@@ -7,3 +7,4 @@ dependencies:
   - fastqc=0.11.7 #newest version
   - multiqc=1.6 #newest version
   - cutadapt=1.18 #newest version
+  - bioconductor-biostrings=2.46.0 

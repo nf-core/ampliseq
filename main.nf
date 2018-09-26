@@ -15,32 +15,56 @@ def helpMessage() {
     =========================================
      nf-core/rrna-ampliseq v${manifest.pipelineVersion}
     =========================================
+    
     Usage:
 
-    The typical command for running the pipeline is as follows:
+    The minimal command for running the pipeline is as follows:
+    nextflow run qiime2.nf --reads "data/*_L001_R{1,2}_001.fastq.gz" --FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT --metadata "$PWD/data/Metadata.tsv"
 
-    nextflow run nf-core/rrna-ampliseq --reads '*_R{1,2}.fastq.gz' -profile standard,docker
+    The test command for running the pipeline is as follows:
+    nextflow run qiime2.nf --minimumTest
 
-    Mandatory arguments:
-      --reads                       Path to input data (must be surrounded with quotes)
-      --genome                      Name of iGenomes reference
-      -profile                      Configuration profile to use. Can use multiple (comma separated)
-                                    Available: standard, conda, docker, singularity, awsbatch, test
+    Required arguments:
+      --reads [Path to folder]      Folder containing Casava 1.8 paired-end demultiplexed fastq files: *_L001_R{1,2}_001.fastq.gz
+      --FW_primer [str]             Forward primer sequence
+      --RV_primer [str]             Reverse primer sequence
+      --metadata                    Absolute path to metadata sheet
 
-    Options:
-      --singleEnd                   Specifies that the input is single end reads
+    Filters:
+      --exclude_taxa [str]          Comma seperated list of unwanted taxa (default: "mitochondria,chloroplast")
+                                    To skip filtering use "none"
 
-    References                      If not specified in the configuration file or you wish to overwrite any of the references.
-      --fasta                       Path to Fasta reference
+    Cutoffs:
+      --retain_untrimmed            Cutadapt will retain untrimmed reads
+      --trunclenf [int]             DADA2 read truncation value for forward strand
+      --trunclenr [int]             DADA2 read truncation value for reverse strand
+      --trunc_qmin [int]            If --trunclenf and --trunclenr are not set, 
+                                    these values will be automatically determined using 
+                                    this mean quality score (not preferred) (default: 25)
+
+    References:                     If you have trained a compatible classifier before
+      --classifier                  Path to QIIME2 classifier file (typically *-classifier.qza)
+
+    Statistics:
+      --metadata_category           Diversity indices will be calculated using these groupings in the metadata sheet,
+                                    all suitable columns in the metadata sheet will be used if not specified.
+                                    Suitable are columns which are categorical (not numerical) and have multiple  
+                                    different values which are not all unique.
 
     Other options:
-      --outdir                      The output directory where the results will be saved
-      --email                       Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits
-      -name                         Name for the pipeline run. If not specified, Nextflow will automatically generate a random mnemonic.
+      --untilQ2import               Skip all steps after importing into QIIME2, used for visually choosing DADA2 parameter
+      --Q2imported [Path]           Path to imported reads (e.g. "demux.qza"), used after visually choosing DADA2 parameter
+      --onlyDenoising               Skip all steps after denoising, produce only sequences and abundance tables on ASV level
 
-    AWSBatch options:
-      --awsqueue                    The AWSBatch JobQueue that needs to be set when running on AWSBatch
-      --awsregion                   The AWS Region for your AWS Batch job to run on
+    Skipping steps:
+      --skip_fastqc                 Skip FastQC
+      --skip_alpha_rarefaction      Skip alpha rarefaction
+      --skip_taxonomy               Skip taxonomic classification
+      --skip_barplot                Skip producing barplot
+      --skip_abundance_tables       Skip producing any relative abundance tables
+      --skip_diversity_indices      Skip alpha and beta diversity analysis
+      --skip_ancom                  Skip differential abundance testing     
+
     """.stripIndent()
 }
 

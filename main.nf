@@ -151,13 +151,6 @@ if(workflow.profile == 'awsbatch'){
     if (!params.awsqueue || !params.awsregion) exit 1, "Specify correct --awsqueue and --awsregion parameters on AWSBatch!"
     if (!workflow.workDir.startsWith('s3') || !params.outdir.startsWith('s3')) exit 1, "Specify S3 URLs for workDir and outdir parameters on AWSBatch!"
 }
-//
-// NOTE - THIS IS NOT USED IN THIS PIPELINE, EXAMPLE ONLY
-// If you want to use the above in a process, define the following:
-//   input:
-//   file fasta from fasta
-//
-
 
 // Has the run name been specified by the user?
 //  this has the bonus effect of catching both -name and --name
@@ -303,10 +296,9 @@ if (!params.Q2imported){
 	    when:
 	    !params.skip_fastqc
 
-	    script:
-	  
+	    script: 
 	    """
-	    ~/PROGRAMS/FastQC/fastqc -q ${reads}
+        fastqc -q ${reads}
 	    """
 	}
 
@@ -377,7 +369,6 @@ if (!params.Q2imported){
 	    !params.Q2imported
 	  
 	    """
-	    singularity exec ${params.qiimeimage} \
 	    qiime tools import  \
 		--type 'SampleData[PairedEndSequencesWithQuality]'  \
 		--input-path ${params.temp_dir}/trimmed  \
@@ -397,7 +388,6 @@ if (!params.Q2imported){
 	  
 	    """
 	    printf ${params.Q2imported}
-
 	    """
 	}
 }
@@ -410,7 +400,7 @@ if (!params.Q2imported){
  */
 
 if( !params.classifier ){
-	new File("${params.temp_dir}/reference").mkdir()
+	new File("${params.temp_dir}/reference").mkdir() //Todo - needs to be a publishDir directive
 	process make_SILVA_132_90_16S_classifier {
 	    echo true
 
@@ -439,18 +429,15 @@ if( !params.classifier ){
 	    rm Silva_132_release.zip
 
 	    ### Import
-	    singularity exec ${params.qiimeimage} \
 	    qiime tools import --type 'FeatureData[Sequence]' \
 		--input-path \$fasta \
 		--output-path ${params.temp_dir}/ref-seq.qza
-	    singularity exec ${params.qiimeimage} \
 	    qiime tools import --type 'FeatureData[Taxonomy]' \
 		--source-format HeaderlessTSVTaxonomyFormat \
 		--input-path \$taxonomy \
 		--output-path ${params.temp_dir}/ref-taxonomy.qza
 
 	    #Extract sequences based on primers
-	    singularity exec ${params.qiimeimage} \
 	    qiime feature-classifier extract-reads \
 		--i-sequences ${params.temp_dir}/ref-seq.qza \
 		--p-f-primer ${params.FW_primer} \
@@ -458,7 +445,6 @@ if( !params.classifier ){
 		--o-reads ${params.temp_dir}/${params.FW_primer}-${params.RV_primer}-ref-seq.qza
 
 	    #Train classifier
-	    singularity exec ${params.qiimeimage} \
 	    qiime feature-classifier fit-classifier-naive-bayes \
 		--i-reference-reads ${params.temp_dir}/${params.FW_primer}-${params.RV_primer}-ref-seq.qza \
 		--i-reference-taxonomy ${params.temp_dir}/ref-taxonomy.qza \
@@ -497,12 +483,10 @@ if( !params.Q2imported ){
 	    val "${params.outdir}/demux/forward-seven-number-summaries.csv,${params.outdir}/demux/reverse-seven-number-summaries.csv" into csv_demux
 	  
 	    """
-	    singularity exec ${params.qiimeimage} \
 	    qiime demux summarize \
 		--i-data $demux \
 		--o-visualization ${params.temp_dir}/demux.qzv
 
-	    singularity exec ${params.qiimeimage} \
 	    qiime tools export ${params.temp_dir}/demux.qzv  \
 		--output-dir ${params.outdir}/demux
 	    """
@@ -515,12 +499,10 @@ if( !params.Q2imported ){
 	    val "${params.outdir}/demux/forward-seven-number-summaries.csv,${params.outdir}/demux/reverse-seven-number-summaries.csv" into csv_demux
 	  
 	    """
-	    singularity exec ${params.qiimeimage} \
 	    qiime demux summarize \
 		--i-data ${params.Q2imported} \
 		--o-visualization ${params.temp_dir}/demux.qzv
 
-	    singularity exec ${params.qiimeimage} \
 	    qiime tools export ${params.temp_dir}/demux.qzv  \
 		--output-dir ${params.outdir}/demux
 	    """
@@ -620,7 +602,6 @@ process dada_single {
     echo run DADA on $demux with truncation values fw: \${trunclen[0]} and rv: \${trunclen[1]}
 
     #denoise samples with DADA2 and produce
-    singularity exec ${params.qiimeimage} \
     qiime dada2 denoise-paired  \
 	--i-demultiplexed-seqs $demux  \
 	--p-trunc-len-f \${trunclen[0]} \
@@ -632,38 +613,31 @@ process dada_single {
 	--verbose
 
     #produce dada2 stats "${params.outdir}/dada_stats/stats.tsv"
-    singularity exec ${params.qiimeimage} \
     qiime tools export ${params.temp_dir}/stats.qza \
 	--output-dir ${params.outdir}/dada_stats
 
     #produce raw count table in biom format "${params.outdir}/table_unfiltered/feature-table.biom"
-    singularity exec ${params.qiimeimage} \
     qiime tools export ${params.temp_dir}/table_unfiltered.qza  \
 	--output-dir ${params.outdir}/table_unfiltered
 
     #produce raw count table
-    singularity exec ${params.qiimeimage} \
     biom convert -i ${params.outdir}/table_unfiltered/feature-table.biom \
 	-o ${params.outdir}/table_unfiltered/feature-table.tsv  \
 	--to-tsv
 
     #produce represenatative sequence fasta file
-    singularity exec ${params.qiimeimage} \
     qiime feature-table tabulate-seqs  \
 	--i-data ${params.temp_dir}/rep-seqs_unfiltered.qza  \
 	--o-visualization ${params.temp_dir}/rep-seqs_unfiltered.qzv
-    singularity exec ${params.qiimeimage} \
     qiime tools export ${params.temp_dir}/rep-seqs_unfiltered.qzv  \
 	--output-dir ${params.outdir}/rep_seqs_unfiltered
 
     #convert to relative abundances
-    singularity exec ${params.qiimeimage} \
     qiime feature-table relative-frequency \
 	--i-table ${params.temp_dir}/table_unfiltered.qza \
 	--o-relative-frequency-table ${params.temp_dir}/relative-table-ASV_unfiltered.qza
 
     #export to biom
-    singularity exec ${params.qiimeimage} \
     qiime tools export ${params.temp_dir}/relative-table-ASV_unfiltered.qza \
 	--output-dir ${params.temp_dir}/rel-table_unfiltered
 
@@ -671,7 +645,6 @@ process dada_single {
     cp ${params.temp_dir}/rel-table_unfiltered/feature-table.biom ${params.outdir}/table_unfiltered/rel-feature-table.biom
 
     #convert to tab seperated text file
-    singularity exec ${params.qiimeimage} \
     biom convert \
 	-i ${params.temp_dir}/rel-table_unfiltered/feature-table.biom \
 	-o ${params.outdir}/table_unfiltered/rel-feature-table.tsv --to-tsv
@@ -806,7 +779,6 @@ process classifier {
 
   
     """
-    singularity exec ${params.qiimeimage} \
     qiime feature-classifier classify-sklearn  \
 	--i-classifier $trained_classifier  \
 	--p-n-jobs -1  \
@@ -814,18 +786,15 @@ process classifier {
 	--o-classification ${params.temp_dir}/taxonomy.qza  \
 	--verbose
 
-    singularity exec ${params.qiimeimage} \
     qiime metadata tabulate  \
 	--m-input-file ${params.temp_dir}/taxonomy.qza  \
 	--o-visualization ${params.temp_dir}/taxonomy.qzv  \
 	--verbose
 
     #produce "${params.outdir}/taxonomy/taxonomy.tsv"
-    singularity exec ${params.qiimeimage} \
     qiime tools export ${params.temp_dir}/taxonomy.qza  \
 	--output-dir ${params.outdir}/taxonomy
 
-    singularity exec ${params.qiimeimage} \
     qiime tools export ${params.temp_dir}/taxonomy.qzv  \
 	--output-dir ${params.outdir}/taxonomy
     """
@@ -871,7 +840,6 @@ if (params.exclude_taxa == "none") {
 	    """
 	    echo exclude taxa ${params.exclude_taxa}
 	    #filter sequences
-	    singularity exec ${params.qiimeimage} \
 	    qiime taxa filter-seqs \
 		--i-sequences $repseq \
 		--i-taxonomy $taxonomy \
@@ -881,7 +849,6 @@ if (params.exclude_taxa == "none") {
 	    echo produced ${params.temp_dir}/filtered-sequences.qza
 
 	    #filter abundance table
-	    singularity exec ${params.qiimeimage} \
 	    qiime taxa filter-table \
 		--i-table $table \
 		--i-taxonomy $taxonomy \
@@ -909,22 +876,18 @@ process export_filtered_dada_output {
 
     """
     #produce raw count table in biom format "${params.outdir}/table/feature-table.biom"
-    singularity exec ${params.qiimeimage} \
     qiime tools export $table  \
 	--output-dir ${params.outdir}/table
 
     #produce raw count table "${params.outdir}/table/feature-table.tsv"
-    singularity exec ${params.qiimeimage} \
     biom convert -i ${params.outdir}/table/feature-table.biom \
 	-o ${params.outdir}/table/feature-table.tsv  \
 	--to-tsv
 
     #produce pepresenatative sequence fasta file "${params.outdir}/rep_seqs/sequences.fasta"
-    singularity exec ${params.qiimeimage} \
     qiime feature-table tabulate-seqs  \
 	--i-data $repseq  \
 	--o-visualization ${params.temp_dir}/rep-seqs.qzv
-    singularity exec ${params.qiimeimage} \
     qiime tools export ${params.temp_dir}/rep-seqs.qzv  \
 	--output-dir ${params.outdir}/rep_seqs
     """
@@ -949,18 +912,15 @@ process RelativeAbundanceASV {
     ##onASV level
 
     #convert to relative abundances
-    singularity exec ${params.qiimeimage} \
     qiime feature-table relative-frequency \
 	--i-table $table \
 	--o-relative-frequency-table ${params.temp_dir}/relative-table-ASV.qza
 
     #export to biom
-    singularity exec ${params.qiimeimage} \
     qiime tools export ${params.temp_dir}/relative-table-ASV.qza \
 	--output-dir ${params.temp_dir}/relative-table-ASV
 
     #convert to tab seperated text file "${params.outdir}/rel-table-ASV.tsv"
-    singularity exec ${params.qiimeimage} \
     biom convert \
 	-i ${params.temp_dir}/relative-table-ASV/feature-table.biom \
 	-o ${params.outdir}/rel-table-ASV.tsv --to-tsv
@@ -988,23 +948,19 @@ process RelativeAbundanceReducedTaxa {
     for i in \${array[@]}
     do
 	#collapse taxa
-	singularity exec ${params.qiimeimage} \
 	qiime taxa collapse \
 		--i-table $table \
 		--i-taxonomy $taxonomy \
 		--p-level \$i \
 		--o-collapsed-table ${params.temp_dir}/table-\$i.qza
 	#convert to relative abundances
-	singularity exec ${params.qiimeimage} \
 	qiime feature-table relative-frequency \
 		--i-table ${params.temp_dir}/table-\$i.qza \
 		--o-relative-frequency-table ${params.temp_dir}/relative-table-\$i.qza
 	#export to biom
-	singularity exec ${params.qiimeimage} \
 	qiime tools export ${params.temp_dir}/relative-table-\$i.qza \
 		--output-dir ${params.temp_dir}/relative-table-\$i
 	#convert to tab seperated text file
-	singularity exec ${params.qiimeimage} \
 	biom convert \
 		-i ${params.temp_dir}/relative-table-\$i/feature-table.biom \
 		-o ${params.outdir}/rel-table-\$i.tsv --to-tsv
@@ -1028,7 +984,6 @@ process barplot {
     !params.skip_barplot && !params.skip_taxonomy
   
     """
-    singularity exec ${params.qiimeimage} \
     qiime taxa barplot  \
 	--i-table $table  \
 	--i-taxonomy $taxonomy  \
@@ -1036,7 +991,6 @@ process barplot {
 	--o-visualization ${params.temp_dir}/taxa-bar-plots.qzv  \
 	--verbose
 
-    singularity exec ${params.qiimeimage} \
     qiime tools export ${params.temp_dir}/taxa-bar-plots.qzv  \
 	--output-dir ${params.outdir}/barplot
     """
@@ -1060,29 +1014,24 @@ process tree {
 
   
     """
-    singularity exec ${params.qiimeimage} \
     qiime alignment mafft \
 	--i-sequences $repseq \
 	--o-alignment ${params.temp_dir}/aligned-rep-seqs.qza \
 	--p-n-threads ${params.tree_cores}
 
-    singularity exec ${params.qiimeimage} \
     qiime alignment mask \
 	--i-alignment ${params.temp_dir}/aligned-rep-seqs.qza \
 	--o-masked-alignment ${params.temp_dir}/masked-aligned-rep-seqs.qza
 
-    singularity exec ${params.qiimeimage} \
     qiime phylogeny fasttree \
 	--i-alignment ${params.temp_dir}/masked-aligned-rep-seqs.qza \
 	--p-n-threads ${params.tree_cores} \
 	--o-tree ${params.temp_dir}/unrooted-tree.qza
 
-    singularity exec ${params.qiimeimage} \
     qiime phylogeny midpoint-root \
 	--i-tree ${params.temp_dir}/unrooted-tree.qza \
 	--o-rooted-tree ${params.temp_dir}/rooted-tree.qza
 
-    singularity exec ${params.qiimeimage} \
     qiime tools export ${params.temp_dir}/rooted-tree.qza  \
 	--output-dir ${params.outdir}/tree
     """
@@ -1122,7 +1071,6 @@ process alpha_rarefaction {
     if [ \"\$maxdepth\" -gt \"5000\" ]; then maxsteps=\"250\"; else maxsteps=\$((maxdepth/20)); fi
     echo \"use the maximum depth of \$maxdepth (found in \"$stats\") and \$maxsteps steps"
 
-    singularity exec ${params.qiimeimage} \
     qiime diversity alpha-rarefaction  \
 	--i-table $table  \
 	--i-phylogeny $tree  \
@@ -1132,7 +1080,6 @@ process alpha_rarefaction {
 	--p-iterations 10  \
 	--o-visualization ${params.temp_dir}/alpha-rarefaction.qzv
 
-    singularity exec ${params.qiimeimage} \
     qiime tools export ${params.temp_dir}/alpha-rarefaction.qzv  \
 	--output-dir ${params.outdir}/alpha-rarefaction
     """
@@ -1219,7 +1166,6 @@ process diversity_core {
     echo \"use the minimum depth of \$mindepth (found in \"$stats\")\"
 
     #run diversity core
-    singularity exec ${params.qiimeimage} \
     qiime diversity core-metrics-phylogenetic \
 	--m-metadata-file ${params.metadata} \
 	--i-phylogeny $tree \
@@ -1248,13 +1194,11 @@ process alpha_diversity {
     method=( \"faith_pd_vector\" \"evenness_vector\" \"shannon_vector\" \"observed_otus_vector\" )
     for i in \"\${method[@]}\"
     do
-	singularity exec ${params.qiimeimage} \
 	qiime diversity alpha-group-significance \
                 --i-alpha-diversity $core/\$i.qza \
                 --m-metadata-file ${params.metadata} \
                 --o-visualization $core/\$i.qzv \
                 --verbose
-	singularity exec ${params.qiimeimage} \
 	qiime tools export $core/\$i.qzv \
                 --output-dir ${params.outdir}/alpha-diversity/\$i
     done
@@ -1370,7 +1314,6 @@ process beta_diversity {
     do
 	for j in \"\${metacategory[@]}\"
 	do
-		singularity exec ${params.qiimeimage} \
 		qiime diversity beta-group-significance \
 		        --i-distance-matrix $core/\$i.qza \
 		        --m-metadata-file ${params.metadata} \
@@ -1378,7 +1321,6 @@ process beta_diversity {
 		        --o-visualization $core/\$i-\$j.qzv \
 		        --p-pairwise \
 		        --verbose
-		singularity exec ${params.qiimeimage} \
 		qiime tools export $core/\$i-\$j.qzv \
 		        --output-dir ${params.outdir}/beta-diversity/\$i-\$j
 	done
@@ -1399,13 +1341,11 @@ process beta_diversity_ordination {
     method=( \"unweighted_unifrac_pcoa_results\" \"weighted_unifrac_pcoa_results\" \"jaccard_pcoa_results\" \"bray_curtis_pcoa_results\" )
     for i in \"\${method[@]}\"
     do
-	singularity exec ${params.qiimeimage} \
 	qiime emperor plot \
                 --i-pcoa $core/\$i.qza \
                 --m-metadata-file ${params.metadata} \
                 --o-visualization $core/\$i.qzv \
                 --verbose
-	singularity exec ${params.qiimeimage} \
 	qiime tools export $core/\$i.qzv \
                 --output-dir ${params.outdir}/beta-diversity/\$i-PCoA
     done
@@ -1435,7 +1375,6 @@ process ancom {
     #remove samples that do not have any value
     for j in \"\${metacategory[@]}\"
     do
-	singularity exec ${params.qiimeimage} \
 	qiime feature-table filter-samples \
 		--i-table $table \
 		--m-metadata-file ${params.metadata} \
@@ -1449,25 +1388,21 @@ process ancom {
     do
 	for j in \"\${metacategory[@]}\"
 	do
-		singularity exec ${params.qiimeimage} \
 		qiime taxa collapse \
 		        --i-table ${params.temp_dir}/ancom/\$j-table.qza \
 		        --i-taxonomy $taxonomy \
 		        --p-level \"\$i\" \
 		        --o-collapsed-table ${params.temp_dir}/ancom/\$j-l\$i-table.qza \
 		        --verbose
-		singularity exec ${params.qiimeimage} \
 		qiime composition add-pseudocount \
 		        --i-table ${params.temp_dir}/ancom/\$j-l\$i-table.qza \
 		        --o-composition-table ${params.temp_dir}/ancom/\$j-l\$i-comp-table.qza
-		singularity exec ${params.qiimeimage} \
 		qiime composition ancom \
 		        --i-table ${params.temp_dir}/ancom/\$j-l\$i-comp-table.qza \
 		        --m-metadata-file ${params.metadata} \
 		        --m-metadata-column \"\$j\" \
 		        --o-visualization ${params.temp_dir}/ancom/\$j-l\$i-comp-table.qzv \
 		        --verbose
-		singularity exec ${params.qiimeimage} \
 		qiime tools export ${params.temp_dir}/ancom/\$j-l\$i-comp-table.qzv \
 		        --output-dir ${params.outdir}/ancom/Category-\$j-level-\$i
 	done
@@ -1476,28 +1411,20 @@ process ancom {
     # ANCOM on ASV level
     for j in \"\${metacategory[@]}\"
     do
-	singularity exec ${params.qiimeimage} \
-	qiime composition add-pseudocount \
+    qiime composition add-pseudocount \
 		--i-table ${params.temp_dir}/ancom/\$j-table.qza \
 		--o-composition-table ${params.temp_dir}/ancom/\$j-comp-table.qza
-	singularity exec ${params.qiimeimage} \
 	qiime composition ancom \
 	        --i-table ${params.temp_dir}/ancom/\$j-comp-table.qza \
 	        --m-metadata-file ${params.metadata} \
 	        --m-metadata-column \"\$j\" \
 	        --o-visualization ${params.temp_dir}/ancom/\$j-comp-table.qzv \
 	        --verbose
-	singularity exec ${params.qiimeimage} \
 	qiime tools export ${params.temp_dir}/ancom/\$j-comp-table.qzv \
 	        --output-dir ${params.outdir}/ancom/Category-\$j-ASV
     done
     """
 }
-
-
-
-
-
 
 /*
  * STEP 3 - Output Description HTML

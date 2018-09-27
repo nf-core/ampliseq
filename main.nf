@@ -165,30 +165,6 @@ if( workflow.profile == 'awsbatch') {
     if(!workflow.workDir.startsWith('s3:') || !params.outdir.startsWith('s3:')) exit 1, "Workdir or Outdir not on S3 - specify S3 Buckets for each to run on AWSBatch!"
 }
 
-/*
- * TODO CHeck with daniels input if that holds true!
- * Create a channel for input read files
- */
- if(params.readPaths){
-     if(params.singleEnd){
-         Channel
-             .from(params.readPaths)
-             .map { row -> [ row[0], [file(row[1][0])]] }
-             .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-             .into { read_files_fastqc; read_files_trimming }
-     } else {
-         Channel
-             .from(params.readPaths)
-             .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
-             .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-             .into { read_files_fastqc; read_files_trimming }
-     }
- } else {
-     Channel
-         .fromFilePairs( params.reads, size: params.singleEnd ? 1 : 2 )
-         .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!\nIf this is single-end data, please specify --singleEnd on the command line." }
-         .into { read_files_fastqc; read_files_trimming }
- }
 
 
 // Header log info
@@ -271,15 +247,30 @@ process get_software_versions {
 
 
 if (!params.Q2imported){
-	/*
-	 * Creates the `read_pairs` channel that emits for each read-pair a tuple containing
-	 * three elements: the pair ID, the first read-pair file and the second read-pair file
-	 */
-	Channel
-	    .fromFilePairs( params.reads )                                             
-	    .ifEmpty { error "Cannot find any reads matching: ${params.reads}" }
-	    .into { read_pairs; read_pairs_fastqc }
 
+    /*
+    * Create a channel for input read files
+    */
+    if(params.readPaths){
+        if(params.singleEnd){
+            Channel
+                .from(params.readPaths)
+                .map { row -> [ row[0], [file(row[1][0])]] }
+                .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
+                .into { read_pairs; read_pairs_fastqc }
+        } else {
+            Channel
+                .from(params.readPaths)
+                .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
+                .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
+                .into { read_pairs; read_pairs_fastqc }
+        }
+    } else {
+        Channel
+            .fromFilePairs( params.reads, size: params.singleEnd ? 1 : 2 )
+            .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!\nIf this is single-end data, please specify --singleEnd on the command line." }
+            .into { read_pairs; read_pairs_fastqc }
+    }
 	/*
 	 * fastQC
 	 */
@@ -342,9 +333,9 @@ if (!params.Q2imported){
 
 	    script:
 	    if( params.retain_untrimmed == false ){ 
-		discard_untrimmed = "--discard-untrimmed"
+		    discard_untrimmed = "--discard-untrimmed"
 	    } else {
-		discard_untrimmed = ""
+		    discard_untrimmed = ""
 	    }
 	  
 	    """

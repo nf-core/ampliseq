@@ -88,6 +88,59 @@ params.plaintext_email = false
 multiqc_config = file(params.multiqc_config)
 output_docs = file("$baseDir/docs/output.md")
 
+// Defines all parameters that are independent of a test run
+params.trunc_qmin = 25 //to calculate params.trunclenf and params.trunclenr automatically
+params.trunclenf = false
+params.trunclenr = false
+params.metadata_category = false
+params.qiimeimage = "$baseDir/qiime2_2018.6.simg"
+params.tree_cores = 2
+params.diversity_cores = 2
+params.retain_untrimmed = false
+params.exclude_taxa = "mitochondria,chloroplast"
+
+/*
+ * Defines pipeline steps
+ */
+params.untilQ2import = false
+
+params.Q2imported = false
+if (params.Q2imported) {
+    params.skip_fastqc = true
+    params.skip_multiqc = true
+} else {
+    params.skip_fastqc = false
+    params.skip_multiqc = false
+}
+
+params.onlyDenoising = false
+if (params.onlyDenoising || params.untilQ2import) {
+    params.skip_abundance_tables = true
+    params.skip_barplot = true
+    params.skip_taxonomy = true
+    params.skip_alpha_rarefaction = true
+    params.skip_diversity_indices = true
+    params.skip_ancom = true
+} else {
+    params.skip_abundance_tables = false
+    params.skip_barplot = false
+    params.skip_taxonomy = false
+    params.skip_alpha_rarefaction = false
+    params.skip_diversity_indices = false
+    params.skip_ancom = false
+}
+
+/*
+ * Sanity check input values
+ * need to be extended eventually
+ */
+if (!params.Q2imported && (!params.FW_primer || !params.RV_primer || !params.metadata || !params.reads)) {
+    println "${params.Q2imported}"
+    println "\nERROR: Missing required input --Q2imported OR --FW_primer / --RV_primer / --metadata\n"
+    helpMessage()
+    exit 1
+}
+
 // Validate inputs
 if ( params.fasta ){
     fasta = file(params.fasta)

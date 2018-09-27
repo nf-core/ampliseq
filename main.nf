@@ -161,8 +161,6 @@ if( workflow.profile == 'awsbatch') {
     if(!workflow.workDir.startsWith('s3:') || !params.outdir.startsWith('s3:')) exit 1, "Workdir or Outdir not on S3 - specify S3 Buckets for each to run on AWSBatch!"
 }
 
-
-
 // Header log info
 // TODO lets test this too - need to add more stuff as well here
 log.info """=======================================================
@@ -253,19 +251,19 @@ if (!params.Q2imported){
                 .from(params.readPaths)
                 .map { row -> [ row[0], [file(row[1][0])]] }
                 .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-                .into { read_pairs; read_pairs_fastqc }
+                .into { ch_read_pairs; ch_read_pairs_fastqc }
         } else {
             Channel
                 .from(params.readPaths)
                 .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
                 .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-                .into { read_pairs; read_pairs_fastqc }
+                .into { ch_read_pairs; ch_read_pairs_fastqc }
         }
     } else {
         Channel
             .fromFilePairs( params.reads, size: params.singleEnd ? 1 : 2 )
             .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!\nIf this is single-end data, please specify --singleEnd on the command line." }
-            .into { read_pairs; read_pairs_fastqc }
+            .into { ch_read_pairs; ch_read_pairs_fastqc }
     }
 	/*
 	 * fastQC
@@ -275,10 +273,10 @@ if (!params.Q2imported){
 		saveAs: {filename -> filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"}
 
 	    input:
-	    set val(name), file(reads) from read_pairs_fastqc
+	    set val(name), file(reads) from ch_read_pairs_fastqc
 
 	    output:
-	    file "*_fastqc.{zip,html}" into fastqc_results
+	    file "*_fastqc.{zip,html}" into ch_fastqc_results
 
 	    when:
 	    !params.skip_fastqc
@@ -296,7 +294,7 @@ if (!params.Q2imported){
 	    publishDir "${params.outdir}/MultiQC", mode: 'copy'
 
 	    input:
-	    file ('fastqc/*') from fastqc_results.collect()
+	    file ('fastqc/*') from ch_fastqc_results.collect()
 
 	    output:
 	    file "*multiqc_report.html" into multiqc_report
@@ -306,7 +304,6 @@ if (!params.Q2imported){
 	    !params.skip_multiqc
 
 	    script:
-	  
 	    """
 	    multiqc --force --interactive .
 	    """

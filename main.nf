@@ -320,7 +320,6 @@ if (!params.Q2imported){
 	 * Trim each read-pair by using cutadapt tool
 	 * instead of printing to stdout better to file "cutadapt_report.txt" or log file or the like (see result_trimmed.subscribe { println it } below)
 	 */
-	new File("${params.temp_dir}/trimmed").mkdir()
 	process trimming {  
 	    publishDir "${params.temp_dir}/trimmed", mode: 'copy'	
 	  

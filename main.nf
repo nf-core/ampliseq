@@ -98,6 +98,7 @@ params.tree_cores = 2
 params.diversity_cores = 2
 params.retain_untrimmed = false
 params.exclude_taxa = "mitochondria,chloroplast"
+params.keepIntermediates = false
 
 /*
  * Defines pipeline steps
@@ -295,6 +296,7 @@ if (!params.Q2imported){
 
 	    input:
 	    file ('fastqc/*') from ch_fastqc_results.collect()
+        file ('cutadapt/*') from ch_fastq_cutadapt_log.collect()
 
 	    output:
 	    file "*multiqc_report.html" into multiqc_report
@@ -314,14 +316,18 @@ if (!params.Q2imported){
 	 * instead of printing to stdout better to file "cutadapt_report.txt" or log file or the like (see result_trimmed.subscribe { println it } below)
 	 */
 	process trimming {  
-	    publishDir "${params.temp_dir}/trimmed", mode: 'copy'	
+	    publishDir "${params.temp_dir}/trimmed", mode: 'copy',
+            saveAs: {filename -> 
+            if (filename.indexOf(".gz") == -1) "logs/$filename"
+            else if(filename.keepIntermediates) filename 
+            else null}
 	  
 	    input:
 	    set pair_id, file(reads) from read_pairs
 	  
 	    output:
-	    val "${params.temp_dir}/trimmed/${reads[0]}" into fastq_trimmed
-	    stdout result_trimmed
+        file "${reads.baseName}" into ch_fastq_trimmed
+        file cutadapt_log_"${reads.baseName}".txt into ch_fastq_cutadapt_log
 
 	    script:
 	    if( params.retain_untrimmed == false ){ 
@@ -331,7 +337,7 @@ if (!params.Q2imported){
 	    }
 	  
 	    """
-	    cutadapt -g ${params.FW_primer} -G ${params.RV_primer} $discard_untrimmed -o ${params.temp_dir}/trimmed/${reads[0]} -p ${params.temp_dir}/trimmed/${reads[1]} ${reads[0]} ${reads[1]}
+	    cutadapt -g ${params.FW_primer} -G ${params.RV_primer} $discard_untrimmed -o ${params.temp_dir}/trimmed/${reads[0]} -p ${params.temp_dir}/trimmed/${reads[1]} ${reads[0]} ${reads[1]} 2> cutadapt_log_"${reads.baseName}".txt
 	    """
 	}
 

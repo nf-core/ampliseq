@@ -9,7 +9,7 @@ channels:
 dependencies:
   - fastqc=0.11.7 #newest version
   - multiqc=1.6 #newest version
-  - cutadapt=1.18 #newest version
+  #Everything below here was copied from QIIME2 YAML file (2018-08 version) including dependencies for QIIME2
   - bioconductor-biobase=2.38.0
   - bioconductor-biocgenerics=0.24.0
   - bioconductor-biocparallel=1.12.0

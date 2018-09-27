@@ -312,9 +312,9 @@ if (!params.Q2imported){
 	}
 
 	/*
-	 * Trim each read-pair by using cutadapt tool
-	 * instead of printing to stdout better to file "cutadapt_report.txt" or log file or the like (see result_trimmed.subscribe { println it } below)
+	 * Trim each read-pair with cutadapt
 	 */
+    
 	process trimming {  
 	    publishDir "${params.temp_dir}/trimmed", mode: 'copy',
             saveAs: {filename -> 
@@ -327,7 +327,7 @@ if (!params.Q2imported){
 	  
 	    output:
         file "${reads.baseName}" into ch_fastq_trimmed
-        file cutadapt_log_"${reads.baseName}".txt into ch_fastq_cutadapt_log
+        file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
 
 	    script:
 	    if( params.retain_untrimmed == false ){ 
@@ -337,7 +337,7 @@ if (!params.Q2imported){
 	    }
 	  
 	    """
-	    cutadapt -g ${params.FW_primer} -G ${params.RV_primer} $discard_untrimmed -o ${params.temp_dir}/trimmed/${reads[0]} -p ${params.temp_dir}/trimmed/${reads[1]} ${reads[0]} ${reads[1]} 2> cutadapt_log_"${reads.baseName}".txt
+	    cutadapt -g ${params.FW_primer} -G ${params.RV_primer} $discard_untrimmed -o "${reads.baseName}".R1.fastq.gz -p "${reads.baseName}".R2.fastq.gz ${reads[0]} ${reads[1]} 2> cutadapt_log_"${reads.baseName}".txt
 	    """
 	}
 

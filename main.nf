@@ -109,6 +109,9 @@ params.Q2imported = false
 if (params.Q2imported) {
     params.skip_fastqc = true
     params.skip_multiqc = true
+    //Set up channel
+    Channel.fromFile("${params.Q2imported}")
+           .into { ch_qiime_demux }
 } else {
     params.skip_fastqc = false
     params.skip_multiqc = false
@@ -346,13 +349,11 @@ if (!params.Q2imported){
 	 * Import trimmed files into QIIME2 artefact
 	 */
 	process qiime_import { 
-	    echo true
-
 	    input:
-	    file(trimmed) from fastq_trimmed.collect() 
+	    file(trimmed) from ch_fastq_trimmed.collect() 
 
 	    output:
-	    val "${params.temp_dir}/demux.qza" into qiime_demux
+	    file "demux.qza" into ch_qiime_demux
 
 	    when:
 	    !params.Q2imported
@@ -360,25 +361,12 @@ if (!params.Q2imported){
 	    """
 	    qiime tools import  \
 		--type 'SampleData[PairedEndSequencesWithQuality]'  \
-		--input-path ${params.temp_dir}/trimmed  \
+		--input-path $trimmed  \
 		--source-format CasavaOneEightSingleLanePerSampleDirFmt  \
-		--output-path ${params.temp_dir}/demux.qza
+		--output-path demux.qza
 	    """
 	}
 
-} else {
-	/*
-	 * Fill variable qiime_demux with params.Q2imported
-	 */
-	process qiime_existing_demux { 
-
-	    output:
-	    stdout qiime_demux
-	  
-	    """
-	    printf ${params.Q2imported}
-	    """
-	}
 }
 
 

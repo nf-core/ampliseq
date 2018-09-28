@@ -50,7 +50,7 @@ NXF_OPTS='-Xms1g -Xmx4g'
 ## Running the pipeline
 The typical command for running the pipeline is as follows:
 ```bash
-nextflow run nf-core/rrna-ampliseq --reads '*_R{1,2}.fastq.gz' -profile standard,docker
+nextflow run nf-core/rrna-ampliseq --reads 'data' -profile standard,docker
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
@@ -105,71 +105,143 @@ Use this parameter to choose a configuration profile. Profiles can give configur
     * No configuration at all. Useful if you want to build your own config from scratch and want to avoid loading in the default `base` config profile (not recommended).
 
 ### `--reads`
-Use this to specify the location of your input FastQ files. For example:
+Use this to specify the location of your input paired-end FastQ files. For example:
 
 ```bash
---reads 'path/to/data/sample_*_{1,2}.fastq'
+--reads 'path/to/data/'
 ```
 
 Please note the following requirements:
 
 1. The path must be enclosed in quotes
-2. The path must have at least one `*` wildcard character
-3. When using the pipeline with paired end data, the path must use `{1,2}` notation to specify read pairs.
+2. The folder must containing gzip compressed Casava 1.8 paired-end demultiplexed fastq files with the naming sheme *_L001_R{1,2}_001.fastq.gz
 
-If left unspecified, a default pattern is used: `data/*{1,2}.fastq.gz`
-
-### `--singleEnd`
-By default, the pipeline expects paired-end data. If you have single-end data, you need to specify `--singleEnd` on the command line when you launch the pipeline. A normal glob pattern, enclosed in quotation marks, can then be used for `--reads`. For example:
+### `--FW_primer` and `--RV_primer`
+In Amplicon sequencing methods, PCR with specific primers produces the amplicon of intrest. These primer sequences need to be trimmed from the reads before further processing and are also required for producing an appropriate classifier. For example:
 
 ```bash
---singleEnd --reads '*.fastq'
+--FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT
 ```
 
-It is not possible to run a mixture of single-end and paired-end files in one run.
-
-
-## Reference Genomes
-
-The pipeline config files come bundled with paths to the illumina iGenomes reference index files. If running with docker or AWS, the configuration is set up to use the [AWS-iGenomes](https://ewels.github.io/AWS-iGenomes/) resource.
-
-### `--genome` (using iGenomes)
-There are 31 different species supported in the iGenomes references. To run the pipeline, you must specify which to use with the `--genome` flag.
-
-You can find the keys to specify the genomes in the [iGenomes config file](../conf/igenomes.config). Common genomes that are supported are:
-
-* Human
-  * `--genome GRCh37`
-* Mouse
-  * `--genome GRCm38`
-* _Drosophila_
-  * `--genome BDGP6`
-* _S. cerevisiae_
-  * `--genome 'R64-1-1'`
-
-> There are numerous others - check the config file for more.
-
-Note that you can use the same configuration setup to save sets of reference files for your own use, even if they are not part of the iGenomes resource. See the [Nextflow documentation](https://www.nextflow.io/docs/latest/config.html) for instructions on where to save such a file.
-
-The syntax for this reference configuration is as follows:
-
-```nextflow
-params {
-  genomes {
-    'GRCh37' {
-      fasta   = '<path to the genome fasta file>' // Used if no star index given
-    }
-    // Any number of additional genomes, key is used with --genome
-  }
-}
-```
-
-### `--fasta`
-If you prefer, you can specify the full path to your reference genome when you run the pipeline:
+### `--retain_untrimmed`
+When read sequences are trimmed, routinely untrimmed read pairs are discarded. Use this option to retain untrimmed read pairs. For example:
 
 ```bash
---fasta '[path to Fasta reference]'
+--retain_untrimmed
 ```
+
+### `--metadata`
+For performing downstream analysis such as barplots, diversity indices or differential abundance testing, a metadata file is essential. For example:
+
+```bash
+--metadata "$PWD/data/Metadata.tsv"
+```
+
+Please note the following requirements:
+
+1. The path must be enclosed in quotes
+2. The metadata sheet has to follow the [QIIME2 specifications](https://docs.qiime2.org/2018.6/tutorials/metadata/)
+
+## Cutoffs
+
+### `--trunclenf` and `--trunclenr`
+Read denoising by DADA2 creates an error profile specific to a sequencing run and uses this to correct sequencing errors. This method requires all reads to have the same length and as high quality as possible while maintaining at least 20 bp overlap for merging. One cutoff for the forward read `--trunclenf` and one for the reverse read `--trunclenr` truncate all longer reads at that position and drop all shorter reads. 
+These cutoffs are usually chosen visually using `--untilQ2import`, inspecting the quality plots in the "result folder/demux", and resuming analysis with `--Q2imported [Path]`. If not set, these cutoffs will be determined automatically for the position before the mean quality score drops below `--trunc_qmin` with default 25. For example:
+
+```bash
+--trunclenf 180 --trunclenr 120
+```
+
+Please note:
+
+1. Too agressive truncation might lead to insufficient overlap for read merging
+2. Too less truncation might reduce denoised reads
+3. The code choosing these values automatically cannot take the points above into account, therefore setting `--trunclenf` and `--trunclenr` is preferred
+
+### `--trunc_qmin`
+Automatically determine `--trunclenf` and `--trunclenr` before the mean quality score drops below `--trunc_qmin` (default: 25). Setting values for `--trunclenf` and `--trunclenr` is strongly encouraged. For example:
+
+```bash
+--trunc_qmin 20
+```
+
+Please note:
+
+1. The code choosing `--trunclenf` and `--trunclenr` using `--trunc_qmin` automatically cannot take amplicon length or overlap requirements into account, therefore setting `--trunclenf` and `--trunclenr` is preferred
+
+### `--untilQ2import`
+Computes all steps until quality plots aiding the choosing of `--trunclenf` and `--trunclenr`.
+
+### `--Q2imported`
+Analysis starting with a QIIME2 artefact with trimmed reads, typically produced before with `--untilQ2import`.
+
+## Reference database
+
+### `--classifier`
+If you have trained a compatible classifier before. For example:
+
+```bash
+--classifier "FW_primer-RV_primer-classifier.qza"
+```
+
+Please note the following requirements:
+
+1. The path must be enclosed in quotes
+2. The cassifier is a Naive Bayes classifier produced by "qiime feature-classifier fit-classifier-naive-bayes" (e.g. by this pipeline)
+3. The primer pair for the amplicon PCR and the computing of the classifier are exactly the same
+2. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses (0.19.1).
+
+## Statistics
+
+### `--metadata_category`
+Here columns in the metadata sheet can be chosen with groupings that are used for diversity indices and differential abundance analysis. By default, all suitable columns in the metadata sheet will be used if this option is not specified. Suitable are columns which are categorical (not numerical) and have multiple different values which are not all unique. For example:
+
+```bash
+--metadata "treatment1,treatment2"
+```
+
+Please note the following requirements:
+
+1. Comma seperated list enclosed in quotes and may not contain space " "
+2. The specified terms have to match exactly a column in the metadata sheet
+
+## Filters
+
+### `--exclude_taxa`
+Depending on the primers used, PCR might amplify unwanted or off-target taxa, e.g. originating from mitochondria or chloroplasts. Here you can specify taxa that are excluded from further analysis. DFor example:
+
+```bash
+--exclude_taxa "mitochondria,chloroplast"
+```
+
+Please note the following requirements:
+
+1. Comma seperated list enclosed in quotes and may not contain space " "
+2. Taxa that contain these strings are excluded
+3. The taxonomy level is meaningless
+
+## Skipping steps:
+
+### `--skip_fastqc`
+Skip FastQC, minor time saving.
+
+### `--skip_alpha_rarefaction`
+Skip alpha rarefaction, minor time saving.
+
+### `--skip_taxonomy`
+Skip taxonomic classification, will essentially truncate the workflow after denoising.
+
+### `--skip_barplot`
+Skip producing barplot, minor time saving.
+
+### `--skip_abundance_tables`
+Skip producing any relative abundance tables, minor time saving.
+
+### `--skip_diversity_indices`
+Skip alpha and beta diversity analysis, large time saving.
+
+### `--skip_ancom`
+Skip differential abundance testing, large time saving.
 
 ## Job Resources
 ### Automatic resubmission

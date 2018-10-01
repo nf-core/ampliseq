@@ -566,8 +566,8 @@ process dada_single {
     val trunc from dada_trunc
 
     output:
-    val "${params.temp_dir}/table_unfiltered.qza" into qiime_table_raw
-    val "${params.temp_dir}/rep-seqs_unfiltered.qza" into qiime_repseq_raw
+    val "table_unfiltered.qza" into qiime_table_raw
+    val "rep-seqs_unfiltered.qza" into qiime_repseq_raw
 
     when:
     !params.untilQ2import
@@ -582,17 +582,17 @@ process dada_single {
 	--p-trunc-len-f \${trunclen[0]} \
 	--p-trunc-len-r \${trunclen[1]} \
 	--p-n-threads ${process.cpus}  \
-	--o-table ${params.temp_dir}/table_unfiltered.qza  \
-	--o-representative-sequences ${params.temp_dir}/rep-seqs_unfiltered.qza  \
-	--o-denoising-stats ${params.temp_dir}/stats.qza \
+	--o-table table_unfiltered.qza  \
+	--o-representative-sequences rep-seqs_unfiltered.qza  \
+	--o-denoising-stats stats.qza \
 	--verbose
 
     #produce dada2 stats "${params.outdir}/dada_stats/stats.tsv"
-    qiime tools export ${params.temp_dir}/stats.qza \
+    qiime tools export stats.qza \
 	--output-dir ${params.outdir}/dada_stats
 
     #produce raw count table in biom format "${params.outdir}/table_unfiltered/feature-table.biom"
-    qiime tools export ${params.temp_dir}/table_unfiltered.qza  \
+    qiime tools export table_unfiltered.qza  \
 	--output-dir ${params.outdir}/table_unfiltered
 
     #produce raw count table
@@ -602,26 +602,26 @@ process dada_single {
 
     #produce represenatative sequence fasta file
     qiime feature-table tabulate-seqs  \
-	--i-data ${params.temp_dir}/rep-seqs_unfiltered.qza  \
-	--o-visualization ${params.temp_dir}/rep-seqs_unfiltered.qzv
-    qiime tools export ${params.temp_dir}/rep-seqs_unfiltered.qzv  \
+	--i-data rep-seqs_unfiltered.qza  \
+	--o-visualization rep-seqs_unfiltered.qzv
+    qiime tools export rep-seqs_unfiltered.qzv  \
 	--output-dir ${params.outdir}/rep_seqs_unfiltered
 
     #convert to relative abundances
     qiime feature-table relative-frequency \
-	--i-table ${params.temp_dir}/table_unfiltered.qza \
-	--o-relative-frequency-table ${params.temp_dir}/relative-table-ASV_unfiltered.qza
+	--i-table table_unfiltered.qza \
+	--o-relative-frequency-table relative-table-ASV_unfiltered.qza
 
     #export to biom
-    qiime tools export ${params.temp_dir}/relative-table-ASV_unfiltered.qza \
-	--output-dir ${params.temp_dir}/rel-table_unfiltered
+    qiime tools export relative-table-ASV_unfiltered.qza \
+	--output-dir rel-table_unfiltered
 
     #copy biom to result folder
-    cp ${params.temp_dir}/rel-table_unfiltered/feature-table.biom ${params.outdir}/table_unfiltered/rel-feature-table.biom
+    cp rel-table_unfiltered/feature-table.biom ${params.outdir}/table_unfiltered/rel-feature-table.biom
 
     #convert to tab seperated text file
     biom convert \
-	-i ${params.temp_dir}/rel-table_unfiltered/feature-table.biom \
+	-i rel-table_unfiltered/feature-table.biom \
 	-o ${params.outdir}/table_unfiltered/rel-feature-table.tsv --to-tsv
 
     """
@@ -641,7 +641,7 @@ process classifier {
     val trained_classifier from qiime_classifier
 
     output:
-    val "${params.temp_dir}/taxonomy.qza" into qiime_taxonomy
+    val "taxonomy.qza" into qiime_taxonomy
     val "${params.outdir}/taxonomy/taxonomy.tsv" into tsv_taxonomy
 
   
@@ -650,19 +650,19 @@ process classifier {
 	--i-classifier $trained_classifier  \
 	--p-n-jobs ${process.cpus}  \
 	--i-reads $repseq  \
-	--o-classification ${params.temp_dir}/taxonomy.qza  \
+	--o-classification taxonomy.qza  \
 	--verbose
 
     qiime metadata tabulate  \
-	--m-input-file ${params.temp_dir}/taxonomy.qza  \
-	--o-visualization ${params.temp_dir}/taxonomy.qzv  \
+	--m-input-file taxonomy.qza  \
+	--o-visualization taxonomy.qzv  \
 	--verbose
 
     #produce "${params.outdir}/taxonomy/taxonomy.tsv"
-    qiime tools export ${params.temp_dir}/taxonomy.qza  \
+    qiime tools export taxonomy.qza  \
 	--output-dir ${params.outdir}/taxonomy
 
-    qiime tools export ${params.temp_dir}/taxonomy.qzv  \
+    qiime tools export taxonomy.qzv  \
 	--output-dir ${params.outdir}/taxonomy
     """
 }
@@ -699,8 +699,8 @@ if (params.exclude_taxa == "none") {
 	    val taxonomy from qiime_taxonomy
 
 	    output:
-	    val "${params.temp_dir}/filtered-table.qza" into qiime_table
-	    val "${params.temp_dir}/filtered-sequences.qza" into qiime_repseq
+	    val "filtered-table.qza" into qiime_table
+	    val "filtered-sequences.qza" into qiime_repseq
 
 	    script:
 	  
@@ -712,8 +712,8 @@ if (params.exclude_taxa == "none") {
 		--i-taxonomy $taxonomy \
 		--p-exclude ${params.exclude_taxa} \
 		--p-mode contains \
-		--o-filtered-sequences ${params.temp_dir}/filtered-sequences.qza
-	    echo produced ${params.temp_dir}/filtered-sequences.qza
+		--o-filtered-sequences filtered-sequences.qza
+	    echo produced filtered-sequences.qza
 
 	    #filter abundance table
 	    qiime taxa filter-table \
@@ -721,8 +721,8 @@ if (params.exclude_taxa == "none") {
 		--i-taxonomy $taxonomy \
 		--p-exclude ${params.exclude_taxa} \
 		--p-mode contains \
-		--o-filtered-table ${params.temp_dir}/filtered-table.qza
-	    echo produced ${params.temp_dir}/filtered-table.qza
+		--o-filtered-table filtered-table.qza
+	    echo produced filtered-table.qza
 	    """
 	}
 }
@@ -754,9 +754,9 @@ process export_filtered_dada_output {
     #produce pepresenatative sequence fasta file "${params.outdir}/rep_seqs/sequences.fasta"
     qiime feature-table tabulate-seqs  \
 	--i-data $repseq  \
-	--o-visualization ${params.temp_dir}/rep-seqs.qzv
-    qiime tools export ${params.temp_dir}/rep-seqs.qzv  \
-	--output-dir ${params.outdir}/rep_seqs
+	--o-visualization rep-seqs.qzv
+    qiime tools export rep-seqs.qzv  \
+	--output-dir rep_seqs
     """
 }
 
@@ -781,16 +781,14 @@ process RelativeAbundanceASV {
     #convert to relative abundances
     qiime feature-table relative-frequency \
 	--i-table $table \
-	--o-relative-frequency-table ${params.temp_dir}/relative-table-ASV.qza
+	--o-relative-frequency-table relative-table-ASV.qza
 
     #export to biom
-    qiime tools export ${params.temp_dir}/relative-table-ASV.qza \
-	--output-dir ${params.temp_dir}/relative-table-ASV
+    qiime tools export relative-table-ASV.qza --output-dir relative-table-ASV
 
     #convert to tab seperated text file "${params.outdir}/rel-table-ASV.tsv"
-    biom convert \
-	-i ${params.temp_dir}/relative-table-ASV/feature-table.biom \
-	-o ${params.outdir}/rel-table-ASV.tsv --to-tsv
+    biom convert -i relative-table-ASV/feature-table.biom 
+	-o rel-table-ASV.tsv --to-tsv
     """
 }
 
@@ -819,17 +817,17 @@ process RelativeAbundanceReducedTaxa {
 		--i-table $table \
 		--i-taxonomy $taxonomy \
 		--p-level \$i \
-		--o-collapsed-table ${params.temp_dir}/table-\$i.qza
+		--o-collapsed-table table-\$i.qza
 	#convert to relative abundances
 	qiime feature-table relative-frequency \
-		--i-table ${params.temp_dir}/table-\$i.qza \
-		--o-relative-frequency-table ${params.temp_dir}/relative-table-\$i.qza
+		--i-table table-\$i.qza \
+		--o-relative-frequency-table relative-table-\$i.qza
 	#export to biom
-	qiime tools export ${params.temp_dir}/relative-table-\$i.qza \
-		--output-dir ${params.temp_dir}/relative-table-\$i
+	qiime tools export relative-table-\$i.qza \
+		--output-dir relative-table-\$i
 	#convert to tab seperated text file
 	biom convert \
-		-i ${params.temp_dir}/relative-table-\$i/feature-table.biom \
+		-i relative-table-\$i/feature-table.biom \
 		-o ${params.outdir}/rel-table-\$i.tsv --to-tsv
     done
 
@@ -855,10 +853,10 @@ process barplot {
 	--i-table $table  \
 	--i-taxonomy $taxonomy  \
 	--m-metadata-file ${params.metadata}  \
-	--o-visualization ${params.temp_dir}/taxa-bar-plots.qzv  \
+	--o-visualization taxa-bar-plots.qzv  \
 	--verbose
 
-    qiime tools export ${params.temp_dir}/taxa-bar-plots.qzv  \
+    qiime tools export taxa-bar-plots.qzv  \
 	--output-dir ${params.outdir}/barplot
     """
 }
@@ -874,7 +872,7 @@ process tree {
     val repseq from qiime_repseq
 
     output:
-    val "${params.temp_dir}/rooted-tree.qza" into qiime_tree
+    val "rooted-tree.qza" into qiime_tree
 
     when:
     !params.skip_diversity_indices || !params.skip_alpha_rarefaction
@@ -883,23 +881,23 @@ process tree {
     """
     qiime alignment mafft \
 	--i-sequences $repseq \
-	--o-alignment ${params.temp_dir}/aligned-rep-seqs.qza \
+	--o-alignment aligned-rep-seqs.qza \
 	--p-n-threads ${params.tree_cores}
 
     qiime alignment mask \
-	--i-alignment ${params.temp_dir}/aligned-rep-seqs.qza \
-	--o-masked-alignment ${params.temp_dir}/masked-aligned-rep-seqs.qza
+	--i-alignment aligned-rep-seqs.qza \
+	--o-masked-alignment masked-aligned-rep-seqs.qza
 
     qiime phylogeny fasttree \
-	--i-alignment ${params.temp_dir}/masked-aligned-rep-seqs.qza \
+	--i-alignment masked-aligned-rep-seqs.qza \
 	--p-n-threads ${params.tree_cores} \
-	--o-tree ${params.temp_dir}/unrooted-tree.qza
+	--o-tree unrooted-tree.qza
 
     qiime phylogeny midpoint-root \
-	--i-tree ${params.temp_dir}/unrooted-tree.qza \
-	--o-rooted-tree ${params.temp_dir}/rooted-tree.qza
+	--i-tree unrooted-tree.qza \
+	--o-rooted-tree rooted-tree.qza
 
-    qiime tools export ${params.temp_dir}/rooted-tree.qza  \
+    qiime tools export rooted-tree.qza  \
 	--output-dir ${params.outdir}/tree
     """
 }
@@ -945,9 +943,9 @@ process alpha_rarefaction {
 	--m-metadata-file ${params.metadata}  \
 	--p-steps \$maxsteps  \
 	--p-iterations 10  \
-	--o-visualization ${params.temp_dir}/alpha-rarefaction.qzv
+	--o-visualization alpha-rarefaction.qzv
 
-    qiime tools export ${params.temp_dir}/alpha-rarefaction.qzv  \
+    qiime tools export alpha-rarefaction.qzv  \
 	--output-dir ${params.outdir}/alpha-rarefaction
     """
 }
@@ -1007,7 +1005,7 @@ process diversity_core {
     val stats from tsv_table
 
     output:
-    val "${params.temp_dir}/core" into qiime_diversity_core
+    val "core" into qiime_diversity_core
 
     when:
     !params.skip_diversity_indices
@@ -1038,7 +1036,7 @@ process diversity_core {
 	--i-phylogeny $tree \
 	--i-table $table \
 	--p-sampling-depth \$mindepth \
-	--output-dir ${params.temp_dir}/core \
+	--output-dir core \
 	--p-n-jobs ${params.diversity_cores} \
 	--verbose
     """
@@ -1246,7 +1244,7 @@ process ancom {
 		--i-table $table \
 		--m-metadata-file ${params.metadata} \
 		--p-where \"\$j<>\'\'\" \
-		--o-filtered-table ${params.temp_dir}/ancom/\$j-table.qza
+		--o-filtered-table ancom/\$j-table.qza
     done
 
     # ANCOM on reduced tax level
@@ -1256,21 +1254,21 @@ process ancom {
 	for j in \"\${metacategory[@]}\"
 	do
 		qiime taxa collapse \
-		        --i-table ${params.temp_dir}/ancom/\$j-table.qza \
+		        --i-table ancom/\$j-table.qza \
 		        --i-taxonomy $taxonomy \
 		        --p-level \"\$i\" \
-		        --o-collapsed-table ${params.temp_dir}/ancom/\$j-l\$i-table.qza \
+		        --o-collapsed-table ancom/\$j-l\$i-table.qza \
 		        --verbose
 		qiime composition add-pseudocount \
-		        --i-table ${params.temp_dir}/ancom/\$j-l\$i-table.qza \
-		        --o-composition-table ${params.temp_dir}/ancom/\$j-l\$i-comp-table.qza
+		        --i-table ancom/\$j-l\$i-table.qza \
+		        --o-composition-table ancom/\$j-l\$i-comp-table.qza
 		qiime composition ancom \
-		        --i-table ${params.temp_dir}/ancom/\$j-l\$i-comp-table.qza \
+		        --i-table ancom/\$j-l\$i-comp-table.qza \
 		        --m-metadata-file ${params.metadata} \
 		        --m-metadata-column \"\$j\" \
-		        --o-visualization ${params.temp_dir}/ancom/\$j-l\$i-comp-table.qzv \
+		        --o-visualization ancom/\$j-l\$i-comp-table.qzv \
 		        --verbose
-		qiime tools export ${params.temp_dir}/ancom/\$j-l\$i-comp-table.qzv \
+		qiime tools export ancom/\$j-l\$i-comp-table.qzv \
 		        --output-dir ${params.outdir}/ancom/Category-\$j-level-\$i
 	done
     done
@@ -1279,15 +1277,15 @@ process ancom {
     for j in \"\${metacategory[@]}\"
     do
     qiime composition add-pseudocount \
-		--i-table ${params.temp_dir}/ancom/\$j-table.qza \
-		--o-composition-table ${params.temp_dir}/ancom/\$j-comp-table.qza
+		--i-table ancom/\$j-table.qza \
+		--o-composition-table ancom/\$j-comp-table.qza
 	qiime composition ancom \
-	        --i-table ${params.temp_dir}/ancom/\$j-comp-table.qza \
+	        --i-table ancom/\$j-comp-table.qza \
 	        --m-metadata-file ${params.metadata} \
 	        --m-metadata-column \"\$j\" \
-	        --o-visualization ${params.temp_dir}/ancom/\$j-comp-table.qzv \
+	        --o-visualization ancom/\$j-comp-table.qzv \
 	        --verbose
-	qiime tools export ${params.temp_dir}/ancom/\$j-comp-table.qzv \
+	qiime tools export ancom/\$j-comp-table.qzv \
 	        --output-dir ${params.outdir}/ancom/Category-\$j-ASV
     done
     """

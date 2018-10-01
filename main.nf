@@ -533,7 +533,7 @@ process dada_trunc_parameter {
 	    #Error and exit if too short
 	    totallength=\$((\${CUTOFF[0]} + \${CUTOFF[1]}))
 	    if (( \$totallength < 10 )); then 
-	    echo \"ERROR: Total read pair length is \$totallength and below 10, this is definitely too less.\"
+	    echo \"ERROR: Total read pair length is \$totallength and below 10, this is definitely too low.\"
 	    echo \"Chosen cutoffs would be forward: \${CUTOFF[0]}, reverse \${CUTOFF[1]}\"
 	    echo \"Please check quality values and read length manually and provide appropriate DADA2 truncation parameters.\"
 	    echo \"Exiting now!\"

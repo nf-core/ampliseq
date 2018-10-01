@@ -540,7 +540,7 @@ process dada_trunc_parameter {
 	    exit
 	    fi
 
-	    #Success massage
+	    #Success message
 	    #echo \"Using cutoffs are forward: \${CUTOFF[0]}, reverse \${CUTOFF[1]}\"
 
 	    printf \${CUTOFF[0]},\${CUTOFF[1]}
@@ -581,7 +581,7 @@ process dada_single {
 	--i-demultiplexed-seqs $demux  \
 	--p-trunc-len-f \${trunclen[0]} \
 	--p-trunc-len-r \${trunclen[1]} \
-	--p-n-threads 0  \
+	--p-n-threads ${process.cpus}  \
 	--o-table ${params.temp_dir}/table_unfiltered.qza  \
 	--o-representative-sequences ${params.temp_dir}/rep-seqs_unfiltered.qza  \
 	--o-denoising-stats ${params.temp_dir}/stats.qza \

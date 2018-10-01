@@ -8,15 +8,29 @@
 * [Reproducibility](#reproducibility)
 * [Main arguments](#main-arguments)
     * [`-profile`](#-profile-single-dash)
-        * [`docker`](#docker)
-        * [`awsbatch`](#awsbatch)
-        * [`standard`](#standard)
-        * [`none`](#none)
     * [`--reads`](#--reads)
-    * [`--singleEnd`](#--singleend)
-* [Reference Genomes](#reference-genomes)
-    * [`--genome`](#--genome)
-    * [`--fasta`](#--fasta)
+    * [`--FW_primer` and `--RV_primer`](#--FW_primer-and---RV_primer)
+    * [`--retain_untrimmed`](#--retain_untrimmed)
+    * [`--metadata`](#--metadata)
+* [Cutoffs](#cutoffs)
+    * [`--trunclenf` and `--trunclenr`](#--trunclenf-and---trunclenr)
+    * [`--trunc_qmin`](#--trunc_qmin)
+    * [`--untilQ2import`](#--untilQ2import)
+    * [`--Q2imported`](#--Q2imported)
+* [Reference database](#reference-database)
+    * [`--classifier`](#--classifier)
+* [Statistics](#statistics)
+    * [`--metadata_category`](#--metadata_category)
+* [Filters](#filters)
+    * [`--exclude_taxa`](#--exclude_taxa)
+* [Skipping steps](#skipping-steps)
+    * [`--skip_fastqc`](#--skip_fastqc)
+    * [`--skip_alpha_rarefaction`](#--skip_alpha_rarefaction)
+    * [`--skip_taxonomy`](#--skip_taxonomy)
+    * [`--skip_barplot`](#--skip_barplot)
+    * [`--skip_abundance_tables`](#--skip_abundance_tables)
+    * [`--skip_diversity_indices`](#--skip_diversity_indices)
+    * [`--skip_ancom`](#--skip_ancom)
 * [Job Resources](#job-resources)
 * [Automatic resubmission](#automatic-resubmission)
 * [Custom resource requests](#custom-resource-requests)
@@ -146,7 +160,7 @@ Please note the following requirements:
 
 ### `--trunclenf` and `--trunclenr`
 Read denoising by DADA2 creates an error profile specific to a sequencing run and uses this to correct sequencing errors. This method requires all reads to have the same length and as high quality as possible while maintaining at least 20 bp overlap for merging. One cutoff for the forward read `--trunclenf` and one for the reverse read `--trunclenr` truncate all longer reads at that position and drop all shorter reads. 
-These cutoffs are usually chosen visually using `--untilQ2import`, inspecting the quality plots in the "result folder/demux", and resuming analysis with `--Q2imported [Path]`. If not set, these cutoffs will be determined automatically for the position before the mean quality score drops below `--trunc_qmin` with default 25. For example:
+These cutoffs are usually chosen visually using `--untilQ2import`, inspecting the quality plots in the "result folder/demux", and resuming analysis with `--Q2imported [Path]`. If not set, these cutoffs will be determined automatically for the position before the mean quality score drops below `--trunc_qmin`. For example:
 
 ```bash
 --trunclenf 180 --trunclenr 120
@@ -167,7 +181,7 @@ Automatically determine `--trunclenf` and `--trunclenr` before the mean quality 
 
 Please note:
 
-1. The code choosing `--trunclenf` and `--trunclenr` using `--trunc_qmin` automatically cannot take amplicon length or overlap requirements into account, therefore setting `--trunclenf` and `--trunclenr` is preferred
+1. The code choosing `--trunclenf` and `--trunclenr` using `--trunc_qmin` automatically cannot take amplicon length or overlap requirements for merging into account, therefore setting `--trunclenf` and `--trunclenr` is preferred
 
 ### `--untilQ2import`
 Computes all steps until quality plots aiding the choosing of `--trunclenf` and `--trunclenr`.
@@ -176,9 +190,10 @@ Computes all steps until quality plots aiding the choosing of `--trunclenf` and 
 Analysis starting with a QIIME2 artefact with trimmed reads, typically produced before with `--untilQ2import`.
 
 ## Reference database
+By default, the workflow downloads [SILVA](https://www.arb-silva.de/) [v132](https://www.arb-silva.de/documentation/release-132/) and extracts reference sequences and taxonomy clustered at 99% similarity and trains a Naive Bayes classifier to assign taxonomy to features.
 
 ### `--classifier`
-If you have trained a compatible classifier before. For example:
+If you have trained a compatible classifier before, from sources such as [SILVA](https://www.arb-silva.de/), [Greengenes](http://greengenes.secondgenome.com/downloads) or [RDP](https://rdp.cme.msu.edu/). For example:
 
 ```bash
 --classifier "FW_primer-RV_primer-classifier.qza"
@@ -187,9 +202,9 @@ If you have trained a compatible classifier before. For example:
 Please note the following requirements:
 
 1. The path must be enclosed in quotes
-2. The cassifier is a Naive Bayes classifier produced by "qiime feature-classifier fit-classifier-naive-bayes" (e.g. by this pipeline)
+2. The cassifier is a Naive Bayes classifier produced by "qiime feature-classifier fit-classifier-naive-bayes" (e.g. by this pipeline or from [QIIME2 resources](https://docs.qiime2.org/2018.6/data-resources/))
 3. The primer pair for the amplicon PCR and the computing of the classifier are exactly the same
-2. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses (0.19.1).
+4. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses (0.19.1).
 
 ## Statistics
 
@@ -197,18 +212,18 @@ Please note the following requirements:
 Here columns in the metadata sheet can be chosen with groupings that are used for diversity indices and differential abundance analysis. By default, all suitable columns in the metadata sheet will be used if this option is not specified. Suitable are columns which are categorical (not numerical) and have multiple different values which are not all unique. For example:
 
 ```bash
---metadata "treatment1,treatment2"
+--metadata_category "treatment1,treatment2"
 ```
 
 Please note the following requirements:
 
-1. Comma seperated list enclosed in quotes and may not contain space " "
-2. The specified terms have to match exactly a column in the metadata sheet
+1. Comma seperated list enclosed in quotes and may not contain whitespace characters
+2. Each comma seperated term has to match exactly one column name in the metadata sheet
 
 ## Filters
 
 ### `--exclude_taxa`
-Depending on the primers used, PCR might amplify unwanted or off-target taxa, e.g. originating from mitochondria or chloroplasts. Here you can specify taxa that are excluded from further analysis. DFor example:
+Depending on the primers used, PCR might amplify unwanted or off-target DNA, e.g. originating from mitochondria or chloroplasts. Here you can specify taxa that are excluded from further analysis. For example:
 
 ```bash
 --exclude_taxa "mitochondria,chloroplast"
@@ -216,9 +231,9 @@ Depending on the primers used, PCR might amplify unwanted or off-target taxa, e.
 
 Please note the following requirements:
 
-1. Comma seperated list enclosed in quotes and may not contain space " "
-2. Taxa that contain these strings are excluded
-3. The taxonomy level is meaningless
+1. Comma seperated list enclosed in quotes and may not contain whitespace characters
+2. Features that contain one or several of these terms in their taxonomical classification are excluded from further analysis
+3. The taxonomy level is not taken into consideration
 
 ## Skipping steps:
 
@@ -235,7 +250,7 @@ Skip taxonomic classification, will essentially truncate the workflow after deno
 Skip producing barplot, minor time saving.
 
 ### `--skip_abundance_tables`
-Skip producing any relative abundance tables, minor time saving.
+Skip producing most relative abundance tables, minor time saving.
 
 ### `--skip_diversity_indices`
 Skip alpha and beta diversity analysis, large time saving.

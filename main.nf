@@ -446,7 +446,7 @@ if( !params.Q2imported ){
 		saveAs: {filename -> 
             if(filename.indexOf(".csv") filename
             else if (filename.indexOf("*.qzv") filename 
-            else if (filename.indexof('demux/*') "demux/$filename")
+            else if (filename.indexof('demux/*') )
             else null }
 
 	    input:
@@ -626,115 +626,6 @@ process dada_single {
 
     """
 }
-
-/*
- * Find ASVs with DADA2 for multiple sequencing runs
- * DOESNT WORK because of "MetadatafileInSubfolder", absolute paths (need to seperate subfolders = sequencing runs), "when" statement
- * Requirements: as many cores as possible (limiting step here!), ??? mem, walltime scales with no. of reads and samples (~15 min to 30 hours)
- * run for each subfolder in ${params.reads}, and output respectively (needs to be adjusted!)
- * followed by process mergeDADA
- */
-/*
-process dada_multi { 
-    echo true
-
-    input:
-    val demux from qiime_demux 
-
-    output:
-    val "${params.temp_dir}/table.qza" into qiime_table_multi
-    val "${params.temp_dir}/rep-seqs.qza" into qiime_repseq_multi
-    val "${params.outdir}/stats/stats.tsv" into dada2stats_multi
-    
-    when:
-    //multiple sequencing runs are analysed
-    //length(${demux}) > 1
-
-
-    """
-    #metadata file in current subfolder
-    MetadatafileInSubfolder="$currentsubfolder/Metadata.tsv"
-
-    #denoise samples with DADA2 and produce 
-    # - count count table "${params.temp_dir}/table.qza"
-    # - count representative sequences "${params.temp_dir}/rep-seqs.qza"
-    # - count denoising stats "${params.temp_dir}/stats.qza"
-    singularity exec ${params.qiimeimage} \
-    qiime dada2 denoise-paired  \
-	--i-demultiplexed-seqs $demux  \
-	--p-trunc-len-f ${params.trunclenf}  \
-	--p-trunc-len-r ${params.trunclenr}  \
-	--p-n-threads 0  \
-	--o-table ${params.temp_dir}/table-beforerelabeling.qza"  \
-	--o-representative-sequences ${params.temp_dir}/rep-seqs.qza  \
-	--o-denoising-stats ${params.temp_dir}/stats.qza \
-	--verbose
-
-    #rename samples
-    singularity exec ${params.qiimeimage} \
-    qiime feature-table group \
-	--i-table ${params.temp_dir}/table-beforerelabeling.qza \
-	--p-axis \"sample\" \
-	--m-metadata-file \$MetadatafileInSubfolder \
-	--m-metadata-column \"new_name\" \
-	--p-mode \"sum\" \
-	--o-grouped-table ${params.temp_dir}/table.qza \
-	--verbose
-
-
-    #produce dada2 stats "${params.outdir}/stats/stats.tsv"
-    singularity exec ${params.qiimeimage} \
-    qiime tools export ${params.temp_dir}/stats.qza \
-	--output-dir ${params.outdir}/stats
-
-    """
-}
-*/
-
-/*
- * Merge DADA2 results for multiple sequencing runs
- * DOESNT WORK because of "tableargument" and "repseqargument" and overlap input/output and "when" statement
- * after process dada_multi
- */
-/*
-process mergeDADA { 
-    echo true
-
-    input:
-    val table from qiime_table_multi
-    val repseq from qiime_repseq_multi
-    val stats from dada2stats_multi
-
-    output:
-    val "${params.temp_dir}/table.qza" into qiime_table_raw
-    val "${params.temp_dir}/rep-seqs.qza" into qiime_repseq_raw
-    val "${params.outdir}/stats/stats.tsv" into dada2stats
-
-    when:
-    //multiple sequencing runs are analysed
-
-    """
-    #produce strings that looks like:
-    tableargument="--i-tables $table[0] --i-tables $table[1] [...] --i-tables $table[N]"
-    repseqargument="--i-data $repseq[0] --i-data $repseq[1] [...] --i-data $repseq[N]"
-
-    #merge DADA2 outputs
-    singularity exec ${params.qiimeimage} \
-    qiime feature-table merge \
-	\$tableargument \
-	--o-merged-table ${params.temp_dir}/table.qza \
-	--verbose
-    singularity exec ${params.qiimeimage} \
-    qiime feature-table merge-seqs \
-	\$repseqargument \
-	--o-merged-data ${params.temp_dir}/rep-seqs.qza \
-	--verbose
-    cat $stats >${params.outdir}/stats/stats.tsv
-    """
-}
-*/
-
-
 
 /*
  * Assign taxonomy to ASV sequences

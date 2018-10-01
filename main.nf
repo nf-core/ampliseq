@@ -630,6 +630,7 @@ process dada_single {
 /*
  * Assign taxonomy to ASV sequences
  * Requirements: many cores, ~35 Gb mem, walltime scales with no. of ASV and ${params.classifier} = trained_classifier size (~15 min to several hours)
+ * USE NXF feature of file size introduced in 0.32.0 here!!!
  */
 process classifier { 
     echo true
@@ -647,7 +648,7 @@ process classifier {
     """
     qiime feature-classifier classify-sklearn  \
 	--i-classifier $trained_classifier  \
-	--p-n-jobs -1  \
+	--p-n-jobs ${process.cpus}  \
 	--i-reads $repseq  \
 	--o-classification ${params.temp_dir}/taxonomy.qza  \
 	--verbose

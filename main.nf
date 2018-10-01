@@ -100,6 +100,11 @@ params.retain_untrimmed = false
 params.exclude_taxa = "mitochondria,chloroplast"
 params.keepIntermediates = false
 
+//Database specific parameters
+params.silva = https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip
+params.dereplication = 90
+
+
 /*
  * Defines pipeline steps
  */
@@ -382,10 +387,10 @@ if (!params.Q2imported){
 
 if( !params.classifier ){
 	process make_SILVA_132_90_16S_classifier {
-        publishDir "${params.outdir}/reference", mode: 'copy', 
+        publishDir "${params.outdir}/DB/", mode: 'copy', 
         if (params.keepIntermediates) filename 
             else null
-
+        //TODO Only keep files we really need (*.qza)
 
 	    output:
 	    file '*.qza' into ch_qiime_classifier
@@ -396,42 +401,32 @@ if( !params.classifier ){
 	    script:
 	  
 	    """
-	    dereplication=90
-	    unzip_fasta_path=\"SILVA_132_QIIME_release/rep_set/rep_set_16S_only/\${dereplication}/silva_132_\${dereplication}_16S.fna\"
-	    unzip_taxonomy_path=\"SILVA_132_QIIME_release/taxonomy/16S_only/\${dereplication}/consensus_taxonomy_7_levels.txt\"
-	    fasta=${params.temp_dir}/reference/silva_132_\${dereplication}_16S.fna
-	    taxonomy=${params.temp_dir}/reference/silva_132_\${dereplication}_16S_consensus_taxonomy_7_levels.txt    
+	    unzip Silva_132_release.zip
 
-	    #download and unpack
-	    echo \"download https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip\"
-	    wget https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip
-	    echo \"unzip \$unzip_fasta_path\"
-	    unzip -p Silva_132_release.zip \$unzip_fasta_path >\$fasta
-	    echo \"unzip \$unzip_taxonomy_path\"
-	    unzip -p Silva_132_release.zip \$unzip_taxonomy_path >\$taxonomy
-	    rm Silva_132_release.zip
+        fasta="SILVA_132_QIIME_release/rep_set/rep_set_16S_only/"${params.dereplication}"/silva_132_"${params.dereplication}"_16S.fna"
+        taxonomy="SILVA_132_QIIME_release/taxonomy/16S_only/"${dereplication}"/consensus_taxonomy_7_levels.txt"
 
 	    ### Import
-	    qiime tools import --type 'FeatureData[Sequence]' \
-		--input-path \$fasta \
-		--output-path ${params.temp_dir}/ref-seq.qza
-	    qiime tools import --type 'FeatureData[Taxonomy]' \
-		--source-format HeaderlessTSVTaxonomyFormat \
-		--input-path \$taxonomy \
-		--output-path ${params.temp_dir}/ref-taxonomy.qza
+	    qiime tools import --type 'FeatureData[Sequence]' 
+		--input-path fasta 
+		--output-path ref-seq.qza
+	    qiime tools import --type 'FeatureData[Taxonomy]' 
+		--source-format HeaderlessTSVTaxonomyFormat 
+		--input-path taxonomy 
+		--output-path ref-taxonomy.qza
 
 	    #Extract sequences based on primers
 	    qiime feature-classifier extract-reads \
-		--i-sequences ${params.temp_dir}/ref-seq.qza \
+		--i-sequences ref-seq.qza \
 		--p-f-primer ${params.FW_primer} \
 		--p-r-primer ${params.RV_primer} \
-		--o-reads ${params.temp_dir}/${params.FW_primer}-${params.RV_primer}-ref-seq.qza
+		--o-reads ${params.FW_primer}-${params.RV_primer}-ref-seq.qza
 
 	    #Train classifier
 	    qiime feature-classifier fit-classifier-naive-bayes \
-		--i-reference-reads ${params.temp_dir}/${params.FW_primer}-${params.RV_primer}-ref-seq.qza \
-		--i-reference-taxonomy ${params.temp_dir}/ref-taxonomy.qza \
-		--o-classifier ${params.temp_dir}/${params.FW_primer}-${params.RV_primer}-classifier.qza \
+		--i-reference-reads ${params.FW_primer}-${params.RV_primer}-ref-seq.qza \
+		--i-reference-taxonomy ref-taxonomy.qza \
+		--o-classifier ${params.FW_primer}-${params.RV_primer}-classifier.qza \
 		--verbose
 
 	    """

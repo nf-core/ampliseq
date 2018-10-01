@@ -319,7 +319,7 @@ if (!params.Q2imported){
 	 */
     
 	process trimming {  
-	    publishDir "${params.temp_dir}/trimmed", mode: 'copy',
+	    publishDir "${params.outdir}/trimmed", mode: 'copy',
             saveAs: {filename -> 
             if (filename.indexOf(".gz") == -1) "logs/$filename"
             else if(filename.keepIntermediates) filename 
@@ -348,7 +348,11 @@ if (!params.Q2imported){
 	/*
 	 * Import trimmed files into QIIME2 artefact
 	 */
-	process qiime_import { 
+	process qiime_import {
+        publishDir "${params.outdir}/qiime_demux", mode: 'copy', 
+        if (params.keepIntermediates) filename 
+            else null
+
 	    input:
 	    file(trimmed) from ch_fastq_trimmed.collect() 
 
@@ -377,12 +381,14 @@ if (!params.Q2imported){
  */
 
 if( !params.classifier ){
-	new File("${params.temp_dir}/reference").mkdir() //Todo - needs to be a publishDir directive
 	process make_SILVA_132_90_16S_classifier {
-	    echo true
+        publishDir "${params.outdir}/reference", mode: 'copy', 
+        if (params.keepIntermediates) filename 
+            else null
+
 
 	    output:
-	    val "${params.temp_dir}/${params.FW_primer}-${params.RV_primer}-classifier.qza" into qiime_classifier
+	    file '*.qza' into ch_qiime_classifier
 
 	    when:
 	    !params.onlyDenoising
@@ -431,19 +437,8 @@ if( !params.classifier ){
 	    """
 	}
 } else {
-	process use_existing_classifier {
-	    echo true
-
-	    output:
-	    val "${params.classifier}" into qiime_classifier
-
-	    when:
-	    !params.skip_taxonomy && !params.untilQ2import
-
-	    """
-	    echo use existing classifier ${params.classifier}
-	    """
-	}
+    Channel.fromFile("${params.classifier}")
+           .into { ch_qiime_classifier }
 }
 
 
@@ -452,9 +447,10 @@ if( !params.classifier ){
  */
 if( !params.Q2imported ){
 	process qiime_demux_visualize { 
+        //TODO output directives
 
 	    input:
-	    val demux from qiime_demux
+	    val demux from ch_qiime_demux
 
 	    output:
 	    val "${params.outdir}/demux/forward-seven-number-summaries.csv,${params.outdir}/demux/reverse-seven-number-summaries.csv" into csv_demux

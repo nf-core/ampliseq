@@ -442,37 +442,44 @@ if( !params.classifier ){
  */
 if( !params.Q2imported ){
 	process qiime_demux_visualize { 
-        //TODO output directives
+        publishDir "${params.outdir}/qiime2-imported", mode: 'copy',
+		saveAs: {filename -> 
+            if(filename.indexOf(".csv") filename
+            else if (filename.indexOf("*.qzv") filename 
+            else if (filename.indexof('demux/*') "demux/$filename")
+            else null }
 
 	    input:
-	    val demux from ch_qiime_demux
+	    file demux from ch_qiime_demux
 
 	    output:
-	    val "${params.outdir}/demux/forward-seven-number-summaries.csv,${params.outdir}/demux/reverse-seven-number-summaries.csv" into csv_demux
+        file("*-seven-number-summaries.csv") into csv_demux
 	  
 	    """
-	    qiime demux summarize \
-		--i-data $demux \
-		--o-visualization ${params.temp_dir}/demux.qzv
+	    qiime demux summarize 
+		--i-data $demux 
+		--o-visualization demux.qzv
 
-	    qiime tools export ${params.temp_dir}/demux.qzv  \
-		--output-dir ${params.outdir}/demux
+	    qiime tools export demux.qzv --output-dir demux
 	    """
 	}
 } else {
 	process qiime_importdemux_visualize { 
-	    echo true
+        publishDir "${params.outdir}/qiime2-imported", mode: 'copy',
+		saveAs: {filename -> 
+            if(filename.indexOf(".csv") filename
+            else if (filename.indexOf("*.qzv") filename 
+            else null }
 
 	    output:
-	    val "${params.outdir}/demux/forward-seven-number-summaries.csv,${params.outdir}/demux/reverse-seven-number-summaries.csv" into csv_demux
+	    file("*-seven-number-summaries.csv") into csv_demux
 	  
 	    """
 	    qiime demux summarize \
 		--i-data ${params.Q2imported} \
-		--o-visualization ${params.temp_dir}/demux.qzv
+		--o-visualization demux.qzv
 
-	    qiime tools export ${params.temp_dir}/demux.qzv  \
-		--output-dir ${params.outdir}/demux
+	    qiime tools export demux.qzv --output-dir demux
 	    """
 	}
 }

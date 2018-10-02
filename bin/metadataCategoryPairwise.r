@@ -9,9 +9,9 @@ metadata <- args[1]
 
 data = read.delim(metadata)
 
-#keep previously selected columns
-nums <- as.list(strsplit("$meta_all", ",")[[1]])
-data <- data[ , names(data) %in% nums]
+#remove all numeric columns
+nums <- unlist(lapply(data, is.numeric))
+data <- data[ , !nums]
 
 vector <- character()
 for (i in 1:ncol(data)) {
@@ -21,8 +21,10 @@ cleandata <- data[!(is.na(data[i]) | data[i]==""), ]
 
 #select only columns that have at least 2 of each value so that it can be used for pairwise comparisons 
 noccur <- data.frame(table(cleandata[i]))
+if (nrow(unique(cleandata[i])) > 1 & nrow(unique(cleandata[i])) < nrow(cleandata[i])) {
 if ( nrow(noccur[noccur$Freq != 1,]) == nrow(noccur) ) {
     vector <- c(vector, colnames(cleandata[i]))
+}
 }
 }
 vector <- paste(vector, collapse=",")

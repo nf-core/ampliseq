@@ -22,8 +22,8 @@ seq <- readDNAStringSet(seq)
 seq <- data.frame(ID=names(seq), sequence=paste(seq))
 
 #check if all ids match
-if(!all(seq\$ID %in% tax\$Feature.ID))  {paste(seq,"and",taxonomy,"dont share all IDs, this is only ok when taxa were excluded.")}
-if(!all(seq\$ID %in% table\$X.OTU.ID))  {stop(paste(seq,"and",table,"dont share all IDs, exit"), call.=FALSE)}
+if(!all(seq$ID %in% tax$Feature.ID))  {paste(seq,"and",taxonomy,"dont share all IDs, this is only ok when taxa were excluded.")}
+if(!all(seq$ID %in% table$X.OTU.ID))  {stop(paste(seq,"and",table,"dont share all IDs, exit"), call.=FALSE)}
 
 #merge
 df <- merge(tax, seq, by.x="Feature.ID", by.y="ID", all.x=FALSE, all.y=TRUE)

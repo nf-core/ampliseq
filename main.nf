@@ -1086,28 +1086,7 @@ process metadata_category_pairwise {
     !params.skip_diversity_indices
 
     """
-    #!/usr/bin/env Rscript
-    data = read.delim("${params.metadata}")
-
-    #keep previously selected columns
-    nums <- as.list(strsplit("$meta_all", \",\")[[1]])
-    data <- data[ , names(data) %in% nums]
-
-    vector <- character()
-    for (i in 1:ncol(data)) {
-
-	#remove blanks or NA
-	cleandata <- data[!(is.na(data[i]) | data[i]==""), ]
-
-	#select only columns that have at least 2 of each value so that it can be used for pairwise comparisons 
-	noccur <- data.frame(table(cleandata[i]))
-	if ( nrow(noccur[noccur\$Freq != 1,]) == nrow(noccur) ) {
-		vector <- c(vector, colnames(cleandata[i]))
-	}
-    }
-    vector <- paste(vector, collapse=",")
-    cat(vector)
-
+    metadataCategoryPairwise.r $input
     """
 }
 

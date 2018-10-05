@@ -119,7 +119,7 @@ Use this parameter to choose a configuration profile. Profiles can give configur
     * No configuration at all. Useful if you want to build your own config from scratch and want to avoid loading in the default `base` config profile (not recommended).
 
 ### `--reads`
-Use this to specify the location of your input paired-end FastQ files. For example:
+Use this to specify the location of your input paired-end FastQ files. ***Currently, sequencing data originating from multiple sequencing runs cannot be analysed apppropriately by this pipeline.*** For example:
 
 ```bash
 --reads 'path/to/data/'
@@ -129,6 +129,7 @@ Please note the following requirements:
 
 1. The path must be enclosed in quotes
 2. The folder must containing gzip compressed Casava 1.8 paired-end demultiplexed fastq files with the naming sheme *_L001_R{1,2}_001.fastq.gz
+3. All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed.
 
 ### `--FW_primer` and `--RV_primer`
 In Amplicon sequencing methods, PCR with specific primers produces the amplicon of intrest. These primer sequences need to be trimmed from the reads before further processing and are also required for producing an appropriate classifier. For example:

@@ -101,8 +101,8 @@ params.exclude_taxa = "mitochondria,chloroplast"
 params.keepIntermediates = false
 
 //Database specific parameters
-params.silva = https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip
-params.dereplication = 90
+params.silva = https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip //currently only this is compatible with process make_SILVA_132_16S_classifier
+params.dereplication = 90 //90 for test run only, for real data that must be 99.
 
 
 /*
@@ -386,7 +386,7 @@ if (!params.Q2imported){
  */
 
 if( !params.classifier ){
-	process make_SILVA_132_90_16S_classifier {
+	process make_SILVA_132_16S_classifier {
         publishDir "${params.outdir}/DB/", mode: 'copy', 
         if (params.keepIntermediates) filename 
             else null
@@ -404,7 +404,7 @@ if( !params.classifier ){
 	    unzip Silva_132_release.zip
 
         fasta="SILVA_132_QIIME_release/rep_set/rep_set_16S_only/"${params.dereplication}"/silva_132_"${params.dereplication}"_16S.fna"
-        taxonomy="SILVA_132_QIIME_release/taxonomy/16S_only/"${dereplication}"/consensus_taxonomy_7_levels.txt"
+        taxonomy="SILVA_132_QIIME_release/taxonomy/16S_only/"${params.dereplication}"/consensus_taxonomy_7_levels.txt"
 
 	    ### Import
 	    qiime tools import --type 'FeatureData[Sequence]' 
@@ -751,7 +751,7 @@ process export_filtered_dada_output {
 	-o ${params.outdir}/table/feature-table.tsv  \
 	--to-tsv
 
-    #produce pepresenatative sequence fasta file "${params.outdir}/rep_seqs/sequences.fasta"
+    #produce representative sequence fasta file "${params.outdir}/rep_seqs/sequences.fasta"
     qiime feature-table tabulate-seqs  \
 	--i-data $repseq  \
 	--o-visualization rep-seqs.qzv

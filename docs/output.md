@@ -96,7 +96,7 @@ DADA2 reduces sequence errors and dereplicates sequences by quality filtering, d
 ## Taxonomic classification
 ASV abundance and sequences inferred in DADA2 are informative but routinely taxonomic classifications such as family or genus annotation is desireable. ASV sequences are classified by default against the [SILVA](https://www.arb-silva.de/) [v132](https://www.arb-silva.de/documentation/release-132/) database to add taxonomic information.
 
-**Output directory: `results/table_unfiltered`**
+**Output directory: `results/taxonomy`**
 * `taxonomy.tsv`
   * Tab-separated table with taxonomic classification for each ASV
 * `index.html`
@@ -186,11 +186,11 @@ Analysis of Composition of Microbiomes ([ANCOM](https://www.ncbi.nlm.nih.gov/pub
 
 ANCOM is applied to each suitable or specified metadata column for 6 taxonomic levels.
 
-**Output directory: `results/beta-diversity`** (all *.html files can be viewed in your web browser)
+**Output directory: `results/ancom`** (all *.html files can be viewed in your web browser)
 * `Category-<treatment>-<taxonomic level>/index.html`
   * treatment: depends on your metadata sheet or what metadata categories you have specified
   * taxonomic level: level-2 (phylum), level-3 (class), level-4 (order), level-5 (family), level-6 (genus), ASV
 
 #
 # More help
-QIIME2 is currently **under heavy development** and often updated, this version of rrna-ampliseq uses QIIME2 2018.6. QIIME2 has a wide variety of analysis tools available and has excellent support in its [forum](https://docs.qiime2.org/2018.6/).
+QIIME2 is currently **under heavy development** and often updated, this version of rrna-ampliseq uses QIIME2 2018.6. QIIME2 has excellent support in its [forum](https://docs.qiime2.org/2018.6/).

@@ -568,6 +568,7 @@ process dada_single {
     output:
     val "table_unfiltered.qza" into qiime_table_raw
     val "rep-seqs_unfiltered.qza" into qiime_repseq_raw
+    val "feature-table.tsv" into tsv_table_raw
 
     when:
     !params.untilQ2import
@@ -757,6 +758,24 @@ process export_filtered_dada_output {
 	--o-visualization rep-seqs.qzv
     qiime tools export rep-seqs.qzv  \
 	--output-dir rep_seqs
+    """
+}
+
+/*
+ * Report stats after taxa filtering
+ */
+process export_filtered_dada_output { 
+    echo true
+
+    input:
+    val unfiltered_table from tsv_table_raw
+    val filtered_table from tsv_table
+
+    output:
+    val "count_table_filter_stats.csv" into csv_filter_stats
+    
+    """
+    count_table_filter_stats.py $unfiltered_table $filtered_table
     """
 }
 

@@ -919,18 +919,8 @@ process alpha_rarefaction {
 
     """
     #define values for alpha-rarefaction
-    #get number of columns
-    colnum=\$(head -1 $stats | tr \'|\' \' \' | wc -w)
-    #fill array with column sums (skip first two rows)
-    for ((i=2;i<\$colnum+1;++i))
-    do
-        sum=\$(tail -n +3 $stats | cut -f \$i | paste -sd+ | bc)
-        array+=(\$sum)
-    done
-    #find maximum
-    IFS=\$\'\\n\'
-    maxdepth=\$( echo \"\${array[*]}\" | sort -nr | head -n1)
-    maxdepth=\$( echo \"(\$maxdepth+0.5)/1\" | bc )
+    maxdepth=\$(count_table_minmax_reads.py $stats maximum 2>&1)
+
     #check values
     if [ \"\$maxdepth\" -gt \"75000\" ]; then maxdepth=\"75000\"; fi
     if [ \"\$maxdepth\" -gt \"5000\" ]; then maxsteps=\"250\"; else maxsteps=\$((maxdepth/20)); fi
@@ -988,18 +978,8 @@ process diversity_core {
 
     """
     #define values for diversity_core
-    #get number of columns
-    colnum=\$(head -1 $stats | tr \'|\' \' \' | wc -w)
-    #fill array with column sums (skip first two rows)
-    for ((i=2;i<\$colnum+1;++i))
-    do
-        sum=\$(tail -n +3 $stats | cut -f \$i | paste -sd+ | bc)
-        array+=(\$sum)
-    done
-    #find maximum
-    IFS=\$\'\\n\'
-    mindepth=\$( echo \"\${array[*]}\" | sort -nr | tail -n1)
-    mindepth=\$( echo \"(\$mindepth)/1\" | bc )
+    mindepth=\$(count_table_minmax_reads.py $stats minimum 2>&1)
+
     #check values
     if [ \"\$mindepth\" -lt \"10000\" -a \"\$mindepth\" -gt \"5000\" ]; then echo \"WARNING! \$mindepth is quite small for rarefaction!\" ; fi
     if [ \"\$mindepth\" -lt \"5000\" -a \"\$mindepth\" -gt \"1000\" ]; then echo \"WARNING! \$mindepth is very small for rarefaction!\" ; fi

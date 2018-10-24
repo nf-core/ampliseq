@@ -27,4 +27,6 @@ out =  sums_unfiltered.to_frame(name = 'unfiltered').join(sums_filtered.to_frame
 out['lost'] = out['unfiltered'] - out['filtered']
 out['retained [%]'] = out['filtered'] / out['unfiltered'] *100
 out['lost [%]'] = (100 - out['retained [%]'])
-print(out)
+
+#write file
+out.to_csv('count_table_filter_stats.csv')

@@ -13,7 +13,7 @@
 def helpMessage() {
     log.info"""
     =========================================
-     nf-core/rrna-ampliseq v${manifest.pipelineVersion}
+     nf-core/rrna-ampliseq v${workflow.manifest.version}
     =========================================
     
     Usage:
@@ -80,7 +80,6 @@ if (params.help){
 
 // Configurable variables
 params.name = false
-params.fasta = params.genome ? params.genomes[ params.genome ].fasta ?: false : false
 params.multiqc_config = "$baseDir/conf/multiqc_config.yaml"
 params.email = false
 params.plaintext_email = false
@@ -103,7 +102,7 @@ params.keepIntermediates = false
 //Database specific parameters
 //currently only this is compatible with process make_SILVA_132_16S_classifier
 params.silva = "https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip"
-params.dereplication = 90 //90 for test run only, for real data that must be 99.
+params.dereplication = 90 //90 for test run only, for real data this has to be set to 99.
 
 
 /*
@@ -187,7 +186,6 @@ summary['Pipeline Name']  = 'nf-core/rrna-ampliseq'
 summary['Pipeline Version'] = manifest.pipelineVersion
 summary['Run Name']     = custom_runName ?: workflow.runName
 summary['Reads']        = params.reads
-summary['Fasta Ref']    = params.fasta
 summary['Data Type']    = params.singleEnd ? 'Single-End' : 'Paired-End'
 summary['Max Memory']   = params.max_memory
 summary['Max CPUs']     = params.max_cpus

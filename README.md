@@ -2,7 +2,7 @@
 **16S rRNA amplicon sequencing analysis workflow using QIIME2**
 
 [![Build Status](https://travis-ci.org/nf-core/rrna-ampliseq.svg?branch=master)](https://travis-ci.org/nf-core/rrna-ampliseq)
-[![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A50.30.0-brightgreen.svg)](https://www.nextflow.io/)
+[![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A518.10.1-brightgreen.svg)](https://www.nextflow.io/)
 
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg)](http://bioconda.github.io/)
 [![Docker](https://img.shields.io/docker/automated/nfcore/rrna-ampliseq.svg)](https://hub.docker.com/r/nfcore/rrna-ampliseq)

@@ -13,7 +13,7 @@
 def helpMessage() {
     log.info"""
     =========================================
-     nf-core/rrna-ampliseq v${manifest.pipelineVersion}
+     nf-core/rrna-ampliseq v${workflow.manifest.version}
     =========================================
     
     Usage:
@@ -80,7 +80,6 @@ if (params.help){
 
 // Configurable variables
 params.name = false
-params.fasta = params.genome ? params.genomes[ params.genome ].fasta ?: false : false
 params.multiqc_config = "$baseDir/conf/multiqc_config.yaml"
 params.email = false
 params.plaintext_email = false
@@ -101,8 +100,9 @@ params.exclude_taxa = "mitochondria,chloroplast"
 params.keepIntermediates = false
 
 //Database specific parameters
-params.silva = https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip //currently only this is compatible with process make_SILVA_132_16S_classifier
-params.dereplication = 90 //90 for test run only, for real data that must be 99.
+//currently only this is compatible with process make_SILVA_132_16S_classifier
+params.silva = "https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip"
+params.dereplication = 90 //90 for test run only, for real data this has to be set to 99.
 
 
 /*
@@ -186,7 +186,6 @@ summary['Pipeline Name']  = 'nf-core/rrna-ampliseq'
 summary['Pipeline Version'] = manifest.pipelineVersion
 summary['Run Name']     = custom_runName ?: workflow.runName
 summary['Reads']        = params.reads
-summary['Fasta Ref']    = params.fasta
 summary['Data Type']    = params.singleEnd ? 'Single-End' : 'Paired-End'
 summary['Max Memory']   = params.max_memory
 summary['Max CPUs']     = params.max_cpus
@@ -277,7 +276,7 @@ if (!params.Q2imported){
 	/*
 	 * fastQC
 	 */
-	process fastQC {
+	process fastqc {
 	    publishDir "${params.outdir}/fastQC", mode: 'copy',
 		saveAs: {filename -> filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"}
 
@@ -355,8 +354,7 @@ if (!params.Q2imported){
 	 */
 	process qiime_import {
         publishDir "${params.outdir}/qiime_demux", mode: 'copy', 
-        if (params.keepIntermediates) filename 
-            else null
+        saveAs: {params.keepIntermediates ? filename : null}
 
 	    input:
 	    file(trimmed) from ch_fastq_trimmed.collect() 
@@ -388,8 +386,7 @@ if (!params.Q2imported){
 if( !params.classifier ){
 	process make_SILVA_132_16S_classifier {
         publishDir "${params.outdir}/DB/", mode: 'copy', 
-        if (params.keepIntermediates) filename 
-            else null
+        saveAs: {params.keepIntermediates ? filename : null}
         //TODO Only keep files we really need (*.qza)
 
 	    output:
@@ -444,9 +441,9 @@ if( !params.Q2imported ){
 	process qiime_demux_visualize { 
         publishDir "${params.outdir}/qiime2-imported", mode: 'copy',
 		saveAs: {filename -> 
-            if(filename.indexOf(".csv") filename
-            else if (filename.indexOf("*.qzv") filename 
-            else if (filename.indexof('demux/*') )
+            if(filename.indexOf(".csv")) filename
+            else if (filename.indexOf("*.qzv")) filename 
+            else if (filename.indexof('demux/*')) filename
             else null }
 
 	    input:
@@ -467,8 +464,8 @@ if( !params.Q2imported ){
 	process qiime_importdemux_visualize { 
         publishDir "${params.outdir}/qiime2-imported", mode: 'copy',
 		saveAs: {filename -> 
-            if(filename.indexOf(".csv") filename
-            else if (filename.indexOf("*.qzv") filename 
+            if(filename.indexOf(".csv")) filename
+            else if (filename.indexOf("*.qzv")) filename 
             else null }
 
 	    output:

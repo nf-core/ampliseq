@@ -101,7 +101,8 @@ params.exclude_taxa = "mitochondria,chloroplast"
 params.keepIntermediates = false
 
 //Database specific parameters
-params.silva = https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip //currently only this is compatible with process make_SILVA_132_16S_classifier
+//currently only this is compatible with process make_SILVA_132_16S_classifier
+params.silva = https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip 
 params.dereplication = 90 //90 for test run only, for real data that must be 99.
 
 

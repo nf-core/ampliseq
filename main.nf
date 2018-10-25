@@ -19,10 +19,8 @@ def helpMessage() {
     Usage:
 
     The minimal command for running the pipeline is as follows:
-    nextflow run qiime2.nf --reads "data/*_L001_R{1,2}_001.fastq.gz" --FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT --metadata "$PWD/data/Metadata.tsv"
+    nextflow run nf-core/rrna-ampliseq --reads "data/*_L001_R{1,2}_001.fastq.gz" --FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT --metadata "$PWD/data/Metadata.tsv"
 
-    The test command for running the pipeline is as follows:
-    nextflow run qiime2.nf --minimumTest
 
     Required arguments:
       --reads [Path to folder]      Folder containing Casava 1.8 paired-end demultiplexed fastq files: *_L001_R{1,2}_001.fastq.gz
@@ -179,11 +177,11 @@ log.info """=======================================================
     | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
                                           `._,._,\'
 
-nf-core/rrna-ampliseq v${manifest.pipelineVersion}"
+nf-core/rrna-ampliseq v${workflow.manifest.version}"
 ======================================================="""
 def summary = [:]
 summary['Pipeline Name']  = 'nf-core/rrna-ampliseq'
-summary['Pipeline Version'] = manifest.pipelineVersion
+summary['Pipeline Version'] = workflow.manifest.version
 summary['Run Name']     = custom_runName ?: workflow.runName
 summary['Reads']        = params.reads
 summary['Data Type']    = params.singleEnd ? 'Single-End' : 'Paired-End'

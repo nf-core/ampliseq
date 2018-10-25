@@ -294,6 +294,37 @@ if (!params.Q2imported){
 	}
 
 	/*
+	 * Trim each read-pair with cutadapt
+	 */
+	process trimming {  
+	    publishDir "${params.outdir}/trimmed", mode: 'copy',
+            saveAs: {filename -> 
+            if (filename.indexOf(".gz") == -1) "logs/$filename"
+            else if(filename.keepIntermediates) filename 
+            else null}
+	  
+	    input:
+	    set pair_id, file(reads) from ch_read_pairs
+	  
+	    output:
+        file "${reads.baseName}" into ch_fastq_trimmed
+        file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
+
+	    script:
+	    if( params.retain_untrimmed == false ){ 
+		    discard_untrimmed = "--discard-untrimmed"
+	    } else {
+		    discard_untrimmed = ""
+	    }
+	  
+	    """
+	    cutadapt -g ${params.FW_primer} -G ${params.RV_primer} $discard_untrimmed \
+            -o ${reads[0].baseName}.R1.fastq.gz -p ${reads[1].baseName}.R2.fastq.gz \
+            ${reads[0]} ${reads[1]} 2> cutadapt_log_${reads[0].baseName}.txt
+	    """
+	}
+
+	/*
 	 * multiQC
 	 */
 	process multiqc {
@@ -315,37 +346,6 @@ if (!params.Q2imported){
 	    multiqc --force --interactive .
 	    """
 	}
-
-	/*
-	 * Trim each read-pair with cutadapt
-	 */
-    
-	process trimming {  
-	    publishDir "${params.outdir}/trimmed", mode: 'copy',
-            saveAs: {filename -> 
-            if (filename.indexOf(".gz") == -1) "logs/$filename"
-            else if(filename.keepIntermediates) filename 
-            else null}
-	  
-	    input:
-	    set pair_id, file(reads) from read_pairs
-	  
-	    output:
-        file "${reads.baseName}" into ch_fastq_trimmed
-        file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
-
-	    script:
-	    if( params.retain_untrimmed == false ){ 
-		    discard_untrimmed = "--discard-untrimmed"
-	    } else {
-		    discard_untrimmed = ""
-	    }
-	  
-	    """
-	    cutadapt -g ${params.FW_primer} -G ${params.RV_primer} $discard_untrimmed -o "${reads.baseName}".R1.fastq.gz -p "${reads.baseName}".R2.fastq.gz ${reads[0]} ${reads[1]} 2> cutadapt_log_"${reads.baseName}".txt
-	    """
-	}
-
 
 	/*
 	 * Import trimmed files into QIIME2 artefact
@@ -427,8 +427,8 @@ if( !params.classifier ){
 	    """
 	}
 } else {
-    Channel.fromFile("${params.classifier}")
-           .into { ch_qiime_classifier }
+    Channel.fromPath("${params.classifier}")
+           .set { ch_qiime_classifier }
 }
 
 
@@ -557,7 +557,7 @@ process dada_single {
     echo true
 
     input:
-    val demux from qiime_demux
+    file demux from ch_qiime_demux
     val trunc from dada_trunc
 
     output:
@@ -634,7 +634,7 @@ process classifier {
     input:
     val table from qiime_table_raw
     val repseq from qiime_repseq_raw
-    val trained_classifier from qiime_classifier
+    file trained_classifier from ch_qiime_classifier
 
     output:
     val "taxonomy.qza" into qiime_taxonomy
@@ -759,7 +759,7 @@ process export_filtered_dada_output {
 /*
  * Report stats after taxa filtering
  */
-process export_filtered_dada_output_from_table { 
+process report_filter_stats { 
     echo true
 
     input:

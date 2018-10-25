@@ -237,7 +237,7 @@ process get_software_versions {
 
     script:
     """
-    echo $manifest.pipelineVersion > v_pipeline.txt
+    echo $workflow.manifest.version > v_pipeline.txt
     echo $workflow.nextflow.version > v_nextflow.txt
     fastqc --version > v_fastqc.txt
     multiqc --version > v_multiqc.txt
@@ -759,7 +759,7 @@ process export_filtered_dada_output {
 /*
  * Report stats after taxa filtering
  */
-process export_filtered_dada_output { 
+process export_filtered_dada_output_from_table { 
     echo true
 
     input:
@@ -1253,7 +1253,7 @@ workflow.onComplete {
       subject = "[nf-core/rrna-ampliseq] FAILED: $workflow.runName"
     }
     def email_fields = [:]
-    email_fields['version'] = manifest.pipelineVersion
+    email_fields['version'] = workflow.manifest.version
     email_fields['runName'] = custom_runName ?: workflow.runName
     email_fields['success'] = workflow.success
     email_fields['dateComplete'] = workflow.complete

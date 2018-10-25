@@ -102,7 +102,7 @@ params.keepIntermediates = false
 
 //Database specific parameters
 //currently only this is compatible with process make_SILVA_132_16S_classifier
-params.silva = https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip 
+params.silva = "https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip"
 params.dereplication = 90 //90 for test run only, for real data that must be 99.
 
 
@@ -278,7 +278,7 @@ if (!params.Q2imported){
 	/*
 	 * fastQC
 	 */
-	process fastQC {
+	process fastqc {
 	    publishDir "${params.outdir}/fastQC", mode: 'copy',
 		saveAs: {filename -> filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"}
 
@@ -356,8 +356,7 @@ if (!params.Q2imported){
 	 */
 	process qiime_import {
         publishDir "${params.outdir}/qiime_demux", mode: 'copy', 
-        if (params.keepIntermediates) filename 
-            else null
+        saveAs: {params.keepIntermediates ? filename : null}
 
 	    input:
 	    file(trimmed) from ch_fastq_trimmed.collect() 
@@ -389,8 +388,7 @@ if (!params.Q2imported){
 if( !params.classifier ){
 	process make_SILVA_132_16S_classifier {
         publishDir "${params.outdir}/DB/", mode: 'copy', 
-        if (params.keepIntermediates) filename 
-            else null
+        saveAs: {params.keepIntermediates ? filename : null}
         //TODO Only keep files we really need (*.qza)
 
 	    output:
@@ -445,9 +443,9 @@ if( !params.Q2imported ){
 	process qiime_demux_visualize { 
         publishDir "${params.outdir}/qiime2-imported", mode: 'copy',
 		saveAs: {filename -> 
-            if(filename.indexOf(".csv") filename
-            else if (filename.indexOf("*.qzv") filename 
-            else if (filename.indexof('demux/*') )
+            if(filename.indexOf(".csv")) filename
+            else if (filename.indexOf("*.qzv")) filename 
+            else if (filename.indexof('demux/*')) filename
             else null }
 
 	    input:
@@ -468,8 +466,8 @@ if( !params.Q2imported ){
 	process qiime_importdemux_visualize { 
         publishDir "${params.outdir}/qiime2-imported", mode: 'copy',
 		saveAs: {filename -> 
-            if(filename.indexOf(".csv") filename
-            else if (filename.indexOf("*.qzv") filename 
+            if(filename.indexOf(".csv")) filename
+            else if (filename.indexOf("*.qzv")) filename 
             else null }
 
 	    output:

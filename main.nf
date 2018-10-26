@@ -637,7 +637,7 @@ process classifier {
     file trained_classifier from ch_qiime_classifier
 
     output:
-    val "taxonomy.qza" into qiime_taxonomy
+    val "taxonomy.qza" into (qiime_taxonomy_for_filter,qiime_taxonomy_for_relative_abundance_reduced_taxa,qiime_taxonomy_for_barplot,qiime_taxonomy_for_ancom)
     val "${params.outdir}/taxonomy/taxonomy.tsv" into tsv_taxonomy
 
   
@@ -675,7 +675,7 @@ if (params.exclude_taxa == "none") {
 	    val repseq from  qiime_repseq_raw
 
 	    output:
-	    val "$table" into qiime_table
+	    val "$table" into (qiime_table_for_filtered_dada_output, qiime_table_for_relative_abundance_asv,qiime_table_for_relative_abundance_reduced_taxa,qiime_table_for_ancom,qiime_table_for_barplot)
 	    val "$repseq" into qiime_repseq
 
 	    script:
@@ -692,10 +692,10 @@ if (params.exclude_taxa == "none") {
 	    input:
 	    val table from qiime_table_raw
 	    val repseq from  qiime_repseq_raw
-	    val taxonomy from qiime_taxonomy
+	    val taxonomy from qiime_taxonomy_for_filter
 
 	    output:
-	    val "filtered-table.qza" into qiime_table
+	    val "filtered-table.qza" into (qiime_table_for_filtered_dada_output, qiime_table_for_relative_abundance_asv,qiime_table_for_relative_abundance_reduced_taxa,qiime_table_for_ancom,qiime_table_for_barplot)
 	    val "filtered-sequences.qza" into qiime_repseq
 
 	    script:
@@ -730,7 +730,7 @@ process export_filtered_dada_output {
     
 
     input:
-    val table from qiime_table
+    val table from qiime_table_for_filtered_dada_output
     val repseq from qiime_repseq
 
     output:
@@ -781,7 +781,7 @@ process RelativeAbundanceASV {
     
 
     input:
-    val table from qiime_table
+    val table from qiime_table_for_relative_abundance_asv
 
     output:
     val "${params.outdir}/rel-table-ASV.tsv" into tsv_relASV_table
@@ -814,8 +814,8 @@ process RelativeAbundanceReducedTaxa {
     
 
     input:
-    val table from qiime_table
-    val taxonomy from qiime_taxonomy
+    val table from qiime_table_for_relative_abundance_reduced_taxa
+    val taxonomy from qiime_taxonomy_for_relative_abundance_reduced_taxa
 
     when:
     !params.skip_abundance_tables && !params.skip_taxonomy
@@ -856,8 +856,8 @@ process barplot {
     
 
     input:
-    val table from qiime_table
-    val taxonomy from qiime_taxonomy
+    val table from qiime_table_for_barplot
+    val taxonomy from qiime_taxonomy_for_barplot
 
     when:
     !params.skip_barplot && !params.skip_taxonomy
@@ -1155,8 +1155,8 @@ process ancom {
     
 
     input:
-    val table from qiime_table
-    val taxonomy from qiime_taxonomy
+    val table from qiime_table_for_ancom
+    val taxonomy from qiime_taxonomy_for_ancom
     val meta from meta_category_all
 
     when:

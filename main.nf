@@ -485,7 +485,7 @@ if( !params.Q2imported ){
  * "Warning massage" and "Success massage" should be printed but interferes with output: stdout
  */
 process dada_trunc_parameter { 
-    //echo true
+    //
 
     input:
     val summary_demux from csv_demux 
@@ -554,7 +554,7 @@ process dada_trunc_parameter {
  * Requirements: as many cores as possible (limiting step here!), ??? mem, walltime scales with no. of reads and samples (~15 min to 30 hours)
  */
 process dada_single { 
-    echo true
+    
 
     input:
     file demux from ch_qiime_demux
@@ -629,7 +629,7 @@ process dada_single {
  * USE NXF feature of file size introduced in 0.32.0 here!!!
  */
 process classifier { 
-    echo true
+    
 
     input:
     val table from qiime_table_raw
@@ -668,7 +668,7 @@ process classifier {
  */
 if (params.exclude_taxa == "none") {
 	process skip_filter_taxa {
-	    echo true
+	    
 
 	    input:
 	    val table from qiime_table_raw
@@ -687,7 +687,7 @@ if (params.exclude_taxa == "none") {
 
 } else {
 	process filter_taxa {
-	    echo true
+	    
 
 	    input:
 	    val table from qiime_table_raw
@@ -727,7 +727,7 @@ if (params.exclude_taxa == "none") {
  * Export qiime artefacts from filtered dada output
  */
 process export_filtered_dada_output { 
-    echo true
+    
 
     input:
     val table from qiime_table
@@ -760,7 +760,7 @@ process export_filtered_dada_output {
  * Report stats after taxa filtering
  */
 process report_filter_stats { 
-    echo true
+    
 
     input:
     val unfiltered_table from tsv_table_raw
@@ -778,7 +778,7 @@ process report_filter_stats {
  * Export relative abundance tables on ASV level
  */
 process RelativeAbundanceASV { 
-    echo true
+    
 
     input:
     val table from qiime_table
@@ -811,7 +811,7 @@ process RelativeAbundanceASV {
  * Export relative abundance tables based on taxonomic levels
  */
 process RelativeAbundanceReducedTaxa { 
-    echo true
+    
 
     input:
     val table from qiime_table
@@ -853,7 +853,7 @@ process RelativeAbundanceReducedTaxa {
  * Produce a bar plot
  */
 process barplot { 
-    echo true
+    
 
     input:
     val table from qiime_table
@@ -880,7 +880,7 @@ process barplot {
  * Requirements: many cores ${params.tree_cores}, ??? mem, walltime scales with no. of ASV
  */
 process tree { 
-    echo true
+    
 
     input:
     val repseq from qiime_repseq
@@ -921,7 +921,7 @@ process tree {
  * Alpha-rarefaction
  */
 process alpha_rarefaction { 
-    echo true
+    
 
     input:
     val table from qiime_table
@@ -958,7 +958,7 @@ process alpha_rarefaction {
  * Combine abundances, sequences and taxonomic classification into one table with R
  */
 process combinetable { 
-    echo true
+    
 
     input:
     val TABLE from tsv_relASV_table
@@ -977,7 +977,7 @@ process combinetable {
  * Compute diversity matrices
  */
 process diversity_core { 
-    echo true
+    
 
     input:
     val table from qiime_table
@@ -1016,7 +1016,7 @@ process diversity_core {
  * Compute alpha diversity indices
  */
 process alpha_diversity { 
-    echo true
+    
 
     input:
     val core from qiime_diversity_core
@@ -1090,7 +1090,7 @@ process metadata_category_pairwise {
  * Compute beta diversity indices
  */
 process beta_diversity { 
-    echo true
+    
 
     input:
     val core from qiime_diversity_core
@@ -1127,7 +1127,7 @@ process beta_diversity {
  * Compute beta diversity ordination
  */
 process beta_diversity_ordination { 
-    echo true
+    
 
     input:
     val core from qiime_diversity_core
@@ -1152,7 +1152,7 @@ process beta_diversity_ordination {
  * Differential abundance analysis with ANCOM
  */
 process ancom { 
-    echo true
+    
 
     input:
     val table from qiime_table

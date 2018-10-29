@@ -482,7 +482,8 @@ if( !params.Q2imported ){
 
 /*
  * Determine params.trunclenf and params.trunclenr where the median quality value drops below params.trunc_qmin
- * "Warning massage" and "Success massage" should be printed but interferes with output: stdout
+ * "Warning massage" should be printed but interferes with output: stdout
+ * "Error and exit if too short" could be done in the python script itself?
  */
 process dada_trunc_parameter { 
     //
@@ -505,42 +506,22 @@ process dada_trunc_parameter {
 	    IFS=\", \" read -r -a array_demux <<< \"$summary_demux\" #convert to array
 	    #echo array_demux \${array_demux[@]}
 
-	    for qfile in \${array_demux[@]}
-	    do
-		#read and convert to array
-		string=\$(head -6 \$qfile | tail -1) #row 6 is median
-		string=\${string//\"50%,\"/} #remove first field that indicate its a median value
-		IFS=\", \" read -r -a median <<< \"\$string\" #convert to array
-		median=(\"\${median[@]/\\.[0-9]*}\") #truncate floats to integers
-
-		#find first occurence of quality below threshold
-		for index in \${!median[@]}; do
-		cutoff=\$index
-		if (( \${median[index]} < ${params.trunc_qmin} )); then cutoff=\$((\$index - 1)) && break; fi;
-		done
-		CUTOFF+=(\$cutoff)
-	    done
+        #dada_trunc_parameter.py <forward-seven-number-summaries.csv> <reverse-seven-number-summaries.csv> <int>
+        dada_trunc_parameter.py \${array_demux[0]} \${array_demux[1]} ${params.trunc_qmin}
 
 	    #Warning massage
 	    #echo \"WARNING: no DADA2 cutoffs were specified, therefore reads will be truncated where median quality drops below ${params.trunc_qmin}.\"
 	    #echo \"This does not account for required overlap for merging, therefore DADA2 might fail. In any case remember to check DADA2 merging statistics!\"
 
 	    #Error and exit if too short
-	    totallength=\$((\${CUTOFF[0]} + \${CUTOFF[1]}))
-	    if (( \$totallength < 10 )); then 
-	    echo \"ERROR: Total read pair length is \$totallength and below 10, this is definitely too low.\"
-	    echo \"Chosen cutoffs would be forward: \${CUTOFF[0]}, reverse \${CUTOFF[1]}\"
-	    echo \"Please check quality values and read length manually and provide appropriate DADA2 truncation parameters.\"
-	    echo \"Exiting now!\"
-	    exit
-	    fi
-
-	    #Success message
-	    #echo \"Using cutoffs are forward: \${CUTOFF[0]}, reverse \${CUTOFF[1]}\"
-
-	    printf \${CUTOFF[0]},\${CUTOFF[1]}
-	    #CUTOFF <- paste(CUTOFF, collapse=",")
-	    #cat(CUTOFF)
+	    #totallength=\$((\${CUTOFF[0]} + \${CUTOFF[1]}))
+	    #if (( \$totallength < 10 )); then 
+	    #echo \"ERROR: Total read pair length is \$totallength and below 10, this is definitely too low.\"
+	    #echo \"Chosen cutoffs would be forward: \${CUTOFF[0]}, reverse \${CUTOFF[1]}\"
+	    #echo \"Please check quality values and read length manually and provide appropriate DADA2 truncation parameters.\"
+	    #echo \"Exiting now!\"
+	    #exit
+	    #fi
 	    """
     else
 	    """
@@ -1057,7 +1038,7 @@ process metadata_category_all {
     script:
     if( !params.metadata_category )
 	    """
-	    metadataCategory.r $input
+	    metadataCategory.r ${params.metadata}
 	    """
     else
 	    """
@@ -1080,7 +1061,7 @@ process metadata_category_pairwise {
     !params.skip_diversity_indices
 
     """
-    metadataCategoryPairwise.r $input
+    metadataCategoryPairwise.r ${params.metadata}
     """
 }
 

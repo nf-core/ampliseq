@@ -300,14 +300,14 @@ if (!params.Q2imported){
 	    publishDir "${params.outdir}/trimmed", mode: 'copy',
             saveAs: {filename -> 
             if (filename.indexOf(".gz") == -1) "logs/$filename"
-            else if(filename.keepIntermediates) filename 
+            else if(params.keepIntermediates) filename 
             else null}
 	  
 	    input:
 	    set pair_id, file(reads) from ch_read_pairs
 	  
 	    output:
-        file "${reads.baseName}" into ch_fastq_trimmed
+        file "*_L001_R{1,2}_001.fastq.gz.trimmed" into ch_fastq_trimmed
         file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
 
 	    script:
@@ -319,7 +319,7 @@ if (!params.Q2imported){
 	  
 	    """
 	    cutadapt -g ${params.FW_primer} -G ${params.RV_primer} $discard_untrimmed \
-            -o ${reads[0].baseName}.R1.fastq.gz -p ${reads[1].baseName}.R2.fastq.gz \
+            -o ${reads[0]}.trimmed -p ${reads[1]}.trimmed \
             ${reads[0]} ${reads[1]} 2> cutadapt_log_${reads[0].baseName}.txt
 	    """
 	}

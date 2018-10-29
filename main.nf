@@ -676,7 +676,7 @@ if (params.exclude_taxa == "none") {
 
 	    output:
 	    val "$table" into (qiime_table_for_filtered_dada_output, qiime_table_for_relative_abundance_asv,qiime_table_for_relative_abundance_reduced_taxa,qiime_table_for_ancom,qiime_table_for_barplot)
-	    val "$repseq" into qiime_repseq
+	    val "$repseq" into (qiime_repseq_for_dada_output,qiime_repseq_for_tree)
 
 	    script:
 	  
@@ -695,8 +695,8 @@ if (params.exclude_taxa == "none") {
 	    val taxonomy from qiime_taxonomy_for_filter
 
 	    output:
-	    val "filtered-table.qza" into (qiime_table_for_filtered_dada_output, qiime_table_for_relative_abundance_asv,qiime_table_for_relative_abundance_reduced_taxa,qiime_table_for_ancom,qiime_table_for_barplot)
-	    val "filtered-sequences.qza" into qiime_repseq
+	    val "filtered-table.qza" into (qiime_table_for_filtered_dada_output, qiime_table_for_relative_abundance_asv,qiime_table_for_relative_abundance_reduced_taxa,qiime_table_for_ancom,qiime_table_for_barplot,qiime_table_for_alpha_rarefaction, qiime_table_for_diversity_core)
+	    val "filtered-sequences.qza" into (qiime_repseq_for_dada_output,qiime_repseq_for_tree)
 
 	    script:
 	  
@@ -731,11 +731,11 @@ process export_filtered_dada_output {
 
     input:
     val table from qiime_table_for_filtered_dada_output
-    val repseq from qiime_repseq
+    val repseq from qiime_repseq_for_dada_output
 
     output:
     val "${params.outdir}/rep_seqs/sequences.fasta" into fasta_repseq
-    val "${params.outdir}/table/feature-table.tsv" into tsv_table
+    val "${params.outdir}/table/feature-table.tsv" into (tsv_table_for_alpha_rarefaction,tsv_table_for_report_filter_stats,tsv_table_for_diversity_core)
 
     """
     #produce raw count table in biom format "${params.outdir}/table/feature-table.biom"
@@ -764,7 +764,7 @@ process report_filter_stats {
 
     input:
     val unfiltered_table from tsv_table_raw
-    val filtered_table from tsv_table
+    val filtered_table from tsv_table_for_report_filter_stats
 
     output:
     val "count_table_filter_stats.csv" into csv_filter_stats
@@ -883,10 +883,10 @@ process tree {
     
 
     input:
-    val repseq from qiime_repseq
+    val repseq from qiime_repseq_for_tree
 
     output:
-    val "rooted-tree.qza" into qiime_tree
+    val "rooted-tree.qza" into (qiime_tree_for_diversity_core, qiime_tree_for_alpha_rarefaction)
 
     when:
     !params.skip_diversity_indices || !params.skip_alpha_rarefaction
@@ -924,9 +924,9 @@ process alpha_rarefaction {
     
 
     input:
-    val table from qiime_table
-    val tree from qiime_tree
-    val stats from tsv_table
+    val table from qiime_table_for_alpha_rarefaction
+    val tree from qiime_tree_for_alpha_rarefaction
+    val stats from tsv_table_for_alpha_rarefaction
 
     when:
     !params.skip_alpha_rarefaction
@@ -980,12 +980,12 @@ process diversity_core {
     
 
     input:
-    val table from qiime_table
-    val tree from qiime_tree
-    val stats from tsv_table
+    val table from qiime_table_for_diversity_core
+    val tree from qiime_tree_for_diversity_core
+    val stats from tsv_table_for_diversity_core
 
     output:
-    val "core" into qiime_diversity_core
+    val "core" into (qiime_diversity_core_for_beta_diversity,qiime_diversity_core_for_beta_diversity_ordination, qiime_diversity_core_for_alpha_diversity)
 
     when:
     !params.skip_diversity_indices
@@ -1019,7 +1019,7 @@ process alpha_diversity {
     
 
     input:
-    val core from qiime_diversity_core
+    val core from qiime_diversity_core_for_alpha_diversity
 
     output:
     val "${params.outdir}/alpha-diversity" into qiime_alphadiversity
@@ -1093,7 +1093,7 @@ process beta_diversity {
     
 
     input:
-    val core from qiime_diversity_core
+    val core from qiime_diversity_core_for_beta_diversity
     val meta from meta_category_pairwise
 
     output:
@@ -1130,7 +1130,7 @@ process beta_diversity_ordination {
     
 
     input:
-    val core from qiime_diversity_core
+    val core from qiime_diversity_core_for_beta_diversity_ordination
 
     """
     method=( \"unweighted_unifrac_pcoa_results\" \"weighted_unifrac_pcoa_results\" \"jaccard_pcoa_results\" \"bray_curtis_pcoa_results\" )

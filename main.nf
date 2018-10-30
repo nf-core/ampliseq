@@ -532,8 +532,7 @@ process dada_trunc_parameter {
  * Find ASVs with DADA2 for single sequencing run
  * Requirements: as many cores as possible (limiting step here!), ??? mem, walltime scales with no. of reads and samples (~15 min to 30 hours)
  */
-process dada_single { 
-    
+process dada_single {
 
     input:
     file demux from ch_qiime_demux
@@ -556,31 +555,31 @@ process dada_single {
 	--i-demultiplexed-seqs $demux  \
 	--p-trunc-len-f \${trunclen[0]} \
 	--p-trunc-len-r \${trunclen[1]} \
-	--p-n-threads ${process.cpus}  \
+	--p-n-threads 0  \
 	--o-table table_unfiltered.qza  \
 	--o-representative-sequences rep-seqs_unfiltered.qza  \
 	--o-denoising-stats stats.qza \
 	--verbose
 
-    #produce dada2 stats "${params.outdir}/dada_stats/stats.tsv"
+    #produce dada2 stats "dada_stats/stats.tsv"
     qiime tools export stats.qza \
-	--output-dir ${params.outdir}/dada_stats
+	--output-dir dada_stats
 
-    #produce raw count table in biom format "${params.outdir}/table_unfiltered/feature-table.biom"
+    #produce raw count table in biom format "table_unfiltered/feature-table.biom"
     qiime tools export table_unfiltered.qza  \
-	--output-dir ${params.outdir}/table_unfiltered
+	--output-dir table_unfiltered
 
     #produce raw count table
-    biom convert -i ${params.outdir}/table_unfiltered/feature-table.biom \
-	-o ${params.outdir}/table_unfiltered/feature-table.tsv  \
+    biom convert -i table_unfiltered/feature-table.biom \
+	-o feature-table.tsv  \
 	--to-tsv
 
-    #produce represenatative sequence fasta file
+    #produce representative sequence fasta file
     qiime feature-table tabulate-seqs  \
 	--i-data rep-seqs_unfiltered.qza  \
 	--o-visualization rep-seqs_unfiltered.qzv
     qiime tools export rep-seqs_unfiltered.qzv  \
-	--output-dir ${params.outdir}/rep_seqs_unfiltered
+	--output-dir rep_seqs_unfiltered
 
     #convert to relative abundances
     qiime feature-table relative-frequency \
@@ -592,12 +591,12 @@ process dada_single {
 	--output-dir rel-table_unfiltered
 
     #copy biom to result folder
-    cp rel-table_unfiltered/feature-table.biom ${params.outdir}/table_unfiltered/rel-feature-table.biom
+    cp rel-table_unfiltered/feature-table.biom table_unfiltered/rel-feature-table.biom
 
     #convert to tab seperated text file
     biom convert \
 	-i rel-table_unfiltered/feature-table.biom \
-	-o ${params.outdir}/table_unfiltered/rel-feature-table.tsv --to-tsv
+	-o rel-feature-table.tsv --to-tsv
 
     """
 }

@@ -302,12 +302,16 @@ if (!params.Q2imported){
             if (filename.indexOf(".gz") == -1) "logs/$filename"
             else if(params.keepIntermediates) filename 
             else null}
+
+	    publishDir "${params.outdir}/trimmed", mode: 'symlink',
+            saveAs: {filename -> 
+            if(filename.startsWith("trimmed.")) "symlink/${filename.substring("trimmed.".size())}"}
 	  
 	    input:
 	    set pair_id, file(reads) from ch_read_pairs
 	  
 	    output:
-        file "*_L001_R{1,2}_001.fastq.gz.trimmed" into ch_fastq_trimmed
+        file "trimmed.*" into ch_fastq_trimmed
         file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
 
 	    script:
@@ -319,7 +323,7 @@ if (!params.Q2imported){
 	  
 	    """
 	    cutadapt -g ${params.FW_primer} -G ${params.RV_primer} $discard_untrimmed \
-            -o ${reads[0]}.trimmed -p ${reads[1]}.trimmed \
+            -o trimmed.${reads[0]} -p trimmed.${reads[1]} \
             ${reads[0]} ${reads[1]} 2> cutadapt_log_${reads[0].baseName}.txt
 	    """
 	}
@@ -366,7 +370,7 @@ if (!params.Q2imported){
 	    """
 	    qiime tools import  \
 		--type 'SampleData[PairedEndSequencesWithQuality]'  \
-		--input-path $trimmed  \
+		--input-path $PWD/${params.outdir}/trimmed/symlink  \
 		--source-format CasavaOneEightSingleLanePerSampleDirFmt  \
 		--output-path demux.qza
 	    """
@@ -451,8 +455,8 @@ if( !params.Q2imported ){
         file("*-seven-number-summaries.csv") into csv_demux
 	  
 	    """
-	    qiime demux summarize 
-		--i-data $demux 
+	    qiime demux summarize \
+		--i-data $demux \
 		--o-visualization demux.qzv
 
 	    qiime tools export demux.qzv --output-dir demux
@@ -467,7 +471,7 @@ if( !params.Q2imported ){
             else null }
 
 	    output:
-	    file("*-seven-number-summaries.csv") into csv_demux
+	    file("demux/*-seven-number-summaries.csv") into csv_demux
 	  
 	    """
 	    qiime demux summarize \

@@ -355,7 +355,7 @@ if (!params.Q2imported){
 	 * Import trimmed files into QIIME2 artefact
 	 */
 	process qiime_import {
-        publishDir "${params.outdir}/qiime_demux", mode: 'copy', 
+        publishDir "${params.outdir}/demux", mode: 'copy', 
         saveAs: {params.keepIntermediates ? filename : null}
 
 	    input:
@@ -441,18 +441,14 @@ if( !params.classifier ){
  */
 if( !params.Q2imported ){
 	process qiime_demux_visualize { 
-        publishDir "${params.outdir}/qiime2-imported", mode: 'copy',
-		saveAs: {filename -> 
-            if(filename.indexOf(".csv")) filename
-            else if (filename.indexOf("*.qzv")) filename 
-            else if (filename.indexof('demux/*')) filename
-            else null }
+        publishDir "${params.outdir}", mode: 'copy'
 
 	    input:
 	    file demux from ch_qiime_demux
 
 	    output:
         file("demux/*-seven-number-summaries.csv") into csv_demux
+        file("demux/*") into demux_dummy
 	  
 	    """
 	    qiime demux summarize \
@@ -464,14 +460,11 @@ if( !params.Q2imported ){
 	}
 } else {
 	process qiime_importdemux_visualize { 
-        publishDir "${params.outdir}/qiime2-imported", mode: 'copy',
-		saveAs: {filename -> 
-            if(filename.indexOf(".csv")) filename
-            else if (filename.indexOf("*.qzv")) filename 
-            else null }
+        publishDir "${params.outdir}", mode: 'copy'
 
 	    output:
 	    file("demux/*-seven-number-summaries.csv") into csv_demux
+        file("demux/*") into demux_dummy
 	  
 	    """
 	    qiime demux summarize \
@@ -490,7 +483,6 @@ if( !params.Q2imported ){
  * "Error and exit if too short" could be done in the python script itself?
  */
 process dada_trunc_parameter { 
-    //
 
     input:
     val summary_demux from csv_demux 
@@ -533,6 +525,19 @@ process dada_trunc_parameter {
  * Requirements: as many cores as possible (limiting step here!), ??? mem, walltime scales with no. of reads and samples (~15 min to 30 hours)
  */
 process dada_single {
+	publishDir "${params.outdir}", mode: 'copy',
+        saveAs: {filename -> 
+            if (filename.indexOf("dada_stats/*")) filename
+            else if (filename == "table_unfiltered.qza") "table_unfiltered/$filename"
+            else if (filename == "table_unfiltered/feature-table.biom") filename
+            else if (filename == "table_unfiltered/feature-table.tsv") filename
+            else if (filename == "rel-table_unfiltered/feature-table.biom") "table_unfiltered/rel-${filename.substring("rel-table_unfiltered/".size())}"
+            else if (filename == "rel-table_unfiltered/feature-table.tsv") "table_unfiltered/rel-${filename.substring("rel-table_unfiltered/".size())}"
+            else if (filename == "rep-seqs_unfiltered.qza") "rep_seqs_unfiltered/$filename"
+            else if (filename.indexOf("rep_seqs_unfiltered/*")) filename
+            else if (filename.indexOf("sequences.fasta")) filename
+            else if(params.keepIntermediates) filename 
+            else null}
 
     input:
     file demux from ch_qiime_demux
@@ -542,6 +547,7 @@ process dada_single {
     val "table_unfiltered.qza" into qiime_table_raw
     val "rep-seqs_unfiltered.qza" into qiime_repseq_raw
     val "feature-table.tsv" into tsv_table_raw
+    file("*") into dada_dummy
 
     when:
     !params.untilQ2import
@@ -571,7 +577,7 @@ process dada_single {
 
     #produce raw count table
     biom convert -i table_unfiltered/feature-table.biom \
-	-o feature-table.tsv  \
+	-o table_unfiltered/feature-table.tsv  \
 	--to-tsv
 
     #produce representative sequence fasta file
@@ -590,9 +596,6 @@ process dada_single {
     qiime tools export relative-table-ASV_unfiltered.qza \
 	--output-dir rel-table_unfiltered
 
-    #copy biom to result folder
-    cp rel-table_unfiltered/feature-table.biom table_unfiltered/rel-feature-table.biom
-
     #convert to tab seperated text file
     biom convert \
 	-i rel-table_unfiltered/feature-table.biom \
@@ -607,7 +610,7 @@ process dada_single {
  * USE NXF feature of file size introduced in 0.32.0 here!!!
  */
 process classifier { 
-    
+    publishDir "${params.outdir}", mode: 'copy'
 
     input:
     val table from qiime_table_raw
@@ -616,13 +619,13 @@ process classifier {
 
     output:
     val "taxonomy.qza" into (qiime_taxonomy_for_filter,qiime_taxonomy_for_relative_abundance_reduced_taxa,qiime_taxonomy_for_barplot,qiime_taxonomy_for_ancom)
-    val "${params.outdir}/taxonomy/taxonomy.tsv" into tsv_taxonomy
+    val "taxonomy.tsv" into tsv_taxonomy
 
   
     """
     qiime feature-classifier classify-sklearn  \
 	--i-classifier $trained_classifier  \
-	--p-n-jobs ${process.cpus}  \
+	--p-n-jobs "-1"  \
 	--i-reads $repseq  \
 	--o-classification taxonomy.qza  \
 	--verbose
@@ -632,12 +635,12 @@ process classifier {
 	--o-visualization taxonomy.qzv  \
 	--verbose
 
-    #produce "${params.outdir}/taxonomy/taxonomy.tsv"
+    #produce "taxonomy/taxonomy.tsv"
     qiime tools export taxonomy.qza  \
-	--output-dir ${params.outdir}/taxonomy
+	--output-dir taxonomy
 
     qiime tools export taxonomy.qzv  \
-	--output-dir ${params.outdir}/taxonomy
+	--output-dir taxonomy
     """
 }
 

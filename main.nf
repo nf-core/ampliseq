@@ -452,7 +452,7 @@ if( !params.Q2imported ){
 	    file demux from ch_qiime_demux
 
 	    output:
-        file("*-seven-number-summaries.csv") into csv_demux
+        file("demux/*-seven-number-summaries.csv") into csv_demux
 	  
 	    """
 	    qiime demux summarize \
@@ -505,13 +505,7 @@ process dada_trunc_parameter {
     if( !params.trunclenf || !params.trunclenr )
 
 	    """
-	    CUTOFF=()
-
-	    IFS=\", \" read -r -a array_demux <<< \"$summary_demux\" #convert to array
-	    #echo array_demux \${array_demux[@]}
-
-        #dada_trunc_parameter.py <forward-seven-number-summaries.csv> <reverse-seven-number-summaries.csv> <int>
-        dada_trunc_parameter.py \${array_demux[0]} \${array_demux[1]} ${params.trunc_qmin}
+        dada_trunc_parameter.py ${summary_demux[0]} ${summary_demux[1]} ${params.trunc_qmin}
 
 	    #Warning massage
 	    #echo \"WARNING: no DADA2 cutoffs were specified, therefore reads will be truncated where median quality drops below ${params.trunc_qmin}.\"

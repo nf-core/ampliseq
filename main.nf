@@ -544,9 +544,9 @@ process dada_single {
     val trunc from dada_trunc
 
     output:
-    val "table_unfiltered.qza" into qiime_table_raw
-    val "rep-seqs_unfiltered.qza" into qiime_repseq_raw
-    val "feature-table.tsv" into tsv_table_raw
+    file("table_unfiltered.qza") into ch_qiime_table_raw
+    file("rep-seqs_unfiltered.qza") into (ch_qiime_repseq_raw_for_classifier,ch_qiime_repseq_raw_for_filter)
+    file("table_unfiltered/feature-table.tsv") into ch_tsv_table_raw
     file("*") into dada_dummy
 
     when:
@@ -610,16 +610,18 @@ process dada_single {
  * USE NXF feature of file size introduced in 0.32.0 here!!!
  */
 process classifier { 
-    publishDir "${params.outdir}", mode: 'copy'
+    publishDir "${params.outdir}", mode: 'copy',
+        saveAs: {filename -> 
+            if (filename == "taxonomy/taxonomy.tsv") filename
+            else if (filename == "taxonomy.qza") "taxonomy/$filename"}
 
     input:
-    val table from qiime_table_raw
-    val repseq from qiime_repseq_raw
+    file repseq from ch_qiime_repseq_raw_for_classifier
     file trained_classifier from ch_qiime_classifier
 
     output:
-    val "taxonomy.qza" into (qiime_taxonomy_for_filter,qiime_taxonomy_for_relative_abundance_reduced_taxa,qiime_taxonomy_for_barplot,qiime_taxonomy_for_ancom)
-    val "taxonomy.tsv" into tsv_taxonomy
+    file("taxonomy.qza") into (ch_qiime_taxonomy_for_filter,ch_qiime_taxonomy_for_relative_abundance_reduced_taxa,ch_qiime_taxonomy_for_barplot,ch_qiime_taxonomy_for_ancom)
+    file("taxonomy/taxonomy.tsv") into ch_tsv_taxonomy
 
   
     """
@@ -652,12 +654,12 @@ if (params.exclude_taxa == "none") {
 	    
 
 	    input:
-	    val table from qiime_table_raw
-	    val repseq from  qiime_repseq_raw
+	    file table from ch_qiime_table_raw
+	    file repseq from  ch_qiime_repseq_raw_for_filter
 
 	    output:
-	    val "$table" into (qiime_table_for_filtered_dada_output, qiime_table_for_relative_abundance_asv,qiime_table_for_relative_abundance_reduced_taxa,qiime_table_for_ancom,qiime_table_for_barplot)
-	    val "$repseq" into (qiime_repseq_for_dada_output,qiime_repseq_for_tree)
+	    file("$table") into (ch_qiime_table_for_filtered_dada_output, ch_qiime_table_for_relative_abundance_asv,ch_qiime_table_for_relative_abundance_reduced_taxa,ch_qiime_table_for_ancom,ch_qiime_table_for_barplot)
+	    file("$repseq") into (ch_qiime_repseq_for_dada_output,ch_qiime_repseq_for_tree)
 
 	    script:
 	  
@@ -668,16 +670,16 @@ if (params.exclude_taxa == "none") {
 
 } else {
 	process filter_taxa {
-	    
+	    publishDir "${params.outdir}/filtered", mode: 'copy'    
 
 	    input:
-	    val table from qiime_table_raw
-	    val repseq from  qiime_repseq_raw
-	    val taxonomy from qiime_taxonomy_for_filter
+	    file table from ch_qiime_table_raw
+	    file repseq from  ch_qiime_repseq_raw_for_filter
+	    file taxonomy from ch_qiime_taxonomy_for_filter
 
 	    output:
-	    val "filtered-table.qza" into (qiime_table_for_filtered_dada_output, qiime_table_for_relative_abundance_asv,qiime_table_for_relative_abundance_reduced_taxa,qiime_table_for_ancom,qiime_table_for_barplot,qiime_table_for_alpha_rarefaction, qiime_table_for_diversity_core)
-	    val "filtered-sequences.qza" into (qiime_repseq_for_dada_output,qiime_repseq_for_tree)
+	    file("filtered-table.qza") into (ch_qiime_table_for_filtered_dada_output, ch_qiime_table_for_relative_abundance_asv,ch_qiime_table_for_relative_abundance_reduced_taxa,ch_qiime_table_for_ancom,ch_qiime_table_for_barplot,qiime_table_for_alpha_rarefaction, qiime_table_for_diversity_core)
+	    file("filtered-sequences.qza") into (ch_qiime_repseq_for_dada_output,ch_qiime_repseq_for_tree)
 
 	    script:
 	  
@@ -708,24 +710,25 @@ if (params.exclude_taxa == "none") {
  * Export qiime artefacts from filtered dada output
  */
 process export_filtered_dada_output { 
-    
+    publishDir "${params.outdir}/filtered", mode: 'copy'    
 
     input:
-    val table from qiime_table_for_filtered_dada_output
-    val repseq from qiime_repseq_for_dada_output
+    file table from ch_qiime_table_for_filtered_dada_output
+    file repseq from ch_qiime_repseq_for_dada_output
 
     output:
-    val "${params.outdir}/rep_seqs/sequences.fasta" into fasta_repseq
-    val "${params.outdir}/table/feature-table.tsv" into (tsv_table_for_alpha_rarefaction,tsv_table_for_report_filter_stats,tsv_table_for_diversity_core)
+    file("rep_seqs/sequences.fasta") into ch_fasta_repseq
+    file("table/feature-table.tsv") into (ch_tsv_table_for_alpha_rarefaction,ch_tsv_table_for_report_filter_stats,ch_tsv_table_for_diversity_core)
+    file("*") into filtered_dummy
 
     """
-    #produce raw count table in biom format "${params.outdir}/table/feature-table.biom"
+    #produce raw count table in biom format "table/feature-table.biom"
     qiime tools export $table  \
-	--output-dir ${params.outdir}/table
+	--output-dir table
 
-    #produce raw count table "${params.outdir}/table/feature-table.tsv"
-    biom convert -i ${params.outdir}/table/feature-table.biom \
-	-o ${params.outdir}/table/feature-table.tsv  \
+    #produce raw count table "table/feature-table.tsv"
+    biom convert -i table/feature-table.biom \
+	-o table/feature-table.tsv  \
 	--to-tsv
 
     #produce representative sequence fasta file "${params.outdir}/rep_seqs/sequences.fasta"
@@ -741,14 +744,14 @@ process export_filtered_dada_output {
  * Report stats after taxa filtering
  */
 process report_filter_stats { 
-    
+    publishDir "${params.outdir}/filtered", mode: 'copy'     
 
     input:
-    val unfiltered_table from tsv_table_raw
-    val filtered_table from tsv_table_for_report_filter_stats
+    file unfiltered_table from ch_tsv_table_raw
+    file filtered_table from ch_tsv_table_for_report_filter_stats
 
     output:
-    val "count_table_filter_stats.csv" into csv_filter_stats
+    file("count_table_filter_stats.csv") into ch_csv_filter_stats
     
     """
     count_table_filter_stats.py $unfiltered_table $filtered_table
@@ -762,7 +765,7 @@ process RelativeAbundanceASV {
     
 
     input:
-    val table from qiime_table_for_relative_abundance_asv
+    val table from ch_qiime_table_for_relative_abundance_asv
 
     output:
     val "${params.outdir}/rel-table-ASV.tsv" into tsv_relASV_table
@@ -795,8 +798,8 @@ process RelativeAbundanceReducedTaxa {
     
 
     input:
-    val table from qiime_table_for_relative_abundance_reduced_taxa
-    val taxonomy from qiime_taxonomy_for_relative_abundance_reduced_taxa
+    val table from ch_qiime_table_for_relative_abundance_reduced_taxa
+    val taxonomy from ch_qiime_taxonomy_for_relative_abundance_reduced_taxa
 
     when:
     !params.skip_abundance_tables && !params.skip_taxonomy
@@ -837,8 +840,8 @@ process barplot {
     
 
     input:
-    val table from qiime_table_for_barplot
-    val taxonomy from qiime_taxonomy_for_barplot
+    val table from ch_qiime_table_for_barplot
+    val taxonomy from ch_qiime_taxonomy_for_barplot
 
     when:
     !params.skip_barplot && !params.skip_taxonomy
@@ -864,7 +867,7 @@ process tree {
     
 
     input:
-    val repseq from qiime_repseq_for_tree
+    val repseq from ch_qiime_repseq_for_tree
 
     output:
     val "rooted-tree.qza" into (qiime_tree_for_diversity_core, qiime_tree_for_alpha_rarefaction)
@@ -907,7 +910,7 @@ process alpha_rarefaction {
     input:
     val table from qiime_table_for_alpha_rarefaction
     val tree from qiime_tree_for_alpha_rarefaction
-    val stats from tsv_table_for_alpha_rarefaction
+    val stats from ch_tsv_table_for_alpha_rarefaction
 
     when:
     !params.skip_alpha_rarefaction
@@ -943,8 +946,8 @@ process combinetable {
 
     input:
     val TABLE from tsv_relASV_table
-    val SEQ from fasta_repseq
-    val TAXONOMY from tsv_taxonomy
+    val SEQ from ch_fasta_repseq
+    val TAXONOMY from ch_tsv_taxonomy
 
     when:
     !params.skip_abundance_tables && !params.skip_taxonomy
@@ -963,7 +966,7 @@ process diversity_core {
     input:
     val table from qiime_table_for_diversity_core
     val tree from qiime_tree_for_diversity_core
-    val stats from tsv_table_for_diversity_core
+    val stats from ch_tsv_table_for_diversity_core
 
     output:
     val "core" into (qiime_diversity_core_for_beta_diversity,qiime_diversity_core_for_beta_diversity_ordination, qiime_diversity_core_for_alpha_diversity)
@@ -1136,8 +1139,8 @@ process ancom {
     
 
     input:
-    val table from qiime_table_for_ancom
-    val taxonomy from qiime_taxonomy_for_ancom
+    val table from ch_qiime_table_for_ancom
+    val taxonomy from ch_qiime_taxonomy_for_ancom
     val meta from meta_category_all
 
     when:

@@ -372,7 +372,7 @@ if (!params.Q2imported){
 	    """
 	    qiime tools import  \
 		--type 'SampleData[PairedEndSequencesWithQuality]'  \
-		--input-path $PWD/${params.outdir}/trimmed/symlink  \
+		--input-path .  \
 		--source-format CasavaOneEightSingleLanePerSampleDirFmt  \
 		--output-path demux.qza
 	    """

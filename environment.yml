@@ -134,7 +134,7 @@ dependencies:
   - pygments=2.2.0
   - pyopenssl=18.0.0
   - pyparsing=2.2.0
-  - pyqt=5.6.0
+  - defaults::pyqt=5.6.0
   - pysocks=1.6.8
   - python=3.5.5
   - python-dateutil=2.7.3

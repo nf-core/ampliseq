@@ -1209,7 +1209,6 @@ process ancom {
  * STEP 3 - Output Description HTML
  */
 process output_documentation {
-    tag "$prefix"
     publishDir "${params.outdir}/Documentation", mode: 'copy'
 
     input:

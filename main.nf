@@ -275,6 +275,7 @@ if (!params.Q2imported){
 	 * fastQC
 	 */
 	process fastqc {
+        tag "${name}"
 	    publishDir "${params.outdir}/fastQC", mode: 'copy',
 		saveAs: {filename -> filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"}
 
@@ -296,7 +297,8 @@ if (!params.Q2imported){
 	/*
 	 * Trim each read-pair with cutadapt
 	 */
-	process trimming {  
+	process trimming {
+        tag "${pair_id}"  
 	    publishDir "${params.outdir}/trimmed", mode: 'copy',
             saveAs: {filename -> 
             if (filename.indexOf(".gz") == -1) "logs/$filename"

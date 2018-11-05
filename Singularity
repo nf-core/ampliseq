@@ -14,4 +14,5 @@ Bootstrap:docker
 
 %post
     /opt/conda/bin/conda env create -f /environment.yml
+    echo "backend: Agg" > ~/.config/matplotlib/matplotlibrc
     /opt/conda/bin/conda clean -a

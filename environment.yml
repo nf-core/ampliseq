@@ -141,7 +141,7 @@ dependencies:
   - pytz=2018.4
   - pyyaml=3.12
   - pyzmq=17.0.0
-  - qt=5.6.2
+  - conda-forge::qt=5.6.2
   - r-assertthat=0.2.0
   - r-base=3.4.1
   - r-bh=1.66.0_1

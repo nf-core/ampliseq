@@ -681,7 +681,7 @@ if (params.exclude_taxa == "none") {
 	    file taxonomy from ch_qiime_taxonomy_for_filter
 
 	    output:
-	    file("filtered-table.qza") into (ch_qiime_table_for_filtered_dada_output, ch_qiime_table_for_relative_abundance_asv,ch_qiime_table_for_relative_abundance_reduced_taxa,ch_qiime_table_for_ancom,ch_qiime_table_for_barplot,qiime_table_for_alpha_rarefaction, qiime_table_for_diversity_core)
+	    file("filtered-table.qza") into (ch_qiime_table_for_filtered_dada_output, ch_qiime_table_for_relative_abundance_asv,ch_qiime_table_for_relative_abundance_reduced_taxa,ch_qiime_table_for_ancom,ch_qiime_table_for_barplot,ch_qiime_table_for_alpha_rarefaction, qiime_table_for_diversity_core)
 	    file("filtered-sequences.qza") into (ch_qiime_repseq_for_dada_output,ch_qiime_repseq_for_tree)
 
 	    script:
@@ -844,8 +844,8 @@ process barplot {
 
     input:
     file metadata from ch_metadata_for_barplot
-    val table from ch_qiime_table_for_barplot
-    val taxonomy from ch_qiime_taxonomy_for_barplot
+    file table from ch_qiime_table_for_barplot
+    file taxonomy from ch_qiime_taxonomy_for_barplot
 
     output:
     file("barplot/*")
@@ -871,13 +871,17 @@ process barplot {
  * Requirements: many cores ${params.tree_cores}, ??? mem, walltime scales with no. of ASV
  */
 process tree { 
-    
+    publishDir "${params.outdir}", mode: 'copy',
+        saveAs: {filename -> 
+            if (filename.indexOf(".qza")) "tree/$filename"
+            else filename}    
 
     input:
-    val repseq from ch_qiime_repseq_for_tree
+    file repseq from ch_qiime_repseq_for_tree
 
     output:
-    val "rooted-tree.qza" into (qiime_tree_for_diversity_core, qiime_tree_for_alpha_rarefaction)
+    file("rooted-tree.qza") into (ch_qiime_tree_for_diversity_core, ch_qiime_tree_for_alpha_rarefaction)
+    file("tree/*") into tree_dummy
 
     when:
     !params.skip_diversity_indices || !params.skip_alpha_rarefaction
@@ -903,7 +907,7 @@ process tree {
 	--o-rooted-tree rooted-tree.qza
 
     qiime tools export rooted-tree.qza  \
-	--output-dir ${params.outdir}/tree
+	--output-dir tree
     """
 }
 
@@ -912,13 +916,16 @@ process tree {
  * Alpha-rarefaction
  */
 process alpha_rarefaction { 
-    
+    publishDir "${params.outdir}", mode: 'copy'    
 
     input:
     file metadata from ch_metadata_for_alphararefaction
-    val table from qiime_table_for_alpha_rarefaction
-    val tree from qiime_tree_for_alpha_rarefaction
-    val stats from ch_tsv_table_for_alpha_rarefaction
+    file table from ch_qiime_table_for_alpha_rarefaction
+    file tree from ch_qiime_tree_for_alpha_rarefaction
+    file stats from ch_tsv_table_for_alpha_rarefaction
+
+    output:
+    file("alpha-rarefaction/*")
 
     when:
     !params.skip_alpha_rarefaction
@@ -942,7 +949,7 @@ process alpha_rarefaction {
 	--o-visualization alpha-rarefaction.qzv
 
     qiime tools export alpha-rarefaction.qzv  \
-	--output-dir ${params.outdir}/alpha-rarefaction
+	--output-dir alpha-rarefaction
     """
 }
 
@@ -974,7 +981,7 @@ process diversity_core {
     input:
     file metadata from ch_metadata_for_diversity_core
     val table from qiime_table_for_diversity_core
-    val tree from qiime_tree_for_diversity_core
+    val tree from ch_qiime_tree_for_diversity_core
     val stats from ch_tsv_table_for_diversity_core
 
     output:

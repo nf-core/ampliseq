@@ -524,19 +524,17 @@ process dada_trunc_parameter {
  
 /*
  * Find ASVs with DADA2 for single sequencing run
- * Requirements: as many cores as possible (limiting step here!), ??? mem, walltime scales with no. of reads and samples (~15 min to 30 hours)
  */
 process dada_single {
-	publishDir "${params.outdir}", mode: 'copy',
+	publishDir "${params.outdir}/unfiltered", mode: 'copy',
         saveAs: {filename -> 
             if (filename.indexOf("dada_stats/*")) filename
-            else if (filename == "table_unfiltered.qza") "table_unfiltered/$filename"
-            else if (filename == "table_unfiltered/feature-table.biom") filename
-            else if (filename == "table_unfiltered/feature-table.tsv") filename
-            else if (filename == "rel-table_unfiltered/feature-table.biom") "table_unfiltered/rel-${filename.substring("rel-table_unfiltered/".size())}"
-            else if (filename == "rel-table_unfiltered/feature-table.tsv") "table_unfiltered/rel-${filename.substring("rel-table_unfiltered/".size())}"
-            else if (filename == "rep-seqs_unfiltered.qza") "rep_seqs_unfiltered/$filename"
-            else if (filename.indexOf("rep_seqs_unfiltered/*")) filename
+            else if (filename == "table.qza") "table/$filename"
+            else if (filename == "table/feature-table.biom") filename
+            else if (filename == "table/feature-table.tsv") filename
+            else if (filename == "table/rel-feature-table.tsv") filename
+            else if (filename == "rep-seqs.qza") "rep_seqs/$filename"
+            else if (filename.indexOf("rep_seqs/*")) filename
             else if (filename.indexOf("sequences.fasta")) filename
             else if(params.keepIntermediates) filename 
             else null}
@@ -546,9 +544,9 @@ process dada_single {
     val trunc from dada_trunc
 
     output:
-    file("table_unfiltered.qza") into ch_qiime_table_raw
-    file("rep-seqs_unfiltered.qza") into (ch_qiime_repseq_raw_for_classifier,ch_qiime_repseq_raw_for_filter)
-    file("table_unfiltered/feature-table.tsv") into ch_tsv_table_raw
+    file("table.qza") into ch_qiime_table_raw
+    file("rep-seqs.qza") into (ch_qiime_repseq_raw_for_classifier,ch_qiime_repseq_raw_for_filter)
+    file("table/feature-table.tsv") into ch_tsv_table_raw
     file("*") into dada_dummy
 
     when:
@@ -564,8 +562,8 @@ process dada_single {
 	--p-trunc-len-f \${trunclen[0]} \
 	--p-trunc-len-r \${trunclen[1]} \
 	--p-n-threads 0  \
-	--o-table table_unfiltered.qza  \
-	--o-representative-sequences rep-seqs_unfiltered.qza  \
+	--o-table table.qza  \
+	--o-representative-sequences rep-seqs.qza  \
 	--o-denoising-stats stats.qza \
 	--verbose
 
@@ -573,35 +571,35 @@ process dada_single {
     qiime tools export stats.qza \
 	--output-dir dada_stats
 
-    #produce raw count table in biom format "table_unfiltered/feature-table.biom"
-    qiime tools export table_unfiltered.qza  \
-	--output-dir table_unfiltered
+    #produce raw count table in biom format "table/feature-table.biom"
+    qiime tools export table.qza  \
+	--output-dir table
 
     #produce raw count table
-    biom convert -i table_unfiltered/feature-table.biom \
-	-o table_unfiltered/feature-table.tsv  \
+    biom convert -i table/feature-table.biom \
+	-o table/feature-table.tsv  \
 	--to-tsv
 
     #produce representative sequence fasta file
     qiime feature-table tabulate-seqs  \
-	--i-data rep-seqs_unfiltered.qza  \
-	--o-visualization rep-seqs_unfiltered.qzv
-    qiime tools export rep-seqs_unfiltered.qzv  \
-	--output-dir rep_seqs_unfiltered
+	--i-data rep-seqs.qza  \
+	--o-visualization rep-seqs.qzv
+    qiime tools export rep-seqs.qzv  \
+	--output-dir rep_seqs
 
     #convert to relative abundances
     qiime feature-table relative-frequency \
-	--i-table table_unfiltered.qza \
-	--o-relative-frequency-table relative-table-ASV_unfiltered.qza
+	--i-table table.qza \
+	--o-relative-frequency-table relative-table-ASV.qza
 
     #export to biom
-    qiime tools export relative-table-ASV_unfiltered.qza \
-	--output-dir rel-table_unfiltered
+    qiime tools export relative-table-ASV.qza \
+	--output-dir rel-table
 
     #convert to tab seperated text file
     biom convert \
-	-i rel-table_unfiltered/feature-table.biom \
-	-o rel-feature-table.tsv --to-tsv
+	-i rel-table/feature-table.biom \
+	-o table/rel-feature-table.tsv --to-tsv
 
     """
 }
@@ -654,7 +652,6 @@ process classifier {
 if (params.exclude_taxa == "none") {
 	process skip_filter_taxa {
 	    
-
 	    input:
 	    file table from ch_qiime_table_raw
 	    file repseq from  ch_qiime_repseq_raw_for_filter
@@ -749,14 +746,14 @@ process report_filter_stats {
     publishDir "${params.outdir}/filtered", mode: 'copy'     
 
     input:
-    file unfiltered_table from ch_tsv_table_raw
-    file filtered_table from ch_tsv_table_for_report_filter_stats
+    file 'unfiltered_table' from ch_tsv_table_raw
+    file 'filtered_table' from ch_tsv_table_for_report_filter_stats
 
     output:
     file("count_table_filter_stats.csv") into ch_csv_filter_stats
     
     """
-    count_table_filter_stats.py $unfiltered_table $filtered_table
+    count_table_filter_stats.py unfiltered_table filtered_table
     """
 }
 

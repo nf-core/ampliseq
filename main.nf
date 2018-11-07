@@ -983,7 +983,7 @@ process combinetable {
  * Compute diversity matrices
  */
 process diversity_core { 
-    
+    publishDir "${params.outdir}/diversity_core", mode: 'copy'
 
     input:
     file metadata from ch_metadata_for_diversity_core
@@ -992,7 +992,9 @@ process diversity_core {
     file stats from ch_tsv_table_for_diversity_core
 
     output:
-    val "core" into (qiime_diversity_core_for_beta_diversity,qiime_diversity_core_for_beta_diversity_ordination, qiime_diversity_core_for_alpha_diversity)
+    file("core/*_pcoa_results.qza") into (qiime_diversity_core_for_beta_diversity_ordination) mode flatten
+    file("core/*_vector.qza") into qiime_diversity_core_for_alpha_diversity mode flatten
+    file("core/*_distance_matrix.qza") into qiime_diversity_core_for_beta_diversity mode flatten
 
     when:
     !params.skip_diversity_indices
@@ -1023,28 +1025,24 @@ process diversity_core {
  * Compute alpha diversity indices
  */
 process alpha_diversity { 
-    publishDir "${params.outdir}/alpha_diversity", mode: 'copy'    
+    publishDir "${params.outdir}", mode: 'copy'    
 
     input:
     file metadata from ch_metadata_for_alpha_diversity
-    val core from qiime_diversity_core_for_alpha_diversity
+    file core from qiime_diversity_core_for_alpha_diversity
 
     output:
-    val "${params.outdir}/alpha-diversity" into qiime_alphadiversity
+    file("alpha-diversity/*") into qiime_alphadiversity
 
 
     """
-    method=( \"faith_pd_vector\" \"evenness_vector\" \"shannon_vector\" \"observed_otus_vector\" )
-    for i in \"\${method[@]}\"
-    do
+    #method=( \"faith_pd_vector\" \"evenness_vector\" \"shannon_vector\" \"observed_otus_vector\" )
 	qiime diversity alpha-group-significance \
-                --i-alpha-diversity $core/\$i.qza \
-                --m-metadata-file $metadata \
-                --o-visualization $core/\$i.qzv \
-                --verbose
-	qiime tools export $core/\$i.qzv \
-                --output-dir ${params.outdir}/alpha-diversity/\$i
-    done
+        --i-alpha-diversity $core \
+        --m-metadata-file $metadata \
+        --o-visualization ${core.baseName}-.qzv
+	qiime tools export ${core.baseName}-.qzv \
+        --output-dir "alpha-diversity/${core.baseName}"
     """
 }
 
@@ -1101,36 +1099,32 @@ process metadata_category_pairwise {
  * Compute beta diversity indices
  */
 process beta_diversity { 
-    
+    publishDir "${params.outdir}", mode: 'copy'     
 
     input:
     file metadata from ch_metadata_for_beta_diversity
-    val core from qiime_diversity_core_for_beta_diversity
+    file core from qiime_diversity_core_for_beta_diversity
     val meta from meta_category_pairwise
 
     output:
-    val "${params.outdir}/beta-diversity" into qiime_betadiversity
+    file "beta-diversity/*"
 
     """
-    method=( \"unweighted_unifrac_distance_matrix\" \"bray_curtis_distance_matrix\" \"weighted_unifrac_distance_matrix\" \"jaccard_distance_matrix\" )
+    #method=( \"unweighted_unifrac_distance_matrix\" \"bray_curtis_distance_matrix\" \"weighted_unifrac_distance_matrix\" \"jaccard_distance_matrix\" )
 
     IFS=',' read -r -a metacategory <<< \"$meta\"
     echo perform beta-diversity tests on "\${metacategory[@]}\"
 
-    for i in \"\${method[@]}\"
-    do
 	for j in \"\${metacategory[@]}\"
 	do
 		qiime diversity beta-group-significance \
-		        --i-distance-matrix $core/\$i.qza \
-		        --m-metadata-file "$metadata" \
-		        --m-metadata-column \"\$j\" \
-		        --o-visualization $core/\$i-\$j.qzv \
-		        --p-pairwise \
-		        --verbose
-		qiime tools export $core/\$i-\$j.qzv \
-		        --output-dir ${params.outdir}/beta-diversity/\$i-\$j
-	done
+		    --i-distance-matrix $core \
+		    --m-metadata-file "$metadata" \
+		    --m-metadata-column \"\$j\" \
+		    --o-visualization ${core.baseName}-\$j.qzv \
+		    --p-pairwise
+		qiime tools export ${core.baseName}-\$j.qzv \
+		    --output-dir beta-diversity/${core.baseName}-\$j
     done
     """
 }
@@ -1139,24 +1133,23 @@ process beta_diversity {
  * Compute beta diversity ordination
  */
 process beta_diversity_ordination { 
-    
+    publishDir "${params.outdir}", mode: 'copy'
 
     input:
     file metadata from ch_metadata_for_beta_diversity_ordination
-    val core from qiime_diversity_core_for_beta_diversity_ordination
+    file core from qiime_diversity_core_for_beta_diversity_ordination
+
+    output:
+    file("beta-diversity/*")
 
     """
-    method=( \"unweighted_unifrac_pcoa_results\" \"weighted_unifrac_pcoa_results\" \"jaccard_pcoa_results\" \"bray_curtis_pcoa_results\" )
-    for i in \"\${method[@]}\"
-    do
+    #method=( \"unweighted_unifrac_pcoa_results\" \"weighted_unifrac_pcoa_results\" \"jaccard_pcoa_results\" \"bray_curtis_pcoa_results\" )
 	qiime emperor plot \
-                --i-pcoa $core/\$i.qza \
-                --m-metadata-file $metadata \
-                --o-visualization $core/\$i.qzv \
-                --verbose
-	qiime tools export $core/\$i.qzv \
-                --output-dir ${params.outdir}/beta-diversity/\$i-PCoA
-    done
+        --i-pcoa $core \
+        --m-metadata-file $metadata \
+        --o-visualization ${core.baseName}-.qzv
+	qiime tools export ${core.baseName}-.qzv \
+        --output-dir beta-diversity/${core.baseName}-PCoA
     """
 }
 

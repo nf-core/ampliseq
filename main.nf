@@ -317,7 +317,7 @@ if (!params.Q2imported){
 	    set pair_id, file(reads) from ch_read_pairs
 	  
 	    output:
-        file "trimmed.*" into ch_fastq_trimmed
+        file "trimmed/*.*" into ch_fastq_trimmed
         file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
 
 	    script:
@@ -328,8 +328,9 @@ if (!params.Q2imported){
 	    }
 	  
 	    """
+        mkdir -p trimmed
 	    cutadapt -g ${params.FW_primer} -G ${params.RV_primer} $discard_untrimmed \
-            -o trimmed.${reads[0]} -p trimmed.${reads[1]} \
+            -o trimmed/${reads[0]} -p trimmed/${reads[1]} \
             ${reads[0]} ${reads[1]} 2> cutadapt_log_${reads[0].baseName}.txt
 	    """
 	}

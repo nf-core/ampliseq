@@ -106,6 +106,10 @@ params.dereplication = 90 //90 for test run only, for real data this has to be s
 /*
  * Defines pipeline steps
  */
+
+Channel.fromPath("${params.metadata}")
+        .into { ch_metadata_for_barplot; ch_metadata_for_alphararefaction; ch_metadata_for_diversity_core; ch_metadata_for_alpha_diversity; ch_metadata_for_metadata_category_all; ch_metadata_for_metadata_category_pairwise; ch_metadata_for_beta_diversity; ch_metadata_for_beta_diversity_ordination; ch_metadata_for_ancom }
+
 params.untilQ2import = false
 
 params.Q2imported = false
@@ -836,11 +840,15 @@ process RelativeAbundanceReducedTaxa {
  * Produce a bar plot
  */
 process barplot { 
-    
+    publishDir "${params.outdir}", mode: 'copy'    
 
     input:
+    file metadata from ch_metadata_for_barplot
     val table from ch_qiime_table_for_barplot
     val taxonomy from ch_qiime_taxonomy_for_barplot
+
+    output:
+    file("barplot/*")
 
     when:
     !params.skip_barplot && !params.skip_taxonomy
@@ -849,12 +857,12 @@ process barplot {
     qiime taxa barplot  \
 	--i-table $table  \
 	--i-taxonomy $taxonomy  \
-	--m-metadata-file ${params.metadata}  \
+	--m-metadata-file $metadata  \
 	--o-visualization taxa-bar-plots.qzv  \
 	--verbose
 
     qiime tools export taxa-bar-plots.qzv  \
-	--output-dir ${params.outdir}/barplot
+	--output-dir barplot
     """
 }
 
@@ -907,6 +915,7 @@ process alpha_rarefaction {
     
 
     input:
+    file metadata from ch_metadata_for_alphararefaction
     val table from qiime_table_for_alpha_rarefaction
     val tree from qiime_tree_for_alpha_rarefaction
     val stats from ch_tsv_table_for_alpha_rarefaction
@@ -927,7 +936,7 @@ process alpha_rarefaction {
 	--i-table $table  \
 	--i-phylogeny $tree  \
 	--p-max-depth \$maxdepth  \
-	--m-metadata-file ${params.metadata}  \
+	--m-metadata-file $metadata  \
 	--p-steps \$maxsteps  \
 	--p-iterations 10  \
 	--o-visualization alpha-rarefaction.qzv
@@ -963,6 +972,7 @@ process diversity_core {
     
 
     input:
+    file metadata from ch_metadata_for_diversity_core
     val table from qiime_table_for_diversity_core
     val tree from qiime_tree_for_diversity_core
     val stats from ch_tsv_table_for_diversity_core
@@ -985,7 +995,7 @@ process diversity_core {
 
     #run diversity core
     qiime diversity core-metrics-phylogenetic \
-	--m-metadata-file ${params.metadata} \
+	--m-metadata-file $metadata \
 	--i-phylogeny $tree \
 	--i-table $table \
 	--p-sampling-depth \$mindepth \
@@ -1002,6 +1012,7 @@ process alpha_diversity {
     
 
     input:
+    file metadata from ch_metadata_for_alpha_diversity
     val core from qiime_diversity_core_for_alpha_diversity
 
     output:
@@ -1014,7 +1025,7 @@ process alpha_diversity {
     do
 	qiime diversity alpha-group-significance \
                 --i-alpha-diversity $core/\$i.qza \
-                --m-metadata-file ${params.metadata} \
+                --m-metadata-file $metadata \
                 --o-visualization $core/\$i.qzv \
                 --verbose
 	qiime tools export $core/\$i.qzv \
@@ -1028,9 +1039,11 @@ process alpha_diversity {
  * TODO MISSING INPUT CATEGORIES / FILES ? 
  */
 process metadata_category_all { 
+    input:
+    file metadata from ch_metadata_for_metadata_category_all
 
     output:
-    stdout meta_category_all
+    stdout into (meta_category_all,meta_category_all_for_ancom)
 
     when:
     !params.skip_ancom || !params.skip_diversity_indices
@@ -1040,7 +1053,7 @@ process metadata_category_all {
     script:
     if( !params.metadata_category )
 	    """
-	    metadataCategory.r ${params.metadata}
+	    metadataCategory.r $metadata
 	    """
     else
 	    """
@@ -1054,6 +1067,7 @@ process metadata_category_all {
 process metadata_category_pairwise { 
 
     input:
+    file metadata from ch_metadata_for_metadata_category_pairwise
     val meta_all from meta_category_all
 
     output:
@@ -1063,7 +1077,7 @@ process metadata_category_pairwise {
     !params.skip_diversity_indices
 
     """
-    metadataCategoryPairwise.r ${params.metadata}
+    metadataCategoryPairwise.r $metadata
     """
 }
 
@@ -1076,6 +1090,7 @@ process beta_diversity {
     
 
     input:
+    file metadata from ch_metadata_for_beta_diversity
     val core from qiime_diversity_core_for_beta_diversity
     val meta from meta_category_pairwise
 
@@ -1094,7 +1109,7 @@ process beta_diversity {
 	do
 		qiime diversity beta-group-significance \
 		        --i-distance-matrix $core/\$i.qza \
-		        --m-metadata-file ${params.metadata} \
+		        --m-metadata-file "$metadata" \
 		        --m-metadata-column \"\$j\" \
 		        --o-visualization $core/\$i-\$j.qzv \
 		        --p-pairwise \
@@ -1113,6 +1128,7 @@ process beta_diversity_ordination {
     
 
     input:
+    file metadata from ch_metadata_for_beta_diversity_ordination
     val core from qiime_diversity_core_for_beta_diversity_ordination
 
     """
@@ -1121,7 +1137,7 @@ process beta_diversity_ordination {
     do
 	qiime emperor plot \
                 --i-pcoa $core/\$i.qza \
-                --m-metadata-file ${params.metadata} \
+                --m-metadata-file $metadata \
                 --o-visualization $core/\$i.qzv \
                 --verbose
 	qiime tools export $core/\$i.qzv \
@@ -1138,9 +1154,10 @@ process ancom {
     
 
     input:
+    file metadata from ch_metadata_for_ancom
     val table from ch_qiime_table_for_ancom
     val taxonomy from ch_qiime_taxonomy_for_ancom
-    val meta from meta_category_all
+    val meta from meta_category_all_for_ancom
 
     when:
     !params.skip_ancom
@@ -1155,7 +1172,7 @@ process ancom {
     do
 	qiime feature-table filter-samples \
 		--i-table $table \
-		--m-metadata-file ${params.metadata} \
+		--m-metadata-file $metadata \
 		--p-where \"\$j<>\'\'\" \
 		--o-filtered-table ancom/\$j-table.qza
     done
@@ -1177,7 +1194,7 @@ process ancom {
 		        --o-composition-table ancom/\$j-l\$i-comp-table.qza
 		qiime composition ancom \
 		        --i-table ancom/\$j-l\$i-comp-table.qza \
-		        --m-metadata-file ${params.metadata} \
+		        --m-metadata-file $metadata \
 		        --m-metadata-column \"\$j\" \
 		        --o-visualization ancom/\$j-l\$i-comp-table.qzv \
 		        --verbose
@@ -1194,7 +1211,7 @@ process ancom {
 		--o-composition-table ancom/\$j-comp-table.qza
 	qiime composition ancom \
 	        --i-table ancom/\$j-comp-table.qza \
-	        --m-metadata-file ${params.metadata} \
+	        --m-metadata-file $metadata \
 	        --m-metadata-column \"\$j\" \
 	        --o-visualization ancom/\$j-comp-table.qzv \
 	        --verbose

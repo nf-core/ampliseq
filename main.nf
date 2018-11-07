@@ -454,7 +454,7 @@ if( !params.Q2imported ){
 
 	    output:
         file("demux/*-seven-number-summaries.csv") into csv_demux
-        file("demux/*") into demux_dummy
+        file("demux/*")
 	  
 	    """
 	    qiime demux summarize \
@@ -470,7 +470,7 @@ if( !params.Q2imported ){
 
 	    output:
 	    file("demux/*-seven-number-summaries.csv") into csv_demux
-        file("demux/*") into demux_dummy
+        file("demux/*")
 	  
 	    """
 	    qiime demux summarize \
@@ -551,7 +551,7 @@ process dada_single {
     file("table.qza") into ch_qiime_table_raw
     file("rep-seqs.qza") into (ch_qiime_repseq_raw_for_classifier,ch_qiime_repseq_raw_for_filter)
     file("table/feature-table.tsv") into ch_tsv_table_raw
-    file("*") into dada_dummy
+    file("*")
 
     when:
     !params.untilQ2import
@@ -722,7 +722,7 @@ process export_filtered_dada_output {
     output:
     file("rep_seqs/sequences.fasta") into ch_fasta_repseq
     file("table/feature-table.tsv") into (ch_tsv_table_for_alpha_rarefaction,ch_tsv_table_for_report_filter_stats,ch_tsv_table_for_diversity_core)
-    file("*") into filtered_dummy
+    file("*")
 
     """
     #produce raw count table in biom format "table/feature-table.biom"
@@ -765,13 +765,13 @@ process report_filter_stats {
  * Export relative abundance tables on ASV level
  */
 process RelativeAbundanceASV { 
-    
+    publishDir "${params.outdir}/abundance-tables", mode: 'copy'    
 
     input:
-    val table from ch_qiime_table_for_relative_abundance_asv
+    file table from ch_qiime_table_for_relative_abundance_asv
 
     output:
-    val "${params.outdir}/rel-table-ASV.tsv" into tsv_relASV_table
+    file("rel-table-ASV.tsv") into ch_tsv_relASV_table
 
     when:
     !params.skip_abundance_tables
@@ -788,7 +788,7 @@ process RelativeAbundanceASV {
     qiime tools export relative-table-ASV.qza --output-dir relative-table-ASV
 
     #convert to tab seperated text file "${params.outdir}/rel-table-ASV.tsv"
-    biom convert -i relative-table-ASV/feature-table.biom 
+    biom convert -i relative-table-ASV/feature-table.biom \
 	-o rel-table-ASV.tsv --to-tsv
     """
 }
@@ -798,11 +798,14 @@ process RelativeAbundanceASV {
  * Export relative abundance tables based on taxonomic levels
  */
 process RelativeAbundanceReducedTaxa { 
-    
+    publishDir "${params.outdir}/abundance-tables", mode: 'copy'    
 
     input:
-    val table from ch_qiime_table_for_relative_abundance_reduced_taxa
-    val taxonomy from ch_qiime_taxonomy_for_relative_abundance_reduced_taxa
+    file table from ch_qiime_table_for_relative_abundance_reduced_taxa
+    file taxonomy from ch_qiime_taxonomy_for_relative_abundance_reduced_taxa
+
+    output:
+    file("*.tsv")
 
     when:
     !params.skip_abundance_tables && !params.skip_taxonomy
@@ -813,23 +816,23 @@ process RelativeAbundanceReducedTaxa {
     array=( 2 3 4 5 6 7 )
     for i in \${array[@]}
     do
-	#collapse taxa
-	qiime taxa collapse \
-		--i-table $table \
-		--i-taxonomy $taxonomy \
-		--p-level \$i \
-		--o-collapsed-table table-\$i.qza
-	#convert to relative abundances
-	qiime feature-table relative-frequency \
-		--i-table table-\$i.qza \
-		--o-relative-frequency-table relative-table-\$i.qza
-	#export to biom
-	qiime tools export relative-table-\$i.qza \
-		--output-dir relative-table-\$i
-	#convert to tab seperated text file
-	biom convert \
-		-i relative-table-\$i/feature-table.biom \
-		-o ${params.outdir}/rel-table-\$i.tsv --to-tsv
+	    #collapse taxa
+	    qiime taxa collapse \
+		    --i-table $table \
+		    --i-taxonomy $taxonomy \
+		    --p-level \$i \
+		    --o-collapsed-table table-\$i.qza
+	    #convert to relative abundances
+	    qiime feature-table relative-frequency \
+		    --i-table table-\$i.qza \
+		    --o-relative-frequency-table relative-table-\$i.qza
+	    #export to biom
+	    qiime tools export relative-table-\$i.qza \
+		    --output-dir relative-table-\$i
+	    #convert to tab seperated text file
+	    biom convert \
+		    -i relative-table-\$i/feature-table.biom \
+		    -o rel-table-\$i.tsv --to-tsv
     done
 
     """
@@ -957,12 +960,15 @@ process alpha_rarefaction {
  * Combine abundances, sequences and taxonomic classification into one table with R
  */
 process combinetable { 
-    
+    publishDir "${params.outdir}/abundance-tables", mode: 'copy'    
 
     input:
-    val TABLE from tsv_relASV_table
-    val SEQ from ch_fasta_repseq
-    val TAXONOMY from ch_tsv_taxonomy
+    file TABLE from ch_tsv_relASV_table
+    file SEQ from ch_fasta_repseq
+    file TAXONOMY from ch_tsv_taxonomy
+
+    output:
+    file("qiime2_ASV_table.csv")
 
     when:
     !params.skip_abundance_tables && !params.skip_taxonomy

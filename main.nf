@@ -681,7 +681,7 @@ if (params.exclude_taxa == "none") {
 	    file taxonomy from ch_qiime_taxonomy_for_filter
 
 	    output:
-	    file("filtered-table.qza") into (ch_qiime_table_for_filtered_dada_output, ch_qiime_table_for_relative_abundance_asv,ch_qiime_table_for_relative_abundance_reduced_taxa,ch_qiime_table_for_ancom,ch_qiime_table_for_barplot,ch_qiime_table_for_alpha_rarefaction, qiime_table_for_diversity_core)
+	    file("filtered-table.qza") into (ch_qiime_table_for_filtered_dada_output, ch_qiime_table_for_relative_abundance_asv,ch_qiime_table_for_relative_abundance_reduced_taxa,ch_qiime_table_for_ancom,ch_qiime_table_for_barplot,ch_qiime_table_for_alpha_rarefaction, ch_qiime_table_for_diversity_core)
 	    file("filtered-sequences.qza") into (ch_qiime_repseq_for_dada_output,ch_qiime_repseq_for_tree)
 
 	    script:
@@ -986,9 +986,9 @@ process diversity_core {
 
     input:
     file metadata from ch_metadata_for_diversity_core
-    val table from qiime_table_for_diversity_core
-    val tree from ch_qiime_tree_for_diversity_core
-    val stats from ch_tsv_table_for_diversity_core
+    file table from ch_qiime_table_for_diversity_core
+    file tree from ch_qiime_tree_for_diversity_core
+    file stats from ch_tsv_table_for_diversity_core
 
     output:
     val "core" into (qiime_diversity_core_for_beta_diversity,qiime_diversity_core_for_beta_diversity_ordination, qiime_diversity_core_for_alpha_diversity)
@@ -1022,7 +1022,7 @@ process diversity_core {
  * Compute alpha diversity indices
  */
 process alpha_diversity { 
-    
+    publishDir "${params.outdir}/alpha_diversity", mode: 'copy'    
 
     input:
     file metadata from ch_metadata_for_alpha_diversity
@@ -1164,13 +1164,16 @@ process beta_diversity_ordination {
  * Differential abundance analysis with ANCOM
  */
 process ancom { 
-    
+    publishDir "${params.outdir}", mode: 'copy'    
 
     input:
     file metadata from ch_metadata_for_ancom
-    val table from ch_qiime_table_for_ancom
-    val taxonomy from ch_qiime_taxonomy_for_ancom
+    file table from ch_qiime_table_for_ancom
+    file taxonomy from ch_qiime_taxonomy_for_ancom
     val meta from meta_category_all_for_ancom
+
+    output:
+    file("ancom/*")
 
     when:
     !params.skip_ancom
@@ -1183,11 +1186,11 @@ process ancom {
     #remove samples that do not have any value
     for j in \"\${metacategory[@]}\"
     do
-	qiime feature-table filter-samples \
-		--i-table $table \
-		--m-metadata-file $metadata \
-		--p-where \"\$j<>\'\'\" \
-		--o-filtered-table ancom/\$j-table.qza
+	    qiime feature-table filter-samples \
+		    --i-table $table \
+		    --m-metadata-file $metadata \
+		    --p-where \"\$j<>\'\'\" \
+		    --o-filtered-table \$j-table.qza
     done
 
     # ANCOM on reduced tax level
@@ -1197,22 +1200,22 @@ process ancom {
 	for j in \"\${metacategory[@]}\"
 	do
 		qiime taxa collapse \
-		        --i-table ancom/\$j-table.qza \
+		        --i-table \$j-table.qza \
 		        --i-taxonomy $taxonomy \
 		        --p-level \"\$i\" \
-		        --o-collapsed-table ancom/\$j-l\$i-table.qza \
+		        --o-collapsed-table \$j-l\$i-table.qza \
 		        --verbose
 		qiime composition add-pseudocount \
-		        --i-table ancom/\$j-l\$i-table.qza \
-		        --o-composition-table ancom/\$j-l\$i-comp-table.qza
+		        --i-table \$j-l\$i-table.qza \
+		        --o-composition-table \$j-l\$i-comp-table.qza
 		qiime composition ancom \
-		        --i-table ancom/\$j-l\$i-comp-table.qza \
+		        --i-table \$j-l\$i-comp-table.qza \
 		        --m-metadata-file $metadata \
 		        --m-metadata-column \"\$j\" \
-		        --o-visualization ancom/\$j-l\$i-comp-table.qzv \
+		        --o-visualization \$j-l\$i-comp-table.qzv \
 		        --verbose
-		qiime tools export ancom/\$j-l\$i-comp-table.qzv \
-		        --output-dir ${params.outdir}/ancom/Category-\$j-level-\$i
+		qiime tools export \$j-l\$i-comp-table.qzv \
+		        --output-dir ancom/Category-\$j-level-\$i
 	done
     done
 
@@ -1220,16 +1223,16 @@ process ancom {
     for j in \"\${metacategory[@]}\"
     do
     qiime composition add-pseudocount \
-		--i-table ancom/\$j-table.qza \
-		--o-composition-table ancom/\$j-comp-table.qza
+		--i-table \$j-table.qza \
+		--o-composition-table \$j-comp-table.qza
 	qiime composition ancom \
-	        --i-table ancom/\$j-comp-table.qza \
+	        --i-table \$j-comp-table.qza \
 	        --m-metadata-file $metadata \
 	        --m-metadata-column \"\$j\" \
-	        --o-visualization ancom/\$j-comp-table.qzv \
+	        --o-visualization \$j-comp-table.qzv \
 	        --verbose
-	qiime tools export ancom/\$j-comp-table.qzv \
-	        --output-dir ${params.outdir}/ancom/Category-\$j-ASV
+	qiime tools export \$j-comp-table.qzv \
+	        --output-dir ancom/Category-\$j-ASV
     done
     """
 }

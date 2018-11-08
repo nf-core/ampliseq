@@ -367,7 +367,7 @@ if (!params.Q2imported){
 
 	    input:
 	    file(trimmed) from ch_fastq_trimmed.collect()
-        env matplotlibrc from matplotlibrc
+        env MATPLOTLIBRC from matplotlibrc
 
 	    output:
 	    file "demux.qza" into ch_qiime_demux
@@ -453,6 +453,7 @@ if( !params.Q2imported ){
 
 	    input:
 	    file demux from ch_qiime_demux
+        env MATPLOTLIBRC from matplotlibrc
 
 	    output:
         file("demux/*-seven-number-summaries.csv") into csv_demux
@@ -548,6 +549,7 @@ process dada_single {
     input:
     file demux from ch_qiime_demux
     val trunc from dada_trunc
+    env MATPLOTLIBRC from matplotlibrc
 
     output:
     file("table.qza") into ch_qiime_table_raw
@@ -624,6 +626,7 @@ process classifier {
     input:
     file repseq from ch_qiime_repseq_raw_for_classifier
     file trained_classifier from ch_qiime_classifier
+    env MATPLOTLIBRC from matplotlibrc
 
     output:
     file("taxonomy.qza") into (ch_qiime_taxonomy_for_filter,ch_qiime_taxonomy_for_relative_abundance_reduced_taxa,ch_qiime_taxonomy_for_barplot,ch_qiime_taxonomy_for_ancom)
@@ -631,7 +634,6 @@ process classifier {
 
   
     """
-    df -h
     qiime feature-classifier classify-sklearn  \
 	--i-classifier $trained_classifier  \
 	--p-n-jobs "-1"  \
@@ -682,6 +684,7 @@ if (params.exclude_taxa == "none") {
 	    file table from ch_qiime_table_raw
 	    file repseq from  ch_qiime_repseq_raw_for_filter
 	    file taxonomy from ch_qiime_taxonomy_for_filter
+        env MATPLOTLIBRC from matplotlibrc
 
 	    output:
 	    file("filtered-table.qza") into (ch_qiime_table_for_filtered_dada_output, ch_qiime_table_for_relative_abundance_asv,ch_qiime_table_for_relative_abundance_reduced_taxa,ch_qiime_table_for_ancom,ch_qiime_table_for_barplot,ch_qiime_table_for_alpha_rarefaction, ch_qiime_table_for_diversity_core)
@@ -721,6 +724,7 @@ process export_filtered_dada_output {
     input:
     file table from ch_qiime_table_for_filtered_dada_output
     file repseq from ch_qiime_repseq_for_dada_output
+    env MATPLOTLIBRC from matplotlibrc
 
     output:
     file("rep_seqs/sequences.fasta") into ch_fasta_repseq
@@ -772,6 +776,7 @@ process RelativeAbundanceASV {
 
     input:
     file table from ch_qiime_table_for_relative_abundance_asv
+    env MATPLOTLIBRC from matplotlibrc
 
     output:
     file("rel-table-ASV.tsv") into ch_tsv_relASV_table
@@ -806,6 +811,7 @@ process RelativeAbundanceReducedTaxa {
     input:
     file table from ch_qiime_table_for_relative_abundance_reduced_taxa
     file taxonomy from ch_qiime_taxonomy_for_relative_abundance_reduced_taxa
+    env MATPLOTLIBRC from matplotlibrc
 
     output:
     file("*.tsv")
@@ -852,6 +858,7 @@ process barplot {
     file metadata from ch_metadata_for_barplot
     file table from ch_qiime_table_for_barplot
     file taxonomy from ch_qiime_taxonomy_for_barplot
+    env MATPLOTLIBRC from matplotlibrc
 
     output:
     file("barplot/*")
@@ -884,6 +891,7 @@ process tree {
 
     input:
     file repseq from ch_qiime_repseq_for_tree
+    env MATPLOTLIBRC from matplotlibrc
 
     output:
     file("rooted-tree.qza") into (ch_qiime_tree_for_diversity_core, ch_qiime_tree_for_alpha_rarefaction)
@@ -929,6 +937,7 @@ process alpha_rarefaction {
     file table from ch_qiime_table_for_alpha_rarefaction
     file tree from ch_qiime_tree_for_alpha_rarefaction
     file stats from ch_tsv_table_for_alpha_rarefaction
+    env MATPLOTLIBRC from matplotlibrc
 
     output:
     file("alpha-rarefaction/*")
@@ -992,6 +1001,7 @@ process diversity_core {
     file table from ch_qiime_table_for_diversity_core
     file tree from ch_qiime_tree_for_diversity_core
     file stats from ch_tsv_table_for_diversity_core
+    env MATPLOTLIBRC from matplotlibrc
 
     output:
     file("core/*_pcoa_results.qza") into (qiime_diversity_core_for_beta_diversity_ordination) mode flatten
@@ -1032,6 +1042,7 @@ process alpha_diversity {
     input:
     file metadata from ch_metadata_for_alpha_diversity
     file core from qiime_diversity_core_for_alpha_diversity
+    env MATPLOTLIBRC from matplotlibrc
 
     output:
     file("alpha-diversity/*") into qiime_alphadiversity
@@ -1055,6 +1066,7 @@ process alpha_diversity {
 process metadata_category_all { 
     input:
     file metadata from ch_metadata_for_metadata_category_all
+    env MATPLOTLIBRC from matplotlibrc
 
     output:
     stdout into (meta_category_all,meta_category_all_for_ancom)
@@ -1083,6 +1095,7 @@ process metadata_category_pairwise {
     input:
     file metadata from ch_metadata_for_metadata_category_pairwise
     val meta_all from meta_category_all
+    env MATPLOTLIBRC from matplotlibrc
 
     output:
     stdout meta_category_pairwise
@@ -1107,6 +1120,7 @@ process beta_diversity {
     file metadata from ch_metadata_for_beta_diversity
     file core from qiime_diversity_core_for_beta_diversity
     val meta from meta_category_pairwise
+    env MATPLOTLIBRC from matplotlibrc
 
     output:
     file "beta-diversity/*"
@@ -1140,6 +1154,7 @@ process beta_diversity_ordination {
     input:
     file metadata from ch_metadata_for_beta_diversity_ordination
     file core from qiime_diversity_core_for_beta_diversity_ordination
+    env MATPLOTLIBRC from matplotlibrc
 
     output:
     file("beta-diversity/*")
@@ -1167,6 +1182,7 @@ process ancom {
     file table from ch_qiime_table_for_ancom
     file taxonomy from ch_qiime_taxonomy_for_ancom
     val meta from meta_category_all_for_ancom
+    env MATPLOTLIBRC from matplotlibrc
 
     output:
     file("ancom/*")

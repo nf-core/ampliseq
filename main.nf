@@ -84,13 +84,13 @@ params.plaintext_email = false
 
 multiqc_config = file(params.multiqc_config)
 output_docs = file("$baseDir/docs/output.md")
+matplotlibrc = file("$baseDir/assets/matplotlibrc")
 
 // Defines all parameters that are independent of a test run
 params.trunc_qmin = 25 //to calculate params.trunclenf and params.trunclenr automatically
 params.trunclenf = false
 params.trunclenr = false
 params.metadata_category = false
-params.qiimeimage = "$baseDir/qiime2_2018.6.simg"
 params.tree_cores = 2
 params.diversity_cores = 2
 params.retain_untrimmed = false
@@ -366,7 +366,8 @@ if (!params.Q2imported){
         saveAs: {params.keepIntermediates ? filename : null}
 
 	    input:
-	    file(trimmed) from ch_fastq_trimmed.collect() 
+	    file(trimmed) from ch_fastq_trimmed.collect()
+        env matplotlibrc from matplotlibrc
 
 	    output:
 	    file "demux.qza" into ch_qiime_demux
@@ -630,6 +631,7 @@ process classifier {
 
   
     """
+    df -h
     qiime feature-classifier classify-sklearn  \
 	--i-classifier $trained_classifier  \
 	--p-n-jobs "-1"  \

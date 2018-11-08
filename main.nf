@@ -19,10 +19,8 @@ def helpMessage() {
     Usage:
 
     The minimal command for running the pipeline is as follows:
-    nextflow run qiime2.nf --reads "data/*_L001_R{1,2}_001.fastq.gz" --FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT --metadata "$PWD/data/Metadata.tsv"
+    nextflow run nf-core/rrna-ampliseq --reads "data/*_L001_R{1,2}_001.fastq.gz" --FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT --metadata "$PWD/data/Metadata.tsv"
 
-    The test command for running the pipeline is as follows:
-    nextflow run qiime2.nf --minimumTest
 
     Required arguments:
       --reads [Path to folder]      Folder containing Casava 1.8 paired-end demultiplexed fastq files: *_L001_R{1,2}_001.fastq.gz
@@ -108,6 +106,10 @@ params.dereplication = 90 //90 for test run only, for real data this has to be s
 /*
  * Defines pipeline steps
  */
+
+Channel.fromPath("${params.metadata}")
+        .into { ch_metadata_for_barplot; ch_metadata_for_alphararefaction; ch_metadata_for_diversity_core; ch_metadata_for_alpha_diversity; ch_metadata_for_metadata_category_all; ch_metadata_for_metadata_category_pairwise; ch_metadata_for_beta_diversity; ch_metadata_for_beta_diversity_ordination; ch_metadata_for_ancom }
+
 params.untilQ2import = false
 
 params.Q2imported = false
@@ -179,11 +181,11 @@ log.info """=======================================================
     | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
                                           `._,._,\'
 
-nf-core/rrna-ampliseq v${manifest.pipelineVersion}"
+nf-core/rrna-ampliseq v${workflow.manifest.version}"
 ======================================================="""
 def summary = [:]
 summary['Pipeline Name']  = 'nf-core/rrna-ampliseq'
-summary['Pipeline Version'] = manifest.pipelineVersion
+summary['Pipeline Version'] = workflow.manifest.version
 summary['Run Name']     = custom_runName ?: workflow.runName
 summary['Reads']        = params.reads
 summary['Data Type']    = params.singleEnd ? 'Single-End' : 'Paired-End'
@@ -239,7 +241,7 @@ process get_software_versions {
 
     script:
     """
-    echo $manifest.pipelineVersion > v_pipeline.txt
+    echo $workflow.manifest.version > v_pipeline.txt
     echo $workflow.nextflow.version > v_nextflow.txt
     fastqc --version > v_fastqc.txt
     multiqc --version > v_multiqc.txt
@@ -277,6 +279,7 @@ if (!params.Q2imported){
 	 * fastQC
 	 */
 	process fastqc {
+        tag "${name}"
 	    publishDir "${params.outdir}/fastQC", mode: 'copy',
 		saveAs: {filename -> filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"}
 
@@ -292,6 +295,43 @@ if (!params.Q2imported){
 	    script: 
 	    """
         fastqc -q ${reads}
+	    """
+	}
+
+	/*
+	 * Trim each read-pair with cutadapt
+	 */
+	process trimming {
+        tag "${pair_id}"  
+	    publishDir "${params.outdir}/trimmed", mode: 'copy',
+            saveAs: {filename -> 
+            if (filename.indexOf(".gz") == -1) "logs/$filename"
+            else if(params.keepIntermediates) filename 
+            else null}
+
+	    publishDir "${params.outdir}/trimmed", mode: 'symlink',
+            saveAs: {filename -> 
+            if(filename.startsWith("trimmed.")) "symlink/${filename.substring("trimmed.".size())}"}
+	  
+	    input:
+	    set pair_id, file(reads) from ch_read_pairs
+	  
+	    output:
+        file "trimmed/*.*" into ch_fastq_trimmed
+        file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
+
+	    script:
+	    if( params.retain_untrimmed == false ){ 
+		    discard_untrimmed = "--discard-untrimmed"
+	    } else {
+		    discard_untrimmed = ""
+	    }
+	  
+	    """
+        mkdir -p trimmed
+	    cutadapt -g ${params.FW_primer} -G ${params.RV_primer} $discard_untrimmed \
+            -o trimmed/${reads[0]} -p trimmed/${reads[1]} \
+            ${reads[0]} ${reads[1]} 2> cutadapt_log_${reads[0].baseName}.txt
 	    """
 	}
 
@@ -319,41 +359,10 @@ if (!params.Q2imported){
 	}
 
 	/*
-	 * Trim each read-pair with cutadapt
-	 */
-    
-	process trimming {  
-	    publishDir "${params.outdir}/trimmed", mode: 'copy',
-            saveAs: {filename -> 
-            if (filename.indexOf(".gz") == -1) "logs/$filename"
-            else if(filename.keepIntermediates) filename 
-            else null}
-	  
-	    input:
-	    set pair_id, file(reads) from read_pairs
-	  
-	    output:
-        file "${reads.baseName}" into ch_fastq_trimmed
-        file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
-
-	    script:
-	    if( params.retain_untrimmed == false ){ 
-		    discard_untrimmed = "--discard-untrimmed"
-	    } else {
-		    discard_untrimmed = ""
-	    }
-	  
-	    """
-	    cutadapt -g ${params.FW_primer} -G ${params.RV_primer} $discard_untrimmed -o "${reads.baseName}".R1.fastq.gz -p "${reads.baseName}".R2.fastq.gz ${reads[0]} ${reads[1]} 2> cutadapt_log_"${reads.baseName}".txt
-	    """
-	}
-
-
-	/*
 	 * Import trimmed files into QIIME2 artefact
 	 */
 	process qiime_import {
-        publishDir "${params.outdir}/qiime_demux", mode: 'copy', 
+        publishDir "${params.outdir}/demux", mode: 'copy', 
         saveAs: {params.keepIntermediates ? filename : null}
 
 	    input:
@@ -368,7 +377,7 @@ if (!params.Q2imported){
 	    """
 	    qiime tools import  \
 		--type 'SampleData[PairedEndSequencesWithQuality]'  \
-		--input-path $trimmed  \
+		--input-path .  \
 		--source-format CasavaOneEightSingleLanePerSampleDirFmt  \
 		--output-path demux.qza
 	    """
@@ -429,8 +438,8 @@ if( !params.classifier ){
 	    """
 	}
 } else {
-    Channel.fromFile("${params.classifier}")
-           .into { ch_qiime_classifier }
+    Channel.fromPath("${params.classifier}")
+           .set { ch_qiime_classifier }
 }
 
 
@@ -439,22 +448,18 @@ if( !params.classifier ){
  */
 if( !params.Q2imported ){
 	process qiime_demux_visualize { 
-        publishDir "${params.outdir}/qiime2-imported", mode: 'copy',
-		saveAs: {filename -> 
-            if(filename.indexOf(".csv")) filename
-            else if (filename.indexOf("*.qzv")) filename 
-            else if (filename.indexof('demux/*')) filename
-            else null }
+        publishDir "${params.outdir}", mode: 'copy'
 
 	    input:
 	    file demux from ch_qiime_demux
 
 	    output:
-        file("*-seven-number-summaries.csv") into csv_demux
+        file("demux/*-seven-number-summaries.csv") into csv_demux
+        file("demux/*")
 	  
 	    """
-	    qiime demux summarize 
-		--i-data $demux 
+	    qiime demux summarize \
+		--i-data $demux \
 		--o-visualization demux.qzv
 
 	    qiime tools export demux.qzv --output-dir demux
@@ -462,14 +467,11 @@ if( !params.Q2imported ){
 	}
 } else {
 	process qiime_importdemux_visualize { 
-        publishDir "${params.outdir}/qiime2-imported", mode: 'copy',
-		saveAs: {filename -> 
-            if(filename.indexOf(".csv")) filename
-            else if (filename.indexOf("*.qzv")) filename 
-            else null }
+        publishDir "${params.outdir}", mode: 'copy'
 
 	    output:
-	    file("*-seven-number-summaries.csv") into csv_demux
+	    file("demux/*-seven-number-summaries.csv") into csv_demux
+        file("demux/*")
 	  
 	    """
 	    qiime demux summarize \
@@ -484,10 +486,10 @@ if( !params.Q2imported ){
 
 /*
  * Determine params.trunclenf and params.trunclenr where the median quality value drops below params.trunc_qmin
- * "Warning massage" and "Success massage" should be printed but interferes with output: stdout
+ * "Warning massage" should be printed but interferes with output: stdout
+ * "Error and exit if too short" could be done in the python script itself?
  */
 process dada_trunc_parameter { 
-    //echo true
 
     input:
     val summary_demux from csv_demux 
@@ -502,47 +504,21 @@ process dada_trunc_parameter {
     if( !params.trunclenf || !params.trunclenr )
 
 	    """
-	    CUTOFF=()
-
-	    IFS=\", \" read -r -a array_demux <<< \"$summary_demux\" #convert to array
-	    #echo array_demux \${array_demux[@]}
-
-	    for qfile in \${array_demux[@]}
-	    do
-		#read and convert to array
-		string=\$(head -6 \$qfile | tail -1) #row 6 is median
-		string=\${string//\"50%,\"/} #remove first field that indicate its a median value
-		IFS=\", \" read -r -a median <<< \"\$string\" #convert to array
-		median=(\"\${median[@]/\\.[0-9]*}\") #truncate floats to integers
-
-		#find first occurence of quality below threshold
-		for index in \${!median[@]}; do
-		cutoff=\$index
-		if (( \${median[index]} < ${params.trunc_qmin} )); then cutoff=\$((\$index - 1)) && break; fi;
-		done
-		CUTOFF+=(\$cutoff)
-	    done
+        dada_trunc_parameter.py ${summary_demux[0]} ${summary_demux[1]} ${params.trunc_qmin}
 
 	    #Warning massage
 	    #echo \"WARNING: no DADA2 cutoffs were specified, therefore reads will be truncated where median quality drops below ${params.trunc_qmin}.\"
 	    #echo \"This does not account for required overlap for merging, therefore DADA2 might fail. In any case remember to check DADA2 merging statistics!\"
 
 	    #Error and exit if too short
-	    totallength=\$((\${CUTOFF[0]} + \${CUTOFF[1]}))
-	    if (( \$totallength < 10 )); then 
-	    echo \"ERROR: Total read pair length is \$totallength and below 10, this is definitely too low.\"
-	    echo \"Chosen cutoffs would be forward: \${CUTOFF[0]}, reverse \${CUTOFF[1]}\"
-	    echo \"Please check quality values and read length manually and provide appropriate DADA2 truncation parameters.\"
-	    echo \"Exiting now!\"
-	    exit
-	    fi
-
-	    #Success message
-	    #echo \"Using cutoffs are forward: \${CUTOFF[0]}, reverse \${CUTOFF[1]}\"
-
-	    printf \${CUTOFF[0]},\${CUTOFF[1]}
-	    #CUTOFF <- paste(CUTOFF, collapse=",")
-	    #cat(CUTOFF)
+	    #totallength=\$((\${CUTOFF[0]} + \${CUTOFF[1]}))
+	    #if (( \$totallength < 10 )); then 
+	    #echo \"ERROR: Total read pair length is \$totallength and below 10, this is definitely too low.\"
+	    #echo \"Chosen cutoffs would be forward: \${CUTOFF[0]}, reverse \${CUTOFF[1]}\"
+	    #echo \"Please check quality values and read length manually and provide appropriate DADA2 truncation parameters.\"
+	    #echo \"Exiting now!\"
+	    #exit
+	    #fi
 	    """
     else
 	    """
@@ -553,19 +529,30 @@ process dada_trunc_parameter {
  
 /*
  * Find ASVs with DADA2 for single sequencing run
- * Requirements: as many cores as possible (limiting step here!), ??? mem, walltime scales with no. of reads and samples (~15 min to 30 hours)
  */
-process dada_single { 
-    echo true
+process dada_single {
+	publishDir "${params.outdir}/unfiltered", mode: 'copy',
+        saveAs: {filename -> 
+            if (filename.indexOf("dada_stats/*")) filename
+            else if (filename == "table.qza") "table/$filename"
+            else if (filename == "table/feature-table.biom") filename
+            else if (filename == "table/feature-table.tsv") filename
+            else if (filename == "table/rel-feature-table.tsv") filename
+            else if (filename == "rep-seqs.qza") "rep_seqs/$filename"
+            else if (filename.indexOf("rep_seqs/*")) filename
+            else if (filename.indexOf("sequences.fasta")) filename
+            else if(params.keepIntermediates) filename 
+            else null}
 
     input:
-    val demux from qiime_demux
+    file demux from ch_qiime_demux
     val trunc from dada_trunc
 
     output:
-    val "table_unfiltered.qza" into qiime_table_raw
-    val "rep-seqs_unfiltered.qza" into qiime_repseq_raw
-    val "feature-table.tsv" into tsv_table_raw
+    file("table.qza") into ch_qiime_table_raw
+    file("rep-seqs.qza") into (ch_qiime_repseq_raw_for_classifier,ch_qiime_repseq_raw_for_filter)
+    file("table/feature-table.tsv") into ch_tsv_table_raw
+    file("*")
 
     when:
     !params.untilQ2import
@@ -579,48 +566,45 @@ process dada_single {
 	--i-demultiplexed-seqs $demux  \
 	--p-trunc-len-f \${trunclen[0]} \
 	--p-trunc-len-r \${trunclen[1]} \
-	--p-n-threads ${process.cpus}  \
-	--o-table table_unfiltered.qza  \
-	--o-representative-sequences rep-seqs_unfiltered.qza  \
+	--p-n-threads 0  \
+	--o-table table.qza  \
+	--o-representative-sequences rep-seqs.qza  \
 	--o-denoising-stats stats.qza \
 	--verbose
 
-    #produce dada2 stats "${params.outdir}/dada_stats/stats.tsv"
+    #produce dada2 stats "dada_stats/stats.tsv"
     qiime tools export stats.qza \
-	--output-dir ${params.outdir}/dada_stats
+	--output-dir dada_stats
 
-    #produce raw count table in biom format "${params.outdir}/table_unfiltered/feature-table.biom"
-    qiime tools export table_unfiltered.qza  \
-	--output-dir ${params.outdir}/table_unfiltered
+    #produce raw count table in biom format "table/feature-table.biom"
+    qiime tools export table.qza  \
+	--output-dir table
 
     #produce raw count table
-    biom convert -i ${params.outdir}/table_unfiltered/feature-table.biom \
-	-o ${params.outdir}/table_unfiltered/feature-table.tsv  \
+    biom convert -i table/feature-table.biom \
+	-o table/feature-table.tsv  \
 	--to-tsv
 
-    #produce represenatative sequence fasta file
+    #produce representative sequence fasta file
     qiime feature-table tabulate-seqs  \
-	--i-data rep-seqs_unfiltered.qza  \
-	--o-visualization rep-seqs_unfiltered.qzv
-    qiime tools export rep-seqs_unfiltered.qzv  \
-	--output-dir ${params.outdir}/rep_seqs_unfiltered
+	--i-data rep-seqs.qza  \
+	--o-visualization rep-seqs.qzv
+    qiime tools export rep-seqs.qzv  \
+	--output-dir rep_seqs
 
     #convert to relative abundances
     qiime feature-table relative-frequency \
-	--i-table table_unfiltered.qza \
-	--o-relative-frequency-table relative-table-ASV_unfiltered.qza
+	--i-table table.qza \
+	--o-relative-frequency-table relative-table-ASV.qza
 
     #export to biom
-    qiime tools export relative-table-ASV_unfiltered.qza \
-	--output-dir rel-table_unfiltered
-
-    #copy biom to result folder
-    cp rel-table_unfiltered/feature-table.biom ${params.outdir}/table_unfiltered/rel-feature-table.biom
+    qiime tools export relative-table-ASV.qza \
+	--output-dir rel-table
 
     #convert to tab seperated text file
     biom convert \
-	-i rel-table_unfiltered/feature-table.biom \
-	-o ${params.outdir}/table_unfiltered/rel-feature-table.tsv --to-tsv
+	-i rel-table/feature-table.biom \
+	-o table/rel-feature-table.tsv --to-tsv
 
     """
 }
@@ -631,22 +615,24 @@ process dada_single {
  * USE NXF feature of file size introduced in 0.32.0 here!!!
  */
 process classifier { 
-    echo true
+    publishDir "${params.outdir}", mode: 'copy',
+        saveAs: {filename -> 
+            if (filename == "taxonomy/taxonomy.tsv") filename
+            else if (filename == "taxonomy.qza") "taxonomy/$filename"}
 
     input:
-    val table from qiime_table_raw
-    val repseq from qiime_repseq_raw
-    val trained_classifier from qiime_classifier
+    file repseq from ch_qiime_repseq_raw_for_classifier
+    file trained_classifier from ch_qiime_classifier
 
     output:
-    val "taxonomy.qza" into qiime_taxonomy
-    val "${params.outdir}/taxonomy/taxonomy.tsv" into tsv_taxonomy
+    file("taxonomy.qza") into (ch_qiime_taxonomy_for_filter,ch_qiime_taxonomy_for_relative_abundance_reduced_taxa,ch_qiime_taxonomy_for_barplot,ch_qiime_taxonomy_for_ancom)
+    file("taxonomy/taxonomy.tsv") into ch_tsv_taxonomy
 
   
     """
     qiime feature-classifier classify-sklearn  \
 	--i-classifier $trained_classifier  \
-	--p-n-jobs ${process.cpus}  \
+	--p-n-jobs "-1"  \
 	--i-reads $repseq  \
 	--o-classification taxonomy.qza  \
 	--verbose
@@ -656,12 +642,12 @@ process classifier {
 	--o-visualization taxonomy.qzv  \
 	--verbose
 
-    #produce "${params.outdir}/taxonomy/taxonomy.tsv"
+    #produce "taxonomy/taxonomy.tsv"
     qiime tools export taxonomy.qza  \
-	--output-dir ${params.outdir}/taxonomy
+	--output-dir taxonomy
 
     qiime tools export taxonomy.qzv  \
-	--output-dir ${params.outdir}/taxonomy
+	--output-dir taxonomy
     """
 }
 
@@ -670,15 +656,14 @@ process classifier {
  */
 if (params.exclude_taxa == "none") {
 	process skip_filter_taxa {
-	    echo true
-
+	    
 	    input:
-	    val table from qiime_table_raw
-	    val repseq from  qiime_repseq_raw
+	    file table from ch_qiime_table_raw
+	    file repseq from  ch_qiime_repseq_raw_for_filter
 
 	    output:
-	    val "$table" into qiime_table
-	    val "$repseq" into qiime_repseq
+	    file("$table") into (ch_qiime_table_for_filtered_dada_output, ch_qiime_table_for_relative_abundance_asv,ch_qiime_table_for_relative_abundance_reduced_taxa,ch_qiime_table_for_ancom,ch_qiime_table_for_barplot)
+	    file("$repseq") into (ch_qiime_repseq_for_dada_output,ch_qiime_repseq_for_tree)
 
 	    script:
 	  
@@ -689,16 +674,16 @@ if (params.exclude_taxa == "none") {
 
 } else {
 	process filter_taxa {
-	    echo true
+	    publishDir "${params.outdir}/filtered", mode: 'copy'    
 
 	    input:
-	    val table from qiime_table_raw
-	    val repseq from  qiime_repseq_raw
-	    val taxonomy from qiime_taxonomy
+	    file table from ch_qiime_table_raw
+	    file repseq from  ch_qiime_repseq_raw_for_filter
+	    file taxonomy from ch_qiime_taxonomy_for_filter
 
 	    output:
-	    val "filtered-table.qza" into qiime_table
-	    val "filtered-sequences.qza" into qiime_repseq
+	    file("filtered-table.qza") into (ch_qiime_table_for_filtered_dada_output, ch_qiime_table_for_relative_abundance_asv,ch_qiime_table_for_relative_abundance_reduced_taxa,ch_qiime_table_for_ancom,ch_qiime_table_for_barplot,ch_qiime_table_for_alpha_rarefaction, ch_qiime_table_for_diversity_core)
+	    file("filtered-sequences.qza") into (ch_qiime_repseq_for_dada_output,ch_qiime_repseq_for_tree)
 
 	    script:
 	  
@@ -729,24 +714,25 @@ if (params.exclude_taxa == "none") {
  * Export qiime artefacts from filtered dada output
  */
 process export_filtered_dada_output { 
-    echo true
+    publishDir "${params.outdir}/filtered", mode: 'copy'    
 
     input:
-    val table from qiime_table
-    val repseq from qiime_repseq
+    file table from ch_qiime_table_for_filtered_dada_output
+    file repseq from ch_qiime_repseq_for_dada_output
 
     output:
-    val "${params.outdir}/rep_seqs/sequences.fasta" into fasta_repseq
-    val "${params.outdir}/table/feature-table.tsv" into tsv_table
+    file("rep_seqs/sequences.fasta") into ch_fasta_repseq
+    file("table/feature-table.tsv") into (ch_tsv_table_for_alpha_rarefaction,ch_tsv_table_for_report_filter_stats,ch_tsv_table_for_diversity_core)
+    file("*")
 
     """
-    #produce raw count table in biom format "${params.outdir}/table/feature-table.biom"
+    #produce raw count table in biom format "table/feature-table.biom"
     qiime tools export $table  \
-	--output-dir ${params.outdir}/table
+	--output-dir table
 
-    #produce raw count table "${params.outdir}/table/feature-table.tsv"
-    biom convert -i ${params.outdir}/table/feature-table.biom \
-	-o ${params.outdir}/table/feature-table.tsv  \
+    #produce raw count table "table/feature-table.tsv"
+    biom convert -i table/feature-table.biom \
+	-o table/feature-table.tsv  \
 	--to-tsv
 
     #produce representative sequence fasta file "${params.outdir}/rep_seqs/sequences.fasta"
@@ -761,18 +747,18 @@ process export_filtered_dada_output {
 /*
  * Report stats after taxa filtering
  */
-process export_filtered_dada_output { 
-    echo true
+process report_filter_stats { 
+    publishDir "${params.outdir}/filtered", mode: 'copy'     
 
     input:
-    val unfiltered_table from tsv_table_raw
-    val filtered_table from tsv_table
+    file 'unfiltered_table' from ch_tsv_table_raw
+    file 'filtered_table' from ch_tsv_table_for_report_filter_stats
 
     output:
-    val "count_table_filter_stats.csv" into csv_filter_stats
+    file("count_table_filter_stats.csv") into ch_csv_filter_stats
     
     """
-    count_table_filter_stats.py $unfiltered_table $filtered_table
+    count_table_filter_stats.py unfiltered_table filtered_table
     """
 }
 
@@ -780,13 +766,13 @@ process export_filtered_dada_output {
  * Export relative abundance tables on ASV level
  */
 process RelativeAbundanceASV { 
-    echo true
+    publishDir "${params.outdir}/abundance-tables", mode: 'copy'    
 
     input:
-    val table from qiime_table
+    file table from ch_qiime_table_for_relative_abundance_asv
 
     output:
-    val "${params.outdir}/rel-table-ASV.tsv" into tsv_relASV_table
+    file("rel-table-ASV.tsv") into ch_tsv_relASV_table
 
     when:
     !params.skip_abundance_tables
@@ -803,7 +789,7 @@ process RelativeAbundanceASV {
     qiime tools export relative-table-ASV.qza --output-dir relative-table-ASV
 
     #convert to tab seperated text file "${params.outdir}/rel-table-ASV.tsv"
-    biom convert -i relative-table-ASV/feature-table.biom 
+    biom convert -i relative-table-ASV/feature-table.biom \
 	-o rel-table-ASV.tsv --to-tsv
     """
 }
@@ -813,11 +799,14 @@ process RelativeAbundanceASV {
  * Export relative abundance tables based on taxonomic levels
  */
 process RelativeAbundanceReducedTaxa { 
-    echo true
+    publishDir "${params.outdir}/abundance-tables", mode: 'copy'    
 
     input:
-    val table from qiime_table
-    val taxonomy from qiime_taxonomy
+    file table from ch_qiime_table_for_relative_abundance_reduced_taxa
+    file taxonomy from ch_qiime_taxonomy_for_relative_abundance_reduced_taxa
+
+    output:
+    file("*.tsv")
 
     when:
     !params.skip_abundance_tables && !params.skip_taxonomy
@@ -828,23 +817,23 @@ process RelativeAbundanceReducedTaxa {
     array=( 2 3 4 5 6 7 )
     for i in \${array[@]}
     do
-	#collapse taxa
-	qiime taxa collapse \
-		--i-table $table \
-		--i-taxonomy $taxonomy \
-		--p-level \$i \
-		--o-collapsed-table table-\$i.qza
-	#convert to relative abundances
-	qiime feature-table relative-frequency \
-		--i-table table-\$i.qza \
-		--o-relative-frequency-table relative-table-\$i.qza
-	#export to biom
-	qiime tools export relative-table-\$i.qza \
-		--output-dir relative-table-\$i
-	#convert to tab seperated text file
-	biom convert \
-		-i relative-table-\$i/feature-table.biom \
-		-o ${params.outdir}/rel-table-\$i.tsv --to-tsv
+	    #collapse taxa
+	    qiime taxa collapse \
+		    --i-table $table \
+		    --i-taxonomy $taxonomy \
+		    --p-level \$i \
+		    --o-collapsed-table table-\$i.qza
+	    #convert to relative abundances
+	    qiime feature-table relative-frequency \
+		    --i-table table-\$i.qza \
+		    --o-relative-frequency-table relative-table-\$i.qza
+	    #export to biom
+	    qiime tools export relative-table-\$i.qza \
+		    --output-dir relative-table-\$i
+	    #convert to tab seperated text file
+	    biom convert \
+		    -i relative-table-\$i/feature-table.biom \
+		    -o rel-table-\$i.tsv --to-tsv
     done
 
     """
@@ -855,11 +844,15 @@ process RelativeAbundanceReducedTaxa {
  * Produce a bar plot
  */
 process barplot { 
-    echo true
+    publishDir "${params.outdir}", mode: 'copy'    
 
     input:
-    val table from qiime_table
-    val taxonomy from qiime_taxonomy
+    file metadata from ch_metadata_for_barplot
+    file table from ch_qiime_table_for_barplot
+    file taxonomy from ch_qiime_taxonomy_for_barplot
+
+    output:
+    file("barplot/*")
 
     when:
     !params.skip_barplot && !params.skip_taxonomy
@@ -868,12 +861,12 @@ process barplot {
     qiime taxa barplot  \
 	--i-table $table  \
 	--i-taxonomy $taxonomy  \
-	--m-metadata-file ${params.metadata}  \
+	--m-metadata-file $metadata  \
 	--o-visualization taxa-bar-plots.qzv  \
 	--verbose
 
     qiime tools export taxa-bar-plots.qzv  \
-	--output-dir ${params.outdir}/barplot
+	--output-dir barplot
     """
 }
 
@@ -882,13 +875,17 @@ process barplot {
  * Requirements: many cores ${params.tree_cores}, ??? mem, walltime scales with no. of ASV
  */
 process tree { 
-    echo true
+    publishDir "${params.outdir}", mode: 'copy',
+        saveAs: {filename -> 
+            if (filename.indexOf(".qza")) "tree/$filename"
+            else filename}    
 
     input:
-    val repseq from qiime_repseq
+    file repseq from ch_qiime_repseq_for_tree
 
     output:
-    val "rooted-tree.qza" into qiime_tree
+    file("rooted-tree.qza") into (ch_qiime_tree_for_diversity_core, ch_qiime_tree_for_alpha_rarefaction)
+    file("tree/*") into tree_dummy
 
     when:
     !params.skip_diversity_indices || !params.skip_alpha_rarefaction
@@ -914,7 +911,7 @@ process tree {
 	--o-rooted-tree rooted-tree.qza
 
     qiime tools export rooted-tree.qza  \
-	--output-dir ${params.outdir}/tree
+	--output-dir tree
     """
 }
 
@@ -923,12 +920,16 @@ process tree {
  * Alpha-rarefaction
  */
 process alpha_rarefaction { 
-    echo true
+    publishDir "${params.outdir}", mode: 'copy'    
 
     input:
-    val table from qiime_table
-    val tree from qiime_tree
-    val stats from tsv_table
+    file metadata from ch_metadata_for_alphararefaction
+    file table from ch_qiime_table_for_alpha_rarefaction
+    file tree from ch_qiime_tree_for_alpha_rarefaction
+    file stats from ch_tsv_table_for_alpha_rarefaction
+
+    output:
+    file("alpha-rarefaction/*")
 
     when:
     !params.skip_alpha_rarefaction
@@ -946,13 +947,13 @@ process alpha_rarefaction {
 	--i-table $table  \
 	--i-phylogeny $tree  \
 	--p-max-depth \$maxdepth  \
-	--m-metadata-file ${params.metadata}  \
+	--m-metadata-file $metadata  \
 	--p-steps \$maxsteps  \
 	--p-iterations 10  \
 	--o-visualization alpha-rarefaction.qzv
 
     qiime tools export alpha-rarefaction.qzv  \
-	--output-dir ${params.outdir}/alpha-rarefaction
+	--output-dir alpha-rarefaction
     """
 }
 
@@ -960,12 +961,15 @@ process alpha_rarefaction {
  * Combine abundances, sequences and taxonomic classification into one table with R
  */
 process combinetable { 
-    echo true
+    publishDir "${params.outdir}/abundance-tables", mode: 'copy'    
 
     input:
-    val TABLE from tsv_relASV_table
-    val SEQ from fasta_repseq
-    val TAXONOMY from tsv_taxonomy
+    file TABLE from ch_tsv_relASV_table
+    file SEQ from ch_fasta_repseq
+    file TAXONOMY from ch_tsv_taxonomy
+
+    output:
+    file("qiime2_ASV_table.csv")
 
     when:
     !params.skip_abundance_tables && !params.skip_taxonomy
@@ -979,15 +983,18 @@ process combinetable {
  * Compute diversity matrices
  */
 process diversity_core { 
-    echo true
+    publishDir "${params.outdir}/diversity_core", mode: 'copy'
 
     input:
-    val table from qiime_table
-    val tree from qiime_tree
-    val stats from tsv_table
+    file metadata from ch_metadata_for_diversity_core
+    file table from ch_qiime_table_for_diversity_core
+    file tree from ch_qiime_tree_for_diversity_core
+    file stats from ch_tsv_table_for_diversity_core
 
     output:
-    val "core" into qiime_diversity_core
+    file("core/*_pcoa_results.qza") into (qiime_diversity_core_for_beta_diversity_ordination) mode flatten
+    file("core/*_vector.qza") into qiime_diversity_core_for_alpha_diversity mode flatten
+    file("core/*_distance_matrix.qza") into qiime_diversity_core_for_beta_diversity mode flatten
 
     when:
     !params.skip_diversity_indices
@@ -1004,7 +1011,7 @@ process diversity_core {
 
     #run diversity core
     qiime diversity core-metrics-phylogenetic \
-	--m-metadata-file ${params.metadata} \
+	--m-metadata-file $metadata \
 	--i-phylogeny $tree \
 	--i-table $table \
 	--p-sampling-depth \$mindepth \
@@ -1018,27 +1025,24 @@ process diversity_core {
  * Compute alpha diversity indices
  */
 process alpha_diversity { 
-    echo true
+    publishDir "${params.outdir}", mode: 'copy'    
 
     input:
-    val core from qiime_diversity_core
+    file metadata from ch_metadata_for_alpha_diversity
+    file core from qiime_diversity_core_for_alpha_diversity
 
     output:
-    val "${params.outdir}/alpha-diversity" into qiime_alphadiversity
+    file("alpha-diversity/*") into qiime_alphadiversity
 
 
     """
-    method=( \"faith_pd_vector\" \"evenness_vector\" \"shannon_vector\" \"observed_otus_vector\" )
-    for i in \"\${method[@]}\"
-    do
+    #method=( \"faith_pd_vector\" \"evenness_vector\" \"shannon_vector\" \"observed_otus_vector\" )
 	qiime diversity alpha-group-significance \
-                --i-alpha-diversity $core/\$i.qza \
-                --m-metadata-file ${params.metadata} \
-                --o-visualization $core/\$i.qzv \
-                --verbose
-	qiime tools export $core/\$i.qzv \
-                --output-dir ${params.outdir}/alpha-diversity/\$i
-    done
+        --i-alpha-diversity $core \
+        --m-metadata-file $metadata \
+        --o-visualization ${core.baseName}-.qzv
+	qiime tools export ${core.baseName}-.qzv \
+        --output-dir "alpha-diversity/${core.baseName}"
     """
 }
 
@@ -1047,9 +1051,11 @@ process alpha_diversity {
  * TODO MISSING INPUT CATEGORIES / FILES ? 
  */
 process metadata_category_all { 
+    input:
+    file metadata from ch_metadata_for_metadata_category_all
 
     output:
-    stdout meta_category_all
+    stdout into (meta_category_all,meta_category_all_for_ancom)
 
     when:
     !params.skip_ancom || !params.skip_diversity_indices
@@ -1059,7 +1065,7 @@ process metadata_category_all {
     script:
     if( !params.metadata_category )
 	    """
-	    metadataCategory.r $input
+	    metadataCategory.r $metadata
 	    """
     else
 	    """
@@ -1073,6 +1079,7 @@ process metadata_category_all {
 process metadata_category_pairwise { 
 
     input:
+    file metadata from ch_metadata_for_metadata_category_pairwise
     val meta_all from meta_category_all
 
     output:
@@ -1082,7 +1089,7 @@ process metadata_category_pairwise {
     !params.skip_diversity_indices
 
     """
-    metadataCategoryPairwise.r $input
+    metadataCategoryPairwise.r $metadata
     """
 }
 
@@ -1092,35 +1099,32 @@ process metadata_category_pairwise {
  * Compute beta diversity indices
  */
 process beta_diversity { 
-    echo true
+    publishDir "${params.outdir}", mode: 'copy'     
 
     input:
-    val core from qiime_diversity_core
+    file metadata from ch_metadata_for_beta_diversity
+    file core from qiime_diversity_core_for_beta_diversity
     val meta from meta_category_pairwise
 
     output:
-    val "${params.outdir}/beta-diversity" into qiime_betadiversity
+    file "beta-diversity/*"
 
     """
-    method=( \"unweighted_unifrac_distance_matrix\" \"bray_curtis_distance_matrix\" \"weighted_unifrac_distance_matrix\" \"jaccard_distance_matrix\" )
+    #method=( \"unweighted_unifrac_distance_matrix\" \"bray_curtis_distance_matrix\" \"weighted_unifrac_distance_matrix\" \"jaccard_distance_matrix\" )
 
     IFS=',' read -r -a metacategory <<< \"$meta\"
     echo perform beta-diversity tests on "\${metacategory[@]}\"
 
-    for i in \"\${method[@]}\"
-    do
 	for j in \"\${metacategory[@]}\"
 	do
 		qiime diversity beta-group-significance \
-		        --i-distance-matrix $core/\$i.qza \
-		        --m-metadata-file ${params.metadata} \
-		        --m-metadata-column \"\$j\" \
-		        --o-visualization $core/\$i-\$j.qzv \
-		        --p-pairwise \
-		        --verbose
-		qiime tools export $core/\$i-\$j.qzv \
-		        --output-dir ${params.outdir}/beta-diversity/\$i-\$j
-	done
+		    --i-distance-matrix $core \
+		    --m-metadata-file "$metadata" \
+		    --m-metadata-column \"\$j\" \
+		    --o-visualization ${core.baseName}-\$j.qzv \
+		    --p-pairwise
+		qiime tools export ${core.baseName}-\$j.qzv \
+		    --output-dir beta-diversity/${core.baseName}-\$j
     done
     """
 }
@@ -1129,23 +1133,23 @@ process beta_diversity {
  * Compute beta diversity ordination
  */
 process beta_diversity_ordination { 
-    echo true
+    publishDir "${params.outdir}", mode: 'copy'
 
     input:
-    val core from qiime_diversity_core
+    file metadata from ch_metadata_for_beta_diversity_ordination
+    file core from qiime_diversity_core_for_beta_diversity_ordination
+
+    output:
+    file("beta-diversity/*")
 
     """
-    method=( \"unweighted_unifrac_pcoa_results\" \"weighted_unifrac_pcoa_results\" \"jaccard_pcoa_results\" \"bray_curtis_pcoa_results\" )
-    for i in \"\${method[@]}\"
-    do
+    #method=( \"unweighted_unifrac_pcoa_results\" \"weighted_unifrac_pcoa_results\" \"jaccard_pcoa_results\" \"bray_curtis_pcoa_results\" )
 	qiime emperor plot \
-                --i-pcoa $core/\$i.qza \
-                --m-metadata-file ${params.metadata} \
-                --o-visualization $core/\$i.qzv \
-                --verbose
-	qiime tools export $core/\$i.qzv \
-                --output-dir ${params.outdir}/beta-diversity/\$i-PCoA
-    done
+        --i-pcoa $core \
+        --m-metadata-file $metadata \
+        --o-visualization ${core.baseName}-.qzv
+	qiime tools export ${core.baseName}-.qzv \
+        --output-dir beta-diversity/${core.baseName}-PCoA
     """
 }
 
@@ -1154,12 +1158,16 @@ process beta_diversity_ordination {
  * Differential abundance analysis with ANCOM
  */
 process ancom { 
-    echo true
+    publishDir "${params.outdir}", mode: 'copy'    
 
     input:
-    val table from qiime_table
-    val taxonomy from qiime_taxonomy
-    val meta from meta_category_all
+    file metadata from ch_metadata_for_ancom
+    file table from ch_qiime_table_for_ancom
+    file taxonomy from ch_qiime_taxonomy_for_ancom
+    val meta from meta_category_all_for_ancom
+
+    output:
+    file("ancom/*")
 
     when:
     !params.skip_ancom
@@ -1172,11 +1180,11 @@ process ancom {
     #remove samples that do not have any value
     for j in \"\${metacategory[@]}\"
     do
-	qiime feature-table filter-samples \
-		--i-table $table \
-		--m-metadata-file ${params.metadata} \
-		--p-where \"\$j<>\'\'\" \
-		--o-filtered-table ancom/\$j-table.qza
+	    qiime feature-table filter-samples \
+		    --i-table $table \
+		    --m-metadata-file $metadata \
+		    --p-where \"\$j<>\'\'\" \
+		    --o-filtered-table \$j-table.qza
     done
 
     # ANCOM on reduced tax level
@@ -1186,22 +1194,22 @@ process ancom {
 	for j in \"\${metacategory[@]}\"
 	do
 		qiime taxa collapse \
-		        --i-table ancom/\$j-table.qza \
+		        --i-table \$j-table.qza \
 		        --i-taxonomy $taxonomy \
 		        --p-level \"\$i\" \
-		        --o-collapsed-table ancom/\$j-l\$i-table.qza \
+		        --o-collapsed-table \$j-l\$i-table.qza \
 		        --verbose
 		qiime composition add-pseudocount \
-		        --i-table ancom/\$j-l\$i-table.qza \
-		        --o-composition-table ancom/\$j-l\$i-comp-table.qza
+		        --i-table \$j-l\$i-table.qza \
+		        --o-composition-table \$j-l\$i-comp-table.qza
 		qiime composition ancom \
-		        --i-table ancom/\$j-l\$i-comp-table.qza \
-		        --m-metadata-file ${params.metadata} \
+		        --i-table \$j-l\$i-comp-table.qza \
+		        --m-metadata-file $metadata \
 		        --m-metadata-column \"\$j\" \
-		        --o-visualization ancom/\$j-l\$i-comp-table.qzv \
+		        --o-visualization \$j-l\$i-comp-table.qzv \
 		        --verbose
-		qiime tools export ancom/\$j-l\$i-comp-table.qzv \
-		        --output-dir ${params.outdir}/ancom/Category-\$j-level-\$i
+		qiime tools export \$j-l\$i-comp-table.qzv \
+		        --output-dir ancom/Category-\$j-level-\$i
 	done
     done
 
@@ -1209,16 +1217,16 @@ process ancom {
     for j in \"\${metacategory[@]}\"
     do
     qiime composition add-pseudocount \
-		--i-table ancom/\$j-table.qza \
-		--o-composition-table ancom/\$j-comp-table.qza
+		--i-table \$j-table.qza \
+		--o-composition-table \$j-comp-table.qza
 	qiime composition ancom \
-	        --i-table ancom/\$j-comp-table.qza \
-	        --m-metadata-file ${params.metadata} \
+	        --i-table \$j-comp-table.qza \
+	        --m-metadata-file $metadata \
 	        --m-metadata-column \"\$j\" \
-	        --o-visualization ancom/\$j-comp-table.qzv \
+	        --o-visualization \$j-comp-table.qzv \
 	        --verbose
-	qiime tools export ancom/\$j-comp-table.qzv \
-	        --output-dir ${params.outdir}/ancom/Category-\$j-ASV
+	qiime tools export \$j-comp-table.qzv \
+	        --output-dir ancom/Category-\$j-ASV
     done
     """
 }
@@ -1227,7 +1235,6 @@ process ancom {
  * STEP 3 - Output Description HTML
  */
 process output_documentation {
-    tag "$prefix"
     publishDir "${params.outdir}/Documentation", mode: 'copy'
 
     input:
@@ -1255,7 +1262,7 @@ workflow.onComplete {
       subject = "[nf-core/rrna-ampliseq] FAILED: $workflow.runName"
     }
     def email_fields = [:]
-    email_fields['version'] = manifest.pipelineVersion
+    email_fields['version'] = workflow.manifest.version
     email_fields['runName'] = custom_runName ?: workflow.runName
     email_fields['success'] = workflow.success
     email_fields['dateComplete'] = workflow.complete

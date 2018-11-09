@@ -1035,34 +1035,47 @@ process diversity_core {
 }
 
 /*
+ * Combine channels for diversity analysis
+ */
+
+ch_metadata_for_alpha_diversity
+    .combine( qiime_diversity_core_for_alpha_diversity )
+    .set{ ch_for_alpha_diversity }
+ch_metadata_for_beta_diversity
+    .combine( qiime_diversity_core_for_beta_diversity )
+    .set{ ch_for_beta_diversity }
+ch_metadata_for_beta_diversity_ordination
+    .combine( qiime_diversity_core_for_beta_diversity_ordination )
+    .set{ ch_for_beta_diversity_ordination }
+    
+
+
+/*
  * Compute alpha diversity indices
  */
 process alpha_diversity { 
+    tag "${core[1].baseName}"
     publishDir "${params.outdir}", mode: 'copy'    
 
     input:
-    file metadata from ch_metadata_for_alpha_diversity
-    file core from qiime_diversity_core_for_alpha_diversity
+    file core from ch_for_alpha_diversity
     env MATPLOTLIBRC from matplotlibrc
 
     output:
     file("alpha-diversity/*") into qiime_alphadiversity
 
-
     """
-    #method=( \"faith_pd_vector\" \"evenness_vector\" \"shannon_vector\" \"observed_otus_vector\" )
 	qiime diversity alpha-group-significance \
-        --i-alpha-diversity $core \
-        --m-metadata-file $metadata \
-        --o-visualization ${core.baseName}-.qzv
-	qiime tools export ${core.baseName}-.qzv \
-        --output-dir "alpha-diversity/${core.baseName}"
+        --i-alpha-diversity ${core[1]} \
+        --m-metadata-file ${core[0]} \
+        --o-visualization ${core[1].baseName}-vis.qzv
+	qiime tools export ${core[1].baseName}-vis.qzv \
+        --output-dir "alpha-diversity/${core[1].baseName}"
     """
 }
 
 /*
  * Capture all possible metadata categories for statistics
- * TODO MISSING INPUT CATEGORIES / FILES ? 
  */
 process metadata_category_all { 
     input:
@@ -1095,7 +1108,6 @@ process metadata_category_pairwise {
 
     input:
     file metadata from ch_metadata_for_metadata_category_pairwise
-    val meta_all from meta_category_all
     env MATPLOTLIBRC from matplotlibrc
 
     output:
@@ -1115,11 +1127,11 @@ process metadata_category_pairwise {
  * Compute beta diversity indices
  */
 process beta_diversity { 
+    tag "${core[1].baseName}"
     publishDir "${params.outdir}", mode: 'copy'     
 
     input:
-    file metadata from ch_metadata_for_beta_diversity
-    file core from qiime_diversity_core_for_beta_diversity
+    file core from ch_for_beta_diversity
     val meta from meta_category_pairwise
     env MATPLOTLIBRC from matplotlibrc
 
@@ -1127,21 +1139,18 @@ process beta_diversity {
     file "beta-diversity/*"
 
     """
-    #method=( \"unweighted_unifrac_distance_matrix\" \"bray_curtis_distance_matrix\" \"weighted_unifrac_distance_matrix\" \"jaccard_distance_matrix\" )
-
     IFS=',' read -r -a metacategory <<< \"$meta\"
-    echo perform beta-diversity tests on "\${metacategory[@]}\"
 
 	for j in \"\${metacategory[@]}\"
 	do
 		qiime diversity beta-group-significance \
-		    --i-distance-matrix $core \
-		    --m-metadata-file "$metadata" \
+		    --i-distance-matrix ${core[1]} \
+		    --m-metadata-file ${core[0]} \
 		    --m-metadata-column \"\$j\" \
-		    --o-visualization ${core.baseName}-\$j.qzv \
+		    --o-visualization ${core[1].baseName}-\$j.qzv \
 		    --p-pairwise
-		qiime tools export ${core.baseName}-\$j.qzv \
-		    --output-dir beta-diversity/${core.baseName}-\$j
+		qiime tools export ${core[1].baseName}-\$j.qzv \
+		    --output-dir beta-diversity/${core[1].baseName}-\$j
     done
     """
 }
@@ -1150,24 +1159,23 @@ process beta_diversity {
  * Compute beta diversity ordination
  */
 process beta_diversity_ordination { 
+    tag "${core[1].baseName}"
     publishDir "${params.outdir}", mode: 'copy'
 
     input:
-    file metadata from ch_metadata_for_beta_diversity_ordination
-    file core from qiime_diversity_core_for_beta_diversity_ordination
+    file core from ch_for_beta_diversity_ordination
     env MATPLOTLIBRC from matplotlibrc
 
     output:
     file("beta-diversity/*")
 
     """
-    #method=( \"unweighted_unifrac_pcoa_results\" \"weighted_unifrac_pcoa_results\" \"jaccard_pcoa_results\" \"bray_curtis_pcoa_results\" )
 	qiime emperor plot \
-        --i-pcoa $core \
-        --m-metadata-file $metadata \
-        --o-visualization ${core.baseName}-.qzv
-	qiime tools export ${core.baseName}-.qzv \
-        --output-dir beta-diversity/${core.baseName}-PCoA
+        --i-pcoa ${core[1]} \
+        --m-metadata-file ${core[0]} \
+        --o-visualization ${core[1].baseName}-vis.qzv
+	qiime tools export ${core[1].baseName}-vis.qzv \
+        --output-dir beta-diversity/${core[1].baseName}-PCoA
     """
 }
 

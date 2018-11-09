@@ -617,6 +617,7 @@ process dada_single {
  * Requirements: many cores, ~35 Gb mem, walltime scales with no. of ASV and ${params.classifier} = trained_classifier size (~15 min to several hours)
  * USE NXF feature of file size introduced in 0.32.0 here!!!
  */
+
 process classifier { 
     publishDir "${params.outdir}", mode: 'copy',
         saveAs: {filename -> 
@@ -636,7 +637,7 @@ process classifier {
     """
     qiime feature-classifier classify-sklearn  \
 	--i-classifier $trained_classifier  \
-	--p-n-jobs "-1"  \
+	--p-n-jobs ${task.cpus}  \
 	--i-reads $repseq  \
 	--o-classification taxonomy.qza  \
 	--verbose

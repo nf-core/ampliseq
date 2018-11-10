@@ -1035,46 +1035,6 @@ process diversity_core {
 }
 
 /*
- * Combine channels for diversity analysis
- */
-
-ch_metadata_for_alpha_diversity
-    .combine( qiime_diversity_core_for_alpha_diversity )
-    .set{ ch_for_alpha_diversity }
-ch_metadata_for_beta_diversity
-    .combine( qiime_diversity_core_for_beta_diversity )
-    .set{ ch_for_beta_diversity }
-ch_metadata_for_beta_diversity_ordination
-    .combine( qiime_diversity_core_for_beta_diversity_ordination )
-    .set{ ch_for_beta_diversity_ordination }
-    
-
-
-/*
- * Compute alpha diversity indices
- */
-process alpha_diversity { 
-    tag "${core[1].baseName}"
-    publishDir "${params.outdir}", mode: 'copy'    
-
-    input:
-    file core from ch_for_alpha_diversity
-    env MATPLOTLIBRC from matplotlibrc
-
-    output:
-    file("alpha-diversity/*") into qiime_alphadiversity
-
-    """
-	qiime diversity alpha-group-significance \
-        --i-alpha-diversity ${core[1]} \
-        --m-metadata-file ${core[0]} \
-        --o-visualization ${core[1].baseName}-vis.qzv
-	qiime tools export ${core[1].baseName}-vis.qzv \
-        --output-dir "alpha-diversity/${core[1].baseName}"
-    """
-}
-
-/*
  * Capture all possible metadata categories for statistics
  */
 process metadata_category_all { 
@@ -1121,36 +1081,75 @@ process metadata_category_pairwise {
     """
 }
 
+/*
+ * Combine channels for diversity analysis
+ */
+
+ch_metadata_for_alpha_diversity
+    .combine( qiime_diversity_core_for_alpha_diversity )
+    .set{ ch_for_alpha_diversity }
+ch_metadata_for_beta_diversity
+    .combine( qiime_diversity_core_for_beta_diversity )
+    .combine( meta_category_pairwise )
+    .set{ ch_for_beta_diversity }
+ch_metadata_for_beta_diversity_ordination
+    .combine( qiime_diversity_core_for_beta_diversity_ordination )
+    .set{ ch_for_beta_diversity_ordination }
+    
+
+
+/*
+ * Compute alpha diversity indices
+ */
+process alpha_diversity { 
+    tag "${core[1].baseName}"
+    publishDir "${params.outdir}", mode: 'copy'    
+
+    input:
+    file core from ch_for_alpha_diversity
+    env MATPLOTLIBRC from matplotlibrc
+
+    output:
+    file("alpha-diversity/*") into qiime_alphadiversity
+
+    """
+	qiime diversity alpha-group-significance \
+        --i-alpha-diversity ${core[1]} \
+        --m-metadata-file ${core[0]} \
+        --o-visualization ${core[1].baseName}-vis.qzv
+	qiime tools export ${core[1].baseName}-vis.qzv \
+        --output-dir "alpha-diversity/${core[1].baseName}"
+    """
+}
 
 
 /*
  * Compute beta diversity indices
  */
 process beta_diversity { 
-    tag "${core[1].baseName}"
+    tag "${core.baseName}"
     publishDir "${params.outdir}", mode: 'copy'     
 
     input:
-    file core from ch_for_beta_diversity
-    val meta from meta_category_pairwise
+    set file(meta), file(core), val(category) from ch_for_beta_diversity
     env MATPLOTLIBRC from matplotlibrc
 
     output:
     file "beta-diversity/*"
 
     """
-    IFS=',' read -r -a metacategory <<< \"$meta\"
+    IFS=',' read -r -a metacategory <<< \"$category\"
 
 	for j in \"\${metacategory[@]}\"
 	do
 		qiime diversity beta-group-significance \
-		    --i-distance-matrix ${core[1]} \
-		    --m-metadata-file ${core[0]} \
+		    --i-distance-matrix $core \
+		    --m-metadata-file $meta \
 		    --m-metadata-column \"\$j\" \
-		    --o-visualization ${core[1].baseName}-\$j.qzv \
+		    --o-visualization ${core.baseName}-\$j.qzv \
 		    --p-pairwise
-		qiime tools export ${core[1].baseName}-\$j.qzv \
-		    --output-dir beta-diversity/${core[1].baseName}-\$j
+		qiime tools export ${core.baseName}-\$j.qzv \
+		    --output-dir beta-diversity/${core.baseName}-\$j
     done
     """
 }

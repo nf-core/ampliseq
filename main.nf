@@ -533,17 +533,17 @@ process dada_trunc_parameter {
  * Find ASVs with DADA2 for single sequencing run
  */
 process dada_single {
-	publishDir "${params.outdir}/unfiltered", mode: 'copy',
+    tag "$trunc"
+	publishDir "${params.outdir}", mode: 'copy',
         saveAs: {filename -> 
-            if (filename.indexOf("dada_stats/*")) filename
-            else if (filename == "table.qza") "table/$filename"
-            else if (filename == "table/feature-table.biom") filename
-            else if (filename == "table/feature-table.tsv") filename
-            else if (filename == "table/rel-feature-table.tsv") filename
-            else if (filename == "rep-seqs.qza") "rep_seqs/$filename"
-            else if (filename.indexOf("rep_seqs/*")) filename
-            else if (filename.indexOf("sequences.fasta")) filename
-            else if(params.keepIntermediates) filename 
+                 if (filename.indexOf("stats.tsv") > 0)                     "table/unfiltered/dada_stats.tsv"
+            else if (filename.indexOf("table.qza") == 0)                    "table/unfiltered/$filename"
+            else if (filename.indexOf("rel-table/feature-table.biom") == 0) "table/unfiltered/rel-feature-table.biom"
+            else if (filename.indexOf("table/feature-table.biom") == 0)     "table/unfiltered/feature-table.biom"
+            else if (filename.indexOf("rel-feature-table.tsv") > 0)         "table/unfiltered/rel-feature-table.tsv"
+            else if (filename.indexOf("feature-table.tsv") > 0)             "table/unfiltered/feature-table.tsv"
+            else if (filename.indexOf("rep-seqs.qza") == 0)                 "rep_seqs/unfiltered/rep-seqs.qza"
+            else if (filename.indexOf("unfiltered/*"))                      "rep_seqs/$filename"
             else null}
 
     input:
@@ -555,7 +555,11 @@ process dada_single {
     file("table.qza") into ch_qiime_table_raw
     file("rep-seqs.qza") into (ch_qiime_repseq_raw_for_classifier,ch_qiime_repseq_raw_for_filter)
     file("table/feature-table.tsv") into ch_tsv_table_raw
-    file("*")
+    file("dada_stats/stats.tsv")
+    file("table/feature-table.biom")
+    file("rel-table/feature-table.biom")
+    file("table/rel-feature-table.tsv")
+    file("unfiltered/*")
 
     when:
     !params.untilQ2import
@@ -593,7 +597,7 @@ process dada_single {
 	--i-data rep-seqs.qza  \
 	--o-visualization rep-seqs.qzv
     qiime tools export rep-seqs.qzv  \
-	--output-dir rep_seqs
+	--output-dir unfiltered
 
     #convert to relative abundances
     qiime feature-table relative-frequency \
@@ -679,7 +683,13 @@ if (params.exclude_taxa == "none") {
 
 } else {
 	process filter_taxa {
-	    publishDir "${params.outdir}/filtered", mode: 'copy'    
+        tag "${params.exclude_taxa}"
+
+    	publishDir "${params.outdir}", mode: 'copy',
+        saveAs: {filename -> 
+                 if (filename.indexOf("filtered-table.qza") == 0)      "table/filtered/table.qza"
+            else if (filename.indexOf("filtered-sequences.qza") == 0)  "rep_seqs/filtered/rep-seqs.qza"
+            else null}  
 
 	    input:
 	    file table from ch_qiime_table_raw
@@ -702,7 +712,6 @@ if (params.exclude_taxa == "none") {
 		--p-exclude ${params.exclude_taxa} \
 		--p-mode contains \
 		--o-filtered-sequences filtered-sequences.qza
-	    echo produced filtered-sequences.qza
 
 	    #filter abundance table
 	    qiime taxa filter-table \
@@ -711,7 +720,6 @@ if (params.exclude_taxa == "none") {
 		--p-exclude ${params.exclude_taxa} \
 		--p-mode contains \
 		--o-filtered-table filtered-table.qza
-	    echo produced filtered-table.qza
 	    """
 	}
 }
@@ -720,7 +728,12 @@ if (params.exclude_taxa == "none") {
  * Export qiime artefacts from filtered dada output
  */
 process export_filtered_dada_output { 
-    publishDir "${params.outdir}/filtered", mode: 'copy'    
+	publishDir "${params.outdir}", mode: 'copy',
+        saveAs: {filename -> 
+                 if (filename.indexOf("table/feature-table.biom") == 0)  "table/filtered/feature-table.biom"
+            else if (filename.indexOf("table/feature-table.tsv") == 0)   "table/filtered/feature-table.tsv"
+            else if (filename.indexOf("filtered/*"))                     "rep_seqs/$filename"
+            else null}   
 
     input:
     file table from ch_qiime_table_for_filtered_dada_output
@@ -728,9 +741,10 @@ process export_filtered_dada_output {
     env MATPLOTLIBRC from matplotlibrc
 
     output:
-    file("rep_seqs/sequences.fasta") into ch_fasta_repseq
+    file("filtered/sequences.fasta") into ch_fasta_repseq
     file("table/feature-table.tsv") into (ch_tsv_table_for_alpha_rarefaction,ch_tsv_table_for_report_filter_stats,ch_tsv_table_for_diversity_core)
-    file("*")
+    file("table/feature-table.biom")
+    file("filtered/*")
 
     """
     #produce raw count table in biom format "table/feature-table.biom"
@@ -747,7 +761,7 @@ process export_filtered_dada_output {
 	--i-data $repseq  \
 	--o-visualization rep-seqs.qzv
     qiime tools export rep-seqs.qzv  \
-	--output-dir rep_seqs
+	--output-dir filtered
     """
 }
 
@@ -755,7 +769,7 @@ process export_filtered_dada_output {
  * Report stats after taxa filtering
  */
 process report_filter_stats { 
-    publishDir "${params.outdir}/filtered", mode: 'copy'     
+    publishDir "${params.outdir}/table/filtered", mode: 'copy'     
 
     input:
     file 'unfiltered_table' from ch_tsv_table_raw

@@ -26,6 +26,7 @@ install:
   # Install nf-core/tools
   - git clone https://github.com/nf-core/tools.git /tmp/nf-core-tools
   - cd /tmp/nf-core-tools
+  - pip install --upgrade pip
   - pip install --user -e .
   # Reset
   - mkdir ${TRAVIS_BUILD_DIR}/tests

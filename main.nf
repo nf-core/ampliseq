@@ -98,7 +98,7 @@ params.exclude_taxa = "mitochondria,chloroplast"
 params.keepIntermediates = false
 
 //Database specific parameters
-//currently only this is compatible with process make_SILVA_132_16S_classifier
+//currently, this is only compatible with process make_SILVA_132_16S_classifier
 params.silva = "https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip"
 params.dereplication = 90 //90 for test run only, for real data this has to be set to 99.
 
@@ -271,7 +271,7 @@ if (!params.Q2imported){
         }
     } else {
         Channel
-            .fromFilePairs( params.reads, size: params.singleEnd ? 1 : 2 )
+            .fromFilePairs( params.reads + params.extension, size: params.singleEnd ? 1 : 2 )
             .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!\nIf this is single-end data, please specify --singleEnd on the command line." }
             .into { ch_read_pairs; ch_read_pairs_fastqc }
     }

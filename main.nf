@@ -108,7 +108,7 @@ params.dereplication = 90 //90 for test run only, for real data this has to be s
  */
 
 Channel.fromPath("${params.metadata}")
-        .into { ch_metadata_for_barplot; ch_metadata_for_alphararefaction; ch_metadata_for_diversity_core; ch_metadata_for_alpha_diversity; ch_metadata_for_metadata_category_all; ch_metadata_for_metadata_category_pairwise; ch_metadata_for_beta_diversity; ch_metadata_for_beta_diversity_ordination; ch_metadata_for_ancom }
+        .into { ch_metadata_for_barplot; ch_metadata_for_alphararefaction; ch_metadata_for_diversity_core; ch_metadata_for_alpha_diversity; ch_metadata_for_metadata_category_all; ch_metadata_for_metadata_category_pairwise; ch_metadata_for_beta_diversity; ch_metadata_for_beta_diversity_ordination; ch_metadata_for_ancom; ch_metadata_for_ancom_tax; ch_metadata_for_ancom_asv }
 
 params.untilQ2import = false
 
@@ -1009,7 +1009,8 @@ process combinetable {
  * Compute diversity matrices
  */
 process diversity_core { 
-    publishDir "${params.outdir}/diversity_core", mode: 'copy'
+    publishDir "${params.outdir}/diversity_core", mode: 'copy',
+    saveAs: {params.keepIntermediates ? filename : null}
 
     input:
     file metadata from ch_metadata_for_diversity_core
@@ -1196,22 +1197,23 @@ process beta_diversity_ordination {
 /*
  * Differential abundance analysis with ANCOM
  */
-process ancom { 
-    publishDir "${params.outdir}", mode: 'copy'    
+process prepare_ancom { 
+    tag "$meta"
+
+    publishDir "${params.outdir}/ancom", mode: 'copy', 
+    saveAs: {params.keepIntermediates ? filename : null}   
 
     input:
     file metadata from ch_metadata_for_ancom
     file table from ch_qiime_table_for_ancom
-    file taxonomy from ch_qiime_taxonomy_for_ancom
     val meta from meta_category_all_for_ancom
     env MATPLOTLIBRC from matplotlibrc
 
     output:
-    file("ancom/*")
+    file("*.qza") into (ch_meta_tables_tax, ch_meta_tables_asv) mode flatten
 
     when:
     !params.skip_ancom
-
 
     """
     IFS=',' read -r -a metacategory <<< \"$meta\"
@@ -1224,50 +1226,91 @@ process ancom {
 		    --i-table $table \
 		    --m-metadata-file $metadata \
 		    --p-where \"\$j<>\'\'\" \
-		    --o-filtered-table \$j-table.qza
+		    --o-filtered-table \$j.qza
     done
+    """
+}
 
-    # ANCOM on reduced tax level
-    array=( 2 3 4 5 6 )
-    for i in \"\${array[@]}\"
-    do
-	for j in \"\${metacategory[@]}\"
-	do
-		qiime taxa collapse \
-		        --i-table \$j-table.qza \
-		        --i-taxonomy $taxonomy \
-		        --p-level \"\$i\" \
-		        --o-collapsed-table \$j-l\$i-table.qza \
-		        --verbose
-		qiime composition add-pseudocount \
-		        --i-table \$j-l\$i-table.qza \
-		        --o-composition-table \$j-l\$i-comp-table.qza
-		qiime composition ancom \
-		        --i-table \$j-l\$i-comp-table.qza \
-		        --m-metadata-file $metadata \
-		        --m-metadata-column \"\$j\" \
-		        --o-visualization \$j-l\$i-comp-table.qzv \
-		        --verbose
-		qiime tools export \$j-l\$i-comp-table.qzv \
-		        --output-dir ancom/Category-\$j-level-\$i
-	done
-    done
+/*
+ * Combine channels for ancom
+ */
 
-    # ANCOM on ASV level
-    for j in \"\${metacategory[@]}\"
-    do
-    qiime composition add-pseudocount \
-		--i-table \$j-table.qza \
-		--o-composition-table \$j-comp-table.qza
+ch_taxlevel_tax = Channel.from( 2, 3, 4, 5, 6 )
+
+ch_meta_tables_tax
+    .combine( ch_taxlevel_tax )
+    .combine( ch_qiime_taxonomy_for_ancom )
+    .combine( ch_metadata_for_ancom_tax )
+    .set{ ch_for_ancom_tax }
+
+ch_meta_tables_asv
+    .combine( ch_metadata_for_ancom_asv )
+    .set{ ch_for_ancom_asv }
+
+
+/*
+ * Differential abundance analysis with ANCOM on various taxonomic levels
+ */
+process ancom_tax { 
+    tag "${table.baseName}-level$taxlevel"
+
+    publishDir "${params.outdir}", mode: 'copy'    
+
+    input:
+    set file(table), val(taxlevel), file(taxonomy), file(metadata) from ch_for_ancom_tax
+    env MATPLOTLIBRC from matplotlibrc
+
+    output:
+    file("ancom/*")
+
+    when:
+    !params.skip_ancom
+
+    """
+	qiime taxa collapse \
+	    --i-table $table \
+		--i-taxonomy $taxonomy \
+		--p-level $taxlevel \
+		--o-collapsed-table lvl$taxlevel-$table
+	qiime composition add-pseudocount \
+		--i-table lvl$taxlevel-$table \
+		--o-composition-table comp-lvl$taxlevel-$table
 	qiime composition ancom \
-	        --i-table \$j-comp-table.qza \
-	        --m-metadata-file $metadata \
-	        --m-metadata-column \"\$j\" \
-	        --o-visualization \$j-comp-table.qzv \
-	        --verbose
-	qiime tools export \$j-comp-table.qzv \
-	        --output-dir ancom/Category-\$j-ASV
-    done
+		--i-table comp-lvl$taxlevel-$table \
+		--m-metadata-file $metadata \
+		--m-metadata-column ${table.baseName} \
+		--o-visualization comp-lvl$taxlevel-${table.baseName}.qzv
+	qiime tools export comp-lvl$taxlevel-${table.baseName}.qzv \
+	    --output-dir ancom/Category-${table.baseName}-level-$taxlevel
+    """
+}
+
+/*
+ * Differential abundance analysis with ANCOM on ASV level
+ */
+process ancom_asv { 
+    tag "${table.baseName}"
+
+    publishDir "${params.outdir}", mode: 'copy' 
+
+    input:
+    set file(table), file(metadata) from ch_for_ancom_asv
+    env MATPLOTLIBRC from matplotlibrc   
+
+    output:
+    file("ancom/*") 
+
+    """
+    qiime composition add-pseudocount \
+		--i-table $table \
+		--o-composition-table comp-$table
+	qiime composition ancom \
+	    --i-table comp-$table \
+	    --m-metadata-file $metadata \
+	    --m-metadata-column ${table.baseName} \
+	    --o-visualization comp-${table.baseName}.qzv
+	qiime tools export comp-${table.baseName}.qzv \
+	    --output-dir ancom/Category-${table.baseName}-ASV
     """
 }
 

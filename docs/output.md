@@ -20,6 +20,7 @@ and processes data using the following steps:
 * [Beta diversity indices](#beta-diversity-indices) - computes beta diversity indices and PCoA plots
 * [ANCOM](#ancom) - calls differentially abundant taxa
 * [More help](#more-help) - more help and further reading
+* [Citations](#citations) - Citations for tools involved
 
 ## FastQC
 [FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) gives general quality metrics about your reads. It provides information about the quality score distribution across your reads, the per base sequence content (%T/A/G/C). You get information about adapter contamination and other overrepresented sequences.
@@ -191,6 +192,15 @@ ANCOM is applied to each suitable or specified metadata column for 6 taxonomic l
   * treatment: depends on your metadata sheet or what metadata categories you have specified
   * taxonomic level: level-2 (phylum), level-3 (class), level-4 (order), level-5 (family), level-6 (genus), ASV
 
-#
 # More help
 QIIME2 is currently **under heavy development** and often updated, this version of rrna-ampliseq uses QIIME2 2018.6. QIIME2 has excellent support in its [forum](https://docs.qiime2.org/2018.6/).
+
+# Citations
+All tools inside the pipeline have to be cited in a publication properly:
+
+* FastQC, "Andrews, Simon. "FastQC: a quality control tool for high throughput sequence data." (2010)."
+* Cutadapt "Martin, Marcel. "Cutadapt removes adapter sequences from high-throughput sequencing reads." EMBnet. journal 17.1 (2011): pp-10."
+* MultiQC, "Ewels, Philip, et al. "MultiQC: summarize analysis results for multiple tools and samples in a single report." Bioinformatics 32.19 (2016): 3047-3048."
+* QIIME2, "Bolyen, Evan, et al. QIIME 2: Reproducible, interactive, scalable, and extensible microbiome data science. No. e27295v1. PeerJ Preprints, 2018."
+* DADA2, "Callahan, Benjamin J., et al. "DADA2: high-resolution sample inference from Illumina amplicon data." Nature methods 13.7 (2016): 581."
+* Matplotlib, "Hunter, John D. "Matplotlib: A 2D graphics environment." Computing in science & engineering 9.3 (2007): 90-95."

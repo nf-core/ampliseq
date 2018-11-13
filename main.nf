@@ -504,21 +504,11 @@ process dada_trunc_parameter {
 
     script:
     if( !params.trunclenf || !params.trunclenr ){
-        log.info "WARNING: no DADA2 cutoffs were specified, therefore reads will be truncated where median quality drops below ${params.trunc_qmin}."
+        log.info "\nWARNING: no DADA2 cutoffs were specified, therefore reads will be truncated where median quality drops below ${params.trunc_qmin}."
         log.info "It is strongly advised to inspect quality values and to set --trunclenf and --trunclenr parameters manually."
-        log.info "This does not account for required overlap for merging, therefore DADA2 might fail. In any case remember to check DADA2 merging statistics!"
+        log.info "This does not account for required overlap for merging, therefore DADA2 might fail. In any case remember to check DADA2 merging statistics!\n"
 	    """
         dada_trunc_parameter.py ${summary_demux[0]} ${summary_demux[1]} ${params.trunc_qmin}
-
-	    #Error and exit if too short
-	    #totallength=\$((\${CUTOFF[0]} + \${CUTOFF[1]}))
-	    #if (( \$totallength < 10 )); then 
-	    #echo \"ERROR: Total read pair length is \$totallength and below 10, this is definitely too low.\"
-	    #echo \"Chosen cutoffs would be forward: \${CUTOFF[0]}, reverse \${CUTOFF[1]}\"
-	    #echo \"Please check quality values and read length manually and provide appropriate DADA2 truncation parameters.\"
-	    #echo \"Exiting now!\"
-	    #exit
-	    #fi
 	    """
     }
     else
@@ -563,6 +553,10 @@ process dada_single {
     when:
     !params.untilQ2import
 
+    script:
+    def values = trunc.split(',')
+    if (values[0].toInteger() + values[1].toInteger() <= 10) { 
+        log.info "\n########## ERROR: Total read pair length is below 10, this is definitely too low.\nForward ${values[0]} and reverse ${values[1]} are chosen.\nPlease provide appropriate values for --trunclenf and --trunclenr or lower --trunc_qmin\n" }
     """
     IFS=',' read -r -a trunclen <<< \"$trunc\"
 

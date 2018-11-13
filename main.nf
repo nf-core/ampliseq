@@ -98,7 +98,7 @@ params.exclude_taxa = "mitochondria,chloroplast"
 params.keepIntermediates = false
 
 //Database specific parameters
-//currently, this is only compatible with process make_SILVA_132_16S_classifier
+//currently only this is compatible with process make_SILVA_132_16S_classifier
 params.silva = "https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip"
 params.dereplication = 90 //90 for test run only, for real data this has to be set to 99.
 
@@ -271,7 +271,7 @@ if (!params.Q2imported){
         }
     } else {
         Channel
-            .fromFilePairs( params.reads + params.extension, size: params.singleEnd ? 1 : 2 )
+            .fromFilePairs( params.reads, size: params.singleEnd ? 1 : 2 )
             .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!\nIf this is single-end data, please specify --singleEnd on the command line." }
             .into { ch_read_pairs; ch_read_pairs_fastqc }
     }
@@ -503,14 +503,12 @@ process dada_trunc_parameter {
     !params.untilQ2import
 
     script:
-    if( !params.trunclenf || !params.trunclenr )
-
+    if( !params.trunclenf || !params.trunclenr ){
+        log.info "WARNING: no DADA2 cutoffs were specified, therefore reads will be truncated where median quality drops below ${params.trunc_qmin}."
+        log.info "It is strongly advised to inspect quality values and to set --trunclenf and --trunclenr parameters manually."
+        log.info "This does not account for required overlap for merging, therefore DADA2 might fail. In any case remember to check DADA2 merging statistics!"
 	    """
         dada_trunc_parameter.py ${summary_demux[0]} ${summary_demux[1]} ${params.trunc_qmin}
-
-	    #Warning massage
-	    #echo \"WARNING: no DADA2 cutoffs were specified, therefore reads will be truncated where median quality drops below ${params.trunc_qmin}.\"
-	    #echo \"This does not account for required overlap for merging, therefore DADA2 might fail. In any case remember to check DADA2 merging statistics!\"
 
 	    #Error and exit if too short
 	    #totallength=\$((\${CUTOFF[0]} + \${CUTOFF[1]}))
@@ -522,6 +520,7 @@ process dada_trunc_parameter {
 	    #exit
 	    #fi
 	    """
+    }
     else
 	    """
 	    printf "${params.trunclenf},${params.trunclenr}"
@@ -566,7 +565,6 @@ process dada_single {
 
     """
     IFS=',' read -r -a trunclen <<< \"$trunc\"
-    echo run DADA on $demux with truncation values fw: \${trunclen[0]} and rv: \${trunclen[1]}
 
     #denoise samples with DADA2 and produce
     qiime dada2 denoise-paired  \
@@ -612,7 +610,6 @@ process dada_single {
     biom convert \
 	-i rel-table/feature-table.biom \
 	-o table/rel-feature-table.tsv --to-tsv
-
     """
 }
 
@@ -675,10 +672,7 @@ if (params.exclude_taxa == "none") {
 	    file("$repseq") into (ch_qiime_repseq_for_dada_output,ch_qiime_repseq_for_tree)
 
 	    script:
-	  
-	    """
-	    echo dont exclude any taxa
-	    """
+        log.info "skip filtering results"
 	}
 
 } else {
@@ -702,9 +696,7 @@ if (params.exclude_taxa == "none") {
 	    file("filtered-sequences.qza") into (ch_qiime_repseq_for_dada_output,ch_qiime_repseq_for_tree)
 
 	    script:
-	  
 	    """
-	    echo exclude taxa ${params.exclude_taxa}
 	    #filter sequences
 	    qiime taxa filter-seqs \
 		--i-sequences $repseq \
@@ -899,10 +891,7 @@ process barplot {
  * Requirements: many cores ${params.tree_cores}, ??? mem, walltime scales with no. of ASV
  */
 process tree { 
-    publishDir "${params.outdir}", mode: 'copy',
-        saveAs: {filename -> 
-            if (filename.indexOf(".qza")) "tree/$filename"
-            else filename}    
+    publishDir "${params.outdir}", mode: 'copy' 
 
     input:
     file repseq from ch_qiime_repseq_for_tree
@@ -910,7 +899,7 @@ process tree {
 
     output:
     file("rooted-tree.qza") into (ch_qiime_tree_for_diversity_core, ch_qiime_tree_for_alpha_rarefaction)
-    file("tree/*") into tree_dummy
+    file("tree/tree.nwk")
 
     when:
     !params.skip_diversity_indices || !params.skip_alpha_rarefaction
@@ -961,13 +950,11 @@ process alpha_rarefaction {
     !params.skip_alpha_rarefaction
 
     """
-    #define values for alpha-rarefaction
     maxdepth=\$(count_table_minmax_reads.py $stats maximum 2>&1)
 
     #check values
     if [ \"\$maxdepth\" -gt \"75000\" ]; then maxdepth=\"75000\"; fi
     if [ \"\$maxdepth\" -gt \"5000\" ]; then maxsteps=\"250\"; else maxsteps=\$((maxdepth/20)); fi
-    echo \"use the maximum depth of \$maxdepth (found in \"$stats\") and \$maxsteps steps"
 
     qiime diversity alpha-rarefaction  \
 	--i-table $table  \
@@ -1028,24 +1015,20 @@ process diversity_core {
     !params.skip_diversity_indices
 
     """
-    #define values for diversity_core
     mindepth=\$(count_table_minmax_reads.py $stats minimum 2>&1)
 
-    #check values
     if [ \"\$mindepth\" -lt \"10000\" -a \"\$mindepth\" -gt \"5000\" ]; then echo \"WARNING! \$mindepth is quite small for rarefaction!\" ; fi
     if [ \"\$mindepth\" -lt \"5000\" -a \"\$mindepth\" -gt \"1000\" ]; then echo \"WARNING! \$mindepth is very small for rarefaction!\" ; fi
     if [ \"\$mindepth\" -lt \"1000\" ]; then echo \"ERROR! \$mindepth is too small for rarefaction!\" ; fi
     echo \"use the minimum depth of \$mindepth (found in \"$stats\")\"
 
-    #run diversity core
     qiime diversity core-metrics-phylogenetic \
 	--m-metadata-file $metadata \
 	--i-phylogeny $tree \
 	--i-table $table \
 	--p-sampling-depth \$mindepth \
 	--output-dir core \
-	--p-n-jobs ${params.diversity_cores} \
-	--verbose
+	--p-n-jobs ${params.diversity_cores}
     """
 }
 
@@ -1217,7 +1200,6 @@ process prepare_ancom {
 
     """
     IFS=',' read -r -a metacategory <<< \"$meta\"
-    echo perform ancom on "\${metacategory[@]}\"
 
     #remove samples that do not have any value
     for j in \"\${metacategory[@]}\"

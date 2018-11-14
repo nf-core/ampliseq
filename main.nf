@@ -100,7 +100,7 @@ params.keepIntermediates = false
 //Database specific parameters
 //currently only this is compatible with process make_SILVA_132_16S_classifier
 params.silva = "https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip"
-params.dereplication = 90 //90 for test run only, for real data this has to be set to 99.
+params.dereplication = 99
 
 
 /*

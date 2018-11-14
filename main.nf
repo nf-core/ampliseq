@@ -397,7 +397,6 @@ if( !params.classifier ){
 	process make_SILVA_132_16S_classifier {
         publishDir "${params.outdir}/DB/", mode: 'copy', 
         saveAs: {params.keepIntermediates ? filename : null}
-        //TODO Only keep files we really need (*.qza)
 
 	    output:
 	    file '*.qza' into ch_qiime_classifier
@@ -435,7 +434,6 @@ if( !params.classifier ){
 		--i-reference-taxonomy ref-taxonomy.qza \
 		--o-classifier ${params.FW_primer}-${params.RV_primer}-classifier.qza \
 		--verbose
-
 	    """
 	}
 } else {
@@ -504,9 +502,7 @@ process dada_trunc_parameter {
 
     script:
     if( !params.trunclenf || !params.trunclenr ){
-        log.info "\nWARNING: no DADA2 cutoffs were specified, therefore reads will be truncated where median quality drops below ${params.trunc_qmin}."
-        log.info "It is strongly advised to inspect quality values and to set --trunclenf and --trunclenr parameters manually."
-        log.info "This does not account for required overlap for merging, therefore DADA2 might fail. In any case remember to check DADA2 merging statistics!\n"
+        log.info "\n######## WARNING: No DADA2 cutoffs were specified, therefore reads will be truncated where median quality drops below ${params.trunc_qmin}. \nIt is strongly advised to inspect quality values and to set --trunclenf and --trunclenr parameters manually. \nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
 	    """
         dada_trunc_parameter.py ${summary_demux[0]} ${summary_demux[1]} ${params.trunc_qmin}
 	    """
@@ -556,7 +552,7 @@ process dada_single {
     script:
     def values = trunc.split(',')
     if (values[0].toInteger() + values[1].toInteger() <= 10) { 
-        log.info "\n########## ERROR: Total read pair length is below 10, this is definitely too low.\nForward ${values[0]} and reverse ${values[1]} are chosen.\nPlease provide appropriate values for --trunclenf and --trunclenr or lower --trunc_qmin\n" }
+        log.info "\n######## ERROR: Total read pair length is below 10, this is definitely too low.\nForward ${values[0]} and reverse ${values[1]} are chosen.\nPlease provide appropriate values for --trunclenf and --trunclenr or lower --trunc_qmin\n" }
     """
     IFS=',' read -r -a trunclen <<< \"$trunc\"
 
@@ -1004,6 +1000,7 @@ process diversity_core {
     file("core/*_pcoa_results.qza") into (qiime_diversity_core_for_beta_diversity_ordination) mode flatten
     file("core/*_vector.qza") into qiime_diversity_core_for_alpha_diversity mode flatten
     file("core/*_distance_matrix.qza") into qiime_diversity_core_for_beta_diversity mode flatten
+    stdout rarefaction_depth
 
     when:
     !params.skip_diversity_indices
@@ -1011,20 +1008,24 @@ process diversity_core {
     """
     mindepth=\$(count_table_minmax_reads.py $stats minimum 2>&1)
 
-    if [ \"\$mindepth\" -lt \"10000\" -a \"\$mindepth\" -gt \"5000\" ]; then echo \"WARNING! \$mindepth is quite small for rarefaction!\" ; fi
-    if [ \"\$mindepth\" -lt \"5000\" -a \"\$mindepth\" -gt \"1000\" ]; then echo \"WARNING! \$mindepth is very small for rarefaction!\" ; fi
-    if [ \"\$mindepth\" -lt \"1000\" ]; then echo \"ERROR! \$mindepth is too small for rarefaction!\" ; fi
-    echo \"use the minimum depth of \$mindepth (found in \"$stats\")\"
-
+    if [ \"\$mindepth\" -gt \"10000\" ]; then echo \"\nUse the sampling depth of \$mindepth for rarefaction\" ; fi
+    if [ \"\$mindepth\" -lt \"10000\" -a \"\$mindepth\" -gt \"5000\" ]; then echo \"\n######## WARNING! The sampling depth of \$mindepth is quite small for rarefaction!\" ; fi
+    if [ \"\$mindepth\" -lt \"5000\" -a \"\$mindepth\" -gt \"1000\" ]; then echo \"\n######## WARNING! The sampling depth of \$mindepth is very small for rarefaction!\" ; fi
+    if [ \"\$mindepth\" -lt \"1000\" ]; then echo \"\n######## ERROR! The sampling depth of \$mindepth seems too small for rarefaction!\" ; fi
+    
     qiime diversity core-metrics-phylogenetic \
 	--m-metadata-file $metadata \
 	--i-phylogeny $tree \
 	--i-table $table \
 	--p-sampling-depth \$mindepth \
 	--output-dir core \
-	--p-n-jobs ${params.diversity_cores}
+	--p-n-jobs ${params.diversity_cores} \
+    --quiet
     """
 }
+
+rarefaction_depth
+    .subscribe { log.info it }
 
 /*
  * Capture all possible metadata categories for statistics

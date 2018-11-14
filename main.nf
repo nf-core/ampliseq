@@ -119,6 +119,7 @@ if (params.Q2imported) {
     //Set up channel
     Channel.fromFile("${params.Q2imported}")
            .into { ch_qiime_demux }
+    params.keepIntermediates = true
 } else {
     params.skip_fastqc = false
     params.skip_multiqc = false
@@ -521,14 +522,14 @@ process dada_single {
     tag "$trunc"
 	publishDir "${params.outdir}", mode: 'copy',
         saveAs: {filename -> 
-                 if (filename.indexOf("stats.tsv") > 0)                     "table/unfiltered/dada_stats.tsv"
-            else if (filename.indexOf("table.qza") == 0)                    "table/unfiltered/$filename"
-            else if (filename.indexOf("rel-table/feature-table.biom") == 0) "table/unfiltered/rel-feature-table.biom"
-            else if (filename.indexOf("table/feature-table.biom") == 0)     "table/unfiltered/feature-table.biom"
-            else if (filename.indexOf("rel-feature-table.tsv") > 0)         "table/unfiltered/rel-feature-table.tsv"
-            else if (filename.indexOf("feature-table.tsv") > 0)             "table/unfiltered/feature-table.tsv"
-            else if (filename.indexOf("rep-seqs.qza") == 0)                 "rep_seqs/unfiltered/rep-seqs.qza"
-            else if (filename.indexOf("unfiltered/*"))                      "rep_seqs/$filename"
+                 if (filename.indexOf("stats.tsv") > 0)                     "abundance_table/unfiltered/dada_stats.tsv"
+            else if (filename.indexOf("table.qza") == 0)                    "abundance_table/unfiltered/$filename"
+            else if (filename.indexOf("rel-table/feature-table.biom") == 0) "abundance_table/unfiltered/rel-feature-table.biom"
+            else if (filename.indexOf("table/feature-table.biom") == 0)     "abundance_table/unfiltered/feature-table.biom"
+            else if (filename.indexOf("rel-feature-table.tsv") > 0)         "abundance_table/unfiltered/rel-feature-table.tsv"
+            else if (filename.indexOf("feature-table.tsv") > 0)             "abundance_table/unfiltered/feature-table.tsv"
+            else if (filename.indexOf("rep-seqs.qza") == 0)                 "representative_sequences/unfiltered/rep-seqs.qza"
+            else if (filename.indexOf("unfiltered/*"))                      "representative_sequences/$filename"
             else null}
 
     input:
@@ -671,8 +672,8 @@ if (params.exclude_taxa == "none") {
 
     	publishDir "${params.outdir}", mode: 'copy',
         saveAs: {filename -> 
-                 if (filename.indexOf("filtered-table.qza") == 0)      "table/filtered/table.qza"
-            else if (filename.indexOf("filtered-sequences.qza") == 0)  "rep_seqs/filtered/rep-seqs.qza"
+                 if (filename.indexOf("filtered-table.qza") == 0)      "abundance_table/filtered/table.qza"
+            else if (filename.indexOf("filtered-sequences.qza") == 0)  "representative_sequences/filtered/rep-seqs.qza"
             else null}  
 
 	    input:
@@ -712,9 +713,9 @@ if (params.exclude_taxa == "none") {
 process export_filtered_dada_output { 
 	publishDir "${params.outdir}", mode: 'copy',
         saveAs: {filename -> 
-                 if (filename.indexOf("table/feature-table.biom") == 0)  "table/filtered/feature-table.biom"
-            else if (filename.indexOf("table/feature-table.tsv") == 0)   "table/filtered/feature-table.tsv"
-            else if (filename.indexOf("filtered/*"))                     "rep_seqs/$filename"
+                 if (filename.indexOf("table/feature-table.biom") == 0)  "abundance_table/filtered/feature-table.biom"
+            else if (filename.indexOf("table/feature-table.tsv") == 0)   "abundance_table/filtered/feature-table.tsv"
+            else if (filename.indexOf("filtered/*"))                     "representative_sequences/$filename"
             else null}   
 
     input:
@@ -738,7 +739,7 @@ process export_filtered_dada_output {
 	-o table/feature-table.tsv  \
 	--to-tsv
 
-    #produce representative sequence fasta file "${params.outdir}/rep_seqs/sequences.fasta"
+    #produce representative sequence fasta file "${params.outdir}/representative_sequences/sequences.fasta"
     qiime feature-table tabulate-seqs  \
 	--i-data $repseq  \
 	--o-visualization rep-seqs.qzv
@@ -751,7 +752,7 @@ process export_filtered_dada_output {
  * Report stats after taxa filtering
  */
 process report_filter_stats { 
-    publishDir "${params.outdir}/table/filtered", mode: 'copy'     
+    publishDir "${params.outdir}/abundance_table/filtered", mode: 'copy'     
 
     input:
     file 'unfiltered_table' from ch_tsv_table_raw
@@ -769,7 +770,7 @@ process report_filter_stats {
  * Export relative abundance tables on ASV level
  */
 process RelativeAbundanceASV { 
-    publishDir "${params.outdir}/abundance-tables", mode: 'copy'    
+    publishDir "${params.outdir}/rel_abundance_tables", mode: 'copy'    
 
     input:
     file table from ch_qiime_table_for_relative_abundance_asv
@@ -803,7 +804,7 @@ process RelativeAbundanceASV {
  * Export relative abundance tables based on taxonomic levels
  */
 process RelativeAbundanceReducedTaxa { 
-    publishDir "${params.outdir}/abundance-tables", mode: 'copy'    
+    publishDir "${params.outdir}/rel_abundance_tables", mode: 'copy'    
 
     input:
     file table from ch_qiime_table_for_relative_abundance_reduced_taxa
@@ -878,10 +879,12 @@ process barplot {
 
 /*
  * Produce a rooted tree
- * Requirements: many cores ${params.tree_cores}, ??? mem, walltime scales with no. of ASV
  */
 process tree { 
-    publishDir "${params.outdir}", mode: 'copy' 
+    publishDir "${params.outdir}", mode: 'copy',
+        saveAs: {filename -> 
+            if (filename.indexOf("rooted-tree.qza") == 0)  "phylogenetic_tree/$filename"
+            else filename }   
 
     input:
     file repseq from ch_qiime_repseq_for_tree
@@ -889,7 +892,7 @@ process tree {
 
     output:
     file("rooted-tree.qza") into (ch_qiime_tree_for_diversity_core, ch_qiime_tree_for_alpha_rarefaction)
-    file("tree/tree.nwk")
+    file("phylogenetic_tree/tree.nwk")
 
     when:
     !params.skip_diversity_indices || !params.skip_alpha_rarefaction
@@ -915,7 +918,7 @@ process tree {
 	--o-rooted-tree rooted-tree.qza
 
     qiime tools export rooted-tree.qza  \
-	--output-dir tree
+	--output-dir phylogenetic_tree
     """
 }
 
@@ -964,7 +967,7 @@ process alpha_rarefaction {
  * Combine abundances, sequences and taxonomic classification into one table with R
  */
 process combinetable { 
-    publishDir "${params.outdir}/abundance-tables", mode: 'copy'    
+    publishDir "${params.outdir}/rel_abundance_tables", mode: 'copy'    
 
     input:
     file TABLE from ch_tsv_relASV_table

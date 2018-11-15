@@ -390,8 +390,8 @@ if (!params.Q2imported){
 
 /*
  * Download, unpack, extract and train classifier
- * CURRENTLY TEST CLASSIFIER, for real data: replace "dereplication=90" with "dereplication=99"
- * Requirements with "dereplication=99": 1 core (seems not to scale with more?), ~35 Gb mem, ~2:15:00 walltime
+ * Use "--dereplication 90" for testing and "--dereplication 99" for real datasets
+ * Requirements with "--dereplication 99": 1 core (seems not to scale with more?), ~35 Gb mem, ~2:15:00 walltime
  */
 
 if( !params.classifier ){
@@ -400,7 +400,8 @@ if( !params.classifier ){
         saveAs: {params.keepIntermediates ? filename : null}
 
 	    output:
-	    file '*.qza' into ch_qiime_classifier
+	    file("${params.FW_primer}-${params.RV_primer}-classifier.qza") into ch_qiime_classifier
+        file("*.qza")
 
 	    when:
 	    !params.onlyDenoising
@@ -408,18 +409,20 @@ if( !params.classifier ){
 	    script:
 	  
 	    """
+        wget https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip
+
 	    unzip Silva_132_release.zip
 
-        fasta="SILVA_132_QIIME_release/rep_set/rep_set_16S_only/"${params.dereplication}"/silva_132_"${params.dereplication}"_16S.fna"
-        taxonomy="SILVA_132_QIIME_release/taxonomy/16S_only/"${params.dereplication}"/consensus_taxonomy_7_levels.txt"
+        fasta=\"SILVA_132_QIIME_release/rep_set/rep_set_16S_only/${params.dereplication}/silva_132_${params.dereplication}_16S.fna\"
+        taxonomy=\"SILVA_132_QIIME_release/taxonomy/16S_only/${params.dereplication}/consensus_taxonomy_7_levels.txt\"
 
 	    ### Import
-	    qiime tools import --type 'FeatureData[Sequence]' 
-		--input-path fasta 
+	    qiime tools import --type \'FeatureData[Sequence]\' \
+		--input-path \$fasta \
 		--output-path ref-seq.qza
-	    qiime tools import --type 'FeatureData[Taxonomy]' 
-		--source-format HeaderlessTSVTaxonomyFormat 
-		--input-path taxonomy 
+	    qiime tools import --type \'FeatureData[Taxonomy]\' \
+		--source-format HeaderlessTSVTaxonomyFormat \
+		--input-path \$taxonomy \
 		--output-path ref-taxonomy.qza
 
 	    #Extract sequences based on primers
@@ -433,8 +436,7 @@ if( !params.classifier ){
 	    qiime feature-classifier fit-classifier-naive-bayes \
 		--i-reference-reads ${params.FW_primer}-${params.RV_primer}-ref-seq.qza \
 		--i-reference-taxonomy ref-taxonomy.qza \
-		--o-classifier ${params.FW_primer}-${params.RV_primer}-classifier.qza \
-		--verbose
+		--o-classifier ${params.FW_primer}-${params.RV_primer}-classifier.qza
 	    """
 	}
 } else {

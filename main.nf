@@ -255,7 +255,7 @@ if (!params.Q2imported){
     /*
     * Create a channel for input read files
     */
-    if(!params.reads){
+    if(params.readPaths && params.reads == "data${params.extension}"){
         Channel
             .from(params.readPaths)
             .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
@@ -264,7 +264,7 @@ if (!params.Q2imported){
     } else {
         Channel
             .fromFilePairs( params.reads + params.extension, size: 2 )
-            .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!" }
+            .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}${params.extension}\nNB: Path needs to be enclosed in quotes!" }
             .into { ch_read_pairs; ch_read_pairs_fastqc }
     }
 	/*

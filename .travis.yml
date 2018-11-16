@@ -1,16 +1,14 @@
 sudo: required
-language: java
+language: python
 jdk: openjdk8
-services:
-  - docker
-python:
-  - "2.7"
+services: docker
+python: '3.6'
 cache: pip
 matrix:
   fast_finish: true
 
 before_install:
-  # PRs made to 'master' branch should always orginate from another repo or the 'dev' branch
+  # PRs to master are only ok if coming from dev branch
   - '[ $TRAVIS_PULL_REQUEST = "false" ] || [ $TRAVIS_BRANCH != "master" ] || ([ $TRAVIS_PULL_REQUEST_SLUG = $TRAVIS_REPO_SLUG ] && [ $TRAVIS_PULL_REQUEST_BRANCH = "dev" ])'
   # Pull the docker image first so the test doesn't wait for this
   - docker pull nfcore/rrna-ampliseq
@@ -26,7 +24,8 @@ install:
   # Install nf-core/tools
   - git clone https://github.com/nf-core/tools.git /tmp/nf-core-tools
   - cd /tmp/nf-core-tools
-  - pip install --user -e .
+  - pip install --upgrade pip
+  - pip install .
   # Reset
   - mkdir ${TRAVIS_BUILD_DIR}/tests
   - cd ${TRAVIS_BUILD_DIR}/tests

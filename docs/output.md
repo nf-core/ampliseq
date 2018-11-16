@@ -20,6 +20,7 @@ and processes data using the following steps:
 * [Beta diversity indices](#beta-diversity-indices) - computes beta diversity indices and PCoA plots
 * [ANCOM](#ancom) - calls differentially abundant taxa
 * [More help](#more-help) - more help and further reading
+* [Citations](#citations) - Citations for tools involved
 
 ## FastQC
 [FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) gives general quality metrics about your reads. It provides information about the quality score distribution across your reads, the per base sequence content (%T/A/G/C). You get information about adapter contamination and other overrepresented sequences.
@@ -36,9 +37,8 @@ For further reading and documentation see the [FastQC help](http://www.bioinform
 ## Cutadapt
 [Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200) is trimming primer sequences from sequencing reads. Primer sequences are non-biological sequences that often introduce point mutations that do not reflect sample sequences. This is especially true for degenerated PCR primer. If primer trimming would be omitted, artifactual amplicon sequence variants might be computed by the denoising tool or sequences might be lost due to become labelled as PCR chimera.
 
-**Output directory: `results/trimmed`**
-* `*.fastq.gz`
-  * Trimmed sequencing reads
+**Output directory: `results/trimmed/logs`**
+  * Log files with retained reads, trimming percantage, etc. for each sample.
 
 
 ## MultiQC
@@ -73,17 +73,17 @@ DADA2 computes an error model on the sequencing reads (forward and reverse indep
 
 DADA2 reduces sequence errors and dereplicates sequences by quality filtering, denoising, read pair merging and PCR chimera removal.
 
-**Output directory: `results/dada_stats`**
-* `stats.tsv`
-  * Tab-separated table of DADA2 statistics
-
-**Output directory: `results/rep_seqs_unfiltered`**
+**Output directory: `results/representative_sequences/unfiltered`**
 * `sequences.fasta`
   * Fasta file with ASV sequences
 * `index.html`
   * ASV IDs, sequences and blast results in an interactive table that can be viewed in your web browser
+* `rep-seqs.qza`
+  * QIIME2 data artefact
 
-**Output directory: `results/table_unfiltered`**
+**Output directory: `results/abundance-table/unfiltered`**
+* `dada_stats.tsv`
+  * Tab-separated table of DADA2 statistics
 * `feature-table.biom`
   * Abundance table in biom format for importing into downstream analysis tools
 * `feature-table.tsv`
@@ -92,6 +92,8 @@ DADA2 reduces sequence errors and dereplicates sequences by quality filtering, d
   * Relative abundance table in biom format for importing into downstream analysis tools
 * `rel-feature-table.tsv`
   * Tab-separated relative abundance table for each ASV and each sample
+* `table.qza`
+  * QIIME2 data artefact
 
 ## Taxonomic classification
 ASV abundance and sequences inferred in DADA2 are informative but routinely taxonomic classifications such as family or genus annotation is desireable. ASV sequences are classified by default against the [SILVA](https://www.arb-silva.de/) [v132](https://www.arb-silva.de/documentation/release-132/) database to add taxonomic information.
@@ -107,22 +109,28 @@ Removes unwanted taxa in DADA2 output sequences and abundance tables by taxonomi
 
 All following analysis is based on these filtered tables.
 
-**Output directory: `results/rep_seqs`**
+**Output directory: `results/representative_sequences/filtered`**
 * `sequences.fasta`
   * Fasta file with ASV sequences
 * `index.html`
   * ASV IDs, sequences and blast results in an interactive table that can be viewed in your web browser
+* `rep-seqs.qza`
+  * QIIME2 data artefact
 
-**Output directory: `results/table`**
+**Output directory: `results/abundance-table/filtered`**
+* `count_table_filter_stats.csv`
+  * Comma-separated table with information on how much counts were filtered for each sample
 * `feature-table.biom`
   * Abundance table in biom format for importing into downstream analysis tools
 * `feature-table.tsv`
   * Tab-separated abundance table for each ASV and each sample
+* `table.qza`
+  * QIIME2 data artefact
 
 ## Relative abundance tables
 Absolute abundance tables produced by the previous steps contain count data, but the compositional nature of 16S rRNA amplicon sequencing requires sequencing depth normalisation. This step computes relative abundance tables for various taxonomic levels and a detailed table for all ASVs with taxonomic classification, sequence and relative abundance for each sample. Typically used for in depth investigation of taxa abundances.
 
-**Output directory: `results`**
+**Output directory: `results/rel_abundance_tables`**
 * `rel-table-2.tsv`
   * Tab-separated relative abundance table at phylum level
 * `rel-table-3.tsv`
@@ -133,6 +141,8 @@ Absolute abundance tables produced by the previous steps contain count data, but
   * Tab-separated relative abundance table at family level
 * `rel-table-6.tsv`
   * Tab-separated relative abundance table at genus level
+* `rel-table-7.tsv`
+  * Tab-separated relative abundance table at species level
 * `rel-table-ASV.tsv`
   * Tab-separated relative abundance table for all ASVs
 * `qiime2_ASV_table.csv`
@@ -178,7 +188,7 @@ Beta diversity measures the species community differences between samples. This 
 **Output directory: `results/beta-diversity`** (all *.html files can be viewed in your web browser)
 * `<method>_distance_matrix-<treatment>/index.html`
 * `<method>_pcoa_results-PCoA/index.html`
-  * methods (see above): bray_curtis, jaccard, unweighted_unifrac, weighted_unifrac
+  * method: bray_curtis, jaccard, unweighted_unifrac, weighted_unifrac
   * treatment: depends on your metadata sheet or what metadata categories you have specified
 
 ## ANCOM
@@ -191,6 +201,19 @@ ANCOM is applied to each suitable or specified metadata column for 6 taxonomic l
   * treatment: depends on your metadata sheet or what metadata categories you have specified
   * taxonomic level: level-2 (phylum), level-3 (class), level-4 (order), level-5 (family), level-6 (genus), ASV
 
-#
 # More help
 QIIME2 is currently **under heavy development** and often updated, this version of rrna-ampliseq uses QIIME2 2018.6. QIIME2 has excellent support in its [forum](https://docs.qiime2.org/2018.6/).
+
+# Citations
+All tools inside the pipeline have to be cited in a publication properly:
+
+* FastQC, "Andrews, Simon. "FastQC: a quality control tool for high throughput sequence data." (2010)."
+* Cutadapt "Martin, Marcel. "Cutadapt removes adapter sequences from high-throughput sequencing reads." EMBnet. journal 17.1 (2011): pp-10."
+* MultiQC, "Ewels, Philip, et al. "MultiQC: summarize analysis results for multiple tools and samples in a single report." Bioinformatics 32.19 (2016): 3047-3048."
+* QIIME2, "Bolyen, Evan, et al. QIIME 2: Reproducible, interactive, scalable, and extensible microbiome data science. No. e27295v1. PeerJ Preprints, 2018."
+* DADA2, "Callahan, Benjamin J., et al. "DADA2: high-resolution sample inference from Illumina amplicon data." Nature methods 13.7 (2016): 581."
+* Matplotlib, "Hunter, John D. "Matplotlib: A 2D graphics environment." Computing in science & engineering 9.3 (2007): 90-95."
+* Feature-classifier, "Bokulich, Kaehler, et al. "Optimizing taxonomic classification of marker-gene amplicon sequences with QIIME 2's q2-feature-classifier plugin." Microbiome 6 (2018): 90. 
+* SILVA database, "Quast, Pruesse, et al. 2013. 'The SILVA ribosomal RNA gene database project: improved data processing and web-based tools', Nucleic Acids Research, 41: D590-D96."
+* Mafft, "Katoh, Kazutaka and Standley, Daron M. "MAFFT multiple sequence alignment software version 7: improvements in performance and usability. Molecular biology and evolution 4 (2013): 772-780"
+* ANCOM, "Mandal, Siddhartha et al. “Analysis of composition of microbiomes: a novel method for studying microbial composition” Microbial ecology in health and disease vol. 26 27663. 29 May. 2015, doi:10.3402/mehd.v26.27663"

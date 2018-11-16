@@ -257,23 +257,15 @@ if (!params.Q2imported){
     * Create a channel for input read files
     */
     if(params.readPaths){
-        if(params.singleEnd){
-            Channel
-                .from(params.readPaths)
-                .map { row -> [ row[0], [file(row[1][0])]] }
-                .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-                .into { ch_read_pairs; ch_read_pairs_fastqc }
-        } else {
-            Channel
-                .from(params.readPaths)
-                .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
-                .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-                .into { ch_read_pairs; ch_read_pairs_fastqc }
-        }
+        Channel
+            .from(params.readPaths)
+            .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
+            .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
+            .into { ch_read_pairs; ch_read_pairs_fastqc }
     } else {
         Channel
-            .fromFilePairs( params.reads, size: params.singleEnd ? 1 : 2 )
-            .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!\nIf this is single-end data, please specify --singleEnd on the command line." }
+            .fromFilePairs( params.reads, size: 2 )
+            .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!" }
             .into { ch_read_pairs; ch_read_pairs_fastqc }
     }
 	/*

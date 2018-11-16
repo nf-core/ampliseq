@@ -99,7 +99,7 @@ params.keepIntermediates = false
 
 //Database specific parameters
 //currently only this is compatible with process make_SILVA_132_16S_classifier
-params.silva = "https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip"
+params.reference_database = "https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip"
 params.dereplication = 99
 
 
@@ -395,9 +395,18 @@ if (!params.Q2imported){
  */
 
 if( !params.classifier ){
+    Channel.fromPath("${params.reference_database}")
+        .set { ch_ref_database }
+
 	process make_SILVA_132_16S_classifier {
         publishDir "${params.outdir}/DB/", mode: 'copy', 
-        saveAs: {params.keepIntermediates ? filename : null}
+        saveAs: {filename -> 
+            if (filename.indexOf("${params.FW_primer}-${params.RV_primer}-classifier.qza") == 0) filename
+            else if(params.keepIntermediates) filename 
+            else null}
+
+        input:
+        file database from ch_ref_database
 
 	    output:
 	    file("${params.FW_primer}-${params.RV_primer}-classifier.qza") into ch_qiime_classifier
@@ -409,9 +418,7 @@ if( !params.classifier ){
 	    script:
 	  
 	    """
-        wget https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip
-
-	    unzip Silva_132_release.zip
+	    unzip $database
 
         fasta=\"SILVA_132_QIIME_release/rep_set/rep_set_16S_only/${params.dereplication}/silva_132_${params.dereplication}_16S.fna\"
         taxonomy=\"SILVA_132_QIIME_release/taxonomy/16S_only/${params.dereplication}/consensus_taxonomy_7_levels.txt\"

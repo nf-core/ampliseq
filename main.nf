@@ -19,14 +19,14 @@ def helpMessage() {
     Usage:
 
     The minimal command for running the pipeline is as follows:
-    nextflow run nf-core/rrna-ampliseq --reads "data/*_L001_R{1,2}_001.fastq.gz" --FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT --metadata "$PWD/data/Metadata.tsv"
+    nextflow run nf-core/rrna-ampliseq --reads "data" --FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT --metadata "Metadata.tsv"
 
 
     Required arguments:
       --reads [Path to folder]      Folder containing Casava 1.8 paired-end demultiplexed fastq files: *_L001_R{1,2}_001.fastq.gz
       --FW_primer [str]             Forward primer sequence
       --RV_primer [str]             Reverse primer sequence
-      --metadata                    Absolute path to metadata sheet
+      --metadata                    Path to metadata sheet
 
     Filters:
       --exclude_taxa [str]          Comma seperated list of unwanted taxa (default: "mitochondria,chloroplast")

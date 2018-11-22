@@ -12,21 +12,27 @@
 
 def helpMessage() {
     log.info"""
-    =========================================
-     nf-core/rrna-ampliseq v${workflow.manifest.version}
-    =========================================
+    =======================================================
+                                              ,--./,-.
+              ___     __   __   __   ___     /,-._.--~\'
+        |\\ | |__  __ /  ` /  \\ |__) |__         }  {
+        | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
+                                              `._,._,\'
+
+     nf-core/rrna-ampliseq : v${workflow.manifest.version}
+    =======================================================
     
     Usage:
 
     The minimal command for running the pipeline is as follows:
-    nextflow run nf-core/rrna-ampliseq --reads "data/*_L001_R{1,2}_001.fastq.gz" --FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT --metadata "$PWD/data/Metadata.tsv"
+    nextflow run nf-core/rrna-ampliseq --reads "data" --FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT --metadata "Metadata.tsv"
 
 
     Required arguments:
       --reads [Path to folder]      Folder containing Casava 1.8 paired-end demultiplexed fastq files: *_L001_R{1,2}_001.fastq.gz
       --FW_primer [str]             Forward primer sequence
       --RV_primer [str]             Reverse primer sequence
-      --metadata                    Absolute path to metadata sheet
+      --metadata                    Path to metadata sheet
 
     Filters:
       --exclude_taxa [str]          Comma seperated list of unwanted taxa (default: "mitochondria,chloroplast")
@@ -255,7 +261,7 @@ if (!params.Q2imported){
     /*
     * Create a channel for input read files
     */
-    if(!params.reads){
+    if(params.readPaths && params.reads == "data${params.extension}"){
         Channel
             .from(params.readPaths)
             .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
@@ -264,7 +270,7 @@ if (!params.Q2imported){
     } else {
         Channel
             .fromFilePairs( params.reads + params.extension, size: 2 )
-            .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}\nNB: Path needs to be enclosed in quotes!" }
+            .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}${params.extension}\nNB: Path needs to be enclosed in quotes!" }
             .into { ch_read_pairs; ch_read_pairs_fastqc }
     }
 	/*

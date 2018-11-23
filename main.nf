@@ -1,11 +1,11 @@
 #!/usr/bin/env nextflow
 /*
 ========================================================================================
-                         nf-core/rrna-ampliseq
+                         nf-core/ampliseq
 ========================================================================================
- nf-core/rrna-ampliseq Analysis Pipeline.
+ nf-core/ampliseq Analysis Pipeline.
  #### Homepage / Documentation
- https://github.com/nf-core/rrna-ampliseq
+ https://github.com/nf-core/ampliseq
 ----------------------------------------------------------------------------------------
 */
 
@@ -19,13 +19,13 @@ def helpMessage() {
         | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
                                               `._,._,\'
 
-     nf-core/rrna-ampliseq : v${workflow.manifest.version}
+     nf-core/ampliseq : v${workflow.manifest.version}
     =======================================================
     
     Usage:
 
     The minimal command for running the pipeline is as follows:
-    nextflow run nf-core/rrna-ampliseq --reads "data" --FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT --metadata "Metadata.tsv"
+    nextflow run nf-core/ampliseq --reads "data" --FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT --metadata "Metadata.tsv"
 
 
     Required arguments:
@@ -188,10 +188,10 @@ log.info """=======================================================
     | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
                                           `._,._,\'
 
-nf-core/rrna-ampliseq v${workflow.manifest.version}"
+nf-core/ampliseq v${workflow.manifest.version}"
 ======================================================="""
 def summary = [:]
-summary['Pipeline Name']  = 'nf-core/rrna-ampliseq'
+summary['Pipeline Name']  = 'nf-core/ampliseq'
 summary['Pipeline Version'] = workflow.manifest.version
 summary['Run Name']     = custom_runName ?: workflow.runName
 summary['Reads']        = params.reads
@@ -222,10 +222,10 @@ def create_workflow_summary(summary) {
 
     def yaml_file = workDir.resolve('workflow_summary_mqc.yaml')
     yaml_file.text  = """
-    id: 'nf-core-rrna-ampliseq-summary'
+    id: 'nf-core-ampliseq-summary'
     description: " - this information is collected when the pipeline is started."
-    section_name: 'nf-core/rrna-ampliseq Workflow Summary'
-    section_href: 'https://github.com/nf-core/rrna-ampliseq'
+    section_name: 'nf-core/ampliseq Workflow Summary'
+    section_href: 'https://github.com/nf-core/ampliseq'
     plot_type: 'html'
     data: |
         <dl class=\"dl-horizontal\">
@@ -1326,9 +1326,9 @@ process output_documentation {
 workflow.onComplete {
 
     // Set up the e-mail variables
-    def subject = "[nf-core/rrna-ampliseq] Successful: $workflow.runName"
+    def subject = "[nf-core/ampliseq] Successful: $workflow.runName"
     if(!workflow.success){
-      subject = "[nf-core/rrna-ampliseq] FAILED: $workflow.runName"
+      subject = "[nf-core/ampliseq] FAILED: $workflow.runName"
     }
     def email_fields = [:]
     email_fields['version'] = workflow.manifest.version
@@ -1376,11 +1376,11 @@ workflow.onComplete {
           if( params.plaintext_email ){ throw GroovyException('Send plaintext e-mail, not HTML') }
           // Try to send HTML e-mail using sendmail
           [ 'sendmail', '-t' ].execute() << sendmail_html
-          log.info "[nf-core/rrna-ampliseq] Sent summary e-mail to $params.email (sendmail)"
+          log.info "[nf-core/ampliseq] Sent summary e-mail to $params.email (sendmail)"
         } catch (all) {
           // Catch failures and try with plaintext
           [ 'mail', '-s', subject, params.email ].execute() << email_txt
-          log.info "[nf-core/rrna-ampliseq] Sent summary e-mail to $params.email (mail)"
+          log.info "[nf-core/ampliseq] Sent summary e-mail to $params.email (mail)"
         }
     }
 
@@ -1394,6 +1394,6 @@ workflow.onComplete {
     def output_tf = new File( output_d, "pipeline_report.txt" )
     output_tf.withWriter { w -> w << email_txt }
 
-    log.info "[nf-core/rrna-ampliseq] Pipeline Complete"
+    log.info "[nf-core/ampliseq] Pipeline Complete"
 
 }

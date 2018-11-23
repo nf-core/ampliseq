@@ -1,4 +1,4 @@
-# nf-core/rrna-ampliseq: Output
+# nf-core/ampliseq: Output
 
 This document describes the output produced by the pipeline.
 
@@ -56,7 +56,7 @@ The pipeline has special steps which allow the software versions used to be repo
 For more information about how to use MultiQC reports, see http://multiqc.info
 
 ## QIIME2
-**Quantitative Insights Into Microbial Ecology 2** ([QIIME2](https://qiime2.org/)) is a next-generation microbiome bioinformatics platform and the successor of the widely used [QIIME1](https://www.nature.com/articles/nmeth.f.303). QIIME2 is currently **under heavy development** and often updated, this version of rrna-ampliseq uses QIIME2 2018.6. QIIME2 has a wide variety of analysis tools available and has excellent support in its [forum](https://docs.qiime2.org/2018.6/).
+**Quantitative Insights Into Microbial Ecology 2** ([QIIME2](https://qiime2.org/)) is a next-generation microbiome bioinformatics platform and the successor of the widely used [QIIME1](https://www.nature.com/articles/nmeth.f.303). QIIME2 is currently **under heavy development** and often updated, this version of ampliseq uses QIIME2 2018.6. QIIME2 has a wide variety of analysis tools available and has excellent support in its [forum](https://docs.qiime2.org/2018.6/).
 
 At this point of the analysis the trimmed reads are imported into QIIME2 and an interactive quality plot is made.
 
@@ -202,7 +202,7 @@ ANCOM is applied to each suitable or specified metadata column for 6 taxonomic l
   * taxonomic level: level-2 (phylum), level-3 (class), level-4 (order), level-5 (family), level-6 (genus), ASV
 
 # More help
-QIIME2 is currently **under heavy development** and often updated, this version of rrna-ampliseq uses QIIME2 2018.6. QIIME2 has excellent support in its [forum](https://docs.qiime2.org/2018.6/).
+QIIME2 is currently **under heavy development** and often updated, this version of ampliseq uses QIIME2 2018.6. QIIME2 has excellent support in its [forum](https://docs.qiime2.org/2018.6/).
 
 # Citations
 All tools inside the pipeline have to be cited in a publication properly:

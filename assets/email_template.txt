@@ -1,13 +1,13 @@
 ========================================
- nf-core/rrna-ampliseq v${version}
+ nf-core/ampliseq v${version}
 ========================================
 Run Name: $runName
 
 <% if (success){
-    out << "## nf-core/rrna-ampliseq execution completed successfully! ##"
+    out << "## nf-core/ampliseq execution completed successfully! ##"
 } else {
     out << """####################################################
-## nf-core/rrna-ampliseq execution completed unsuccessfully! ##
+## nf-core/ampliseq execution completed unsuccessfully! ##
 ####################################################
 The exit status of the task that caused the workflow execution to fail was: $exitStatus.
 The full error message was:
@@ -19,7 +19,7 @@ ${errorReport}
 
 <% if (!success){
     out << """####################################################
-## nf-core/rrna-ampliseq execution completed unsuccessfully! ##
+## nf-core/ampliseq execution completed unsuccessfully! ##
 ####################################################
 The exit status of the task that caused the workflow execution to fail was: $exitStatus.
 The full error message was:
@@ -27,7 +27,7 @@ The full error message was:
 ${errorReport}
 """
 } else {
-    out << "## nf-core/rrna-ampliseq execution completed successfully! ##"
+    out << "## nf-core/ampliseq execution completed successfully! ##"
 }
 %>
 
@@ -47,5 +47,5 @@ Pipeline Configuration:
 <% out << summary.collect{ k,v -> " - $k: $v" }.join("\n") %>
 
 --
-nf-core/rrna-ampliseq
-https://github.com/nf-core/rrna-ampliseq
+nf-core/ampliseq
+https://github.com/nf-core/ampliseq

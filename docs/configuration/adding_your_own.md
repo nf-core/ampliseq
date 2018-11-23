@@ -1,4 +1,4 @@
-# nf-core/rrna-ampliseq: Configuration for other clusters
+# nf-core/ampliseq: Configuration for other clusters
 
 It is entirely possible to run this pipeline on other clusters, though you will need to set up your own config file so that the pipeline knows how to work with your cluster.
 
@@ -35,15 +35,15 @@ To run the pipeline, several software packages are required. How you satisfy the
 Please see the [`installation documentation`](../installation.md) for how to run using the below as a one-off. These instructions are about configuring a config file for repeated use.
 
 ### Docker
-Docker is a great way to run nf-core/rrna-ampliseq, as it manages all software installations and allows the pipeline to be run in an identical software environment across a range of systems.
+Docker is a great way to run nf-core/ampliseq, as it manages all software installations and allows the pipeline to be run in an identical software environment across a range of systems.
 
-Nextflow has [excellent integration](https://www.nextflow.io/docs/latest/docker.html) with Docker, and beyond installing the two tools, not much else is required - nextflow will automatically fetch the [nfcore/rrna-ampliseq](https://hub.docker.com/r/nfcore/rrna-ampliseq/) image that we have created and is hosted at dockerhub at run time.
+Nextflow has [excellent integration](https://www.nextflow.io/docs/latest/docker.html) with Docker, and beyond installing the two tools, not much else is required - nextflow will automatically fetch the [nfcore/ampliseq](https://hub.docker.com/r/nfcore/ampliseq/) image that we have created and is hosted at dockerhub at run time.
 
 To add docker support to your own config file, add the following:
 
 ```nextflow
 docker.enabled = true
-process.container = "nfcore/rrna-ampliseq"
+process.container = "nfcore/ampliseq"
 ```
 
 Note that the dockerhub organisation name annoyingly can't have a hyphen, so is `nfcore` and not `nf-core`.
@@ -57,7 +57,7 @@ To specify singularity usage in your pipeline config file, add the following:
 
 ```nextflow
 singularity.enabled = true
-process.container = "shub://nf-core/rrna-ampliseq"
+process.container = "shub://nf-core/ampliseq"
 ```
 
 If you intend to run the pipeline offline, nextflow will not be able to automatically download the singularity image for you.
@@ -66,14 +66,14 @@ Instead, you'll have to do this yourself manually first, transfer the image file
 First, pull the image file where you have an internet connection:
 
 ```bash
-singularity pull --name nf-core-rrna-ampliseq.simg shub://nf-core/rrna-ampliseq
+singularity pull --name nf-core-ampliseq.simg shub://nf-core/ampliseq
 ```
 
 Then transfer this file and point the config file to the image:
 
 ```nextflow
 singularity.enabled = true
-process.container = "/path/to/nf-core-rrna-ampliseq.simg"
+process.container = "/path/to/nf-core-ampliseq.simg"
 ```
 
 

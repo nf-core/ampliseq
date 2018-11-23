@@ -25,7 +25,7 @@ A clear and concise description of what you expected to happen.
 #### Container engine:
  - Engine: [e.g. Conda, Docker or Singularity]
  - version: [e.g. 1.0.0]
- - Image tag: [e.g. nfcore/rrna-ampliseq:1.0.0]
+ - Image tag: [e.g. nfcore/ampliseq:1.0.0]
 
 #### Additional context
 Add any other context about the problem here.

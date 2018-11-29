@@ -1,4 +1,4 @@
-name: nf-core-ampliseq-1.0.0
+name: nf-core-ampliseq-1.0dev
 channels:
   - anaconda
   - qiime2/label/r2018.6

@@ -91,7 +91,7 @@ params.plaintext_email = false
 ch_multiqc_config = Channel.fromPath(file(params.multiqc_config))
 ch_output_docs = Channel.fromPath(file("$baseDir/docs/output.md"))
 Channel.fromPath(file("$baseDir/assets/matplotlibrc"))
-                      .into {ch_mpl_for_make_classifier;ch_mpl_for_qiime_import; ch_mpl_for_ancom_asv; ch_mpl_for_ancom_tax; ch_mpl_for_ancom; ch_mpl_for_beta_diversity_ord; ch_mpl_for_beta_diversity; ch_mpl_for_alpha_diversity; ch_mpl_for_metadata_pair; ch_mpl_for_metadata_cat; ch_mpl_for_diversity_core; ch_mpl_for_alpha_rare; ch_mpl_for_tree; ch_mpl_for_barcode; ch_mpl_for_relreducetaxa; ch_mpl_for_relasv, ch_mpl_for_export_dada_output;  ch_mpl_filter_taxa; ch_mpl_classifier; ch_mpl_dada_single; ch_mpl_for_demux_visualize; ch_mpl_for_classifier}
+                      .into { ch_mpl_for_make_classifier; ch_mpl_for_qiime_import; ch_mpl_for_ancom_asv; ch_mpl_for_ancom_tax; ch_mpl_for_ancom; ch_mpl_for_beta_diversity_ord; ch_mpl_for_beta_diversity; ch_mpl_for_alpha_diversity; ch_mpl_for_metadata_pair; ch_mpl_for_metadata_cat; ch_mpl_for_diversity_core; ch_mpl_for_alpha_rare; ch_mpl_for_tree; ch_mpl_for_barcode; ch_mpl_for_relreducetaxa; ch_mpl_for_relasv; ch_mpl_for_export_dada_output; ch_mpl_filter_taxa; ch_mpl_classifier; ch_mpl_dada_single; ch_mpl_for_demux_visualize; ch_mpl_for_classifier }
 
 // Defines all parameters that are independent of a test run
 params.trunc_qmin = 25 //to calculate params.trunclenf and params.trunclenr automatically

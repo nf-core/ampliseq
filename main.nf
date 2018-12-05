@@ -125,7 +125,7 @@ if (params.Q2imported) {
     params.skip_multiqc = true
     //Set up channel
     Channel.fromFile("${params.Q2imported}")
-           .into { ch_qiime_demux }
+           .into { ch_qiime_demux_import; ch_qiime_demux_vis; ch_qiime_demux_dada }
     params.keepIntermediates = true
 } else {
     params.skip_fastqc = false
@@ -369,7 +369,7 @@ if (!params.Q2imported){
         env MATPLOTLIBRC from ch_mpl_for_qiime_import
 
 	    output:
-	    file "demux.qza" into ch_qiime_demux
+	    file "demux.qza" into (ch_qiime_demux_import, ch_qiime_demux_vis, ch_qiime_demux_dada)
 
 	    when:
 	    !params.Q2imported
@@ -459,7 +459,7 @@ if( !params.Q2imported ){
         publishDir "${params.outdir}", mode: 'copy'
 
 	    input:
-	    file demux from ch_qiime_demux
+	    file demux from ch_qiime_demux_vis
         env MATPLOTLIBRC from ch_mpl_for_demux_visualize
 
 	    output:
@@ -541,7 +541,7 @@ process dada_single {
             else null}
 
     input:
-    file demux from ch_qiime_demux
+    file demux from ch_qiime_demux_dada
     val trunc from dada_trunc
     env MATPLOTLIBRC from ch_mpl_dada_single
 

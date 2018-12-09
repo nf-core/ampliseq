@@ -1309,7 +1309,7 @@ process output_documentation {
     publishDir "${params.outdir}/Documentation", mode: 'copy'
 
     input:
-    file "$output_docs" from ch_output_docs
+    file output_docs from ch_output_docs
 
     output:
     file "results_description.html"

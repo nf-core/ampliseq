@@ -2,11 +2,11 @@ From:nfcore/base
 Bootstrap:docker
 
 %labels
-    DESCRIPTION Singularity image containing all requirements for nf-core/rrna-ampliseq pipeline
-    VERSION 1.0.0
+    DESCRIPTION Singularity image containing all requirements for nf-core/ampliseq pipeline
+    VERSION 1.0dev
 
 %environment
-    PATH=/opt/conda/envs/nf-core-rrna-ampliseq-1.0.0/bin:$PATH
+    PATH=/opt/conda/envs/nf-core-ampliseq-1.0dev/bin:$PATH
     export PATH
 
 %files

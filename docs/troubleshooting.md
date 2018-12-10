@@ -1,4 +1,4 @@
-# nf-core/rrna-ampliseq: Troubleshooting
+# nf-core/ampliseq: Troubleshooting
 
 ## Input files not found
 
@@ -40,7 +40,7 @@ Solutions might be (numbered as above):
 
 ## Extra resources and getting help
 If you still have an issue with running the pipeline then feel free to contact us.
-Have a look at the [pipeline website](https://github.com/nf-core/rrna-ampliseq) to find out how.
+Have a look at the [pipeline website](https://github.com/nf-core/ampliseq) to find out how.
 
 If you have trouble interpreting results or with the methods itself, the [QIIME2 forum](https://forum.qiime2.org/) provides excellent help. Be aware that QIIME2 is in active development and you might use an older version of QIIME2 right now. 
 

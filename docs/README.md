@@ -1,6 +1,6 @@
-# nf-core/rrna-ampliseq: Documentation
+# nf-core/ampliseq: Documentation
 
-The nf-core/rrna-ampliseq documentation is split into the following files:
+The nf-core/ampliseq documentation is split into the following files:
 
 1. [Installation](installation.md)
 2. [Running the pipeline](usage.md)

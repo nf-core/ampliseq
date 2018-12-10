@@ -1,11 +1,11 @@
 #!/usr/bin/env nextflow
 /*
 ========================================================================================
-                         nf-core/rrna-ampliseq
+                         nf-core/ampliseq
 ========================================================================================
- nf-core/rrna-ampliseq Analysis Pipeline.
+ nf-core/ampliseq Analysis Pipeline.
  #### Homepage / Documentation
- https://github.com/nf-core/rrna-ampliseq
+ https://github.com/nf-core/ampliseq
 ----------------------------------------------------------------------------------------
 */
 
@@ -19,13 +19,13 @@ def helpMessage() {
         | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
                                               `._,._,\'
 
-     nf-core/rrna-ampliseq : v${workflow.manifest.version}
+     nf-core/ampliseq : v${workflow.manifest.version}
     =======================================================
     
     Usage:
 
     The minimal command for running the pipeline is as follows:
-    nextflow run nf-core/rrna-ampliseq --reads "data" --FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT --metadata "Metadata.tsv"
+    nextflow run nf-core/ampliseq --reads "data" --FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT --metadata "Metadata.tsv"
 
 
     Required arguments:
@@ -88,9 +88,10 @@ params.multiqc_config = "$baseDir/conf/multiqc_config.yaml"
 params.email = false
 params.plaintext_email = false
 
-multiqc_config = file(params.multiqc_config)
-output_docs = file("$baseDir/docs/output.md")
-matplotlibrc = file("$baseDir/assets/matplotlibrc")
+ch_multiqc_config = Channel.fromPath(params.multiqc_config)
+ch_output_docs = Channel.fromPath("$baseDir/docs/output.md")
+Channel.fromPath("$baseDir/assets/matplotlibrc")
+                      .into { ch_mpl_for_make_classifier; ch_mpl_for_qiime_import; ch_mpl_for_ancom_asv; ch_mpl_for_ancom_tax; ch_mpl_for_ancom; ch_mpl_for_beta_diversity_ord; ch_mpl_for_beta_diversity; ch_mpl_for_alpha_diversity; ch_mpl_for_metadata_pair; ch_mpl_for_metadata_cat; ch_mpl_for_diversity_core; ch_mpl_for_alpha_rare; ch_mpl_for_tree; ch_mpl_for_barcode; ch_mpl_for_relreducetaxa; ch_mpl_for_relasv; ch_mpl_for_export_dada_output; ch_mpl_filter_taxa; ch_mpl_classifier; ch_mpl_dada_single; ch_mpl_for_demux_visualize; ch_mpl_for_classifier }
 
 // Defines all parameters that are independent of a test run
 params.trunc_qmin = 25 //to calculate params.trunclenf and params.trunclenr automatically
@@ -124,7 +125,7 @@ if (params.Q2imported) {
     params.skip_multiqc = true
     //Set up channel
     Channel.fromFile("${params.Q2imported}")
-           .into { ch_qiime_demux }
+           .into { ch_qiime_demux_import; ch_qiime_demux_vis; ch_qiime_demux_dada }
     params.keepIntermediates = true
 } else {
     params.skip_fastqc = false
@@ -188,10 +189,10 @@ log.info """=======================================================
     | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
                                           `._,._,\'
 
-nf-core/rrna-ampliseq v${workflow.manifest.version}"
+nf-core/ampliseq v${workflow.manifest.version}"
 ======================================================="""
 def summary = [:]
-summary['Pipeline Name']  = 'nf-core/rrna-ampliseq'
+summary['Pipeline Name']  = 'nf-core/ampliseq'
 summary['Pipeline Version'] = workflow.manifest.version
 summary['Run Name']     = custom_runName ?: workflow.runName
 summary['Reads']        = params.reads
@@ -222,10 +223,10 @@ def create_workflow_summary(summary) {
 
     def yaml_file = workDir.resolve('workflow_summary_mqc.yaml')
     yaml_file.text  = """
-    id: 'nf-core-rrna-ampliseq-summary'
+    id: 'nf-core-ampliseq-summary'
     description: " - this information is collected when the pipeline is started."
-    section_name: 'nf-core/rrna-ampliseq Workflow Summary'
-    section_href: 'https://github.com/nf-core/rrna-ampliseq'
+    section_name: 'nf-core/ampliseq Workflow Summary'
+    section_href: 'https://github.com/nf-core/ampliseq'
     plot_type: 'html'
     data: |
         <dl class=\"dl-horizontal\">
@@ -365,10 +366,10 @@ if (!params.Q2imported){
 
 	    input:
 	    file(trimmed) from ch_fastq_trimmed.collect()
-        env MATPLOTLIBRC from matplotlibrc
+        env MATPLOTLIBRC from ch_mpl_for_qiime_import
 
 	    output:
-	    file "demux.qza" into ch_qiime_demux
+	    file "demux.qza" into (ch_qiime_demux_import, ch_qiime_demux_vis, ch_qiime_demux_dada)
 
 	    when:
 	    !params.Q2imported
@@ -404,6 +405,7 @@ if( !params.classifier ){
 
         input:
         file database from ch_ref_database
+        env MATPLOTLIBRC from ch_mpl_for_make_classifier
 
 	    output:
 	    file("${params.FW_primer}-${params.RV_primer}-classifier.qza") into ch_qiime_classifier
@@ -457,8 +459,8 @@ if( !params.Q2imported ){
         publishDir "${params.outdir}", mode: 'copy'
 
 	    input:
-	    file demux from ch_qiime_demux
-        env MATPLOTLIBRC from matplotlibrc
+	    file demux from ch_qiime_demux_vis
+        env MATPLOTLIBRC from ch_mpl_for_demux_visualize
 
 	    output:
         file("demux/*-seven-number-summaries.csv") into csv_demux
@@ -539,9 +541,9 @@ process dada_single {
             else null}
 
     input:
-    file demux from ch_qiime_demux
+    file demux from ch_qiime_demux_dada
     val trunc from dada_trunc
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_dada_single
 
     output:
     file("table.qza") into ch_qiime_table_raw
@@ -625,7 +627,7 @@ process classifier {
     input:
     file repseq from ch_qiime_repseq_raw_for_classifier
     file trained_classifier from ch_qiime_classifier
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_classifier
 
     output:
     file("taxonomy.qza") into (ch_qiime_taxonomy_for_filter,ch_qiime_taxonomy_for_relative_abundance_reduced_taxa,ch_qiime_taxonomy_for_barplot,ch_qiime_taxonomy_for_ancom)
@@ -686,7 +688,7 @@ if (params.exclude_taxa == "none") {
 	    file table from ch_qiime_table_raw
 	    file repseq from  ch_qiime_repseq_raw_for_filter
 	    file taxonomy from ch_qiime_taxonomy_for_filter
-        env MATPLOTLIBRC from matplotlibrc
+        env MATPLOTLIBRC from ch_mpl_filter_taxa
 
 	    output:
 	    file("filtered-table.qza") into (ch_qiime_table_for_filtered_dada_output, ch_qiime_table_for_relative_abundance_asv,ch_qiime_table_for_relative_abundance_reduced_taxa,ch_qiime_table_for_ancom,ch_qiime_table_for_barplot,ch_qiime_table_for_alpha_rarefaction, ch_qiime_table_for_diversity_core)
@@ -727,7 +729,7 @@ process export_filtered_dada_output {
     input:
     file table from ch_qiime_table_for_filtered_dada_output
     file repseq from ch_qiime_repseq_for_dada_output
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_for_export_dada_output
 
     output:
     file("filtered/sequences.fasta") into ch_fasta_repseq
@@ -780,7 +782,7 @@ process RelativeAbundanceASV {
 
     input:
     file table from ch_qiime_table_for_relative_abundance_asv
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_for_relasv
 
     output:
     file("rel-table-ASV.tsv") into ch_tsv_relASV_table
@@ -815,7 +817,7 @@ process RelativeAbundanceReducedTaxa {
     input:
     file table from ch_qiime_table_for_relative_abundance_reduced_taxa
     file taxonomy from ch_qiime_taxonomy_for_relative_abundance_reduced_taxa
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_for_relreducetaxa
 
     output:
     file("*.tsv")
@@ -862,7 +864,7 @@ process barplot {
     file metadata from ch_metadata_for_barplot
     file table from ch_qiime_table_for_barplot
     file taxonomy from ch_qiime_taxonomy_for_barplot
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_for_barcode
 
     output:
     file("barplot/*")
@@ -894,7 +896,7 @@ process tree {
 
     input:
     file repseq from ch_qiime_repseq_for_tree
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_for_tree
 
     output:
     file("rooted-tree.qza") into (ch_qiime_tree_for_diversity_core, ch_qiime_tree_for_alpha_rarefaction)
@@ -940,7 +942,7 @@ process alpha_rarefaction {
     file table from ch_qiime_table_for_alpha_rarefaction
     file tree from ch_qiime_tree_for_alpha_rarefaction
     file stats from ch_tsv_table_for_alpha_rarefaction
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_for_alpha_rare
 
     output:
     file("alpha-rarefaction/*")
@@ -1003,7 +1005,7 @@ process diversity_core {
     file table from ch_qiime_table_for_diversity_core
     file tree from ch_qiime_tree_for_diversity_core
     file stats from ch_tsv_table_for_diversity_core
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_for_diversity_core
 
     output:
     file("core/*_pcoa_results.qza") into (qiime_diversity_core_for_beta_diversity_ordination) mode flatten
@@ -1042,7 +1044,7 @@ rarefaction_depth
 process metadata_category_all { 
     input:
     file metadata from ch_metadata_for_metadata_category_all
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_for_metadata_cat
 
     output:
     stdout into (meta_category_all,meta_category_all_for_ancom)
@@ -1070,7 +1072,7 @@ process metadata_category_pairwise {
 
     input:
     file metadata from ch_metadata_for_metadata_category_pairwise
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_for_metadata_pair
 
     output:
     stdout meta_category_pairwise
@@ -1109,7 +1111,7 @@ process alpha_diversity {
 
     input:
     file core from ch_for_alpha_diversity
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_for_alpha_diversity
 
     output:
     file("alpha-diversity/*") into qiime_alphadiversity
@@ -1134,7 +1136,7 @@ process beta_diversity {
 
     input:
     set file(meta), file(core), val(category) from ch_for_beta_diversity
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_for_beta_diversity
 
     output:
     file "beta-diversity/*"
@@ -1165,7 +1167,7 @@ process beta_diversity_ordination {
 
     input:
     file core from ch_for_beta_diversity_ordination
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_for_beta_diversity_ord
 
     output:
     file("beta-diversity/*")
@@ -1194,7 +1196,7 @@ process prepare_ancom {
     file metadata from ch_metadata_for_ancom
     file table from ch_qiime_table_for_ancom
     val meta from meta_category_all_for_ancom
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_for_ancom
 
     output:
     file("*.qza") into (ch_meta_tables_tax, ch_meta_tables_asv) mode flatten
@@ -1244,7 +1246,7 @@ process ancom_tax {
 
     input:
     set file(table), val(taxlevel), file(taxonomy), file(metadata) from ch_for_ancom_tax
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_for_ancom_tax
 
     output:
     file("ancom/*")
@@ -1281,7 +1283,7 @@ process ancom_asv {
 
     input:
     set file(table), file(metadata) from ch_for_ancom_asv
-    env MATPLOTLIBRC from matplotlibrc   
+    env MATPLOTLIBRC from ch_mpl_for_ancom_asv   
 
     output:
     file("ancom/*") 
@@ -1307,7 +1309,7 @@ process output_documentation {
     publishDir "${params.outdir}/Documentation", mode: 'copy'
 
     input:
-    file output_docs
+    file output_docs from ch_output_docs
 
     output:
     file "results_description.html"
@@ -1326,9 +1328,9 @@ process output_documentation {
 workflow.onComplete {
 
     // Set up the e-mail variables
-    def subject = "[nf-core/rrna-ampliseq] Successful: $workflow.runName"
+    def subject = "[nf-core/ampliseq] Successful: $workflow.runName"
     if(!workflow.success){
-      subject = "[nf-core/rrna-ampliseq] FAILED: $workflow.runName"
+      subject = "[nf-core/ampliseq] FAILED: $workflow.runName"
     }
     def email_fields = [:]
     email_fields['version'] = workflow.manifest.version
@@ -1376,11 +1378,11 @@ workflow.onComplete {
           if( params.plaintext_email ){ throw GroovyException('Send plaintext e-mail, not HTML') }
           // Try to send HTML e-mail using sendmail
           [ 'sendmail', '-t' ].execute() << sendmail_html
-          log.info "[nf-core/rrna-ampliseq] Sent summary e-mail to $params.email (sendmail)"
+          log.info "[nf-core/ampliseq] Sent summary e-mail to $params.email (sendmail)"
         } catch (all) {
           // Catch failures and try with plaintext
           [ 'mail', '-s', subject, params.email ].execute() << email_txt
-          log.info "[nf-core/rrna-ampliseq] Sent summary e-mail to $params.email (mail)"
+          log.info "[nf-core/ampliseq] Sent summary e-mail to $params.email (mail)"
         }
     }
 
@@ -1394,6 +1396,6 @@ workflow.onComplete {
     def output_tf = new File( output_d, "pipeline_report.txt" )
     output_tf.withWriter { w -> w << email_txt }
 
-    log.info "[nf-core/rrna-ampliseq] Pipeline Complete"
+    log.info "[nf-core/ampliseq] Pipeline Complete"
 
 }

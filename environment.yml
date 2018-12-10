@@ -1,4 +1,4 @@
-name: nf-core-rrna-ampliseq-1.0.0
+name: nf-core-ampliseq-1.0dev
 channels:
   - anaconda
   - qiime2/label/r2018.6
@@ -9,6 +9,7 @@ channels:
   - biocore
 dependencies:
   - fastqc=0.11.8 #newest version
+  - font-ttf-dejavu-sans-mono=2.37 #for fastqc 
   - multiqc=1.6 #newest version
   - unzip=6.0 #required for silva unzippping
   - r-rmarkdown=1.10

@@ -672,19 +672,12 @@ process classifier {
  * Filter out unwanted/off-target taxa
  */
 if (params.exclude_taxa == "none") {
-	process skip_filter_taxa {
-	    
-	    input:
-	    file table from ch_qiime_table_raw
-	    file repseq from  ch_qiime_repseq_raw_for_filter
 
-	    output:
-	    file("$table") into (ch_qiime_table_for_filtered_dada_output, ch_qiime_table_for_relative_abundance_asv,ch_qiime_table_for_relative_abundance_reduced_taxa,ch_qiime_table_for_ancom,ch_qiime_table_for_barplot)
-	    file("$repseq") into (ch_qiime_repseq_for_dada_output,ch_qiime_repseq_for_tree)
+    ch_qiime_repseq_raw_for_filter
+        .into{ ch_qiime_repseq_for_dada_output; ch_qiime_repseq_for_tree }
 
-	    script:
-        log.info "skip filtering results"
-	}
+    ch_qiime_table_raw
+        .into{ ch_qiime_table_for_filtered_dada_output; ch_qiime_table_for_relative_abundance_asv; ch_qiime_table_for_relative_abundance_reduced_taxa; ch_qiime_table_for_ancom; ch_qiime_table_for_barplot; ch_qiime_table_for_alpha_rarefaction; ch_qiime_table_for_diversity_core }
 
 } else {
 	process filter_taxa {

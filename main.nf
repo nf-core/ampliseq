@@ -48,6 +48,7 @@ def helpMessage() {
 
     References:                     If you have trained a compatible classifier before
       --classifier                  Path to QIIME2 classifier file (typically *-classifier.qza)
+      --classifier_removeHash       Remove all hash signs from taxonomy strings, resolves a rare ValueError during classification (process classifier)
 
     Statistics:
       --metadata_category           Diversity indices will be calculated using these groupings in the metadata sheet,
@@ -103,6 +104,7 @@ params.diversity_cores = 2
 params.retain_untrimmed = false
 params.exclude_taxa = "mitochondria,chloroplast"
 params.keepIntermediates = false
+params.classifier_removeHash = false
 
 //Database specific parameters
 //currently only this is compatible with process make_SILVA_132_16S_classifier
@@ -399,7 +401,7 @@ if( !params.classifier ){
 	process make_SILVA_132_16S_classifier {
         publishDir "${params.outdir}/DB/", mode: 'copy', 
         saveAs: {filename -> 
-            if (filename.indexOf("${params.FW_primer}-${params.RV_primer}-classifier.qza") == 0) filename
+            if (filename.indexOf("${params.FW_primer}-${params.RV_primer}-${params.dereplication}-classifier.qza") == 0) filename
             else if(params.keepIntermediates) filename 
             else null}
 
@@ -408,8 +410,9 @@ if( !params.classifier ){
         env MATPLOTLIBRC from ch_mpl_for_make_classifier
 
 	    output:
-	    file("${params.FW_primer}-${params.RV_primer}-classifier.qza") into ch_qiime_classifier
+	    file("${params.FW_primer}-${params.RV_primer}-${params.dereplication}-classifier.qza") into ch_qiime_classifier
         file("*.qza")
+        stdout message_classifier_removeHash
 
 	    when:
 	    !params.onlyDenoising
@@ -417,38 +420,48 @@ if( !params.classifier ){
 	    script:
 	  
 	    """
-	    unzip $database
+	    unzip -qq $database
 
         fasta=\"SILVA_132_QIIME_release/rep_set/rep_set_16S_only/${params.dereplication}/silva_132_${params.dereplication}_16S.fna\"
         taxonomy=\"SILVA_132_QIIME_release/taxonomy/16S_only/${params.dereplication}/consensus_taxonomy_7_levels.txt\"
 
+        if [ \"${params.classifier_removeHash}\" = \"true\" ]; then
+		    sed \'s/#//g\' \$taxonomy >taxonomy-${params.dereplication}_removeHash.txt
+		    taxonomy=\"taxonomy-${params.dereplication}_removeHash.txt\"
+		    echo \"\n######## WARNING! The taxonomy file was altered by removing all hash signs!\"
+        fi
+
 	    ### Import
 	    qiime tools import --type \'FeatureData[Sequence]\' \
 		--input-path \$fasta \
-		--output-path ref-seq.qza
+		--output-path ref-seq-${params.dereplication}.qza
 	    qiime tools import --type \'FeatureData[Taxonomy]\' \
 		--source-format HeaderlessTSVTaxonomyFormat \
 		--input-path \$taxonomy \
-		--output-path ref-taxonomy.qza
+		--output-path ref-taxonomy-${params.dereplication}.qza
 
 	    #Extract sequences based on primers
 	    qiime feature-classifier extract-reads \
-		--i-sequences ref-seq.qza \
+		--i-sequences ref-seq-${params.dereplication}.qza \
 		--p-f-primer ${params.FW_primer} \
 		--p-r-primer ${params.RV_primer} \
-		--o-reads ${params.FW_primer}-${params.RV_primer}-ref-seq.qza
+		--o-reads ${params.FW_primer}-${params.RV_primer}-${params.dereplication}-ref-seq.qza \
+        --quiet
 
 	    #Train classifier
 	    qiime feature-classifier fit-classifier-naive-bayes \
-		--i-reference-reads ${params.FW_primer}-${params.RV_primer}-ref-seq.qza \
-		--i-reference-taxonomy ref-taxonomy.qza \
-		--o-classifier ${params.FW_primer}-${params.RV_primer}-classifier.qza
+		--i-reference-reads ${params.FW_primer}-${params.RV_primer}-${params.dereplication}-ref-seq.qza \
+		--i-reference-taxonomy ref-taxonomy-${params.dereplication}.qza \
+		--o-classifier ${params.FW_primer}-${params.RV_primer}-${params.dereplication}-classifier.qza \
+        --quiet
 	    """
 	}
 } else {
     Channel.fromPath("${params.classifier}")
            .set { ch_qiime_classifier }
 }
+message_classifier_removeHash
+    .subscribe { log.info it }
 
 
 /*

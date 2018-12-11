@@ -456,13 +456,12 @@ if( !params.classifier ){
         --quiet
 	    """
 	}
+    message_classifier_removeHash
+        .subscribe { log.info it }
 } else {
     Channel.fromPath("${params.classifier}")
            .set { ch_qiime_classifier }
 }
-message_classifier_removeHash
-    .subscribe { log.info it }
-
 
 /*
  * Import trimmed files into QIIME2 artefact

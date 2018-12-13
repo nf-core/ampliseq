@@ -13,7 +13,7 @@ before_install:
   # Pull the docker image first so the test doesn't wait for this
   - docker pull nfcore/ampliseq:dev
   # Fake the tag locally so that the pipeline runs properly
-  - docker tag nfcore/ampliseq:dev nfcore/ampliseq:latest
+  - docker tag nfcore/ampliseq:dev nfcore/ampliseq:1.0.0
 
 install:
   # Install Nextflow

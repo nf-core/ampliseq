@@ -1096,13 +1096,16 @@ process metadata_category_pairwise {
 
 ch_metadata_for_alpha_diversity
     .combine( qiime_diversity_core_for_alpha_diversity )
+    .combine( ch_mpl_for_alpha_diversity )
     .set{ ch_for_alpha_diversity }
 ch_metadata_for_beta_diversity
     .combine( qiime_diversity_core_for_beta_diversity )
     .combine( meta_category_pairwise )
+    .combine( ch_mpl_for_beta_diversity )
     .set{ ch_for_beta_diversity }
 ch_metadata_for_beta_diversity_ordination
     .combine( qiime_diversity_core_for_beta_diversity_ordination )
+    .combine( ch_mpl_for_beta_diversity_ord )
     .set{ ch_for_beta_diversity_ordination }
     
 
@@ -1111,23 +1114,22 @@ ch_metadata_for_beta_diversity_ordination
  * Compute alpha diversity indices
  */
 process alpha_diversity { 
-    tag "${core[1].baseName}"
+    tag "${core.baseName}"
     publishDir "${params.outdir}", mode: 'copy'    
 
     input:
-    file core from ch_for_alpha_diversity
-    env MATPLOTLIBRC from ch_mpl_for_alpha_diversity
+    set file(metadata), file(core), env(MATPLOTLIBRC) from ch_for_alpha_diversity
 
     output:
     file("alpha-diversity/*") into qiime_alphadiversity
 
     """
 	qiime diversity alpha-group-significance \
-        --i-alpha-diversity ${core[1]} \
-        --m-metadata-file ${core[0]} \
-        --o-visualization ${core[1].baseName}-vis.qzv
-	qiime tools export ${core[1].baseName}-vis.qzv \
-        --output-dir "alpha-diversity/${core[1].baseName}"
+        --i-alpha-diversity ${core} \
+        --m-metadata-file ${metadata} \
+        --o-visualization ${core.baseName}-vis.qzv
+	qiime tools export ${core.baseName}-vis.qzv \
+        --output-dir "alpha-diversity/${core.baseName}"
     """
 }
 
@@ -1140,8 +1142,7 @@ process beta_diversity {
     publishDir "${params.outdir}", mode: 'copy'     
 
     input:
-    set file(meta), file(core), val(category) from ch_for_beta_diversity
-    env MATPLOTLIBRC from ch_mpl_for_beta_diversity
+    set file(meta), file(core), val(category), env(MATPLOTLIBRC) from ch_for_beta_diversity
 
     output:
     file "beta-diversity/*"
@@ -1167,23 +1168,22 @@ process beta_diversity {
  * Compute beta diversity ordination
  */
 process beta_diversity_ordination { 
-    tag "${core[1].baseName}"
+    tag "${core.baseName}"
     publishDir "${params.outdir}", mode: 'copy'
 
     input:
-    file core from ch_for_beta_diversity_ordination
-    env MATPLOTLIBRC from ch_mpl_for_beta_diversity_ord
+    set file(metadata), file(core), env(MATPLOTLIBRC) from ch_for_beta_diversity_ordination
 
     output:
     file("beta-diversity/*")
 
     """
 	qiime emperor plot \
-        --i-pcoa ${core[1]} \
-        --m-metadata-file ${core[0]} \
-        --o-visualization ${core[1].baseName}-vis.qzv
-	qiime tools export ${core[1].baseName}-vis.qzv \
-        --output-dir beta-diversity/${core[1].baseName}-PCoA
+        --i-pcoa ${core} \
+        --m-metadata-file ${metadata} \
+        --o-visualization ${core.baseName}-vis.qzv
+	qiime tools export ${core.baseName}-vis.qzv \
+        --output-dir beta-diversity/${core.baseName}-PCoA
     """
 }
 
@@ -1234,10 +1234,12 @@ ch_meta_tables_tax
     .combine( ch_taxlevel_tax )
     .combine( ch_qiime_taxonomy_for_ancom )
     .combine( ch_metadata_for_ancom_tax )
+    .combine( ch_mpl_for_ancom_tax )
     .set{ ch_for_ancom_tax }
 
 ch_meta_tables_asv
     .combine( ch_metadata_for_ancom_asv )
+    .combine ( ch_mpl_for_ancom_asv )
     .set{ ch_for_ancom_asv }
 
 
@@ -1250,8 +1252,7 @@ process ancom_tax {
     publishDir "${params.outdir}", mode: 'copy'    
 
     input:
-    set file(table), val(taxlevel), file(taxonomy), file(metadata) from ch_for_ancom_tax
-    env MATPLOTLIBRC from ch_mpl_for_ancom_tax
+    set file(table), val(taxlevel), file(taxonomy), file(metadata), env(MATPLOTLIBRC) from ch_for_ancom_tax
 
     output:
     file("ancom/*")
@@ -1287,8 +1288,7 @@ process ancom_asv {
     publishDir "${params.outdir}", mode: 'copy' 
 
     input:
-    set file(table), file(metadata) from ch_for_ancom_asv
-    env MATPLOTLIBRC from ch_mpl_for_ancom_asv   
+    set file(table), file(metadata), env(MATPLOTLIBRC) from ch_for_ancom_asv 
 
     output:
     file("ancom/*") 

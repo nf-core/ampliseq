@@ -19,6 +19,7 @@
     * [`--Q2imported`](#--Q2imported)
 * [Reference database](#reference-database)
     * [`--classifier`](#--classifier)
+    * [`--classifier_removeHash`](#--classifier_removeHash)
 * [Statistics](#statistics)
     * [`--metadata_category`](#--metadata_category)
 * [Filters](#filters)
@@ -206,6 +207,10 @@ Please note the following requirements:
 2. The cassifier is a Naive Bayes classifier produced by "qiime feature-classifier fit-classifier-naive-bayes" (e.g. by this pipeline or from [QIIME2 resources](https://docs.qiime2.org/2018.6/data-resources/))
 3. The primer pair for the amplicon PCR and the computing of the classifier are exactly the same
 4. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses (0.19.1).
+
+### `--classifier_removeHash`
+Remove all hash signs from taxonomy strings, resolves a rare ValueError during classification (process classifier).
+
 
 ## Statistics
 

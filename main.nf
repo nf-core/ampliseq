@@ -48,6 +48,7 @@ def helpMessage() {
 
     References:                     If you have trained a compatible classifier before
       --classifier                  Path to QIIME2 classifier file (typically *-classifier.qza)
+      --classifier_removeHash       Remove all hash signs from taxonomy strings, resolves a rare ValueError during classification (process classifier)
 
     Statistics:
       --metadata_category           Diversity indices will be calculated using these groupings in the metadata sheet,
@@ -103,6 +104,7 @@ params.diversity_cores = 2
 params.retain_untrimmed = false
 params.exclude_taxa = "mitochondria,chloroplast"
 params.keepIntermediates = false
+params.classifier_removeHash = false
 
 //Database specific parameters
 //currently only this is compatible with process make_SILVA_132_16S_classifier
@@ -399,7 +401,7 @@ if( !params.classifier ){
 	process make_SILVA_132_16S_classifier {
         publishDir "${params.outdir}/DB/", mode: 'copy', 
         saveAs: {filename -> 
-            if (filename.indexOf("${params.FW_primer}-${params.RV_primer}-classifier.qza") == 0) filename
+            if (filename.indexOf("${params.FW_primer}-${params.RV_primer}-${params.dereplication}-classifier.qza") == 0) filename
             else if(params.keepIntermediates) filename 
             else null}
 
@@ -408,8 +410,9 @@ if( !params.classifier ){
         env MATPLOTLIBRC from ch_mpl_for_make_classifier
 
 	    output:
-	    file("${params.FW_primer}-${params.RV_primer}-classifier.qza") into ch_qiime_classifier
+	    file("${params.FW_primer}-${params.RV_primer}-${params.dereplication}-classifier.qza") into ch_qiime_classifier
         file("*.qza")
+        stdout message_classifier_removeHash
 
 	    when:
 	    !params.onlyDenoising
@@ -417,39 +420,48 @@ if( !params.classifier ){
 	    script:
 	  
 	    """
-	    unzip $database
+	    unzip -qq $database
 
         fasta=\"SILVA_132_QIIME_release/rep_set/rep_set_16S_only/${params.dereplication}/silva_132_${params.dereplication}_16S.fna\"
         taxonomy=\"SILVA_132_QIIME_release/taxonomy/16S_only/${params.dereplication}/consensus_taxonomy_7_levels.txt\"
 
+        if [ \"${params.classifier_removeHash}\" = \"true\" ]; then
+		    sed \'s/#//g\' \$taxonomy >taxonomy-${params.dereplication}_removeHash.txt
+		    taxonomy=\"taxonomy-${params.dereplication}_removeHash.txt\"
+		    echo \"\n######## WARNING! The taxonomy file was altered by removing all hash signs!\"
+        fi
+
 	    ### Import
 	    qiime tools import --type \'FeatureData[Sequence]\' \
 		--input-path \$fasta \
-		--output-path ref-seq.qza
+		--output-path ref-seq-${params.dereplication}.qza
 	    qiime tools import --type \'FeatureData[Taxonomy]\' \
 		--source-format HeaderlessTSVTaxonomyFormat \
 		--input-path \$taxonomy \
-		--output-path ref-taxonomy.qza
+		--output-path ref-taxonomy-${params.dereplication}.qza
 
 	    #Extract sequences based on primers
 	    qiime feature-classifier extract-reads \
-		--i-sequences ref-seq.qza \
+		--i-sequences ref-seq-${params.dereplication}.qza \
 		--p-f-primer ${params.FW_primer} \
 		--p-r-primer ${params.RV_primer} \
-		--o-reads ${params.FW_primer}-${params.RV_primer}-ref-seq.qza
+		--o-reads ${params.FW_primer}-${params.RV_primer}-${params.dereplication}-ref-seq.qza \
+        --quiet
 
 	    #Train classifier
 	    qiime feature-classifier fit-classifier-naive-bayes \
-		--i-reference-reads ${params.FW_primer}-${params.RV_primer}-ref-seq.qza \
-		--i-reference-taxonomy ref-taxonomy.qza \
-		--o-classifier ${params.FW_primer}-${params.RV_primer}-classifier.qza
+		--i-reference-reads ${params.FW_primer}-${params.RV_primer}-${params.dereplication}-ref-seq.qza \
+		--i-reference-taxonomy ref-taxonomy-${params.dereplication}.qza \
+		--o-classifier ${params.FW_primer}-${params.RV_primer}-${params.dereplication}-classifier.qza \
+        --quiet
 	    """
 	}
+    message_classifier_removeHash
+        .subscribe { log.info it }
 } else {
     Channel.fromPath("${params.classifier}")
            .set { ch_qiime_classifier }
 }
-
 
 /*
  * Import trimmed files into QIIME2 artefact
@@ -660,19 +672,12 @@ process classifier {
  * Filter out unwanted/off-target taxa
  */
 if (params.exclude_taxa == "none") {
-	process skip_filter_taxa {
-	    
-	    input:
-	    file table from ch_qiime_table_raw
-	    file repseq from  ch_qiime_repseq_raw_for_filter
 
-	    output:
-	    file("$table") into (ch_qiime_table_for_filtered_dada_output, ch_qiime_table_for_relative_abundance_asv,ch_qiime_table_for_relative_abundance_reduced_taxa,ch_qiime_table_for_ancom,ch_qiime_table_for_barplot)
-	    file("$repseq") into (ch_qiime_repseq_for_dada_output,ch_qiime_repseq_for_tree)
+    ch_qiime_repseq_raw_for_filter
+        .into{ ch_qiime_repseq_for_dada_output; ch_qiime_repseq_for_tree }
 
-	    script:
-        log.info "skip filtering results"
-	}
+    ch_qiime_table_raw
+        .into{ ch_qiime_table_for_filtered_dada_output; ch_qiime_table_for_relative_abundance_asv; ch_qiime_table_for_relative_abundance_reduced_taxa; ch_qiime_table_for_ancom; ch_qiime_table_for_barplot; ch_qiime_table_for_alpha_rarefaction; ch_qiime_table_for_diversity_core }
 
 } else {
 	process filter_taxa {
@@ -1091,13 +1096,16 @@ process metadata_category_pairwise {
 
 ch_metadata_for_alpha_diversity
     .combine( qiime_diversity_core_for_alpha_diversity )
+    .combine( ch_mpl_for_alpha_diversity )
     .set{ ch_for_alpha_diversity }
 ch_metadata_for_beta_diversity
     .combine( qiime_diversity_core_for_beta_diversity )
     .combine( meta_category_pairwise )
+    .combine( ch_mpl_for_beta_diversity )
     .set{ ch_for_beta_diversity }
 ch_metadata_for_beta_diversity_ordination
     .combine( qiime_diversity_core_for_beta_diversity_ordination )
+    .combine( ch_mpl_for_beta_diversity_ord )
     .set{ ch_for_beta_diversity_ordination }
     
 
@@ -1106,23 +1114,22 @@ ch_metadata_for_beta_diversity_ordination
  * Compute alpha diversity indices
  */
 process alpha_diversity { 
-    tag "${core[1].baseName}"
+    tag "${core.baseName}"
     publishDir "${params.outdir}", mode: 'copy'    
 
     input:
-    file core from ch_for_alpha_diversity
-    env MATPLOTLIBRC from ch_mpl_for_alpha_diversity
+    set file(metadata), file(core), env(MATPLOTLIBRC) from ch_for_alpha_diversity
 
     output:
     file("alpha-diversity/*") into qiime_alphadiversity
 
     """
 	qiime diversity alpha-group-significance \
-        --i-alpha-diversity ${core[1]} \
-        --m-metadata-file ${core[0]} \
-        --o-visualization ${core[1].baseName}-vis.qzv
-	qiime tools export ${core[1].baseName}-vis.qzv \
-        --output-dir "alpha-diversity/${core[1].baseName}"
+        --i-alpha-diversity ${core} \
+        --m-metadata-file ${metadata} \
+        --o-visualization ${core.baseName}-vis.qzv
+	qiime tools export ${core.baseName}-vis.qzv \
+        --output-dir "alpha-diversity/${core.baseName}"
     """
 }
 
@@ -1135,8 +1142,7 @@ process beta_diversity {
     publishDir "${params.outdir}", mode: 'copy'     
 
     input:
-    set file(meta), file(core), val(category) from ch_for_beta_diversity
-    env MATPLOTLIBRC from ch_mpl_for_beta_diversity
+    set file(meta), file(core), val(category), env(MATPLOTLIBRC) from ch_for_beta_diversity
 
     output:
     file "beta-diversity/*"
@@ -1162,23 +1168,22 @@ process beta_diversity {
  * Compute beta diversity ordination
  */
 process beta_diversity_ordination { 
-    tag "${core[1].baseName}"
+    tag "${core.baseName}"
     publishDir "${params.outdir}", mode: 'copy'
 
     input:
-    file core from ch_for_beta_diversity_ordination
-    env MATPLOTLIBRC from ch_mpl_for_beta_diversity_ord
+    set file(metadata), file(core), env(MATPLOTLIBRC) from ch_for_beta_diversity_ordination
 
     output:
     file("beta-diversity/*")
 
     """
 	qiime emperor plot \
-        --i-pcoa ${core[1]} \
-        --m-metadata-file ${core[0]} \
-        --o-visualization ${core[1].baseName}-vis.qzv
-	qiime tools export ${core[1].baseName}-vis.qzv \
-        --output-dir beta-diversity/${core[1].baseName}-PCoA
+        --i-pcoa ${core} \
+        --m-metadata-file ${metadata} \
+        --o-visualization ${core.baseName}-vis.qzv
+	qiime tools export ${core.baseName}-vis.qzv \
+        --output-dir beta-diversity/${core.baseName}-PCoA
     """
 }
 
@@ -1229,10 +1234,12 @@ ch_meta_tables_tax
     .combine( ch_taxlevel_tax )
     .combine( ch_qiime_taxonomy_for_ancom )
     .combine( ch_metadata_for_ancom_tax )
+    .combine( ch_mpl_for_ancom_tax )
     .set{ ch_for_ancom_tax }
 
 ch_meta_tables_asv
     .combine( ch_metadata_for_ancom_asv )
+    .combine ( ch_mpl_for_ancom_asv )
     .set{ ch_for_ancom_asv }
 
 
@@ -1245,8 +1252,7 @@ process ancom_tax {
     publishDir "${params.outdir}", mode: 'copy'    
 
     input:
-    set file(table), val(taxlevel), file(taxonomy), file(metadata) from ch_for_ancom_tax
-    env MATPLOTLIBRC from ch_mpl_for_ancom_tax
+    set file(table), val(taxlevel), file(taxonomy), file(metadata), env(MATPLOTLIBRC) from ch_for_ancom_tax
 
     output:
     file("ancom/*")
@@ -1282,8 +1288,7 @@ process ancom_asv {
     publishDir "${params.outdir}", mode: 'copy' 
 
     input:
-    set file(table), file(metadata) from ch_for_ancom_asv
-    env MATPLOTLIBRC from ch_mpl_for_ancom_asv   
+    set file(table), file(metadata), env(MATPLOTLIBRC) from ch_for_ancom_asv 
 
     output:
     file("ancom/*") 

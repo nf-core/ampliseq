@@ -332,7 +332,7 @@ if (!params.Q2imported){
         mkdir -p trimmed
 	    cutadapt -g ${params.FW_primer} -G ${params.RV_primer} $discard_untrimmed \
             -o trimmed/${reads[0]} -p trimmed/${reads[1]} \
-            ${reads[0]} ${reads[1]} 2> cutadapt_log_${reads[0].baseName}.txt
+            ${reads[0]} ${reads[1]} > cutadapt_log_${reads[0].baseName}.txt
 	    """
 	}
 
@@ -344,7 +344,7 @@ if (!params.Q2imported){
 
 	    input:
 	    file ('fastqc/*') from ch_fastqc_results.collect()
-        file ('cutadapt/*') from ch_fastq_cutadapt_log.collect()
+        file ('cutadapt/logs/*') from ch_fastq_cutadapt_log.collect()
 
 	    output:
 	    file "*multiqc_report.html" into multiqc_report

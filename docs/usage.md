@@ -241,6 +241,13 @@ Please note the following requirements:
 2. Features that contain one or several of these terms in their taxonomical classification are excluded from further analysis
 3. The taxonomy level is not taken into consideration
 
+### `--min_frequency`        
+Remove entries from the feature table below an absolute abundance threshold (default: 1). Singletons are often regarded as artifacts, choosing a value of 2 removes sequences with less than 2 total counts from the feature table.
+
+### `--min_samples`           
+Filtering low prevalent features from the feature table, e.g. keeping only features that are present in at least two samples can be achived by choosing a value of 2 (default: 1). Typically only used when having replicates for all samples.         
+
+
 ## Skipping steps:
 
 ### `--skip_fastqc`

@@ -37,6 +37,8 @@ def helpMessage() {
     Filters:
       --exclude_taxa [str]          Comma seperated list of unwanted taxa (default: "mitochondria,chloroplast")
                                     To skip filtering use "none"
+      --min_frequency [int]         Remove entries from the feature table below an absolute abundance threshold (default: 1)
+      --min_samples [int]           Filtering low prevalent features from the feature table (default: 1)                   
 
     Cutoffs:
       --retain_untrimmed            Cutadapt will retain untrimmed reads
@@ -105,6 +107,8 @@ params.retain_untrimmed = false
 params.exclude_taxa = "mitochondria,chloroplast"
 params.keepIntermediates = false
 params.classifier_removeHash = false
+params.min_frequency = false
+params.min_samples = false
 
 //Database specific parameters
 //currently only this is compatible with process make_SILVA_132_16S_classifier
@@ -671,7 +675,7 @@ process classifier {
 /*
  * Filter out unwanted/off-target taxa
  */
-if (params.exclude_taxa == "none") {
+if (params.exclude_taxa == "none" && !params.min_frequency && !params.min_samples) {
 
     ch_qiime_repseq_raw_for_filter
         .into{ ch_qiime_repseq_for_dada_output; ch_qiime_repseq_for_tree }
@@ -681,7 +685,7 @@ if (params.exclude_taxa == "none") {
 
 } else {
 	process filter_taxa {
-        tag "${params.exclude_taxa}"
+        tag "taxa:${params.exclude_taxa};min-freq:${params.min_frequency};min-samples:${params.min_samples}"
 
     	publishDir "${params.outdir}", mode: 'copy',
         saveAs: {filename -> 
@@ -700,22 +704,42 @@ if (params.exclude_taxa == "none") {
 	    file("filtered-sequences.qza") into (ch_qiime_repseq_for_dada_output,ch_qiime_repseq_for_tree)
 
 	    script:
+        if ( "${params.min_frequency}" == "false" ) { minfrequency = 1 } else { minfrequency = "${params.min_frequency}" }
+        if ( "${params.min_samples}" == "false" ) { minsamples = 1 } else { minsamples = "${params.min_samples}" }
+        //if ( "${params.exclude_taxa}" == "none" ) { exclude = "" } else { exclude = "--p-exclude ${params.exclude_taxa} --p-mode contains " }
 	    """
-	    #filter sequences
-	    qiime taxa filter-seqs \
-		--i-sequences $repseq \
-		--i-taxonomy $taxonomy \
-		--p-exclude ${params.exclude_taxa} \
-		--p-mode contains \
-		--o-filtered-sequences filtered-sequences.qza
+        if ! [ \"${params.exclude_taxa}\" = \"none\" ]; then
+            #filter sequences
+            qiime taxa filter-seqs \
+            --i-sequences $repseq \
+            --i-taxonomy $taxonomy \
+            --p-exclude ${params.exclude_taxa} --p-mode contains \
+            --o-filtered-sequences tax_filtered-sequences.qza
 
-	    #filter abundance table
-	    qiime taxa filter-table \
-		--i-table $table \
-		--i-taxonomy $taxonomy \
-		--p-exclude ${params.exclude_taxa} \
-		--p-mode contains \
-		--o-filtered-table filtered-table.qza
+            #filter abundance table
+            qiime taxa filter-table \
+            --i-table $table \
+            --i-taxonomy $taxonomy \
+            --p-exclude ${params.exclude_taxa} --p-mode contains \
+            --o-filtered-table tax_filtered-table.qza
+
+            filtered_table="tax_filtered-table.qza"
+            filtered_sequences="tax_filtered-sequences.qza"
+        else
+            filtered_table=$table
+            filtered_sequences=$repseq
+        fi
+
+        qiime feature-table filter-features \
+        --i-table \$filtered_table \
+        --p-min-frequency $minfrequency \
+        --p-min-samples $minsamples \
+        --o-filtered-table filtered-table.qza
+        
+        qiime feature-table filter-seqs \
+        --i-data \$filtered_sequences \
+        --i-table filtered-table.qza \
+        --o-filtered-data filtered-sequences.qza
 	    """
 	}
 }

@@ -36,7 +36,11 @@ Solutions might be (numbered as above):
 2. Allow more overlap using higher truncation values
 3. Double check the primer sequence
 
+## "ValueError: CategoricalMetadataColumn does not support strings with leading or trailing whitespace characters"
+This is a shortcoming of the QIIME2 classifier trainer and QIIME2 to handle '#' when specific sequences are in a sample related to specific taxonomies of the classifier. 
 
+The solution is to remove all hash signs from the taxonomy strings using:
+`--classifier_removeHash`
 
 ## Extra resources and getting help
 If you still have an issue with running the pipeline then feel free to contact us.

@@ -19,6 +19,7 @@
     * [`--Q2imported`](#--Q2imported)
 * [Reference database](#reference-database)
     * [`--classifier`](#--classifier)
+    * [`--classifier_removeHash`](#--classifier_removeHash)
 * [Statistics](#statistics)
     * [`--metadata_category`](#--metadata_category)
 * [Filters](#filters)
@@ -207,6 +208,10 @@ Please note the following requirements:
 3. The primer pair for the amplicon PCR and the computing of the classifier are exactly the same
 4. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses (0.19.1).
 
+### `--classifier_removeHash`
+Remove all hash signs from taxonomy strings, resolves a rare ValueError during classification (process classifier).
+
+
 ## Statistics
 
 ### `--metadata_category`
@@ -235,6 +240,13 @@ Please note the following requirements:
 1. Comma seperated list enclosed in quotes and may not contain whitespace characters
 2. Features that contain one or several of these terms in their taxonomical classification are excluded from further analysis
 3. The taxonomy level is not taken into consideration
+
+### `--min_frequency`        
+Remove entries from the feature table below an absolute abundance threshold (default: 1). Singletons are often regarded as artifacts, choosing a value of 2 removes sequences with less than 2 total counts from the feature table.
+
+### `--min_samples`           
+Filtering low prevalent features from the feature table, e.g. keeping only features that are present in at least two samples can be achived by choosing a value of 2 (default: 1). Typically only used when having replicates for all samples.         
+
 
 ## Skipping steps:
 

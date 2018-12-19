@@ -37,6 +37,8 @@ def helpMessage() {
     Filters:
       --exclude_taxa [str]          Comma seperated list of unwanted taxa (default: "mitochondria,chloroplast")
                                     To skip filtering use "none"
+      --min_frequency [int]         Remove entries from the feature table below an absolute abundance threshold (default: 1)
+      --min_samples [int]           Filtering low prevalent features from the feature table (default: 1)                   
 
     Cutoffs:
       --retain_untrimmed            Cutadapt will retain untrimmed reads
@@ -48,6 +50,7 @@ def helpMessage() {
 
     References:                     If you have trained a compatible classifier before
       --classifier                  Path to QIIME2 classifier file (typically *-classifier.qza)
+      --classifier_removeHash       Remove all hash signs from taxonomy strings, resolves a rare ValueError during classification (process classifier)
 
     Statistics:
       --metadata_category           Diversity indices will be calculated using these groupings in the metadata sheet,
@@ -88,9 +91,10 @@ params.multiqc_config = "$baseDir/conf/multiqc_config.yaml"
 params.email = false
 params.plaintext_email = false
 
-multiqc_config = file(params.multiqc_config)
-output_docs = file("$baseDir/docs/output.md")
-matplotlibrc = file("$baseDir/assets/matplotlibrc")
+ch_multiqc_config = Channel.fromPath(params.multiqc_config)
+ch_output_docs = Channel.fromPath("$baseDir/docs/output.md")
+Channel.fromPath("$baseDir/assets/matplotlibrc")
+                      .into { ch_mpl_for_make_classifier; ch_mpl_for_qiime_import; ch_mpl_for_ancom_asv; ch_mpl_for_ancom_tax; ch_mpl_for_ancom; ch_mpl_for_beta_diversity_ord; ch_mpl_for_beta_diversity; ch_mpl_for_alpha_diversity; ch_mpl_for_metadata_pair; ch_mpl_for_metadata_cat; ch_mpl_for_diversity_core; ch_mpl_for_alpha_rare; ch_mpl_for_tree; ch_mpl_for_barcode; ch_mpl_for_relreducetaxa; ch_mpl_for_relasv; ch_mpl_for_export_dada_output; ch_mpl_filter_taxa; ch_mpl_classifier; ch_mpl_dada_single; ch_mpl_for_demux_visualize; ch_mpl_for_classifier }
 
 // Defines all parameters that are independent of a test run
 params.trunc_qmin = 25 //to calculate params.trunclenf and params.trunclenr automatically
@@ -102,6 +106,9 @@ params.diversity_cores = 2
 params.retain_untrimmed = false
 params.exclude_taxa = "mitochondria,chloroplast"
 params.keepIntermediates = false
+params.classifier_removeHash = false
+params.min_frequency = false
+params.min_samples = false
 
 //Database specific parameters
 //currently only this is compatible with process make_SILVA_132_16S_classifier
@@ -124,7 +131,7 @@ if (params.Q2imported) {
     params.skip_multiqc = true
     //Set up channel
     Channel.fromFile("${params.Q2imported}")
-           .into { ch_qiime_demux }
+           .into { ch_qiime_demux_import; ch_qiime_demux_vis; ch_qiime_demux_dada }
     params.keepIntermediates = true
 } else {
     params.skip_fastqc = false
@@ -329,7 +336,7 @@ if (!params.Q2imported){
         mkdir -p trimmed
 	    cutadapt -g ${params.FW_primer} -G ${params.RV_primer} $discard_untrimmed \
             -o trimmed/${reads[0]} -p trimmed/${reads[1]} \
-            ${reads[0]} ${reads[1]} 2> cutadapt_log_${reads[0].baseName}.txt
+            ${reads[0]} ${reads[1]} > cutadapt_log_${reads[0].baseName}.txt
 	    """
 	}
 
@@ -341,7 +348,7 @@ if (!params.Q2imported){
 
 	    input:
 	    file ('fastqc/*') from ch_fastqc_results.collect()
-        file ('cutadapt/*') from ch_fastq_cutadapt_log.collect()
+        file ('cutadapt/logs/*') from ch_fastq_cutadapt_log.collect()
 
 	    output:
 	    file "*multiqc_report.html" into multiqc_report
@@ -365,10 +372,10 @@ if (!params.Q2imported){
 
 	    input:
 	    file(trimmed) from ch_fastq_trimmed.collect()
-        env MATPLOTLIBRC from matplotlibrc
+        env MATPLOTLIBRC from ch_mpl_for_qiime_import
 
 	    output:
-	    file "demux.qza" into ch_qiime_demux
+	    file "demux.qza" into (ch_qiime_demux_import, ch_qiime_demux_vis, ch_qiime_demux_dada)
 
 	    when:
 	    !params.Q2imported
@@ -398,16 +405,18 @@ if( !params.classifier ){
 	process make_SILVA_132_16S_classifier {
         publishDir "${params.outdir}/DB/", mode: 'copy', 
         saveAs: {filename -> 
-            if (filename.indexOf("${params.FW_primer}-${params.RV_primer}-classifier.qza") == 0) filename
+            if (filename.indexOf("${params.FW_primer}-${params.RV_primer}-${params.dereplication}-classifier.qza") == 0) filename
             else if(params.keepIntermediates) filename 
             else null}
 
         input:
         file database from ch_ref_database
+        env MATPLOTLIBRC from ch_mpl_for_make_classifier
 
 	    output:
-	    file("${params.FW_primer}-${params.RV_primer}-classifier.qza") into ch_qiime_classifier
+	    file("${params.FW_primer}-${params.RV_primer}-${params.dereplication}-classifier.qza") into ch_qiime_classifier
         file("*.qza")
+        stdout message_classifier_removeHash
 
 	    when:
 	    !params.onlyDenoising
@@ -415,39 +424,48 @@ if( !params.classifier ){
 	    script:
 	  
 	    """
-	    unzip $database
+	    unzip -qq $database
 
         fasta=\"SILVA_132_QIIME_release/rep_set/rep_set_16S_only/${params.dereplication}/silva_132_${params.dereplication}_16S.fna\"
         taxonomy=\"SILVA_132_QIIME_release/taxonomy/16S_only/${params.dereplication}/consensus_taxonomy_7_levels.txt\"
 
+        if [ \"${params.classifier_removeHash}\" = \"true\" ]; then
+		    sed \'s/#//g\' \$taxonomy >taxonomy-${params.dereplication}_removeHash.txt
+		    taxonomy=\"taxonomy-${params.dereplication}_removeHash.txt\"
+		    echo \"\n######## WARNING! The taxonomy file was altered by removing all hash signs!\"
+        fi
+
 	    ### Import
 	    qiime tools import --type \'FeatureData[Sequence]\' \
 		--input-path \$fasta \
-		--output-path ref-seq.qza
+		--output-path ref-seq-${params.dereplication}.qza
 	    qiime tools import --type \'FeatureData[Taxonomy]\' \
 		--source-format HeaderlessTSVTaxonomyFormat \
 		--input-path \$taxonomy \
-		--output-path ref-taxonomy.qza
+		--output-path ref-taxonomy-${params.dereplication}.qza
 
 	    #Extract sequences based on primers
 	    qiime feature-classifier extract-reads \
-		--i-sequences ref-seq.qza \
+		--i-sequences ref-seq-${params.dereplication}.qza \
 		--p-f-primer ${params.FW_primer} \
 		--p-r-primer ${params.RV_primer} \
-		--o-reads ${params.FW_primer}-${params.RV_primer}-ref-seq.qza
+		--o-reads ${params.FW_primer}-${params.RV_primer}-${params.dereplication}-ref-seq.qza \
+        --quiet
 
 	    #Train classifier
 	    qiime feature-classifier fit-classifier-naive-bayes \
-		--i-reference-reads ${params.FW_primer}-${params.RV_primer}-ref-seq.qza \
-		--i-reference-taxonomy ref-taxonomy.qza \
-		--o-classifier ${params.FW_primer}-${params.RV_primer}-classifier.qza
+		--i-reference-reads ${params.FW_primer}-${params.RV_primer}-${params.dereplication}-ref-seq.qza \
+		--i-reference-taxonomy ref-taxonomy-${params.dereplication}.qza \
+		--o-classifier ${params.FW_primer}-${params.RV_primer}-${params.dereplication}-classifier.qza \
+        --quiet
 	    """
 	}
+    message_classifier_removeHash
+        .subscribe { log.info it }
 } else {
     Channel.fromPath("${params.classifier}")
            .set { ch_qiime_classifier }
 }
-
 
 /*
  * Import trimmed files into QIIME2 artefact
@@ -457,8 +475,8 @@ if( !params.Q2imported ){
         publishDir "${params.outdir}", mode: 'copy'
 
 	    input:
-	    file demux from ch_qiime_demux
-        env MATPLOTLIBRC from matplotlibrc
+	    file demux from ch_qiime_demux_vis
+        env MATPLOTLIBRC from ch_mpl_for_demux_visualize
 
 	    output:
         file("demux/*-seven-number-summaries.csv") into csv_demux
@@ -539,9 +557,9 @@ process dada_single {
             else null}
 
     input:
-    file demux from ch_qiime_demux
+    file demux from ch_qiime_demux_dada
     val trunc from dada_trunc
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_dada_single
 
     output:
     file("table.qza") into ch_qiime_table_raw
@@ -625,7 +643,7 @@ process classifier {
     input:
     file repseq from ch_qiime_repseq_raw_for_classifier
     file trained_classifier from ch_qiime_classifier
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_classifier
 
     output:
     file("taxonomy.qza") into (ch_qiime_taxonomy_for_filter,ch_qiime_taxonomy_for_relative_abundance_reduced_taxa,ch_qiime_taxonomy_for_barplot,ch_qiime_taxonomy_for_ancom)
@@ -657,24 +675,17 @@ process classifier {
 /*
  * Filter out unwanted/off-target taxa
  */
-if (params.exclude_taxa == "none") {
-	process skip_filter_taxa {
-	    
-	    input:
-	    file table from ch_qiime_table_raw
-	    file repseq from  ch_qiime_repseq_raw_for_filter
+if (params.exclude_taxa == "none" && !params.min_frequency && !params.min_samples) {
 
-	    output:
-	    file("$table") into (ch_qiime_table_for_filtered_dada_output, ch_qiime_table_for_relative_abundance_asv,ch_qiime_table_for_relative_abundance_reduced_taxa,ch_qiime_table_for_ancom,ch_qiime_table_for_barplot)
-	    file("$repseq") into (ch_qiime_repseq_for_dada_output,ch_qiime_repseq_for_tree)
+    ch_qiime_repseq_raw_for_filter
+        .into{ ch_qiime_repseq_for_dada_output; ch_qiime_repseq_for_tree }
 
-	    script:
-        log.info "skip filtering results"
-	}
+    ch_qiime_table_raw
+        .into{ ch_qiime_table_for_filtered_dada_output; ch_qiime_table_for_relative_abundance_asv; ch_qiime_table_for_relative_abundance_reduced_taxa; ch_qiime_table_for_ancom; ch_qiime_table_for_barplot; ch_qiime_table_for_alpha_rarefaction; ch_qiime_table_for_diversity_core }
 
 } else {
 	process filter_taxa {
-        tag "${params.exclude_taxa}"
+        tag "taxa:${params.exclude_taxa};min-freq:${params.min_frequency};min-samples:${params.min_samples}"
 
     	publishDir "${params.outdir}", mode: 'copy',
         saveAs: {filename -> 
@@ -686,29 +697,49 @@ if (params.exclude_taxa == "none") {
 	    file table from ch_qiime_table_raw
 	    file repseq from  ch_qiime_repseq_raw_for_filter
 	    file taxonomy from ch_qiime_taxonomy_for_filter
-        env MATPLOTLIBRC from matplotlibrc
+        env MATPLOTLIBRC from ch_mpl_filter_taxa
 
 	    output:
 	    file("filtered-table.qza") into (ch_qiime_table_for_filtered_dada_output, ch_qiime_table_for_relative_abundance_asv,ch_qiime_table_for_relative_abundance_reduced_taxa,ch_qiime_table_for_ancom,ch_qiime_table_for_barplot,ch_qiime_table_for_alpha_rarefaction, ch_qiime_table_for_diversity_core)
 	    file("filtered-sequences.qza") into (ch_qiime_repseq_for_dada_output,ch_qiime_repseq_for_tree)
 
 	    script:
+        if ( "${params.min_frequency}" == "false" ) { minfrequency = 1 } else { minfrequency = "${params.min_frequency}" }
+        if ( "${params.min_samples}" == "false" ) { minsamples = 1 } else { minsamples = "${params.min_samples}" }
+        //if ( "${params.exclude_taxa}" == "none" ) { exclude = "" } else { exclude = "--p-exclude ${params.exclude_taxa} --p-mode contains " }
 	    """
-	    #filter sequences
-	    qiime taxa filter-seqs \
-		--i-sequences $repseq \
-		--i-taxonomy $taxonomy \
-		--p-exclude ${params.exclude_taxa} \
-		--p-mode contains \
-		--o-filtered-sequences filtered-sequences.qza
+        if ! [ \"${params.exclude_taxa}\" = \"none\" ]; then
+            #filter sequences
+            qiime taxa filter-seqs \
+            --i-sequences $repseq \
+            --i-taxonomy $taxonomy \
+            --p-exclude ${params.exclude_taxa} --p-mode contains \
+            --o-filtered-sequences tax_filtered-sequences.qza
 
-	    #filter abundance table
-	    qiime taxa filter-table \
-		--i-table $table \
-		--i-taxonomy $taxonomy \
-		--p-exclude ${params.exclude_taxa} \
-		--p-mode contains \
-		--o-filtered-table filtered-table.qza
+            #filter abundance table
+            qiime taxa filter-table \
+            --i-table $table \
+            --i-taxonomy $taxonomy \
+            --p-exclude ${params.exclude_taxa} --p-mode contains \
+            --o-filtered-table tax_filtered-table.qza
+
+            filtered_table="tax_filtered-table.qza"
+            filtered_sequences="tax_filtered-sequences.qza"
+        else
+            filtered_table=$table
+            filtered_sequences=$repseq
+        fi
+
+        qiime feature-table filter-features \
+        --i-table \$filtered_table \
+        --p-min-frequency $minfrequency \
+        --p-min-samples $minsamples \
+        --o-filtered-table filtered-table.qza
+        
+        qiime feature-table filter-seqs \
+        --i-data \$filtered_sequences \
+        --i-table filtered-table.qza \
+        --o-filtered-data filtered-sequences.qza
 	    """
 	}
 }
@@ -727,7 +758,7 @@ process export_filtered_dada_output {
     input:
     file table from ch_qiime_table_for_filtered_dada_output
     file repseq from ch_qiime_repseq_for_dada_output
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_for_export_dada_output
 
     output:
     file("filtered/sequences.fasta") into ch_fasta_repseq
@@ -780,7 +811,7 @@ process RelativeAbundanceASV {
 
     input:
     file table from ch_qiime_table_for_relative_abundance_asv
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_for_relasv
 
     output:
     file("rel-table-ASV.tsv") into ch_tsv_relASV_table
@@ -815,7 +846,7 @@ process RelativeAbundanceReducedTaxa {
     input:
     file table from ch_qiime_table_for_relative_abundance_reduced_taxa
     file taxonomy from ch_qiime_taxonomy_for_relative_abundance_reduced_taxa
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_for_relreducetaxa
 
     output:
     file("*.tsv")
@@ -862,7 +893,7 @@ process barplot {
     file metadata from ch_metadata_for_barplot
     file table from ch_qiime_table_for_barplot
     file taxonomy from ch_qiime_taxonomy_for_barplot
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_for_barcode
 
     output:
     file("barplot/*")
@@ -894,7 +925,7 @@ process tree {
 
     input:
     file repseq from ch_qiime_repseq_for_tree
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_for_tree
 
     output:
     file("rooted-tree.qza") into (ch_qiime_tree_for_diversity_core, ch_qiime_tree_for_alpha_rarefaction)
@@ -940,7 +971,7 @@ process alpha_rarefaction {
     file table from ch_qiime_table_for_alpha_rarefaction
     file tree from ch_qiime_tree_for_alpha_rarefaction
     file stats from ch_tsv_table_for_alpha_rarefaction
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_for_alpha_rare
 
     output:
     file("alpha-rarefaction/*")
@@ -1003,7 +1034,7 @@ process diversity_core {
     file table from ch_qiime_table_for_diversity_core
     file tree from ch_qiime_tree_for_diversity_core
     file stats from ch_tsv_table_for_diversity_core
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_for_diversity_core
 
     output:
     file("core/*_pcoa_results.qza") into (qiime_diversity_core_for_beta_diversity_ordination) mode flatten
@@ -1042,7 +1073,7 @@ rarefaction_depth
 process metadata_category_all { 
     input:
     file metadata from ch_metadata_for_metadata_category_all
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_for_metadata_cat
 
     output:
     stdout into (meta_category_all,meta_category_all_for_ancom)
@@ -1070,7 +1101,7 @@ process metadata_category_pairwise {
 
     input:
     file metadata from ch_metadata_for_metadata_category_pairwise
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_for_metadata_pair
 
     output:
     stdout meta_category_pairwise
@@ -1089,13 +1120,16 @@ process metadata_category_pairwise {
 
 ch_metadata_for_alpha_diversity
     .combine( qiime_diversity_core_for_alpha_diversity )
+    .combine( ch_mpl_for_alpha_diversity )
     .set{ ch_for_alpha_diversity }
 ch_metadata_for_beta_diversity
     .combine( qiime_diversity_core_for_beta_diversity )
     .combine( meta_category_pairwise )
+    .combine( ch_mpl_for_beta_diversity )
     .set{ ch_for_beta_diversity }
 ch_metadata_for_beta_diversity_ordination
     .combine( qiime_diversity_core_for_beta_diversity_ordination )
+    .combine( ch_mpl_for_beta_diversity_ord )
     .set{ ch_for_beta_diversity_ordination }
     
 
@@ -1104,23 +1138,22 @@ ch_metadata_for_beta_diversity_ordination
  * Compute alpha diversity indices
  */
 process alpha_diversity { 
-    tag "${core[1].baseName}"
+    tag "${core.baseName}"
     publishDir "${params.outdir}", mode: 'copy'    
 
     input:
-    file core from ch_for_alpha_diversity
-    env MATPLOTLIBRC from matplotlibrc
+    set file(metadata), file(core), env(MATPLOTLIBRC) from ch_for_alpha_diversity
 
     output:
     file("alpha-diversity/*") into qiime_alphadiversity
 
     """
 	qiime diversity alpha-group-significance \
-        --i-alpha-diversity ${core[1]} \
-        --m-metadata-file ${core[0]} \
-        --o-visualization ${core[1].baseName}-vis.qzv
-	qiime tools export ${core[1].baseName}-vis.qzv \
-        --output-dir "alpha-diversity/${core[1].baseName}"
+        --i-alpha-diversity ${core} \
+        --m-metadata-file ${metadata} \
+        --o-visualization ${core.baseName}-vis.qzv
+	qiime tools export ${core.baseName}-vis.qzv \
+        --output-dir "alpha-diversity/${core.baseName}"
     """
 }
 
@@ -1133,8 +1166,7 @@ process beta_diversity {
     publishDir "${params.outdir}", mode: 'copy'     
 
     input:
-    set file(meta), file(core), val(category) from ch_for_beta_diversity
-    env MATPLOTLIBRC from matplotlibrc
+    set file(meta), file(core), val(category), env(MATPLOTLIBRC) from ch_for_beta_diversity
 
     output:
     file "beta-diversity/*"
@@ -1160,23 +1192,22 @@ process beta_diversity {
  * Compute beta diversity ordination
  */
 process beta_diversity_ordination { 
-    tag "${core[1].baseName}"
+    tag "${core.baseName}"
     publishDir "${params.outdir}", mode: 'copy'
 
     input:
-    file core from ch_for_beta_diversity_ordination
-    env MATPLOTLIBRC from matplotlibrc
+    set file(metadata), file(core), env(MATPLOTLIBRC) from ch_for_beta_diversity_ordination
 
     output:
     file("beta-diversity/*")
 
     """
 	qiime emperor plot \
-        --i-pcoa ${core[1]} \
-        --m-metadata-file ${core[0]} \
-        --o-visualization ${core[1].baseName}-vis.qzv
-	qiime tools export ${core[1].baseName}-vis.qzv \
-        --output-dir beta-diversity/${core[1].baseName}-PCoA
+        --i-pcoa ${core} \
+        --m-metadata-file ${metadata} \
+        --o-visualization ${core.baseName}-vis.qzv
+	qiime tools export ${core.baseName}-vis.qzv \
+        --output-dir beta-diversity/${core.baseName}-PCoA
     """
 }
 
@@ -1194,7 +1225,7 @@ process prepare_ancom {
     file metadata from ch_metadata_for_ancom
     file table from ch_qiime_table_for_ancom
     val meta from meta_category_all_for_ancom
-    env MATPLOTLIBRC from matplotlibrc
+    env MATPLOTLIBRC from ch_mpl_for_ancom
 
     output:
     file("*.qza") into (ch_meta_tables_tax, ch_meta_tables_asv) mode flatten
@@ -1227,10 +1258,12 @@ ch_meta_tables_tax
     .combine( ch_taxlevel_tax )
     .combine( ch_qiime_taxonomy_for_ancom )
     .combine( ch_metadata_for_ancom_tax )
+    .combine( ch_mpl_for_ancom_tax )
     .set{ ch_for_ancom_tax }
 
 ch_meta_tables_asv
     .combine( ch_metadata_for_ancom_asv )
+    .combine ( ch_mpl_for_ancom_asv )
     .set{ ch_for_ancom_asv }
 
 
@@ -1243,8 +1276,7 @@ process ancom_tax {
     publishDir "${params.outdir}", mode: 'copy'    
 
     input:
-    set file(table), val(taxlevel), file(taxonomy), file(metadata) from ch_for_ancom_tax
-    env MATPLOTLIBRC from matplotlibrc
+    set file(table), val(taxlevel), file(taxonomy), file(metadata), env(MATPLOTLIBRC) from ch_for_ancom_tax
 
     output:
     file("ancom/*")
@@ -1280,8 +1312,7 @@ process ancom_asv {
     publishDir "${params.outdir}", mode: 'copy' 
 
     input:
-    set file(table), file(metadata) from ch_for_ancom_asv
-    env MATPLOTLIBRC from matplotlibrc   
+    set file(table), file(metadata), env(MATPLOTLIBRC) from ch_for_ancom_asv 
 
     output:
     file("ancom/*") 
@@ -1307,7 +1338,7 @@ process output_documentation {
     publishDir "${params.outdir}/Documentation", mode: 'copy'
 
     input:
-    file output_docs
+    file output_docs from ch_output_docs
 
     output:
     file "results_description.html"

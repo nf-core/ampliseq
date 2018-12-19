@@ -30,6 +30,7 @@ def helpMessage() {
 
     Required arguments:
       --reads [Path to folder]      Folder containing Casava 1.8 paired-end demultiplexed fastq files: *_L001_R{1,2}_001.fastq.gz
+                                    Note: All samples have to be sequenced in one run, otherwise also specifiy --multipleSequencingRuns
       --FW_primer [str]             Forward primer sequence
       --RV_primer [str]             Reverse primer sequence
       --metadata                    Path to metadata sheet
@@ -62,6 +63,9 @@ def helpMessage() {
       --untilQ2import               Skip all steps after importing into QIIME2, used for visually choosing DADA2 parameter
       --Q2imported [Path]           Path to imported reads (e.g. "demux.qza"), used after visually choosing DADA2 parameter
       --onlyDenoising               Skip all steps after denoising, produce only sequences and abundance tables on ASV level
+      --multipleSequencingRuns      If samples were sequenced in multiple sequencing runs. Expects one subfolder per sequencing run
+                                    in the folder specified by --reads containing sequencing data of the specific run. Also, fastQC
+                                    is skipped because multiple sequencing runs might create overlapping file names that crash MultiQC.
 
     Skipping steps:
       --skip_fastqc                 Skip FastQC
@@ -109,6 +113,7 @@ params.keepIntermediates = false
 params.classifier_removeHash = false
 params.min_frequency = false
 params.min_samples = false
+params.multipleSequencingRuns = false
 
 //Database specific parameters
 //currently only this is compatible with process make_SILVA_132_16S_classifier
@@ -134,8 +139,14 @@ if (params.Q2imported) {
            .into { ch_qiime_demux_import; ch_qiime_demux_vis; ch_qiime_demux_dada }
     params.keepIntermediates = true
 } else {
-    params.skip_fastqc = false
     params.skip_multiqc = false
+}
+
+//Currently, fastqc doesnt work for multiple runs when sample names are identical. These names are encoded in the sequencing file itself.
+if (params.multipleSequencingRuns) {
+    params.skip_fastqc = true
+} else {
+    params.skip_fastqc = false
 }
 
 params.onlyDenoising = false
@@ -274,22 +285,45 @@ if (!params.Q2imported){
             .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
             .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
             .into { ch_read_pairs; ch_read_pairs_fastqc }
+
+    } else if ( params.multipleSequencingRuns ) {
+        //Get files
+        Channel
+            .fromFilePairs( params.reads + "/*" + params.extension, size: 2 )
+            .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}/*${params.extension}\nNB: Path needs to be enclosed in quotes!" }
+            .into { ch_extract_folders; ch_rename_key }
+
+        //Get folders
+        ch_extract_folders
+            .flatMap { key, files -> [files[0]] }
+            .map { it.take(it.findLastIndexOf{"/"})[-1] }
+            .unique()
+            //.subscribe { println "folder: $it" }
+            .set { ch_folders }
+
+        //Rename key value from file pairs
+        ch_rename_key
+            .map { key, files -> [ ((files[0].take(files[0].findLastIndexOf{"/"})[-1]) + "-" + key), files] }
+            //.subscribe { println it }
+            .into { ch_read_pairs; ch_read_pairs_fastqc }
+            
     } else {
         Channel
             .fromFilePairs( params.reads + params.extension, size: 2 )
             .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}${params.extension}\nNB: Path needs to be enclosed in quotes!" }
             .into { ch_read_pairs; ch_read_pairs_fastqc }
     }
+
 	/*
 	 * fastQC
 	 */
 	process fastqc {
-        tag "${name}"
+        tag "${pair_id}"
 	    publishDir "${params.outdir}/fastQC", mode: 'copy',
 		saveAs: {filename -> filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"}
 
 	    input:
-	    set val(name), file(reads) from ch_read_pairs_fastqc
+	    set pair_id, file(reads) from ch_read_pairs_fastqc
 
 	    output:
 	    file "*_fastqc.{zip,html}" into ch_fastqc_results
@@ -335,8 +369,8 @@ if (!params.Q2imported){
 	    """
         mkdir -p trimmed
 	    cutadapt -g ${params.FW_primer} -G ${params.RV_primer} $discard_untrimmed \
-            -o trimmed/${reads[0]} -p trimmed/${reads[1]} \
-            ${reads[0]} ${reads[1]} > cutadapt_log_${reads[0].baseName}.txt
+            -o trimmed/${pair_id}_L001_R1_001.fastq.gz -p trimmed/${pair_id}_L001_R2_001.fastq.gz \
+            ${reads[0]} ${reads[1]} > cutadapt_log_${pair_id}.txt
 	    """
 	}
 
@@ -363,31 +397,69 @@ if (!params.Q2imported){
 	    """
 	}
 
-	/*
-	 * Import trimmed files into QIIME2 artefact
-	 */
-	process qiime_import {
-        publishDir "${params.outdir}/demux", mode: 'copy', 
-        saveAs: {params.keepIntermediates ? filename : null}
+    /*
+    * Import trimmed files into QIIME2 artefact
+    */
+    if (!params.multipleSequencingRuns){
+        process qiime_import {
+            publishDir "${params.outdir}/demux", mode: 'copy', 
+            saveAs: {params.keepIntermediates ? filename : null}
 
-	    input:
-	    file(trimmed) from ch_fastq_trimmed.collect()
-        env MATPLOTLIBRC from ch_mpl_for_qiime_import
+            input:
+            file(trimmed) from ch_fastq_trimmed.collect()
+            env MATPLOTLIBRC from ch_mpl_for_qiime_import
 
-	    output:
-	    file "demux.qza" into (ch_qiime_demux_import, ch_qiime_demux_vis, ch_qiime_demux_dada)
+            output:
+            file "demux.qza" into (ch_qiime_demux_import, ch_qiime_demux_vis, ch_qiime_demux_dada)
 
-	    when:
-	    !params.Q2imported
-	  
-	    """
-	    qiime tools import  \
-		--type 'SampleData[PairedEndSequencesWithQuality]'  \
-		--input-path .  \
-		--source-format CasavaOneEightSingleLanePerSampleDirFmt  \
-		--output-path demux.qza
-	    """
+            when:
+            !params.Q2imported
+        
+            """
+            qiime tools import  \
+            --type 'SampleData[PairedEndSequencesWithQuality]'  \
+            --input-path .  \
+            --source-format CasavaOneEightSingleLanePerSampleDirFmt  \
+            --output-path demux.qza
+            """
+        }
+    } else {
+        process qiime_import_multi {
+            tag "${folders}"
+
+            publishDir "${params.outdir}", mode: 'copy', 
+            saveAs: {params.keepIntermediates ? filename : null}
+
+            input:
+            file(trimmed) from ch_fastq_trimmed.collect()
+            val(folders) from ch_folders.collect()
+            env MATPLOTLIBRC from ch_mpl_for_qiime_import
+
+            output:
+            file "*demux.qza" into (ch_qiime_demux_import, ch_qiime_demux_vis, ch_qiime_demux_dada) mode flatten
+
+            when:
+            !params.Q2imported
+
+            script:
+            """
+            for folder in $folders
+            do
+                folder=\"\${folder//[],[]}\"
+                mkdir \$folder
+                mv \$folder-* \$folder/
+                qiime tools import \
+                --type 'SampleData[PairedEndSequencesWithQuality]' \
+                --input-path \$folder \
+                --source-format CasavaOneEightSingleLanePerSampleDirFmt \
+                --output-path \$folder-demux.qza
+            done
+            """
+        }
 	}
+    ch_qiime_demux_vis
+        .combine( ch_mpl_for_demux_visualize )
+        .set{ ch_qiime_demux_visualisation }
 
 }
 
@@ -471,28 +543,31 @@ if( !params.classifier ){
  * Import trimmed files into QIIME2 artefact
  */
 if( !params.Q2imported ){
-	process qiime_demux_visualize { 
+	process qiime_demux_visualize {
+        tag "${demux.baseName}"
         publishDir "${params.outdir}", mode: 'copy'
 
 	    input:
-	    file demux from ch_qiime_demux_vis
-        env MATPLOTLIBRC from ch_mpl_for_demux_visualize
+	    set file(demux), env(MATPLOTLIBRC) from ch_qiime_demux_visualisation
 
 	    output:
-        file("demux/*-seven-number-summaries.csv") into csv_demux
-        file("demux/*")
+        file("${demux.baseName}/*-seven-number-summaries.csv") into csv_demux
+        file("${demux.baseName}/*")
 	  
 	    """
 	    qiime demux summarize \
 		--i-data $demux \
-		--o-visualization demux.qzv
+		--o-visualization ${demux.baseName}.qzv
 
-	    qiime tools export demux.qzv --output-dir demux
+	    qiime tools export ${demux.baseName}.qzv --output-dir ${demux.baseName}
 	    """
 	}
 } else {
 	process qiime_importdemux_visualize { 
         publishDir "${params.outdir}", mode: 'copy'
+
+	    input:
+        env MATPLOTLIBRC from ch_mpl_for_demux_visualize
 
 	    output:
 	    file("demux/*-seven-number-summaries.csv") into csv_demux

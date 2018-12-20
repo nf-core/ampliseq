@@ -157,7 +157,7 @@ When read sequences are trimmed, routinely untrimmed read pairs are discarded. U
 For performing downstream analysis such as barplots, diversity indices or differential abundance testing, a metadata file is essential. For example:
 
 ```bash
---metadata "$PWD/data/Metadata.tsv"
+--metadata "Metadata.tsv"
 ```
 
 Please note the following requirements:

@@ -98,7 +98,7 @@ params.plaintext_email = false
 ch_multiqc_config = Channel.fromPath(params.multiqc_config)
 ch_output_docs = Channel.fromPath("$baseDir/docs/output.md")
 Channel.fromPath("$baseDir/assets/matplotlibrc")
-                      .into { ch_mpl_for_make_classifier; ch_mpl_for_qiime_import; ch_mpl_for_ancom_asv; ch_mpl_for_ancom_tax; ch_mpl_for_ancom; ch_mpl_for_beta_diversity_ord; ch_mpl_for_beta_diversity; ch_mpl_for_alpha_diversity; ch_mpl_for_metadata_pair; ch_mpl_for_metadata_cat; ch_mpl_for_diversity_core; ch_mpl_for_alpha_rare; ch_mpl_for_tree; ch_mpl_for_barcode; ch_mpl_for_relreducetaxa; ch_mpl_for_relasv; ch_mpl_for_export_dada_output; ch_mpl_filter_taxa; ch_mpl_classifier; ch_mpl_dada; ch_mpl_for_demux_visualize; ch_mpl_for_classifier }
+    .into { ch_mpl_for_make_classifier; ch_mpl_for_qiime_import; ch_mpl_for_ancom_asv; ch_mpl_for_ancom_tax; ch_mpl_for_ancom; ch_mpl_for_beta_diversity_ord; ch_mpl_for_beta_diversity; ch_mpl_for_alpha_diversity; ch_mpl_for_metadata_pair; ch_mpl_for_metadata_cat; ch_mpl_for_diversity_core; ch_mpl_for_alpha_rare; ch_mpl_for_tree; ch_mpl_for_barcode; ch_mpl_for_relreducetaxa; ch_mpl_for_relasv; ch_mpl_for_export_dada_output; ch_mpl_filter_taxa; ch_mpl_classifier; ch_mpl_dada; ch_mpl_dada_merge; ch_mpl_for_demux_visualize; ch_mpl_for_classifier }
 
 // Defines all parameters that are independent of a test run
 params.trunc_qmin = 25 //to calculate params.trunclenf and params.trunclenr automatically
@@ -682,6 +682,7 @@ if (params.multipleSequencingRuns){
     //combine channels for dada_multi
     ch_qiime_demux_dada
         .combine( dada_trunc_multi )
+        .combine( ch_mpl_dada )
         .set { ch_dada_multi }
 }
 
@@ -780,7 +781,7 @@ if (!params.multipleSequencingRuns){
         tag "${demux.baseName} $trunclenf $trunclenr"
 
         input:
-        set file(demux), val(trunclenf), val(trunclenr) from ch_dada_multi
+        set file(demux), val(trunclenf), val(trunclenr), env(MATPLOTLIBRC) from ch_dada_multi
 
         output:
         file("${demux.baseName}-table.qza") into ch_qiime_table
@@ -830,7 +831,7 @@ if (!params.multipleSequencingRuns){
         file tables from ch_qiime_table.collect()
         file repseqs from ch_qiime_repseq.collect()
         file stats from ch_dada_stats.collect()
-        env MATPLOTLIBRC from ch_mpl_dada
+        env MATPLOTLIBRC from ch_mpl_dada_merge
 
         output:
         file("table.qza") into ch_qiime_table_raw

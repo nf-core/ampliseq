@@ -235,6 +235,9 @@ if(params.email) summary['E-mail Address'] = params.email
 log.info summary.collect { k,v -> "${k.padRight(15)}: $v" }.join("\n")
 log.info "========================================="
 
+if( !params.trunclenf || !params.trunclenr ){
+    log.info "\n######## WARNING: No DADA2 cutoffs were specified, therefore reads will be truncated where median quality drops below ${params.trunc_qmin}.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
+}
 
 def create_workflow_summary(summary) {
 
@@ -298,13 +301,12 @@ if (!params.Q2imported){
             .flatMap { key, files -> [files[0]] }
             .map { it.take(it.findLastIndexOf{"/"})[-1] }
             .unique()
-            //.subscribe { println "folder: $it" }
-            .into { ch_folders; ch_folders_for_dada_merge }
+            .set { ch_folders }
 
         //Rename key value from file pairs
         ch_rename_key
-            .map { key, files -> [ ((files[0].take(files[0].findLastIndexOf{"/"})[-1]) + "-" + key), files] }
-            //.subscribe { println it }
+            //.map { key, files -> [ ((files[0].take(files[0].findLastIndexOf{"/"})[-1]) + "-" + key), files] }
+            .map { key, files -> [ key, files, (files[0].take(files[0].findLastIndexOf{"/"})[-1]) ] }
             .into { ch_read_pairs; ch_read_pairs_fastqc }
             
     } else {
@@ -317,61 +319,111 @@ if (!params.Q2imported){
 	/*
 	 * fastQC
 	 */
-	process fastqc {
-        tag "${pair_id}"
-	    publishDir "${params.outdir}/fastQC", mode: 'copy',
-		saveAs: {filename -> filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"}
+    if (!params.multipleSequencingRuns){
+        process fastqc {
+            tag "$pair_id"
+            publishDir "${params.outdir}/fastQC", mode: 'copy',
+            saveAs: {filename -> filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"}
 
-	    input:
-	    set pair_id, file(reads) from ch_read_pairs_fastqc
+            input:
+            set pair_id, file(reads) from ch_read_pairs_fastqc
 
-	    output:
-	    file "*_fastqc.{zip,html}" into ch_fastqc_results
+            output:
+            file "*_fastqc.{zip,html}" into ch_fastqc_results
 
-	    when:
-	    !params.skip_fastqc
+            when:
+            !params.skip_fastqc
 
-	    script: 
-	    """
-        fastqc -q ${reads}
-	    """
-	}
+            script: 
+            """
+            fastqc -q ${reads}
+            """
+        }
+    } else {
+        process fastqc_multi {
+            tag "$folder-$pair_id"
+            publishDir "${params.outdir}/fastQC", mode: 'copy',
+            saveAs: {filename -> filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"}
+
+            input:
+            set pair_id, file(reads), folder from ch_read_pairs_fastqc
+
+            output:
+            file "*_fastqc.{zip,html}" into ch_fastqc_results
+
+            when:
+            !params.skip_fastqc
+
+            script: 
+            """
+            fastqc -q ${reads}
+            """
+        }
+    }
 
 	/*
 	 * Trim each read-pair with cutadapt
 	 */
-	process trimming {
-        tag "${pair_id}"  
-	    publishDir "${params.outdir}/trimmed", mode: 'copy',
-            saveAs: {filename -> 
-            if (filename.indexOf(".gz") == -1) "logs/$filename"
-            else if(params.keepIntermediates) filename 
-            else null}
+    if (!params.multipleSequencingRuns){
+        process trimming {
+            tag "$pair_id"  
+            publishDir "${params.outdir}/trimmed", mode: 'copy',
+                saveAs: {filename -> 
+                if (filename.indexOf(".gz") == -1) "logs/$filename"
+                else if(params.keepIntermediates) filename 
+                else null}
+        
+            input:
+            set pair_id, file(reads) from ch_read_pairs
+        
+            output:
+            file "trimmed/*.*" into ch_fastq_trimmed
+            file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
 
-	    publishDir "${params.outdir}/trimmed", mode: 'symlink',
-            saveAs: {filename -> 
-            if(filename.startsWith("trimmed.")) "symlink/${filename.substring("trimmed.".size())}"}
-	  
-	    input:
-	    set pair_id, file(reads) from ch_read_pairs
-	  
-	    output:
-        file "trimmed/*.*" into ch_fastq_trimmed
-        file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
+            script:
+            if( params.retain_untrimmed == false ){ 
+                discard_untrimmed = "--discard-untrimmed"
+            } else {
+                discard_untrimmed = ""
+            }
+        
+            """
+            mkdir -p trimmed
+            cutadapt -g ${params.FW_primer} -G ${params.RV_primer} $discard_untrimmed \
+                -o trimmed/${reads[0]} -p trimmed/${reads[1]} \
+                ${reads[0]} ${reads[1]} > cutadapt_log_${pair_id}.txt
+            """
+        }
+    } else {
+        process trimming_multi {
+            tag "$folder-$pair_id"  
+            publishDir "${params.outdir}/trimmed", mode: 'copy',
+                saveAs: {filename -> 
+                if (filename.indexOf(".gz") == -1) "logs/$filename"
+                else if(params.keepIntermediates) filename 
+                else null}
+        
+            input:
+            set pair_id, file(reads), folder from ch_read_pairs
+        
+            output:
+            file "trimmed/*.*" into ch_fastq_trimmed
+            file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
 
-	    script:
-	    if( params.retain_untrimmed == false ){ 
-		    discard_untrimmed = "--discard-untrimmed"
-	    } else {
-		    discard_untrimmed = ""
-	    }
-	  
-	    """
-        mkdir -p trimmed
-	    cutadapt -g ${params.FW_primer} -G ${params.RV_primer} $discard_untrimmed \
-            -o trimmed/${pair_id}_L001_R1_001.fastq.gz -p trimmed/${pair_id}_L001_R2_001.fastq.gz \
-            ${reads[0]} ${reads[1]} > cutadapt_log_${pair_id}.txt
-	    """
+            script:
+            if( params.retain_untrimmed == false ){ 
+                discard_untrimmed = "--discard-untrimmed"
+            } else {
+                discard_untrimmed = ""
+            }
+        
+            """
+            mkdir -p trimmed
+            cutadapt -g ${params.FW_primer} -G ${params.RV_primer} $discard_untrimmed \
+                -o trimmed/$folder-${reads[0]} -p trimmed/$folder-${reads[1]} \
+                ${reads[0]} ${reads[1]} > cutadapt_log_${pair_id}.txt
+            """
+        }
 	}
 
 	/*
@@ -602,7 +654,6 @@ process dada_trunc_parameter {
 
     script:
     if( !params.trunclenf || !params.trunclenr ){
-        log.info "\n######## WARNING: No DADA2 cutoffs were specified, therefore reads will be truncated where median quality drops below ${params.trunc_qmin}. \nIt is strongly advised to inspect quality values and to set --trunclenf and --trunclenr parameters manually. \nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
 	    """
         dada_trunc_parameter.py ${summary_demux[0]} ${summary_demux[1]} ${params.trunc_qmin}
 	    """

@@ -98,7 +98,7 @@ params.plaintext_email = false
 ch_multiqc_config = Channel.fromPath(params.multiqc_config)
 ch_output_docs = Channel.fromPath("$baseDir/docs/output.md")
 Channel.fromPath("$baseDir/assets/matplotlibrc")
-                      .into { ch_mpl_for_make_classifier; ch_mpl_for_qiime_import; ch_mpl_for_ancom_asv; ch_mpl_for_ancom_tax; ch_mpl_for_ancom; ch_mpl_for_beta_diversity_ord; ch_mpl_for_beta_diversity; ch_mpl_for_alpha_diversity; ch_mpl_for_metadata_pair; ch_mpl_for_metadata_cat; ch_mpl_for_diversity_core; ch_mpl_for_alpha_rare; ch_mpl_for_tree; ch_mpl_for_barcode; ch_mpl_for_relreducetaxa; ch_mpl_for_relasv; ch_mpl_for_export_dada_output; ch_mpl_filter_taxa; ch_mpl_classifier; ch_mpl_dada_single; ch_mpl_for_demux_visualize; ch_mpl_for_classifier }
+                      .into { ch_mpl_for_make_classifier; ch_mpl_for_qiime_import; ch_mpl_for_ancom_asv; ch_mpl_for_ancom_tax; ch_mpl_for_ancom; ch_mpl_for_beta_diversity_ord; ch_mpl_for_beta_diversity; ch_mpl_for_alpha_diversity; ch_mpl_for_metadata_pair; ch_mpl_for_metadata_cat; ch_mpl_for_diversity_core; ch_mpl_for_alpha_rare; ch_mpl_for_tree; ch_mpl_for_barcode; ch_mpl_for_relreducetaxa; ch_mpl_for_relasv; ch_mpl_for_export_dada_output; ch_mpl_filter_taxa; ch_mpl_classifier; ch_mpl_dada; ch_mpl_for_demux_visualize; ch_mpl_for_classifier }
 
 // Defines all parameters that are independent of a test run
 params.trunc_qmin = 25 //to calculate params.trunclenf and params.trunclenr automatically
@@ -299,7 +299,7 @@ if (!params.Q2imported){
             .map { it.take(it.findLastIndexOf{"/"})[-1] }
             .unique()
             //.subscribe { println "folder: $it" }
-            .set { ch_folders }
+            .into { ch_folders; ch_folders_for_dada_merge }
 
         //Rename key value from file pairs
         ch_rename_key
@@ -592,7 +592,7 @@ if( !params.Q2imported ){
 process dada_trunc_parameter { 
 
     input:
-    val summary_demux from csv_demux 
+    file summary_demux from csv_demux 
 
     output:
     stdout dada_trunc
@@ -613,94 +613,238 @@ process dada_trunc_parameter {
 	    """
 }
 
+if (params.multipleSequencingRuns){
+    //find minimum dada truncation values
+    dada_trunc
+        .into { dada_trunc_forward; dada_trunc_reverse }
+    dada_trunc_forward
+        .map { trunc -> (trunc.split(',')[0]) }
+        .min()
+        .set { dada_forward }
+    dada_trunc_reverse
+        .map { trunc -> (trunc.split(',')[1]) }
+        .min()
+        .set { dada_reverse }
+    dada_forward
+        .combine( dada_reverse )
+        .set { dada_trunc_multi }
+    //combine channels for dada_multi
+    ch_qiime_demux_dada
+        .combine( dada_trunc_multi )
+        .set { ch_dada_multi }
+}
+
  
 /*
  * Find ASVs with DADA2 for single sequencing run
  */
-process dada_single {
-    tag "$trunc"
-	publishDir "${params.outdir}", mode: 'copy',
-        saveAs: {filename -> 
-                 if (filename.indexOf("stats.tsv") > 0)                     "abundance_table/unfiltered/dada_stats.tsv"
-            else if (filename.indexOf("table.qza") == 0)                    "abundance_table/unfiltered/$filename"
-            else if (filename.indexOf("rel-table/feature-table.biom") == 0) "abundance_table/unfiltered/rel-feature-table.biom"
-            else if (filename.indexOf("table/feature-table.biom") == 0)     "abundance_table/unfiltered/feature-table.biom"
-            else if (filename.indexOf("rel-feature-table.tsv") > 0)         "abundance_table/unfiltered/rel-feature-table.tsv"
-            else if (filename.indexOf("feature-table.tsv") > 0)             "abundance_table/unfiltered/feature-table.tsv"
-            else if (filename.indexOf("rep-seqs.qza") == 0)                 "representative_sequences/unfiltered/rep-seqs.qza"
-            else if (filename.indexOf("unfiltered/*"))                      "representative_sequences/$filename"
-            else null}
+if (!params.multipleSequencingRuns){
+    process dada_single {
+        tag "$trunc"
+        publishDir "${params.outdir}", mode: 'copy',
+            saveAs: {filename -> 
+                    if (filename.indexOf("stats.tsv") > 0)                     "abundance_table/unfiltered/dada_stats.tsv"
+                else if (filename.indexOf("table.qza") == 0)                    "abundance_table/unfiltered/$filename"
+                else if (filename.indexOf("rel-table/feature-table.biom") == 0) "abundance_table/unfiltered/rel-feature-table.biom"
+                else if (filename.indexOf("table/feature-table.biom") == 0)     "abundance_table/unfiltered/feature-table.biom"
+                else if (filename.indexOf("rel-feature-table.tsv") > 0)         "abundance_table/unfiltered/rel-feature-table.tsv"
+                else if (filename.indexOf("feature-table.tsv") > 0)             "abundance_table/unfiltered/feature-table.tsv"
+                else if (filename.indexOf("rep-seqs.qza") == 0)                 "representative_sequences/unfiltered/rep-seqs.qza"
+                else if (filename.indexOf("unfiltered/*"))                      "representative_sequences/$filename"
+                else null}
 
-    input:
-    file demux from ch_qiime_demux_dada
-    val trunc from dada_trunc
-    env MATPLOTLIBRC from ch_mpl_dada_single
+        input:
+        file demux from ch_qiime_demux_dada
+        val trunc from dada_trunc
+        env MATPLOTLIBRC from ch_mpl_dada
 
-    output:
-    file("table.qza") into ch_qiime_table_raw
-    file("rep-seqs.qza") into (ch_qiime_repseq_raw_for_classifier,ch_qiime_repseq_raw_for_filter)
-    file("table/feature-table.tsv") into ch_tsv_table_raw
-    file("dada_stats/stats.tsv")
-    file("table/feature-table.biom")
-    file("rel-table/feature-table.biom")
-    file("table/rel-feature-table.tsv")
-    file("unfiltered/*")
+        output:
+        file("table.qza") into ch_qiime_table_raw
+        file("rep-seqs.qza") into (ch_qiime_repseq_raw_for_classifier,ch_qiime_repseq_raw_for_filter)
+        file("table/feature-table.tsv") into ch_tsv_table_raw
+        file("dada_stats/stats.tsv")
+        file("table/feature-table.biom")
+        file("rel-table/feature-table.biom")
+        file("table/rel-feature-table.tsv")
+        file("unfiltered/*")
 
-    when:
-    !params.untilQ2import
+        when:
+        !params.untilQ2import
 
-    script:
-    def values = trunc.split(',')
-    if (values[0].toInteger() + values[1].toInteger() <= 10) { 
-        log.info "\n######## ERROR: Total read pair length is below 10, this is definitely too low.\nForward ${values[0]} and reverse ${values[1]} are chosen.\nPlease provide appropriate values for --trunclenf and --trunclenr or lower --trunc_qmin\n" }
-    """
-    IFS=',' read -r -a trunclen <<< \"$trunc\"
+        script:
+        def values = trunc.split(',')
+        if (values[0].toInteger() + values[1].toInteger() <= 10) { 
+            log.info "\n######## ERROR: Total read pair length is below 10, this is definitely too low.\nForward ${values[0]} and reverse ${values[1]} are chosen.\nPlease provide appropriate values for --trunclenf and --trunclenr or lower --trunc_qmin\n" }
+        """
+        IFS=',' read -r -a trunclen <<< \"$trunc\"
 
-    #denoise samples with DADA2 and produce
-    qiime dada2 denoise-paired  \
-	--i-demultiplexed-seqs $demux  \
-	--p-trunc-len-f \${trunclen[0]} \
-	--p-trunc-len-r \${trunclen[1]} \
-	--p-n-threads 0  \
-	--o-table table.qza  \
-	--o-representative-sequences rep-seqs.qza  \
-	--o-denoising-stats stats.qza \
-	--verbose
+        #denoise samples with DADA2 and produce
+        qiime dada2 denoise-paired  \
+        --i-demultiplexed-seqs $demux  \
+        --p-trunc-len-f \${trunclen[0]} \
+        --p-trunc-len-r \${trunclen[1]} \
+        --p-n-threads 0  \
+        --o-table table.qza  \
+        --o-representative-sequences rep-seqs.qza  \
+        --o-denoising-stats stats.qza \
+        --verbose
 
-    #produce dada2 stats "dada_stats/stats.tsv"
-    qiime tools export stats.qza \
-	--output-dir dada_stats
+        #produce dada2 stats "dada_stats/stats.tsv"
+        qiime tools export stats.qza \
+        --output-dir dada_stats
 
-    #produce raw count table in biom format "table/feature-table.biom"
-    qiime tools export table.qza  \
-	--output-dir table
+        #produce raw count table in biom format "table/feature-table.biom"
+        qiime tools export table.qza  \
+        --output-dir table
 
-    #produce raw count table
-    biom convert -i table/feature-table.biom \
-	-o table/feature-table.tsv  \
-	--to-tsv
+        #produce raw count table
+        biom convert -i table/feature-table.biom \
+        -o table/feature-table.tsv  \
+        --to-tsv
 
-    #produce representative sequence fasta file
-    qiime feature-table tabulate-seqs  \
-	--i-data rep-seqs.qza  \
-	--o-visualization rep-seqs.qzv
-    qiime tools export rep-seqs.qzv  \
-	--output-dir unfiltered
+        #produce representative sequence fasta file
+        qiime feature-table tabulate-seqs  \
+        --i-data rep-seqs.qza  \
+        --o-visualization rep-seqs.qzv
+        qiime tools export rep-seqs.qzv  \
+        --output-dir unfiltered
 
-    #convert to relative abundances
-    qiime feature-table relative-frequency \
-	--i-table table.qza \
-	--o-relative-frequency-table relative-table-ASV.qza
+        #convert to relative abundances
+        qiime feature-table relative-frequency \
+        --i-table table.qza \
+        --o-relative-frequency-table relative-table-ASV.qza
 
-    #export to biom
-    qiime tools export relative-table-ASV.qza \
-	--output-dir rel-table
+        #export to biom
+        qiime tools export relative-table-ASV.qza \
+        --output-dir rel-table
 
-    #convert to tab seperated text file
-    biom convert \
-	-i rel-table/feature-table.biom \
-	-o table/rel-feature-table.tsv --to-tsv
-    """
+        #convert to tab seperated text file
+        biom convert \
+        -i rel-table/feature-table.biom \
+        -o table/rel-feature-table.tsv --to-tsv
+        """
+    }
+} else {
+    process dada_multi {
+        tag "${demux.baseName} $trunclenf $trunclenr"
+
+        input:
+        set file(demux), val(trunclenf), val(trunclenr) from ch_dada_multi
+
+        output:
+        file("${demux.baseName}-table.qza") into ch_qiime_table
+        file("${demux.baseName}-rep-seqs.qza") into ch_qiime_repseq
+        file("${demux.baseName}-stats.tsv") into ch_dada_stats
+
+        when:
+        !params.untilQ2import
+
+        script:
+        if (trunclenf.toInteger() + trunclenr.toInteger() <= 10) { 
+            log.info "\n######## ERROR: Total read pair length is below 10, this is definitely too low.\nForward ${trunclenf} and reverse ${trunclenr} are chosen.\nPlease provide appropriate values for --trunclenf and --trunclenr or lower --trunc_qmin\n" }
+        """
+        #denoise samples with DADA2 and produce
+        qiime dada2 denoise-paired  \
+        --i-demultiplexed-seqs $demux  \
+        --p-trunc-len-f ${trunclenf} \
+        --p-trunc-len-r ${trunclenr} \
+        --p-n-threads 0  \
+        --o-table ${demux.baseName}-table.qza  \
+        --o-representative-sequences ${demux.baseName}-rep-seqs.qza  \
+        --o-denoising-stats ${demux.baseName}-stats.qza \
+        --verbose
+
+        #produce dada2 stats "${demux.baseName}-dada_stats/stats.tsv"
+        qiime tools export ${demux.baseName}-stats.qza \
+        --output-dir ${demux.baseName}-dada_stats
+        cp ${demux.baseName}-dada_stats/stats.tsv ${demux.baseName}-stats.tsv
+        """
+    }
+
+    process dada_merge {
+        tag "$tables"
+        publishDir "${params.outdir}", mode: 'copy',
+            saveAs: {filename -> 
+                    if (filename.indexOf("stats.tsv") > 0)                      "abundance_table/unfiltered/dada_stats.tsv"
+                else if (filename.indexOf("table.qza") == 0)                    "abundance_table/unfiltered/$filename"
+                else if (filename.indexOf("rel-table/feature-table.biom") == 0) "abundance_table/unfiltered/rel-feature-table.biom"
+                else if (filename.indexOf("table/feature-table.biom") == 0)     "abundance_table/unfiltered/feature-table.biom"
+                else if (filename.indexOf("rel-feature-table.tsv") > 0)         "abundance_table/unfiltered/rel-feature-table.tsv"
+                else if (filename.indexOf("feature-table.tsv") > 0)             "abundance_table/unfiltered/feature-table.tsv"
+                else if (filename.indexOf("rep-seqs.qza") == 0)                 "representative_sequences/unfiltered/rep-seqs.qza"
+                else if (filename.indexOf("unfiltered/*"))                      "representative_sequences/$filename"
+                else null}
+
+        input:
+        file tables from ch_qiime_table.collect()
+        file repseqs from ch_qiime_repseq.collect()
+        file stats from ch_dada_stats.collect()
+        env MATPLOTLIBRC from ch_mpl_dada
+
+        output:
+        file("table.qza") into ch_qiime_table_raw
+        file("rep-seqs.qza") into (ch_qiime_repseq_raw_for_classifier,ch_qiime_repseq_raw_for_filter)
+        file("table/feature-table.tsv") into ch_tsv_table_raw
+        file("stats.tsv")
+        file("table/feature-table.biom")
+        file("rel-table/feature-table.biom")
+        file("table/rel-feature-table.tsv")
+        file("unfiltered/*")
+
+        when:
+        !params.untilQ2import
+
+        script:
+        def TABLES = ''
+        def REPSEQ = ''
+        def STAT = ''
+        for (table in tables) { TABLES+= " --i-tables $table" }
+        for (repseq in repseqs) { REPSEQ+= " --i-data $repseq" }
+        for (stat in stats) { STAT+= " $stat" }
+        """
+        #concatenate tables
+        #merge files
+        qiime feature-table merge \
+	        $TABLES \
+	        --o-merged-table table.qza \
+	        --quiet
+        qiime feature-table merge-seqs \
+	        $REPSEQ \
+	        --o-merged-data rep-seqs.qza \
+	        --quiet
+        cat $STAT >stats.tsv
+
+        #produce raw count table in biom format "table/feature-table.biom"
+        qiime tools export table.qza  \
+        --output-dir table
+
+        #produce raw count table
+        biom convert -i table/feature-table.biom \
+        -o table/feature-table.tsv  \
+        --to-tsv
+
+        #produce representative sequence fasta file
+        qiime feature-table tabulate-seqs  \
+        --i-data rep-seqs.qza  \
+        --o-visualization rep-seqs.qzv
+        qiime tools export rep-seqs.qzv  \
+        --output-dir unfiltered
+
+        #convert to relative abundances
+        qiime feature-table relative-frequency \
+        --i-table table.qza \
+        --o-relative-frequency-table relative-table-ASV.qza
+
+        #export to biom
+        qiime tools export relative-table-ASV.qza \
+        --output-dir rel-table
+
+        #convert to tab seperated text file
+        biom convert \
+        -i rel-table/feature-table.biom \
+        -o table/rel-feature-table.tsv --to-tsv
+        """
+    }
 }
 
 /*

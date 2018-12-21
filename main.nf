@@ -817,7 +817,7 @@ if (!params.multipleSequencingRuns){
         tag "$tables"
         publishDir "${params.outdir}", mode: 'copy',
             saveAs: {filename -> 
-                    if (filename.indexOf("stats.tsv") > 0)                      "abundance_table/unfiltered/dada_stats.tsv"
+                    if (filename.indexOf("stats.tsv") == 0)                      "abundance_table/unfiltered/dada_stats.tsv"
                 else if (filename.indexOf("table.qza") == 0)                    "abundance_table/unfiltered/$filename"
                 else if (filename.indexOf("rel-table/feature-table.biom") == 0) "abundance_table/unfiltered/rel-feature-table.biom"
                 else if (filename.indexOf("table/feature-table.biom") == 0)     "abundance_table/unfiltered/feature-table.biom"

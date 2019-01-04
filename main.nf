@@ -296,16 +296,27 @@ if (!params.Q2imported){
             .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}/*${params.extension}\nNB: Path needs to be enclosed in quotes!" }
             .into { ch_extract_folders; ch_rename_key }
 
-        //Get folders
+        //Get folder information
         ch_extract_folders
             .flatMap { key, files -> [files[0]] }
             .map { it.take(it.findLastIndexOf{"/"})[-1] }
             .unique()
-            .set { ch_folders }
+            .into { ch_folders; ch_check_folders; ch_report_folders }
 
-        //Rename key value from file pairs
+        //Report folders with sequencing files
+        ch_report_folders
+            .collect()
+            .subscribe {
+                String folders = it.toString().replace("[", "").replace("]","") 
+                log.info "\nFound the folder(s) \"$folders\" containing sequencing read files matching \"${params.extension}\" in \"${params.reads}\".\n" }
+
+        //Stop if folder count is 1
+        ch_check_folders
+            .count()
+            .subscribe { if ( it == 1 ) exit 1, "Found only one folder with read data but \"--multipleSequencingRuns\" was specified. Please review data input." }
+
+        //Add folder information to sequence files
         ch_rename_key
-            //.map { key, files -> [ ((files[0].take(files[0].findLastIndexOf{"/"})[-1]) + "-" + key), files] }
             .map { key, files -> [ key, files, (files[0].take(files[0].findLastIndexOf{"/"})[-1]) ] }
             .into { ch_read_pairs; ch_read_pairs_fastqc }
             

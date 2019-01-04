@@ -15,8 +15,11 @@
 * [Cutoffs](#cutoffs)
     * [`--trunclenf` and `--trunclenr`](#--trunclenf-and---trunclenr)
     * [`--trunc_qmin`](#--trunc_qmin)
+* [Other options](#other-options)
     * [`--untilQ2import`](#--untilQ2import)
     * [`--Q2imported`](#--Q2imported)
+    * [`--onlyDenoising`](#--onlyDenoising)
+    * [`--multipleSequencingRuns`](#--multipleSequencingRuns)
 * [Reference database](#reference-database)
     * [`--classifier`](#--classifier)
     * [`--classifier_removeHash`](#--classifier_removeHash)
@@ -24,6 +27,8 @@
     * [`--metadata_category`](#--metadata_category)
 * [Filters](#filters)
     * [`--exclude_taxa`](#--exclude_taxa)
+    * [`--min_frequency`](#--min_frequency)
+    * [`--min_samples`](#--min_samples)
 * [Skipping steps](#skipping-steps)
     * [`--skip_fastqc`](#--skip_fastqc)
     * [`--skip_alpha_rarefaction`](#--skip_alpha_rarefaction)
@@ -120,7 +125,9 @@ Use this parameter to choose a configuration profile. Profiles can give configur
     * No configuration at all. Useful if you want to build your own config from scratch and want to avoid loading in the default `base` config profile (not recommended).
 
 ### `--reads`
-Use this to specify the location of your input paired-end FastQ files. ***Currently, sequencing data originating from multiple sequencing runs cannot be analysed apppropriately by this pipeline.*** For example:
+Use this to specify the location of your input paired-end FastQ files.  
+
+For example:
 
 ```bash
 --reads 'path/to/data/'
@@ -130,7 +137,7 @@ Please note the following requirements:
 
 1. The path must be enclosed in quotes
 2. The folder must containing gzip compressed Casava 1.8 paired-end demultiplexed fastq files with the naming sheme *_L001_R{1,2}_001.fastq.gz
-3. All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed.
+3. All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed. Sequencing data originating from multiple sequencing runs requires additionally the parameter `--multipleSequencingRuns` and a specific folder structure.
 
 ### `--FW_primer` and `--RV_primer`
 In Amplicon sequencing methods, PCR with specific primers produces the amplicon of intrest. These primer sequences need to be trimmed from the reads before further processing and are also required for producing an appropriate classifier. For example:
@@ -150,7 +157,7 @@ When read sequences are trimmed, routinely untrimmed read pairs are discarded. U
 For performing downstream analysis such as barplots, diversity indices or differential abundance testing, a metadata file is essential. For example:
 
 ```bash
---metadata "$PWD/data/Metadata.tsv"
+--metadata "Metadata.tsv"
 ```
 
 Please note the following requirements:
@@ -185,11 +192,38 @@ Please note:
 
 1. The code choosing `--trunclenf` and `--trunclenr` using `--trunc_qmin` automatically cannot take amplicon length or overlap requirements for merging into account, therefore setting `--trunclenf` and `--trunclenr` is preferred
 
+## Other options
+
 ### `--untilQ2import`
 Computes all steps until quality plots aiding the choosing of `--trunclenf` and `--trunclenr`.
 
 ### `--Q2imported`
 Analysis starting with a QIIME2 artefact with trimmed reads, typically produced before with `--untilQ2import`.
+
+### `--onlyDenoising`
+Skip all steps after denoising, produce only sequences and abundance tables on ASV level
+
+### `--multipleSequencingRuns`
+If samples were sequenced in multiple sequencing runs. Expects one subfolder per sequencing run
+in the folder specified by --reads containing sequencing data of the specific run. Also, fastQC
+is skipped because multiple sequencing runs might create overlapping file names that crash MultiQC.
+
+Example:
+```
+data
+  |-run1
+  |  |-sample1_1_L001_R{1,2}_001.fastq.gz
+  |  |-sample2_1_L001_R{1,2}_001.fastq.gz
+  |
+  |-run2
+     |-sample3_1_L001_R{1,2}_001.fastq.gz
+     |-sample4_1_L001_R{1,2}_001.fastq.gz
+```
+Analysing these requires the arguments `--reads "data" --multipleSequencingRuns`
+
+The metadata sheet specified with `--metadata` requires as first column with header `ID` the values `run1-sample1` ... `run2-sample4` following the scheme `subfolder-sample`.
+
+While `--onlyDenoising` with `--multipleSequencingRuns` is currently supported, `--Q2imported` is not.
 
 ## Reference database
 By default, the workflow downloads [SILVA](https://www.arb-silva.de/) [v132](https://www.arb-silva.de/documentation/release-132/) and extracts reference sequences and taxonomy clustered at 99% similarity and trains a Naive Bayes classifier to assign taxonomy to features.

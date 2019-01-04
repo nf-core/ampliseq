@@ -30,6 +30,7 @@ def helpMessage() {
 
     Required arguments:
       --reads [Path to folder]      Folder containing Casava 1.8 paired-end demultiplexed fastq files: *_L001_R{1,2}_001.fastq.gz
+                                    Note: All samples have to be sequenced in one run, otherwise also specifiy --multipleSequencingRuns
       --FW_primer [str]             Forward primer sequence
       --RV_primer [str]             Reverse primer sequence
       --metadata                    Path to metadata sheet
@@ -62,6 +63,9 @@ def helpMessage() {
       --untilQ2import               Skip all steps after importing into QIIME2, used for visually choosing DADA2 parameter
       --Q2imported [Path]           Path to imported reads (e.g. "demux.qza"), used after visually choosing DADA2 parameter
       --onlyDenoising               Skip all steps after denoising, produce only sequences and abundance tables on ASV level
+      --multipleSequencingRuns      If samples were sequenced in multiple sequencing runs. Expects one subfolder per sequencing run
+                                    in the folder specified by --reads containing sequencing data of the specific run. Also, fastQC
+                                    is skipped because multiple sequencing runs might create overlapping file names that crash MultiQC.
 
     Skipping steps:
       --skip_fastqc                 Skip FastQC
@@ -94,7 +98,7 @@ params.plaintext_email = false
 ch_multiqc_config = Channel.fromPath(params.multiqc_config)
 ch_output_docs = Channel.fromPath("$baseDir/docs/output.md")
 Channel.fromPath("$baseDir/assets/matplotlibrc")
-                      .into { ch_mpl_for_make_classifier; ch_mpl_for_qiime_import; ch_mpl_for_ancom_asv; ch_mpl_for_ancom_tax; ch_mpl_for_ancom; ch_mpl_for_beta_diversity_ord; ch_mpl_for_beta_diversity; ch_mpl_for_alpha_diversity; ch_mpl_for_metadata_pair; ch_mpl_for_metadata_cat; ch_mpl_for_diversity_core; ch_mpl_for_alpha_rare; ch_mpl_for_tree; ch_mpl_for_barcode; ch_mpl_for_relreducetaxa; ch_mpl_for_relasv; ch_mpl_for_export_dada_output; ch_mpl_filter_taxa; ch_mpl_classifier; ch_mpl_dada_single; ch_mpl_for_demux_visualize; ch_mpl_for_classifier }
+    .into { ch_mpl_for_make_classifier; ch_mpl_for_qiime_import; ch_mpl_for_ancom_asv; ch_mpl_for_ancom_tax; ch_mpl_for_ancom; ch_mpl_for_beta_diversity_ord; ch_mpl_for_beta_diversity; ch_mpl_for_alpha_diversity; ch_mpl_for_metadata_pair; ch_mpl_for_metadata_cat; ch_mpl_for_diversity_core; ch_mpl_for_alpha_rare; ch_mpl_for_tree; ch_mpl_for_barcode; ch_mpl_for_relreducetaxa; ch_mpl_for_relasv; ch_mpl_for_export_dada_output; ch_mpl_filter_taxa; ch_mpl_classifier; ch_mpl_dada; ch_mpl_dada_merge; ch_mpl_for_demux_visualize; ch_mpl_for_classifier }
 
 // Defines all parameters that are independent of a test run
 params.trunc_qmin = 25 //to calculate params.trunclenf and params.trunclenr automatically
@@ -109,6 +113,7 @@ params.keepIntermediates = false
 params.classifier_removeHash = false
 params.min_frequency = false
 params.min_samples = false
+params.multipleSequencingRuns = false
 
 //Database specific parameters
 //currently only this is compatible with process make_SILVA_132_16S_classifier
@@ -134,8 +139,14 @@ if (params.Q2imported) {
            .into { ch_qiime_demux_import; ch_qiime_demux_vis; ch_qiime_demux_dada }
     params.keepIntermediates = true
 } else {
-    params.skip_fastqc = false
     params.skip_multiqc = false
+}
+
+//Currently, fastqc doesnt work for multiple runs when sample names are identical. These names are encoded in the sequencing file itself.
+if (params.multipleSequencingRuns) {
+    params.skip_fastqc = true
+} else {
+    params.skip_fastqc = false
 }
 
 params.onlyDenoising = false
@@ -224,6 +235,9 @@ if(params.email) summary['E-mail Address'] = params.email
 log.info summary.collect { k,v -> "${k.padRight(15)}: $v" }.join("\n")
 log.info "========================================="
 
+if( !params.trunclenf || !params.trunclenr ){
+    log.info "\n######## WARNING: No DADA2 cutoffs were specified, therefore reads will be truncated where median quality drops below ${params.trunc_qmin}.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
+}
 
 def create_workflow_summary(summary) {
 
@@ -274,70 +288,153 @@ if (!params.Q2imported){
             .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
             .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
             .into { ch_read_pairs; ch_read_pairs_fastqc }
+
+    } else if ( params.multipleSequencingRuns ) {
+        //Get files
+        Channel
+            .fromFilePairs( params.reads + "/*" + params.extension, size: 2 )
+            .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}/*${params.extension}\nNB: Path needs to be enclosed in quotes!" }
+            .into { ch_extract_folders; ch_rename_key }
+
+        //Get folder information
+        ch_extract_folders
+            .flatMap { key, files -> [files[0]] }
+            .map { it.take(it.findLastIndexOf{"/"})[-1] }
+            .unique()
+            .into { ch_folders; ch_check_folders; ch_report_folders }
+
+        //Report folders with sequencing files
+        ch_report_folders
+            .collect()
+            .subscribe {
+                String folders = it.toString().replace("[", "").replace("]","") 
+                log.info "\nFound the folder(s) \"$folders\" containing sequencing read files matching \"${params.extension}\" in \"${params.reads}\".\n" }
+
+        //Stop if folder count is 1
+        ch_check_folders
+            .count()
+            .subscribe { if ( it == 1 ) exit 1, "Found only one folder with read data but \"--multipleSequencingRuns\" was specified. Please review data input." }
+
+        //Add folder information to sequence files
+        ch_rename_key
+            .map { key, files -> [ key, files, (files[0].take(files[0].findLastIndexOf{"/"})[-1]) ] }
+            .into { ch_read_pairs; ch_read_pairs_fastqc }
+            
     } else {
         Channel
             .fromFilePairs( params.reads + params.extension, size: 2 )
             .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}${params.extension}\nNB: Path needs to be enclosed in quotes!" }
             .into { ch_read_pairs; ch_read_pairs_fastqc }
     }
+
 	/*
 	 * fastQC
 	 */
-	process fastqc {
-        tag "${name}"
-	    publishDir "${params.outdir}/fastQC", mode: 'copy',
-		saveAs: {filename -> filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"}
+    if (!params.multipleSequencingRuns){
+        process fastqc {
+            tag "$pair_id"
+            publishDir "${params.outdir}/fastQC", mode: 'copy',
+            saveAs: {filename -> filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"}
 
-	    input:
-	    set val(name), file(reads) from ch_read_pairs_fastqc
+            input:
+            set pair_id, file(reads) from ch_read_pairs_fastqc
 
-	    output:
-	    file "*_fastqc.{zip,html}" into ch_fastqc_results
+            output:
+            file "*_fastqc.{zip,html}" into ch_fastqc_results
 
-	    when:
-	    !params.skip_fastqc
+            when:
+            !params.skip_fastqc
 
-	    script: 
-	    """
-        fastqc -q ${reads}
-	    """
-	}
+            script: 
+            """
+            fastqc -q ${reads}
+            """
+        }
+    } else {
+        process fastqc_multi {
+            tag "$folder-$pair_id"
+            publishDir "${params.outdir}/fastQC", mode: 'copy',
+            saveAs: {filename -> filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"}
+
+            input:
+            set pair_id, file(reads), folder from ch_read_pairs_fastqc
+
+            output:
+            file "*_fastqc.{zip,html}" into ch_fastqc_results
+
+            when:
+            !params.skip_fastqc
+
+            script: 
+            """
+            fastqc -q ${reads}
+            """
+        }
+    }
 
 	/*
 	 * Trim each read-pair with cutadapt
 	 */
-	process trimming {
-        tag "${pair_id}"  
-	    publishDir "${params.outdir}/trimmed", mode: 'copy',
-            saveAs: {filename -> 
-            if (filename.indexOf(".gz") == -1) "logs/$filename"
-            else if(params.keepIntermediates) filename 
-            else null}
+    if (!params.multipleSequencingRuns){
+        process trimming {
+            tag "$pair_id"  
+            publishDir "${params.outdir}/trimmed", mode: 'copy',
+                saveAs: {filename -> 
+                if (filename.indexOf(".gz") == -1) "logs/$filename"
+                else if(params.keepIntermediates) filename 
+                else null}
+        
+            input:
+            set pair_id, file(reads) from ch_read_pairs
+        
+            output:
+            file "trimmed/*.*" into ch_fastq_trimmed
+            file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
 
-	    publishDir "${params.outdir}/trimmed", mode: 'symlink',
-            saveAs: {filename -> 
-            if(filename.startsWith("trimmed.")) "symlink/${filename.substring("trimmed.".size())}"}
-	  
-	    input:
-	    set pair_id, file(reads) from ch_read_pairs
-	  
-	    output:
-        file "trimmed/*.*" into ch_fastq_trimmed
-        file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
+            script:
+            if( params.retain_untrimmed == false ){ 
+                discard_untrimmed = "--discard-untrimmed"
+            } else {
+                discard_untrimmed = ""
+            }
+        
+            """
+            mkdir -p trimmed
+            cutadapt -g ${params.FW_primer} -G ${params.RV_primer} $discard_untrimmed \
+                -o trimmed/${reads[0]} -p trimmed/${reads[1]} \
+                ${reads[0]} ${reads[1]} > cutadapt_log_${pair_id}.txt
+            """
+        }
+    } else {
+        process trimming_multi {
+            tag "$folder-$pair_id"  
+            publishDir "${params.outdir}/trimmed", mode: 'copy',
+                saveAs: {filename -> 
+                if (filename.indexOf(".gz") == -1) "logs/$filename"
+                else if(params.keepIntermediates) filename 
+                else null}
+        
+            input:
+            set pair_id, file(reads), folder from ch_read_pairs
+        
+            output:
+            file "trimmed/*.*" into ch_fastq_trimmed
+            file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
 
-	    script:
-	    if( params.retain_untrimmed == false ){ 
-		    discard_untrimmed = "--discard-untrimmed"
-	    } else {
-		    discard_untrimmed = ""
-	    }
-	  
-	    """
-        mkdir -p trimmed
-	    cutadapt -g ${params.FW_primer} -G ${params.RV_primer} $discard_untrimmed \
-            -o trimmed/${reads[0]} -p trimmed/${reads[1]} \
-            ${reads[0]} ${reads[1]} > cutadapt_log_${reads[0].baseName}.txt
-	    """
+            script:
+            if( params.retain_untrimmed == false ){ 
+                discard_untrimmed = "--discard-untrimmed"
+            } else {
+                discard_untrimmed = ""
+            }
+        
+            """
+            mkdir -p trimmed
+            cutadapt -g ${params.FW_primer} -G ${params.RV_primer} $discard_untrimmed \
+                -o trimmed/$folder-${reads[0]} -p trimmed/$folder-${reads[1]} \
+                ${reads[0]} ${reads[1]} > cutadapt_log_${pair_id}.txt
+            """
+        }
 	}
 
 	/*
@@ -363,31 +460,69 @@ if (!params.Q2imported){
 	    """
 	}
 
-	/*
-	 * Import trimmed files into QIIME2 artefact
-	 */
-	process qiime_import {
-        publishDir "${params.outdir}/demux", mode: 'copy', 
-        saveAs: {params.keepIntermediates ? filename : null}
+    /*
+    * Import trimmed files into QIIME2 artefact
+    */
+    if (!params.multipleSequencingRuns){
+        process qiime_import {
+            publishDir "${params.outdir}/demux", mode: 'copy', 
+            saveAs: {params.keepIntermediates ? filename : null}
 
-	    input:
-	    file(trimmed) from ch_fastq_trimmed.collect()
-        env MATPLOTLIBRC from ch_mpl_for_qiime_import
+            input:
+            file(trimmed) from ch_fastq_trimmed.collect()
+            env MATPLOTLIBRC from ch_mpl_for_qiime_import
 
-	    output:
-	    file "demux.qza" into (ch_qiime_demux_import, ch_qiime_demux_vis, ch_qiime_demux_dada)
+            output:
+            file "demux.qza" into (ch_qiime_demux_import, ch_qiime_demux_vis, ch_qiime_demux_dada)
 
-	    when:
-	    !params.Q2imported
-	  
-	    """
-	    qiime tools import  \
-		--type 'SampleData[PairedEndSequencesWithQuality]'  \
-		--input-path .  \
-		--source-format CasavaOneEightSingleLanePerSampleDirFmt  \
-		--output-path demux.qza
-	    """
+            when:
+            !params.Q2imported
+        
+            """
+            qiime tools import  \
+            --type 'SampleData[PairedEndSequencesWithQuality]'  \
+            --input-path .  \
+            --source-format CasavaOneEightSingleLanePerSampleDirFmt  \
+            --output-path demux.qza
+            """
+        }
+    } else {
+        process qiime_import_multi {
+            tag "${folders}"
+
+            publishDir "${params.outdir}", mode: 'copy', 
+            saveAs: {params.keepIntermediates ? filename : null}
+
+            input:
+            file(trimmed) from ch_fastq_trimmed.collect()
+            val(folders) from ch_folders.collect()
+            env MATPLOTLIBRC from ch_mpl_for_qiime_import
+
+            output:
+            file "*demux.qza" into (ch_qiime_demux_import, ch_qiime_demux_vis, ch_qiime_demux_dada) mode flatten
+
+            when:
+            !params.Q2imported
+
+            script:
+            """
+            for folder in $folders
+            do
+                folder=\"\${folder//[],[]}\"
+                mkdir \$folder
+                mv \$folder-* \$folder/
+                qiime tools import \
+                --type 'SampleData[PairedEndSequencesWithQuality]' \
+                --input-path \$folder \
+                --source-format CasavaOneEightSingleLanePerSampleDirFmt \
+                --output-path \$folder-demux.qza
+            done
+            """
+        }
 	}
+    ch_qiime_demux_vis
+        .combine( ch_mpl_for_demux_visualize )
+        .set{ ch_qiime_demux_visualisation }
 
 }
 
@@ -471,28 +606,31 @@ if( !params.classifier ){
  * Import trimmed files into QIIME2 artefact
  */
 if( !params.Q2imported ){
-	process qiime_demux_visualize { 
+	process qiime_demux_visualize {
+        tag "${demux.baseName}"
         publishDir "${params.outdir}", mode: 'copy'
 
 	    input:
-	    file demux from ch_qiime_demux_vis
-        env MATPLOTLIBRC from ch_mpl_for_demux_visualize
+	    set file(demux), env(MATPLOTLIBRC) from ch_qiime_demux_visualisation
 
 	    output:
-        file("demux/*-seven-number-summaries.csv") into csv_demux
-        file("demux/*")
+        file("${demux.baseName}/*-seven-number-summaries.csv") into csv_demux
+        file("${demux.baseName}/*")
 	  
 	    """
 	    qiime demux summarize \
 		--i-data $demux \
-		--o-visualization demux.qzv
+		--o-visualization ${demux.baseName}.qzv
 
-	    qiime tools export demux.qzv --output-dir demux
+	    qiime tools export ${demux.baseName}.qzv --output-dir ${demux.baseName}
 	    """
 	}
 } else {
 	process qiime_importdemux_visualize { 
         publishDir "${params.outdir}", mode: 'copy'
+
+	    input:
+        env MATPLOTLIBRC from ch_mpl_for_demux_visualize
 
 	    output:
 	    file("demux/*-seven-number-summaries.csv") into csv_demux
@@ -517,7 +655,7 @@ if( !params.Q2imported ){
 process dada_trunc_parameter { 
 
     input:
-    val summary_demux from csv_demux 
+    file summary_demux from csv_demux 
 
     output:
     stdout dada_trunc
@@ -527,7 +665,6 @@ process dada_trunc_parameter {
 
     script:
     if( !params.trunclenf || !params.trunclenr ){
-        log.info "\n######## WARNING: No DADA2 cutoffs were specified, therefore reads will be truncated where median quality drops below ${params.trunc_qmin}. \nIt is strongly advised to inspect quality values and to set --trunclenf and --trunclenr parameters manually. \nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
 	    """
         dada_trunc_parameter.py ${summary_demux[0]} ${summary_demux[1]} ${params.trunc_qmin}
 	    """
@@ -538,94 +675,239 @@ process dada_trunc_parameter {
 	    """
 }
 
+if (params.multipleSequencingRuns){
+    //find minimum dada truncation values
+    dada_trunc
+        .into { dada_trunc_forward; dada_trunc_reverse }
+    dada_trunc_forward
+        .map { trunc -> (trunc.split(',')[0]) }
+        .min()
+        .set { dada_forward }
+    dada_trunc_reverse
+        .map { trunc -> (trunc.split(',')[1]) }
+        .min()
+        .set { dada_reverse }
+    dada_forward
+        .combine( dada_reverse )
+        .set { dada_trunc_multi }
+    //combine channels for dada_multi
+    ch_qiime_demux_dada
+        .combine( dada_trunc_multi )
+        .combine( ch_mpl_dada )
+        .set { ch_dada_multi }
+}
+
  
 /*
  * Find ASVs with DADA2 for single sequencing run
  */
-process dada_single {
-    tag "$trunc"
-	publishDir "${params.outdir}", mode: 'copy',
-        saveAs: {filename -> 
-                 if (filename.indexOf("stats.tsv") > 0)                     "abundance_table/unfiltered/dada_stats.tsv"
-            else if (filename.indexOf("table.qza") == 0)                    "abundance_table/unfiltered/$filename"
-            else if (filename.indexOf("rel-table/feature-table.biom") == 0) "abundance_table/unfiltered/rel-feature-table.biom"
-            else if (filename.indexOf("table/feature-table.biom") == 0)     "abundance_table/unfiltered/feature-table.biom"
-            else if (filename.indexOf("rel-feature-table.tsv") > 0)         "abundance_table/unfiltered/rel-feature-table.tsv"
-            else if (filename.indexOf("feature-table.tsv") > 0)             "abundance_table/unfiltered/feature-table.tsv"
-            else if (filename.indexOf("rep-seqs.qza") == 0)                 "representative_sequences/unfiltered/rep-seqs.qza"
-            else if (filename.indexOf("unfiltered/*"))                      "representative_sequences/$filename"
-            else null}
+if (!params.multipleSequencingRuns){
+    process dada_single {
+        tag "$trunc"
+        publishDir "${params.outdir}", mode: 'copy',
+            saveAs: {filename -> 
+                    if (filename.indexOf("stats.tsv") > 0)                     "abundance_table/unfiltered/dada_stats.tsv"
+                else if (filename.indexOf("table.qza") == 0)                    "abundance_table/unfiltered/$filename"
+                else if (filename.indexOf("rel-table/feature-table.biom") == 0) "abundance_table/unfiltered/rel-feature-table.biom"
+                else if (filename.indexOf("table/feature-table.biom") == 0)     "abundance_table/unfiltered/feature-table.biom"
+                else if (filename.indexOf("rel-feature-table.tsv") > 0)         "abundance_table/unfiltered/rel-feature-table.tsv"
+                else if (filename.indexOf("feature-table.tsv") > 0)             "abundance_table/unfiltered/feature-table.tsv"
+                else if (filename.indexOf("rep-seqs.qza") == 0)                 "representative_sequences/unfiltered/rep-seqs.qza"
+                else if (filename.indexOf("unfiltered/*"))                      "representative_sequences/$filename"
+                else null}
 
-    input:
-    file demux from ch_qiime_demux_dada
-    val trunc from dada_trunc
-    env MATPLOTLIBRC from ch_mpl_dada_single
+        input:
+        file demux from ch_qiime_demux_dada
+        val trunc from dada_trunc
+        env MATPLOTLIBRC from ch_mpl_dada
 
-    output:
-    file("table.qza") into ch_qiime_table_raw
-    file("rep-seqs.qza") into (ch_qiime_repseq_raw_for_classifier,ch_qiime_repseq_raw_for_filter)
-    file("table/feature-table.tsv") into ch_tsv_table_raw
-    file("dada_stats/stats.tsv")
-    file("table/feature-table.biom")
-    file("rel-table/feature-table.biom")
-    file("table/rel-feature-table.tsv")
-    file("unfiltered/*")
+        output:
+        file("table.qza") into ch_qiime_table_raw
+        file("rep-seqs.qza") into (ch_qiime_repseq_raw_for_classifier,ch_qiime_repseq_raw_for_filter)
+        file("table/feature-table.tsv") into ch_tsv_table_raw
+        file("dada_stats/stats.tsv")
+        file("table/feature-table.biom")
+        file("rel-table/feature-table.biom")
+        file("table/rel-feature-table.tsv")
+        file("unfiltered/*")
 
-    when:
-    !params.untilQ2import
+        when:
+        !params.untilQ2import
 
-    script:
-    def values = trunc.split(',')
-    if (values[0].toInteger() + values[1].toInteger() <= 10) { 
-        log.info "\n######## ERROR: Total read pair length is below 10, this is definitely too low.\nForward ${values[0]} and reverse ${values[1]} are chosen.\nPlease provide appropriate values for --trunclenf and --trunclenr or lower --trunc_qmin\n" }
-    """
-    IFS=',' read -r -a trunclen <<< \"$trunc\"
+        script:
+        def values = trunc.split(',')
+        if (values[0].toInteger() + values[1].toInteger() <= 10) { 
+            log.info "\n######## ERROR: Total read pair length is below 10, this is definitely too low.\nForward ${values[0]} and reverse ${values[1]} are chosen.\nPlease provide appropriate values for --trunclenf and --trunclenr or lower --trunc_qmin\n" }
+        """
+        IFS=',' read -r -a trunclen <<< \"$trunc\"
 
-    #denoise samples with DADA2 and produce
-    qiime dada2 denoise-paired  \
-	--i-demultiplexed-seqs $demux  \
-	--p-trunc-len-f \${trunclen[0]} \
-	--p-trunc-len-r \${trunclen[1]} \
-	--p-n-threads 0  \
-	--o-table table.qza  \
-	--o-representative-sequences rep-seqs.qza  \
-	--o-denoising-stats stats.qza \
-	--verbose
+        #denoise samples with DADA2 and produce
+        qiime dada2 denoise-paired  \
+        --i-demultiplexed-seqs $demux  \
+        --p-trunc-len-f \${trunclen[0]} \
+        --p-trunc-len-r \${trunclen[1]} \
+        --p-n-threads 0  \
+        --o-table table.qza  \
+        --o-representative-sequences rep-seqs.qza  \
+        --o-denoising-stats stats.qza \
+        --verbose
 
-    #produce dada2 stats "dada_stats/stats.tsv"
-    qiime tools export stats.qza \
-	--output-dir dada_stats
+        #produce dada2 stats "dada_stats/stats.tsv"
+        qiime tools export stats.qza \
+        --output-dir dada_stats
 
-    #produce raw count table in biom format "table/feature-table.biom"
-    qiime tools export table.qza  \
-	--output-dir table
+        #produce raw count table in biom format "table/feature-table.biom"
+        qiime tools export table.qza  \
+        --output-dir table
 
-    #produce raw count table
-    biom convert -i table/feature-table.biom \
-	-o table/feature-table.tsv  \
-	--to-tsv
+        #produce raw count table
+        biom convert -i table/feature-table.biom \
+        -o table/feature-table.tsv  \
+        --to-tsv
 
-    #produce representative sequence fasta file
-    qiime feature-table tabulate-seqs  \
-	--i-data rep-seqs.qza  \
-	--o-visualization rep-seqs.qzv
-    qiime tools export rep-seqs.qzv  \
-	--output-dir unfiltered
+        #produce representative sequence fasta file
+        qiime feature-table tabulate-seqs  \
+        --i-data rep-seqs.qza  \
+        --o-visualization rep-seqs.qzv
+        qiime tools export rep-seqs.qzv  \
+        --output-dir unfiltered
 
-    #convert to relative abundances
-    qiime feature-table relative-frequency \
-	--i-table table.qza \
-	--o-relative-frequency-table relative-table-ASV.qza
+        #convert to relative abundances
+        qiime feature-table relative-frequency \
+        --i-table table.qza \
+        --o-relative-frequency-table relative-table-ASV.qza
 
-    #export to biom
-    qiime tools export relative-table-ASV.qza \
-	--output-dir rel-table
+        #export to biom
+        qiime tools export relative-table-ASV.qza \
+        --output-dir rel-table
 
-    #convert to tab seperated text file
-    biom convert \
-	-i rel-table/feature-table.biom \
-	-o table/rel-feature-table.tsv --to-tsv
-    """
+        #convert to tab seperated text file
+        biom convert \
+        -i rel-table/feature-table.biom \
+        -o table/rel-feature-table.tsv --to-tsv
+        """
+    }
+} else {
+    process dada_multi {
+        tag "${demux.baseName} $trunclenf $trunclenr"
+
+        input:
+        set file(demux), val(trunclenf), val(trunclenr), env(MATPLOTLIBRC) from ch_dada_multi
+
+        output:
+        file("${demux.baseName}-table.qza") into ch_qiime_table
+        file("${demux.baseName}-rep-seqs.qza") into ch_qiime_repseq
+        file("${demux.baseName}-stats.tsv") into ch_dada_stats
+
+        when:
+        !params.untilQ2import
+
+        script:
+        if (trunclenf.toInteger() + trunclenr.toInteger() <= 10) { 
+            log.info "\n######## ERROR: Total read pair length is below 10, this is definitely too low.\nForward ${trunclenf} and reverse ${trunclenr} are chosen.\nPlease provide appropriate values for --trunclenf and --trunclenr or lower --trunc_qmin\n" }
+        """
+        #denoise samples with DADA2 and produce
+        qiime dada2 denoise-paired  \
+        --i-demultiplexed-seqs $demux  \
+        --p-trunc-len-f ${trunclenf} \
+        --p-trunc-len-r ${trunclenr} \
+        --p-n-threads 0  \
+        --o-table ${demux.baseName}-table.qza  \
+        --o-representative-sequences ${demux.baseName}-rep-seqs.qza  \
+        --o-denoising-stats ${demux.baseName}-stats.qza \
+        --verbose
+
+        #produce dada2 stats "${demux.baseName}-dada_stats/stats.tsv"
+        qiime tools export ${demux.baseName}-stats.qza \
+        --output-dir ${demux.baseName}-dada_stats
+        cp ${demux.baseName}-dada_stats/stats.tsv ${demux.baseName}-stats.tsv
+        """
+    }
+
+    process dada_merge {
+        tag "$tables"
+        publishDir "${params.outdir}", mode: 'copy',
+            saveAs: {filename -> 
+                    if (filename.indexOf("stats.tsv") == 0)                      "abundance_table/unfiltered/dada_stats.tsv"
+                else if (filename.indexOf("table.qza") == 0)                    "abundance_table/unfiltered/$filename"
+                else if (filename.indexOf("rel-table/feature-table.biom") == 0) "abundance_table/unfiltered/rel-feature-table.biom"
+                else if (filename.indexOf("table/feature-table.biom") == 0)     "abundance_table/unfiltered/feature-table.biom"
+                else if (filename.indexOf("rel-feature-table.tsv") > 0)         "abundance_table/unfiltered/rel-feature-table.tsv"
+                else if (filename.indexOf("feature-table.tsv") > 0)             "abundance_table/unfiltered/feature-table.tsv"
+                else if (filename.indexOf("rep-seqs.qza") == 0)                 "representative_sequences/unfiltered/rep-seqs.qza"
+                else if (filename.indexOf("unfiltered/*"))                      "representative_sequences/$filename"
+                else null}
+
+        input:
+        file tables from ch_qiime_table.collect()
+        file repseqs from ch_qiime_repseq.collect()
+        file stats from ch_dada_stats.collect()
+        env MATPLOTLIBRC from ch_mpl_dada_merge
+
+        output:
+        file("table.qza") into ch_qiime_table_raw
+        file("rep-seqs.qza") into (ch_qiime_repseq_raw_for_classifier,ch_qiime_repseq_raw_for_filter)
+        file("table/feature-table.tsv") into ch_tsv_table_raw
+        file("stats.tsv")
+        file("table/feature-table.biom")
+        file("rel-table/feature-table.biom")
+        file("table/rel-feature-table.tsv")
+        file("unfiltered/*")
+
+        when:
+        !params.untilQ2import
+
+        script:
+        def TABLES = ''
+        def REPSEQ = ''
+        def STAT = ''
+        for (table in tables) { TABLES+= " --i-tables $table" }
+        for (repseq in repseqs) { REPSEQ+= " --i-data $repseq" }
+        for (stat in stats) { STAT+= " $stat" }
+        """
+        #concatenate tables
+        #merge files
+        qiime feature-table merge \
+	        $TABLES \
+	        --o-merged-table table.qza \
+	        --quiet
+        qiime feature-table merge-seqs \
+	        $REPSEQ \
+	        --o-merged-data rep-seqs.qza \
+	        --quiet
+        cat $STAT >stats.tsv
+
+        #produce raw count table in biom format "table/feature-table.biom"
+        qiime tools export table.qza  \
+        --output-dir table
+
+        #produce raw count table
+        biom convert -i table/feature-table.biom \
+        -o table/feature-table.tsv  \
+        --to-tsv
+
+        #produce representative sequence fasta file
+        qiime feature-table tabulate-seqs  \
+        --i-data rep-seqs.qza  \
+        --o-visualization rep-seqs.qzv
+        qiime tools export rep-seqs.qzv  \
+        --output-dir unfiltered
+
+        #convert to relative abundances
+        qiime feature-table relative-frequency \
+        --i-table table.qza \
+        --o-relative-frequency-table relative-table-ASV.qza
+
+        #export to biom
+        qiime tools export relative-table-ASV.qza \
+        --output-dir rel-table
+
+        #convert to tab seperated text file
+        biom convert \
+        -i rel-table/feature-table.biom \
+        -o table/rel-feature-table.tsv --to-tsv
+        """
+    }
 }
 
 /*

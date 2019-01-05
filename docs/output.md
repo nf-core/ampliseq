@@ -82,6 +82,8 @@ DADA2 reduces sequence errors and dereplicates sequences by quality filtering, d
   * QIIME2 data artefact
 
 **Output directory: `results/abundance-table/unfiltered`**
+* `dada_report.txt`
+  * DADA2 verbose output
 * `dada_stats.tsv`
   * Tab-separated table of DADA2 statistics
 * `feature-table.biom`

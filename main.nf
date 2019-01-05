@@ -706,7 +706,8 @@ if (!params.multipleSequencingRuns){
         tag "$trunc"
         publishDir "${params.outdir}", mode: 'copy',
             saveAs: {filename -> 
-                    if (filename.indexOf("stats.tsv") > 0)                     "abundance_table/unfiltered/dada_stats.tsv"
+                     if (filename.indexOf("stats.tsv") > 0)                     "abundance_table/unfiltered/dada_stats.tsv"
+                else if (filename.indexOf("dada_report.txt") == 0)              "abundance_table/unfiltered/dada_report.txt"
                 else if (filename.indexOf("table.qza") == 0)                    "abundance_table/unfiltered/$filename"
                 else if (filename.indexOf("rel-table/feature-table.biom") == 0) "abundance_table/unfiltered/rel-feature-table.biom"
                 else if (filename.indexOf("table/feature-table.biom") == 0)     "abundance_table/unfiltered/feature-table.biom"
@@ -730,6 +731,7 @@ if (!params.multipleSequencingRuns){
         file("rel-table/feature-table.biom")
         file("table/rel-feature-table.tsv")
         file("unfiltered/*")
+        file("dada_report.txt")
 
         when:
         !params.untilQ2import
@@ -750,7 +752,8 @@ if (!params.multipleSequencingRuns){
         --o-table table.qza  \
         --o-representative-sequences rep-seqs.qza  \
         --o-denoising-stats stats.qza \
-        --verbose
+        --verbose \
+        >dada_report.txt
 
         #produce dada2 stats "dada_stats/stats.tsv"
         qiime tools export stats.qza \
@@ -798,6 +801,7 @@ if (!params.multipleSequencingRuns){
         file("${demux.baseName}-table.qza") into ch_qiime_table
         file("${demux.baseName}-rep-seqs.qza") into ch_qiime_repseq
         file("${demux.baseName}-stats.tsv") into ch_dada_stats
+        file("${demux.baseName}-report.txt") into ch_dada_reports
 
         when:
         !params.untilQ2import
@@ -815,7 +819,8 @@ if (!params.multipleSequencingRuns){
         --o-table ${demux.baseName}-table.qza  \
         --o-representative-sequences ${demux.baseName}-rep-seqs.qza  \
         --o-denoising-stats ${demux.baseName}-stats.qza \
-        --verbose
+        --verbose \
+        >${demux.baseName}-report.txt
 
         #produce dada2 stats "${demux.baseName}-dada_stats/stats.tsv"
         qiime tools export ${demux.baseName}-stats.qza \
@@ -828,7 +833,8 @@ if (!params.multipleSequencingRuns){
         tag "$tables"
         publishDir "${params.outdir}", mode: 'copy',
             saveAs: {filename -> 
-                    if (filename.indexOf("stats.tsv") == 0)                      "abundance_table/unfiltered/dada_stats.tsv"
+                     if (filename.indexOf("stats.tsv") == 0)                    "abundance_table/unfiltered/dada_stats.tsv"
+                else if (filename.indexOf("dada_report.txt") == 0)              "abundance_table/unfiltered/dada_report.txt"
                 else if (filename.indexOf("table.qza") == 0)                    "abundance_table/unfiltered/$filename"
                 else if (filename.indexOf("rel-table/feature-table.biom") == 0) "abundance_table/unfiltered/rel-feature-table.biom"
                 else if (filename.indexOf("table/feature-table.biom") == 0)     "abundance_table/unfiltered/feature-table.biom"
@@ -842,6 +848,7 @@ if (!params.multipleSequencingRuns){
         file tables from ch_qiime_table.collect()
         file repseqs from ch_qiime_repseq.collect()
         file stats from ch_dada_stats.collect()
+        file reports from ch_dada_reports.collect()
         env MATPLOTLIBRC from ch_mpl_dada_merge
 
         output:
@@ -853,6 +860,7 @@ if (!params.multipleSequencingRuns){
         file("rel-table/feature-table.biom")
         file("table/rel-feature-table.tsv")
         file("unfiltered/*")
+        file("dada_report.txt")
 
         when:
         !params.untilQ2import
@@ -861,9 +869,11 @@ if (!params.multipleSequencingRuns){
         def TABLES = ''
         def REPSEQ = ''
         def STAT = ''
+        def REPORT = ''
         for (table in tables) { TABLES+= " --i-tables $table" }
         for (repseq in repseqs) { REPSEQ+= " --i-data $repseq" }
         for (stat in stats) { STAT+= " $stat" }
+        for (report in reports) { REPORT+= " $report" }
         """
         #concatenate tables
         #merge files
@@ -876,6 +886,7 @@ if (!params.multipleSequencingRuns){
 	        --o-merged-data rep-seqs.qza \
 	        --quiet
         cat $STAT >stats.tsv
+        cat $REPORT >dada_report.txt
 
         #produce raw count table in biom format "table/feature-table.biom"
         qiime tools export table.qza  \

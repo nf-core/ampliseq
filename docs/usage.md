@@ -136,7 +136,7 @@ For example:
 Please note the following requirements:
 
 1. The path must be enclosed in quotes
-2. The folder must containing gzip compressed Casava 1.8 paired-end demultiplexed fastq files with the naming sheme *_L001_R{1,2}_001.fastq.gz
+2. The folder must containing gzip compressed Casava 1.8 paired-end demultiplexed fastq files with the naming sheme "[a-zA-Z0-9-]+_[a-zA-Z0-9-]+_L[0-9][0-9][0-9]_R{1,2}_001.fastq.gz". This is a requirement of QIIME2 and cannot be bypassed, files not following this pattern need to be renamed to be analyzed.
 3. All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed. Sequencing data originating from multiple sequencing runs requires additionally the parameter `--multipleSequencingRuns` and a specific folder structure.
 
 ### `--FW_primer` and `--RV_primer`

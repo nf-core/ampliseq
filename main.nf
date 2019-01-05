@@ -287,7 +287,7 @@ if (!params.Q2imported){
             .from(params.readPaths)
             .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
             .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-            .into { ch_read_pairs; ch_read_pairs_fastqc }
+            .into { ch_read_pairs; ch_read_pairs_fastqc; ch_read_pairs_name_check }
 
     } else if ( params.multipleSequencingRuns ) {
         //Get files
@@ -318,13 +318,25 @@ if (!params.Q2imported){
         //Add folder information to sequence files
         ch_rename_key
             .map { key, files -> [ key, files, (files[0].take(files[0].findLastIndexOf{"/"})[-1]) ] }
-            .into { ch_read_pairs; ch_read_pairs_fastqc }
+            .into { ch_read_pairs; ch_read_pairs_fastqc; ch_read_pairs_name_check }
+
+        //Check if key follows regex "^[a-zA-Z0-9-]+_[a-zA-Z0-9-]+$"
+        ch_read_pairs_name_check
+            .map { key, files, folder -> [ key ] }
+            .subscribe { 
+                if ( !(it =~ /[a-zA-Z0-9-]+_[a-zA-Z0-9-]+/) ) exit 1, "files starting with $it dont match the QIIME2 input requirements \"[a-zA-Z0-9-]+_[a-zA-Z0-9-]+_L[0-9][0-9][0-9]_R{1,2}_001.fastq.gz\". There might be more, just stopped here. \nPlease follow input requirements outlined in the documentation." }
             
     } else {
         Channel
             .fromFilePairs( params.reads + params.extension, size: 2 )
             .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}${params.extension}\nNB: Path needs to be enclosed in quotes!" }
-            .into { ch_read_pairs; ch_read_pairs_fastqc }
+            .into { ch_read_pairs; ch_read_pairs_fastqc; ch_read_pairs_name_check }
+
+        //Check if key follows regex "^[a-zA-Z0-9-]+_[a-zA-Z0-9-]+$"
+        ch_read_pairs_name_check
+            .map { key, files -> [ key ] }
+            .subscribe { 
+                if ( !(it =~ /[a-zA-Z0-9-]+_[a-zA-Z0-9-]+/) ) exit 1, "files starting with $it dont match the QIIME2 input requirements \"[a-zA-Z0-9-]+_[a-zA-Z0-9-]+_L[0-9][0-9][0-9]_R{1,2}_001.fastq.gz\". There might be more, just stopped here. \nPlease follow input requirements outlined in the documentation." }
     }
 
 	/*

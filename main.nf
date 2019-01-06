@@ -236,7 +236,7 @@ log.info summary.collect { k,v -> "${k.padRight(15)}: $v" }.join("\n")
 log.info "========================================="
 
 if( !params.trunclenf || !params.trunclenr ){
-    log.info "\n######## WARNING: No DADA2 cutoffs were specified, therefore reads will be truncated where median quality drops below ${params.trunc_qmin}.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
+    if ( !params.untilQ2import ) log.info "\n######## WARNING: No DADA2 cutoffs were specified, therefore reads will be truncated where median quality drops below ${params.trunc_qmin}.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
 }
 
 def create_workflow_summary(summary) {
@@ -478,7 +478,9 @@ if (!params.Q2imported){
     if (!params.multipleSequencingRuns){
         process qiime_import {
             publishDir "${params.outdir}/demux", mode: 'copy', 
-            saveAs: {params.keepIntermediates ? filename : null}
+            saveAs: { filename -> 
+                params.keepIntermediates ? filename : null
+                params.untilQ2import ? filename : null }
 
             input:
             file(trimmed) from ch_fastq_trimmed.collect()

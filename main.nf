@@ -122,22 +122,14 @@ params.dereplication = 99
 
 
 /*
- * Defines pipeline steps
+ * Define pipeline steps
  */
-
-Channel.fromPath("${params.metadata}")
-        .into { ch_metadata_for_barplot; ch_metadata_for_alphararefaction; ch_metadata_for_diversity_core; ch_metadata_for_alpha_diversity; ch_metadata_for_metadata_category_all; ch_metadata_for_metadata_category_pairwise; ch_metadata_for_beta_diversity; ch_metadata_for_beta_diversity_ordination; ch_metadata_for_ancom; ch_metadata_for_ancom_tax; ch_metadata_for_ancom_asv }
-
 params.untilQ2import = false
 
 params.Q2imported = false
 if (params.Q2imported) {
     params.skip_fastqc = true
     params.skip_multiqc = true
-    //Set up channel
-    Channel.fromFile("${params.Q2imported}")
-           .into { ch_qiime_demux_import; ch_qiime_demux_vis; ch_qiime_demux_dada }
-    params.keepIntermediates = true
 } else {
     params.skip_multiqc = false
 }
@@ -167,8 +159,23 @@ if (params.onlyDenoising || params.untilQ2import) {
 }
 
 /*
+ * Import input files
+ */
+Channel.fromPath("${params.metadata}", checkIfExists: true)
+    .into { ch_metadata_for_barplot; ch_metadata_for_alphararefaction; ch_metadata_for_diversity_core; ch_metadata_for_alpha_diversity; ch_metadata_for_metadata_category_all; ch_metadata_for_metadata_category_pairwise; ch_metadata_for_beta_diversity; ch_metadata_for_beta_diversity_ordination; ch_metadata_for_ancom; ch_metadata_for_ancom_tax; ch_metadata_for_ancom_asv }
+
+if (params.Q2imported) {
+    Channel.fromPath("${params.Q2imported}", checkIfExists: true)
+           .into { ch_qiime_demux_import; ch_qiime_demux_vis; ch_qiime_demux_dada }
+}
+
+if (params.classifier) {
+    Channel.fromPath("${params.classifier}", checkIfExists: true)
+           .set { ch_qiime_classifier }
+}
+
+/*
  * Sanity check input values
- * need to be extended eventually
  */
 if (!params.Q2imported && (!params.FW_primer || !params.RV_primer || !params.metadata || !params.reads)) {
     println "${params.Q2imported}"
@@ -611,9 +618,6 @@ if( !params.classifier ){
 	}
     message_classifier_removeHash
         .subscribe { log.info it }
-} else {
-    Channel.fromPath("${params.classifier}")
-           .set { ch_qiime_classifier }
 }
 
 /*

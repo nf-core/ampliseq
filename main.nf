@@ -161,8 +161,14 @@ if (params.onlyDenoising || params.untilQ2import) {
 /*
  * Import input files
  */
-Channel.fromPath("${params.metadata}", checkIfExists: true)
-    .into { ch_metadata_for_barplot; ch_metadata_for_alphararefaction; ch_metadata_for_diversity_core; ch_metadata_for_alpha_diversity; ch_metadata_for_metadata_category_all; ch_metadata_for_metadata_category_pairwise; ch_metadata_for_beta_diversity; ch_metadata_for_beta_diversity_ordination; ch_metadata_for_ancom; ch_metadata_for_ancom_tax; ch_metadata_for_ancom_asv }
+if (params.metadata) {
+    Channel.fromPath("${params.metadata}", checkIfExists: true)
+        .into { ch_metadata_for_barplot; ch_metadata_for_alphararefaction; ch_metadata_for_diversity_core; ch_metadata_for_alpha_diversity; ch_metadata_for_metadata_category_all; ch_metadata_for_metadata_category_pairwise; ch_metadata_for_beta_diversity; ch_metadata_for_beta_diversity_ordination; ch_metadata_for_ancom; ch_metadata_for_ancom_tax; ch_metadata_for_ancom_asv }
+} else {
+    Channel.fromPath("${params.metadata}", checkIfExists: false)
+        .into { ch_metadata_for_barplot; ch_metadata_for_alphararefaction; ch_metadata_for_diversity_core; ch_metadata_for_alpha_diversity; ch_metadata_for_metadata_category_all; ch_metadata_for_metadata_category_pairwise; ch_metadata_for_beta_diversity; ch_metadata_for_beta_diversity_ordination; ch_metadata_for_ancom; ch_metadata_for_ancom_tax; ch_metadata_for_ancom_asv }
+   
+}
 
 if (params.Q2imported) {
     Channel.fromPath("${params.Q2imported}", checkIfExists: true)
@@ -177,12 +183,23 @@ if (params.classifier) {
 /*
  * Sanity check input values
  */
-if (!params.Q2imported && (!params.FW_primer || !params.RV_primer || !params.metadata || !params.reads)) {
-    println "${params.Q2imported}"
-    println "\nERROR: Missing required input --Q2imported OR --FW_primer / --RV_primer / --metadata\n"
-    helpMessage()
-    exit 1
+if (!params.Q2imported) { 
+    if (!params.FW_primer) { exit 1, "Option --FW_primer missing" }
+    if (!params.RV_primer) { exit 1, "Option --RV_primer missing" }
+    if (!params.reads) { exit 1, "Option --reads missing" }
 }
+
+if (!params.skip_barplot || !params.skip_alpha_rarefaction || !params.skip_diversity_indices || !params.skip_ancom ) {
+    if (!params.untilQ2import && !params.onlyDenoising) {
+        if (!params.metadata) { exit 1, "Option --metdata missing" }
+    }
+}
+
+if (params.Q2imported && params.untilQ2import) {
+    exit 1, "Choose either to import data into a QIIME2 artefact and quit with --untilQ2import or use an already existing QIIME2 data artefact with --Q2imported."
+}
+
+
 
 
 // AWSBatch sanity checking
@@ -1393,6 +1410,8 @@ process metadata_category_all {
     !params.skip_ancom || !params.skip_diversity_indices
     when:
     !params.untilQ2import && !params.onlyDenoising
+    when:
+    params.metadata
 
     script:
     if( !params.metadata_category )

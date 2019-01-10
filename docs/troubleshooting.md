@@ -5,17 +5,25 @@
 If no file or less files than expected are picked up then something is wrong with your input file declaration (path) or with the naming of the files.
 
 1. The path must be enclosed in quotes (`'` or `"`)
-2. The files have to be or mimic Casava 1.8 paired-end demultiplexed fastq files with the naming sheme "*_L001_R{1,2}_001.fastq.gz". This is acurrently a limitation of QIIME2 file import.
+2. The files have to be or mimic Casava 1.8 paired-end demultiplexed fastq files with the naming sheme "[a-zA-Z0-9-]+_[a-zA-Z0-9-]+_L[0-9][0-9][0-9]_R{1,2}_001.fastq.gz". This is acurrently a limitation of QIIME2 file import.
 
 If the pipeline can't find your files then you will get the following error
 
 ```
-ERROR ~ Cannot find any reads matching: [folder]/*_L001_R{1,2}_001.fastq.gz
+ERROR ~ Cannot find any reads matching: "[folder]/*_L[0-9][0-9][0-9]_R{1,2}_001.fastq.gz"
 ```
 
 
 ## Data organization
-The pipeline can't take a list of multiple input files - it takes a single folder and picks up all files that match the pattern "*_L001_R{1,2}_001.fastq.gz". If the input files do not follow the naming scheme, a directory with symlinks named as required linking to your actual data might be a solution. If your input files are scattered in different paths then we recommend that you generate a directory with symlinked files.
+The pipeline can't take a list of multiple input files - it takes a single folder and picks up all files that match the pattern "[a-zA-Z0-9-]+_[a-zA-Z0-9-]+_L[0-9][0-9][0-9]_R{1,2}_001.fastq.gz". If the input files do not follow the naming scheme, a directory with symlinks named as required linking to your actual data might be a solution. If your input files are scattered in different paths then we recommend that you generate a directory with symlinked files.
+
+## Required computational resources
+
+For learning a classifier from scratch for the appropriate primer pair (default) the pipeline requires 35GB memory. Other pipeline steps require an increasing amount of memory with number of samples, number of sequencing reads, number of sequencing runs, and sample complexity (number of unique sequences).
+
+When memory is limiting you can use a pre-trained classifier with `--classifier [Path/To/Classifier.qza]` and e.g. `--max_memory [15.GB]`.
+
+When number of CPUs are a matter of concern use e.g.`--max_cpus 4`.
 
 ## Error related to metadata sheet
 

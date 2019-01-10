@@ -29,11 +29,11 @@ def helpMessage() {
 
 
     Required arguments:
-      --reads [Path to folder]      Folder containing Casava 1.8 paired-end demultiplexed fastq files: *_L001_R{1,2}_001.fastq.gz
+      --reads [path/to/folder]      Folder containing Casava 1.8 paired-end demultiplexed fastq files: *_L001_R{1,2}_001.fastq.gz
                                     Note: All samples have to be sequenced in one run, otherwise also specifiy --multipleSequencingRuns
       --FW_primer [str]             Forward primer sequence
       --RV_primer [str]             Reverse primer sequence
-      --metadata                    Path to metadata sheet
+      --metadata [path/to/file]     Path to metadata sheet
 
     Filters:
       --exclude_taxa [str]          Comma seperated list of unwanted taxa (default: "mitochondria,chloroplast")
@@ -50,7 +50,7 @@ def helpMessage() {
                                     this mean quality score (not preferred) (default: 25)
 
     References:                     If you have trained a compatible classifier before
-      --classifier                  Path to QIIME2 classifier file (typically *-classifier.qza)
+      --classifier [path/to/file]   Path to QIIME2 classifier file (typically *-classifier.qza)
       --classifier_removeHash       Remove all hash signs from taxonomy strings, resolves a rare ValueError during classification (process classifier)
 
     Statistics:
@@ -61,7 +61,7 @@ def helpMessage() {
 
     Other options:
       --untilQ2import               Skip all steps after importing into QIIME2, used for visually choosing DADA2 parameter
-      --Q2imported [Path]           Path to imported reads (e.g. "demux.qza"), used after visually choosing DADA2 parameter
+      --Q2imported [path/to/file]   Path to imported reads (e.g. "demux.qza"), used after visually choosing DADA2 parameter
       --onlyDenoising               Skip all steps after denoising, produce only sequences and abundance tables on ASV level
       --multipleSequencingRuns      If samples were sequenced in multiple sequencing runs. Expects one subfolder per sequencing run
                                     in the folder specified by --reads containing sequencing data of the specific run. Also, fastQC

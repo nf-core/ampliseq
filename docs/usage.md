@@ -70,10 +70,15 @@ NXF_OPTS='-Xms1g -Xmx4g'
 ## Running the pipeline
 The typical command for running the pipeline is as follows:
 ```bash
-nextflow run nf-core/ampliseq --reads 'data' -profile standard,docker
+nextflow run nf-core/ampliseq \
+    -profile standard,singularity \
+    --reads "data" \
+    --FW_primer GTGYCAGCMGCCGCGGTAA \
+    --RV_primer GGACTACNVGGGTWTCTAAT \
+    --metadata "data/Metadata.tsv"
 ```
 
-This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
+This will launch the pipeline with the `singularity` configuration profile. See below for more information about profiles.
 
 Note that the pipeline will create the following files in your working directory:
 
@@ -130,13 +135,13 @@ Use this to specify the location of your input paired-end FastQ files.
 For example:
 
 ```bash
---reads 'path/to/data/'
+--reads 'path/to/data'
 ```
 
 Please note the following requirements:
 
 1. The path must be enclosed in quotes
-2. The folder must containing gzip compressed Casava 1.8 paired-end demultiplexed fastq files with the naming sheme "[a-zA-Z0-9-]+_[a-zA-Z0-9-]+_L[0-9][0-9][0-9]_R{1,2}_001.fastq.gz". This is a requirement of QIIME2 and cannot be bypassed, files not following this pattern need to be renamed to be analyzed.
+2. The folder must containing gzip compressed Casava 1.8 paired-end demultiplexed fastq files with the naming sheme "[a-zA-Z0-9-]+_[a-zA-Z0-9-]+_L[0-9][0-9][0-9]_R{1,2}_001.fastq.gz". This is a requirement of QIIME2 and cannot be bypassed. A directory with symlinks named as required linking to your actual data might be a solution.
 3. All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed. Sequencing data originating from multiple sequencing runs requires additionally the parameter `--multipleSequencingRuns` and a specific folder structure.
 
 ### `--FW_primer` and `--RV_primer`

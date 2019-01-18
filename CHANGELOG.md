@@ -9,6 +9,7 @@
 * [#5](https://github.com/nf-core/ampliseq/issues/5) - Introduced check for existence of input files
 * Extended parameter sanity check, including [#15](https://github.com/nf-core/ampliseq/issues/15)
 * [#61](https://github.com/nf-core/ampliseq/issues/61) - Improved documentation
+* [#62](https://github.com/nf-core/ampliseq/pull/62) - Utilize nf-core/configs centrally for this pipeline
 
 #### Bug fixes
 * [#57](https://github.com/nf-core/ampliseq/issues/57) - Indicate exact regex for sequencing file names

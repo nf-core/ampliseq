@@ -66,6 +66,7 @@ def helpMessage() {
       --multipleSequencingRuns      If samples were sequenced in multiple sequencing runs. Expects one subfolder per sequencing run
                                     in the folder specified by --reads containing sequencing data of the specific run. Also, fastQC
                                     is skipped because multiple sequencing runs might create overlapping file names that crash MultiQC.
+      --phred64                     If the sequencing data has PHRED 64 encoded quality scores (default: PHRED 33)
 
     Skipping steps:
       --skip_fastqc                 Skip FastQC
@@ -114,6 +115,8 @@ params.classifier_removeHash = false
 params.min_frequency = false
 params.min_samples = false
 params.multipleSequencingRuns = false
+params.phred64 = false
+params.split = "-" //TODO: multi: test if "${params.split}" in folder names and return error if yes //TODO: also "_" may not be in folder names!!
 
 //Database specific parameters
 //currently only this is compatible with process make_SILVA_132_16S_classifier
@@ -388,7 +391,7 @@ if (!params.Q2imported){
         }
     } else {
         process fastqc_multi {
-            tag "$folder-$pair_id"
+            tag "$folder${params.split}$pair_id"
             publishDir "${params.outdir}/fastQC", mode: 'copy',
             saveAs: {filename -> filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"}
 
@@ -424,7 +427,7 @@ if (!params.Q2imported){
             set pair_id, file(reads) from ch_read_pairs
         
             output:
-            file "trimmed/*.*" into ch_fastq_trimmed
+            file "trimmed/*.*" into (ch_fastq_trimmed, ch_fastq_trimmed_manifest)
             file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
 
             script:
@@ -443,7 +446,7 @@ if (!params.Q2imported){
         }
     } else {
         process trimming_multi {
-            tag "$folder-$pair_id"  
+            tag "$folder${params.split}$pair_id"  
             publishDir "${params.outdir}/trimmed", mode: 'copy',
                 saveAs: {filename -> 
                 if (filename.indexOf(".gz") == -1) "logs/$filename"
@@ -454,7 +457,7 @@ if (!params.Q2imported){
             set pair_id, file(reads), folder from ch_read_pairs
         
             output:
-            file "trimmed/*.*" into ch_fastq_trimmed
+            file "trimmed/*.*" into (ch_fastq_trimmed, ch_fastq_trimmed_manifest)
             file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
 
             script:
@@ -467,7 +470,7 @@ if (!params.Q2imported){
             """
             mkdir -p trimmed
             cutadapt -g ${params.FW_primer} -G ${params.RV_primer} $discard_untrimmed \
-                -o trimmed/$folder-${reads[0]} -p trimmed/$folder-${reads[1]} \
+                -o trimmed/$folder${params.split}${reads[0]} -p trimmed/$folder${params.split}${reads[1]} \
                 ${reads[0]} ${reads[1]} > cutadapt_log_${pair_id}.txt
             """
         }
@@ -497,6 +500,34 @@ if (!params.Q2imported){
 	}
 
     /*
+    * Produce manifest file for QIIME2
+    */
+    if (!params.multipleSequencingRuns){
+        ch_fastq_trimmed_manifest
+            .map { forward, reverse -> [ forward.drop(forward.findLastIndexOf{"/"})[0], forward, reverse ] } //extract file name
+            .map { name, forward, reverse -> [ name.toString().take(name.toString().indexOf("_")), forward, reverse ] } //extract sample name
+            .map { name, forward, reverse -> [ name +","+ forward + ",forward\n" + name +","+ reverse +",reverse" ] } //prepare basic synthax
+            .flatten()
+            .collectFile(name: 'manifest.txt', newLine: true, storeDir: "${params.outdir}/demux", seed: "sample-id,absolute-filepath,direction")
+            .set { ch_manifest }
+    } else {
+        ch_fastq_trimmed_manifest
+            .map { forward, reverse -> [ forward.drop(forward.findLastIndexOf{"/"})[0], forward, reverse ] } //extract file name
+            .map { name, forward, reverse -> [ name.toString().take(name.toString().indexOf("_")), forward, reverse ] } //extract sample name
+            .map { name, forward, reverse -> [ name +","+ forward + ",forward\n" + name +","+ reverse +",reverse" ] } //prepare basic synthax
+            .flatten()
+            .collectFile(storeDir: "${params.outdir}", seed: "sample-id,absolute-filepath,direction\n") { item ->
+                def folder = item.take(item.indexOf("${params.split}")) //re-extract folder
+                [ "${folder}${params.split}manifest.txt", item + '\n' ]
+            }
+            .set { ch_manifest_files }
+            
+        ch_manifest_files
+            .combine( ch_mpl_for_qiime_import )
+            .set { ch_manifest }
+    }
+
+    /*
     * Import trimmed files into QIIME2 artefact
     */
     if (!params.multipleSequencingRuns){
@@ -507,7 +538,7 @@ if (!params.Q2imported){
                 params.untilQ2import ? filename : null }
 
             input:
-            file(trimmed) from ch_fastq_trimmed.collect()
+            file(manifest) from ch_manifest
             env MATPLOTLIBRC from ch_mpl_for_qiime_import
 
             output:
@@ -516,25 +547,34 @@ if (!params.Q2imported){
             when:
             !params.Q2imported
         
-            """
-            qiime tools import  \
-            --type 'SampleData[PairedEndSequencesWithQuality]'  \
-            --input-path .  \
-            --source-format CasavaOneEightSingleLanePerSampleDirFmt  \
-            --output-path demux.qza
-            """
+            script:
+            if (!params.phred64) {
+                """
+                qiime tools import \
+                --type 'SampleData[PairedEndSequencesWithQuality]' \
+                --input-path $manifest \
+                --output-path demux.qza \
+                --source-format PairedEndFastqManifestPhred33
+                """
+            } else {
+                """
+                qiime tools import \
+                --type 'SampleData[PairedEndSequencesWithQuality]' \
+                --input-path $manifest \
+                --output-path demux.qza \
+                --source-format PairedEndFastqManifestPhred64
+                """
+            }
         }
     } else {
         process qiime_import_multi {
-            tag "${folders}"
+            tag "${manifest}"
 
             publishDir "${params.outdir}", mode: 'copy', 
             saveAs: {params.keepIntermediates ? filename : null}
 
             input:
-            file(trimmed) from ch_fastq_trimmed.collect()
-            val(folders) from ch_folders.collect()
-            env MATPLOTLIBRC from ch_mpl_for_qiime_import
+            set file(manifest), env(MATPLOTLIBRC) from ch_manifest
 
             output:
             file "*demux.qza" into (ch_qiime_demux_import, ch_qiime_demux_vis, ch_qiime_demux_dada) mode flatten
@@ -543,21 +583,26 @@ if (!params.Q2imported){
             !params.Q2imported
 
             script:
-            """
-            for folder in $folders
-            do
-                folder=\"\${folder//[],[]}\"
-                mkdir \$folder
-                mv \$folder-* \$folder/
+            def folder = "${manifest}".take("${manifest}".indexOf("${params.split}"))
+            if (!params.phred64) {
+                """
                 qiime tools import \
                 --type 'SampleData[PairedEndSequencesWithQuality]' \
-                --input-path \$folder \
-                --source-format CasavaOneEightSingleLanePerSampleDirFmt \
-                --output-path \$folder-demux.qza
-            done
-            """
+                --input-path $manifest \
+                --output-path $folder-demux.qza \
+                --source-format PairedEndFastqManifestPhred33
+                """
+            } else {
+                """
+                qiime tools import \
+                --type 'SampleData[PairedEndSequencesWithQuality]' \
+                --input-path $manifest \
+                --output-path $folder-demux.qza \
+                --source-format PairedEndFastqManifestPhred64
+                """
+            }
         }
-	}
+    }
     ch_qiime_demux_vis
         .combine( ch_mpl_for_demux_visualize )
         .set{ ch_qiime_demux_visualisation }

@@ -7,7 +7,7 @@
 * [Updating the pipeline](#updating-the-pipeline)
 * [Reproducibility](#reproducibility)
 * [Main arguments](#main-arguments)
-    * [`-profile`](#-profile-single-dash)
+    * [`-profile`](#-profile)
     * [`--reads`](#--reads)
     * [`--FW_primer` and `--RV_primer`](#--FW_primer-and---RV_primer)
     * [`--retain_untrimmed`](#--retain_untrimmed)
@@ -47,9 +47,9 @@
 * [Other command line parameters](#other-command-line-parameters)
     * [`--outdir`](#--outdir)
     * [`--email`](#--email)
-    * [`-name`](#-name-single-dash)
-    * [`-resume`](#-resume-single-dash)
-    * [`-c`](#-c-single-dash)
+    * [`-name`](#-name)
+    * [`-resume`](#-resume)
+    * [`-c`](#-c)
     * [`--max_memory`](#--max_memory)
     * [`--max_time`](#--max_time)
     * [`--max_cpus`](#--max_cpus)
@@ -70,10 +70,15 @@ NXF_OPTS='-Xms1g -Xmx4g'
 ## Running the pipeline
 The typical command for running the pipeline is as follows:
 ```bash
-nextflow run nf-core/ampliseq --reads 'data' -profile standard,docker
+nextflow run nf-core/ampliseq \
+    -profile standard,singularity \
+    --reads "data" \
+    --FW_primer GTGYCAGCMGCCGCGGTAA \
+    --RV_primer GGACTACNVGGGTWTCTAAT \
+    --metadata "data/Metadata.tsv"
 ```
 
-This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
+This will launch the pipeline with the `singularity` configuration profile. See below for more information about profiles.
 
 Note that the pipeline will create the following files in your working directory:
 
@@ -130,24 +135,24 @@ Use this to specify the location of your input paired-end FastQ files.
 For example:
 
 ```bash
---reads 'path/to/data/'
+--reads 'path/to/data'
 ```
 
 Please note the following requirements:
 
 1. The path must be enclosed in quotes
-2. The folder must containing gzip compressed Casava 1.8 paired-end demultiplexed fastq files with the naming sheme *_L001_R{1,2}_001.fastq.gz
-3. All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed. Sequencing data originating from multiple sequencing runs requires additionally the parameter `--multipleSequencingRuns` and a specific folder structure.
+2. The folder must containing gzip compressed Casava 1.8 paired-end demultiplexed fastq files with the naming sheme "[a-zA-Z0-9-]+_[a-zA-Z0-9-]+_L[0-9][0-9][0-9]_R{1,2}_001.fastq.gz". This is a requirement of QIIME2 and cannot be bypassed. A directory with symlinks named as required linking to your actual data might be a solution.
+3. All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed. Sequencing data originating from multiple sequencing runs requires additionally the parameter `--multipleSequencingRuns` and a specific folder structure, see [here](#--multipleSequencingRuns).
 
 ### `--FW_primer` and `--RV_primer`
-In Amplicon sequencing methods, PCR with specific primers produces the amplicon of intrest. These primer sequences need to be trimmed from the reads before further processing and are also required for producing an appropriate classifier. For example:
+In amplicon sequencing methods, PCR with specific primers produces the amplicon of intrest. These primer sequences need to be trimmed from the reads before further processing and are also required for producing an appropriate classifier. For example:
 
 ```bash
 --FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT
 ```
 
 ### `--retain_untrimmed`
-When read sequences are trimmed, routinely untrimmed read pairs are discarded. Use this option to retain untrimmed read pairs. For example:
+When read sequences are trimmed, untrimmed read pairs are discarded routinely. Use this option to retain untrimmed read pairs. This is usually not recommended and is only of advantage for specific protocols that prevent sequencing PCR primers. For example:
 
 ```bash
 --retain_untrimmed
@@ -157,19 +162,20 @@ When read sequences are trimmed, routinely untrimmed read pairs are discarded. U
 For performing downstream analysis such as barplots, diversity indices or differential abundance testing, a metadata file is essential. For example:
 
 ```bash
---metadata "Metadata.tsv"
+--metadata "path/to/metadata.tsv"
 ```
 
 Please note the following requirements:
 
 1. The path must be enclosed in quotes
-2. The metadata sheet has to follow the [QIIME2 specifications](https://docs.qiime2.org/2018.6/tutorials/metadata/)
+2. The metadata file has to follow the [QIIME2 specifications](https://docs.qiime2.org/2018.6/tutorials/metadata/)
+3. In case of multiple sequencing runs, specific naming of samples are required, see [here](#--multipleSequencingRuns)
 
 ## Cutoffs
 
 ### `--trunclenf` and `--trunclenr`
 Read denoising by DADA2 creates an error profile specific to a sequencing run and uses this to correct sequencing errors. This method requires all reads to have the same length and as high quality as possible while maintaining at least 20 bp overlap for merging. One cutoff for the forward read `--trunclenf` and one for the reverse read `--trunclenr` truncate all longer reads at that position and drop all shorter reads. 
-These cutoffs are usually chosen visually using `--untilQ2import`, inspecting the quality plots in the "result folder/demux", and resuming analysis with `--Q2imported [Path]`. If not set, these cutoffs will be determined automatically for the position before the mean quality score drops below `--trunc_qmin`. For example:
+These cutoffs are usually chosen visually using [`--untilQ2import`](#--untilQ2import), inspecting the quality plots in the "result folder/demux", and resuming analysis with [`--Q2imported`](#--Q2imported). If not set, these cutoffs will be determined automatically for the position before the mean quality score drops below [`--trunc_qmin`](#--trunc_qmin). For example:
 
 ```bash
 --trunclenf 180 --trunclenr 120
@@ -179,10 +185,10 @@ Please note:
 
 1. Too agressive truncation might lead to insufficient overlap for read merging
 2. Too less truncation might reduce denoised reads
-3. The code choosing these values automatically cannot take the points above into account, therefore setting `--trunclenf` and `--trunclenr` is preferred
+3. The code choosing these values automatically cannot take the points above into account, therefore setting `--trunclenf` and `--trunclenr` is recommended
 
 ### `--trunc_qmin`
-Automatically determine `--trunclenf` and `--trunclenr` before the mean quality score drops below `--trunc_qmin` (default: 25). Setting values for `--trunclenf` and `--trunclenr` is strongly encouraged. For example:
+Automatically determine [`--trunclenf` and `--trunclenr`](#--trunclenf-and---trunclenr) before the mean quality score drops below `--trunc_qmin` (default: 25). For example:
 
 ```bash
 --trunc_qmin 20
@@ -191,24 +197,25 @@ Automatically determine `--trunclenf` and `--trunclenr` before the mean quality 
 Please note:
 
 1. The code choosing `--trunclenf` and `--trunclenr` using `--trunc_qmin` automatically cannot take amplicon length or overlap requirements for merging into account, therefore setting `--trunclenf` and `--trunclenr` is preferred
+2. The default value of 25 is recommended. However, very good quality data with large paired sequence overlap might justify a higher value. Also, very low quality data might require a lower value 
 
 ## Other options
 
 ### `--untilQ2import`
-Computes all steps until quality plots aiding the choosing of `--trunclenf` and `--trunclenr`.
+Computes all steps until quality plots aiding the choosing of [`--trunclenf` and `--trunclenr`](#--trunclenf-and---trunclenr).
 
 ### `--Q2imported`
-Analysis starting with a QIIME2 artefact with trimmed reads, typically produced before with `--untilQ2import`.
+Analysis starting with a QIIME2 artefact with trimmed reads, typically produced before with [`--untilQ2import`](#--untilQ2import). This is only supported for data from a single sequencing run.
 
-### `--onlyDenoising`
-Skip all steps after denoising, produce only sequences and abundance tables on ASV level
+For data from multiple sequencing runs with [`--multipleSequencingRuns`](#--multipleSequencingRuns) the pipeline can be first run with `--untilQ2import` and next run without `--untilQ2import` but with [`-resume`](#-resume-single-dash). For more details see [here](#visually-choosing-sequencing-read-truncation-cutoffs).
 
 ### `--multipleSequencingRuns`
 If samples were sequenced in multiple sequencing runs. Expects one subfolder per sequencing run
-in the folder specified by --reads containing sequencing data of the specific run. Also, fastQC
-is skipped because multiple sequencing runs might create overlapping file names that crash MultiQC.
+in the folder specified by [`--reads`](#--reads) containing sequencing data of the specific run. Also, fastQC and MultiQC are skipped because multiple sequencing runs might create overlapping file names that crash MultiQC.
 
-Example:
+To prevent overlapping sample names from multiple sequencing runs, sample names obtained from the sequencing files will be renamed automatically by adding the folder name as prefix. Accordingly, the sample name column in the metadata file [`--metadata`](#--metadata) require values following `subfolder-samplename`.
+
+Example for input data organization:
 ```
 data
   |-run1
@@ -219,11 +226,51 @@ data
      |-sample3_1_L001_R{1,2}_001.fastq.gz
      |-sample4_1_L001_R{1,2}_001.fastq.gz
 ```
-Analysing these requires the arguments `--reads "data" --multipleSequencingRuns`
 
-The metadata sheet specified with `--metadata` requires as first column with header `ID` the values `run1-sample1` ... `run2-sample4` following the scheme `subfolder-sample`.
 
-While `--onlyDenoising` with `--multipleSequencingRuns` is currently supported, `--Q2imported` is not.
+In this example the first column in the metadata file requires the values `run1-sample1` ... `run2-sample4` (instead of sample1, ..., sample4).
+
+Example command to analyze this data in one pipeline run:
+```bash
+nextflow run nf-core/ampliseq \
+    -profile standard,singularity \
+    --reads "data" \
+    --FW_primer GTGYCAGCMGCCGCGGTAA \
+    --RV_primer GGACTACNVGGGTWTCTAAT \
+    --metadata "data/Metadata.tsv" \
+    --multipleSequencingRuns
+```
+
+#### Visually choosing sequencing read truncation cutoffs
+
+While [`--untilQ2import`](#--untilQ2import) with `--multipleSequencingRuns` is currently supported, [`--Q2imported`](#--Q2imported) is not. The pipeline can be first run with `--untilQ2import`, than [`--trunclenf` and `--trunclenr`](#--trunclenf-and---trunclenr) are visually chosen, and than the pipeline can be continued without `--untilQ2import` but with `--trunlenf`, `--trunlenr`, and [`-resume`](#-resume).
+
+For example:
+
+(1) To produce quality plots and choose truncation values:
+```bash
+nextflow run nf-core/ampliseq \
+    -profile standard,singularity \
+    --reads "data" \
+    --FW_primer GTGYCAGCMGCCGCGGTAA \
+    --RV_primer GGACTACNVGGGTWTCTAAT \
+    --metadata "data/Metadata.tsv" \
+    --multipleSequencingRuns \
+    --untilQ2import
+```
+(2) To finish analysis:
+```bash
+nextflow run nf-core/ampliseq \
+    -profile standard,singularity \
+    --reads "data" \
+    --FW_primer GTGYCAGCMGCCGCGGTAA \
+    --RV_primer GGACTACNVGGGTWTCTAAT \
+    --metadata "data/Metadata.tsv" \
+    --multipleSequencingRuns \
+    --trunclenf 200 \
+    --trunclenr 180 \
+    -resume
+```
 
 ## Reference database
 By default, the workflow downloads [SILVA](https://www.arb-silva.de/) [v132](https://www.arb-silva.de/documentation/release-132/) and extracts reference sequences and taxonomy clustered at 99% similarity and trains a Naive Bayes classifier to assign taxonomy to features.
@@ -240,7 +287,7 @@ Please note the following requirements:
 1. The path must be enclosed in quotes
 2. The cassifier is a Naive Bayes classifier produced by "qiime feature-classifier fit-classifier-naive-bayes" (e.g. by this pipeline or from [QIIME2 resources](https://docs.qiime2.org/2018.6/data-resources/))
 3. The primer pair for the amplicon PCR and the computing of the classifier are exactly the same
-4. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses (0.19.1).
+4. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses (0.19.1)
 
 ### `--classifier_removeHash`
 Remove all hash signs from taxonomy strings, resolves a rare ValueError during classification (process classifier).
@@ -263,10 +310,12 @@ Please note the following requirements:
 ## Filters
 
 ### `--exclude_taxa`
-Depending on the primers used, PCR might amplify unwanted or off-target DNA, e.g. originating from mitochondria or chloroplasts. Here you can specify taxa that are excluded from further analysis. For example:
+Depending on the primers used, PCR might amplify unwanted or off-target DNA. By default sequences originating from mitochondria or chloroplasts are removed. 
+
+Here you can specify taxa that are excluded from further analysis. For example:
 
 ```bash
---exclude_taxa "mitochondria,chloroplast"
+--exclude_taxa "mitochondria,chloroplast,archea"
 ```
 
 Please note the following requirements:
@@ -276,13 +325,16 @@ Please note the following requirements:
 3. The taxonomy level is not taken into consideration
 
 ### `--min_frequency`        
-Remove entries from the feature table below an absolute abundance threshold (default: 1). Singletons are often regarded as artifacts, choosing a value of 2 removes sequences with less than 2 total counts from the feature table.
+Remove entries from the feature table below an absolute abundance threshold (default: 1, meaning filter is disabled). Singletons are often regarded as artifacts, choosing a value of 2 removes sequences with less than 2 total counts from the feature table.
 
 ### `--min_samples`           
-Filtering low prevalent features from the feature table, e.g. keeping only features that are present in at least two samples can be achived by choosing a value of 2 (default: 1). Typically only used when having replicates for all samples.         
+Filtering low prevalent features from the feature table, e.g. keeping only features that are present in at least two samples can be achived by choosing a value of 2 (default: 1, meaning filter is disabled). Typically only used when having replicates for all samples.         
 
 
 ## Skipping steps:
+
+### `--onlyDenoising`
+Skip all steps after denoising, produce only sequences and abundance tables on ASV level.
 
 ### `--skip_fastqc`
 Skip FastQC, minor time saving.
@@ -356,7 +408,7 @@ process.$multiqc.module = []
 
 ### `--max_memory`
 Use to set a top-limit for the default memory requirement for each process.
-Should be a string in the format integer-unit. eg. `--max_memory '8.GB'``
+Should be a string in the format integer-unit. eg. `--max_memory '8.GB'`
 
 ### `--max_time`
 Use to set a top-limit for the default time requirement for each process.
@@ -370,4 +422,5 @@ Should be a string in the format integer-unit. eg. `--max_cpus 1`
 Set to receive plain-text e-mails instead of HTML formatted.
 
 ### `--multiqc_config`
+
 Specify a path to a custom MultiQC configuration file.

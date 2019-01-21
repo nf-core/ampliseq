@@ -63,6 +63,8 @@ At this point of the analysis the trimmed reads are imported into QIIME2 and an 
 **Output directory: `results/demux`**
 * `index.html`
   * Quality plots that can be viewed in your web browser
+* `demux.qza` (only when --untilQ2import is true)
+  * QIIME2 artefact for imported reads
 
 All following steps are performed in QIIME2.
 
@@ -82,6 +84,8 @@ DADA2 reduces sequence errors and dereplicates sequences by quality filtering, d
   * QIIME2 data artefact
 
 **Output directory: `results/abundance-table/unfiltered`**
+* `dada_report.txt`
+  * DADA2 verbose output
 * `dada_stats.tsv`
   * Tab-separated table of DADA2 statistics
 * `feature-table.biom`

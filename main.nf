@@ -29,11 +29,11 @@ def helpMessage() {
 
 
     Required arguments:
-      --reads [Path to folder]      Folder containing Casava 1.8 paired-end demultiplexed fastq files: *_L001_R{1,2}_001.fastq.gz
+      --reads [path/to/folder]      Folder containing Casava 1.8 paired-end demultiplexed fastq files: *_L001_R{1,2}_001.fastq.gz
                                     Note: All samples have to be sequenced in one run, otherwise also specifiy --multipleSequencingRuns
       --FW_primer [str]             Forward primer sequence
       --RV_primer [str]             Reverse primer sequence
-      --metadata                    Path to metadata sheet
+      --metadata [path/to/file]     Path to metadata sheet
 
     Filters:
       --exclude_taxa [str]          Comma seperated list of unwanted taxa (default: "mitochondria,chloroplast")
@@ -50,7 +50,7 @@ def helpMessage() {
                                     this mean quality score (not preferred) (default: 25)
 
     References:                     If you have trained a compatible classifier before
-      --classifier                  Path to QIIME2 classifier file (typically *-classifier.qza)
+      --classifier [path/to/file]   Path to QIIME2 classifier file (typically *-classifier.qza)
       --classifier_removeHash       Remove all hash signs from taxonomy strings, resolves a rare ValueError during classification (process classifier)
 
     Statistics:
@@ -61,7 +61,7 @@ def helpMessage() {
 
     Other options:
       --untilQ2import               Skip all steps after importing into QIIME2, used for visually choosing DADA2 parameter
-      --Q2imported [Path]           Path to imported reads (e.g. "demux.qza"), used after visually choosing DADA2 parameter
+      --Q2imported [path/to/file]   Path to imported reads (e.g. "demux.qza"), used after visually choosing DADA2 parameter
       --onlyDenoising               Skip all steps after denoising, produce only sequences and abundance tables on ASV level
       --multipleSequencingRuns      If samples were sequenced in multiple sequencing runs. Expects one subfolder per sequencing run
                                     in the folder specified by --reads containing sequencing data of the specific run. Also, fastQC
@@ -122,22 +122,14 @@ params.dereplication = 99
 
 
 /*
- * Defines pipeline steps
+ * Define pipeline steps
  */
-
-Channel.fromPath("${params.metadata}")
-        .into { ch_metadata_for_barplot; ch_metadata_for_alphararefaction; ch_metadata_for_diversity_core; ch_metadata_for_alpha_diversity; ch_metadata_for_metadata_category_all; ch_metadata_for_metadata_category_pairwise; ch_metadata_for_beta_diversity; ch_metadata_for_beta_diversity_ordination; ch_metadata_for_ancom; ch_metadata_for_ancom_tax; ch_metadata_for_ancom_asv }
-
 params.untilQ2import = false
 
 params.Q2imported = false
 if (params.Q2imported) {
     params.skip_fastqc = true
     params.skip_multiqc = true
-    //Set up channel
-    Channel.fromFile("${params.Q2imported}")
-           .into { ch_qiime_demux_import; ch_qiime_demux_vis; ch_qiime_demux_dada }
-    params.keepIntermediates = true
 } else {
     params.skip_multiqc = false
 }
@@ -167,15 +159,47 @@ if (params.onlyDenoising || params.untilQ2import) {
 }
 
 /*
- * Sanity check input values
- * need to be extended eventually
+ * Import input files
  */
-if (!params.Q2imported && (!params.FW_primer || !params.RV_primer || !params.metadata || !params.reads)) {
-    println "${params.Q2imported}"
-    println "\nERROR: Missing required input --Q2imported OR --FW_primer / --RV_primer / --metadata\n"
-    helpMessage()
-    exit 1
+if (params.metadata) {
+    Channel.fromPath("${params.metadata}", checkIfExists: true)
+        .into { ch_metadata_for_barplot; ch_metadata_for_alphararefaction; ch_metadata_for_diversity_core; ch_metadata_for_alpha_diversity; ch_metadata_for_metadata_category_all; ch_metadata_for_metadata_category_pairwise; ch_metadata_for_beta_diversity; ch_metadata_for_beta_diversity_ordination; ch_metadata_for_ancom; ch_metadata_for_ancom_tax; ch_metadata_for_ancom_asv }
+} else {
+    Channel.fromPath("${params.metadata}", checkIfExists: false)
+        .into { ch_metadata_for_barplot; ch_metadata_for_alphararefaction; ch_metadata_for_diversity_core; ch_metadata_for_alpha_diversity; ch_metadata_for_metadata_category_all; ch_metadata_for_metadata_category_pairwise; ch_metadata_for_beta_diversity; ch_metadata_for_beta_diversity_ordination; ch_metadata_for_ancom; ch_metadata_for_ancom_tax; ch_metadata_for_ancom_asv }
+   
 }
+
+if (params.Q2imported) {
+    Channel.fromPath("${params.Q2imported}", checkIfExists: true)
+           .into { ch_qiime_demux_import; ch_qiime_demux_vis; ch_qiime_demux_dada }
+}
+
+if (params.classifier) {
+    Channel.fromPath("${params.classifier}", checkIfExists: true)
+           .set { ch_qiime_classifier }
+}
+
+/*
+ * Sanity check input values
+ */
+if (!params.Q2imported) { 
+    if (!params.FW_primer) { exit 1, "Option --FW_primer missing" }
+    if (!params.RV_primer) { exit 1, "Option --RV_primer missing" }
+    if (!params.reads) { exit 1, "Option --reads missing" }
+}
+
+if (!params.skip_barplot || !params.skip_alpha_rarefaction || !params.skip_diversity_indices || !params.skip_ancom ) {
+    if (!params.untilQ2import && !params.onlyDenoising) {
+        if (!params.metadata) { exit 1, "Option --metdata missing" }
+    }
+}
+
+if (params.Q2imported && params.untilQ2import) {
+    exit 1, "Choose either to import data into a QIIME2 artefact and quit with --untilQ2import or use an already existing QIIME2 data artefact with --Q2imported."
+}
+
+
 
 
 // AWSBatch sanity checking
@@ -236,7 +260,7 @@ log.info summary.collect { k,v -> "${k.padRight(15)}: $v" }.join("\n")
 log.info "========================================="
 
 if( !params.trunclenf || !params.trunclenr ){
-    log.info "\n######## WARNING: No DADA2 cutoffs were specified, therefore reads will be truncated where median quality drops below ${params.trunc_qmin}.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
+    if ( !params.untilQ2import ) log.info "\n######## WARNING: No DADA2 cutoffs were specified, therefore reads will be truncated where median quality drops below ${params.trunc_qmin}.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
 }
 
 def create_workflow_summary(summary) {
@@ -287,7 +311,7 @@ if (!params.Q2imported){
             .from(params.readPaths)
             .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
             .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-            .into { ch_read_pairs; ch_read_pairs_fastqc }
+            .into { ch_read_pairs; ch_read_pairs_fastqc; ch_read_pairs_name_check }
 
     } else if ( params.multipleSequencingRuns ) {
         //Get files
@@ -318,13 +342,25 @@ if (!params.Q2imported){
         //Add folder information to sequence files
         ch_rename_key
             .map { key, files -> [ key, files, (files[0].take(files[0].findLastIndexOf{"/"})[-1]) ] }
-            .into { ch_read_pairs; ch_read_pairs_fastqc }
+            .into { ch_read_pairs; ch_read_pairs_fastqc; ch_read_pairs_name_check }
+
+        //Check if key follows regex "^[a-zA-Z0-9-]+_[a-zA-Z0-9-]+$"
+        ch_read_pairs_name_check
+            .map { key, files, folder -> [ key ] }
+            .subscribe { 
+                if ( !(it =~ /[a-zA-Z0-9-]+_[a-zA-Z0-9-]+/) ) exit 1, "files starting with $it dont match the QIIME2 input requirements \"[a-zA-Z0-9-]+_[a-zA-Z0-9-]+_L[0-9][0-9][0-9]_R{1,2}_001.fastq.gz\". There might be more, just stopped here. \nPlease follow input requirements outlined in the documentation." }
             
     } else {
         Channel
             .fromFilePairs( params.reads + params.extension, size: 2 )
             .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}${params.extension}\nNB: Path needs to be enclosed in quotes!" }
-            .into { ch_read_pairs; ch_read_pairs_fastqc }
+            .into { ch_read_pairs; ch_read_pairs_fastqc; ch_read_pairs_name_check }
+
+        //Check if key follows regex "^[a-zA-Z0-9-]+_[a-zA-Z0-9-]+$"
+        ch_read_pairs_name_check
+            .map { key, files -> [ key ] }
+            .subscribe { 
+                if ( !(it =~ /[a-zA-Z0-9-]+_[a-zA-Z0-9-]+/) ) exit 1, "files starting with $it dont match the QIIME2 input requirements \"[a-zA-Z0-9-]+_[a-zA-Z0-9-]+_L[0-9][0-9][0-9]_R{1,2}_001.fastq.gz\". There might be more, just stopped here. \nPlease follow input requirements outlined in the documentation." }
     }
 
 	/*
@@ -466,7 +502,9 @@ if (!params.Q2imported){
     if (!params.multipleSequencingRuns){
         process qiime_import {
             publishDir "${params.outdir}/demux", mode: 'copy', 
-            saveAs: {params.keepIntermediates ? filename : null}
+            saveAs: { filename -> 
+                params.keepIntermediates ? filename : null
+                params.untilQ2import ? filename : null }
 
             input:
             file(trimmed) from ch_fastq_trimmed.collect()
@@ -597,9 +635,6 @@ if( !params.classifier ){
 	}
     message_classifier_removeHash
         .subscribe { log.info it }
-} else {
-    Channel.fromPath("${params.classifier}")
-           .set { ch_qiime_classifier }
 }
 
 /*
@@ -706,7 +741,8 @@ if (!params.multipleSequencingRuns){
         tag "$trunc"
         publishDir "${params.outdir}", mode: 'copy',
             saveAs: {filename -> 
-                    if (filename.indexOf("stats.tsv") > 0)                     "abundance_table/unfiltered/dada_stats.tsv"
+                     if (filename.indexOf("stats.tsv") > 0)                     "abundance_table/unfiltered/dada_stats.tsv"
+                else if (filename.indexOf("dada_report.txt") == 0)              "abundance_table/unfiltered/dada_report.txt"
                 else if (filename.indexOf("table.qza") == 0)                    "abundance_table/unfiltered/$filename"
                 else if (filename.indexOf("rel-table/feature-table.biom") == 0) "abundance_table/unfiltered/rel-feature-table.biom"
                 else if (filename.indexOf("table/feature-table.biom") == 0)     "abundance_table/unfiltered/feature-table.biom"
@@ -730,6 +766,7 @@ if (!params.multipleSequencingRuns){
         file("rel-table/feature-table.biom")
         file("table/rel-feature-table.tsv")
         file("unfiltered/*")
+        file("dada_report.txt")
 
         when:
         !params.untilQ2import
@@ -750,7 +787,8 @@ if (!params.multipleSequencingRuns){
         --o-table table.qza  \
         --o-representative-sequences rep-seqs.qza  \
         --o-denoising-stats stats.qza \
-        --verbose
+        --verbose \
+        >dada_report.txt
 
         #produce dada2 stats "dada_stats/stats.tsv"
         qiime tools export stats.qza \
@@ -798,6 +836,7 @@ if (!params.multipleSequencingRuns){
         file("${demux.baseName}-table.qza") into ch_qiime_table
         file("${demux.baseName}-rep-seqs.qza") into ch_qiime_repseq
         file("${demux.baseName}-stats.tsv") into ch_dada_stats
+        file("${demux.baseName}-report.txt") into ch_dada_reports
 
         when:
         !params.untilQ2import
@@ -815,7 +854,8 @@ if (!params.multipleSequencingRuns){
         --o-table ${demux.baseName}-table.qza  \
         --o-representative-sequences ${demux.baseName}-rep-seqs.qza  \
         --o-denoising-stats ${demux.baseName}-stats.qza \
-        --verbose
+        --verbose \
+        >${demux.baseName}-report.txt
 
         #produce dada2 stats "${demux.baseName}-dada_stats/stats.tsv"
         qiime tools export ${demux.baseName}-stats.qza \
@@ -828,7 +868,8 @@ if (!params.multipleSequencingRuns){
         tag "$tables"
         publishDir "${params.outdir}", mode: 'copy',
             saveAs: {filename -> 
-                    if (filename.indexOf("stats.tsv") == 0)                      "abundance_table/unfiltered/dada_stats.tsv"
+                     if (filename.indexOf("stats.tsv") == 0)                    "abundance_table/unfiltered/dada_stats.tsv"
+                else if (filename.indexOf("dada_report.txt") == 0)              "abundance_table/unfiltered/dada_report.txt"
                 else if (filename.indexOf("table.qza") == 0)                    "abundance_table/unfiltered/$filename"
                 else if (filename.indexOf("rel-table/feature-table.biom") == 0) "abundance_table/unfiltered/rel-feature-table.biom"
                 else if (filename.indexOf("table/feature-table.biom") == 0)     "abundance_table/unfiltered/feature-table.biom"
@@ -842,6 +883,7 @@ if (!params.multipleSequencingRuns){
         file tables from ch_qiime_table.collect()
         file repseqs from ch_qiime_repseq.collect()
         file stats from ch_dada_stats.collect()
+        file reports from ch_dada_reports.collect()
         env MATPLOTLIBRC from ch_mpl_dada_merge
 
         output:
@@ -853,6 +895,7 @@ if (!params.multipleSequencingRuns){
         file("rel-table/feature-table.biom")
         file("table/rel-feature-table.tsv")
         file("unfiltered/*")
+        file("dada_report.txt")
 
         when:
         !params.untilQ2import
@@ -861,9 +904,11 @@ if (!params.multipleSequencingRuns){
         def TABLES = ''
         def REPSEQ = ''
         def STAT = ''
+        def REPORT = ''
         for (table in tables) { TABLES+= " --i-tables $table" }
         for (repseq in repseqs) { REPSEQ+= " --i-data $repseq" }
         for (stat in stats) { STAT+= " $stat" }
+        for (report in reports) { REPORT+= " $report" }
         """
         #concatenate tables
         #merge files
@@ -876,6 +921,7 @@ if (!params.multipleSequencingRuns){
 	        --o-merged-data rep-seqs.qza \
 	        --quiet
         cat $STAT >stats.tsv
+        cat $REPORT >dada_report.txt
 
         #produce raw count table in biom format "table/feature-table.biom"
         qiime tools export table.qza  \
@@ -1364,6 +1410,8 @@ process metadata_category_all {
     !params.skip_ancom || !params.skip_diversity_indices
     when:
     !params.untilQ2import && !params.onlyDenoising
+    when:
+    params.metadata
 
     script:
     if( !params.metadata_category )

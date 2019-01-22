@@ -28,16 +28,27 @@ def helpMessage() {
     nextflow run nf-core/ampliseq --reads "data" --FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT --metadata "Metadata.tsv"
 
 
-    Required arguments:
-      --reads [path/to/folder]      Folder containing Casava 1.8 paired-end demultiplexed fastq files: *_L001_R{1,2}_001.fastq.gz
-                                    Note: All samples have to be sequenced in one run, otherwise also specifiy --multipleSequencingRuns
+    Main arguments:
+      --reads [path/to/folder]      Folder containing paired-end demultiplexed fastq files
+                                    Note: All samples have to be sequenced in one run, otherwise also specifiy "--multipleSequencingRuns"
       --FW_primer [str]             Forward primer sequence
       --RV_primer [str]             Reverse primer sequence
       --metadata [path/to/file]     Path to metadata sheet
 
+    Other input arguments:
+      --extension [str]             Naming of sequencing files (default: "/*_R{1,2}_001.fastq.gz"). 
+                                    The prepended "/" is required, also one "*" is required for sample names and "{1,2}" indicates read orientation
+      --multipleSequencingRuns      If samples were sequenced in multiple sequencing runs. Expects one subfolder per sequencing run
+                                    in the folder specified by "--reads" containing sequencing data of the specific run. These folders 
+                                    may not contain underscores. Also, fastQC is skipped because multiple sequencing runs might 
+                                    create overlapping file names that crash MultiQC.
+      --split [str]                 A string that will be used between the prepended run/folder name and the sample name. 
+                                    May not be present in run/folder names and no underscore(s) allowed. Only used with "--multipleSequencingRuns"
+      --phred64                     If the sequencing data has PHRED 64 encoded quality scores (default: PHRED 33)
+
     Filters:
       --exclude_taxa [str]          Comma seperated list of unwanted taxa (default: "mitochondria,chloroplast")
-                                    To skip filtering use "none"
+                                    To skip taxa filtering use "none"
       --min_frequency [int]         Remove entries from the feature table below an absolute abundance threshold (default: 1)
       --min_samples [int]           Filtering low prevalent features from the feature table (default: 1)                   
 
@@ -63,10 +74,6 @@ def helpMessage() {
       --untilQ2import               Skip all steps after importing into QIIME2, used for visually choosing DADA2 parameter
       --Q2imported [path/to/file]   Path to imported reads (e.g. "demux.qza"), used after visually choosing DADA2 parameter
       --onlyDenoising               Skip all steps after denoising, produce only sequences and abundance tables on ASV level
-      --multipleSequencingRuns      If samples were sequenced in multiple sequencing runs. Expects one subfolder per sequencing run
-                                    in the folder specified by --reads containing sequencing data of the specific run. Also, fastQC
-                                    is skipped because multiple sequencing runs might create overlapping file names that crash MultiQC.
-      --phred64                     If the sequencing data has PHRED 64 encoded quality scores (default: PHRED 33)
 
     Skipping steps:
       --skip_fastqc                 Skip FastQC
@@ -116,7 +123,7 @@ params.min_frequency = false
 params.min_samples = false
 params.multipleSequencingRuns = false
 params.phred64 = false
-params.split = "-" //TODO: multi: test if "${params.split}" in folder names and return error if yes //TODO: also "_" may not be in folder names!!
+params.split = "-"
 
 //Database specific parameters
 //currently only this is compatible with process make_SILVA_132_16S_classifier
@@ -328,7 +335,7 @@ if (!params.Q2imported){
             .flatMap { key, files -> [files[0]] }
             .map { it.take(it.findLastIndexOf{"/"})[-1] }
             .unique()
-            .into { ch_folders; ch_check_folders; ch_report_folders }
+            .into { ch_count_folders; ch_check_folders; ch_report_folders }
 
         //Report folders with sequencing files
         ch_report_folders
@@ -338,32 +345,27 @@ if (!params.Q2imported){
                 log.info "\nFound the folder(s) \"$folders\" containing sequencing read files matching \"${params.extension}\" in \"${params.reads}\".\n" }
 
         //Stop if folder count is 1
-        ch_check_folders
+        ch_count_folders
             .count()
             .subscribe { if ( it == 1 ) exit 1, "Found only one folder with read data but \"--multipleSequencingRuns\" was specified. Please review data input." }
+        
+        //Stop if folder names contain "_" or "${params.split}"
+        ch_check_folders
+            .subscribe { 
+                if ( it.toString().indexOf("${params.split}") > -1 ) exit 1, "Folder name \"$it\" contains \"${params.split}\", but may not. Please review data input or choose another string using \"--split [str]\" (no underscore allowed!)."
+                if ( it.toString().indexOf("_") > -1 ) exit 1, "Folder name \"$it\" contains \"_\", but may not. Please review data input." 
+            }
 
         //Add folder information to sequence files
         ch_rename_key
             .map { key, files -> [ key, files, (files[0].take(files[0].findLastIndexOf{"/"})[-1]) ] }
-            .into { ch_read_pairs; ch_read_pairs_fastqc; ch_read_pairs_name_check }
-
-        //Check if key follows regex "^[a-zA-Z0-9-]+_[a-zA-Z0-9-]+$"
-        ch_read_pairs_name_check
-            .map { key, files, folder -> [ key ] }
-            .subscribe { 
-                if ( !(it =~ /[a-zA-Z0-9-]+_[a-zA-Z0-9-]+/) ) exit 1, "files starting with $it dont match the QIIME2 input requirements \"[a-zA-Z0-9-]+_[a-zA-Z0-9-]+_L[0-9][0-9][0-9]_R{1,2}_001.fastq.gz\". There might be more, just stopped here. \nPlease follow input requirements outlined in the documentation." }
+            .into { ch_read_pairs; ch_read_pairs_fastqc }
             
     } else {
         Channel
             .fromFilePairs( params.reads + params.extension, size: 2 )
             .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}${params.extension}\nNB: Path needs to be enclosed in quotes!" }
-            .into { ch_read_pairs; ch_read_pairs_fastqc; ch_read_pairs_name_check }
-
-        //Check if key follows regex "^[a-zA-Z0-9-]+_[a-zA-Z0-9-]+$"
-        ch_read_pairs_name_check
-            .map { key, files -> [ key ] }
-            .subscribe { 
-                if ( !(it =~ /[a-zA-Z0-9-]+_[a-zA-Z0-9-]+/) ) exit 1, "files starting with $it dont match the QIIME2 input requirements \"[a-zA-Z0-9-]+_[a-zA-Z0-9-]+_L[0-9][0-9][0-9]_R{1,2}_001.fastq.gz\". There might be more, just stopped here. \nPlease follow input requirements outlined in the documentation." }
+            .into { ch_read_pairs; ch_read_pairs_fastqc }
     }
 
 	/*

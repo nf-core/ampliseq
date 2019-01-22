@@ -10,8 +10,12 @@
     * [`-profile`](#-profile)
     * [`--reads`](#--reads)
     * [`--FW_primer` and `--RV_primer`](#--FW_primer-and---RV_primer)
-    * [`--retain_untrimmed`](#--retain_untrimmed)
     * [`--metadata`](#--metadata)
+* [Other input options](#other-input-options)
+    * [`--extension`](#--extension)
+    * [`--multipleSequencingRuns`](#--multipleSequencingRuns)
+    * [`--split`](#--split)
+    * [`--phred64`](#--phred64)
 * [Cutoffs](#cutoffs)
     * [`--trunclenf` and `--trunclenr`](#--trunclenf-and---trunclenr)
     * [`--trunc_qmin`](#--trunc_qmin)
@@ -19,13 +23,13 @@
     * [`--untilQ2import`](#--untilQ2import)
     * [`--Q2imported`](#--Q2imported)
     * [`--onlyDenoising`](#--onlyDenoising)
-    * [`--multipleSequencingRuns`](#--multipleSequencingRuns)
 * [Reference database](#reference-database)
     * [`--classifier`](#--classifier)
     * [`--classifier_removeHash`](#--classifier_removeHash)
 * [Statistics](#statistics)
     * [`--metadata_category`](#--metadata_category)
 * [Filters](#filters)
+    * [`--retain_untrimmed`](#--retain_untrimmed)
     * [`--exclude_taxa`](#--exclude_taxa)
     * [`--min_frequency`](#--min_frequency)
     * [`--min_samples`](#--min_samples)
@@ -78,7 +82,7 @@ nextflow run nf-core/ampliseq \
     --metadata "data/Metadata.tsv"
 ```
 
-This will launch the pipeline with the `singularity` configuration profile. See below for more information about profiles.
+This will launch the pipeline with the `singularity` configuration profile. See below [`-profile`](#-profile) for more information about profiles.
 
 Note that the pipeline will create the following files in your working directory:
 
@@ -138,24 +142,28 @@ For example:
 --reads 'path/to/data'
 ```
 
+Example for input data organization from one sequencing run with two samples:
+```
+data
+  |-sample1_1_L001_R1_001.fastq.gz
+  |-sample1_1_L001_R2_001.fastq.gz
+  |-sample2_1_L001_R1_001.fastq.gz
+  |-sample2_1_L001_R2_001.fastq.gz
+```
+
+
 Please note the following requirements:
 
 1. The path must be enclosed in quotes
-2. The folder must containing gzip compressed Casava 1.8 paired-end demultiplexed fastq files with the naming sheme "[a-zA-Z0-9-]+_[a-zA-Z0-9-]+_L[0-9][0-9][0-9]_R{1,2}_001.fastq.gz". This is a requirement of QIIME2 and cannot be bypassed. A directory with symlinks named as required linking to your actual data might be a solution.
-3. All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed. Sequencing data originating from multiple sequencing runs requires additionally the parameter `--multipleSequencingRuns` and a specific folder structure, see [here](#--multipleSequencingRuns).
+2. The folder must contain gzip compressed paired-end demultiplexed fastq files. If the file names do not follow the default (`"/*_R{1,2}_001.fastq.gz"`), please check [`--extension`](#--extension). 
+3. If your data is scattered, a directory with symlinks to your actual data might be a solution.
+4. All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed. Sequencing data originating from multiple sequencing runs requires additionally the parameter `--multipleSequencingRuns` and a specific folder structure, see [here](#--multipleSequencingRuns).
 
 ### `--FW_primer` and `--RV_primer`
 In amplicon sequencing methods, PCR with specific primers produces the amplicon of intrest. These primer sequences need to be trimmed from the reads before further processing and are also required for producing an appropriate classifier. For example:
 
 ```bash
 --FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT
-```
-
-### `--retain_untrimmed`
-When read sequences are trimmed, untrimmed read pairs are discarded routinely. Use this option to retain untrimmed read pairs. This is usually not recommended and is only of advantage for specific protocols that prevent sequencing PCR primers. For example:
-
-```bash
---retain_untrimmed
 ```
 
 ### `--metadata`
@@ -171,11 +179,85 @@ Please note the following requirements:
 2. The metadata file has to follow the [QIIME2 specifications](https://docs.qiime2.org/2018.6/tutorials/metadata/)
 3. In case of multiple sequencing runs, specific naming of samples are required, see [here](#--multipleSequencingRuns)
 
+## Other input options
+
+### `--extension`          
+Indicates the naming of sequencing files (default: `"/*_R{1,2}_001.fastq.gz"`). 
+
+Please note:
+
+1. The prepended slash (`/`) is required
+2. The star (`*`) is the required wildcard for sample names
+3. The curly brackets (`{}`) enclose the orientation for paired end reads, seperated by a comma (`,`).
+4. T
+
+For example for one sample (name: `1`) with forward (file: `1_a.fastq.gz`) and reverse (file: `1_b.fastq.gz`) reads in folder `data`:
+
+```bash
+--reads "data" --extension "/*_{a,b}.fastq.gz"
+```
+
+### `--multipleSequencingRuns`
+If samples were sequenced in multiple sequencing runs. Expects one subfolder per sequencing run
+in the folder specified by [`--reads`](#--reads) containing sequencing data of the specific run. Also, fastQC and MultiQC are skipped because multiple sequencing runs might create overlapping file names that crash MultiQC.
+
+To prevent overlapping sample names from multiple sequencing runs, sample names obtained from the sequencing files will be renamed automatically by adding the folder name as prefix seperated by a string specified by [`--split`](#--split). Accordingly, the sample name column in the metadata file [`--metadata`](#--metadata) require values following `subfolder-samplename`.
+
+Example for input data organization:
+```
+data
+  |-run1
+  |  |-sample1_1_L001_R{1,2}_001.fastq.gz
+  |  |-sample2_1_L001_R{1,2}_001.fastq.gz
+  |
+  |-run2
+     |-sample3_1_L001_R{1,2}_001.fastq.gz
+     |-sample4_1_L001_R{1,2}_001.fastq.gz
+```
+
+
+In this example the first column in the metadata file requires the values `run1-sample1` ... `run2-sample4` (instead of `sample1`, ..., `sample4`).
+
+Example command to analyze this data in one pipeline run:
+```bash
+nextflow run nf-core/ampliseq \
+    -profile standard,singularity \
+    --reads "data" \
+    --FW_primer GTGYCAGCMGCCGCGGTAA \
+    --RV_primer GGACTACNVGGGTWTCTAAT \
+    --metadata "data/Metadata.tsv" \
+    --multipleSequencingRuns
+```
+
+
+### `--split`
+A string that will be used between the prepended run/folder name and the sample name. Only used with "--multipleSequencingRuns" (default: `"-"`).
+
+
+For example using the sting `link`:
+
+```bash
+--split "link"
+```
+
+Please note:
+
+1. May not be present in run/folder names
+2. No underscore(s) allowed
+3. Enclose in quotes
+
+
+### `--phred64`                   
+If the sequencing data has PHRED 64 encoded quality scores (default: PHRED 33)
+
+
 ## Cutoffs
 
 ### `--trunclenf` and `--trunclenr`
 Read denoising by DADA2 creates an error profile specific to a sequencing run and uses this to correct sequencing errors. This method requires all reads to have the same length and as high quality as possible while maintaining at least 20 bp overlap for merging. One cutoff for the forward read `--trunclenf` and one for the reverse read `--trunclenr` truncate all longer reads at that position and drop all shorter reads. 
-These cutoffs are usually chosen visually using [`--untilQ2import`](#--untilQ2import), inspecting the quality plots in the "result folder/demux", and resuming analysis with [`--Q2imported`](#--Q2imported). If not set, these cutoffs will be determined automatically for the position before the mean quality score drops below [`--trunc_qmin`](#--trunc_qmin). For example:
+These cutoffs are usually chosen visually using [`--untilQ2import`](#--untilQ2import), inspecting the quality plots in the "result folder/demux", and resuming analysis with [`--Q2imported`](#--Q2imported). If not set, these cutoffs will be determined automatically for the position before the mean quality score drops below [`--trunc_qmin`](#--trunc_qmin). 
+
+For example:
 
 ```bash
 --trunclenf 180 --trunclenr 120
@@ -208,38 +290,6 @@ Computes all steps until quality plots aiding the choosing of [`--trunclenf` and
 Analysis starting with a QIIME2 artefact with trimmed reads, typically produced before with [`--untilQ2import`](#--untilQ2import). This is only supported for data from a single sequencing run.
 
 For data from multiple sequencing runs with [`--multipleSequencingRuns`](#--multipleSequencingRuns) the pipeline can be first run with `--untilQ2import` and next run without `--untilQ2import` but with [`-resume`](#-resume-single-dash). For more details see [here](#visually-choosing-sequencing-read-truncation-cutoffs).
-
-### `--multipleSequencingRuns`
-If samples were sequenced in multiple sequencing runs. Expects one subfolder per sequencing run
-in the folder specified by [`--reads`](#--reads) containing sequencing data of the specific run. Also, fastQC and MultiQC are skipped because multiple sequencing runs might create overlapping file names that crash MultiQC.
-
-To prevent overlapping sample names from multiple sequencing runs, sample names obtained from the sequencing files will be renamed automatically by adding the folder name as prefix. Accordingly, the sample name column in the metadata file [`--metadata`](#--metadata) require values following `subfolder-samplename`.
-
-Example for input data organization:
-```
-data
-  |-run1
-  |  |-sample1_1_L001_R{1,2}_001.fastq.gz
-  |  |-sample2_1_L001_R{1,2}_001.fastq.gz
-  |
-  |-run2
-     |-sample3_1_L001_R{1,2}_001.fastq.gz
-     |-sample4_1_L001_R{1,2}_001.fastq.gz
-```
-
-
-In this example the first column in the metadata file requires the values `run1-sample1` ... `run2-sample4` (instead of sample1, ..., sample4).
-
-Example command to analyze this data in one pipeline run:
-```bash
-nextflow run nf-core/ampliseq \
-    -profile standard,singularity \
-    --reads "data" \
-    --FW_primer GTGYCAGCMGCCGCGGTAA \
-    --RV_primer GGACTACNVGGGTWTCTAAT \
-    --metadata "data/Metadata.tsv" \
-    --multipleSequencingRuns
-```
 
 #### Visually choosing sequencing read truncation cutoffs
 
@@ -308,6 +358,15 @@ Please note the following requirements:
 2. Each comma seperated term has to match exactly one column name in the metadata sheet
 
 ## Filters
+
+
+### `--retain_untrimmed`
+When read sequences are trimmed, untrimmed read pairs are discarded routinely. Use this option to retain untrimmed read pairs. This is usually not recommended and is only of advantage for specific protocols that prevent sequencing PCR primers. For example:
+
+```bash
+--retain_untrimmed
+```
+
 
 ### `--exclude_taxa`
 Depending on the primers used, PCR might amplify unwanted or off-target DNA. By default sequences originating from mitochondria or chloroplasts are removed. 

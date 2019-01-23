@@ -22,7 +22,6 @@
 * [Other options](#other-options)
     * [`--untilQ2import`](#--untilQ2import)
     * [`--Q2imported`](#--Q2imported)
-    * [`--onlyDenoising`](#--onlyDenoising)
 * [Reference database](#reference-database)
     * [`--classifier`](#--classifier)
     * [`--classifier_removeHash`](#--classifier_removeHash)
@@ -34,6 +33,7 @@
     * [`--min_frequency`](#--min_frequency)
     * [`--min_samples`](#--min_samples)
 * [Skipping steps](#skipping-steps)
+    * [`--onlyDenoising`](#--onlyDenoising)
     * [`--skip_fastqc`](#--skip_fastqc)
     * [`--skip_alpha_rarefaction`](#--skip_alpha_rarefaction)
     * [`--skip_taxonomy`](#--skip_taxonomy)
@@ -245,6 +245,7 @@ Please note:
 1. May not be present in run/folder names
 2. No underscore(s) allowed
 3. Enclose in quotes
+4. The metadata sheet has to be adjusted, instead of using `run-sample`, in this example `runlinksample` is required
 
 
 ### `--phred64`                   
@@ -480,6 +481,6 @@ Should be a string in the format integer-unit. eg. `--max_cpus 1`
 ### `--plaintext_email`
 Set to receive plain-text e-mails instead of HTML formatted.
 
-### `--multiqc_config`
+### `--multiqc_config`
 
 Specify a path to a custom MultiQC configuration file.

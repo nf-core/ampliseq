@@ -211,8 +211,9 @@ if (params.Q2imported && params.untilQ2import) {
     exit 1, "Choose either to import data into a QIIME2 artefact and quit with --untilQ2import or use an already existing QIIME2 data artefact with --Q2imported."
 }
 
-
-
+if ("${params.split}".indexOf("_") > -1 ) {
+    exit 1, "Underscore is not allowed in --split, please review your input."
+}
 
 // AWSBatch sanity checking
 if(workflow.profile == 'awsbatch'){

@@ -2,7 +2,7 @@
 
 ## Input files not found
 
-If no file or less files than expected are picked up then something is wrong with your input file declaration (path) or with the naming of the files.
+If no file or less files than expected are picked up then something is wrong with the input file declaration (path) or with the naming of the files.
 
 1. The path specified by `--reads` must be enclosed in quotes (`'` or `"`)
 2. The files have to follow the naming sheme specified by `--extension` (default: `"/*_R{1,2}_001.fastq.gz"`)
@@ -43,6 +43,8 @@ data
 ```
 
 In this example the first column in the metadata file requires the values `run1-sample1` ... `run2-sample4` (instead of `sample1`, ..., `sample4`).
+
+If changing `--split` because the run folders contain this sign, the metadata sheet has to be adjusted as well, instead of using `run-sample`, `run[--split]sample` is required.
 
 If your input files are scattered in different paths then we recommend that you generate a directory with symlinked files.
 

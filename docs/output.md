@@ -71,7 +71,7 @@ All following steps are performed in QIIME2.
 ## DADA2
 [DADA2](https://www.nature.com/articles/nmeth.3869) performs fast and accurate sample inference from amplicon data with single-nucleotide resolution. It infers exact amplicon sequence variants (ASVs) from amplicon data with fewer false positives than many other methods while maintaining high sensitivity.
 
-DADA2 computes an error model on the sequencing reads (forward and reverse independently), therefore quality filtering or merging may not be performed before. Each sequencing run varies in their error profile and it is recommended that you run DADA2 separately on data from each run individually, then combine data from the runs after denoising. ***Sequencing data originating from multiple sequencing runs cannot be analysed apppropriately by this pipeline at the moment.***
+DADA2 computes an error model on the sequencing reads (forward and reverse independently), therefore quality filtering or paired read merging may not be performed before. Each sequencing run varies in their error profile and it is recommended that DADA2 runs separately on data from each run individually. It is recommended to use the ampliseq option `--multipleSequencingRuns` to analyse such data.
 
 DADA2 reduces sequence errors and dereplicates sequences by quality filtering, denoising, read pair merging and PCR chimera removal.
 

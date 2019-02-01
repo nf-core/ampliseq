@@ -8,7 +8,7 @@ If no file or less files than expected are picked up then something is wrong wit
 2. The files have to follow the naming sheme specified by `--extension` (default: `"/*_R{1,2}_001.fastq.gz"`)
 3. The pattern specified by `--extension` must be enclosed in quotes (`'` or `"`) and pretended by a slash (`/`), also one star (`*`) is required for sample names and curly brackets, e.g. `{1,2}` indicate paired end read orientation.
 
-If the pipeline can't find your files then you will get the following error
+If the pipeline can't find any file then you will get the following error
 
 ```
 ERROR ~ Cannot find any reads matching: "[folder][extension]"
@@ -51,7 +51,7 @@ If your input files are scattered in different paths then we recommend that you 
 
 ## Required computational resources
 
-For learning a classifier from scratch for the appropriate primer pair (default) the pipeline requires 35GB memory. Other pipeline steps require a variable amount of memory increasing with number of samples, number of sequencing reads, number of sequencing runs, and sample complexity (number of unique sequences).
+For learning a classifier from scratch for the appropriate primer pair (default) the pipeline requires 35GB memory. Other pipeline steps require a variable amount of memory increasing with number of samples, number of sequencing reads, and sample complexity (number of unique sequences).
 
 When memory is limiting you can use a pre-trained classifier with `--classifier [Path/To/Classifier.qza]` and e.g. `--max_memory [15.GB]`.
 
@@ -62,16 +62,22 @@ Detailed decribtions can be found in [Running the pipeline](usage.md)
 ## Error related to metadata sheet
 
 Please have a look at [QIIME2 metadata requirements](https://docs.qiime2.org/2018.6/tutorials/metadata). 
+
 Generally, do not use whitespace characters or any special character.
-The file has to contain tab-separated values. The first column should be named "ID" and contain unique terms which represent the beginning (usually referred to as sample id) of the sequencing files. 
-For example the files L2S357_15_L001_R1_001.fastq.gz and L2S357_15_L001_R2_001.fastq.gz would have the ID L2S357.
-Column names have to be unique and cannot be empty. Metadata values can be categorical (text) or numeric (containing only numbers or are empty). Empty cells represent missing data.
+
+Further requirements:
+1. The file has to contain tab-separated values. 
+2. The first column should be named "ID" and contain unique terms which represent the beginning (usually referred to as sample id) of the sequencing files. For example the files L2S357_15_L001_R1_001.fastq.gz and L2S357_15_L001_R2_001.fastq.gz would have the ID L2S357.
+3. Column names have to be unique and cannot be empty. 
+4. Metadata values can be categorical (text) or numeric (containing only numbers or are empty). 
+5. Empty cells represent missing data.
+6. Only non-numeric (categorical) metadata columns can be used as groups in statistics
 
 ## Low read count after DADA2
 This can have several reasons:
 1. Poor data quality: High lost at quality filtering
-2. Merging inefficient: Too less overlap for merging
-3. Unusual high percentage of chimeric sequences: Remaining primer sequences
+2. Merging is inefficient: Too less overlap for merging
+3. Unusual high percentage of chimeric sequences: Primer sequences not sufficiently removed
 
 Solutions might be (numbered as above):
 1. More agressive truncation values
@@ -81,9 +87,7 @@ Solutions might be (numbered as above):
 ## "ValueError: CategoricalMetadataColumn does not support strings with leading or trailing whitespace characters"
 This is a shortcoming of the QIIME2 classifier trainer and QIIME2 to handle '#' when specific sequences are in a sample related to specific taxonomies of the classifier. 
 
-The solution is to remove all hash signs from the taxonomy strings using:
-
-`--classifier_removeHash`
+The solution is to remove all hash signs from the taxonomy strings using `--classifier_removeHash`. Only works when training a new classifier.
 
 Also see [Running the pipeline](usage.md).
 

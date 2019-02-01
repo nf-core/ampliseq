@@ -189,7 +189,7 @@ Please note:
 1. The prepended slash (`/`) is required
 2. The star (`*`) is the required wildcard for sample names
 3. The curly brackets (`{}`) enclose the orientation for paired end reads, seperated by a comma (`,`).
-4. T
+4. The pattern must be enclosed in quotes
 
 For example for one sample (name: `1`) with forward (file: `1_a.fastq.gz`) and reverse (file: `1_b.fastq.gz`) reads in folder `data`:
 
@@ -231,10 +231,10 @@ nextflow run nf-core/ampliseq \
 
 
 ### `--split`
-A string that will be used between the prepended run/folder name and the sample name. Only used with "--multipleSequencingRuns" (default: `"-"`).
+A string that will be used between the prepended run/folder name and the sample name. Only used with [`--multipleSequencingRuns`](#--multipleSequencingRuns) (default: `"-"`).
 
 
-For example using the sting `link`:
+For example using the string `link`:
 
 ```bash
 --split "link"
@@ -242,10 +242,10 @@ For example using the sting `link`:
 
 Please note:
 
-1. May not be present in run/folder names
+1. Run/folder names may not contain the string specified by `--split`
 2. No underscore(s) allowed
-3. Enclose in quotes
-4. The metadata sheet has to be adjusted, instead of using `run-sample`, in this example `runlinksample` is required
+3. Must be enclosed in quotes
+4. The metadata sheet has to be adjusted, instead of using `run-sample` in the first column, in this example `runlinksample` is required
 
 
 ### `--phred64`                   
@@ -256,7 +256,7 @@ If the sequencing data has PHRED 64 encoded quality scores (default: PHRED 33)
 
 ### `--trunclenf` and `--trunclenr`
 Read denoising by DADA2 creates an error profile specific to a sequencing run and uses this to correct sequencing errors. This method requires all reads to have the same length and as high quality as possible while maintaining at least 20 bp overlap for merging. One cutoff for the forward read `--trunclenf` and one for the reverse read `--trunclenr` truncate all longer reads at that position and drop all shorter reads. 
-These cutoffs are usually chosen visually using [`--untilQ2import`](#--untilQ2import), inspecting the quality plots in the "result folder/demux", and resuming analysis with [`--Q2imported`](#--Q2imported). If not set, these cutoffs will be determined automatically for the position before the mean quality score drops below [`--trunc_qmin`](#--trunc_qmin). 
+These cutoffs are usually chosen visually using [`--untilQ2import`](#--untilQ2import), inspecting the quality plots in "results/demux", and resuming analysis with [`--Q2imported`](#--Q2imported). If not set, these cutoffs will be determined automatically for the position before the mean quality score drops below [`--trunc_qmin`](#--trunc_qmin). 
 
 For example:
 
@@ -355,8 +355,9 @@ Here columns in the metadata sheet can be chosen with groupings that are used fo
 
 Please note the following requirements:
 
-1. Comma seperated list enclosed in quotes and may not contain whitespace characters
-2. Each comma seperated term has to match exactly one column name in the metadata sheet
+1. Comma seperated list enclosed in quotes
+2. May not contain whitespace characters
+3. Each comma seperated term has to match exactly one column name in the metadata sheet
 
 ## Filters
 
@@ -371,25 +372,43 @@ When read sequences are trimmed, untrimmed read pairs are discarded routinely. U
 
 ### `--exclude_taxa`
 Depending on the primers used, PCR might amplify unwanted or off-target DNA. By default sequences originating from mitochondria or chloroplasts are removed. 
+The taxa specified are excluded from further analysis. 
 
-Here you can specify taxa that are excluded from further analysis. For example:
+For example to exclude any taxa that contain mitochondria, chloroplast, or archea:
 
 ```bash
 --exclude_taxa "mitochondria,chloroplast,archea"
 ```
 
+If you prefer not filtering the data, specify:
+```bash
+--exclude_taxa "none"
+```
+
 Please note the following requirements:
 
-1. Comma seperated list enclosed in quotes and may not contain whitespace characters
-2. Features that contain one or several of these terms in their taxonomical classification are excluded from further analysis
-3. The taxonomy level is not taken into consideration
+1. Comma seperated list enclosed in quotes
+2. May not contain whitespace characters
+3. Features that contain one or several of these terms in their taxonomical classification are excluded from further analysis
+4. The taxonomy level is not taken into consideration
 
 ### `--min_frequency`        
 Remove entries from the feature table below an absolute abundance threshold (default: 1, meaning filter is disabled). Singletons are often regarded as artifacts, choosing a value of 2 removes sequences with less than 2 total counts from the feature table.
 
-### `--min_samples`           
-Filtering low prevalent features from the feature table, e.g. keeping only features that are present in at least two samples can be achived by choosing a value of 2 (default: 1, meaning filter is disabled). Typically only used when having replicates for all samples.         
+For example to remove singletons choose:
+```bash
+--min_frequency 2
+```
 
+### `--min_samples`           
+Filtering low prevalent features from the feature table, e.g. keeping only features that are present in at least two samples can be achived by choosing a value of 2 (default: 1, meaning filter is disabled). Typically only used when having replicates for all samples.   
+
+For example to retain features that are present in at least two sample:
+```bash
+--min_samples 2
+```
+
+Please note this is independent of abundance.
 
 ## Skipping steps:
 

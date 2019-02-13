@@ -332,7 +332,7 @@ if (!params.Q2imported){
         mkdir -p trimmed
 	    cutadapt -g ${params.FW_primer} -G ${params.RV_primer} $discard_untrimmed \
             -o trimmed/${reads[0]} -p trimmed/${reads[1]} \
-            ${reads[0]} ${reads[1]} 2> cutadapt_log_${reads[0].baseName}.txt
+            ${reads[0]} ${reads[1]} 2>&1 | tee  cutadapt_log_${reads[0].baseName}.txt
 	    """
 	}
 

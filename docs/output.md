@@ -38,7 +38,7 @@ For further reading and documentation see the [FastQC help](http://www.bioinform
 [Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200) is trimming primer sequences from sequencing reads. Primer sequences are non-biological sequences that often introduce point mutations that do not reflect sample sequences. This is especially true for degenerated PCR primer. If primer trimming would be omitted, artifactual amplicon sequence variants might be computed by the denoising tool or sequences might be lost due to become labelled as PCR chimera.
 
 **Output directory: `results/trimmed/logs`**
-  * Log files with retained reads, trimming percantage, etc. for each sample.
+  * Log files with retained reads, trimming percentage, etc. for each sample.
 
 
 ## MultiQC
@@ -71,7 +71,7 @@ All following steps are performed in QIIME2.
 ## DADA2
 [DADA2](https://www.nature.com/articles/nmeth.3869) performs fast and accurate sample inference from amplicon data with single-nucleotide resolution. It infers exact amplicon sequence variants (ASVs) from amplicon data with fewer false positives than many other methods while maintaining high sensitivity.
 
-DADA2 computes an error model on the sequencing reads (forward and reverse independently), therefore quality filtering or merging may not be performed before. Each sequencing run varies in their error profile and it is recommended that you run DADA2 separately on data from each run individually, then combine data from the runs after denoising. ***Sequencing data originating from multiple sequencing runs cannot be analysed apppropriately by this pipeline at the moment.***
+DADA2 computes an error model on the sequencing reads (forward and reverse independently), therefore quality filtering or paired read merging may not be performed before. Each sequencing run varies in their error profile and it is recommended that DADA2 runs separately on data from each run individually. It is recommended to use the ampliseq option `--multipleSequencingRuns` to analyse such data.
 
 DADA2 reduces sequence errors and dereplicates sequences by quality filtering, denoising, read pair merging and PCR chimera removal.
 
@@ -109,7 +109,7 @@ ASV abundance and sequences inferred in DADA2 are informative but routinely taxo
   * ASV IDs with taxonomic classification in an interactive table that can be viewed in your web browser
 
 ## Exclude taxa
-Removes unwanted taxa in DADA2 output sequences and abundance tables by taxonomic classification. Unwanted taxa are often off-targets generated in PCR with primers that are not perfectely specific for the target DNA. For example, PCR with commonly used primers is also amplifying mitrochindrial or chloroplast rRNA genes and therefore lead to non-bacteria products. These mitrochondria or chloroplast amplicons are removed in this step.
+Removes unwanted taxa in DADA2 output sequences and abundance tables by taxonomic classification. Unwanted taxa are often off-targets generated in PCR with primers that are not perfectly specific for the target DNA. For example, PCR with commonly used primers also amplifyies mitrochindrial or chloroplast rRNA genes and therefore leads to non-bacteria products. These mitrochondria or chloroplast amplicons are removed in this step.
 
 All following analysis is based on these filtered tables.
 

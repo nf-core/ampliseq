@@ -76,6 +76,7 @@ def helpMessage() {
       --untilQ2import               Skip all steps after importing into QIIME2, used for visually choosing DADA2 parameter
       --Q2imported [path/to/file]   Path to imported reads (e.g. "demux.qza"), used after visually choosing DADA2 parameter
       --onlyDenoising               Skip all steps after denoising, produce only sequences and abundance tables on ASV level
+      --keepIntermediates           Keep additional intermediate files, such as trimmed reads or various QIIME2 archives
 
     Skipping steps:
       --skip_fastqc                 Skip FastQC
@@ -576,7 +577,8 @@ if (!params.Q2imported){
             tag "${manifest}"
 
             publishDir "${params.outdir}", mode: 'copy', 
-            saveAs: {params.keepIntermediates ? filename : null}
+            saveAs: { filename ->
+                params.keepIntermediates ? filename : null}
 
             input:
             set file(manifest), env(MATPLOTLIBRC) from ch_manifest
@@ -1404,8 +1406,9 @@ process combinetable {
  * Compute diversity matrices
  */
 process diversity_core { 
-    publishDir "${params.outdir}/diversity_core", mode: 'copy',
-    saveAs: {params.keepIntermediates ? filename : null}
+    publishDir "${params.outdir}", mode: 'copy',
+    saveAs: {filename ->
+        params.keepIntermediates ? filename : null} 
 
     input:
     file metadata from ch_metadata_for_diversity_core
@@ -1415,9 +1418,9 @@ process diversity_core {
     env MATPLOTLIBRC from ch_mpl_for_diversity_core
 
     output:
-    file("core/*_pcoa_results.qza") into (qiime_diversity_core_for_beta_diversity_ordination) mode flatten
-    file("core/*_vector.qza") into qiime_diversity_core_for_alpha_diversity mode flatten
-    file("core/*_distance_matrix.qza") into qiime_diversity_core_for_beta_diversity mode flatten
+    file("diversity_core/*_pcoa_results.qza") into (qiime_diversity_core_for_beta_diversity_ordination) mode flatten
+    file("diversity_core/*_vector.qza") into qiime_diversity_core_for_alpha_diversity mode flatten
+    file("diversity_core/*_distance_matrix.qza") into qiime_diversity_core_for_beta_diversity mode flatten
     stdout rarefaction_depth
 
     when:
@@ -1436,7 +1439,7 @@ process diversity_core {
 	--i-phylogeny $tree \
 	--i-table $table \
 	--p-sampling-depth \$mindepth \
-	--output-dir core \
+	--output-dir diversity_core \
 	--p-n-jobs ${params.diversity_cores} \
     --quiet
     """
@@ -1599,7 +1602,8 @@ process prepare_ancom {
     tag "$meta"
 
     publishDir "${params.outdir}/ancom", mode: 'copy', 
-    saveAs: {params.keepIntermediates ? filename : null}   
+    saveAs: {filename ->
+        params.keepIntermediates ? filename : null}   
 
     input:
     file metadata from ch_metadata_for_ancom

@@ -22,6 +22,7 @@
 * [Other options](#other-options)
     * [`--untilQ2import`](#--untilQ2import)
     * [`--Q2imported`](#--Q2imported)
+    * [`--keepIntermediates`](#--keepIntermediates)
 * [Reference database](#reference-database)
     * [`--classifier`](#--classifier)
     * [`--classifier_removeHash`](#--classifier_removeHash)
@@ -291,6 +292,9 @@ Computes all steps until quality plots aiding the choosing of [`--trunclenf` and
 Analysis starting with a QIIME2 artefact with trimmed reads, typically produced before with [`--untilQ2import`](#--untilQ2import). This is only supported for data from a single sequencing run.
 
 For data from multiple sequencing runs with [`--multipleSequencingRuns`](#--multipleSequencingRuns) the pipeline can be first run with `--untilQ2import` and next run without `--untilQ2import` but with [`-resume`](#-resume-single-dash). For more details see [here](#visually-choosing-sequencing-read-truncation-cutoffs).
+
+### `--keepIntermediates`
+Keep additional intermediate files, such as trimmed reads or various QIIME2 archives.
 
 #### Visually choosing sequencing read truncation cutoffs
 

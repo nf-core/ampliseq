@@ -11,8 +11,7 @@ To start using the nf-core/ampliseq pipeline, follow the steps below:
     * [Software deps: Docker and Singularity](#31-software-deps-docker-and-singularity)
     * [Software deps: Bioconda](#32-software-deps-bioconda)
     * [Configuration profiles](#33-configuration-profiles)
-4. [Reference genomes](#4-reference-genomes)
-5. [Appendices](#appendices)
+4. [Appendices](#appendices)
     * [Running on UPPMAX](#running-on-uppmax)
 
 ## 1) Install NextFlow
@@ -54,6 +53,8 @@ To stop nextflow from looking for updates online, you can tell it to run in offl
 ```bash
 export NXF_OFFLINE='TRUE'
 ```
+
+Also make sure that either a trained classifier is available or download [Silva v132](https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip) and specify the location with `--reference_database path/to/zip`.
 
 #### 2.3) Development
 

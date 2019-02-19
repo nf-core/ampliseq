@@ -76,7 +76,7 @@ NXF_OPTS='-Xms1g -Xmx4g'
 The typical command for running the pipeline is as follows:
 ```bash
 nextflow run nf-core/ampliseq \
-    -profile standard,singularity \
+    -profile singularity \
     --reads "data" \
     --FW_primer GTGYCAGCMGCCGCGGTAA \
     --RV_primer GGACTACNVGGGTWTCTAAT \
@@ -112,10 +112,9 @@ This version number will be logged in reports when you run the pipeline, so that
 ## Main Arguments
 
 ### `-profile`
-Use this parameter to choose a configuration profile. Profiles can give configuration presets for different compute environments. Note that multiple profiles can be loaded, for example: `-profile standard,docker` - the order of arguments is important!
+Use this parameter to choose a configuration profile. Profiles can give configuration presets for different compute environments. Note that multiple profiles can be loaded, for example: `-profile docker` - the order of arguments is important!
 
-* `standard`
-    * The default profile, used if `-profile` is not specified at all.
+* if `-profile` is not specified at all
     * Runs locally and expects all software to be installed and available on the `PATH`.
 * `docker`
     * A generic configuration profile to be used with [Docker](http://docker.com/)
@@ -222,7 +221,7 @@ In this example the first column in the metadata file requires the values `run1-
 Example command to analyze this data in one pipeline run:
 ```bash
 nextflow run nf-core/ampliseq \
-    -profile standard,singularity \
+    -profile singularity \
     --reads "data" \
     --FW_primer GTGYCAGCMGCCGCGGTAA \
     --RV_primer GGACTACNVGGGTWTCTAAT \
@@ -305,7 +304,7 @@ For example:
 (1) To produce quality plots and choose truncation values:
 ```bash
 nextflow run nf-core/ampliseq \
-    -profile standard,singularity \
+    -profile singularity \
     --reads "data" \
     --FW_primer GTGYCAGCMGCCGCGGTAA \
     --RV_primer GGACTACNVGGGTWTCTAAT \
@@ -316,7 +315,7 @@ nextflow run nf-core/ampliseq \
 (2) To finish analysis:
 ```bash
 nextflow run nf-core/ampliseq \
-    -profile standard,singularity \
+    -profile singularity \
     --reads "data" \
     --FW_primer GTGYCAGCMGCCGCGGTAA \
     --RV_primer GGACTACNVGGGTWTCTAAT \

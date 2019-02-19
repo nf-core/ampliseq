@@ -25,12 +25,13 @@ def helpMessage() {
     Usage:
 
     The minimal command for running the pipeline is as follows:
-    nextflow run nf-core/ampliseq -profile standard,singularity --reads "data" --FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT --metadata "Metadata.tsv"
+    nextflow run nf-core/ampliseq -profile singularity --reads "data" --FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT --metadata "Metadata.tsv"
 
 
     Main arguments:
-      -profile [strings]            Use this parameter to choose a configuration profile. The typical choice would be using "standard" or 
-                                    a specialized profile such as "binac" and a container engine such as "docker" or "singularity"
+      -profile [strings]            Use this parameter to choose a configuration profile. If not specified, runs locally and expects all software
+                                    to be installed and available on the `PATH`. Otherwise specify a container engine, "docker" or "singularity" 
+                                    and a specialized profile such as "binac".
       --reads [path/to/folder]      Folder containing paired-end demultiplexed fastq files
                                     Note: All samples have to be sequenced in one run, otherwise also specifiy "--multipleSequencingRuns"
       --FW_primer [str]             Forward primer sequence

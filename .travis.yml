@@ -39,18 +39,5 @@ script:
   - nf-core lint ${TRAVIS_BUILD_DIR}
   # Run the pipeline with the test profile
   - nextflow run ${TRAVIS_BUILD_DIR} -profile test,docker
-  # Run the pipeline with the test profile for multipüle sequencing runs
-  - |
-    mkdir testmulti
-    mkdir testmulti/run1
-    mkdir testmulti/run2
-    wget https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/1_S103_L001_R1_001.fastq.gz -O testmulti/run1/1_S103_L001_R1_001.fastq.gz
-    wget https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/1_S103_L001_R2_001.fastq.gz -O testmulti/run1/1_S103_L001_R2_001.fastq.gz
-    wget https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/1a_S103_L001_R1_001.fastq.gz -O testmulti/run1/1a_S103_L001_R1_001.fastq.gz
-    wget https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/1a_S103_L001_R1_001.fastq.gz -O testmulti/run1/1a_S103_L001_R2_001.fastq.gz
-    wget https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/2_S115_L001_R1_001.fastq.gz -O testmulti/run2/2_S115_L001_R1_001.fastq.gz
-    wget https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/2_S115_L001_R2_001.fastq.gz -O testmulti/run2/2_S115_L001_R2_001.fastq.gz
-    wget https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/2a_S115_L001_R1_001.fastq.gz -O testmulti/run2/2a_S115_L001_R1_001.fastq.gz
-    wget https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/2a_S115_L001_R2_001.fastq.gz -O testmulti/run2/2a_S115_L001_R2_001.fastq.gz
-  - nextflow run ${TRAVIS_BUILD_DIR} -profile test,docker --multipleSequencingRuns --reads "testmulti" --metadata "https://github.com/d4straub/test-datasets/raw/ampliseq/testdata/Metadata_multi.tsv"
-  #- nextflow run ${TRAVIS_BUILD_DIR} -profile test,docker --multipleSequencingRuns --reads "testmulti" --metadata "https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/Metadata_multi.tsv"
+  # Run the pipeline with the test profile for multiple sequencing runs
+  - nextflow run ${TRAVIS_BUILD_DIR} -profile test_multi,docker

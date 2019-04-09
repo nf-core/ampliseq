@@ -1,4 +1,4 @@
-# nf-core/rrna-ampliseq: Changelog
+# nf-core/ampliseq: Changelog
 
-## v1.0dev - <date>
-Initial release of nf-core/rrna-ampliseq, created with the [nf-core](http://nf-co.re/) template.
+## v1.0.0 - [date]
+Initial release of nf-core/ampliseq, created with the [nf-core](http://nf-co.re/) template.

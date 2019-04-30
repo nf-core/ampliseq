@@ -1,5 +1,4 @@
-# nf-core/ampliseq
-**16S rRNA amplicon sequencing analysis workflow using QIIME2**
+# nf-core/ampliseq: 16S rRNA amplicon sequencing analysis workflow using QIIME2
 
 [![Build Status](https://travis-ci.org/nf-core/ampliseq.svg?branch=master)](https://travis-ci.org/nf-core/ampliseq)
 [![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A518.10.1-brightgreen.svg)](https://www.nextflow.io/)

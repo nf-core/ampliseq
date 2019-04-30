@@ -2,7 +2,6 @@
 
 This document describes the output produced by the pipeline.
 
-
 ## Pipeline overview
 The pipeline is built using [Nextflow](https://www.nextflow.io/)
 and processes data using the following steps:

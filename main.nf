@@ -328,26 +328,22 @@ if (!params.Q2imported){
     * Create a channel for input read files
     */
     if(params.readPaths && params.reads == "data${params.extension}" && !params.multipleSequencingRuns){
+        //Standard input
+
         Channel
             .from(params.readPaths)
             .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
             .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
             .into { ch_read_pairs; ch_read_pairs_fastqc; ch_read_pairs_name_check }
 
-    } else if ( params.multipleSequencingRuns ) {
+    } else if ( !params.readPaths && params.multipleSequencingRuns ) {
+        //Standard input for multiple sequencing runs
+
         //Get files
-        if(!params.readPaths) {
-            Channel
-                .fromFilePairs( params.reads + "/*" + params.extension, size: 2 )
-                .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}/*${params.extension}\nNB: Path needs to be enclosed in quotes!" }
-                .into { ch_extract_folders; ch_rename_key }
-        } else {
-            Channel
-                .from(params.readPaths)
-                .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
-                .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-                .into { ch_extract_folders; ch_rename_key }
-        }
+        Channel
+            .fromFilePairs( params.reads + "/*" + params.extension, size: 2 )
+            .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}/*${params.extension}\nNB: Path needs to be enclosed in quotes!" }
+            .into { ch_extract_folders; ch_rename_key }
 
         //Get folder information
         ch_extract_folders
@@ -379,8 +375,19 @@ if (!params.Q2imported){
         ch_rename_key
             .map { key, files -> [ key, files, (files[0].take(files[0].findLastIndexOf{"/"})[-1]) ] }
             .into { ch_read_pairs; ch_read_pairs_fastqc }
+
+    } else if ( params.readPaths && params.multipleSequencingRuns ) {
+        //Test input for multiple sequencing runs
+
+        Channel
+            .from(params.readPaths)
+            .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])], row[2] ] }
+            .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
+            .into { ch_read_pairs; ch_read_pairs_fastqc }
             
     } else {
+        //Test input for signle sequencing runs
+
         Channel
             .fromFilePairs( params.reads + params.extension, size: 2 )
             .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}${params.extension}\nNB: Path needs to be enclosed in quotes!" }

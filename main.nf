@@ -1865,15 +1865,15 @@ def nfcoreHeader(){
 	c_cyan = params.monochrome_logs ? '' : "\033[0;36m";
 	c_white = params.monochrome_logs ? '' : "\033[0;37m";
 
-	return """    ${c_dim}----------------------------------------------------${c_reset}
-											${c_green},--.${c_black}/${c_green},-.${c_reset}
-	${c_blue}        ___     __   __   __   ___     ${c_green}/,-._.--~\'${c_reset}
-	${c_blue}  |\\ | |__  __ /  ` /  \\ |__) |__         ${c_yellow}}  {${c_reset}
-	${c_blue}  | \\| |       \\__, \\__/ |  \\ |___     ${c_green}\\`-._,-`-,${c_reset}
-											${c_green}`._,._,\'${c_reset}
-	${c_purple}  nf-core/ampliseq v${workflow.manifest.version}${c_reset}
-	${c_dim}----------------------------------------------------${c_reset}
-	""".stripIndent()
+return """${c_dim}----------------------------------------------------${c_reset}
+	                                ${c_green},--.${c_black}/${c_green},-.${c_reset}
+${c_blue}        ___     __   __   __   ___     ${c_green}/,-._.--~\'${c_reset}
+${c_blue}  |\\ | |__  __ /  ` /  \\ |__) |__         ${c_yellow}}  {${c_reset}
+${c_blue}  | \\| |       \\__, \\__/ |  \\ |___     ${c_green}\\`-._,-`-,${c_reset}
+	                                ${c_green}`._,._,\'${c_reset}
+${c_purple}  nf-core/ampliseq v${workflow.manifest.version}${c_reset}
+${c_dim}----------------------------------------------------${c_reset}
+""".stripIndent()
 }
 
 def checkHostname(){

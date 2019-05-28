@@ -1459,7 +1459,7 @@ process metadata_category_all {
     env MATPLOTLIBRC from ch_mpl_for_metadata_cat
 
     output:
-    stdout into (meta_category_all,meta_category_all_for_ancom)
+    stdout into (ch_meta_category_all_for_alphadiversity,meta_category_all_for_ancom)
 
     when:
     !params.skip_ancom || !params.skip_diversity_indices
@@ -1506,6 +1506,7 @@ process metadata_category_pairwise {
 ch_metadata_for_alpha_diversity
     .combine( qiime_diversity_core_for_alpha_diversity )
     .combine( ch_mpl_for_alpha_diversity )
+    .combine( ch_meta_category_all_for_alphadiversity )
     .set{ ch_for_alpha_diversity }
 ch_metadata_for_beta_diversity
     .combine( qiime_diversity_core_for_beta_diversity )
@@ -1527,10 +1528,13 @@ process alpha_diversity {
     publishDir "${params.outdir}", mode: 'copy'    
 
     input:
-    set file(metadata), file(core), env(MATPLOTLIBRC) from ch_for_alpha_diversity
+    set file(metadata), file(core), env(MATPLOTLIBRC), val(meta) from ch_for_alpha_diversity
 
     output:
     file("alpha-diversity/*") into qiime_alphadiversity
+
+    when:
+    meta.length() > 0
 
     """
 	qiime diversity alpha-group-significance \
@@ -1555,6 +1559,9 @@ process beta_diversity {
 
     output:
     file "beta-diversity/*"
+
+    when:
+    category.length() > 0
 
     """
     IFS=',' read -r -a metacategory <<< \"$category\"
@@ -1618,6 +1625,7 @@ process prepare_ancom {
 
     when:
     !params.skip_ancom
+    meta.length() > 0
 
     """
     IFS=',' read -r -a metacategory <<< \"$meta\"

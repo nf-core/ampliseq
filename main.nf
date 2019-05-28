@@ -16,7 +16,7 @@ def helpMessage() {
     Usage:
 
     The minimal command for running the pipeline is as follows:
-    nextflow run nf-core/ampliseq -profile singularity --reads "data" --FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT --metadata "Metadata.tsv"
+    nextflow run nf-core/ampliseq -profile singularity --reads "data" --FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT
 
 
     Main arguments:
@@ -27,7 +27,7 @@ def helpMessage() {
                                     Note: All samples have to be sequenced in one run, otherwise also specifiy "--multipleSequencingRuns"
       --FW_primer [str]             Forward primer sequence
       --RV_primer [str]             Reverse primer sequence
-      --metadata [path/to/file]     Path to metadata sheet
+      --metadata [path/to/file]     Path to metadata sheet, when missing most downstream analysis are skipped (barplots, PCoA plots, ...)
 
     Other input options:
       --extension [str]             Naming of sequencing files (default: "/*_R{1,2}_001.fastq.gz"). 
@@ -173,7 +173,7 @@ if (params.metadata) {
     Channel.fromPath("${params.metadata}", checkIfExists: true)
         .into { ch_metadata_for_barplot; ch_metadata_for_alphararefaction; ch_metadata_for_diversity_core; ch_metadata_for_alpha_diversity; ch_metadata_for_metadata_category_all; ch_metadata_for_metadata_category_pairwise; ch_metadata_for_beta_diversity; ch_metadata_for_beta_diversity_ordination; ch_metadata_for_ancom; ch_metadata_for_ancom_tax; ch_metadata_for_ancom_asv }
 } else {
-    Channel.fromPath("${params.metadata}", checkIfExists: false)
+    Channel.from()
         .into { ch_metadata_for_barplot; ch_metadata_for_alphararefaction; ch_metadata_for_diversity_core; ch_metadata_for_alpha_diversity; ch_metadata_for_metadata_category_all; ch_metadata_for_metadata_category_pairwise; ch_metadata_for_beta_diversity; ch_metadata_for_beta_diversity_ordination; ch_metadata_for_ancom; ch_metadata_for_ancom_tax; ch_metadata_for_ancom_asv }
    
 }
@@ -195,12 +195,6 @@ if (!params.Q2imported) {
     if (!params.FW_primer) { exit 1, "Option --FW_primer missing" }
     if (!params.RV_primer) { exit 1, "Option --RV_primer missing" }
     if (!params.reads) { exit 1, "Option --reads missing" }
-}
-
-if (!params.skip_barplot || !params.skip_alpha_rarefaction || !params.skip_diversity_indices || !params.skip_ancom ) {
-    if (!params.untilQ2import && !params.onlyDenoising) {
-        if (!params.metadata) { exit 1, "Option --metdata missing" }
-    }
 }
 
 if (params.Q2imported && params.untilQ2import) {

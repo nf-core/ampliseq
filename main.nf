@@ -665,7 +665,7 @@ if( !params.classifier ){
         stdout message_classifier_removeHash
 
 	    when:
-	    !params.onlyDenoising
+	    !params.onlyDenoising && !params.untilQ2import
 
 	    script:
 	  

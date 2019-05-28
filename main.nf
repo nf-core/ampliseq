@@ -345,6 +345,7 @@ if (!params.Q2imported){
             Channel
                 .from(params.readPaths)
                 .map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
+                .dump(tag: 'input')
                 .ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
                 .into { ch_extract_folders; ch_rename_key }
         }
@@ -354,6 +355,7 @@ if (!params.Q2imported){
             .flatMap { key, files -> [files[0]] }
             .map { it.take(it.findLastIndexOf{"/"})[-1] }
             .unique()
+            .dump(tag: 'extract')
             .into { ch_count_folders; ch_check_folders; ch_report_folders }
 
         //Report folders with sequencing files
@@ -378,12 +380,14 @@ if (!params.Q2imported){
         //Add folder information to sequence files
         ch_rename_key
             .map { key, files -> [ key, files, (files[0].take(files[0].findLastIndexOf{"/"})[-1]) ] }
+            .dump()
             .into { ch_read_pairs; ch_read_pairs_fastqc }
             
     } else {
         Channel
             .fromFilePairs( params.reads + params.extension, size: 2 )
             .ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}${params.extension}\nNB: Path needs to be enclosed in quotes!" }
+            .dump(tag: 'input')
             .into { ch_read_pairs; ch_read_pairs_fastqc }
     }
 
@@ -452,12 +456,7 @@ if (!params.Q2imported){
             file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
 
             script:
-            if( params.retain_untrimmed == false ){ 
-                discard_untrimmed = "--discard-untrimmed"
-            } else {
-                discard_untrimmed = ""
-            }
-        
+            discard_untrimmed = params.retain_untrimmed ? '--discard-untrimmed' : ''
             """
             mkdir -p trimmed
             cutadapt -g ${params.FW_primer} -G ${params.RV_primer} $discard_untrimmed \
@@ -467,7 +466,7 @@ if (!params.Q2imported){
         }
     } else {
         process trimming_multi {
-            tag "$folder${params.split}$pair_id"  
+            tag "${folder}${params.split}${pair_id}"
             publishDir "${params.outdir}/trimmed", mode: 'copy',
                 saveAs: {filename -> 
                 if (filename.indexOf(".gz") == -1) "logs/$filename"

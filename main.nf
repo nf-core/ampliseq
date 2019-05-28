@@ -111,8 +111,6 @@ params.trunc_qmin = 25 //to calculate params.trunclenf and params.trunclenr auto
 params.trunclenf = false
 params.trunclenr = false
 params.metadata_category = false
-params.tree_cores = 2
-params.diversity_cores = 2
 params.retain_untrimmed = false
 params.exclude_taxa = "mitochondria,chloroplast"
 params.keepIntermediates = false
@@ -175,7 +173,6 @@ if (params.metadata) {
 } else {
     Channel.from()
         .into { ch_metadata_for_barplot; ch_metadata_for_alphararefaction; ch_metadata_for_diversity_core; ch_metadata_for_alpha_diversity; ch_metadata_for_metadata_category_all; ch_metadata_for_metadata_category_pairwise; ch_metadata_for_beta_diversity; ch_metadata_for_beta_diversity_ordination; ch_metadata_for_ancom; ch_metadata_for_ancom_tax; ch_metadata_for_ancom_asv }
-   
 }
 
 if (params.Q2imported) {
@@ -310,6 +307,8 @@ process get_software_versions {
     echo $workflow.nextflow.version > v_nextflow.txt
     fastqc --version > v_fastqc.txt
     multiqc --version > v_multiqc.txt
+    cutadapt --version > v_cutadapt.txt
+    qiime --version > v_qiime.txt
     scrape_software_versions.py &> software_versions_mqc.yaml
     """
 }
@@ -379,7 +378,7 @@ if (!params.Q2imported){
             .into { ch_read_pairs; ch_read_pairs_fastqc }
             
     } else {
-        //Test input for signle sequencing runs
+        //Test input for single sequencing runs
 
         Channel
             .fromFilePairs( params.reads + params.extension, size: 2 )
@@ -397,7 +396,7 @@ if (!params.Q2imported){
             saveAs: {filename -> filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"}
 
             input:
-            set pair_id, file(reads) from ch_read_pairs_fastqc
+            set val(pair_id), file(reads) from ch_read_pairs_fastqc
 
             output:
             file "*_fastqc.{zip,html}" into ch_fastqc_results
@@ -417,7 +416,7 @@ if (!params.Q2imported){
             saveAs: {filename -> filename.indexOf(".zip") > 0 ? "zips/$filename" : "$filename"}
 
             input:
-            set pair_id, file(reads), folder from ch_read_pairs_fastqc
+            set val(pair_id), file(reads), val(folder) from ch_read_pairs_fastqc
 
             output:
             file "*_fastqc.{zip,html}" into ch_fastqc_results
@@ -445,19 +444,14 @@ if (!params.Q2imported){
                 else null}
         
             input:
-            set pair_id, file(reads) from ch_read_pairs
+            set val(pair_id), file(reads) from ch_read_pairs
         
             output:
             file "trimmed/*.*" into (ch_fastq_trimmed, ch_fastq_trimmed_manifest)
             file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
 
             script:
-            if( params.retain_untrimmed == false ){ 
-                discard_untrimmed = "--discard-untrimmed"
-            } else {
-                discard_untrimmed = ""
-            }
-        
+            discard_untrimmed = params.retain_untrimmed ? '' : '--discard-untrimmed'
             """
             mkdir -p trimmed
             cutadapt -g ${params.FW_primer} -G ${params.RV_primer} $discard_untrimmed \
@@ -475,19 +469,14 @@ if (!params.Q2imported){
                 else null}
         
             input:
-            set pair_id, file(reads), folder from ch_read_pairs
+            set val(pair_id), file(reads), val(folder) from ch_read_pairs
         
             output:
             file "trimmed/*.*" into (ch_fastq_trimmed, ch_fastq_trimmed_manifest)
             file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
 
             script:
-            if( params.retain_untrimmed == false ){ 
-                discard_untrimmed = "--discard-untrimmed"
-            } else {
-                discard_untrimmed = ""
-            }
-        
+            discard_untrimmed = params.retain_untrimmed ? '' : '--discard-untrimmed'
             """
             mkdir -p trimmed
             cutadapt -g ${params.FW_primer} -G ${params.RV_primer} $discard_untrimmed \
@@ -572,18 +561,18 @@ if (!params.Q2imported){
             if (!params.phred64) {
                 """
                 qiime tools import \
-                --type 'SampleData[PairedEndSequencesWithQuality]' \
-                --input-path $manifest \
-                --output-path demux.qza \
-                --source-format PairedEndFastqManifestPhred33
+                    --type 'SampleData[PairedEndSequencesWithQuality]' \
+                    --input-path $manifest \
+                    --output-path demux.qza \
+                    --source-format PairedEndFastqManifestPhred33
                 """
             } else {
                 """
                 qiime tools import \
-                --type 'SampleData[PairedEndSequencesWithQuality]' \
-                --input-path $manifest \
-                --output-path demux.qza \
-                --source-format PairedEndFastqManifestPhred64
+                    --type 'SampleData[PairedEndSequencesWithQuality]' \
+                    --input-path $manifest \
+                    --output-path demux.qza \
+                    --source-format PairedEndFastqManifestPhred64
                 """
             }
         }
@@ -609,18 +598,18 @@ if (!params.Q2imported){
             if (!params.phred64) {
                 """
                 qiime tools import \
-                --type 'SampleData[PairedEndSequencesWithQuality]' \
-                --input-path $manifest \
-                --output-path $folder-demux.qza \
-                --source-format PairedEndFastqManifestPhred33
+                    --type 'SampleData[PairedEndSequencesWithQuality]' \
+                    --input-path $manifest \
+                    --output-path $folder-demux.qza \
+                    --source-format PairedEndFastqManifestPhred33
                 """
             } else {
                 """
                 qiime tools import \
-                --type 'SampleData[PairedEndSequencesWithQuality]' \
-                --input-path $manifest \
-                --output-path $folder-demux.qza \
-                --source-format PairedEndFastqManifestPhred64
+                    --type 'SampleData[PairedEndSequencesWithQuality]' \
+                    --input-path $manifest \
+                    --output-path $folder-demux.qza \
+                    --source-format PairedEndFastqManifestPhred64
                 """
             }
         }
@@ -677,27 +666,27 @@ if( !params.classifier ){
 
 	    ### Import
 	    qiime tools import --type \'FeatureData[Sequence]\' \
-		--input-path \$fasta \
-		--output-path ref-seq-${params.dereplication}.qza
+		    --input-path \$fasta \
+		    --output-path ref-seq-${params.dereplication}.qza
 	    qiime tools import --type \'FeatureData[Taxonomy]\' \
-		--source-format HeaderlessTSVTaxonomyFormat \
-		--input-path \$taxonomy \
-		--output-path ref-taxonomy-${params.dereplication}.qza
+		    --source-format HeaderlessTSVTaxonomyFormat \
+		    --input-path \$taxonomy \
+		    --output-path ref-taxonomy-${params.dereplication}.qza
 
 	    #Extract sequences based on primers
 	    qiime feature-classifier extract-reads \
-		--i-sequences ref-seq-${params.dereplication}.qza \
-		--p-f-primer ${params.FW_primer} \
-		--p-r-primer ${params.RV_primer} \
-		--o-reads ${params.FW_primer}-${params.RV_primer}-${params.dereplication}-ref-seq.qza \
-        --quiet
+		    --i-sequences ref-seq-${params.dereplication}.qza \
+		    --p-f-primer ${params.FW_primer} \
+		    --p-r-primer ${params.RV_primer} \
+		    --o-reads ${params.FW_primer}-${params.RV_primer}-${params.dereplication}-ref-seq.qza \
+            --quiet
 
 	    #Train classifier
 	    qiime feature-classifier fit-classifier-naive-bayes \
-		--i-reference-reads ${params.FW_primer}-${params.RV_primer}-${params.dereplication}-ref-seq.qza \
-		--i-reference-taxonomy ref-taxonomy-${params.dereplication}.qza \
-		--o-classifier ${params.FW_primer}-${params.RV_primer}-${params.dereplication}-classifier.qza \
-        --quiet
+		    --i-reference-reads ${params.FW_primer}-${params.RV_primer}-${params.dereplication}-ref-seq.qza \
+		    --i-reference-taxonomy ref-taxonomy-${params.dereplication}.qza \
+		    --o-classifier ${params.FW_primer}-${params.RV_primer}-${params.dereplication}-classifier.qza \
+            --quiet
 	    """
 	}
     message_classifier_removeHash
@@ -740,8 +729,8 @@ if( !params.Q2imported ){
 	  
 	    """
 	    qiime demux summarize \
-		--i-data ${params.Q2imported} \
-		--o-visualization demux.qzv
+		    --i-data ${params.Q2imported} \
+		    --o-visualization demux.qzv
 
 	    qiime tools export demux.qzv --output-dir demux
 	    """
@@ -847,49 +836,49 @@ if (!params.multipleSequencingRuns){
 
         #denoise samples with DADA2 and produce
         qiime dada2 denoise-paired  \
-        --i-demultiplexed-seqs $demux  \
-        --p-trunc-len-f \${trunclen[0]} \
-        --p-trunc-len-r \${trunclen[1]} \
-        --p-n-threads 0  \
-        --o-table table.qza  \
-        --o-representative-sequences rep-seqs.qza  \
-        --o-denoising-stats stats.qza \
-        --verbose \
+            --i-demultiplexed-seqs $demux  \
+            --p-trunc-len-f \${trunclen[0]} \
+            --p-trunc-len-r \${trunclen[1]} \
+            --p-n-threads 0  \
+            --o-table table.qza  \
+            --o-representative-sequences rep-seqs.qza  \
+            --o-denoising-stats stats.qza \
+            --verbose \
         >dada_report.txt
 
         #produce dada2 stats "dada_stats/stats.tsv"
         qiime tools export stats.qza \
-        --output-dir dada_stats
+            --output-dir dada_stats
 
         #produce raw count table in biom format "table/feature-table.biom"
         qiime tools export table.qza  \
-        --output-dir table
+            --output-dir table
 
         #produce raw count table
         biom convert -i table/feature-table.biom \
-        -o table/feature-table.tsv  \
-        --to-tsv
+            -o table/feature-table.tsv  \
+            --to-tsv
 
         #produce representative sequence fasta file
         qiime feature-table tabulate-seqs  \
-        --i-data rep-seqs.qza  \
-        --o-visualization rep-seqs.qzv
+            --i-data rep-seqs.qza  \
+            --o-visualization rep-seqs.qzv
         qiime tools export rep-seqs.qzv  \
-        --output-dir unfiltered
+            --output-dir unfiltered
 
         #convert to relative abundances
         qiime feature-table relative-frequency \
-        --i-table table.qza \
-        --o-relative-frequency-table relative-table-ASV.qza
+            --i-table table.qza \
+            --o-relative-frequency-table relative-table-ASV.qza
 
         #export to biom
         qiime tools export relative-table-ASV.qza \
-        --output-dir rel-table
+            --output-dir rel-table
 
         #convert to tab seperated text file
         biom convert \
-        -i rel-table/feature-table.biom \
-        -o table/rel-feature-table.tsv --to-tsv
+            -i rel-table/feature-table.biom \
+            -o table/rel-feature-table.tsv --to-tsv
         """
     }
 } else {
@@ -914,19 +903,19 @@ if (!params.multipleSequencingRuns){
         """
         #denoise samples with DADA2 and produce
         qiime dada2 denoise-paired  \
-        --i-demultiplexed-seqs $demux  \
-        --p-trunc-len-f ${trunclenf} \
-        --p-trunc-len-r ${trunclenr} \
-        --p-n-threads 0  \
-        --o-table ${demux.baseName}-table.qza  \
-        --o-representative-sequences ${demux.baseName}-rep-seqs.qza  \
-        --o-denoising-stats ${demux.baseName}-stats.qza \
-        --verbose \
-        >${demux.baseName}-report.txt
+            --i-demultiplexed-seqs $demux  \
+            --p-trunc-len-f ${trunclenf} \
+            --p-trunc-len-r ${trunclenr} \
+            --p-n-threads 0  \
+            --o-table ${demux.baseName}-table.qza  \
+            --o-representative-sequences ${demux.baseName}-rep-seqs.qza  \
+            --o-denoising-stats ${demux.baseName}-stats.qza \
+            --verbose \
+            >${demux.baseName}-report.txt
 
         #produce dada2 stats "${demux.baseName}-dada_stats/stats.tsv"
         qiime tools export ${demux.baseName}-stats.qza \
-        --output-dir ${demux.baseName}-dada_stats
+            --output-dir ${demux.baseName}-dada_stats
         cp ${demux.baseName}-dada_stats/stats.tsv ${demux.baseName}-stats.tsv
         """
     }
@@ -992,33 +981,33 @@ if (!params.multipleSequencingRuns){
 
         #produce raw count table in biom format "table/feature-table.biom"
         qiime tools export table.qza  \
-        --output-dir table
+            --output-dir table
 
         #produce raw count table
         biom convert -i table/feature-table.biom \
-        -o table/feature-table.tsv  \
-        --to-tsv
+            -o table/feature-table.tsv  \
+            --to-tsv
 
         #produce representative sequence fasta file
         qiime feature-table tabulate-seqs  \
-        --i-data rep-seqs.qza  \
-        --o-visualization rep-seqs.qzv
+            --i-data rep-seqs.qza  \
+            --o-visualization rep-seqs.qzv
         qiime tools export rep-seqs.qzv  \
-        --output-dir unfiltered
+            --output-dir unfiltered
 
         #convert to relative abundances
         qiime feature-table relative-frequency \
-        --i-table table.qza \
-        --o-relative-frequency-table relative-table-ASV.qza
+            --i-table table.qza \
+            --o-relative-frequency-table relative-table-ASV.qza
 
         #export to biom
         qiime tools export relative-table-ASV.qza \
-        --output-dir rel-table
+            --output-dir rel-table
 
         #convert to tab seperated text file
         biom convert \
-        -i rel-table/feature-table.biom \
-        -o table/rel-feature-table.tsv --to-tsv
+            -i rel-table/feature-table.biom \
+            -o table/rel-feature-table.tsv --to-tsv
         """
     }
 }
@@ -1047,23 +1036,23 @@ process classifier {
   
     """
     qiime feature-classifier classify-sklearn  \
-	--i-classifier $trained_classifier  \
-	--p-n-jobs ${task.cpus}  \
-	--i-reads $repseq  \
-	--o-classification taxonomy.qza  \
-	--verbose
+	    --i-classifier $trained_classifier  \
+	    --p-n-jobs ${task.cpus}  \
+	    --i-reads $repseq  \
+	    --o-classification taxonomy.qza  \
+	    --verbose
 
     qiime metadata tabulate  \
-	--m-input-file taxonomy.qza  \
-	--o-visualization taxonomy.qzv  \
-	--verbose
+	    --m-input-file taxonomy.qza  \
+	    --o-visualization taxonomy.qzv  \
+	    --verbose
 
     #produce "taxonomy/taxonomy.tsv"
     qiime tools export taxonomy.qza  \
-	--output-dir taxonomy
+	    --output-dir taxonomy
 
     qiime tools export taxonomy.qzv  \
-	--output-dir taxonomy
+	    --output-dir taxonomy
     """
 }
 
@@ -1106,17 +1095,17 @@ if (params.exclude_taxa == "none" && !params.min_frequency && !params.min_sample
         if ! [ \"${params.exclude_taxa}\" = \"none\" ]; then
             #filter sequences
             qiime taxa filter-seqs \
-            --i-sequences $repseq \
-            --i-taxonomy $taxonomy \
-            --p-exclude ${params.exclude_taxa} --p-mode contains \
-            --o-filtered-sequences tax_filtered-sequences.qza
+                --i-sequences $repseq \
+                --i-taxonomy $taxonomy \
+                --p-exclude ${params.exclude_taxa} --p-mode contains \
+                --o-filtered-sequences tax_filtered-sequences.qza
 
             #filter abundance table
             qiime taxa filter-table \
-            --i-table $table \
-            --i-taxonomy $taxonomy \
-            --p-exclude ${params.exclude_taxa} --p-mode contains \
-            --o-filtered-table tax_filtered-table.qza
+                --i-table $table \
+                --i-taxonomy $taxonomy \
+                --p-exclude ${params.exclude_taxa} --p-mode contains \
+                --o-filtered-table tax_filtered-table.qza
 
             filtered_table="tax_filtered-table.qza"
             filtered_sequences="tax_filtered-sequences.qza"
@@ -1126,15 +1115,15 @@ if (params.exclude_taxa == "none" && !params.min_frequency && !params.min_sample
         fi
 
         qiime feature-table filter-features \
-        --i-table \$filtered_table \
-        --p-min-frequency $minfrequency \
-        --p-min-samples $minsamples \
-        --o-filtered-table filtered-table.qza
+            --i-table \$filtered_table \
+            --p-min-frequency $minfrequency \
+            --p-min-samples $minsamples \
+            --o-filtered-table filtered-table.qza
         
         qiime feature-table filter-seqs \
-        --i-data \$filtered_sequences \
-        --i-table filtered-table.qza \
-        --o-filtered-data filtered-sequences.qza
+            --i-data \$filtered_sequences \
+            --i-table filtered-table.qza \
+            --o-filtered-data filtered-sequences.qza
 	    """
 	}
 }
@@ -1164,19 +1153,19 @@ process export_filtered_dada_output {
     """
     #produce raw count table in biom format "table/feature-table.biom"
     qiime tools export $table  \
-	--output-dir table
+        --output-dir table
 
     #produce raw count table "table/feature-table.tsv"
     biom convert -i table/feature-table.biom \
-	-o table/feature-table.tsv  \
-	--to-tsv
+        -o table/feature-table.tsv  \
+        --to-tsv
 
     #produce representative sequence fasta file "${params.outdir}/representative_sequences/sequences.fasta"
     qiime feature-table tabulate-seqs  \
-	--i-data $repseq  \
-	--o-visualization rep-seqs.qzv
+        --i-data $repseq  \
+        --o-visualization rep-seqs.qzv
     qiime tools export rep-seqs.qzv  \
-	--output-dir filtered
+        --output-dir filtered
     """
 }
 
@@ -1215,19 +1204,17 @@ process RelativeAbundanceASV {
     !params.skip_abundance_tables
 
     """
-    ##onASV level
-
     #convert to relative abundances
     qiime feature-table relative-frequency \
-	--i-table $table \
-	--o-relative-frequency-table relative-table-ASV.qza
+	    --i-table $table \
+	    --o-relative-frequency-table relative-table-ASV.qza
 
     #export to biom
     qiime tools export relative-table-ASV.qza --output-dir relative-table-ASV
 
     #convert to tab seperated text file "${params.outdir}/rel-table-ASV.tsv"
     biom convert -i relative-table-ASV/feature-table.biom \
-	-o rel-table-ASV.tsv --to-tsv
+	    -o rel-table-ASV.tsv --to-tsv
     """
 }
 
@@ -1298,14 +1285,14 @@ process barplot {
   
     """
     qiime taxa barplot  \
-	--i-table $table  \
-	--i-taxonomy $taxonomy  \
-	--m-metadata-file $metadata  \
-	--o-visualization taxa-bar-plots.qzv  \
-	--verbose
+	    --i-table $table  \
+	    --i-taxonomy $taxonomy  \
+	    --m-metadata-file $metadata  \
+	    --o-visualization taxa-bar-plots.qzv  \
+	    --verbose
 
     qiime tools export taxa-bar-plots.qzv  \
-	--output-dir barplot
+	    --output-dir barplot
     """
 }
 
@@ -1332,25 +1319,25 @@ process tree {
   
     """
     qiime alignment mafft \
-	--i-sequences $repseq \
-	--o-alignment aligned-rep-seqs.qza \
-	--p-n-threads ${params.tree_cores}
+	    --i-sequences $repseq \
+	    --o-alignment aligned-rep-seqs.qza \
+	    --p-n-threads ${task.cpus}
 
     qiime alignment mask \
-	--i-alignment aligned-rep-seqs.qza \
-	--o-masked-alignment masked-aligned-rep-seqs.qza
+	    --i-alignment aligned-rep-seqs.qza \
+	    --o-masked-alignment masked-aligned-rep-seqs.qza
 
     qiime phylogeny fasttree \
-	--i-alignment masked-aligned-rep-seqs.qza \
-	--p-n-threads ${params.tree_cores} \
-	--o-tree unrooted-tree.qza
+	    --i-alignment masked-aligned-rep-seqs.qza \
+	    --p-n-threads ${task.cpus} \
+	    --o-tree unrooted-tree.qza
 
     qiime phylogeny midpoint-root \
-	--i-tree unrooted-tree.qza \
-	--o-rooted-tree rooted-tree.qza
+	    --i-tree unrooted-tree.qza \
+	    --o-rooted-tree rooted-tree.qza
 
     qiime tools export rooted-tree.qza  \
-	--output-dir phylogenetic_tree
+	    --output-dir phylogenetic_tree
     """
 }
 
@@ -1382,16 +1369,16 @@ process alpha_rarefaction {
     if [ \"\$maxdepth\" -gt \"5000\" ]; then maxsteps=\"250\"; else maxsteps=\$((maxdepth/20)); fi
 
     qiime diversity alpha-rarefaction  \
-	--i-table $table  \
-	--i-phylogeny $tree  \
-	--p-max-depth \$maxdepth  \
-	--m-metadata-file $metadata  \
-	--p-steps \$maxsteps  \
-	--p-iterations 10  \
-	--o-visualization alpha-rarefaction.qzv
+	    --i-table $table  \
+	    --i-phylogeny $tree  \
+	    --p-max-depth \$maxdepth  \
+	    --m-metadata-file $metadata  \
+	    --p-steps \$maxsteps  \
+	    --p-iterations 10  \
+	    --o-visualization alpha-rarefaction.qzv
 
     qiime tools export alpha-rarefaction.qzv  \
-	--output-dir alpha-rarefaction
+	    --output-dir alpha-rarefaction
     """
 }
 
@@ -1450,13 +1437,13 @@ process diversity_core {
     if [ \"\$mindepth\" -lt \"1000\" ]; then echo \"\n######## ERROR! The sampling depth of \$mindepth seems too small for rarefaction!\" ; fi
     
     qiime diversity core-metrics-phylogenetic \
-	--m-metadata-file $metadata \
-	--i-phylogeny $tree \
-	--i-table $table \
-	--p-sampling-depth \$mindepth \
-	--output-dir diversity_core \
-	--p-n-jobs ${params.diversity_cores} \
-    --quiet
+	    --m-metadata-file $metadata \
+	    --i-phylogeny $tree \
+	    --i-table $table \
+	    --p-sampling-depth \$mindepth \
+	    --output-dir diversity_core \
+	    --p-n-jobs ${task.cpus} \
+        --quiet
     """
 }
 

@@ -177,7 +177,7 @@ In amplicon sequencing methods, PCR with specific primers produces the amplicon 
 
 ### `--metadata`
 
-For performing downstream analysis such as barplots, diversity indices or differential abundance testing, a metadata file is essential. For example:
+This is optional, but for performing downstream analysis such as barplots, diversity indices or differential abundance testing, a metadata file is essential. For example:
 
 ```bash
 --metadata "path/to/metadata.tsv"
@@ -287,13 +287,13 @@ Please note:
 Automatically determine [`--trunclenf` and `--trunclenr`](#--trunclenf-and---trunclenr) before the mean quality score drops below `--trunc_qmin` (default: 25). For example:
 
 ```bash
---trunc_qmin 20
+--trunc_qmin 35
 ```
 
 Please note:
 
 1. The code choosing `--trunclenf` and `--trunclenr` using `--trunc_qmin` automatically cannot take amplicon length or overlap requirements for merging into account, therefore setting `--trunclenf` and `--trunclenr` is preferred
-2. The default value of 25 is recommended. However, very good quality data with large paired sequence overlap might justify a higher value. Also, very low quality data might require a lower value.
+2. The default value of 25 is recommended. However, very good quality data with large paired sequence overlap might justify a higher value (e.g. 35). Also, very low quality data might require a lower value.
 
 ## Other options
 

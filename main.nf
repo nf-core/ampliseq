@@ -1181,7 +1181,7 @@ process report_filter_stats {
 	file 'filtered_table' from ch_tsv_table_for_report_filter_stats
 
 	output:
-	file("count_table_filter_stats.csv") into ch_csv_filter_stats
+	file("count_table_filter_stats.tsv")
 	
 	"""
 	count_table_filter_stats.py unfiltered_table filtered_table

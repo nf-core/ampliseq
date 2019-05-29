@@ -122,8 +122,8 @@ All following analysis is based on these filtered tables.
   * QIIME2 data artefact
 
 **Output directory: `results/abundance-table/filtered`**
-* `count_table_filter_stats.csv`
-  * Comma-separated table with information on how much counts were filtered for each sample
+* `count_table_filter_stats.tsv`
+  * Tab-separated table with information on how much counts were filtered for each sample
 * `feature-table.biom`
   * Abundance table in biom format for importing into downstream analysis tools
 * `feature-table.tsv`
@@ -149,7 +149,7 @@ Absolute abundance tables produced by the previous steps contain count data, but
   * Tab-separated relative abundance table at species level
 * `rel-table-ASV.tsv`
   * Tab-separated relative abundance table for all ASVs
-* `qiime2_ASV_table.csv`
+* `qiime2_ASV_table.tsv`
   * Tab-separated table for all ASVs with taxonomic classification, sequence and relative abundance
 
 ### Barplot

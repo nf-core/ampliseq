@@ -29,4 +29,4 @@ out['retained [%]'] = out['filtered'] / out['unfiltered'] *100
 out['lost [%]'] = (100 - out['retained [%]'])
 
 #write file
-out.to_csv('count_table_filter_stats.csv')
+out.to_csv('count_table_filter_stats.tsv', sep='\t')

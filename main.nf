@@ -321,7 +321,7 @@ if (!params.Q2imported){
 	* Create a channel for input read files
 	*/
 	if(params.readPaths && params.reads == "data${params.extension}" && !params.multipleSequencingRuns){
-		//Standard input
+		//Test input for single sequencing runs, profile = test
 
 		Channel
 			.from(params.readPaths)
@@ -370,7 +370,7 @@ if (!params.Q2imported){
 			.into { ch_read_pairs; ch_read_pairs_fastqc }
 
 	} else if ( params.readPaths && params.multipleSequencingRuns ) {
-		//Test input for multiple sequencing runs
+		//Test input for multiple sequencing runs, profile = test_multi
 
 		Channel
 			.from(params.readPaths)
@@ -379,7 +379,7 @@ if (!params.Q2imported){
 			.into { ch_read_pairs; ch_read_pairs_fastqc }
 			
 	} else {
-		//Test input for single sequencing runs
+		//Standard input
 
 		Channel
 			.fromFilePairs( params.reads + params.extension, size: 2 )

@@ -10,7 +10,7 @@ table <- args[1]
 seq <- args[2]
 taxonomy <- args[3]
 
-OUT="qiime2_ASV_table.csv"
+OUT="qiime2_ASV_table.tsv"
 
 #load packages, Biostrings_2.46.0
 library("Biostrings")

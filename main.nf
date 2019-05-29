@@ -21,28 +21,28 @@ def helpMessage() {
 
 	Main arguments:
 	  -profile [strings]            Use this parameter to choose a configuration profile. If not specified, runs locally and expects all software
-									to be installed and available on the `PATH`. Otherwise specify a container engine, "docker" or "singularity" 
-									and a specialized profile such as "binac".
+	                                to be installed and available on the `PATH`. Otherwise specify a container engine, "docker" or "singularity" 
+	                                and a specialized profile such as "binac".
 	  --reads [path/to/folder]      Folder containing paired-end demultiplexed fastq files
-									Note: All samples have to be sequenced in one run, otherwise also specifiy "--multipleSequencingRuns"
+	                                Note: All samples have to be sequenced in one run, otherwise also specifiy "--multipleSequencingRuns"
 	  --FW_primer [str]             Forward primer sequence
 	  --RV_primer [str]             Reverse primer sequence
 	  --metadata [path/to/file]     Path to metadata sheet, when missing most downstream analysis are skipped (barplots, PCoA plots, ...)
 
 	Other input options:
 	  --extension [str]             Naming of sequencing files (default: "/*_R{1,2}_001.fastq.gz"). 
-									The prepended "/" is required, also one "*" is required for sample names and "{1,2}" indicates read orientation
+	                                The prepended "/" is required, also one "*" is required for sample names and "{1,2}" indicates read orientation
 	  --multipleSequencingRuns      If samples were sequenced in multiple sequencing runs. Expects one subfolder per sequencing run
-									in the folder specified by "--reads" containing sequencing data of the specific run. These folders 
-									may not contain underscores. Also, fastQC is skipped because multiple sequencing runs might 
-									create overlapping file names that crash MultiQC.
-	  --split [str]                 A string that will be used between the prepended run/folder name and the sample name. 
-									May not be present in run/folder names and no underscore(s) allowed. Only used with "--multipleSequencingRuns"
+	                                in the folder specified by "--reads" containing sequencing data of the specific run. These folders 
+	                                may not contain underscores. Also, fastQC is skipped because multiple sequencing runs might 
+	                                create overlapping file names that crash MultiQC.
+	  --split [str]                 A string that will be used between the prepended run/folder name and the sample name. (default: "-")
+	                                May not be present in run/folder names and no underscore(s) allowed. Only used with "--multipleSequencingRuns"
 	  --phred64                     If the sequencing data has PHRED 64 encoded quality scores (default: PHRED 33)
 
 	Filters:
-	  --exclude_taxa [str]          Comma seperated list of unwanted taxa (default: "mitochondria,chloroplast")
-									To skip taxa filtering use "none"
+	  --exclude_taxa [str]          Comma separated list of unwanted taxa (default: "mitochondria,chloroplast")
+	                                To skip taxa filtering use "none"
 	  --min_frequency [int]         Remove entries from the feature table below an absolute abundance threshold (default: 1)
 	  --min_samples [int]           Filtering low prevalent features from the feature table (default: 1)                   
 
@@ -51,28 +51,29 @@ def helpMessage() {
 	  --trunclenf [int]             DADA2 read truncation value for forward strand
 	  --trunclenr [int]             DADA2 read truncation value for reverse strand
 	  --trunc_qmin [int]            If --trunclenf and --trunclenr are not set, 
-									these values will be automatically determined using 
-									this mean quality score (not preferred) (default: 25)
+	                                these values will be automatically determined using 
+	                                this mean quality score (not preferred) (default: 25)
 
 	References:                     If you have trained a compatible classifier before
 	  --classifier [path/to/file]   Path to QIIME2 classifier file (typically *-classifier.qza)
 	  --classifier_removeHash       Remove all hash signs from taxonomy strings, resolves a rare ValueError during classification (process classifier)
 
 	Statistics:
-	  --metadata_category           Diversity indices will be calculated using these groupings in the metadata sheet,
-									all suitable columns in the metadata sheet will be used if not specified.
-									Suitable are columns which are categorical (not numerical) and have multiple  
-									different values which are not all unique.
+	  --metadata_category [str]     Comma separated list of metadata column headers for statistics (default: false)
+	                                If not specified, all suitable columns in the metadata sheet will be used.
+	                                Suitable are columns which are categorical (not numerical) and have multiple  
+	                                different values that are not all unique.
 
 	Other options:
 	  --untilQ2import               Skip all steps after importing into QIIME2, used for visually choosing DADA2 parameter
 	  --Q2imported [path/to/file]   Path to imported reads (e.g. "demux.qza"), used after visually choosing DADA2 parameter
 	  --onlyDenoising               Skip all steps after denoising, produce only sequences and abundance tables on ASV level
 	  --keepIntermediates           Keep additional intermediate files, such as trimmed reads or various QIIME2 archives
-	  --outdir                      The output directory where the results will be saved
-	  --email                       Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits
-	  --maxMultiqcEmailFileSize     Theshold size for MultiQC report to be attached in notification email. If file generated by pipeline exceeds the threshold, it will not be attached (Default: 25MB)
-	  -name                         Name for the pipeline run. If not specified, Nextflow will automatically generate a random mnemonic.
+	  --outdir [path/to/folder]     The output directory where the results will be saved
+	  --email [email]               Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits
+	  --maxMultiqcEmailFileSize     Theshold size for MultiQC report to be attached in notification email. If file generated by pipeline exceeds the threshold, 
+	                                it will not be attached (Default: 25MB)
+	  -name [str]                   Name for the pipeline run. If not specified, Nextflow will automatically generate a random mnemonic.
 
 	Skipping steps:
 	  --skip_fastqc                 Skip FastQC
@@ -875,7 +876,7 @@ if (!params.multipleSequencingRuns){
 		qiime tools export relative-table-ASV.qza \
 			--output-dir rel-table
 
-		#convert to tab seperated text file
+		#convert to tab separated text file
 		biom convert \
 			-i rel-table/feature-table.biom \
 			-o table/rel-feature-table.tsv --to-tsv
@@ -1004,7 +1005,7 @@ if (!params.multipleSequencingRuns){
 		qiime tools export relative-table-ASV.qza \
 			--output-dir rel-table
 
-		#convert to tab seperated text file
+		#convert to tab separated text file
 		biom convert \
 			-i rel-table/feature-table.biom \
 			-o table/rel-feature-table.tsv --to-tsv
@@ -1212,7 +1213,7 @@ process RelativeAbundanceASV {
 	#export to biom
 	qiime tools export relative-table-ASV.qza --output-dir relative-table-ASV
 
-	#convert to tab seperated text file "${params.outdir}/rel-table-ASV.tsv"
+	#convert to tab separated text file "${params.outdir}/rel-table-ASV.tsv"
 	biom convert -i relative-table-ASV/feature-table.biom \
 		-o rel-table-ASV.tsv --to-tsv
 	"""
@@ -1255,7 +1256,7 @@ process RelativeAbundanceReducedTaxa {
 		#export to biom
 		qiime tools export relative-table-\$i.qza \
 			--output-dir relative-table-\$i
-		#convert to tab seperated text file
+		#convert to tab separated text file
 		biom convert \
 			-i relative-table-\$i/feature-table.biom \
 			-o rel-table-\$i.tsv --to-tsv
@@ -1394,7 +1395,7 @@ process combinetable {
 	file TAXONOMY from ch_tsv_taxonomy
 
 	output:
-	file("qiime2_ASV_table.csv")
+	file("qiime2_ASV_table.tsv")
 
 	when:
 	!params.skip_abundance_tables && !params.skip_taxonomy

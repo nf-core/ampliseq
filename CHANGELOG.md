@@ -11,6 +11,7 @@
 * [#61](https://github.com/nf-core/ampliseq/issues/61) - Improved documentation
 * [#62](https://github.com/nf-core/ampliseq/pull/62) - Utilize nf-core/configs centrally for this pipeline
 * [#63](https://github.com/nf-core/ampliseq/issues/63) - QIIME imports files by using a manifest, giving more freedom with input file names
+* [#84](https://github.com/nf-core/ampliseq/issues/84) - Add proper nf-core logo
 
 #### Bug fixes
 * [#57](https://github.com/nf-core/ampliseq/issues/57) - Indicate exact regex for sequencing file names

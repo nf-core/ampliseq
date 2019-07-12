@@ -1464,8 +1464,7 @@ process metadata_category_all {
 
 	when:
 	(!params.skip_ancom || !params.skip_diversity_indices) &&
-	(!params.untilQ2import && !params.onlyDenoising) &&
-	params.metadata
+	(!params.untilQ2import && !params.onlyDenoising)
 
 	script:
 	if( !params.metadata_category )

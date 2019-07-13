@@ -1463,9 +1463,8 @@ process metadata_category_all {
 	stdout into (ch_meta_category_all_for_alphadiversity, ch_meta_category_all_for_ancom)
 
 	when:
-	!params.skip_ancom || !params.skip_diversity_indices
-	!params.untilQ2import && !params.onlyDenoising
-	params.metadata
+	(!params.skip_ancom || !params.skip_diversity_indices) &&
+	(!params.untilQ2import && !params.onlyDenoising)
 
 	script:
 	if( !params.metadata_category )
@@ -1623,8 +1622,7 @@ process prepare_ancom {
 	file("*.qza") into (ch_meta_tables_tax, ch_meta_tables_asv) mode flatten
 
 	when:
-	!params.skip_ancom
-	meta.length() > 0
+	!params.skip_ancom && (meta.length() > 0)
 
 	"""
 	IFS=',' read -r -a metacategory <<< \"$meta\"

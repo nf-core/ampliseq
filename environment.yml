@@ -37,7 +37,7 @@ dependencies:
   - bioconductor-zlibbioc=1.24.0
   - blast=2.6.0
   - cutadapt=1.16
-  - deblur=1.0.4
+  - bioconda::deblur=1.0.4
   - fasttree=2.1.10
   - mafft=7.310
   - raxml=8.2.10

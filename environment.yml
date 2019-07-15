@@ -1,12 +1,14 @@
 name: nf-core-ampliseq-1.0.0
 channels:
-  - anaconda
   - qiime2/label/r2018.6
   - qiime2
   - conda-forge
   - defaults
   - bioconda
   - biocore
+  - conda-forge/label/gcc7
+  - conda-forge/label/cf201901
+  - anaconda
 dependencies:
   - fastqc=0.11.8 #newest version
   - font-ttf-dejavu-sans-mono=2.37 #for fastqc 
@@ -14,8 +16,7 @@ dependencies:
   - unzip=6.0 #required for silva unzippping
   - r-rmarkdown=1.10
   - conda-forge::ncurses=5.9
-  - msgpack-python=0.5.6 #This was part of QIIME2 YAML
-  #Everything below here was copied from QIIME2 YAML file (2018-08 version) including dependencies for QIIME2 - DO NOT UPDATE
+  #QIIME2 2018/6 release
   - bioconductor-biobase=2.38.0
   - bioconductor-biocgenerics=0.24.0
   - bioconductor-biocparallel=1.12.0
@@ -113,6 +114,7 @@ dependencies:
   - natsort=5.3.2
   - nbconvert=5.3.1
   - nbformat=4.4.0
+  - ncurses=5.9
   - nose=1.3.7
   - notebook=5.5.0
   - openssl=1.0.2o
@@ -143,7 +145,7 @@ dependencies:
   - pytz=2018.4
   - pyyaml=3.12
   - pyzmq=17.0.0
-  - conda-forge::qt=5.6.2
+  - qt=5.6.2
   - r-assertthat=0.2.0
   - r-base=3.4.1
   - r-bh=1.66.0_1
@@ -250,4 +252,4 @@ dependencies:
   - ijson=2.3
   - scikit-bio=0.5.1
   - tzlocal=1.3
-  
+  - msgpack-python=0.5.6

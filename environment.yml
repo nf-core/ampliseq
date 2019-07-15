@@ -8,6 +8,7 @@ channels:
   - biocore
   - conda-forge/label/gcc7
   - conda-forge/label/cf201901
+  - bioconda/label/cf201901
   - anaconda
 dependencies:
   - fastqc=0.11.8 #newest version
@@ -44,7 +45,7 @@ dependencies:
   - vsearch=2.7.0
   - xopen=0.3.2
   - gneiss=0.4.4
-  - unifrac=0.9.2
+  - biocore::unifrac=0.9.2
   - asn1crypto=0.24.0
   - backcall=0.1.0
   - bibtexparser=1.0.1

@@ -225,7 +225,7 @@ dependencies:
   - numpy=1.12.1
   - scikit-learn=0.19.1
   - scipy=0.19.1
-  - wget=1.19.5
+  - anaconda::wget=1.19.5
   - q2-alignment=2018.6.0
   - q2-composition=2018.6.0
   - q2-cutadapt=2018.6.0

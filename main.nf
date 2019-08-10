@@ -238,7 +238,6 @@ def summary = [:]
 summary['Pipeline Name']  = 'nf-core/ampliseq'
 if(workflow.revision) summary['Pipeline Release'] = workflow.revision
 summary['Run Name']         = custom_runName ?: workflow.runName
-// TODO nf-core: Report custom parameters here
 summary['Reads']            = params.reads
 summary['Data Type']        = params.singleEnd ? 'Single-End' : 'Paired-End'
 summary['Max Resources']    = "$params.max_memory memory, $params.max_cpus cpus, $params.max_time time per job"
@@ -302,7 +301,6 @@ process get_software_versions {
 	file "software_versions.csv"
 
 	script:
-	// TODO nf-core: Get all tools to print their version number here
 	"""
 	echo $workflow.manifest.version > v_pipeline.txt
 	echo $workflow.nextflow.version > v_nextflow.txt

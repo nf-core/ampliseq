@@ -184,7 +184,7 @@ This is optional, but for performing downstream analysis such as barplots, diver
 Please note the following requirements:
 
 1. The path must be enclosed in quotes
-2. The metadata file has to follow the [QIIME2 specifications](https://docs.qiime2.org/2018.6/tutorials/metadata/)
+2. The metadata file has to follow the [QIIME2 specifications](https://docs.qiime2.org/2019.7/tutorials/metadata/)
 3. In case of multiple sequencing runs, specific naming of samples are required, see [here](#--multipleSequencingRuns)
 
 ## Other input options
@@ -358,9 +358,9 @@ If you have trained a compatible classifier before, from sources such as [SILVA]
 Please note the following requirements:
 
 1. The path must be enclosed in quotes
-2. The cassifier is a Naive Bayes classifier produced by "qiime feature-classifier fit-classifier-naive-bayes" (e.g. by this pipeline or from [QIIME2 resources](https://docs.qiime2.org/2018.6/data-resources/))
+2. The cassifier is a Naive Bayes classifier produced by "qiime feature-classifier fit-classifier-naive-bayes" (e.g. by this pipeline or from [QIIME2 resources](https://docs.qiime2.org/2019.7/data-resources/))
 3. The primer pair for the amplicon PCR and the computing of the classifier are exactly the same
-4. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses (0.19.1)
+4. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses (0.21.2)
 
 ### `--classifier_removeHash`
 

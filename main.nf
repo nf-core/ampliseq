@@ -600,7 +600,7 @@ if (!params.Q2imported){
 					--type 'SampleData[PairedEndSequencesWithQuality]' \
 					--input-path ${manifest} \
 					--output-path ${folder}-demux.qza \
-					--source-format PairedEndFastqManifestPhred33
+					--input-format PairedEndFastqManifestPhred33
 				"""
 			} else {
 				"""
@@ -608,7 +608,7 @@ if (!params.Q2imported){
 					--type 'SampleData[PairedEndSequencesWithQuality]' \
 					--input-path ${manifest} \
 					--output-path ${folder}-demux.qza \
-					--source-format PairedEndFastqManifestPhred64
+					--input-format PairedEndFastqManifestPhred64
 				"""
 			}
 		}
@@ -668,7 +668,7 @@ if( !params.classifier ){
 			--input-path \$fasta \
 			--output-path ref-seq-${params.dereplication}.qza
 		qiime tools import --type \'FeatureData[Taxonomy]\' \
-			--source-format HeaderlessTSVTaxonomyFormat \
+			--input-format HeaderlessTSVTaxonomyFormat \
 			--input-path \$taxonomy \
 			--output-path ref-taxonomy-${params.dereplication}.qza
 
@@ -796,7 +796,7 @@ if (!params.multipleSequencingRuns){
 		tag "$trunc"
 		publishDir "${params.outdir}", mode: 'copy',
 			saveAs: {filename -> 
-					 if (filename.indexOf("stats.tsv") > 0)                     "abundance_table/unfiltered/dada_stats.tsv"
+					 if (filename.indexOf("dada_stats/stats.tsv") == 0)         "abundance_table/unfiltered/dada_stats.tsv"
 				else if (filename.indexOf("dada_report.txt") == 0)              "abundance_table/unfiltered/dada_report.txt"
 				else if (filename.indexOf("table.qza") == 0)                    "abundance_table/unfiltered/$filename"
 				else if (filename.indexOf("rel-table/feature-table.biom") == 0) "abundance_table/unfiltered/rel-feature-table.biom"

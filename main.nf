@@ -107,26 +107,6 @@ ch_output_docs = Channel.fromPath("$baseDir/docs/output.md")
 Channel.fromPath("$baseDir/assets/matplotlibrc")
 	.into { ch_mpl_for_make_classifier; ch_mpl_for_qiime_import; ch_mpl_for_ancom_asv; ch_mpl_for_ancom_tax; ch_mpl_for_ancom; ch_mpl_for_beta_diversity_ord; ch_mpl_for_beta_diversity; ch_mpl_for_alpha_diversity; ch_mpl_for_metadata_pair; ch_mpl_for_metadata_cat; ch_mpl_for_diversity_core; ch_mpl_for_alpha_rare; ch_mpl_for_tree; ch_mpl_for_barcode; ch_mpl_for_relreducetaxa; ch_mpl_for_relasv; ch_mpl_for_export_dada_output; ch_mpl_filter_taxa; ch_mpl_classifier; ch_mpl_dada; ch_mpl_dada_merge; ch_mpl_for_demux_visualize; ch_mpl_for_classifier }
 
-// Defines all parameters that are independent of a test run
-params.trunc_qmin = 25 //to calculate params.trunclenf and params.trunclenr automatically
-params.trunclenf = false
-params.trunclenr = false
-params.metadata_category = false
-params.retain_untrimmed = false
-params.exclude_taxa = "mitochondria,chloroplast"
-params.keepIntermediates = false
-params.classifier_removeHash = false
-params.min_frequency = false
-params.min_samples = false
-params.multipleSequencingRuns = false
-params.phred64 = false
-params.split = "-"
-
-//Database specific parameters
-//currently only this is compatible with process make_SILVA_132_16S_classifier
-params.reference_database = "https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip"
-params.dereplication = 99
-
 
 /*
  * Define pipeline steps

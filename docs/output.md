@@ -63,7 +63,7 @@ For more information about how to use MultiQC reports, see [http://multiqc.info]
 
 ### QIIME2
 
-**Quantitative Insights Into Microbial Ecology 2** ([QIIME2](https://qiime2.org/)) is a next-generation microbiome bioinformatics platform and the successor of the widely used [QIIME1](https://www.nature.com/articles/nmeth.f.303). QIIME2 is currently **under heavy development** and often updated, this version of ampliseq uses QIIME2 2019.7. QIIME2 has a wide variety of analysis tools available and has excellent support in its [forum](https://docs.qiime2.org/2019.7/).
+**Quantitative Insights Into Microbial Ecology 2** ([QIIME2](https://qiime2.org/)) is a next-generation microbiome bioinformatics platform and the successor of the widely used [QIIME1](https://www.nature.com/articles/nmeth.f.303). QIIME2 is currently **under heavy development** and often updated, this version of ampliseq uses QIIME2 2019.10. QIIME2 has a wide variety of analysis tools available and has excellent support in its [forum](https://docs.qiime2.org/2019.10/).
 
 At this point of the analysis the trimmed reads are imported into QIIME2 and an interactive quality plot is made.
 
@@ -235,7 +235,7 @@ ANCOM is applied to each suitable or specified metadata column for 6 taxonomic l
 
 ## More help
 
-QIIME2 is currently **under heavy development** and often updated, this version of ampliseq uses QIIME2 2019.7. QIIME2 has excellent support in its [forum](https://docs.qiime2.org/2019.7/).
+QIIME2 is currently **under heavy development** and often updated, this version of ampliseq uses QIIME2 2019.10. QIIME2 has excellent support in its [forum](https://docs.qiime2.org/2019.10/).
 
 ## Citations
 

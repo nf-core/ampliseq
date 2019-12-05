@@ -56,7 +56,7 @@ The pipeline has special steps which allow the software versions used to be repo
 For more information about how to use MultiQC reports, see [http://multiqc.info](http://multiqc.info)
 
 ### QIIME2
-**Quantitative Insights Into Microbial Ecology 2** ([QIIME2](https://qiime2.org/)) is a next-generation microbiome bioinformatics platform and the successor of the widely used [QIIME1](https://www.nature.com/articles/nmeth.f.303). QIIME2 is currently **under heavy development** and often updated, this version of ampliseq uses QIIME2 2018.6. QIIME2 has a wide variety of analysis tools available and has excellent support in its [forum](https://docs.qiime2.org/2018.6/).
+**Quantitative Insights Into Microbial Ecology 2** ([QIIME2](https://qiime2.org/)) is a next-generation microbiome bioinformatics platform and the successor of the widely used [QIIME1](https://www.nature.com/articles/nmeth.f.303). QIIME2 is currently **under heavy development** and often updated, this version of ampliseq uses QIIME2 2019.7. QIIME2 has a wide variety of analysis tools available and has excellent support in its [forum](https://docs.qiime2.org/2019.7/).
 
 At this point of the analysis the trimmed reads are imported into QIIME2 and an interactive quality plot is made.
 
@@ -205,7 +205,7 @@ ANCOM is applied to each suitable or specified metadata column for 6 taxonomic l
   * taxonomic level: level-2 (phylum), level-3 (class), level-4 (order), level-5 (family), level-6 (genus), ASV
 
 ## More help
-QIIME2 is currently **under heavy development** and often updated, this version of ampliseq uses QIIME2 2018.6. QIIME2 has excellent support in its [forum](https://docs.qiime2.org/2018.6/).
+QIIME2 is currently **under heavy development** and often updated, this version of ampliseq uses QIIME2 2019.7. QIIME2 has excellent support in its [forum](https://docs.qiime2.org/2019.7/).
 
 ## Citations
 All tools inside the pipeline have to be cited in a publication properly:
@@ -213,7 +213,7 @@ All tools inside the pipeline have to be cited in a publication properly:
 * FastQC, "Andrews, Simon. "FastQC: a quality control tool for high throughput sequence data." (2010)."
 * Cutadapt "Martin, Marcel. "Cutadapt removes adapter sequences from high-throughput sequencing reads." EMBnet. journal 17.1 (2011): pp-10."
 * MultiQC, "Ewels, Philip, et al. "MultiQC: summarize analysis results for multiple tools and samples in a single report." Bioinformatics 32.19 (2016): 3047-3048."
-* QIIME2, "Bolyen, Evan, et al. QIIME 2: Reproducible, interactive, scalable, and extensible microbiome data science. No. e27295v1. PeerJ Preprints, 2018."
+* QIIME2, "Bolyen, Evan, et al. "Reproducible, interactive, scalable and extensible microbiome data science using QIIME 2." Nature Biotechnology 37 (2019): 852–857."
 * DADA2, "Callahan, Benjamin J., et al. "DADA2: high-resolution sample inference from Illumina amplicon data." Nature methods 13.7 (2016): 581."
 * Matplotlib, "Hunter, John D. "Matplotlib: A 2D graphics environment." Computing in science & engineering 9.3 (2007): 90-95."
 * Feature-classifier, "Bokulich, Kaehler, et al. "Optimizing taxonomic classification of marker-gene amplicon sequences with QIIME 2's q2-feature-classifier plugin." Microbiome 6 (2018): 90.

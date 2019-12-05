@@ -1,12 +1,12 @@
 # nf-core/ampliseq
 
-## nf-core/ampliseq version 1.1.1
+## nf-core/ampliseq version 1.1.1 - 2019
 
-### Pipeline updates
+### Pipeline Updates
 
-* Update from QIIME2 v2018.6 to v2019.7, including DADA2 v1.6 to DADA2 v1.10
+* Updated to QIIME2 v 2019-10
 
-### Bug fixes
+### Bugfixes
 
 * [#78](https://github.com/nf-core/ampliseq/issues/78) - All sequenced classifed to the same species
 

@@ -8,4 +8,3 @@ RUN mkdir -p /root/.config/matplotlib
 RUN echo "backend : Agg" > /root/.config/matplotlib/matplotlibrc
 ## Don't recache on each execution, do that once per build process
 RUN qiime dev refresh-cache
-

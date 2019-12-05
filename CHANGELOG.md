@@ -1,5 +1,12 @@
 # nf-core/ampliseq
 
+## nf-core/ampliseq version 1.1.1 - 2019
+
+### Pipeline Updates
+
+* Updated to QIIME2 v 2019-10
+
+
 ## nf-core/ampliseq version 1.1.0 "Silver Lime Bee" - 2019
 
 #### Pipeline updates

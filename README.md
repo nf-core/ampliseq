@@ -1,6 +1,7 @@
 # ![nf-core/ampliseq](docs/images/nfcore-ampliseq_logo.png)
 
-[![Build Status](https://travis-ci.com/nf-core/ampliseq.svg?branch=master)](https://travis-ci.com/nf-core/ampliseq)[![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A519.10.0-brightgreen.svg)](https://www.nextflow.io/)
+[![Build Status](https://github.com/nf-core/ampliseq/workflows/ampliseq%20CI/badge.svg)](https://github.com/nf-core/ampliseq/workflows/ampliseq%20CI/badge.svg)
+[![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A519.10.0-brightgreen.svg)](https://www.nextflow.io/)
 
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg)](http://bioconda.github.io/)
 [![Docker](https://img.shields.io/docker/automated/nfcore/ampliseq.svg)](https://hub.docker.com/r/nfcore/ampliseq)

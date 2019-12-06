@@ -107,26 +107,6 @@ ch_output_docs = Channel.fromPath("$baseDir/docs/output.md")
 Channel.fromPath("$baseDir/assets/matplotlibrc")
 	.into { ch_mpl_for_make_classifier; ch_mpl_for_qiime_import; ch_mpl_for_ancom_asv; ch_mpl_for_ancom_tax; ch_mpl_for_ancom; ch_mpl_for_beta_diversity_ord; ch_mpl_for_beta_diversity; ch_mpl_for_alpha_diversity; ch_mpl_for_metadata_pair; ch_mpl_for_metadata_cat; ch_mpl_for_diversity_core; ch_mpl_for_alpha_rare; ch_mpl_for_tree; ch_mpl_for_barcode; ch_mpl_for_relreducetaxa; ch_mpl_for_relasv; ch_mpl_for_export_dada_output; ch_mpl_filter_taxa; ch_mpl_classifier; ch_mpl_dada; ch_mpl_dada_merge; ch_mpl_for_demux_visualize; ch_mpl_for_classifier }
 
-// Defines all parameters that are independent of a test run
-params.trunc_qmin = 25 //to calculate params.trunclenf and params.trunclenr automatically
-params.trunclenf = false
-params.trunclenr = false
-params.metadata_category = false
-params.retain_untrimmed = false
-params.exclude_taxa = "mitochondria,chloroplast"
-params.keepIntermediates = false
-params.classifier_removeHash = false
-params.min_frequency = false
-params.min_samples = false
-params.multipleSequencingRuns = false
-params.phred64 = false
-params.split = "-"
-
-//Database specific parameters
-//currently only this is compatible with process make_SILVA_132_16S_classifier
-params.reference_database = "https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip"
-params.dereplication = 99
-
 
 /*
  * Define pipeline steps
@@ -224,7 +204,7 @@ if( workflow.profile == 'awsbatch') {
   // related: https://github.com/nextflow-io/nextflow/issues/813
   if (!params.outdir.startsWith('s3:')) exit 1, "Outdir not on S3 - specify S3 Bucket to run on AWSBatch!"
   // Prevent trace files to be stored on S3 since S3 does not support rolling files.
-  if (workflow.tracedir.startsWith('s3:')) exit 1, "Specify a local tracedir or run without trace! S3 cannot be used for tracefiles."
+  if (params.tracedir.startsWith('s3:')) exit 1, "Specify a local tracedir or run without trace! S3 cannot be used for tracefiles."
 }
 
 // Stage config files
@@ -260,7 +240,7 @@ if(params.email) {
   summary['MultiQC maxsize'] = params.maxMultiqcEmailFileSize
 }
 log.info summary.collect { k,v -> "${k.padRight(18)}: $v" }.join("\n")
-log.info "\033[2m----------------------------------------------------\033[0m"
+log.info "-\033[2m----------------------------------------------------\033[0m-"
 
 if( !params.trunclenf || !params.trunclenr ){
 	if ( !params.untilQ2import ) log.info "\n######## WARNING: No DADA2 cutoffs were specified, therefore reads will be truncated where median quality drops below ${params.trunc_qmin}.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
@@ -563,7 +543,7 @@ if (!params.Q2imported){
 					--type 'SampleData[PairedEndSequencesWithQuality]' \
 					--input-path ${manifest} \
 					--output-path demux.qza \
-					--source-format PairedEndFastqManifestPhred33
+					--input-format PairedEndFastqManifestPhred33
 				"""
 			} else {
 				"""
@@ -571,7 +551,7 @@ if (!params.Q2imported){
 					--type 'SampleData[PairedEndSequencesWithQuality]' \
 					--input-path ${manifest} \
 					--output-path demux.qza \
-					--source-format PairedEndFastqManifestPhred64
+					--input-format PairedEndFastqManifestPhred64
 				"""
 			}
 		}
@@ -600,7 +580,7 @@ if (!params.Q2imported){
 					--type 'SampleData[PairedEndSequencesWithQuality]' \
 					--input-path ${manifest} \
 					--output-path ${folder}-demux.qza \
-					--source-format PairedEndFastqManifestPhred33
+					--input-format PairedEndFastqManifestPhred33
 				"""
 			} else {
 				"""
@@ -608,7 +588,7 @@ if (!params.Q2imported){
 					--type 'SampleData[PairedEndSequencesWithQuality]' \
 					--input-path ${manifest} \
 					--output-path ${folder}-demux.qza \
-					--source-format PairedEndFastqManifestPhred64
+					--input-format PairedEndFastqManifestPhred64
 				"""
 			}
 		}
@@ -668,7 +648,7 @@ if( !params.classifier ){
 			--input-path \$fasta \
 			--output-path ref-seq-${params.dereplication}.qza
 		qiime tools import --type \'FeatureData[Taxonomy]\' \
-			--source-format HeaderlessTSVTaxonomyFormat \
+			--input-format HeaderlessTSVTaxonomyFormat \
 			--input-path \$taxonomy \
 			--output-path ref-taxonomy-${params.dereplication}.qza
 
@@ -712,7 +692,7 @@ if( !params.Q2imported ){
 		--i-data ${demux} \
 		--o-visualization ${demux.baseName}.qzv
 
-		qiime tools export ${demux.baseName}.qzv --output-dir ${demux.baseName}
+		qiime tools export --input-path ${demux.baseName}.qzv --output-path ${demux.baseName}
 		"""
 	}
 } else {
@@ -731,7 +711,7 @@ if( !params.Q2imported ){
 			--i-data ${params.Q2imported} \
 			--o-visualization demux.qzv
 
-		qiime tools export demux.qzv --output-dir demux
+		qiime tools export --input-path demux.qzv --output-path demux
 		"""
 	}
 }
@@ -796,7 +776,7 @@ if (!params.multipleSequencingRuns){
 		tag "$trunc"
 		publishDir "${params.outdir}", mode: 'copy',
 			saveAs: {filename -> 
-					 if (filename.indexOf("stats.tsv") > 0)                     "abundance_table/unfiltered/dada_stats.tsv"
+					 if (filename.indexOf("dada_stats/stats.tsv") == 0)         "abundance_table/unfiltered/dada_stats.tsv"
 				else if (filename.indexOf("dada_report.txt") == 0)              "abundance_table/unfiltered/dada_report.txt"
 				else if (filename.indexOf("table.qza") == 0)                    "abundance_table/unfiltered/$filename"
 				else if (filename.indexOf("rel-table/feature-table.biom") == 0) "abundance_table/unfiltered/rel-feature-table.biom"
@@ -846,12 +826,12 @@ if (!params.multipleSequencingRuns){
 		>dada_report.txt
 
 		#produce dada2 stats "dada_stats/stats.tsv"
-		qiime tools export stats.qza \
-			--output-dir dada_stats
+		qiime tools export --input-path stats.qza \
+			--output-path dada_stats
 
 		#produce raw count table in biom format "table/feature-table.biom"
-		qiime tools export table.qza  \
-			--output-dir table
+		qiime tools export --input-path table.qza  \
+			--output-path table
 
 		#produce raw count table
 		biom convert -i table/feature-table.biom \
@@ -862,8 +842,8 @@ if (!params.multipleSequencingRuns){
 		qiime feature-table tabulate-seqs  \
 			--i-data rep-seqs.qza  \
 			--o-visualization rep-seqs.qzv
-		qiime tools export rep-seqs.qzv  \
-			--output-dir unfiltered
+		qiime tools export --input-path rep-seqs.qzv  \
+			--output-path unfiltered
 
 		#convert to relative abundances
 		qiime feature-table relative-frequency \
@@ -871,8 +851,8 @@ if (!params.multipleSequencingRuns){
 			--o-relative-frequency-table relative-table-ASV.qza
 
 		#export to biom
-		qiime tools export relative-table-ASV.qza \
-			--output-dir rel-table
+		qiime tools export --input-path relative-table-ASV.qza \
+			--output-path rel-table
 
 		#convert to tab separated text file
 		biom convert \
@@ -913,8 +893,8 @@ if (!params.multipleSequencingRuns){
 			>${demux.baseName}-report.txt
 
 		#produce dada2 stats "${demux.baseName}-dada_stats/stats.tsv"
-		qiime tools export ${demux.baseName}-stats.qza \
-			--output-dir ${demux.baseName}-dada_stats
+		qiime tools export --input-path ${demux.baseName}-stats.qza \
+			--output-path ${demux.baseName}-dada_stats
 		cp ${demux.baseName}-dada_stats/stats.tsv ${demux.baseName}-stats.tsv
 		"""
 	}
@@ -979,8 +959,8 @@ if (!params.multipleSequencingRuns){
 		cat ${REPORT} >dada_report.txt
 
 		#produce raw count table in biom format "table/feature-table.biom"
-		qiime tools export table.qza  \
-			--output-dir table
+		qiime tools export --input-path table.qza  \
+			--output-path table
 
 		#produce raw count table
 		biom convert -i table/feature-table.biom \
@@ -991,8 +971,8 @@ if (!params.multipleSequencingRuns){
 		qiime feature-table tabulate-seqs  \
 			--i-data rep-seqs.qza  \
 			--o-visualization rep-seqs.qzv
-		qiime tools export rep-seqs.qzv  \
-			--output-dir unfiltered
+		qiime tools export --input-path rep-seqs.qzv  \
+			--output-path unfiltered
 
 		#convert to relative abundances
 		qiime feature-table relative-frequency \
@@ -1000,8 +980,8 @@ if (!params.multipleSequencingRuns){
 			--o-relative-frequency-table relative-table-ASV.qza
 
 		#export to biom
-		qiime tools export relative-table-ASV.qza \
-			--output-dir rel-table
+		qiime tools export --input-path relative-table-ASV.qza \
+			--output-path rel-table
 
 		#convert to tab separated text file
 		biom convert \
@@ -1047,11 +1027,11 @@ process classifier {
 		--verbose
 
 	#produce "taxonomy/taxonomy.tsv"
-	qiime tools export taxonomy.qza  \
-		--output-dir taxonomy
+	qiime tools export --input-path taxonomy.qza  \
+		--output-path taxonomy
 
-	qiime tools export taxonomy.qzv  \
-		--output-dir taxonomy
+	qiime tools export --input-path taxonomy.qzv  \
+		--output-path taxonomy
 	"""
 }
 
@@ -1151,8 +1131,8 @@ process export_filtered_dada_output {
 
 	"""
 	#produce raw count table in biom format "table/feature-table.biom"
-	qiime tools export ${table}  \
-		--output-dir table
+	qiime tools export --input-path ${table}  \
+		--output-path table
 
 	#produce raw count table "table/feature-table.tsv"
 	biom convert -i table/feature-table.biom \
@@ -1163,8 +1143,8 @@ process export_filtered_dada_output {
 	qiime feature-table tabulate-seqs  \
 		--i-data ${repseq}  \
 		--o-visualization rep-seqs.qzv
-	qiime tools export rep-seqs.qzv  \
-		--output-dir filtered
+	qiime tools export --input-path rep-seqs.qzv  \
+		--output-path filtered
 	"""
 }
 
@@ -1209,7 +1189,7 @@ process RelativeAbundanceASV {
 		--o-relative-frequency-table relative-table-ASV.qza
 
 	#export to biom
-	qiime tools export relative-table-ASV.qza --output-dir relative-table-ASV
+	qiime tools export --input-path relative-table-ASV.qza --output-path relative-table-ASV
 
 	#convert to tab separated text file "${params.outdir}/rel-table-ASV.tsv"
 	biom convert -i relative-table-ASV/feature-table.biom \
@@ -1252,8 +1232,8 @@ process RelativeAbundanceReducedTaxa {
 			--i-table table-\$i.qza \
 			--o-relative-frequency-table relative-table-\$i.qza
 		#export to biom
-		qiime tools export relative-table-\$i.qza \
-			--output-dir relative-table-\$i
+		qiime tools export --input-path relative-table-\$i.qza \
+			--output-path relative-table-\$i
 		#convert to tab separated text file
 		biom convert \
 			-i relative-table-\$i/feature-table.biom \
@@ -1290,8 +1270,8 @@ process barplot {
 		--o-visualization taxa-bar-plots.qzv  \
 		--verbose
 
-	qiime tools export taxa-bar-plots.qzv  \
-		--output-dir barplot
+	qiime tools export --input-path taxa-bar-plots.qzv  \
+		--output-path barplot
 	"""
 }
 
@@ -1335,8 +1315,8 @@ process tree {
 		--i-tree unrooted-tree.qza \
 		--o-rooted-tree rooted-tree.qza
 
-	qiime tools export rooted-tree.qza  \
-		--output-dir phylogenetic_tree
+	qiime tools export --input-path rooted-tree.qza  \
+		--output-path phylogenetic_tree
 	"""
 }
 
@@ -1376,8 +1356,8 @@ process alpha_rarefaction {
 		--p-iterations 10  \
 		--o-visualization alpha-rarefaction.qzv
 
-	qiime tools export alpha-rarefaction.qzv  \
-		--output-dir alpha-rarefaction
+	qiime tools export --input-path alpha-rarefaction.qzv  \
+		--output-path alpha-rarefaction
 	"""
 }
 
@@ -1537,8 +1517,8 @@ process alpha_diversity {
 		--i-alpha-diversity ${core} \
 		--m-metadata-file ${metadata} \
 		--o-visualization ${core.baseName}-vis.qzv
-	qiime tools export ${core.baseName}-vis.qzv \
-		--output-dir "alpha-diversity/${core.baseName}"
+	qiime tools export --input-path ${core.baseName}-vis.qzv \
+		--output-path "alpha-diversity/${core.baseName}"
 	"""
 }
 
@@ -1570,8 +1550,8 @@ process beta_diversity {
 			--m-metadata-column \"\$j\" \
 			--o-visualization ${core.baseName}-\$j.qzv \
 			--p-pairwise
-		qiime tools export ${core.baseName}-\$j.qzv \
-			--output-dir beta-diversity/${core.baseName}-\$j
+		qiime tools export --input-path ${core.baseName}-\$j.qzv \
+			--output-path beta-diversity/${core.baseName}-\$j
 	done
 	"""
 }
@@ -1594,8 +1574,8 @@ process beta_diversity_ordination {
 		--i-pcoa ${core} \
 		--m-metadata-file ${metadata} \
 		--o-visualization ${core.baseName}-vis.qzv
-	qiime tools export ${core.baseName}-vis.qzv \
-		--output-dir beta-diversity/${core.baseName}-PCoA
+	qiime tools export --input-path ${core.baseName}-vis.qzv \
+		--output-path beta-diversity/${core.baseName}-PCoA
 	"""
 }
 
@@ -1687,8 +1667,8 @@ process ancom_tax {
 		--m-metadata-file ${metadata} \
 		--m-metadata-column ${table.baseName} \
 		--o-visualization comp-lvl${taxlevel}-${table.baseName}.qzv
-	qiime tools export comp-lvl${taxlevel}-${table.baseName}.qzv \
-		--output-dir ancom/Category-${table.baseName}-level-${taxlevel}
+	qiime tools export --input-path comp-lvl${taxlevel}-${table.baseName}.qzv \
+		--output-path ancom/Category-${table.baseName}-level-${taxlevel}
 	"""
 }
 
@@ -1715,8 +1695,8 @@ process ancom_asv {
 		--m-metadata-file ${metadata} \
 		--m-metadata-column ${table.baseName} \
 		--o-visualization comp-${table.baseName}.qzv
-	qiime tools export comp-${table.baseName}.qzv \
-		--output-dir ancom/Category-${table.baseName}-ASV
+	qiime tools export --input-path comp-${table.baseName}.qzv \
+		--output-path ancom/Category-${table.baseName}-ASV
 	"""
 }
 

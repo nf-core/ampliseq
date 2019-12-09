@@ -17,6 +17,10 @@ jobs:
           export NXF_VER=${{ matrix.nxf_ver }}
           wget -qO- get.nextflow.io | bash
           sudo mv nextflow /usr/local/bin/
+      - name: Download and tag image
+        run: |
+          docker pull nfcore/ampliseq:dev
+          docker tag nfcore/ampliseq:dev nfcore/ampliseq:1.1.1
       - name: Run test
         run: |
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker

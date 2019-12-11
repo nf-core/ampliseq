@@ -27,7 +27,16 @@ def helpMessage() {
 	                                Note: All samples have to be sequenced in one run, otherwise also specifiy "--multipleSequencingRuns"
 	  --FW_primer [str]             Forward primer sequence
 	  --RV_primer [str]             Reverse primer sequence
-	  --metadata [path/to/file]     Path to metadata sheet, when missing most downstream analysis are skipped (barplots, PCoA plots, ...)
+          --metadata [path/to/file]     Path to metadata sheet, when missing most downstream analysis are skipped (barplots, PCoA plots, ...). 
+                                        File extension is not relevant. Must have a comma separated list of metadata column headers.
+                                        The first column in the metadata file is the identifier (ID) column and defines the sample or feature IDs associated with your study.
+					Additional columns defining metadata associated with each sample or feature ID are optional.
+					Metadata files are not required to have additional metadata columns, so a file containing only an ID column is a valid QIIME 2 metadata file.
+					It is not recommended to mix sample and feature IDs in a single metadata file; keep sample and feature metadata stored in separate files.
+                                        Identifiers should be 36 characters long or less, and also contain only ASCII alphanumeric characters
+                                        (i.e. in the range of [a-z], [A-Z], or [0-9]), the period (.) character, or the dash (-) character.
+                                        By default all numeric columns, blanks or NA are removed, and only columns with multiple different values but not all unique are selected.
+                                        The columns which are to be assessed can be specified by --metadata_category, see below.
 
 	Other input options:
 	  --extension [str]             Naming of sequencing files (default: "/*_R{1,2}_001.fastq.gz"). 

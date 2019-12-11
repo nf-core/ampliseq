@@ -138,6 +138,11 @@ If `-profile` is not specified at all the pipeline will be run locally and expec
 * `test`
   * A profile with a complete configuration for automated testing
   * Includes links to test data so needs no other parameters
+* `uppmax`
+  * A generic configuration profile to be used in the HPC environment [UPPMAX](https://www.uppmax.uu.se/)
+  * Pulls software from dockerhub: [`nfcore/ampliseq`](http://hub.docker.com/r/nfcore/ampliseq/)
+  * More on `-profile uppmax` [here](https://github.com/nf-core/configs/blob/master/docs/uppmax.md)
+  * More on how to run `-profile uppmax` offline and how to set user-specific parameters [here](https://nf-co.re/rnafusion/docs/configuration/uppmax) 
 
 ### `--reads`
 

@@ -1,4 +1,4 @@
-name: nf-core-ampliseq-1.1.1
+name: nf-core-ampliseq-1.2.0dev
 channels:
 - qiime2
 - qiime2/label/r2019.10

@@ -154,6 +154,15 @@ if (params.onlyDenoising || params.untilQ2import) {
 	params.skip_ancom = false
 }
 
+params.manifestFile = false
+if (params.manifestFile {
+	Channel.fromPath("${params.manifestFile}", checkIfExists:true)
+		.into {man_file}
+} else {
+	Channel.from()
+		.into {man_file}
+}
+
 /*
  * Import input files
  */
@@ -528,8 +537,44 @@ if (!params.Q2imported){
 	/*
 	* Import trimmed files into QIIME2 artefact
 	*/
-	if (!params.multipleSequencingRuns){
-		process qiime_import {
+	if (params.man_file && !params.multipleSequencingRuns){
+		process qiime_import_new_man {
+			publishDir "${params.outdir}/demux", mode: 'copy', 
+			saveAs: { filename -> 
+				params.keepIntermediates ? filename : null
+				params.untilQ2import ? filename : null }
+
+			input:
+			file(manifest) from man_file
+			env MATPLOTLIBRC from ch_mpl_for_qiime_import
+
+			output:
+			file "demux.qza" into (ch_qiime_demux_import, ch_qiime_demux_vis, ch_qiime_demux_dada)
+
+			when:
+			!params.Q2imported
+		
+			script:
+			if (!params.phred64) {
+				"""
+				qiime tools import \
+					--type 'SampleData[PairedEndSequencesWithQuality]' \
+					--input-path ${manifest} \
+					--output-path demux.qza \
+					--input-format PairedEndFastqManifestPhred33
+				"""
+			} else {
+				"""
+				qiime tools import \
+					--type 'SampleData[PairedEndSequencesWithQuality]' \
+					--input-path ${manifest} \
+					--output-path demux.qza \
+					--input-format PairedEndFastqManifestPhred64
+				"""
+			}
+		}
+	} else if (!params.man_file && !params.multipleSequencingRuns){
+		process qiime_import{
 			publishDir "${params.outdir}/demux", mode: 'copy', 
 			saveAs: { filename -> 
 				params.keepIntermediates ? filename : null

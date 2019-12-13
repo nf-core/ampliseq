@@ -155,11 +155,8 @@ if (params.onlyDenoising || params.untilQ2import) {
 }
 
 params.manifestFile = false
-if (params.manifestFile {
+if (params.manifestFile) {
 	Channel.fromPath("${params.manifestFile}", checkIfExists:true)
-		.into {man_file}
-} else {
-	Channel.from()
 		.into {man_file}
 }
 

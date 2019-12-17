@@ -192,6 +192,7 @@ Please note the following requirements:
 ### `--qiime_timezone`
 
 If a timezone error occurs, this parameter needs to be specified (default: 'Europe/Berlin'). Find your appropriate timezone with e.g. tzselect.
+Note, this affects the timezone of the entire software environment.
 
 ## Other input options
 

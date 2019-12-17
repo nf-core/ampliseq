@@ -189,7 +189,7 @@ Please note the following requirements:
 2. The metadata file has to follow the [QIIME2 specifications](https://docs.qiime2.org/2019.10/tutorials/metadata/)
 3. In case of multiple sequencing runs, specific naming of samples are required, see [here](#--multipleSequencingRuns)
 
-### `--qiime_timezone`		
+### `--qiime_timezone`
 
 If a timezone error occurs, this parameter needs to be specified (default: 'Europe/Berlin'). Find your appropriate timezone with e.g. tzselect.
 

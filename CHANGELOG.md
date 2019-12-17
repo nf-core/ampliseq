@@ -4,7 +4,8 @@
 
 ### Pipeline Updates
 
-* Update from QIIME2 v2018.6 to v2019.10, including DADA2 v1.6 to DADA2 v1.10
+* Update from QIIME2 v2018.6 to v2019.10, including DADA2 v1.6 to DADA2 v1.10, specification of '--qiiime_timezone' might be required
+* Export absolute abundance files into "results/abundance-table/filtered/" for optional external secondary analysis
   
 ### Bugfixes
 

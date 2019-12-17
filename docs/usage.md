@@ -13,6 +13,7 @@
     * [--reads](#--reads)
     * [--FW_primer and --RV_primer](#--fw_primer-and---rv_primer)
     * [--metadata](#--metadata)
+    * [----qiime_timezone](#--qiime_timezone)
   * [Other input options](#other-input-options)
     * [--extension](#--extension)
     * [--multipleSequencingRuns](#--multiplesequencingruns)
@@ -187,6 +188,10 @@ Please note the following requirements:
 1. The path must be enclosed in quotes
 2. The metadata file has to follow the [QIIME2 specifications](https://docs.qiime2.org/2019.10/tutorials/metadata/)
 3. In case of multiple sequencing runs, specific naming of samples are required, see [here](#--multipleSequencingRuns)
+
+### `--qiime_timezone`		
+
+If a timezone error occurs, this parameter needs to be specified (default: 'Europe/Berlin'). Find your appropriate timezone with e.g. tzselect.
 
 ## Other input options
 

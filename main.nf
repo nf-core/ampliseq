@@ -18,6 +18,7 @@ def helpMessage() {
 	The minimal command for running the pipeline is as follows:
 	nextflow run nf-core/ampliseq -profile singularity --reads "data" --FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT
 
+	In case of a timezone error, please specify "--qiime_timezone", e.g. --qiime_timezone 'Europe/Berlin'!
 
 	Main arguments:
 	  -profile [strings]            Use this parameter to choose a configuration profile. If not specified, runs locally and expects all software
@@ -28,6 +29,7 @@ def helpMessage() {
 	  --FW_primer [str]             Forward primer sequence
 	  --RV_primer [str]             Reverse primer sequence
 	  --metadata [path/to/file]     Path to metadata sheet, when missing most downstream analysis are skipped (barplots, PCoA plots, ...)
+	  --qiime_timezone [str]		Needs to be specified to resolve a timezone error (default: 'Europe/Berlin')
 
 	Other input options:
 	  --extension [str]             Naming of sequencing files (default: "/*_R{1,2}_001.fastq.gz"). 

@@ -1,10 +1,15 @@
 # nf-core/ampliseq
 
+## nf-core/ampliseq version 1.1.2 - 2019
+
+* No further changes, except a bugfix for the [timezone](https://github.com/nf-core/ampliseq/issues/114) issue found by @marchoeppner
+* Specification of '--qiime_timezone' might be required to run the analysis appropriately
+
 ## nf-core/ampliseq version 1.1.1 - 2019
 
 ### Pipeline Updates
 
-* Update from QIIME2 v2018.6 to v2019.10, including DADA2 v1.6 to DADA2 v1.10, specification of '--qiime_timezone' might be required
+* Update from QIIME2 v2018.6 to v2019.10, including DADA2 v1.6 to DADA2 v1.10
 * Export absolute abundance files into "results/abundance-table/filtered/" for optional external secondary analysis
   
 ### Bugfixes

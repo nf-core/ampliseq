@@ -48,6 +48,6 @@ The pre-print can be cited as follows:
 
 [![DOI](https://img.shields.io/badge/-Cite%20Preprint-orange)](https://www.biorxiv.org/content/10.1101/2019.12.17.880468v1)
 
-You can cite the `nf-core` pre-print as follows: 
+You can cite the `nf-core` pre-print as follows:
 
 > Ewels PA, Peltzer A, Fillinger S, Alneberg JA, Patel H, Wilm A, Garcia MU, Di Tommaso P, Nahnsen S. **nf-core: Community curated bioinformatics pipelines**. *bioRxiv*. 2019. p. 610741. [doi: 10.1101/610741](https://www.biorxiv.org/content/10.1101/610741v2).

@@ -138,6 +138,18 @@ All following analysis is based on these filtered tables.
 
 **Output directory: `results/abundance-table/filtered`**
 
+* `abs-abund-table-2.tsv`
+  * Tab-separated absolute abundance table at phylum level
+* `abs-abund-table-3.tsv`
+  * Tab-separated absolute abundance table at class level
+* `abs-abund-table-4.tsv`
+  * Tab-separated absolute abundance table at order level
+* `abs-abund-table-5.tsv`
+  * Tab-separated absolute abundance table at family level
+* `abs-abund-table-6.tsv`
+  * Tab-separated absolute abundance table at genus level
+* `abs-abund-table-7.tsv`
+  * Tab-separated absolute abundance table at species level
 * `count_table_filter_stats.tsv`
   * Tab-separated table with information on how much counts were filtered for each sample
 * `feature-table.biom`

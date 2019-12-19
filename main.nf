@@ -18,6 +18,7 @@ def helpMessage() {
 	The minimal command for running the pipeline is as follows:
 	nextflow run nf-core/ampliseq -profile singularity --reads "data" --FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT
 
+	In case of a timezone error, please specify "--qiime_timezone", e.g. --qiime_timezone 'Europe/Berlin'!
 
 	Main arguments:
 	  -profile [strings]            Use this parameter to choose a configuration profile. If not specified, runs locally and expects all software
@@ -28,6 +29,7 @@ def helpMessage() {
 	  --FW_primer [str]             Forward primer sequence
 	  --RV_primer [str]             Reverse primer sequence
 	  --metadata [path/to/file]     Path to metadata sheet, when missing most downstream analysis are skipped (barplots, PCoA plots, ...)
+	  --qiime_timezone [str]		Needs to be specified to resolve a timezone error (default: 'Europe/Berlin')
 
 	Other input options:
 	  --extension [str]             Naming of sequencing files (default: "/*_R{1,2}_001.fastq.gz"). 
@@ -1009,7 +1011,7 @@ process classifier {
 	env MATPLOTLIBRC from ch_mpl_classifier
 
 	output:
-	file("taxonomy.qza") into (ch_qiime_taxonomy_for_filter,ch_qiime_taxonomy_for_relative_abundance_reduced_taxa,ch_qiime_taxonomy_for_barplot,ch_qiime_taxonomy_for_ancom)
+	file("taxonomy.qza") into (ch_qiime_taxonomy_for_filter,ch_qiime_taxonomy_for_relative_abundance_reduced_taxa,ch_qiime_taxonomy_for_barplot,ch_qiime_taxonomy_for_ancom,ch_qiime_taxonomy_for_export_filtered_dada_output)
 	file("taxonomy/taxonomy.tsv") into ch_tsv_taxonomy
 
   
@@ -1115,12 +1117,14 @@ process export_filtered_dada_output {
 		saveAs: {filename -> 
 				 if (filename.indexOf("table/feature-table.biom") == 0)  "abundance_table/filtered/feature-table.biom"
 			else if (filename.indexOf("table/feature-table.tsv") == 0)   "abundance_table/filtered/feature-table.tsv"
+			else if (filename.indexOf("abs-abund-table-") == 0)          "abundance_table/filtered/$filename"
 			else if (filename.indexOf("filtered/*"))                     "representative_sequences/$filename"
 			else null}   
 
 	input:
 	file table from ch_qiime_table_for_filtered_dada_output
 	file repseq from ch_qiime_repseq_for_dada_output
+	file taxonomy from ch_qiime_taxonomy_for_export_filtered_dada_output
 	env MATPLOTLIBRC from ch_mpl_for_export_dada_output
 
 	output:
@@ -1128,6 +1132,7 @@ process export_filtered_dada_output {
 	file("table/feature-table.tsv") into (ch_tsv_table_for_alpha_rarefaction,ch_tsv_table_for_report_filter_stats,ch_tsv_table_for_diversity_core)
 	file("table/feature-table.biom")
 	file("filtered/*")
+	file("abs-abund-table-*.tsv")
 
 	"""
 	#produce raw count table in biom format "table/feature-table.biom"
@@ -1145,6 +1150,25 @@ process export_filtered_dada_output {
 		--o-visualization rep-seqs.qzv
 	qiime tools export --input-path rep-seqs.qzv  \
 		--output-path filtered
+
+	##on several taxa level
+	array=( 2 3 4 5 6 7 )
+	for i in \${array[@]}
+	do
+		#collapse taxa
+		qiime taxa collapse \
+			--i-table ${table} \
+			--i-taxonomy ${taxonomy} \
+			--p-level \$i \
+			--o-collapsed-table table-\$i.qza
+		#export to biom
+		qiime tools export --input-path table-\$i.qza \
+			--output-path table-\$i
+		#convert to tab separated text file
+		biom convert \
+			-i table-\$i/feature-table.biom \
+			-o abs-abund-table-\$i.tsv --to-tsv
+	done
 	"""
 }
 

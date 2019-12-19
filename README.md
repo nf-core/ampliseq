@@ -1,11 +1,17 @@
 # ![nf-core/ampliseq](docs/images/nfcore-ampliseq_logo.png)
 
-[![Build Status](https://github.com/nf-core/ampliseq/workflows/ampliseq%20CI/badge.svg)](https://github.com/nf-core/ampliseq/workflows/ampliseq%20CI/badge.svg)
 [![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A519.10.0-brightgreen.svg)](https://www.nextflow.io/)
+[![nf-core](https://img.shields.io/badge/nf--core-pipeline-brightgreen.svg)](https://nf-co.re/)
+[![DOI](https://zenodo.org/badge/150448201.svg)](https://zenodo.org/badge/latestdoi/150448201)
+
+[![GitHub Actions CI Status](https://github.com/nf-core/ampliseq/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/ampliseq/actions)
+[![GitHub Actions Linting Status](https://github.com/nf-core/ampliseq/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/ampliseq/actions)
 
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg)](http://bioconda.github.io/)
 [![Docker](https://img.shields.io/docker/automated/nfcore/ampliseq.svg)](https://hub.docker.com/r/nfcore/ampliseq)
-[![DOI](https://zenodo.org/badge/150448201.svg)](https://zenodo.org/badge/latestdoi/150448201)
+![Singularity Container available](https://img.shields.io/badge/singularity-available-7E4C74.svg)
+
+[![Joins us on Slack](https://img.shields.io/badge/slack-nfcore/ampliseq-blue.svg)](https://nfcore.slack.com/channels/ampliseq)
 
 ## Introduction
 

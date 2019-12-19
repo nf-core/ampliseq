@@ -10,8 +10,8 @@
 ### Pipeline Updates
 
 * Update from QIIME2 v2018.6 to v2019.10, including DADA2 v1.6 to DADA2 v1.10
-* Export absolute abundance files into "results/abundance-table/filtered/" for optional external secondary analysis
-  
+* Export absolute abundance files into 'results/abundance-table/filtered/' for optional external secondary analysis
+
 ### Bugfixes
 
 * [#78](https://github.com/nf-core/ampliseq/issues/78) - All sequenced classifed to the same species

@@ -20,7 +20,7 @@ jobs:
       - name: Download and tag image
         run: |
           docker pull nfcore/ampliseq:dev
-          docker tag nfcore/ampliseq:dev nfcore/ampliseq:1.1.2
+          docker tag nfcore/ampliseq:dev nfcore/ampliseq:dev
       - name: Run test
         run: |
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker

@@ -158,7 +158,7 @@ params.manifestFile = false
 if (params.manifestFile) {
 	Channel.fromPath("${params.manifestFile}", checkIfExists:true)
 		.splitCsv(header:true)
-		.map{ row-> tuple(row.sampleId, file(row.forward-absolute-filepath), file(row.reverse-absolute-filepath)) }
+		.map{ row-> tuple(row.sampleId, file(row.read1), file(row.read2)) }
 		.set {man_ch}
 }
 
@@ -492,7 +492,7 @@ if (!params.Q2imported){
 				else null}
 		
 			input:
-			set sampleId, file(forwardAbsoluteFilepath), file(reverseAbsoluteFilepath) from man_ch
+			set sampleId, file(read1), file(read2) from man_ch
 		
 			output:
 			file "trimmed/*.*" into (ch_fastq_trimmed, ch_fastq_trimmed_manifest)
@@ -503,8 +503,8 @@ if (!params.Q2imported){
 			"""
 			mkdir -p trimmed
 			cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
-				-o trimmed/${forwardAbsoluteFilepath} -p trimmed/${reverseAbsoluteFilepath} \
-				${forwardAbsoluteFilepath} ${reverseAbsoluteFilepath} > cutadapt_log_${pair_id}.txt
+				-o trimmed/${read1} -p trimmed/${read2} \
+				${read1} ${read2} > cutadapt_log_${pair_id}.txt
 			"""
 		}
 	}	

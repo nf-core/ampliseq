@@ -157,7 +157,9 @@ if (params.onlyDenoising || params.untilQ2import) {
 params.manifestFile = false
 if (params.manifestFile) {
 	Channel.fromPath("${params.manifestFile}", checkIfExists:true)
-		.into {man_file}
+		.splitCSV(header:true)
+		.map{ row-> tuple(row.sampleId, file(row.forward-absolute-filepath), file(row.reverse-absolute-filepath)) }
+		.set {man_ch}
 }
 
 /*
@@ -428,8 +430,60 @@ if (!params.Q2imported){
 	/*
 	 * Trim each read-pair with cutadapt
 	 */
-	if (!params.multipleSequencingRuns){
-		process trimming {
+	if (!params.manifestFile){
+		if (!params.multipleSequencingRuns){
+			process trimming {
+				tag "${pair_id}"  
+				publishDir "${params.outdir}/trimmed", mode: 'copy',
+					saveAs: {filename -> 
+					if (filename.indexOf(".gz") == -1) "logs/$filename"
+					else if(params.keepIntermediates) filename 
+					else null}
+			
+				input:
+				set val(pair_id), file(reads) from ch_read_pairs
+			
+				output:
+				file "trimmed/*.*" into (ch_fastq_trimmed, ch_fastq_trimmed_manifest)
+				file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
+	
+				script:
+				discard_untrimmed = params.retain_untrimmed ? '' : '--discard-untrimmed'
+				"""
+				mkdir -p trimmed
+				cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
+					-o trimmed/${reads[0]} -p trimmed/${reads[1]} \
+					${reads[0]} ${reads[1]} > cutadapt_log_${pair_id}.txt
+				"""
+			}
+		} else {
+			process trimming_multi {
+				tag "$folder${params.split}$pair_id"  
+				publishDir "${params.outdir}/trimmed", mode: 'copy',
+					saveAs: {filename -> 
+					if (filename.indexOf(".gz") == -1) "logs/$filename"
+					else if(params.keepIntermediates) filename 
+					else null}
+			
+				input:
+				set val(pair_id), file(reads), val(folder) from ch_read_pairs
+			
+				output:
+				file "trimmed/*.*" into (ch_fastq_trimmed, ch_fastq_trimmed_manifest)
+				file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
+	
+				script:
+				discard_untrimmed = params.retain_untrimmed ? '' : '--discard-untrimmed'
+				"""
+				mkdir -p trimmed
+				cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
+					-o trimmed/$folder${params.split}${reads[0]} -p trimmed/$folder${params.split}${reads[1]} \
+					${reads[0]} ${reads[1]} > cutadapt_log_${pair_id}.txt
+				"""
+			}
+		}
+	} else {
+		process trimming_manifest {
 			tag "${pair_id}"  
 			publishDir "${params.outdir}/trimmed", mode: 'copy',
 				saveAs: {filename -> 
@@ -438,7 +492,7 @@ if (!params.Q2imported){
 				else null}
 		
 			input:
-			set val(pair_id), file(reads) from ch_read_pairs
+			set sampleId, file(forward-absolute-filepath), file(reverse-absolute-filepath) from man_ch
 		
 			output:
 			file "trimmed/*.*" into (ch_fastq_trimmed, ch_fastq_trimmed_manifest)
@@ -449,36 +503,11 @@ if (!params.Q2imported){
 			"""
 			mkdir -p trimmed
 			cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
-				-o trimmed/${reads[0]} -p trimmed/${reads[1]} \
-				${reads[0]} ${reads[1]} > cutadapt_log_${pair_id}.txt
+				-o trimmed/${forward-absolute-filepath} -p trimmed/${reverse-absolute-filepath} \
+				${forward-absolute-filepath} ${reverse-absolute-filepath} > cutadapt_log_${pair_id}.txt
 			"""
 		}
-	} else {
-		process trimming_multi {
-			tag "$folder${params.split}$pair_id"  
-			publishDir "${params.outdir}/trimmed", mode: 'copy',
-				saveAs: {filename -> 
-				if (filename.indexOf(".gz") == -1) "logs/$filename"
-				else if(params.keepIntermediates) filename 
-				else null}
-		
-			input:
-			set val(pair_id), file(reads), val(folder) from ch_read_pairs
-		
-			output:
-			file "trimmed/*.*" into (ch_fastq_trimmed, ch_fastq_trimmed_manifest)
-			file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
-
-			script:
-			discard_untrimmed = params.retain_untrimmed ? '' : '--discard-untrimmed'
-			"""
-			mkdir -p trimmed
-			cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
-				-o trimmed/$folder${params.split}${reads[0]} -p trimmed/$folder${params.split}${reads[1]} \
-				${reads[0]} ${reads[1]} > cutadapt_log_${pair_id}.txt
-			"""
-		}
-	}
+	}	
 
 	/*
 	 * multiQC

@@ -492,7 +492,7 @@ if (!params.Q2imported){
 				else null}
 		
 			input:
-			set sampleId, file(forward-absolute-filepath), file(reverse-absolute-filepath) from man_ch
+			set sampleId, file(forwardAbsoluteFilepath), file(reverseAbsoluteFilepath) from man_ch
 		
 			output:
 			file "trimmed/*.*" into (ch_fastq_trimmed, ch_fastq_trimmed_manifest)
@@ -503,8 +503,8 @@ if (!params.Q2imported){
 			"""
 			mkdir -p trimmed
 			cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
-				-o trimmed/${forward-absolute-filepath} -p trimmed/${reverse-absolute-filepath} \
-				${forward-absolute-filepath} ${reverse-absolute-filepath} > cutadapt_log_${pair_id}.txt
+				-o trimmed/${forwardAbsoluteFilepath} -p trimmed/${reverseAbsoluteFilepath} \
+				${forwardAbsoluteFilepath} ${reverseAbsoluteFilepath} > cutadapt_log_${pair_id}.txt
 			"""
 		}
 	}	

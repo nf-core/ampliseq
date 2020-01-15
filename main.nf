@@ -157,7 +157,7 @@ if (params.onlyDenoising || params.untilQ2import) {
 params.manifestFile = false
 if (params.manifestFile) {
 	Channel.fromPath("${params.manifestFile}", checkIfExists:true)
-		.splitCSV(header:true)
+		.splitCsv(header:true)
 		.map{ row-> tuple(row.sampleId, file(row.forward-absolute-filepath), file(row.reverse-absolute-filepath)) }
 		.set {man_ch}
 }

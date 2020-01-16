@@ -154,13 +154,7 @@ if (params.onlyDenoising || params.untilQ2import) {
 	params.skip_ancom = false
 }
 
-params.manifestFile = false
-if (params.manifestFile) {
-	Channel.fromPath("${params.manifestFile}", checkIfExists:true)
-		.splitCsv(header:true)
-		.map{ row-> tuple(row.sampleId, file(row.read1), file(row.read2)) }
-		.set {man_ch}
-}
+params.manifest_file = false
 
 /*
  * Import input files
@@ -311,7 +305,16 @@ process get_software_versions {
 
 
 if (!params.Q2imported){
-
+	/*
+	* Create a channel for optional input manifest file
+	*/
+	 if (params.manifest_file) {
+			Channel.fromPath("${params.manifest_file}", checkIfExists:true)
+				.splitCsv(header:true, sep: '\t')
+				.map{ row-> tuple(row.sampleId, file(row.read1), file(row.read2)) }
+				.set {ch_manifest_reads}
+		
+		} 
 	/*
 	* Create a channel for input read files
 	*/
@@ -430,60 +433,8 @@ if (!params.Q2imported){
 	/*
 	 * Trim each read-pair with cutadapt
 	 */
-	if (!params.manifestFile){
-		if (!params.multipleSequencingRuns){
-			process trimming {
-				tag "${pair_id}"  
-				publishDir "${params.outdir}/trimmed", mode: 'copy',
-					saveAs: {filename -> 
-					if (filename.indexOf(".gz") == -1) "logs/$filename"
-					else if(params.keepIntermediates) filename 
-					else null}
-			
-				input:
-				set val(pair_id), file(reads) from ch_read_pairs
-			
-				output:
-				file "trimmed/*.*" into (ch_fastq_trimmed, ch_fastq_trimmed_manifest)
-				file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
-	
-				script:
-				discard_untrimmed = params.retain_untrimmed ? '' : '--discard-untrimmed'
-				"""
-				mkdir -p trimmed
-				cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
-					-o trimmed/${reads[0]} -p trimmed/${reads[1]} \
-					${reads[0]} ${reads[1]} > cutadapt_log_${pair_id}.txt
-				"""
-			}
-		} else {
-			process trimming_multi {
-				tag "$folder${params.split}$pair_id"  
-				publishDir "${params.outdir}/trimmed", mode: 'copy',
-					saveAs: {filename -> 
-					if (filename.indexOf(".gz") == -1) "logs/$filename"
-					else if(params.keepIntermediates) filename 
-					else null}
-			
-				input:
-				set val(pair_id), file(reads), val(folder) from ch_read_pairs
-			
-				output:
-				file "trimmed/*.*" into (ch_fastq_trimmed, ch_fastq_trimmed_manifest)
-				file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
-	
-				script:
-				discard_untrimmed = params.retain_untrimmed ? '' : '--discard-untrimmed'
-				"""
-				mkdir -p trimmed
-				cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
-					-o trimmed/$folder${params.split}${reads[0]} -p trimmed/$folder${params.split}${reads[1]} \
-					${reads[0]} ${reads[1]} > cutadapt_log_${pair_id}.txt
-				"""
-			}
-		}
-	} else {
-		process trimming_manifest {
+	if (!params.multipleSequencingRuns){
+		process trimming {
 			tag "${pair_id}"  
 			publishDir "${params.outdir}/trimmed", mode: 'copy',
 				saveAs: {filename -> 
@@ -492,7 +443,64 @@ if (!params.Q2imported){
 				else null}
 		
 			input:
-			set sampleId, file(read1), file(read2) from man_ch
+			set val(pair_id), file(reads) from ch_read_pairs
+		
+			output:
+			file "trimmed/*.*" into (ch_fastq_trimmed, ch_fastq_trimmed_manifest)
+			file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
+
+			when:
+			!params.manifest_file
+
+			script:
+			discard_untrimmed = params.retain_untrimmed ? '' : '--discard-untrimmed'
+			"""
+			mkdir -p trimmed
+			cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
+				-o trimmed/${reads[0]} -p trimmed/${reads[1]} \
+				${reads[0]} ${reads[1]} > cutadapt_log_${pair_id}.txt
+			"""
+		}
+		process trimming_manifest {
+			tag "${sampleId}"  
+			publishDir "${params.outdir}/trimmed", mode: 'copy',
+				saveAs: {filename -> 
+				if (filename.indexOf(".gz") == -1) "logs/$filename"
+				else if(params.keepIntermediates) filename 
+				else null}
+			input:
+			set val(sampleId), file(read1), file(read2) from ch_manifest_reads
+			
+			output:
+			file "trimmed/*.*" into (ch_fastq_manifest_trimmed, ch_fastq_manifest_trimmed_manifest)
+			file "cutadapt_log_*.txt" into ch_fastq_manifest_cutadapt_log
+
+			when: 
+			params.manifest_file
+
+			script:
+			discard_untrimmed = params.retain_untrimmed ? '' : '--discard-untrimmed'
+			"""
+			mkdir -p trimmed
+			cat $read1
+			cat $read2
+			cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
+			-o trimmed/${read1} -p trimmed/${read2} \
+			${read1} ${read2} > cutadapt_log_${sampleId}.txt
+			"""
+		}
+
+	} else {
+		process trimming_multi {
+			tag "$folder${params.split}$pair_id"  
+			publishDir "${params.outdir}/trimmed", mode: 'copy',
+				saveAs: {filename -> 
+				if (filename.indexOf(".gz") == -1) "logs/$filename"
+				else if(params.keepIntermediates) filename 
+				else null}
+		
+			input:
+			set val(pair_id), file(reads), val(folder) from ch_read_pairs
 		
 			output:
 			file "trimmed/*.*" into (ch_fastq_trimmed, ch_fastq_trimmed_manifest)
@@ -503,12 +511,13 @@ if (!params.Q2imported){
 			"""
 			mkdir -p trimmed
 			cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
-				-o trimmed/${read1} -p trimmed/${read2} \
-				${read1} ${read2} > cutadapt_log_${pair_id}.txt
+				-o trimmed/$folder${params.split}${reads[0]} -p trimmed/$folder${params.split}${reads[1]} \
+				${reads[0]} ${reads[1]} > cutadapt_log_${pair_id}.txt
 			"""
 		}
-	}	
-
+	}
+		
+	
 	/*
 	 * multiQC
 	 */
@@ -517,7 +526,7 @@ if (!params.Q2imported){
 
 		input:
 		file ('fastqc/*') from ch_fastqc_results.collect()
-		file ('cutadapt/logs/*') from ch_fastq_cutadapt_log.collect()
+		file ('cutadapt/logs/*') from ch_fastq_cutadapt_log.mix(ch_fastq_manifest_cutadapt_log).collect()
 
 		output:
 		file "*multiqc_report.html" into multiqc_report
@@ -537,6 +546,7 @@ if (!params.Q2imported){
 	*/
 	if (!params.multipleSequencingRuns){
 		ch_fastq_trimmed_manifest
+			.mix(ch_fastq_manifest_trimmed_manifest)
 			.map { forward, reverse -> [ forward.drop(forward.findLastIndexOf{"/"})[0], forward, reverse ] } //extract file name
 			.map { name, forward, reverse -> [ name.toString().take(name.toString().indexOf("_")), forward, reverse ] } //extract sample name
 			.map { name, forward, reverse -> [ name +","+ forward + ",forward\n" + name +","+ reverse +",reverse" ] } //prepare basic synthax

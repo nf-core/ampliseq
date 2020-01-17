@@ -494,7 +494,7 @@ if (!params.Q2imported){
 
 		input:
 		file ('fastqc/*') from ch_fastqc_results.collect()
-		file ('cutadapt/logs/*') from ch_fastq_cutadapt_log.mix(ch_fastq_manifest_cutadapt_log).collect()
+		file ('cutadapt/logs/*') from ch_fastq_cutadapt_log.collect()
 
 		output:
 		file "*multiqc_report.html" into multiqc_report

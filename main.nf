@@ -309,16 +309,15 @@ if (!params.Q2imported){
 	* Create a channel for optional input manifest file
 	*/
 	 if (params.manifest_file) {
-			Channel.fromPath("${params.manifest_file}", checkIfExists:true)
-				.splitCsv(header:true, sep: '\t')
-				.map{ row-> tuple(row.sampleId, file(row.read1), file(row.read2)) }
-				.set {ch_manifest_reads}
-		
-		} 
+		Channel
+			.fromPath("${params.manifest_file}", checkIfExists:true)
+			.splitCsv(header:true, sep: '\t')
+			.map{ row-> [ row.sampleId, [file(row.read1), file(row.read2)]] }
+			.into { ch_read_pairs; ch_read_pairs_fastqc; ch_read_pairs_name_check }
 	/*
 	* Create a channel for input read files
 	*/
-	if(params.readPaths && params.reads == "data${params.extension}" && !params.multipleSequencingRuns){
+	} else if (params.readPaths && params.reads == "data${params.extension}" && !params.multipleSequencingRuns){
 		//Test input for single sequencing runs, profile = test
 
 		Channel
@@ -449,9 +448,6 @@ if (!params.Q2imported){
 			file "trimmed/*.*" into (ch_fastq_trimmed, ch_fastq_trimmed_manifest)
 			file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
 
-			when:
-			!params.manifest_file
-
 			script:
 			discard_untrimmed = params.retain_untrimmed ? '' : '--discard-untrimmed'
 			"""
@@ -459,34 +455,6 @@ if (!params.Q2imported){
 			cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
 				-o trimmed/${reads[0]} -p trimmed/${reads[1]} \
 				${reads[0]} ${reads[1]} > cutadapt_log_${pair_id}.txt
-			"""
-		}
-		process trimming_manifest {
-			tag "${sampleId}"  
-			publishDir "${params.outdir}/trimmed", mode: 'copy',
-				saveAs: {filename -> 
-				if (filename.indexOf(".gz") == -1) "logs/$filename"
-				else if(params.keepIntermediates) filename 
-				else null}
-			input:
-			set val(sampleId), file(read1), file(read2) from ch_manifest_reads
-			
-			output:
-			file "trimmed/*.*" into (ch_fastq_manifest_trimmed, ch_fastq_manifest_trimmed_manifest)
-			file "cutadapt_log_*.txt" into ch_fastq_manifest_cutadapt_log
-
-			when: 
-			params.manifest_file
-
-			script:
-			discard_untrimmed = params.retain_untrimmed ? '' : '--discard-untrimmed'
-			"""
-			mkdir -p trimmed
-			cat $read1
-			cat $read2
-			cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
-			-o trimmed/${read1} -p trimmed/${read2} \
-			${read1} ${read2} > cutadapt_log_${sampleId}.txt
 			"""
 		}
 
@@ -546,7 +514,6 @@ if (!params.Q2imported){
 	*/
 	if (!params.multipleSequencingRuns){
 		ch_fastq_trimmed_manifest
-			.mix(ch_fastq_manifest_trimmed_manifest)
 			.map { forward, reverse -> [ forward.drop(forward.findLastIndexOf{"/"})[0], forward, reverse ] } //extract file name
 			.map { name, forward, reverse -> [ name.toString().take(name.toString().indexOf("_")), forward, reverse ] } //extract sample name
 			.map { name, forward, reverse -> [ name +","+ forward + ",forward\n" + name +","+ reverse +",reverse" ] } //prepare basic synthax

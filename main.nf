@@ -311,8 +311,8 @@ if (!params.Q2imported){
 	 if (params.manifest_file) {
 		Channel
 			.fromPath("${params.manifest_file}", checkIfExists:true)
-			.splitCsv(header:true, sep: '\t')
-			.map{ row-> [ row.sampleId, [file(row.read1), file(row.read2)]] }
+			.splitCsv(sep:'\t', skip:1)
+			.map{ row-> [ row[0], [file(row[1]), file(row[2])]] }
 			.into { ch_read_pairs; ch_read_pairs_fastqc; ch_read_pairs_name_check }
 	/*
 	* Create a channel for input read files

@@ -309,7 +309,7 @@ if (!params.Q2imported){
 	* Create a channel for optional input manifest file
 	*/
 	 if (params.manifest_file) {
-		tsvFile = file(params.manifest).getName()
+		tsvFile = file(params.manifest_file).getName()
 		// extracts read files from TSV and distribute into channels
 		Channel
 			.fromPath(params.manifest_file)

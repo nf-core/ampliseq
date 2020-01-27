@@ -309,10 +309,13 @@ if (!params.Q2imported){
 	* Create a channel for optional input manifest file
 	*/
 	 if (params.manifest_file) {
+		tsvFile = file(params.manifest).getName()
+		// extracts read files from TSV and distribute into channels
 		Channel
-			.fromPath("${params.manifest_file}", checkIfExists:true)
-			.splitCsv(sep:'\t', skip:1)
-			.map{ row-> [ row[0], [file(row[1]), file(row[2])]] }
+			.fromPath(params.manifest_file)
+			.ifEmpty {exit 1, log.info "Cannot find path file ${tsvFile}"}
+			.splitCsv(header:true, sep:'\t')
+			.map { row -> [ row.sampleID, [ file(row.forwardReads, checkIfExists: true), file(row.reverseReads, checkIfExists: true) ] ] }
 			.into { ch_read_pairs; ch_read_pairs_fastqc; ch_read_pairs_name_check }
 	/*
 	* Create a channel for input read files

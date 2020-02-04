@@ -448,7 +448,8 @@ if (!params.Q2imported){
 			set val(pair_id), file(reads) from ch_read_pairs
 		
 			output:
-			file "trimmed/*.*" into (ch_fastq_trimmed, ch_fastq_trimmed_manifest)
+			set val(pair_id), file ("trimmed/*.*") into ch_fastq_trimmed_manifest 
+			file "trimmed/*.*" into ch_fastq_trimmed
 			file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
 
 			script:
@@ -515,7 +516,19 @@ if (!params.Q2imported){
 	/*
 	* Produce manifest file for QIIME2
 	*/
-	if (!params.multipleSequencingRuns){
+	if (params.manifest_file) {
+		ch_fastq_trimmed_manifest
+			.map { name, reads ->
+				def sampleID = name 
+				def fwdReads = reads [0]
+				def revReads = reads [1]
+				[ "${sampleID}" +","+ "${fwdReads}" + ",forward\n" + "${sampleID}" +","+ "${revReads}" +",reverse" ]
+			}
+			.flatten()
+			.collectFile(name: 'manifest.txt', newLine: true, storeDir: "${params.outdir}/demux", seed: "sample-id,absolute-filepath,direction")
+			.set { ch_manifest }
+	
+	} else if (!params.multipleSequencingRuns){
 		ch_fastq_trimmed_manifest
 			.map { forward, reverse -> [ forward.drop(forward.findLastIndexOf{"/"})[0], forward, reverse ] } //extract file name
 			.map { name, forward, reverse -> [ name.toString().take(name.toString().indexOf("_")), forward, reverse ] } //extract sample name
@@ -543,7 +556,7 @@ if (!params.Q2imported){
 	/*
 	* Import trimmed files into QIIME2 artefact
 	*/
-	if (params.man_file && !params.multipleSequencingRuns){
+	if (!params.multipleSequencingRuns){
 		process qiime_import_new_man {
 			publishDir "${params.outdir}/demux", mode: 'copy', 
 			saveAs: { filename -> 
@@ -551,7 +564,7 @@ if (!params.Q2imported){
 				params.untilQ2import ? filename : null }
 
 			input:
-			file(manifest) from man_file
+			file(manifest) from ch_manifest
 			env MATPLOTLIBRC from ch_mpl_for_qiime_import
 
 			output:
@@ -579,7 +592,7 @@ if (!params.Q2imported){
 				"""
 			}
 		}
-	} else if (!params.man_file && !params.multipleSequencingRuns){
+	} else if (!params.multipleSequencingRuns){
 		process qiime_import{
 			publishDir "${params.outdir}/demux", mode: 'copy', 
 			saveAs: { filename -> 

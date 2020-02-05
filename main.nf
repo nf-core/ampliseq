@@ -516,7 +516,7 @@ if (!params.Q2imported){
 	/*
 	* Produce manifest file for QIIME2
 	*/
-	if (params.manifest_file) {
+	if (!params.multipleSequencingRuns){
 		ch_fastq_trimmed_manifest
 			.map { name, reads ->
 				def sampleID = name 
@@ -528,14 +528,14 @@ if (!params.Q2imported){
 			.collectFile(name: 'manifest.txt', newLine: true, storeDir: "${params.outdir}/demux", seed: "sample-id,absolute-filepath,direction")
 			.set { ch_manifest }
 	
-	} else if (!params.multipleSequencingRuns){
-		ch_fastq_trimmed_manifest
-			.map { forward, reverse -> [ forward.drop(forward.findLastIndexOf{"/"})[0], forward, reverse ] } //extract file name
-			.map { name, forward, reverse -> [ name.toString().take(name.toString().indexOf("_")), forward, reverse ] } //extract sample name
-			.map { name, forward, reverse -> [ name +","+ forward + ",forward\n" + name +","+ reverse +",reverse" ] } //prepare basic synthax
-			.flatten()
-			.collectFile(name: 'manifest.txt', newLine: true, storeDir: "${params.outdir}/demux", seed: "sample-id,absolute-filepath,direction")
-			.set { ch_manifest }
+/*	} else if (!params.multipleSequencingRuns){
+*		ch_fastq_trimmed_manifest
+*			.map { forward, reverse -> [ forward.drop(forward.findLastIndexOf{"/"})[0], forward, reverse ] } //extract file name
+*			.map { name, forward, reverse -> [ name.toString().take(name.toString().indexOf("_")), forward, reverse ] } //extract sample name
+*			.map { name, forward, reverse -> [ name +","+ forward + ",forward\n" + name +","+ reverse +",reverse" ] } //prepare basic synthax
+*			.flatten()
+*			.collectFile(name: 'manifest.txt', newLine: true, storeDir: "${params.outdir}/demux", seed: "sample-id,absolute-filepath,direction")
+*/			.set { ch_manifest }
 	} else {
 		ch_fastq_trimmed_manifest
 			.map { forward, reverse -> [ forward.drop(forward.findLastIndexOf{"/"})[0], forward, reverse ] } //extract file name

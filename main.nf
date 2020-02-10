@@ -38,11 +38,11 @@ def helpMessage() {
                                         (i.e. in the range of [a-z], [A-Z], or [0-9]), the period (.) character, or the dash (-) character.
                                         By default all numeric columns, blanks or NA are removed, and only columns with multiple different values but not all unique are selected.
                                         The columns which are to be assessed can be specified by --metadata_category, see below.
-	  --manifest_file [path/to/file]You can submit a manifest file as an alternative way to provide input reads. No submission of read files with --reads is required this way.
+	  --manifest [path/to/file]You can submit a manifest file as an alternative way to provide input reads. No submission of read files with --reads is required this way.
 	                                A manifest is a tab-separated file that must have the following labels in this exact order: sampleID, forwardReads, reverseReads.
 	                                The sample identifiers must be listed under sampleID. Paths to forward and reverse reads must be reported under forwardReads and reverseReads,
 	                                respectively. Test this feature by runnig the pipeline with -profile test_manifest. If downstream analyses do not work, skip them (see below).
-	                                Default is FALSE. 
+	                                Multiple sequencing runs not supported by manifest at this stage. Default is FALSE. 
 	  --qiime_timezone [str]	Needs to be specified to resolve a timezone error (default: 'Europe/Berlin')
 
 	Other input options:
@@ -161,7 +161,7 @@ if (params.onlyDenoising || params.untilQ2import) {
 	params.skip_ancom = false
 }
 
-params.manifest_file = false
+params.manifest = false
 
 /*
  * Import input files
@@ -315,11 +315,11 @@ if (!params.Q2imported){
 	/*
 	* Create a channel for optional input manifest file
 	*/
-	 if (params.manifest_file) {
-		tsvFile = file(params.manifest_file).getName()
+	 if (params.manifest) {
+		tsvFile = file(params.manifest).getName()
 		// extracts read files from TSV and distribute into channels
 		Channel
-			.fromPath(params.manifest_file)
+			.fromPath(params.manifest)
 			.ifEmpty {exit 1, log.info "Cannot find path file ${tsvFile}"}
 			.splitCsv(header:true, sep:'\t')
 			.map { row -> [ row.sampleID, [ file(row.forwardReads, checkIfExists: true), file(row.reverseReads, checkIfExists: true) ] ] }
@@ -545,9 +545,9 @@ if (!params.Q2imported){
 				def folder = item.take(item.indexOf("${params.split}")) //re-extract folder
 				[ "${folder}${params.split}manifest.txt", item + '\n' ]
 			}
-			.set { ch_manifest_files }
+			.set { ch_manifest_file }
 			
-		ch_manifest_files
+		ch_manifest_file
 			.combine( ch_mpl_for_qiime_import )
 			.set { ch_manifest }
 	}

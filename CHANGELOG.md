@@ -1,5 +1,9 @@
 # nf-core/ampliseq
 
+## nf-core/ampliseq version 1.1.2 - dev
+
+* Added social preview images
+
 ## nf-core/ampliseq version 1.1.2 - 2019
 
 * No further changes, except a bugfix for the [timezone](https://github.com/nf-core/ampliseq/issues/114) issue found by @marchoeppner

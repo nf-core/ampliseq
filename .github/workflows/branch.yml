@@ -1,9 +1,9 @@
 name: ampliseq branch protection
-# This workflow is triggered on PRs to master branch on the repository
+# This workflow is triggered on PRs to dev branch on the repository
 on:
   pull_request:
     branches:
-    - master
+    - dev
 
 jobs:
   test:
@@ -13,4 +13,4 @@ jobs:
       - uses: actions/checkout@v1
       - name: Check PRs
         run: |
-         { [[ $(git remote get-url origin) == *nf-core/tools ]] && [[ ${GITHUB_HEAD_REF} = "dev" ]]; } || [[ ${GITHUB_HEAD_REF} == "patch" ]] 
+         { [[ $(git remote get-url origin) == *nf-core/ampliseq ]] && [[ ${GITHUB_HEAD_REF} = "dev" ]]; } || [[ ${GITHUB_HEAD_REF} == "patch" ]] 

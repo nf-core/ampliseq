@@ -1,7 +1,8 @@
-FROM nfcore/base:1.7
+FROM nfcore/base:1.8
 LABEL description="Docker image containing all requirements for nf-core/ampliseq pipeline"
 COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
+RUN conda env export --name nf-core-ampliseq-dev > nf-core-ampliseq-dev.yml
 ENV PATH /opt/conda/envs/nf-core-ampliseq-dev/bin:$PATH
 ## Required to build the container properly
 RUN mkdir -p /root/.config/matplotlib

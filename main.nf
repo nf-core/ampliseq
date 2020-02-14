@@ -18,6 +18,7 @@ def helpMessage() {
 	The minimal command for running the pipeline is as follows:
 	nextflow run nf-core/ampliseq -profile singularity --reads "data" --FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT
 
+	In case of a timezone error, please specify "--qiime_timezone", e.g. --qiime_timezone 'Europe/Berlin'!
 
 	Main arguments:
 	  -profile [strings]            Use this parameter to choose a configuration profile. If not specified, runs locally and expects all software
@@ -27,7 +28,22 @@ def helpMessage() {
 	                                Note: All samples have to be sequenced in one run, otherwise also specifiy "--multipleSequencingRuns"
 	  --FW_primer [str]             Forward primer sequence
 	  --RV_primer [str]             Reverse primer sequence
-	  --metadata [path/to/file]     Path to metadata sheet, when missing most downstream analysis are skipped (barplots, PCoA plots, ...)
+          --metadata [path/to/file]     Path to metadata sheet, when missing most downstream analysis are skipped (barplots, PCoA plots, ...). 
+                                        File extension is not relevant. Must have a comma separated list of metadata column headers.
+                                        The first column in the metadata file is the identifier (ID) column and defines the sample or feature IDs associated with your study.
+					Additional columns defining metadata associated with each sample or feature ID are optional.
+					Metadata files are not required to have additional metadata columns, so a file containing only an ID column is a valid QIIME 2 metadata file.
+					It is not recommended to mix sample and feature IDs in a single metadata file; keep sample and feature metadata stored in separate files.
+                                        Identifiers should be 36 characters long or less, and also contain only ASCII alphanumeric characters
+                                        (i.e. in the range of [a-z], [A-Z], or [0-9]), the period (.) character, or the dash (-) character.
+                                        By default all numeric columns, blanks or NA are removed, and only columns with multiple different values but not all unique are selected.
+                                        The columns which are to be assessed can be specified by --metadata_category, see below.
+	  --manifest [path/to/file]You can submit a manifest file as an alternative way to provide input reads. No submission of read files with --reads is required this way.
+	                                A manifest is a tab-separated file that must have the following labels in this exact order: sampleID, forwardReads, reverseReads.
+	                                The sample identifiers must be listed under sampleID. Paths to forward and reverse reads must be reported under forwardReads and reverseReads,
+	                                respectively. Test this feature by runnig the pipeline with -profile test_manifest. If downstream analyses do not work, skip them (see below).
+	                                Multiple sequencing runs not supported by manifest at this stage. Default is FALSE. 
+	  --qiime_timezone [str]	Needs to be specified to resolve a timezone error (default: 'Europe/Berlin')
 
 	Other input options:
 	  --extension [str]             Naming of sequencing files (default: "/*_R{1,2}_001.fastq.gz"). 
@@ -145,6 +161,8 @@ if (params.onlyDenoising || params.untilQ2import) {
 	params.skip_ancom = false
 }
 
+params.manifest = false
+
 /*
  * Import input files
  */
@@ -219,7 +237,7 @@ summary['Pipeline Name']  = 'nf-core/ampliseq'
 if(workflow.revision) summary['Pipeline Release'] = workflow.revision
 summary['Run Name']         = custom_runName ?: workflow.runName
 summary['Reads']            = params.reads
-summary['Data Type']        = params.singleEnd ? 'Single-End' : 'Paired-End'
+summary['Data Type']        = params.single_end ? 'Single-End' : 'Paired-End'
 summary['Max Resources']    = "$params.max_memory memory, $params.max_cpus cpus, $params.max_time time per job"
 if(workflow.containerEngine) summary['Container'] = "$workflow.containerEngine - $workflow.container"
 summary['Output dir']       = params.outdir
@@ -294,11 +312,22 @@ process get_software_versions {
 
 
 if (!params.Q2imported){
-
+	/*
+	* Create a channel for optional input manifest file
+	*/
+	 if (params.manifest) {
+		tsvFile = file(params.manifest).getName()
+		// extracts read files from TSV and distribute into channels
+		Channel
+			.fromPath(params.manifest)
+			.ifEmpty {exit 1, log.info "Cannot find path file ${tsvFile}"}
+			.splitCsv(header:true, sep:'\t')
+			.map { row -> [ row.sampleID, [ file(row.forwardReads, checkIfExists: true), file(row.reverseReads, checkIfExists: true) ] ] }
+			.into { ch_read_pairs; ch_read_pairs_fastqc; ch_read_pairs_name_check }
 	/*
 	* Create a channel for input read files
 	*/
-	if(params.readPaths && params.reads == "data${params.extension}" && !params.multipleSequencingRuns){
+	} else if (params.readPaths && params.reads == "data${params.extension}" && !params.multipleSequencingRuns){
 		//Test input for single sequencing runs, profile = test
 
 		Channel
@@ -426,7 +455,8 @@ if (!params.Q2imported){
 			set val(pair_id), file(reads) from ch_read_pairs
 		
 			output:
-			file "trimmed/*.*" into (ch_fastq_trimmed, ch_fastq_trimmed_manifest)
+			set val(pair_id), file ("trimmed/*.*") into ch_fastq_trimmed_manifest 
+			file "trimmed/*.*" into ch_fastq_trimmed
 			file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
 
 			script:
@@ -438,6 +468,7 @@ if (!params.Q2imported){
 				${reads[0]} ${reads[1]} > cutadapt_log_${pair_id}.txt
 			"""
 		}
+
 	} else {
 		process trimming_multi {
 			tag "$folder${params.split}$pair_id"  
@@ -464,7 +495,8 @@ if (!params.Q2imported){
 			"""
 		}
 	}
-
+		
+	
 	/*
 	 * multiQC
 	 */
@@ -493,12 +525,16 @@ if (!params.Q2imported){
 	*/
 	if (!params.multipleSequencingRuns){
 		ch_fastq_trimmed_manifest
-			.map { forward, reverse -> [ forward.drop(forward.findLastIndexOf{"/"})[0], forward, reverse ] } //extract file name
-			.map { name, forward, reverse -> [ name.toString().take(name.toString().indexOf("_")), forward, reverse ] } //extract sample name
-			.map { name, forward, reverse -> [ name +","+ forward + ",forward\n" + name +","+ reverse +",reverse" ] } //prepare basic synthax
+			.map { name, reads ->
+				def sampleID = name 
+				def fwdReads = reads [0]
+				def revReads = reads [1]
+				[ "${sampleID}" +","+ "${fwdReads}" + ",forward\n" + "${sampleID}" +","+ "${revReads}" +",reverse" ]
+			}
 			.flatten()
 			.collectFile(name: 'manifest.txt', newLine: true, storeDir: "${params.outdir}/demux", seed: "sample-id,absolute-filepath,direction")
 			.set { ch_manifest }
+	
 	} else {
 		ch_fastq_trimmed_manifest
 			.map { forward, reverse -> [ forward.drop(forward.findLastIndexOf{"/"})[0], forward, reverse ] } //extract file name
@@ -509,9 +545,9 @@ if (!params.Q2imported){
 				def folder = item.take(item.indexOf("${params.split}")) //re-extract folder
 				[ "${folder}${params.split}manifest.txt", item + '\n' ]
 			}
-			.set { ch_manifest_files }
+			.set { ch_manifest_file }
 			
-		ch_manifest_files
+		ch_manifest_file
 			.combine( ch_mpl_for_qiime_import )
 			.set { ch_manifest }
 	}
@@ -520,7 +556,43 @@ if (!params.Q2imported){
 	* Import trimmed files into QIIME2 artefact
 	*/
 	if (!params.multipleSequencingRuns){
-		process qiime_import {
+		process qiime_import_new_man {
+			publishDir "${params.outdir}/demux", mode: 'copy', 
+			saveAs: { filename -> 
+				params.keepIntermediates ? filename : null
+				params.untilQ2import ? filename : null }
+
+			input:
+			file(manifest) from ch_manifest
+			env MATPLOTLIBRC from ch_mpl_for_qiime_import
+
+			output:
+			file "demux.qza" into (ch_qiime_demux_import, ch_qiime_demux_vis, ch_qiime_demux_dada)
+
+			when:
+			!params.Q2imported
+		
+			script:
+			if (!params.phred64) {
+				"""
+				qiime tools import \
+					--type 'SampleData[PairedEndSequencesWithQuality]' \
+					--input-path ${manifest} \
+					--output-path demux.qza \
+					--input-format PairedEndFastqManifestPhred33
+				"""
+			} else {
+				"""
+				qiime tools import \
+					--type 'SampleData[PairedEndSequencesWithQuality]' \
+					--input-path ${manifest} \
+					--output-path demux.qza \
+					--input-format PairedEndFastqManifestPhred64
+				"""
+			}
+		}
+	} else if (!params.multipleSequencingRuns){
+		process qiime_import{
 			publishDir "${params.outdir}/demux", mode: 'copy', 
 			saveAs: { filename -> 
 				params.keepIntermediates ? filename : null
@@ -1009,7 +1081,7 @@ process classifier {
 	env MATPLOTLIBRC from ch_mpl_classifier
 
 	output:
-	file("taxonomy.qza") into (ch_qiime_taxonomy_for_filter,ch_qiime_taxonomy_for_relative_abundance_reduced_taxa,ch_qiime_taxonomy_for_barplot,ch_qiime_taxonomy_for_ancom)
+	file("taxonomy.qza") into (ch_qiime_taxonomy_for_filter,ch_qiime_taxonomy_for_relative_abundance_reduced_taxa,ch_qiime_taxonomy_for_barplot,ch_qiime_taxonomy_for_ancom,ch_qiime_taxonomy_for_export_filtered_dada_output)
 	file("taxonomy/taxonomy.tsv") into ch_tsv_taxonomy
 
   
@@ -1115,12 +1187,14 @@ process export_filtered_dada_output {
 		saveAs: {filename -> 
 				 if (filename.indexOf("table/feature-table.biom") == 0)  "abundance_table/filtered/feature-table.biom"
 			else if (filename.indexOf("table/feature-table.tsv") == 0)   "abundance_table/filtered/feature-table.tsv"
+			else if (filename.indexOf("abs-abund-table-") == 0)          "abundance_table/filtered/$filename"
 			else if (filename.indexOf("filtered/*"))                     "representative_sequences/$filename"
 			else null}   
 
 	input:
 	file table from ch_qiime_table_for_filtered_dada_output
 	file repseq from ch_qiime_repseq_for_dada_output
+	file taxonomy from ch_qiime_taxonomy_for_export_filtered_dada_output
 	env MATPLOTLIBRC from ch_mpl_for_export_dada_output
 
 	output:
@@ -1128,6 +1202,7 @@ process export_filtered_dada_output {
 	file("table/feature-table.tsv") into (ch_tsv_table_for_alpha_rarefaction,ch_tsv_table_for_report_filter_stats,ch_tsv_table_for_diversity_core)
 	file("table/feature-table.biom")
 	file("filtered/*")
+	file("abs-abund-table-*.tsv")
 
 	"""
 	#produce raw count table in biom format "table/feature-table.biom"
@@ -1145,6 +1220,25 @@ process export_filtered_dada_output {
 		--o-visualization rep-seqs.qzv
 	qiime tools export --input-path rep-seqs.qzv  \
 		--output-path filtered
+
+	##on several taxa level
+	array=( 2 3 4 5 6 7 )
+	for i in \${array[@]}
+	do
+		#collapse taxa
+		qiime taxa collapse \
+			--i-table ${table} \
+			--i-taxonomy ${taxonomy} \
+			--p-level \$i \
+			--o-collapsed-table table-\$i.qza
+		#export to biom
+		qiime tools export --input-path table-\$i.qza \
+			--output-path table-\$i
+		#convert to tab separated text file
+		biom convert \
+			-i table-\$i/feature-table.biom \
+			-o abs-abund-table-\$i.tsv --to-tsv
+	done
 	"""
 }
 

@@ -13,6 +13,7 @@
     * [--reads](#--reads)
     * [--FW_primer and --RV_primer](#--fw_primer-and---rv_primer)
     * [--metadata](#--metadata)
+    * [----qiime_timezone](#--qiime_timezone)
   * [Other input options](#other-input-options)
     * [--extension](#--extension)
     * [--multipleSequencingRuns](#--multiplesequencingruns)
@@ -138,6 +139,11 @@ If `-profile` is not specified at all the pipeline will be run locally and expec
 * `test`
   * A profile with a complete configuration for automated testing
   * Includes links to test data so needs no other parameters
+* `uppmax`
+  * A generic configuration profile to be used in the HPC environment [UPPMAX](https://www.uppmax.uu.se/)
+  * Pulls software from dockerhub: [`nfcore/ampliseq`](http://hub.docker.com/r/nfcore/ampliseq/)
+  * More on `-profile uppmax` [here](https://github.com/nf-core/configs/blob/master/docs/uppmax.md)
+  * More on how to run `-profile uppmax` offline and how to set user-specific parameters [here](https://nf-co.re/rnafusion/docs/configuration/uppmax) 
 
 ### `--reads`
 
@@ -187,6 +193,11 @@ Please note the following requirements:
 1. The path must be enclosed in quotes
 2. The metadata file has to follow the [QIIME2 specifications](https://docs.qiime2.org/2019.10/tutorials/metadata/)
 3. In case of multiple sequencing runs, specific naming of samples are required, see [here](#--multipleSequencingRuns)
+
+### `--qiime_timezone`
+
+If a timezone error occurs, this parameter needs to be specified (default: 'Europe/Berlin'). Find your appropriate timezone with e.g. tzselect.
+Note, this affects the timezone of the entire software environment.
 
 ## Other input options
 

@@ -1,4 +1,4 @@
-FROM nfcore/base:dev
+FROM nfcore/base:1.9
 LABEL authors="Daniel Straub, Alexander Peltzer" \
       description="Docker image containing all software requirements for the nf-core/ampliseq pipeline"
 

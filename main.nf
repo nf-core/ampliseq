@@ -31,7 +31,8 @@ def helpMessage() {
           --metadata [path/to/file]     Path to metadata sheet, when missing most downstream analysis are skipped (barplots, PCoA plots, ...). 
                                         File extension is not relevant. Must have a comma separated list of metadata column headers.
 	  --manifest [path/to/file]     Path to manifest.tsv table with the following labels in this exact order: sampleID, forwardReads, reverseReads.
-                                        Multiple sequencing runs not supported by manifest at this stage. Default is FALSE. 
+                                        Tab ('\t') must be the table separator. Multiple sequencing runs not supported by manifest at this stage.
+	                                Default is FALSE. 
 	  --qiime_timezone [str]	Needs to be specified to resolve a timezone error (default: 'Europe/Berlin')
 
 	Other input options:

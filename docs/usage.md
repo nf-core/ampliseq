@@ -178,7 +178,6 @@ In amplicon sequencing methods, PCR with specific primers produces the amplicon 
 
 ### `--metadata`
 
-
 This is optional, but for performing downstream analysis such as barplots, diversity indices or differential abundance testing, a metadata file is essential. For example:
 
 ```bash

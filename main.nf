@@ -30,19 +30,9 @@ def helpMessage() {
 	  --RV_primer [str]             Reverse primer sequence
           --metadata [path/to/file]     Path to metadata sheet, when missing most downstream analysis are skipped (barplots, PCoA plots, ...). 
                                         File extension is not relevant. Must have a comma separated list of metadata column headers.
-                                        The first column in the metadata file is the identifier (ID) column and defines the sample or feature IDs associated with your study.
-					Additional columns defining metadata associated with each sample or feature ID are optional.
-					Metadata files are not required to have additional metadata columns, so a file containing only an ID column is a valid QIIME 2 metadata file.
-					It is not recommended to mix sample and feature IDs in a single metadata file; keep sample and feature metadata stored in separate files.
-                                        Identifiers should be 36 characters long or less, and also contain only ASCII alphanumeric characters
-                                        (i.e. in the range of [a-z], [A-Z], or [0-9]), the period (.) character, or the dash (-) character.
-                                        By default all numeric columns, blanks or NA are removed, and only columns with multiple different values but not all unique are selected.
-                                        The columns which are to be assessed can be specified by --metadata_category, see below.
-	  --manifest [path/to/file]You can submit a manifest file as an alternative way to provide input reads. No submission of read files with --reads is required this way.
-	                                A manifest is a tab-separated file that must have the following labels in this exact order: sampleID, forwardReads, reverseReads.
-	                                The sample identifiers must be listed under sampleID. Paths to forward and reverse reads must be reported under forwardReads and reverseReads,
-	                                respectively. Test this feature by runnig the pipeline with -profile test_manifest. If downstream analyses do not work, skip them (see below).
-	                                Multiple sequencing runs not supported by manifest at this stage. Default is FALSE. 
+	  --manifest [path/to/file]     Path to manifest.tsv table with the following labels in this exact order: sampleID, forwardReads, reverseReads.
+                                        Tab ('\t') must be the table separator. Multiple sequencing runs not supported by manifest at this stage.
+	                                Default is FALSE. 
 	  --qiime_timezone [str]	Needs to be specified to resolve a timezone error (default: 'Europe/Berlin')
 
 	Other input options:
@@ -201,6 +191,10 @@ if ("${params.split}".indexOf("_") > -1 ) {
 	exit 1, "Underscore is not allowed in --split, please review your input."
 }
 
+if (params.multipleSequencingRuns && params.manifest) { 
+	exit 1, "The manifest file does not support multiple sequencing runs at this point."
+}
+
 // AWSBatch sanity checking
 if(workflow.profile == 'awsbatch'){
 	if (!params.awsqueue || !params.awsregion) exit 1, "Specify correct --awsqueue and --awsregion parameters on AWSBatch!"
@@ -334,6 +328,7 @@ if (!params.Q2imported){
 			.from(params.readPaths)
 			.map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
 			.ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
+			.map { name, reads -> [ name.toString().take(name.toString().indexOf("_")), reads ] }
 			.into { ch_read_pairs; ch_read_pairs_fastqc; ch_read_pairs_name_check }
 
 	} else if ( !params.readPaths && params.multipleSequencingRuns ) {
@@ -391,6 +386,7 @@ if (!params.Q2imported){
 		Channel
 			.fromFilePairs( params.reads + params.extension, size: 2 )
 			.ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}${params.extension}\nNB: Path needs to be enclosed in quotes!" }
+			.map { name, reads -> [ name.toString().take(name.toString().indexOf("_")), reads ] }
 			.into { ch_read_pairs; ch_read_pairs_fastqc }
 	}
 

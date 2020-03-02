@@ -1,29 +1,34 @@
 name: nf-core CI
 # This workflow is triggered on pushes and PRs to the repository.
 # It runs the pipeline with the minimal test dataset to check that it completes without any syntax errors
-on: [push, pull_request]  
+on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: ubuntu-18.04
+    env:
+      NXF_VER: ${{ matrix.nxf_ver }}
+      NXF_ANSI_LOG: false
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         # Nextflow versions: check pipeline minimum and current latest
         nxf_ver: ['19.10.0', '']
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Install Nextflow
         run: |
-          export NXF_VER=${{ matrix.nxf_ver }}
           wget -qO- get.nextflow.io | bash
           sudo mv nextflow /usr/local/bin/
-      - name: Download and tag image
+      - name: Pull docker image
         run: |
-          docker pull nfcore/ampliseq:dev && docker tag nfcore/ampliseq:dev nfcore/ampliseq:dev
+          docker pull nfcore/ampliseq:dev
+          docker tag nfcore/ampliseq:dev nfcore/ampliseq:dev
       - name: Run test
         run: |
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker
       - name: Run multi test
         run: | 
           nextflow run ${GITHUB_WORKSPACE} -profile test_multi,docker
-
+      - name: Run manifest test
+        run: | 
+          nextflow run ${GITHUB_WORKSPACE} -profile test_manifest,docker

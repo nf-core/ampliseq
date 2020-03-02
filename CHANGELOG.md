@@ -1,5 +1,14 @@
 # nf-core/ampliseq
 
+The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+
+## v1.2.0dev - [date]
+
+### Pipeline updates
+
+* [#111](https://github.com/nf-core/ampliseq/issues/111) - Added parameter for user specified manifest file
+
 ## nf-core/ampliseq version 1.1.2 - 2019
 
 * No further changes, except a bugfix for the [timezone](https://github.com/nf-core/ampliseq/issues/114) issue found by @marchoeppner
@@ -38,3 +47,11 @@
 ## nf-core/ampliseq version 1.0.0 "Olive Steel Panda" - 2018-11-23
 
 Initial release of nf-core/ampliseq, created with the [nf-core](http://nf-co.re/) template.
+
+### `Added`
+
+### `Fixed`
+
+### `Dependencies`
+
+### `Deprecated`

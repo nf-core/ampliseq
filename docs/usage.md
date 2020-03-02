@@ -2,73 +2,75 @@
 
 ## Table of contents
 
-* [nf-core/ampliseq: Usage](#nf-coreampliseq-usage)
-  * [Table of contents](#table-of-contents)
-  * [General Nextflow info](#general-nextflow-info)
-  * [Running the pipeline](#running-the-pipeline)
-    * [Updating the pipeline](#updating-the-pipeline)
-    * [Reproducibility](#reproducibility)
-  * [Main arguments](#main-arguments)
-    * [-profile](#-profile)
-    * [--reads](#--reads)
-    * [--FW_primer and --RV_primer](#--fw_primer-and---rv_primer)
-    * [--metadata](#--metadata)
-    * [--manifest] (#--manifest)
-    * [----qiime_timezone](#--qiime_timezone)
-  * [Other input options](#other-input-options)
-    * [--extension](#--extension)
-    * [--multipleSequencingRuns](#--multiplesequencingruns)
-    * [--split](#--split)
-    * [--phred64](#--phred64)
-  * [Cutoffs](#cutoffs)
-    * [--trunclenf and --trunclenr](#--trunclenf-and---trunclenr)
-    * [--trunc_qmin](#--trunc_qmin)
-  * [Other options](#other-options)
-    * [--untilQ2import](#--untilq2import)
-    * [--Q2imported](#--q2imported)
-    * [--keepIntermediates](#--keepintermediates)
-      * [Visually choosing sequencing read truncation cutoffs](#visually-choosing-sequencing-read-truncation-cutoffs)
-  * [Reference database](#reference-database)
-    * [--classifier](#--classifier)
-    * [--classifier_removeHash](#--classifier_removehash)
-  * [Statistics](#statistics)
-    * [--metadata_category](#--metadata_category)
-  * [Filters](#filters)
-    * [--retain_untrimmed](#--retain_untrimmed)
-    * [--exclude_taxa](#--exclude_taxa)
-    * [--min_frequency](#--min_frequency)
-    * [--min_samples](#--min_samples)
-  * [Skipping steps](#skipping-steps)
-    * [--onlyDenoising](#--onlydenoising)
-    * [--skip_fastqc](#--skip_fastqc)
-    * [--skip_alpha_rarefaction](#--skip_alpha_rarefaction)
-    * [--skip_taxonomy](#--skip_taxonomy)
-    * [--skip_barplot](#--skip_barplot)
-    * [--skip_abundance_tables](#--skip_abundance_tables)
-    * [--skip_diversity_indices](#--skip_diversity_indices)
-    * [--skip_ancom](#--skip_ancom)
-  * [Job Resources](#job-resources)
-    * [Automatic resubmission](#automatic-resubmission)
-    * [Custom resource requests](#custom-resource-requests)
-  * [AWS Batch specific parameters](#aws-batch-specific-parameters)
-    * [--awsqueue](#--awsqueue)
-    * [--awsregion](#--awsregion)
-  * [Other command line parameters](#other-command-line-parameters)
-    * [--outdir](#--outdir)
-    * [--email](#--email)
-    * [-name](#-name)
-    * [-resume](#-resume)
-    * [-c](#-c)
-    * [--custom_config_version](#--custom_config_version)
-    * [--custom_config_base](#--custom_config_base)
-    * [--max_memory](#--max_memory)
-    * [--max_time](#--max_time)
-    * [--max_cpus](#--max_cpus)
-    * [--plaintext_email](#--plaintext_email)
-    * [--monochrome_logs](#--monochrome_logs)
-    * [--multiqc_config](#--multiqc_config)
+* [Table of contents](#table-of-contents)
+* [Introduction](#introduction)
+* [Running the pipeline](#running-the-pipeline)
+  * [Updating the pipeline](#updating-the-pipeline)
+  * [Reproducibility](#reproducibility)
+* [Main arguments](#main-arguments)
+  * [`-profile`](#-profile)
+  * [`--reads`](#--reads)
+  * [`--FW_primer` and `--RV_primer`](#--fw_primer-and---rv_primer)
+  * [`--metadata`](#--metadata)
+  * [`--manifest`](#--manifest)
+  * [`--qiime_timezone`](#--qiime_timezone)
+* [Other input options](#other-input-options)
+  * [`--extension`](#--extension)
+  * [`--multipleSequencingRuns`](#--multiplesequencingruns)
+  * [`--split`](#--split)
+  * [`--phred64`](#--phred64)
+* [Cutoffs](#cutoffs)
+  * [`--trunclenf and --trunclenr`](#--trunclenf-and---trunclenr)
+  * [`--trunc_qmin`](#--trunc_qmin)
+* [Other options](#other-options)
+  * [`--untilQ2import`](#--untilq2import)
+  * [`--Q2imported`](#--q2imported)
+  * [`--keepIntermediates`](#--keepintermediates)
+    * [Visually choosing sequencing read truncation cutoffs](#visually-choosing-sequencing-read-truncation-cutoffs)
+* [Reference database](#reference-database)
+  * [`--classifier`](#--classifier)
+  * [`--classifier_removeHash`](#--classifier_removehash)
+* [Statistics](#statistics)
+  * [`--metadata_category`](#--metadata_category)
+* [Filters](#filters)
+  * [`--retain_untrimmed`](#--retain_untrimmed)
+  * [`--exclude_taxa`](#--exclude_taxa)
+  * [`--min_frequency`](#--min_frequency)
+  * [`--min_samples`](#--min_samples)
+* [Skipping steps](#skipping-steps)
+  * [`--onlyDenoising`](#--onlydenoising)
+  * [`--skip_fastqc`](#--skip_fastqc)
+  * [`--skip_alpha_rarefaction`](#--skip_alpha_rarefaction)
+  * [`--skip_taxonomy`](#--skip_taxonomy)
+  * [`--skip_barplot`](#--skip_barplot)
+  * [`--skip_abundance_tables`](#--skip_abundance_tables)
+  * [`--skip_diversity_indices`](#--skip_diversity_indices)
+  * [`--skip_ancom`](#--skip_ancom)
+* [Job Resources](#job-resources)
+  * [Automatic resubmission](#automatic-resubmission)
+  * [Custom resource requests](#custom-resource-requests)
+* [AWS Batch specific parameters](#aws-batch-specific-parameters)
+  * [`--awsqueue`](#--awsqueue)
+  * [`--awsregion`](#--awsregion)
+  * [`--awscli`](#--awscli)
+* [Other command line parameters](#other-command-line-parameters)
+  * [`--outdir`](#--outdir)
+  * [`--email`](#--email)
+  * [`--email_on_fail`](#--email_on_fail)
+  * [`--max_multiqc_email_size`](#--max_multiqc_email_size)
+  * [`-name`](#-name)
+  * [`-resume`](#-resume)
+  * [`-c`](#-c)
+  * [`--custom_config_version`](#--custom_config_version)
+  * [`--custom_config_base`](#--custom_config_base)
+  * [`--max_memory`](#--max_memory)
+  * [`--max_time`](#--max_time)
+  * [`--max_cpus`](#--max_cpus)
+  * [`--plaintext_email`](#--plaintext_email)
+  * [`--monochrome_logs`](#--monochrome_logs)
+  * [`--multiqc_config`](#--multiqc_config)
 
-## General Nextflow info
+## Introduction
 
 Nextflow handles job submissions on SLURM or other environments, and supervises running the jobs. Thus the Nextflow process must run until the pipeline is finished. We recommend that you put the process running in the background through `screen` / `tmux` or similar tool. Alternatively you can run nextflow within a cluster job submitted your job scheduler.
 
@@ -122,30 +124,36 @@ This version number will be logged in reports when you run the pipeline, so that
 
 ### `-profile`
 
-Use this parameter to choose a configuration profile. Profiles can give configuration presets for different compute environments. Note that multiple profiles can be loaded, for example: `-profile docker` - the order of arguments is important!
+Use this parameter to choose a configuration profile. Profiles can give configuration presets for different compute environments.
 
-If `-profile` is not specified at all the pipeline will be run locally and expects all software to be installed and available on the `PATH`.
+Several generic profiles are bundled with the pipeline which instruct the pipeline to use software packaged using different methods (Docker, Singularity, Conda) - see below.
 
-* `awsbatch`
-  * A generic configuration profile to be used with AWS Batch.
-* `conda`
-  * A generic configuration profile to be used with [conda](https://conda.io/docs/)
-  * Pulls most software from [Bioconda](https://bioconda.github.io/)
+> We highly recommend the use of Docker or Singularity containers for full pipeline reproducibility, however when this is not possible, Conda is also supported.
+
+The pipeline also dynamically loads configurations from [https://github.com/nf-core/configs](https://github.com/nf-core/configs) when it runs, making multiple config profiles for various institutional clusters available at run time. For more information and to see if your system is available in these configs please see the [nf-core/configs documentation](https://github.com/nf-core/configs#documentation).
+
+Note that multiple profiles can be loaded, for example: `-profile test,docker` - the order of arguments is important!
+They are loaded in sequence, so later profiles can overwrite earlier profiles.
+
+If `-profile` is not specified, the pipeline will run locally and expect all software to be installed and available on the `PATH`. This is _not_ recommended.
+
 * `docker`
   * A generic configuration profile to be used with [Docker](http://docker.com/)
   * Pulls software from dockerhub: [`nfcore/ampliseq`](http://hub.docker.com/r/nfcore/ampliseq/)
 * `singularity`
   * A generic configuration profile to be used with [Singularity](http://singularity.lbl.gov/)
   * Pulls software from DockerHub: [`nfcore/ampliseq`](http://hub.docker.com/r/nfcore/ampliseq/)
+* `conda`
+  * Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker or Singularity.
+  * A generic configuration profile to be used with [Conda](https://conda.io/docs/)
+  * Pulls most software from [Bioconda](https://bioconda.github.io/)
 * `test`
   * A profile with a complete configuration for automated testing
   * Includes links to test data so needs no other parameters
 
 ### `--reads`
 
-Use this to specify the location of your input paired-end FastQ files.  
-
-For example:
+Use this to specify the location of your input FastQ files. For example:
 
 ```bash
 --reads 'path/to/data'
@@ -511,11 +519,11 @@ Wherever process-specific requirements are set in the pipeline, the default valu
 
 If you are likely to be running `nf-core` pipelines regularly it may be a good idea to request that your custom config file is uploaded to the `nf-core/configs` git repository. Before you do this please can you test that the config file works with your pipeline of choice using the `-c` parameter (see definition below). You can then create a pull request to the `nf-core/configs` repository with the addition of your config file, associated documentation file (see examples in [`nf-core/configs/docs`](https://github.com/nf-core/configs/tree/master/docs)), and amending [`nfcore_custom.config`](https://github.com/nf-core/configs/blob/master/nfcore_custom.config) to include your custom profile.
 
-If you have any questions or issues please send us a message on [Slack](https://nf-core-invite.herokuapp.com/).
+If you have any questions or issues please send us a message on [Slack](https://nf-co.re/join/slack).
 
 ## AWS Batch specific parameters
 
-Running the pipeline on AWS Batch requires a couple of specific parameters to be set according to your AWS Batch configuration. Please use the `-awsbatch` profile and then specify all of the following parameters.
+Running the pipeline on AWS Batch requires a couple of specific parameters to be set according to your AWS Batch configuration. Please use [`-profile awsbatch`](https://github.com/nf-core/configs/blob/master/conf/awsbatch.config) and then specify all of the following parameters.
 
 ### `--awsqueue`
 
@@ -523,7 +531,11 @@ The JobQueue that you intend to use on AWS Batch.
 
 ### `--awsregion`
 
-The AWS region to run your job in. Default is set to `eu-west-1` but can be adjusted to your needs.
+The AWS region in which to run your job. Default is set to `eu-west-1` but can be adjusted to your needs.
+
+### `--awscli`
+
+The [AWS CLI](https://www.nextflow.io/docs/latest/awscloud.html#aws-cli-installation) path in your custom AMI. Default: `/home/ec2-user/miniconda/bin/aws`.
 
 Please make sure to also set the `-w/--work-dir` and `--outdir` parameters to a S3 storage bucket of your choice - you'll get an error message notifying you if you didn't.
 
@@ -536,6 +548,14 @@ The output directory where the results will be saved.
 ### `--email`
 
 Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.
+
+### `--email_on_fail`
+
+This works exactly as with `--email`, except emails are only sent if the workflow is not successful.
+
+### `--max_multiqc_email_size`
+
+Threshold size for MultiQC report to be attached in notification email. If file generated by pipeline exceeds the threshold, it will not be attached (Default: 25MB).
 
 ### `-name`
 
@@ -563,7 +583,7 @@ Note - you can use this to override pipeline defaults.
 
 ### `--custom_config_version`
 
-Provide git commit id for custom Institutional configs hosted at `nf-core/configs`. This was implemented for reproducibility purposes. Default is set to `master`.
+Provide git commit id for custom Institutional configs hosted at `nf-core/configs`. This was implemented for reproducibility purposes. Default: `master`.
 
 ```bash
 ## Download and use config file with following git commid id

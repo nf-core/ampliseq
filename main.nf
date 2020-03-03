@@ -106,14 +106,7 @@ if (params.help){
 	exit 0
 }
 
-// Configurable variables
-params.name = false
-params.multiqc_config = "$baseDir/conf/multiqc_config.yaml"
-params.email = false
-params.plaintext_email = false
-
-ch_multiqc_config = Channel.fromPath(params.multiqc_config)
-ch_output_docs = Channel.fromPath("$baseDir/docs/output.md")
+// Add matplotlib required for QIIME2 processes
 Channel.fromPath("$baseDir/assets/matplotlibrc")
 	.into { ch_mpl_for_make_classifier; ch_mpl_for_qiime_import; ch_mpl_for_ancom_asv; ch_mpl_for_ancom_tax; ch_mpl_for_ancom; ch_mpl_for_beta_diversity_ord; ch_mpl_for_beta_diversity; ch_mpl_for_alpha_diversity; ch_mpl_for_metadata_pair; ch_mpl_for_metadata_cat; ch_mpl_for_diversity_core; ch_mpl_for_alpha_rare; ch_mpl_for_tree; ch_mpl_for_barcode; ch_mpl_for_relreducetaxa; ch_mpl_for_relasv; ch_mpl_for_export_dada_output; ch_mpl_filter_taxa; ch_mpl_classifier; ch_mpl_dada; ch_mpl_dada_merge; ch_mpl_for_demux_visualize; ch_mpl_for_classifier }
 
@@ -525,7 +518,7 @@ if (!params.Q2imported){
     	custom_config_file = params.multiqc_config ? "--config $mqc_custom_config" : ''
     	// TODO nf-core: Specify which MultiQC modules to use with -m for a faster run time
     	"""
-    	multiqc -f $rtitle $rfilename $custom_config_file .
+    	multiqc -f $rtitle $rfilename $custom_config_file --force --interactive .
     	"""
 	}
 
@@ -565,42 +558,6 @@ if (!params.Q2imported){
 	* Import trimmed files into QIIME2 artefact
 	*/
 	if (!params.multipleSequencingRuns){
-		process qiime_import_new_man {
-			publishDir "${params.outdir}/demux", mode: 'copy', 
-			saveAs: { filename -> 
-				params.keepIntermediates ? filename : null
-				params.untilQ2import ? filename : null }
-
-			input:
-			file(manifest) from ch_manifest
-			env MATPLOTLIBRC from ch_mpl_for_qiime_import
-
-			output:
-			file "demux.qza" into (ch_qiime_demux_import, ch_qiime_demux_vis, ch_qiime_demux_dada)
-
-			when:
-			!params.Q2imported
-		
-			script:
-			if (!params.phred64) {
-				"""
-				qiime tools import \
-					--type 'SampleData[PairedEndSequencesWithQuality]' \
-					--input-path ${manifest} \
-					--output-path demux.qza \
-					--input-format PairedEndFastqManifestPhred33
-				"""
-			} else {
-				"""
-				qiime tools import \
-					--type 'SampleData[PairedEndSequencesWithQuality]' \
-					--input-path ${manifest} \
-					--output-path demux.qza \
-					--input-format PairedEndFastqManifestPhred64
-				"""
-			}
-		}
-	} else if (!params.multipleSequencingRuns){
 		process qiime_import{
 			publishDir "${params.outdir}/demux", mode: 'copy', 
 			saveAs: { filename -> 

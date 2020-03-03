@@ -484,7 +484,7 @@ if (!params.Q2imported){
 			mkdir -p trimmed
 			cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
 				-o trimmed/$folder${params.split}${reads[0]} -p trimmed/$folder${params.split}${reads[1]} \
-				${reads[0]} ${reads[1]} > cutadapt_log_${pair_id}.txt
+				${reads[0]} ${reads[1]} > cutadapt_log_$folder${params.split}${pair_id}.txt
 			"""
 		}
 	}
@@ -499,8 +499,8 @@ if (!params.Q2imported){
     	input:
     	file (multiqc_config) from ch_multiqc_config
     	file (mqc_custom_config) from ch_multiqc_custom_config.collect().ifEmpty([])
-    	file ('cutadapt/logs/*') from ch_fastq_cutadapt_log.collect()
-    	file ('fastqc/*') from ch_fastqc_results.collect().ifEmpty([])
+    	//file ('cutadapt/logs/*') from ch_fastq_cutadapt_log.collect()
+    	//file ('fastqc/*') from ch_fastqc_results.collect().ifEmpty([])
     	file ('software_versions/*') from ch_software_versions_yaml.collect()
     	file workflow_summary from ch_workflow_summary.collectFile(name: "workflow_summary_mqc.yaml")
 

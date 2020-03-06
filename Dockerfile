@@ -1,4 +1,4 @@
-FROM nfcore/base:1.8
+FROM nfcore/base:1.9
 LABEL description="Docker image containing all requirements for nf-core/ampliseq pipeline"
 COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a

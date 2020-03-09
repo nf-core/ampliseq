@@ -13,7 +13,7 @@
     * [--reads](#--reads)
     * [--FW_primer and --RV_primer](#--fw_primer-and---rv_primer)
     * [--metadata](#--metadata)
-    * [--manifest](#--manifest)
+    * [--manifest] (#--manifest)
     * [----qiime_timezone](#--qiime_timezone)
   * [Other input options](#other-input-options)
     * [--extension](#--extension)
@@ -192,7 +192,7 @@ Please note the following requirements:
 
 The first column in the metadata file is the identifier (ID) column and defines the sample or feature IDs associated with your study.
 Additional columns defining metadata associated with each sample or feature ID are optional.
-**NB**: without additional columns there might be no groupings for the downstream analyses.
+**NB:**without additional columns there might be no groupings for the downstream analyses.
 Metadata files are not required to have additional metadata columns, so a file containing only an ID column is a valid QIIME 2 metadata file.
 It is not recommended to mix sample and feature IDs in a single metadata file; keep sample and feature metadata stored in separate files.
 Identifiers should be 36 characters long or less, and also contain only ASCII alphanumeric characters

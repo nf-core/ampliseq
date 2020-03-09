@@ -13,7 +13,7 @@
     * [--reads](#--reads)
     * [--FW_primer and --RV_primer](#--fw_primer-and---rv_primer)
     * [--metadata](#--metadata)
-    * [--manifest] (#--manifest)
+    * [--manifest](#--manifest)
     * [----qiime_timezone](#--qiime_timezone)
   * [Other input options](#other-input-options)
     * [--extension](#--extension)

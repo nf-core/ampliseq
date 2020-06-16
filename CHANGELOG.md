@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Pipeline updates
 
 * [#111](https://github.com/nf-core/ampliseq/issues/111) - Added parameter for user specified manifest file
+* Template update for nf-core/tools v1.9
 
 ## nf-core/ampliseq version 1.1.2 - 2019
 

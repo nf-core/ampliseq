@@ -48,11 +48,3 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## nf-core/ampliseq version 1.0.0 "Olive Steel Panda" - 2018-11-23
 
 Initial release of nf-core/ampliseq, created with the [nf-core](http://nf-co.re/) template.
-
-### `Added`
-
-### `Fixed`
-
-### `Dependencies`
-
-### `Deprecated`

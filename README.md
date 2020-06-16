@@ -71,7 +71,7 @@ For further information or help, don't hesitate to get in touch on [Slack](https
 
 If you use  nf-core/ampliseq for your analysis, please cite it using the following doi:
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3568091.svg)](https://doi.org/10.5281/zenodo.3568091)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3585924.svg)](https://doi.org/10.5281/zenodo.3585924)
 
 The pre-print can be cited as follows:
 

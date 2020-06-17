@@ -1,3 +1,5 @@
+# You can use this file to create a conda environment for this pipeline:
+#   conda env create -f environment.yml
 name: nf-core-ampliseq-1.2.0dev
 channels:
 - qiime2
@@ -6,9 +8,15 @@ channels:
 - bioconda
 - defaults
 dependencies:
+# nf-core
+#- conda-forge::python=3.7.3
+- conda-forge::markdown=3.1.1
+- conda-forge::pymdown-extensions=6.0
+#- conda-forge::pygments=2.5.2
+# Pipeline
 - fastqc=0.11.8
 - font-ttf-dejavu-sans-mono=2.37 #for fastqc 
-- multiqc=1.6 #has to be 1.6 for now (python2-3(
+- multiqc=1.7 #has to be 1.6 for now (python2-3(
 - unzip=6.0 #required for silva unzippping
 - r-rmarkdown=1.18
 - ncurses=6.1

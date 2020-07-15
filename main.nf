@@ -659,6 +659,7 @@ if( !params.classifier ){
 			--i-sequences ref-seq-${params.dereplication}.qza \
 			--p-f-primer ${params.FW_primer} \
 			--p-r-primer ${params.RV_primer} \
+			--p-n-jobs ${task.cpus} \
 			--o-reads ${params.FW_primer}-${params.RV_primer}-${params.dereplication}-ref-seq.qza \
 			--quiet
 

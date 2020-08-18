@@ -11,6 +11,7 @@
   * [Main arguments](#main-arguments)
     * [-profile](#-profile)
     * [--reads](#--reads)
+    * [--single_end](#--single_end)
     * [--FW_primer and --RV_primer](#--fw_primer-and---rv_primer)
     * [--metadata](#--metadata)
     * [--manifest](#--manifest)
@@ -168,6 +169,10 @@ Please note the following requirements:
 3. If your data is scattered, a directory with symlinks to your actual data might be a solution.
 4. All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed. Sequencing data originating from multiple sequencing runs requires additionally the parameter `--multipleSequencingRuns` and a specific folder structure, see [here](#--multipleSequencingRuns).
 
+###`--single_end`
+
+Use this to tell that the reads are single end (e.g. PacBio reads). A manifest file is needed to specify the location of the FastQ file(-s).
+
 ### `--FW_primer` and `--RV_primer`
 
 In amplicon sequencing methods, PCR with specific primers produces the amplicon of interest. These primer sequences need to be trimmed from the reads before further processing and are also required for producing an appropriate classifier. For example:
@@ -203,8 +208,8 @@ If `--metadata_category` isn't specified than all columns that fit the specifica
 
 ### `--manifest`
 
-You can submit a manifest file as an alternative way to provide input reads. No submission of read files with --reads is required this way.
-A manifest must be a **tab**-separated file that must have the following labels in this exact order: sampleID, forwardReads, reverseReads.
+You can submit a manifest file as an alternative way to provide input reads. No submission of read files with --reads is required this way. This is the only option in case of single end reads.
+A manifest must be a **tab**-separated file that must have the following labels in this exact order: sampleID, forwardReads, reverseReads. In case of single end reads, the labels should be: sampleID, Reads.
 The sample identifiers must be listed under sampleID. Paths to forward and reverse reads must be reported under forwardReads and reverseReads,
 respectively. Test this feature by runnig the pipeline with `-profile test_manifest`. If downstream analyses do not work, skip them (see below).
 Multiple sequencing runs not supported by manifest at this stage. Default is FALSE.

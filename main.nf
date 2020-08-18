@@ -26,11 +26,12 @@ def helpMessage() {
 	                                and a specialized profile such as "binac".
 	  --reads [path/to/folder]      Folder containing paired-end demultiplexed fastq files
 	                                Note: All samples have to be sequenced in one run, otherwise also specifiy "--multipleSequencingRuns"
+	  --single_end                  If single end reads. A manifest file is needed to specify the location of single end reads
 	  --FW_primer [str]             Forward primer sequence
 	  --RV_primer [str]             Reverse primer sequence
           --metadata [path/to/file]     Path to metadata sheet, when missing most downstream analysis are skipped (barplots, PCoA plots, ...). 
                                         File extension is not relevant. Must have a comma separated list of metadata column headers.
-	  --manifest [path/to/file]     Path to manifest.tsv table with the following labels in this exact order: sampleID, forwardReads, reverseReads.
+	  --manifest [path/to/file]     Path to manifest.tsv table with the following labels in this exact order: sampleID, forwardReads, reverseReads. In case of single end reads, the labels should be: sampleID, Reads.
                                         Tab ('\t') must be the table separator. Multiple sequencing runs not supported by manifest at this stage.
 	                                Default is FALSE. 
 	  --qiime_timezone [str]	Needs to be specified to resolve a timezone error (default: 'Europe/Berlin')
@@ -54,8 +55,8 @@ def helpMessage() {
 
 	Cutoffs:
 	  --retain_untrimmed            Cutadapt will retain untrimmed reads
-	  --trunclenf [int]             DADA2 read truncation value for forward strand
-	  --trunclenr [int]             DADA2 read truncation value for reverse strand
+	  --trunclenf [int]             DADA2 read truncation value for forward strand and single end reads, set this to 0 for no truncation
+	  --trunclenr [int]             DADA2 read truncation value for reverse strand, set this to 0 for no truncation
 	  --trunc_qmin [int]            If --trunclenf and --trunclenr are not set, 
 	                                these values will be automatically determined using 
 	                                this mean quality score (not preferred) (default: 25)
@@ -195,6 +196,10 @@ if (params.multipleSequencingRuns && params.manifest) {
 	exit 1, "The manifest file does not support multiple sequencing runs at this point."
 }
 
+if (params.single_end && !params.manifest) {
+        exit 1, "A manifest file is needed for single end reads."
+}
+
 // AWSBatch sanity checking
 if(workflow.profile == 'awsbatch'){
 	if (!params.awsqueue || !params.awsregion) exit 1, "Specify correct --awsqueue and --awsregion parameters on AWSBatch!"
@@ -309,7 +314,7 @@ if (!params.Q2imported){
 	/*
 	* Create a channel for optional input manifest file
 	*/
-	 if (params.manifest) {
+	 if (params.manifest && !params.single_end) {
 		tsvFile = file(params.manifest).getName()
 		// extracts read files from TSV and distribute into channels
 		Channel
@@ -318,6 +323,17 @@ if (!params.Q2imported){
 			.splitCsv(header:true, sep:'\t')
 			.map { row -> [ row.sampleID, [ file(row.forwardReads, checkIfExists: true), file(row.reverseReads, checkIfExists: true) ] ] }
 			.into { ch_read_pairs; ch_read_pairs_fastqc; ch_read_pairs_name_check }
+	} else if ( params.single_end ) {
+	       	  // Manifest file is currently the only available input option for single_end
+		  tsvFile = file(params.manifest).getName()
+		  // extracts read files from TSV and distribute into channels
+		  Channel
+			.fromPath(params.manifest)
+			.ifEmpty {exit 1, log.info "Cannot find path file ${tsvFile}"}
+			.splitCsv(header:true, sep:'\t')
+			.map { row -> [ row.sampleID, file(row.Reads, checkIfExists: true) ] }
+			.into { ch_read_pairs; ch_read_pairs_fastqc; ch_read_pairs_name_check }
+
 	/*
 	* Create a channel for input read files
 	*/
@@ -436,7 +452,7 @@ if (!params.Q2imported){
 	}
 
 	/*
-	 * Trim each read-pair with cutadapt
+	 * Trim each read or read-pair with cutadapt
 	 */
 	if (!params.multipleSequencingRuns){
 		process trimming {
@@ -457,11 +473,13 @@ if (!params.Q2imported){
 
 			script:
 			discard_untrimmed = params.retain_untrimmed ? '' : '--discard-untrimmed'
+			primers = params.single_end ? "--rc -g ${params.FW_primer}...${params.RV_primer}" : "-g ${params.FW_primer} -G ${params.RV_primer}"
+			out_files = params.single_end ? "-o trimmed/${reads}" : "-o trimmed/${reads[0]} -p trimmed/${reads[1]}"
+			in_files = params.single_end ? "${reads}" : "${reads[0]} ${reads[1]}"
 			"""
 			mkdir -p trimmed
-			cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
-				-o trimmed/${reads[0]} -p trimmed/${reads[1]} \
-				${reads[0]} ${reads[1]} > cutadapt_log_${pair_id}.txt
+			cutadapt ${primers} ${discard_untrimmed} ${out_files} ${in_files} \
+				 > cutadapt_log_${pair_id}.txt
 			"""
 		}
 
@@ -519,7 +537,18 @@ if (!params.Q2imported){
 	/*
 	* Produce manifest file for QIIME2
 	*/
-	if (!params.multipleSequencingRuns){
+	if (!params.multipleSequencingRuns && params.single_end){
+		ch_fastq_trimmed_manifest
+			.map { name, reads ->
+				def sampleID = name 
+				def Reads = reads
+				[ "${sampleID}" +","+ "${Reads}" ]
+			}
+			.flatten()
+			.collectFile(name: 'manifest.txt', newLine: true, storeDir: "${params.outdir}/demux", seed: "sample-id,absolute-filepath")
+			.set { ch_manifest }
+	
+	} else if (!params.multipleSequencingRuns){
 		ch_fastq_trimmed_manifest
 			.map { name, reads ->
 				def sampleID = name 
@@ -790,7 +819,8 @@ if( !params.Q2imported ){
  * "Warning massage" should be printed but interferes with output: stdout
  * "Error and exit if too short" could be done in the python script itself?
  */
-process dada_trunc_parameter { 
+if ( ! params.single_end ) {
+   process dada_trunc_parameter { 
 
 	input:
 	file summary_demux from ch_csv_demux 
@@ -811,6 +841,27 @@ process dada_trunc_parameter {
 		"""
 		printf "${params.trunclenf},${params.trunclenr}"
 		"""
+  }
+} else {
+  process dada_trunc_se {
+
+  	  output:
+	  stdout ch_dada_trunc
+
+	  when:
+	  !params.untilQ2import
+
+	  script:
+	  if ( !params.trunclenf ) {
+	     """
+	     printf "0"
+	     """
+	  } else {
+	     """
+	     printf "${params.trunclenf}"
+	     """
+	  }
+  }
 }
 
 if (params.multipleSequencingRuns){

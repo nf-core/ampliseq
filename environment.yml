@@ -65,7 +65,7 @@ dependencies:
 - click=7.0
 - cryptography=2.7
 - curl=7.65.3
-- cutadapt=2.6
+- cutadapt=2.8
 - cycler=0.10.0
 - cython=0.29.13
 - dbus=1.13.6

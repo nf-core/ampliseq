@@ -20,8 +20,10 @@
     * [--extension](#--extension)
     * [--multipleSequencingRuns](#--multiplesequencingruns)
     * [--split](#--split)
+    * [--pacbio](#--pacbio)
     * [--phred64](#--phred64)
   * [Cutoffs](#cutoffs)
+    * [--maxEE](#--maxEE)
     * [--trunclenf and --trunclenr](#--trunclenf-and---trunclenr)
     * [--trunc_qmin](#--trunc_qmin)
   * [Other options](#other-options)
@@ -289,11 +291,20 @@ Please note:
 3. Must be enclosed in quotes
 4. The metadata sheet has to be adjusted, instead of using `run-sample` in the first column, in this example `runlinksample` is required
 
+###`--pacbio`
+
+If PacBio data. Use this option together with --single_end and --manifest.
+
+
 ### `--phred64`
 
 If the sequencing data has PHRED 64 encoded quality scores (default: PHRED 33)
 
 ## Cutoffs
+
+###`--maxEE`
+
+DADA2 read filtering option, currently only used when --pacbio is set.  After truncation, reads with higher than ‘maxEE’ "expected errors" will be discarded. In case of very long reads, you might want to increase this value. (default: 2)
 
 ### `--trunclenf` and `--trunclenr`
 

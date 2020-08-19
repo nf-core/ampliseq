@@ -17,6 +17,7 @@ dependencies:
 - multiqc=1.7
 - unzip=6.0 #required for silva unzippping
 - r-rmarkdown=1.18
+- r-optparse=1.6.4 #for pacbio R scripts
 - ncurses=6.1
 # QIIME2 2019/10 
 - _libgcc_mutex=0.1

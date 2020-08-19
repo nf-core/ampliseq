@@ -45,6 +45,7 @@ def helpMessage() {
 	                                create overlapping file names that crash MultiQC.
 	  --split [str]                 A string that will be used between the prepended run/folder name and the sample name. (default: "-")
 	                                May not be present in run/folder names and no underscore(s) allowed. Only used with "--multipleSequencingRuns"
+	  --pacbio			If PacBio data. Use this option together with --single_end and --manifest.
 	  --phred64                     If the sequencing data has PHRED 64 encoded quality scores (default: PHRED 33)
 
 	Filters:
@@ -55,6 +56,7 @@ def helpMessage() {
 
 	Cutoffs:
 	  --retain_untrimmed            Cutadapt will retain untrimmed reads
+          --maxEE [number]              DADA2 read filtering option, currently only used when --pacbio is set. After truncation, reads with higher than ‘maxEE’ "expected errors" will be discarded (default: 2)
 	  --trunclenf [int]             DADA2 read truncation value for forward strand and single end reads, set this to 0 for no truncation
 	  --trunclenr [int]             DADA2 read truncation value for reverse strand, set this to 0 for no truncation
 	  --trunc_qmin [int]            If --trunclenf and --trunclenr are not set, 
@@ -196,6 +198,9 @@ if (params.multipleSequencingRuns && params.manifest) {
 	exit 1, "The manifest file does not support multiple sequencing runs at this point."
 }
 
+if (params.single_end && !params.pacbio) {
+        exit 1, "Paired end sequences are expected if other than PacBio data."
+}
 if (params.single_end && !params.manifest) {
         exit 1, "A manifest file is needed for single end reads."
 }
@@ -580,7 +585,7 @@ if (!params.Q2imported){
 	/*
 	* Import trimmed files into QIIME2 artefact
 	*/
-	if (!params.multipleSequencingRuns){
+	if (!params.multipleSequencingRuns && !params.pacbio){
 		process qiime_import_new_man {
 			publishDir "${params.outdir}/demux", mode: 'copy', 
 			saveAs: { filename -> 
@@ -616,7 +621,7 @@ if (!params.Q2imported){
 				"""
 			}
 		}
-	} else if (!params.multipleSequencingRuns){
+	} else if (!params.multipleSequencingRuns && !params.pacbio){
 		process qiime_import{
 			publishDir "${params.outdir}/demux", mode: 'copy', 
 			saveAs: { filename -> 
@@ -652,6 +657,8 @@ if (!params.Q2imported){
 				"""
 			}
 		}
+	} else if (params.pacbio) {
+		ch_manifest.set { ch_dada_import }
 	} else {
 		process qiime_import_multi {
 			tag "${manifest}"
@@ -690,12 +697,12 @@ if (!params.Q2imported){
 			}
 		}
 	}
-	ch_qiime_demux_vis
-		.combine( ch_mpl_for_demux_visualize )
-		.set{ ch_qiime_demux_visualisation }
-
-}
-
+	if (!params.pacbio) {
+		ch_qiime_demux_vis  
+			.combine( ch_mpl_for_demux_visualize )
+			.set{ ch_qiime_demux_visualisation }
+	}
+} 
 
 /*
  * Download, unpack, extract and train classifier
@@ -772,7 +779,7 @@ if( !params.classifier ){
 /*
  * Import trimmed files into QIIME2 artefact
  */
-if( !params.Q2imported ){
+if( !params.Q2imported && !params.pacbio ){
 	process qiime_demux_visualize {
 		tag "${demux.baseName}"
 		publishDir "${params.outdir}", mode: 'copy'
@@ -792,7 +799,7 @@ if( !params.Q2imported ){
 		qiime tools export --input-path ${demux.baseName}.qzv --output-path ${demux.baseName}
 		"""
 	}
-} else {
+} else if ( !params.pacbio ){
 	process qiime_importdemux_visualize { 
 		publishDir "${params.outdir}", mode: 'copy'
 
@@ -890,7 +897,7 @@ if (params.multipleSequencingRuns){
 /*
  * Find ASVs with DADA2 for single sequencing run
  */
-if (!params.multipleSequencingRuns){
+if (!params.multipleSequencingRuns && !params.pacbio){
 	process dada_single {
 		tag "$trunc"
 		publishDir "${params.outdir}", mode: 'copy',
@@ -977,6 +984,82 @@ if (!params.multipleSequencingRuns){
 		biom convert \
 			-i rel-table/feature-table.biom \
 			-o table/rel-feature-table.tsv --to-tsv
+		"""
+	}
+} else if (params.pacbio){
+	process dada_pacBio {
+		
+		publishDir "${params.outdir}", mode: 'copy',
+			saveAs: {filename -> 
+					 if (filename.indexOf("dada_stats.tsv") == 0)         "abundance_table/unfiltered/dada_stats.tsv"
+				else if (filename.indexOf("dada_report.txt") == 0)              "abundance_table/unfiltered/dada_report.txt"
+				else if (filename.indexOf("rel-feature-table.tsv") > 0)         "abundance_table/unfiltered/rel-feature-table.tsv"
+				else if (filename.indexOf("feature-table.tsv") > 0)             "abundance_table/unfiltered/feature-table.tsv"
+				else if (filename.indexOf("feature-table.biom") == 0)     "abundance_table/unfiltered/feature-table.biom"
+				else if (filename.indexOf("sequences.fasta"))                      "representative_sequences/sequences.fasta"
+				else if (filename.indexOf("rep-seqs.qza") == 0)                 "representative_sequences/unfiltered/rep-seqs.qza"
+				else null}
+
+		input:
+		file demux from ch_dada_import
+		val trunc from ch_dada_trunc
+
+		output:
+		file("table.qza") into ch_qiime_table_raw
+		file("rep-seqs.qza") into (ch_qiime_repseq_raw_for_classifier,ch_qiime_repseq_raw_for_filter)
+		file("feature-table.tsv") into ch_tsv_table_raw
+		file("dada_stats.tsv")
+		file("feature-table.biom")
+	//	file("rel-table/feature-table.biom")
+		file("rel-feature-table.tsv")
+		file("sequences.fasta")
+	//	file("seven_number_summary.tsv")
+		file("dada_report.txt")
+
+		when:
+		!params.untilQ2import
+
+		script:
+		"""
+		# Quality filtering with DADA2 filterAndTrim
+		# Might want to add params.minLen and params.maxLen in the future
+		# maxLen set to 2999 as this is the maximum allowed read length in dada2 version 1.12
+		dada2_filter_pacbio.r --infile ${demux} --filterDir dada2_filtered --maxEE {params.maxEE} --truncLen ${trunc} --minLen 50 --maxLen 2999 --stats filter_stats.tsv --verbose
+
+		# Estimation of error models with DADA2 learnErrors
+		dada2_errmodels_pacbio.r --filterDir dada2_filtered > err.out
+
+		# Denoise samples with DADA2
+		dada2_denoise_pacbio.r --filterDir dada2_filtered --errModel err.rds --pool TRUE  --verbose > dd.out
+
+		# Chimera removal with DADA2, and produce
+		# * raw count table "feature-table.tsv"
+		# * relative abundancies "rel-feature-table.tsv"
+                # * DADA2 stats to file "denoise_stats.tsv"
+		# * representative sequences "sequences.fasta"
+		dada2_chimrem.r --dadaObj dd.rds --method "pooled" --allowOneOff TRUE --table feature-table.tsv --reltable rel-feature-table.tsv --repseqs sequences.fasta --stats denoise_stats.tsv
+
+		# Create qiime2 object from representative sequences
+		qiime tools import --type \'FeatureData[Sequence]\' \
+			--input-path sequences.fasta \
+			--output-path rep-seqs.qza
+
+		# Create qiime2 object for feature table
+		biom convert -i feature-table.tsv -o feature-table.biom --to-hdf5
+#		make_biom_from_tsv feature-table.tsv feature-table.biom
+		qiime tools import \
+		        --input-path feature-table.biom \
+			--type 'FeatureTable[Frequency]' \
+			--input-format BIOMV210Format \
+			--output-path table.qza
+
+
+		# Produce dada2 report "dada_report.txt" from err.out and dd.out
+		make_dada2_report_pacbio.py err.out dd.out pooled
+
+		# Produce dada2 stats "dada_stats.tsv" from filter_stats.tsv and denoise_stats.tsv
+		make_dada2_stats_pacbio.py filter_stats.tsv denoise_stats.tsv
+
 		"""
 	}
 } else {

@@ -264,7 +264,7 @@ if(params.email) {
 log.info summary.collect { k,v -> "${k.padRight(18)}: $v" }.join("\n")
 log.info "-\033[2m----------------------------------------------------\033[0m-"
 
-if( !params.trunclenf || !params.trunclenr ){
+if( params.trunclenf == false || params.trunclenr == false ){
 	if ( !params.untilQ2import ) log.info "\n######## WARNING: No DADA2 cutoffs were specified, therefore reads will be truncated where median quality drops below ${params.trunc_qmin}.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
 }
 // Check the hostnames against configured profiles
@@ -839,7 +839,7 @@ if ( ! params.single_end ) {
 	!params.untilQ2import
 
 	script:
-	if( !params.trunclenf || !params.trunclenr ){
+	if( params.trunclenf == false || params.trunclenr == false ){
 		"""
 		dada_trunc_parameter.py ${summary_demux[0]} ${summary_demux[1]} ${params.trunc_qmin}
 		"""
@@ -859,7 +859,7 @@ if ( ! params.single_end ) {
 	  !params.untilQ2import
 
 	  script:
-	  if ( !params.trunclenf ) {
+	  if ( params.trunclenf == false ) {
 	     """
 	     printf "0"
 	     """

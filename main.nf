@@ -63,9 +63,11 @@ def helpMessage() {
 	                                these values will be automatically determined using 
 	                                this mean quality score (not preferred) (default: 25)
 
-	References:                     If you have trained a compatible classifier before
+	References:                     If you have trained a compatible classifier before, or want to uise a custom database
 	  --classifier [path/to/file]   Path to QIIME2 classifier file (typically *-classifier.qza)
 	  --classifier_removeHash       Remove all hash signs from taxonomy strings, resolves a rare ValueError during classification (process classifier)
+          --reference_database          Path to file with reference database with taxonomies (default: SILVA_132_16S)
+          --unite                       If reference database is in the format of a UNITE fasta file
 
 	Statistics:
 	  --metadata_category [str]     Comma separated list of metadata column headers for statistics (default: false)
@@ -714,7 +716,7 @@ if( !params.classifier ){
 	Channel.fromPath("${params.reference_database}")
 		.set { ch_ref_database }
 
-	process make_SILVA_132_16S_classifier {
+	process make_classifier {
 		publishDir "${params.outdir}/DB/", mode: 'copy', 
 		saveAs: {filename -> 
 			if (filename.indexOf("${params.FW_primer}-${params.RV_primer}-${params.dereplication}-classifier.qza") == 0) filename
@@ -731,15 +733,22 @@ if( !params.classifier ){
 		stdout ch_message_classifier_removeHash
 
 		when:
-		!params.onlyDenoising && !params.untilQ2import
+		!params.onlyDenoising || !params.untilQ2import 
 
 		script:
 	  
 		"""
-		unzip -qq $database
 
-		fasta=\"SILVA_132_QIIME_release/rep_set/rep_set_16S_only/${params.dereplication}/silva_132_${params.dereplication}_16S.fna\"
-		taxonomy=\"SILVA_132_QIIME_release/taxonomy/16S_only/${params.dereplication}/consensus_taxonomy_7_levels.txt\"
+		if [ \"${params.unite}\" = \"true\" ]; then
+                        create_unite_taxfile.py $database db.fa db.tax
+			fasta=\"db.fa\"
+		        taxonomy=\"db.tax\"
+		else
+			unzip -qq $database
+			fasta=\"SILVA_132_QIIME_release/rep_set/rep_set_16S_only/${params.dereplication}/silva_132_${params.dereplication}_16S.fna\"
+			taxonomy=\"SILVA_132_QIIME_release/taxonomy/16S_only/${params.dereplication}/consensus_taxonomy_7_levels.txt\"
+		fi
+
 
 		if [ \"${params.classifier_removeHash}\" = \"true\" ]; then
 			sed \'s/#//g\' \$taxonomy >taxonomy-${params.dereplication}_removeHash.txt
@@ -772,6 +781,7 @@ if( !params.classifier ){
 			--quiet
 		"""
 	}
+
 	ch_message_classifier_removeHash
 		.subscribe { log.info it }
 }

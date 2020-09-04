@@ -19,6 +19,7 @@ dependencies:
 - r-rmarkdown=1.18
 - r-optparse=1.6.4 #for pacbio R scripts
 - ncurses=6.1
+- biopython=1.77 #for database conversion (UNITE)
 # QIIME2 2019/10 
 - _libgcc_mutex=0.1
 - _r-mutex=1.0.1

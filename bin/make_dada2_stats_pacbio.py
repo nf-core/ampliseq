@@ -22,7 +22,7 @@ filt = pd.read_csv( sys.argv[1], sep = '\t', usecols = ['sample.id', 'file', 're
 denoise = pd.read_csv( sys.argv[2], sep = '\t' )
 
 #-- Count number of input sequences --#
-num_input = filt[ 'reads.in' ].sum()
+num_input = filt[ 'reads.in' ]
 
 #-- Create results table --#
 res = filt.join( denoise.set_index( 'file' ), on = 'file' )

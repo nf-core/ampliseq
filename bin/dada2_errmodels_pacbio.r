@@ -65,7 +65,7 @@ suppressPackageStartupMessages(library(ShortRead))
 # Do the error estimation, save rds for error profile
 files=list.files(opt$filterDir,full.names=T)
 logmsg( sprintf("Using files: %s", files))
-err <- learnErrors(files, errorEstimationFunction=PacBioErrfun, multithread=TRUE, randomize=TRUE, verbose=opt$verbose, nbases=as.double(opt$nbases))
+err <- learnErrors(files, errorEstimationFunction=PacBioErrfun, multithread=TRUE, randomize=FALSE, verbose=opt$verbose, nbases=as.double(opt$nbases))
 saveRDS(err,sprintf('%serr.rds', opt$prefix))
 
 logmsg(sprintf("Finished error estimation"))

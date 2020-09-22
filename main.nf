@@ -1003,10 +1003,10 @@ if (!params.multipleSequencingRuns && !params.pacbio){
 			saveAs: {filename -> 
 					 if (filename.indexOf("dada_stats.tsv") == 0)         "abundance_table/unfiltered/dada_stats.tsv"
 				else if (filename.indexOf("dada_report.txt") == 0)              "abundance_table/unfiltered/dada_report.txt"
-				else if (filename.indexOf("rel-feature-table.tsv") > 0)         "abundance_table/unfiltered/rel-feature-table.tsv"
-				else if (filename.indexOf("feature-table.tsv") > 0)             "abundance_table/unfiltered/feature-table.tsv"
+				else if (filename.indexOf("rel-feature-table.tsv") == 0)         "abundance_table/unfiltered/rel-feature-table.tsv"
+				else if (filename.indexOf("feature-table.tsv") == 0)             "abundance_table/unfiltered/feature-table.tsv"
 				else if (filename.indexOf("feature-table.biom") == 0)     "abundance_table/unfiltered/feature-table.biom"
-				else if (filename.indexOf("sequences.fasta"))                      "representative_sequences/sequences.fasta"
+				else if (filename.indexOf("sequences.fasta") == 0)                      "representative_sequences/unfiltered/sequences.fasta"
 				else if (filename.indexOf("rep-seqs.qza") == 0)                 "representative_sequences/unfiltered/rep-seqs.qza"
 				else null}
 
@@ -1034,7 +1034,7 @@ if (!params.multipleSequencingRuns && !params.pacbio){
 		# Quality filtering with DADA2 filterAndTrim
 		# Might want to add params.minLen and params.maxLen in the future
 		# maxLen set to 2999 as this is the maximum allowed read length in dada2 version 1.12
-		dada2_filter_pacbio.r --infile ${demux} --filterDir dada2_filtered --maxEE {params.maxEE} --truncLen ${trunc} --minLen 50 --maxLen 2999 --stats filter_stats.tsv --verbose
+		dada2_filter_pacbio.r --infile ${demux} --filterDir dada2_filtered --maxEE ${params.maxEE} --truncLen ${trunc} --minLen 50 --maxLen 2999 --stats filter_stats.tsv --verbose
 
 		# Estimation of error models with DADA2 learnErrors
 		dada2_errmodels_pacbio.r --filterDir dada2_filtered > err.out

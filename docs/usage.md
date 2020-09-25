@@ -13,7 +13,7 @@
     * [--reads](#--reads)
     * [--FW_primer and --RV_primer](#--fw_primer-and---rv_primer)
     * [--metadata](#--metadata)
-    * [--manifest] (#--manifest)
+    * [--manifest](#--manifest)
     * [----qiime_timezone](#--qiime_timezone)
   * [Other input options](#other-input-options)
     * [--extension](#--extension)
@@ -170,7 +170,7 @@ Please note the following requirements:
 
 ### `--FW_primer` and `--RV_primer`
 
-In amplicon sequencing methods, PCR with specific primers produces the amplicon of intrest. These primer sequences need to be trimmed from the reads before further processing and are also required for producing an appropriate classifier. For example:
+In amplicon sequencing methods, PCR with specific primers produces the amplicon of interest. These primer sequences need to be trimmed from the reads before further processing and are also required for producing an appropriate classifier. For example:
 
 ```bash
 --FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT
@@ -192,7 +192,7 @@ Please note the following requirements:
 
 The first column in the metadata file is the identifier (ID) column and defines the sample or feature IDs associated with your study.
 Additional columns defining metadata associated with each sample or feature ID are optional.
-**NB:**without additional columns there might be no groupings for the downstream analyses.
+**NB**: without additional columns there might be no groupings for the downstream analyses.
 Metadata files are not required to have additional metadata columns, so a file containing only an ID column is a valid QIIME 2 metadata file.
 It is not recommended to mix sample and feature IDs in a single metadata file; keep sample and feature metadata stored in separate files.
 Identifiers should be 36 characters long or less, and also contain only ASCII alphanumeric characters
@@ -303,8 +303,8 @@ For example:
 
 Please note:
 
-1. Too agressive truncation might lead to insufficient overlap for read merging
-2. Too less truncation might reduce denoised reads
+1. Overly aggressive truncation might lead to insufficient overlap for read merging
+2. Too little truncation might reduce denoised reads
 3. The code choosing these values automatically cannot take the points above into account, therefore setting `--trunclenf` and `--trunclenr` is recommended
 
 ### `--trunc_qmin`
@@ -318,7 +318,7 @@ Automatically determine [`--trunclenf` and `--trunclenr`](#--trunclenf-and---tru
 Please note:
 
 1. The code choosing `--trunclenf` and `--trunclenr` using `--trunc_qmin` automatically cannot take amplicon length or overlap requirements for merging into account, therefore setting `--trunclenf` and `--trunclenr` is preferred
-2. The default value of 25 is recommended. However, very good quality data with large paired sequence overlap might justify a higher value (e.g. 35). Also, very low quality data might require a lower value.
+2. The default value of 25 is recommended. However, high quality data with a large paired sequence overlap might justify a higher value (e.g. 35). Also, very low quality data might require a lower value.
 
 ## Other options
 
@@ -338,7 +338,7 @@ Keep additional intermediate files, such as trimmed reads or various QIIME2 arch
 
 #### Visually choosing sequencing read truncation cutoffs
 
-While [`--untilQ2import`](#--untilQ2import) with `--multipleSequencingRuns` is currently supported, [`--Q2imported`](#--Q2imported) is not. The pipeline can be first run with `--untilQ2import`, than [`--trunclenf` and `--trunclenr`](#--trunclenf-and---trunclenr) are visually chosen, and than the pipeline can be continued without `--untilQ2import` but with `--trunlenf`, `--trunlenr`, and [`-resume`](#-resume).
+While [`--untilQ2import`](#--untilQ2import) with `--multipleSequencingRuns` is currently supported, [`--Q2imported`](#--Q2imported) is not. The pipeline can be first run with `--untilQ2import`, than [`--trunclenf` and `--trunclenr`](#--trunclenf-and---trunclenr) are visually chosen, and then the pipeline can be continued without `--untilQ2import` but with `--trunlenf`, `--trunlenr`, and [`-resume`](#-resume).
 
 For example:
 
@@ -385,7 +385,7 @@ If you have trained a compatible classifier before, from sources such as [SILVA]
 Please note the following requirements:
 
 1. The path must be enclosed in quotes
-2. The cassifier is a Naive Bayes classifier produced by "qiime feature-classifier fit-classifier-naive-bayes" (e.g. by this pipeline or from [QIIME2 resources](https://docs.qiime2.org/2019.10/data-resources/))
+2. The classifier is a Naive Bayes classifier produced by "qiime feature-classifier fit-classifier-naive-bayes" (e.g. by this pipeline or from [QIIME2 resources](https://docs.qiime2.org/2019.10/data-resources/))
 3. The primer pair for the amplicon PCR and the computing of the classifier are exactly the same
 4. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses (0.21.2)
 
@@ -405,9 +405,9 @@ Here columns in the metadata sheet can be chosen with groupings that are used fo
 
 Please note the following requirements:
 
-1. Comma seperated list enclosed in quotes
+1. Comma separated list enclosed in quotes
 2. May not contain whitespace characters
-3. Each comma seperated term has to match exactly one column name in the metadata sheet
+3. Each comma separated term has to match exactly one column name in the metadata sheet
 
 ## Filters
 
@@ -438,7 +438,7 @@ If you prefer not filtering the data, specify:
 
 Please note the following requirements:
 
-1. Comma seperated list enclosed in quotes
+1. Comma separated list enclosed in quotes
 2. May not contain whitespace characters
 3. Features that contain one or several of these terms in their taxonomical classification are excluded from further analysis
 4. The taxonomy level is not taken into consideration
@@ -485,7 +485,7 @@ Skip taxonomic classification, will essentially truncate the workflow after deno
 
 ### `--skip_barplot`
 
-Skip producing barplot, minor time saving.
+Skip creating a barplot, minor time saving.
 
 ### `--skip_abundance_tables`
 
@@ -493,7 +493,7 @@ Skip producing most relative abundance tables, minor time saving.
 
 ### `--skip_diversity_indices`
 
-Skip alpha and beta diversity analysis, large time saving.
+Skip alpha and beta diversity analyses, large time saving.
 
 ### `--skip_ancom`
 
@@ -503,7 +503,7 @@ Skip differential abundance testing, large time saving.
 
 ### Automatic resubmission
 
-Each step in the pipeline has a default set of requirements for number of CPUs, memory and time. For most of the steps in the pipeline, if the job exits with an error code of `143` (exceeded requested resources) it will automatically resubmit with higher requests (2 x original, then 3 x original). If it still fails after three times then the pipeline is stopped.
+Each step in the pipeline has a default set of requirements for number of CPUs, memory and time. For most of the steps in the pipeline, if the job exits with an error code of `143` (exceeded requested resources) it will automatically resubmit with higher requests (2 x original, then 3 x original). If it still fails after three attempts the pipeline is stopped.
 
 ### Custom resource requests
 
@@ -547,7 +547,7 @@ This is used in the MultiQC report (if not default) and in the summary HTML / e-
 
 ### `-resume`
 
-Specify this when restarting a pipeline. Nextflow will used cached results from any pipeline steps where the inputs are the same, continuing from where it got to previously.
+Specify this when restarting a pipeline. Nextflow will use cached results from any pipeline steps where the inputs are the same, continuing from where it got to previously.
 
 You can also supply a run name to resume a specific run: `-resume [run-name]`. Use the `nextflow log` command to show previous run names.
 

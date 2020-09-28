@@ -16,8 +16,5 @@ RUN conda env export --name nf-core-ampliseq-1.2.0dev > nf-core-ampliseq-1.2.0de
 RUN touch .Rprofile
 RUN touch .Renviron
 
-## Required to build the container properly
-RUN mkdir -p /root/.config/matplotlib
-RUN echo "backend : Agg" > /root/.config/matplotlib/matplotlibrc
 ## Don't recache on each execution, do that once per build process
 RUN qiime dev refresh-cache

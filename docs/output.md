@@ -119,7 +119,7 @@ Removes unwanted taxa in DADA2 output sequences and abundance tables by taxonomi
 
 All following analysis is based on these filtered tables.
 
-**Output files:** 
+**Output files:**
 
 * `representative_sequences/filtered/`
   * `sequences.fasta`: Fasta file with ASV sequences.
@@ -141,7 +141,7 @@ All following analysis is based on these filtered tables.
 
 Absolute abundance tables produced by the previous steps contain count data, but the compositional nature of 16S rRNA amplicon sequencing requires sequencing depth normalisation. This step computes relative abundance tables for various taxonomic levels and a detailed table for all ASVs with taxonomic classification, sequence and relative abundance for each sample. Typically used for in depth investigation of taxa abundances.
 
-**Output files:** 
+**Output files:**
 
 * `rel_abundance_tables/`
   * `rel-table-2.tsv`: Tab-separated relative abundance table at phylum level.
@@ -157,7 +157,7 @@ Absolute abundance tables produced by the previous steps contain count data, but
 
 Produces an interactive abundance plot count tables that aids exploratory browsing the discovered taxa and their abundance in samples and allows sorting for associated meta data.
 
-**Output files:** 
+**Output files:**
 
 * `barplot/`
   * `index.html`: Interactive barplot for taxa abundance per sample that can be viewed in your web browser.
@@ -166,7 +166,7 @@ Produces an interactive abundance plot count tables that aids exploratory browsi
 
 Produces rarefaction plots for several alpha diversity indices, and is primarily used to determine if the richness of the samples has been fully observed or sequenced. If the slope of the curves does not level out and the lines do not becomes horizontal, this might be because the sequencing depth was too low to observe all diversity or that sequencing error artificially increases sequence diversity and causes false discoveries.
 
-**Output files:** 
+**Output files:**
 
 * `alpha-rarefaction/`
   * `index.html`: Interactive alphararefaction curve for taxa abundance per sample that can be viewed in your web browser.
@@ -175,7 +175,7 @@ Produces rarefaction plots for several alpha diversity indices, and is primarily
 
 Alpha diversity measures the species diversity within samples. This step calculates alpha diversity using various methods and performs pairwise comparisons of groups of samples.
 
-**Output files:** 
+**Output files:**
 
 * `alpha-diversity`
   * `evenness_vector/index.html`: Pielou’s Evenness.
@@ -194,7 +194,7 @@ Beta diversity measures the species community differences between samples. This 
 * unweighted UniFrac distance (qualitative, phylogenetic)
 * weighted UniFrac distance (quantitative, phylogenetic)
 
-**Output files:** 
+**Output files:**
 
 * `beta-diversity/`
   * `<method>_distance_matrix-<treatment>/index.html`
@@ -208,7 +208,7 @@ Analysis of Composition of Microbiomes ([ANCOM](https://www.ncbi.nlm.nih.gov/pub
 
 ANCOM is applied to each suitable or specified metadata column for 6 taxonomic levels.
 
-**Output files:** 
+**Output files:**
 
 * `ancom/`
   * `Category-<treatment>-<taxonomic level>/index.html`

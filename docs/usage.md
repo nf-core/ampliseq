@@ -10,7 +10,7 @@
     * [Reproducibility](#reproducibility)
   * [Main arguments](#main-arguments)
     * [-profile](#-profile)
-    * [--reads](#--reads)
+    * [--input](#--input)
     * [--FW_primer and --RV_primer](#--fw_primer-and---rv_primer)
     * [--metadata](#--metadata)
     * [--manifest](#--manifest)
@@ -85,7 +85,7 @@ The typical command for running the pipeline is as follows:
 ```bash
 nextflow run nf-core/ampliseq \
     -profile singularity \
-    --reads "data" \
+    --input "data" \
     --FW_primer GTGYCAGCMGCCGCGGTAA \
     --RV_primer GGACTACNVGGGTWTCTAAT \
     --metadata "data/Metadata.tsv"
@@ -141,14 +141,14 @@ If `-profile` is not specified at all the pipeline will be run locally and expec
   * A profile with a complete configuration for automated testing
   * Includes links to test data so needs no other parameters
 
-### `--reads`
+### `--input`
 
 Use this to specify the location of your input paired-end FastQ files.  
 
 For example:
 
 ```bash
---reads 'path/to/data'
+--input 'path/to/data'
 ```
 
 Example for input data organization from one sequencing run with two samples:
@@ -161,7 +161,7 @@ data
   |-sample2_1_L001_R2_001.fastq.gz
 ```
 
-Please note the following requirements:
+Several generic profiles are bundled with the pipeline which instruct the pipeline to use software packaged using different methods (Docker, Singularity, Conda) - see below.
 
 1. The path must be enclosed in quotes
 2. The folder must contain gzip compressed paired-end demultiplexed fastq files. If the file names do not follow the default (`"/*_R{1,2}_001.fastq.gz"`), please check [`--extension`](#--extension).
@@ -203,7 +203,7 @@ If `--metadata_category` isn't specified than all columns that fit the specifica
 
 ### `--manifest`
 
-You can submit a manifest file as an alternative way to provide input reads. No submission of read files with --reads is required this way.
+You can submit a manifest file as an alternative way to provide input reads. No submission of read files with `--input` is required this way.
 A manifest must be a **tab**-separated file that must have the following labels in this exact order: sampleID, forwardReads, reverseReads.
 The sample identifiers must be listed under sampleID. Paths to forward and reverse reads must be reported under forwardReads and reverseReads,
 respectively. Test this feature by runnig the pipeline with `-profile test_manifest`. If downstream analyses do not work, skip them (see below).
@@ -230,13 +230,13 @@ Please note:
 For example for one sample (name: `1`) with forward (file: `1_a.fastq.gz`) and reverse (file: `1_b.fastq.gz`) reads in folder `data`:
 
 ```bash
---reads "data" --extension "/*_{a,b}.fastq.gz"
+--input "data" --extension "/*_{a,b}.fastq.gz"
 ```
 
 ### `--multipleSequencingRuns`
 
 If samples were sequenced in multiple sequencing runs. Expects one subfolder per sequencing run
-in the folder specified by [`--reads`](#--reads) containing sequencing data of the specific run. Also, fastQC and MultiQC are skipped because multiple sequencing runs might create overlapping file names that crash MultiQC.
+in the folder specified by [`--input`](#--input) containing sequencing data of the specific run. Also, fastQC and MultiQC are skipped because multiple sequencing runs might create overlapping file names that crash MultiQC.
 
 To prevent overlapping sample names from multiple sequencing runs, sample names obtained from the sequencing files will be renamed automatically by adding the folder name as prefix seperated by a string specified by [`--split`](#--split). Accordingly, the sample name column in the metadata file [`--metadata`](#--metadata) require values following `subfolder-samplename`.
 
@@ -260,7 +260,7 @@ Example command to analyze this data in one pipeline run:
 ```bash
 nextflow run nf-core/ampliseq \
     -profile singularity \
-    --reads "data" \
+    --input "data" \
     --FW_primer GTGYCAGCMGCCGCGGTAA \
     --RV_primer GGACTACNVGGGTWTCTAAT \
     --metadata "data/Metadata.tsv" \
@@ -347,7 +347,7 @@ For example:
 ```bash
 nextflow run nf-core/ampliseq \
     -profile singularity \
-    --reads "data" \
+    --input "data" \
     --FW_primer GTGYCAGCMGCCGCGGTAA \
     --RV_primer GGACTACNVGGGTWTCTAAT \
     --metadata "data/Metadata.tsv" \
@@ -360,7 +360,7 @@ nextflow run nf-core/ampliseq \
 ```bash
 nextflow run nf-core/ampliseq \
     -profile singularity \
-    --reads "data" \
+    --input "data" \
     --FW_primer GTGYCAGCMGCCGCGGTAA \
     --RV_primer GGACTACNVGGGTWTCTAAT \
     --metadata "data/Metadata.tsv" \
@@ -543,13 +543,13 @@ Name for the pipeline run. If not specified, Nextflow will automatically generat
 
 This is used in the MultiQC report (if not default) and in the summary HTML / e-mail (always).
 
-**NB:** Single hyphen (core Nextflow option)
+### Running in the background
 
 ### `-resume`
 
 Specify this when restarting a pipeline. Nextflow will use cached results from any pipeline steps where the inputs are the same, continuing from where it got to previously.
 
-You can also supply a run name to resume a specific run: `-resume [run-name]`. Use the `nextflow log` command to show previous run names.
+The Nextflow `-bg` flag launches Nextflow in the background, detached from your terminal so that the workflow does not stop if you log out of your session. The logs are saved to a file.
 
 **NB:** Single hyphen (core Nextflow option)
 
@@ -578,14 +578,7 @@ you should download the files from the repo and tell nextflow where to find them
 `custom_config_base` option. For example:
 
 ```bash
-## Download and unzip the config files
-cd /path/to/my/configs
-wget https://github.com/nf-core/configs/archive/master.zip
-unzip master.zip
-
-## Run the pipeline
-cd /path/to/my/data
-nextflow run /path/to/pipeline/ --custom_config_base /path/to/my/configs/configs-master/
+NXF_OPTS='-Xms1g -Xmx4g'
 ```
 
 > Note that the nf-core/tools helper package has a `download` command to download all required pipeline

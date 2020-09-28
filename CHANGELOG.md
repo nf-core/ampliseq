@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+* [#111](https://github.com/nf-core/ampliseq/issues/111) - Added parameter for user specified manifest file
+
 ### `Fixed`
+
+* Template update for nf-core/tools v1.10.2
 
 ### `Dependencies`
 

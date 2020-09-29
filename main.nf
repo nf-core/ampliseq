@@ -26,7 +26,7 @@ def helpMessage() {
 	                                and a specialized profile such as "binac".
 	  --reads [path/to/folder]      Folder containing paired-end demultiplexed fastq files
 	                                Note: All samples have to be sequenced in one run, otherwise also specifiy "--multipleSequencingRuns"
-	  --single_end                  If single end reads. A manifest file is needed to specify the location of single end reads
+	  --single_end                  If single end reads. A manifest file is needed to specify path(-s) to demultiplexed fastq files with the reads
 	  --FW_primer [str]             Forward primer sequence
 	  --RV_primer [str]             Reverse primer sequence
           --metadata [path/to/file]     Path to metadata sheet, when missing most downstream analysis are skipped (barplots, PCoA plots, ...). 
@@ -56,14 +56,14 @@ def helpMessage() {
 
 	Cutoffs:
 	  --retain_untrimmed            Cutadapt will retain untrimmed reads
-          --maxEE [number]              DADA2 read filtering option, currently only used when --pacbio is set. After truncation, reads with higher than ‘maxEE’ "expected errors" will be discarded (default: 2)
+          --maxEE [number]              DADA2 read filtering option, currently only used when --pacbio is set. After truncation, reads with higher than ‘maxEE’ "expected errors" will be discarded. We recommend (to start with) a value corresponding to approximately 1 expected error per 100-200 bp (default: 2)
 	  --trunclenf [int]             DADA2 read truncation value for forward strand and single end reads, set this to 0 for no truncation
 	  --trunclenr [int]             DADA2 read truncation value for reverse strand, set this to 0 for no truncation
 	  --trunc_qmin [int]            If --trunclenf and --trunclenr are not set, 
 	                                these values will be automatically determined using 
 	                                this mean quality score (not preferred) (default: 25)
 
-	References:                     If you have trained a compatible classifier before, or want to uise a custom database
+	References:                     If you have trained a compatible classifier before, or want to use a custom database
 	  --classifier [path/to/file]   Path to QIIME2 classifier file (typically *-classifier.qza)
 	  --classifier_removeHash       Remove all hash signs from taxonomy strings, resolves a rare ValueError during classification (process classifier)
           --reference_database          Path to file with reference database with taxonomies (default: SILVA_132_16S)
@@ -203,6 +203,7 @@ if (params.multipleSequencingRuns && params.manifest) {
 if (params.single_end && !params.pacbio) {
         exit 1, "Paired end sequences are expected if other than PacBio data."
 }
+
 if (params.single_end && !params.manifest) {
         exit 1, "A manifest file is needed for single end reads."
 }
@@ -549,10 +550,10 @@ if (!params.Q2imported){
 			.map { name, reads ->
 				def sampleID = name 
 				def Reads = reads
-				[ "${sampleID}" +","+ "${Reads}" ]
+				[ "${sampleID}" +","+ "${Reads}" + ",forward" ]
 			}
 			.flatten()
-			.collectFile(name: 'manifest.txt', newLine: true, storeDir: "${params.outdir}/demux", seed: "sample-id,absolute-filepath")
+			.collectFile(name: 'manifest.txt', newLine: true, storeDir: "${params.outdir}/demux", seed: "sample-id,absolute-filepath,direction")
 			.set { ch_manifest }
 	
 	} else if (!params.multipleSequencingRuns){
@@ -660,7 +661,42 @@ if (!params.Q2imported){
 			}
 		}
 	} else if (params.pacbio) {
-		ch_manifest.set { ch_dada_import }
+		process qiime_import_pacbio{
+			publishDir "${params.outdir}/demux", mode: 'copy', 
+			saveAs: { filename -> 
+				params.keepIntermediates ? filename : null
+				params.untilQ2import ? filename : null }
+
+			input:
+			file(manifest) from ch_manifest
+			env MATPLOTLIBRC from ch_mpl_for_qiime_import
+
+			output:
+			file manifest into ch_dada_import
+			file "demux.qza" into (ch_qiime_demux_import, ch_qiime_demux_vis)
+
+			when:
+			!params.Q2imported
+		
+			script:
+			if (!params.phred64) {
+				"""
+				qiime tools import \
+					--type 'SampleData[SequencesWithQuality]' \
+					--input-path ${manifest} \
+					--output-path demux.qza \
+					--input-format SingleEndFastqManifestPhred33
+				"""
+			} else {
+				"""
+				qiime tools import \
+					--type 'SampleData[SequencesWithQuality]' \
+					--input-path ${manifest} \
+					--output-path demux.qza \
+					--input-format SingleEndFastqManifestPhred64
+				"""
+			}
+		}
 	} else {
 		process qiime_import_multi {
 			tag "${manifest}"
@@ -699,11 +735,9 @@ if (!params.Q2imported){
 			}
 		}
 	}
-	if (!params.pacbio) {
-		ch_qiime_demux_vis  
-			.combine( ch_mpl_for_demux_visualize )
-			.set{ ch_qiime_demux_visualisation }
-	}
+	ch_qiime_demux_vis  
+		.combine( ch_mpl_for_demux_visualize )
+		.set{ ch_qiime_demux_visualisation }
 } 
 
 /*
@@ -789,7 +823,7 @@ if( !params.classifier ){
 /*
  * Import trimmed files into QIIME2 artefact
  */
-if( !params.Q2imported && !params.pacbio ){
+if( !params.Q2imported ){
 	process qiime_demux_visualize {
 		tag "${demux.baseName}"
 		publishDir "${params.outdir}", mode: 'copy'
@@ -809,7 +843,7 @@ if( !params.Q2imported && !params.pacbio ){
 		qiime tools export --input-path ${demux.baseName}.qzv --output-path ${demux.baseName}
 		"""
 	}
-} else if ( !params.pacbio ){
+} else {
 	process qiime_importdemux_visualize { 
 		publishDir "${params.outdir}", mode: 'copy'
 
@@ -905,7 +939,10 @@ if (params.multipleSequencingRuns){
 
  
 /*
- * Find ASVs with DADA2 for single sequencing run
+ * Find ASVs with DADA2
+ *    (i) for single sequencing run
+ *    (ii) for PacBio reads
+ *    (iii) for multiple sequencing runs
  */
 if (!params.multipleSequencingRuns && !params.pacbio){
 	process dada_single {
@@ -1020,10 +1057,8 @@ if (!params.multipleSequencingRuns && !params.pacbio){
 		file("feature-table.tsv") into ch_tsv_table_raw
 		file("dada_stats.tsv")
 		file("feature-table.biom")
-	//	file("rel-table/feature-table.biom")
 		file("rel-feature-table.tsv")
 		file("sequences.fasta")
-	//	file("seven_number_summary.tsv")
 		file("dada_report.txt")
 
 		when:

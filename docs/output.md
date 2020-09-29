@@ -74,7 +74,7 @@ At this point of the analysis the trimmed reads are imported into QIIME2 and an 
 * `demux.qza` (only when --untilQ2import is true)
   * QIIME2 artefact for imported reads
 
-All following steps are performed in QIIME2.
+All following steps are performed in QIIME2, except DADA2 in the case of pacbio data.
 
 ### DADA2
 
@@ -82,7 +82,7 @@ All following steps are performed in QIIME2.
 
 DADA2 computes an error model on the sequencing reads (forward and reverse independently), therefore quality filtering or paired read merging may not be performed before. Each sequencing run varies in their error profile and it is recommended that DADA2 runs separately on data from each run individually. It is recommended to use the ampliseq option `--multipleSequencingRuns` to analyse such data.
 
-DADA2 reduces sequence errors and dereplicates sequences by quality filtering, denoising, read pair merging and PCR chimera removal.
+DADA2 reduces sequence errors and dereplicates sequences by quality filtering, denoising, read pair merging (if applicable) and PCR chimera removal.
 
 **Output directory: `results/representative_sequences/unfiltered`**
 
@@ -112,7 +112,7 @@ DADA2 reduces sequence errors and dereplicates sequences by quality filtering, d
 
 ### Taxonomic classification
 
-ASV abundance and sequences inferred in DADA2 are informative but routinely taxonomic classifications such as family or genus annotation is desireable. ASV sequences are classified by default against the [SILVA](https://www.arb-silva.de/) [v132](https://www.arb-silva.de/documentation/release-132/) database to add taxonomic information.
+ASV abundance and sequences inferred in DADA2 are informative but routinely taxonomic classifications such as family or genus annotation is desireable. ASV sequences are classified by default against the [SILVA](https://www.arb-silva.de/) [v132](https://www.arb-silva.de/documentation/release-132/) database to add taxonomic information, but a custom database is used if provided.
 
 **Output directory: `results/taxonomy`**
 

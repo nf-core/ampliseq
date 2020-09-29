@@ -34,6 +34,8 @@
   * [Reference database](#reference-database)
     * [--classifier](#--classifier)
     * [--classifier_removeHash](#--classifier_removehash)
+    * [--reference_database](#--reference_database)
+    * [--unite](#--unite)
   * [Statistics](#statistics)
     * [--metadata_category](#--metadata_category)
   * [Filters](#filters)
@@ -206,11 +208,11 @@ Identifiers should be 36 characters long or less, and also contain only ASCII al
 (i.e. in the range of [a-z], [A-Z], or [0-9]), the period (.) character, or the dash (-) character.
 By default all numeric columns, blanks or NA are removed, and only columns with multiple different values but not all unique are selected.
 The columns which are to be assessed can be specified by `--metadata_category`, see below.
-If `--metadata_category` isn't specified than all columns that fit the specification are automatically chosen.
+If `--metadata_category` isn't specified then all columns that fit the specification are automatically chosen.
 
 ### `--manifest`
 
-You can submit a manifest file as an alternative way to provide input reads. No submission of read files with --reads is required this way. This is the only option in case of single end reads.
+You can submit a manifest file as an alternative way to provide input reads. No submission of read files with --reads is required this way. This is the only way to provide input in case of single end reads.
 A manifest must be a **tab**-separated file that must have the following labels in this exact order: sampleID, forwardReads, reverseReads. In case of single end reads, the labels should be: sampleID, Reads.
 The sample identifiers must be listed under sampleID. Paths to forward and reverse reads must be reported under forwardReads and reverseReads,
 respectively. Test this feature by runnig the pipeline with `-profile test_manifest`. If downstream analyses do not work, skip them (see below).
@@ -304,7 +306,7 @@ If the sequencing data has PHRED 64 encoded quality scores (default: PHRED 33)
 
 ###`--maxEE`
 
-DADA2 read filtering option, currently only used when --pacbio is set.  After truncation, reads with higher than ‘maxEE’ "expected errors" will be discarded. In case of very long reads, you might want to increase this value. (default: 2)
+DADA2 read filtering option, currently only used when --pacbio is set.  After truncation, reads with higher than ‘maxEE’ "expected errors" will be discarded. In case of very long reads, you might want to increase this value.  We recommend (to start with) a value corresponding to approximately 1 expected error per 100-200 bp (default: 2)
 
 ### `--trunclenf` and `--trunclenr`
 
@@ -408,6 +410,14 @@ Please note the following requirements:
 ### `--classifier_removeHash`
 
 Remove all hash signs from taxonomy strings, resolves a rare ValueError during classification (process classifier).
+
+### `--reference_database`
+
+Path to custom reference database. By default, the workflow downloads SILVA_132_16S
+
+### `--unite`
+
+If reference database is in the format of a UNITE fasta file instead of SILVA zip file
 
 ## Statistics
 

@@ -716,6 +716,8 @@ if( !params.classifier ){
 		script:
 	  
 		"""
+		export HOME=./HOME
+
 		unzip -qq $database
 
 		fasta=\"SILVA_132_QIIME_release/rep_set/rep_set_16S_only/${params.dereplication}/silva_132_${params.dereplication}_16S.fna\"
@@ -793,6 +795,8 @@ if( !params.Q2imported ){
 		file("demux/*")
 	  
 		"""
+		export HOME=./HOME
+
 		qiime demux summarize \
 			--i-data ${params.Q2imported} \
 			--o-visualization demux.qzv
@@ -897,6 +901,7 @@ if (!params.multipleSequencingRuns){
 		if (values[0].toInteger() + values[1].toInteger() <= 10) { 
 			log.info "\n######## ERROR: Total read pair length is below 10, this is definitely too low.\nForward ${values[0]} and reverse ${values[1]} are chosen.\nPlease provide appropriate values for --trunclenf and --trunclenr or lower --trunc_qmin\n" }
 		"""
+		export HOME=./HOME
 		IFS=',' read -r -a trunclen <<< \"$trunc\"
 
 		#denoise samples with DADA2 and produce
@@ -1033,6 +1038,8 @@ if (!params.multipleSequencingRuns){
 		for (stat in stats) { STAT+= " $stat" }
 		for (report in reports) { REPORT+= " $report" }
 		"""
+		export HOME=./HOME
+
 		#concatenate tables
 		#merge files
 		qiime feature-table merge \
@@ -1102,6 +1109,8 @@ process classifier {
 
   
 	"""
+	export HOME=./HOME
+
 	qiime feature-classifier classify-sklearn  \
 		--i-classifier ${trained_classifier}  \
 		--p-n-jobs ${task.cpus}  \
@@ -1159,6 +1168,8 @@ if (params.exclude_taxa == "none" && !params.min_frequency && !params.min_sample
 		if ( "${params.min_samples}" == "false" ) { minsamples = 1 } else { minsamples = "${params.min_samples}" }
 		//if ( "${params.exclude_taxa}" == "none" ) { exclude = "" } else { exclude = "--p-exclude ${params.exclude_taxa} --p-mode contains " }
 		"""
+		export HOME=./HOME
+
 		if ! [ \"${params.exclude_taxa}\" = \"none\" ]; then
 			#filter sequences
 			qiime taxa filter-seqs \
@@ -1221,6 +1232,8 @@ process export_filtered_dada_output {
 	file("abs-abund-table-*.tsv")
 
 	"""
+	export HOME=./HOME
+
 	#produce raw count table in biom format "table/feature-table.biom"
 	qiime tools export --input-path ${table}  \
 		--output-path table
@@ -1293,6 +1306,8 @@ process RelativeAbundanceASV {
 	!params.skip_abundance_tables
 
 	"""
+	export HOME=./HOME
+
 	#convert to relative abundances
 	qiime feature-table relative-frequency \
 		--i-table ${table} \
@@ -1326,6 +1341,7 @@ process RelativeAbundanceReducedTaxa {
 	!params.skip_abundance_tables && !params.skip_taxonomy
 
 	"""
+	export HOME=./HOME
 	##on several taxa level
 
 	array=( 2 3 4 5 6 7 )
@@ -1373,6 +1389,8 @@ process barplot {
 	!params.skip_barplot && !params.skip_taxonomy
   
 	"""
+	export HOME=./HOME
+
 	qiime taxa barplot  \
 		--i-table ${table}  \
 		--i-taxonomy ${taxonomy}  \
@@ -1407,6 +1425,8 @@ process tree {
 
   
 	"""
+	export HOME=./HOME
+
 	qiime alignment mafft \
 		--i-sequences ${repseq} \
 		--o-alignment aligned-rep-seqs.qza \
@@ -1451,6 +1471,8 @@ process alpha_rarefaction {
 	!params.skip_alpha_rarefaction
 
 	"""
+	export HOME=./HOME
+
 	maxdepth=\$(count_table_minmax_reads.py $stats maximum 2>&1)
 
 	#check values
@@ -1518,6 +1540,7 @@ process diversity_core {
 	!params.skip_diversity_indices
 
 	"""
+	export HOME=./HOME
 	mindepth=\$(count_table_minmax_reads.py $stats minimum 2>&1)
 
 	if [ \"\$mindepth\" -gt \"10000\" ]; then echo \"\nUse the sampling depth of \$mindepth for rarefaction\" ; fi
@@ -1624,6 +1647,7 @@ process alpha_diversity {
 
 	"""
 	export HOME=./HOME
+
 	qiime diversity alpha-group-significance \
 		--i-alpha-diversity ${core} \
 		--m-metadata-file ${metadata} \
@@ -1683,6 +1707,7 @@ process beta_diversity_ordination {
 
 	"""
 	export HOME=./HOME
+
 	qiime emperor plot \
 		--i-pcoa ${core} \
 		--m-metadata-file ${metadata} \
@@ -1716,6 +1741,7 @@ process prepare_ancom {
 	!params.skip_ancom && (meta.length() > 0)
 
 	"""
+	export HOME=./HOME
 	IFS=',' read -r -a metacategory <<< \"$meta\"
 
 	#remove samples that do not have any value
@@ -1768,6 +1794,7 @@ process ancom_tax {
 
 	"""
 	export HOME=./HOME
+
 	qiime taxa collapse \
 		--i-table ${table} \
 		--i-taxonomy ${taxonomy} \
@@ -1802,6 +1829,7 @@ process ancom_asv {
 
 	"""
 	export HOME=./HOME
+	
 	qiime composition add-pseudocount \
 		--i-table ${table} \
 		--o-composition-table comp-${table}

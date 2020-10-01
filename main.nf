@@ -772,7 +772,8 @@ if( !params.Q2imported ){
 		file("${demux.baseName}/*")
 	  
 		"""
-		export HOME=./HOME_for_QIIME
+		export HOME=./HOME
+		
 		qiime demux summarize \
 		--i-data ${demux} \
 		--o-visualization ${demux.baseName}.qzv
@@ -965,6 +966,8 @@ if (!params.multipleSequencingRuns){
 		if (trunclenf.toInteger() + trunclenr.toInteger() <= 10) { 
 			log.info "\n######## ERROR: Total read pair length is below 10, this is definitely too low.\nForward ${trunclenf} and reverse ${trunclenr} are chosen.\nPlease provide appropriate values for --trunclenf and --trunclenr or lower --trunc_qmin\n" }
 		"""
+		export HOME=./HOME
+
 		#denoise samples with DADA2 and produce
 		qiime dada2 denoise-paired  \
 			--i-demultiplexed-seqs ${demux}  \
@@ -1620,6 +1623,7 @@ process alpha_diversity {
 	meta.length() > 0
 
 	"""
+	export HOME=./HOME
 	qiime diversity alpha-group-significance \
 		--i-alpha-diversity ${core} \
 		--m-metadata-file ${metadata} \
@@ -1647,6 +1651,7 @@ process beta_diversity {
 	category.length() > 0
 
 	"""
+	export HOME=./HOME
 	IFS=',' read -r -a metacategory <<< \"$category\"
 
 	for j in \"\${metacategory[@]}\"
@@ -1677,6 +1682,7 @@ process beta_diversity_ordination {
 	file("beta-diversity/*")
 
 	"""
+	export HOME=./HOME
 	qiime emperor plot \
 		--i-pcoa ${core} \
 		--m-metadata-file ${metadata} \
@@ -1761,6 +1767,7 @@ process ancom_tax {
 	!params.skip_ancom
 
 	"""
+	export HOME=./HOME
 	qiime taxa collapse \
 		--i-table ${table} \
 		--i-taxonomy ${taxonomy} \
@@ -1794,6 +1801,7 @@ process ancom_asv {
 	file("ancom/*") 
 
 	"""
+	export HOME=./HOME
 	qiime composition add-pseudocount \
 		--i-table ${table} \
 		--o-composition-table comp-${table}

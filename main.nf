@@ -772,6 +772,7 @@ if( !params.Q2imported ){
 		file("${demux.baseName}/*")
 	  
 		"""
+		export HOME=./HOME_for_QIIME
 		qiime demux summarize \
 		--i-data ${demux} \
 		--o-visualization ${demux.baseName}.qzv

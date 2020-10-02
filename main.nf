@@ -716,7 +716,7 @@ if( !params.classifier ){
 		script:
 	  
 		"""
-		export HOME=./HOME
+		export HOME="\${PWD}/HOME"
 
 		unzip -qq $database
 

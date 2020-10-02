@@ -1109,7 +1109,7 @@ process classifier {
 
   
 	"""
-	export HOME=./HOME
+	export HOME="\${PWD}/HOME"
 
 	qiime feature-classifier classify-sklearn  \
 		--i-classifier ${trained_classifier}  \

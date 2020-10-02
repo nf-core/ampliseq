@@ -71,7 +71,7 @@
             },
             "fa_icon": "fas fa-filter"
         },
-        "taconomic_database": {
+        "taxonomic_database": {
             "title": "Taconomic database",
             "type": "object",
             "description": "",

@@ -971,7 +971,7 @@ if (!params.multipleSequencingRuns){
 		if (trunclenf.toInteger() + trunclenr.toInteger() <= 10) { 
 			log.info "\n######## ERROR: Total read pair length is below 10, this is definitely too low.\nForward ${trunclenf} and reverse ${trunclenr} are chosen.\nPlease provide appropriate values for --trunclenf and --trunclenr or lower --trunc_qmin\n" }
 		"""
-		export HOME=./HOME
+		export HOME="\${PWD}/HOME"
 
 		#denoise samples with DADA2 and produce
 		qiime dada2 denoise-paired  \

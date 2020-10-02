@@ -1828,7 +1828,7 @@ process ancom_asv {
 	file("ancom/*") 
 
 	"""
-	export HOME=./HOME
+	export HOME="\${PWD}/HOME"
 	
 	qiime composition add-pseudocount \
 		--i-table ${table} \

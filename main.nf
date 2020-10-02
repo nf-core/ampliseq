@@ -1646,7 +1646,7 @@ process alpha_diversity {
 	meta.length() > 0
 
 	"""
-	export HOME=./HOME
+	export HOME="\${PWD}/HOME"
 
 	qiime diversity alpha-group-significance \
 		--i-alpha-diversity ${core} \

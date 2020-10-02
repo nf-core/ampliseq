@@ -1389,7 +1389,7 @@ process barplot {
 	!params.skip_barplot && !params.skip_taxonomy
   
 	"""
-	export HOME=./HOME
+	export HOME="\${PWD}/HOME"
 
 	qiime taxa barplot  \
 		--i-table ${table}  \

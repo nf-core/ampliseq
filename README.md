@@ -43,20 +43,11 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 See [usage docs](docs/usage.md) for all of the available options when running the pipeline.
 
-### Documentation
+## Documentation
 
-The nf-core/ampliseq pipeline comes with documentation about the pipeline which you can read at [https://nf-co.re/ampliseq](https://nf-co.re/ampliseq) or find in the [`docs/` directory](docs).
-The nf-core/ampliseq pipeline comes with documentation about the pipeline, found in the `docs/` directory:
+The nf-core/mag pipeline comes with documentation about the pipeline which you can read at [https://nf-co.re/ampliseq](https://nf-co.re/ampliseq) or find in the [`docs/` directory](docs).
 
-1. [Installation](https://nf-co.re/usage/installation)
-2. Pipeline configuration
-    * [Local installation](https://nf-co.re/usage/installation)
-    * [Adding your own system config](https://nf-co.re/usage/adding_own_config)
-3. [Running the pipeline](docs/usage.md)
-4. [Output and how to interpret the results](docs/output.md)
-5. [Troubleshooting](https://nf-co.re/usage/troubleshooting)
-
-### Credits
+## Credits
 
 These scripts were originally written for use at the [Quantitative Biology Center (QBiC)](http://www.qbic.life) and [Microbial Ecology, Center for Applied Geosciences](http://www.uni-tuebingen.de/de/104325), part of Eberhard Karls Universität Tübingen (Germany) by Daniel Straub ([@d4straub](https://github.com/d4straub)) and Alexander Peltzer ([@apeltzer](https://github.com/apeltzer)).
 
@@ -70,7 +61,7 @@ For further information or help, don't hesitate to get in touch on the [Slack `#
 
 If you use nf-core/ampliseq for your analysis, please cite it using the following DOI:
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3568091.svg)](https://doi.org/10.5281/zenodo.3568091)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1493841.svg)](https://doi.org/10.5281/zenodo.1493841)
 
 Additionally, please cite the pre-print as follows:
 

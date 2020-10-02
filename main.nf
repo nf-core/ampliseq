@@ -1306,7 +1306,7 @@ process RelativeAbundanceASV {
 	!params.skip_abundance_tables
 
 	"""
-	export HOME=./HOME
+	export HOME="\${PWD}/HOME"
 
 	#convert to relative abundances
 	qiime feature-table relative-frequency \

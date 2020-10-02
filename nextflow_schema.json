@@ -72,7 +72,7 @@
             "fa_icon": "fas fa-filter"
         },
         "taxonomic_database": {
-            "title": "Taconomic database",
+            "title": "Taxonomic database",
             "type": "object",
             "description": "",
             "default": "",

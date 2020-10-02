@@ -45,6 +45,7 @@ See [usage docs](docs/usage.md) for all of the available options when running th
 
 ### Documentation
 
+The nf-core/ampliseq pipeline comes with documentation about the pipeline which you can read at [https://nf-co.re/ampliseq](https://nf-co.re/ampliseq) or find in the [`docs/` directory](docs).
 The nf-core/ampliseq pipeline comes with documentation about the pipeline, found in the `docs/` directory:
 
 1. [Installation](https://nf-co.re/usage/installation)

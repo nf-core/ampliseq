@@ -1232,7 +1232,7 @@ process export_filtered_dada_output {
 	file("abs-abund-table-*.tsv")
 
 	"""
-	export HOME=./HOME
+	export HOME="\${PWD}/HOME"
 
 	#produce raw count table in biom format "table/feature-table.biom"
 	qiime tools export --input-path ${table}  \

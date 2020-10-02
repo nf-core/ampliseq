@@ -1741,7 +1741,7 @@ process prepare_ancom {
 	!params.skip_ancom && (meta.length() > 0)
 
 	"""
-	export HOME=./HOME
+	export HOME="\${PWD}/HOME"
 	IFS=',' read -r -a metacategory <<< \"$meta\"
 
 	#remove samples that do not have any value

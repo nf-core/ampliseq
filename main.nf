@@ -1038,7 +1038,7 @@ if (!params.multipleSequencingRuns){
 		for (stat in stats) { STAT+= " $stat" }
 		for (report in reports) { REPORT+= " $report" }
 		"""
-		export HOME=./HOME
+		export HOME="\${PWD}/HOME"
 
 		#concatenate tables
 		#merge files

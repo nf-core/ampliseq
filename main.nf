@@ -1168,7 +1168,7 @@ if (params.exclude_taxa == "none" && !params.min_frequency && !params.min_sample
 		if ( "${params.min_samples}" == "false" ) { minsamples = 1 } else { minsamples = "${params.min_samples}" }
 		//if ( "${params.exclude_taxa}" == "none" ) { exclude = "" } else { exclude = "--p-exclude ${params.exclude_taxa} --p-mode contains " }
 		"""
-		export HOME=./HOME
+		export HOME="\${PWD}/HOME"
 
 		if ! [ \"${params.exclude_taxa}\" = \"none\" ]; then
 			#filter sequences

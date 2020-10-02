@@ -1425,7 +1425,7 @@ process tree {
 
   
 	"""
-	export HOME=./HOME
+	export HOME="\${PWD}/HOME"
 
 	qiime alignment mafft \
 		--i-sequences ${repseq} \

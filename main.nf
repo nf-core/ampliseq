@@ -1341,7 +1341,7 @@ process RelativeAbundanceReducedTaxa {
 	!params.skip_abundance_tables && !params.skip_taxonomy
 
 	"""
-	export HOME=./HOME
+	export HOME="\${PWD}/HOME"
 	##on several taxa level
 
 	array=( 2 3 4 5 6 7 )

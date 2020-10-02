@@ -1540,7 +1540,7 @@ process diversity_core {
 	!params.skip_diversity_indices
 
 	"""
-	export HOME=./HOME
+	export HOME="\${PWD}/HOME"
 	mindepth=\$(count_table_minmax_reads.py $stats minimum 2>&1)
 
 	if [ \"\$mindepth\" -gt \"10000\" ]; then echo \"\nUse the sampling depth of \$mindepth for rarefaction\" ; fi

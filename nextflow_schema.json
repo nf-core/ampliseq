@@ -379,7 +379,7 @@
             "$ref": "#/definitions/cutoffs"
         },
         {
-            "$ref": "#/definitions/taconomic_database"
+            "$ref": "#/definitions/taxonomic_database"
         },
         {
             "$ref": "#/definitions/filtering"

@@ -62,6 +62,7 @@ def helpMessage() {
 	References:                     If you have trained a compatible classifier before
 	  --classifier [path/to/file]   Path to QIIME2 classifier file (typically *-classifier.qza)
 	  --classifier_removeHash       Remove all hash signs from taxonomy strings, resolves a rare ValueError during classification (process classifier)
+	  --reference_database [path]   Path to the qiime compatible file Silva_132_release.zip (default: "https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip")
 
 	Statistics:
 	  --metadata_category [str]     Comma separated list of metadata column headers for statistics (default: false)

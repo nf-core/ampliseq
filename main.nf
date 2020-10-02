@@ -1675,7 +1675,7 @@ process beta_diversity {
 	category.length() > 0
 
 	"""
-	export HOME=./HOME
+	export HOME="\${PWD}/HOME"
 	IFS=',' read -r -a metacategory <<< \"$category\"
 
 	for j in \"\${metacategory[@]}\"

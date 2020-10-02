@@ -1471,7 +1471,7 @@ process alpha_rarefaction {
 	!params.skip_alpha_rarefaction
 
 	"""
-	export HOME=./HOME
+	export HOME="\${PWD}/HOME"
 
 	maxdepth=\$(count_table_minmax_reads.py $stats maximum 2>&1)
 

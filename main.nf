@@ -774,7 +774,7 @@ if( !params.Q2imported ){
 		file("${demux.baseName}/*")
 	  
 		"""
-		export HOME=./HOME
+		export HOME="\${PWD}/HOME"
 		
 		qiime demux summarize \
 		--i-data ${demux} \

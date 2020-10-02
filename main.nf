@@ -1706,7 +1706,7 @@ process beta_diversity_ordination {
 	file("beta-diversity/*")
 
 	"""
-	export HOME=./HOME
+	export HOME="\${PWD}/HOME"
 
 	qiime emperor plot \
 		--i-pcoa ${core} \

@@ -1793,7 +1793,7 @@ process ancom_tax {
 	!params.skip_ancom
 
 	"""
-	export HOME=./HOME
+	export HOME="\${PWD}/HOME"
 
 	qiime taxa collapse \
 		--i-table ${table} \

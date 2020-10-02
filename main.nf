@@ -901,7 +901,7 @@ if (!params.multipleSequencingRuns){
 		if (values[0].toInteger() + values[1].toInteger() <= 10) { 
 			log.info "\n######## ERROR: Total read pair length is below 10, this is definitely too low.\nForward ${values[0]} and reverse ${values[1]} are chosen.\nPlease provide appropriate values for --trunclenf and --trunclenr or lower --trunc_qmin\n" }
 		"""
-		export HOME=./HOME
+		export HOME="\${PWD}/HOME"
 		IFS=',' read -r -a trunclen <<< \"$trunc\"
 
 		#denoise samples with DADA2 and produce

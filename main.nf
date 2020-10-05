@@ -458,7 +458,7 @@ if (!params.Q2imported){
 		
 			output:
 			set val(pair_id), file ("trimmed/*.*") into ch_fastq_trimmed_manifest 
-			file "trimmed/*.*" into ch_fastq_trimmed
+			file "trimmed/*.*" into (ch_fastq_trimmed, ch_fastq_trimmed_qiime)
 			file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
 
 			script:
@@ -484,7 +484,7 @@ if (!params.Q2imported){
 			set val(pair_id), file(reads), val(folder) from ch_read_pairs
 		
 			output:
-			file "trimmed/*.*" into (ch_fastq_trimmed, ch_fastq_trimmed_manifest)
+			file "trimmed/*.*" into (ch_fastq_trimmed, ch_fastq_trimmed_manifest, ch_fastq_trimmed_qiime)
 			file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
 
 			script:
@@ -614,6 +614,7 @@ if (!params.Q2imported){
 			input:
 			file(manifest) from ch_manifest
 			env MATPLOTLIBRC from ch_mpl_for_qiime_import
+			file('*') from ch_fastq_trimmed_qiime.collect()
 
 			output:
 			file "demux.qza" into (ch_qiime_demux_import, ch_qiime_demux_vis, ch_qiime_demux_dada)
@@ -624,6 +625,16 @@ if (!params.Q2imported){
 			script:
 			if (!params.phred64) {
 				"""
+				head -n 1 ${manifest} > header.txt
+				tail -n+2 ${manifest} | cut -d, -f1 > col1.txt
+				tail -n+2 ${manifest} | cut -d, -f2 | sed 's:.*/::' > col2.txt
+				while read f; do
+					realpath \$f >> full_path.txt
+				done <col2.txt
+				tail -n+2 ${manifest} | cut -d, -f3 > col3.txt
+				paste -d, col1.txt full_path.txt col3.txt > cols.txt
+				cat cols.txt >> header.txt && mv header.txt ${manifest}
+
 				qiime tools import \
 					--type 'SampleData[PairedEndSequencesWithQuality]' \
 					--input-path ${manifest} \
@@ -632,6 +643,16 @@ if (!params.Q2imported){
 				"""
 			} else {
 				"""
+				head -n 1 ${manifest} > header.txt
+				tail -n+2 ${manifest} | cut -d, -f1 > col1.txt
+				tail -n+2 ${manifest} | cut -d, -f2 | sed 's:.*/::' > col2.txt
+				while read f; do
+					realpath \$f >> full_path.txt
+				done <col2.txt
+				tail -n+2 ${manifest} | cut -d, -f3 > col3.txt
+				paste -d, col1.txt full_path.txt col3.txt > cols.txt
+				cat cols.txt >> header.txt && mv header.txt ${manifest}
+
 				qiime tools import \
 					--type 'SampleData[PairedEndSequencesWithQuality]' \
 					--input-path ${manifest} \
@@ -650,6 +671,7 @@ if (!params.Q2imported){
 
 			input:
 			set file(manifest), env(MATPLOTLIBRC) from ch_manifest
+			file('*') from ch_fastq_trimmed_qiime.collect()
 
 			output:
 			file "*demux.qza" into (ch_qiime_demux_import, ch_qiime_demux_vis, ch_qiime_demux_dada) mode flatten
@@ -661,6 +683,16 @@ if (!params.Q2imported){
 			def folder = "${manifest}".take("${manifest}".indexOf("${params.split}"))
 			if (!params.phred64) {
 				"""
+				head -n 1 ${manifest} > header.txt
+				tail -n+2 ${manifest} | cut -d, -f1 > col1.txt
+				tail -n+2 ${manifest} | cut -d, -f2 | sed 's:.*/::' > col2.txt
+				while read f; do
+					realpath \$f >> full_path.txt
+				done <col2.txt
+				tail -n+2 ${manifest} | cut -d, -f3 > col3.txt
+				paste -d, col1.txt full_path.txt col3.txt > cols.txt
+				cat cols.txt >> header.txt && mv header.txt ${manifest}
+
 				qiime tools import \
 					--type 'SampleData[PairedEndSequencesWithQuality]' \
 					--input-path ${manifest} \
@@ -669,6 +701,16 @@ if (!params.Q2imported){
 				"""
 			} else {
 				"""
+				head -n 1 ${manifest} > header.txt
+				tail -n+2 ${manifest} | cut -d, -f1 > col1.txt
+				tail -n+2 ${manifest} | cut -d, -f2 | sed 's:.*/::' > col2.txt
+				while read f; do
+					realpath \$f >> full_path.txt
+				done <col2.txt
+				tail -n+2 ${manifest} | cut -d, -f3 > col3.txt
+				paste -d, col1.txt full_path.txt col3.txt > cols.txt
+				cat cols.txt >> header.txt && mv header.txt ${manifest}
+
 				qiime tools import \
 					--type 'SampleData[PairedEndSequencesWithQuality]' \
 					--input-path ${manifest} \

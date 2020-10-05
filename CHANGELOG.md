@@ -1,5 +1,22 @@
 # nf-core/ampliseq
 
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## v1.2.0dev - [date]
+
+### `Added`
+
+* [#111](https://github.com/nf-core/ampliseq/issues/111) - Added parameter for user specified manifest file
+
+### `Fixed`
+
+* [#163](https://github.com/nf-core/ampliseq/pull/163) - Template update for nf-core/tools v1.10.2
+
+### `Dependencies`
+
+### `Deprecated`
+
 ## nf-core/ampliseq version 1.1.2 - 2019
 
 * No further changes, except a bugfix for the [timezone](https://github.com/nf-core/ampliseq/issues/114) issue found by @marchoeppner

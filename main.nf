@@ -516,7 +516,6 @@ if (!params.Q2imported){
 		output:
 		file "*multiqc_report.html" into ch_multiqc_report
 		file "*_data"
-		file "multiqc_plots"
 
 		when:
 		!params.skip_multiqc
@@ -527,8 +526,7 @@ if (!params.Q2imported){
 		custom_config_file = params.multiqc_config ? "--config $mqc_custom_config" : ''
 		// TODO nf-core: Specify which MultiQC modules to use with -m for a faster run time
 		"""
-		##TODO, use "--force --interactive"?
-		multiqc -f $rtitle $rfilename $custom_config_file .
+		multiqc --interactive -f $rtitle $rfilename $custom_config_file .
 		"""
 	}
 

@@ -568,44 +568,8 @@ if (!params.Q2imported){
 	/*
 	* Import trimmed files into QIIME2 artefact
 	*/
-	if (!params.multipleSequencingRuns){
-		process qiime_import_new_man {
-			publishDir "${params.outdir}/demux", mode: params.publish_dir_mode, 
-			saveAs: { filename -> 
-				params.keepIntermediates ? filename : null
-				params.untilQ2import ? filename : null }
-
-			input:
-			file(manifest) from ch_manifest
-			env MATPLOTLIBRC from ch_mpl_for_qiime_import
-
-			output:
-			file "demux.qza" into (ch_qiime_demux_import, ch_qiime_demux_vis, ch_qiime_demux_dada)
-
-			when:
-			!params.Q2imported
-		
-			script:
-			if (!params.phred64) {
-				"""
-				qiime tools import \
-					--type 'SampleData[PairedEndSequencesWithQuality]' \
-					--input-path ${manifest} \
-					--output-path demux.qza \
-					--input-format PairedEndFastqManifestPhred33
-				"""
-			} else {
-				"""
-				qiime tools import \
-					--type 'SampleData[PairedEndSequencesWithQuality]' \
-					--input-path ${manifest} \
-					--output-path demux.qza \
-					--input-format PairedEndFastqManifestPhred64
-				"""
-			}
-		}
-	} else if (!params.multipleSequencingRuns){
-		process qiime_import{
+	if (!params.multipleSequencingRuns) {
+		process qiime_import {
 			publishDir "${params.outdir}/demux", mode: params.publish_dir_mode, 
 			saveAs: { filename -> 
 				params.keepIntermediates ? filename : null

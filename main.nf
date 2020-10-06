@@ -568,44 +568,8 @@ if (!params.Q2imported){
 	/*
 	* Import trimmed files into QIIME2 artefact
 	*/
-	if (!params.multipleSequencingRuns){
-		process qiime_import_new_man {
-			publishDir "${params.outdir}/demux", mode: params.publish_dir_mode, 
-			saveAs: { filename -> 
-				params.keepIntermediates ? filename : null
-				params.untilQ2import ? filename : null }
-
-			input:
-			file(manifest) from ch_manifest
-			env MATPLOTLIBRC from ch_mpl_for_qiime_import
-
-			output:
-			file "demux.qza" into (ch_qiime_demux_import, ch_qiime_demux_vis, ch_qiime_demux_dada)
-
-			when:
-			!params.Q2imported
-		
-			script:
-			if (!params.phred64) {
-				"""
-				qiime tools import \
-					--type 'SampleData[PairedEndSequencesWithQuality]' \
-					--input-path ${manifest} \
-					--output-path demux.qza \
-					--input-format PairedEndFastqManifestPhred33
-				"""
-			} else {
-				"""
-				qiime tools import \
-					--type 'SampleData[PairedEndSequencesWithQuality]' \
-					--input-path ${manifest} \
-					--output-path demux.qza \
-					--input-format PairedEndFastqManifestPhred64
-				"""
-			}
-		}
-	} else if (!params.multipleSequencingRuns){
-		process qiime_import{
+	if (!params.multipleSequencingRuns) {
+		process qiime_import {
 			publishDir "${params.outdir}/demux", mode: params.publish_dir_mode, 
 			saveAs: { filename -> 
 				params.keepIntermediates ? filename : null
@@ -623,43 +587,24 @@ if (!params.Q2imported){
 			!params.Q2imported
 		
 			script:
-			if (!params.phred64) {
-				"""
-				head -n 1 ${manifest} > header.txt
-				tail -n+2 ${manifest} | cut -d, -f1 > col1.txt
-				tail -n+2 ${manifest} | cut -d, -f2 | sed 's:.*/::' > col2.txt
-				while read f; do
-					realpath \$f >> full_path.txt
-				done <col2.txt
-				tail -n+2 ${manifest} | cut -d, -f3 > col3.txt
-				paste -d, col1.txt full_path.txt col3.txt > cols.txt
-				cat cols.txt >> header.txt && mv header.txt ${manifest}
+			input_format = params.phred64 ? "PairedEndFastqManifestPhred64" : "PairedEndFastqManifestPhred33"
+			"""
+			head -n 1 ${manifest} > header.txt
+			tail -n+2 ${manifest} | cut -d, -f1 > col1.txt
+			tail -n+2 ${manifest} | cut -d, -f2 | sed 's:.*/::' > col2.txt
+			while read f; do
+				realpath \$f >> full_path.txt
+			done <col2.txt
+			tail -n+2 ${manifest} | cut -d, -f3 > col3.txt
+			paste -d, col1.txt full_path.txt col3.txt > cols.txt
+			cat cols.txt >> header.txt && mv header.txt ${manifest}
 
-				qiime tools import \
-					--type 'SampleData[PairedEndSequencesWithQuality]' \
-					--input-path ${manifest} \
-					--output-path demux.qza \
-					--input-format PairedEndFastqManifestPhred33
+			qiime tools import \
+				--type 'SampleData[PairedEndSequencesWithQuality]' \
+				--input-path ${manifest} \
+				--output-path demux.qza \
+				--input-format $input_format
 				"""
-			} else {
-				"""
-				head -n 1 ${manifest} > header.txt
-				tail -n+2 ${manifest} | cut -d, -f1 > col1.txt
-				tail -n+2 ${manifest} | cut -d, -f2 | sed 's:.*/::' > col2.txt
-				while read f; do
-					realpath \$f >> full_path.txt
-				done <col2.txt
-				tail -n+2 ${manifest} | cut -d, -f3 > col3.txt
-				paste -d, col1.txt full_path.txt col3.txt > cols.txt
-				cat cols.txt >> header.txt && mv header.txt ${manifest}
-
-				qiime tools import \
-					--type 'SampleData[PairedEndSequencesWithQuality]' \
-					--input-path ${manifest} \
-					--output-path demux.qza \
-					--input-format PairedEndFastqManifestPhred64
-				"""
-			}
 		}
 	} else {
 		process qiime_import_multi {
@@ -680,44 +625,25 @@ if (!params.Q2imported){
 			!params.Q2imported
 
 			script:
+			input_format = params.phred64 ? "PairedEndFastqManifestPhred64" : "PairedEndFastqManifestPhred33"
 			def folder = "${manifest}".take("${manifest}".indexOf("${params.split}"))
-			if (!params.phred64) {
-				"""
-				head -n 1 ${manifest} > header.txt
-				tail -n+2 ${manifest} | cut -d, -f1 > col1.txt
-				tail -n+2 ${manifest} | cut -d, -f2 | sed 's:.*/::' > col2.txt
-				while read f; do
-					realpath \$f >> full_path.txt
-				done <col2.txt
-				tail -n+2 ${manifest} | cut -d, -f3 > col3.txt
-				paste -d, col1.txt full_path.txt col3.txt > cols.txt
-				cat cols.txt >> header.txt && mv header.txt ${manifest}
+			"""
+			head -n 1 ${manifest} > header.txt
+			tail -n+2 ${manifest} | cut -d, -f1 > col1.txt
+			tail -n+2 ${manifest} | cut -d, -f2 | sed 's:.*/::' > col2.txt
+			while read f; do
+				realpath \$f >> full_path.txt
+			done <col2.txt
+			tail -n+2 ${manifest} | cut -d, -f3 > col3.txt
+			paste -d, col1.txt full_path.txt col3.txt > cols.txt
+			cat cols.txt >> header.txt && mv header.txt ${manifest}
 
-				qiime tools import \
-					--type 'SampleData[PairedEndSequencesWithQuality]' \
-					--input-path ${manifest} \
-					--output-path ${folder}-demux.qza \
-					--input-format PairedEndFastqManifestPhred33
-				"""
-			} else {
-				"""
-				head -n 1 ${manifest} > header.txt
-				tail -n+2 ${manifest} | cut -d, -f1 > col1.txt
-				tail -n+2 ${manifest} | cut -d, -f2 | sed 's:.*/::' > col2.txt
-				while read f; do
-					realpath \$f >> full_path.txt
-				done <col2.txt
-				tail -n+2 ${manifest} | cut -d, -f3 > col3.txt
-				paste -d, col1.txt full_path.txt col3.txt > cols.txt
-				cat cols.txt >> header.txt && mv header.txt ${manifest}
-
-				qiime tools import \
-					--type 'SampleData[PairedEndSequencesWithQuality]' \
-					--input-path ${manifest} \
-					--output-path ${folder}-demux.qza \
-					--input-format PairedEndFastqManifestPhred64
-				"""
-			}
+			qiime tools import \
+				--type 'SampleData[PairedEndSequencesWithQuality]' \
+				--input-path ${manifest} \
+				--output-path ${folder}-demux.qza \
+				--input-format $input_format
+			"""
 		}
 	}
 	ch_qiime_demux_vis

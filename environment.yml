@@ -14,7 +14,7 @@ dependencies:
 # Pipeline
 - fastqc=0.11.8
 - font-ttf-dejavu-sans-mono=2.37 #for fastqc 
-- multiqc=1.7
+- multiqc=1.9
 - unzip=6.0 #required for silva unzippping
 - r-rmarkdown=1.18
 - r-optparse=1.6.4 #for pacbio R scripts

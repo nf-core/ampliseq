@@ -19,8 +19,7 @@
                 },
                 "single_end": {
                     "type": "boolean",
-                    "description": "If single end data (e.g. PacBio reads). A manifest file is needed to specify the location of the FastQ file(-s)"
-                   "type": "string",
+                    "description": "If single end data (e.g. PacBio reads). A manifest file is needed to specify the location of the FastQ file(-s)",
                 },
                 "FW_primer": {
                     "type": "string",

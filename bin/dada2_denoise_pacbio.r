@@ -5,7 +5,7 @@
 # Run DADA2 denoising, using sequence files in a given folder
 # and reading error model from given rds file.
 #
-# Jeanette Tångrot
+# Author: Jeanette Tångrot (jeanette.tangrot@nbis.se), Daniel Lundin
 
 suppressPackageStartupMessages(library(optparse))
 

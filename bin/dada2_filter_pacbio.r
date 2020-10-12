@@ -5,7 +5,7 @@
 # Uses the filterAndTrim function in the dada2 package
 # to filter long amplicon sequences generated with PacBio.
 #
-# Jeanette Tångrot
+# Author: Jeanette Tångrot (jeanette.tangrot@nbis.se), Daniel Lundin
 
 suppressPackageStartupMessages(library(optparse))
 

@@ -10,7 +10,7 @@
 # * Denoising stats for each sample; number of reads before/after
 #   denoising and chimera removal
 # 
-# Jeanette Tångrot
+# Author: Jeanette Tångrot (jeanette.tangrot@nbis.se), Daniel Lundin
 
 suppressPackageStartupMessages(library(optparse))
 

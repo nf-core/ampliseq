@@ -5,7 +5,7 @@
 # DADA2 sequence error estimation based on files in a given folder
 # Assumes PacBio reads, i.e. uses errorEstimationFunction = PacBioErrfun
 #
-# Jeanette Tångrot
+# Author: Jeanette Tångrot (jeanette.tangrot@nbis.se), Daniel Lundin
 
 suppressPackageStartupMessages(library(optparse))
 

@@ -1,8 +1,28 @@
 # nf-core/ampliseq
 
-## nf-core/ampliseq version 1.1.2 - dev
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-* Added social preview images
+## v1.2.0dev - [date]
+
+### `Added`
+
+* [#111](https://github.com/nf-core/ampliseq/issues/111) - Added parameter for user specified manifest file
+* [#118](https://github.com/nf-core/ampliseq/issues/118) - Added social preview images
+
+### `Fixed`
+
+* [#172](https://github.com/nf-core/ampliseq/pull/163) - Template update for nf-core/tools v1.11
+* [#163](https://github.com/nf-core/ampliseq/pull/163) - Template update for nf-core/tools v1.10.2
+* [#136](https://github.com/nf-core/ampliseq/issues/136) - Pipeline fails with remote working directory
+
+### `Dependencies`
+
+* Updated from MultiQC v1.6 to v1.9
+
+### `Deprecated`
+
+* '--reads' is replaced by --input due to nf-core/tools v1.10.2
 
 ## nf-core/ampliseq version 1.1.2 - 2019
 

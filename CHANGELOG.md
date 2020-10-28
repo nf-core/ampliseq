@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [#170](https://github.com/nf-core/ampliseq/issues/170) - Cite paper for initial release
 * [#111](https://github.com/nf-core/ampliseq/issues/111) - Added parameter for user specified manifest file
 * [#118](https://github.com/nf-core/ampliseq/issues/118) - Added social preview images
+* [#135](https://github.com/nf-core/ampliseq/issues/135) - Added `--trunc_rmin` to make sure that auto trunc cutoff retaines a certain fraction of reads
 
 ### `Fixed`
 

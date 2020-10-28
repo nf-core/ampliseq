@@ -658,8 +658,13 @@ if (!params.Q2imported){
  */
 
 if( !params.classifier ){
-	Channel.fromPath("${params.reference_database}")
-		.set { ch_ref_database }
+	if( !params.onlyDenoising ){
+		Channel.fromPath("${params.reference_database}")
+			.set { ch_ref_database }
+	} else {
+		Channel.empty()
+			.set { ch_ref_database }		
+	}
 
 	process make_SILVA_132_16S_classifier {
 		publishDir "${params.outdir}/DB/", mode: params.publish_dir_mode, 

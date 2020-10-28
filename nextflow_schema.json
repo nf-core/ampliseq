@@ -75,6 +75,12 @@
                     "default": 25,
                     "description": "If --trunclenf and --trunclenr are not set, these values will be automatically determined using this median quality score",
                     "help_text": "Automatically determine `--trunclenf` and `--trunclenr` before the median quality score drops below `--trunc_qmin` (default: 25). \n\nFor example:\n\n```bash\n--trunc_qmin 35\n```\n\nPlease note:\n\n1. The code choosing `--trunclenf` and `--trunclenr` using `--trunc_qmin` automatically cannot take amplicon length or overlap requirements for merging into account, therefore setting `--trunclenf` and `--trunclenr` is preferred\n2. The default value of 25 is recommended. However, high quality data with a large paired sequence overlap might justify a higher value (e.g. 35). Also, very low quality data might require a lower value."
+                },
+                "trunc_rmin": {
+                    "type": "number",
+                    "default": 0.75,
+                    "description": "Assures that values chosen with --trunc_qmin will retain a fraction of reads.",
+                    "help_text": "Value can range from 0 to 1. 0 means no reads need to be retained and 1 means all reads need to be retained. The minimum lengths of --trunc_qmin and --trunc_rmin are chosen as DADA2 cutoffs."
                 }
             },
             "fa_icon": "fas fa-filter"

@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [#172](https://github.com/nf-core/ampliseq/pull/163) - Template update for nf-core/tools v1.11
 * [#163](https://github.com/nf-core/ampliseq/pull/163) - Template update for nf-core/tools v1.10.2
 * [#136](https://github.com/nf-core/ampliseq/issues/136) - Pipeline fails with remote working directory
+* [#152](https://github.com/nf-core/ampliseq/issues/152) - Don't fetch taxonomy/create classifier when run with `--onlyDenoising`
 
 ### `Dependencies`
 

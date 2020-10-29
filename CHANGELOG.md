@@ -25,12 +25,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Deprecated`
 
-* '--reads' is replaced by --input due to nf-core/tools v1.10.2
+* `--reads` is replaced by `--input` due to nf-core/tools v1.10.2
 
 ## nf-core/ampliseq version 1.1.2 - 2019
 
 * No further changes, except a bugfix for the [timezone](https://github.com/nf-core/ampliseq/issues/114) issue found by @marchoeppner
-* Specification of '--qiime_timezone' might be required to run the analysis appropriately
+* Specification of `--qiime_timezone` might be required to run the analysis appropriately
 
 ## nf-core/ampliseq version 1.1.1 - 2019
 

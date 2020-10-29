@@ -238,7 +238,7 @@ QIIME2 is currently **under heavy development** and often updated, this version 
 
 ## Citations
 
-Besides citing the [pipeline](https://doi.org/10.5281/zenodo.3568091) and its [preprint](https://www.biorxiv.org/content/10.1101/2019.12.17.880468v1), all tools that were used inside the pipeline have to be cited in a publication properly:
+Besides citing the [pipeline](https://doi.org/10.5281/zenodo.3568091) and its [publication](https://doi.org/10.3389/fmicb.2020.550420), all tools that were used inside the pipeline have to be cited in a publication properly:
 
 * FastQC, "Andrews, Simon. "FastQC: a quality control tool for high throughput sequence data." (2010)."
 * Cutadapt "Martin, Marcel. "Cutadapt removes adapter sequences from high-throughput sequencing reads." EMBnet. journal 17.1 (2011): pp-10."

@@ -465,9 +465,19 @@ if (!params.Q2imported){
 			discard_untrimmed = params.retain_untrimmed ? '' : '--discard-untrimmed'
 			"""
 			mkdir -p trimmed
-			cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
-				-o trimmed/${reads[0]} -p trimmed/${reads[1]} \
-				${reads[0]} ${reads[1]} > cutadapt_log_${pair_id}.txt
+			if [[ $params.double_primer=TRUE && $discard_untrimmed="--discard-untrimmed" ]]; then
+	                        mkdir -p firstcutadapt
+				cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
+					-o firstcutadapt/${reads[0]} -p firstcutadapt/${reads[1]} \
+					${reads[0]} ${reads[1]} >> cutadapt_log_${pair_id}.txt
+                                cutadapt -g ${params.FW_primer} -G ${params.RV_primer} --discard-trimmed \
+                                        -o trimmed/${reads[0]} -p trimmed/${reads[1]} \
+                                        firstcutadapt/${reads[0]} firstcutadapt/${reads[1]} >> cutadapt_log_${pair_id}.txt
+			else
+				cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
+                                        -o trimmed/${reads[0]} -p trimmed/${reads[1]} \
+                                        ${reads[0]} ${reads[1]} >> cutadapt_log_${pair_id}.txt
+			fi
 			"""
 		}
 
@@ -491,9 +501,19 @@ if (!params.Q2imported){
 			discard_untrimmed = params.retain_untrimmed ? '' : '--discard-untrimmed'
 			"""
 			mkdir -p trimmed
-			cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
-				-o trimmed/$folder${params.split}${reads[0]} -p trimmed/$folder${params.split}${reads[1]} \
-				${reads[0]} ${reads[1]} > cutadapt_log_${pair_id}.txt
+			if [[ $params.double_primer=TRUE && $discard_untrimmed="--discard-untrimmed" ]]; then
+				mkdir -p firstcutadapt
+				cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
+					-o firstcutadapt/$folder${params.split}${reads[0]} -p firstcutadapt/$folder${params.split}${reads[1]} \
+					${reads[0]} ${reads[1]} >> cutadapt_log_${pair_id}.txt
+				cutadapt -g ${params.FW_primer} -G ${params.RV_primer} --discard_trimmed \
+                                        -o trimmed/$folder${params.split}${reads[0]} -p trimmed/$folder${params.split}${reads[1]} \
+                                        firstcutadapt/${reads[0]} firstcutadapt/${reads[1]} >> cutadapt_log_${pair_id}.txt
+			else
+				cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
+                               		-o trimmed/$folder${params.split}${reads[0]} -p trimmed/$folder${params.split}${reads[1]} \
+                                	${reads[0]} ${reads[1]} > cutadapt_log_${pair_id}.txt
+			fi
 			"""
 		}
 	}

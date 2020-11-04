@@ -55,9 +55,8 @@ def helpMessage() {
 	  --retain_untrimmed            Cutadapt will retain untrimmed reads
 	  --trunclenf [int]             DADA2 read truncation value for forward strand
 	  --trunclenr [int]             DADA2 read truncation value for reverse strand
-	  --trunc_qmin [int]            If --trunclenf and --trunclenr are not set, 
-	                                these values will be automatically determined using 
-	                                this mean quality score (not preferred) (default: 25)
+	  --trunc_qmin [int]            If --trunclenf and --trunclenr are not set, these values will be automatically determined using this mean quality score (not preferred) (default: 25)
+	  --trunc_rmin [float]          Assures that values chosen with --trunc_qmin will retain a fraction of reads (default: 0.75)
 
 	References:                     If you have trained a compatible classifier before
 	  --classifier [path/to/file]   Path to QIIME2 classifier file (typically *-classifier.qza)
@@ -263,7 +262,7 @@ log.info summary.collect { k,v -> "${k.padRight(18)}: $v" }.join("\n")
 log.info "-\033[2m--------------------------------------------------\033[0m-"
 
 if( !params.trunclenf || !params.trunclenr ){
-	if ( !params.untilQ2import ) log.info "\n######## WARNING: No DADA2 cutoffs were specified, therefore reads will be truncated where median quality drops below ${params.trunc_qmin}.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
+	if ( !params.untilQ2import ) log.info "\n######## WARNING: No DADA2 cutoffs were specified, therefore reads will be truncated where median quality drops below ${params.trunc_qmin} but at least a fraction of ${params.trunc_rmin} of the reads will be retained.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
 }
 // Check the hostnames against configured profiles
 checkHostname()
@@ -678,8 +677,13 @@ if (!params.Q2imported){
  */
 
 if( !params.classifier ){
-	Channel.fromPath("${params.reference_database}")
-		.set { ch_ref_database }
+	if( !params.onlyDenoising ){
+		Channel.fromPath("${params.reference_database}")
+			.set { ch_ref_database }
+	} else {
+		Channel.empty()
+			.set { ch_ref_database }		
+	}
 
 	process make_SILVA_132_16S_classifier {
 		publishDir "${params.outdir}/DB/", mode: params.publish_dir_mode, 
@@ -796,8 +800,8 @@ if( !params.Q2imported ){
 
 /*
  * Determine params.trunclenf and params.trunclenr where the median quality value drops below params.trunc_qmin
- * "Warning massage" should be printed but interferes with output: stdout
- * "Error and exit if too short" could be done in the python script itself?
+ * But at least the fraction of params.trunc_rmin reads is retained
+ * "Warning massage" is printed
  */
 process dada_trunc_parameter { 
 
@@ -813,7 +817,7 @@ process dada_trunc_parameter {
 	script:
 	if( !params.trunclenf || !params.trunclenr ){
 		"""
-		dada_trunc_parameter.py ${summary_demux[0]} ${summary_demux[1]} ${params.trunc_qmin}
+		dada_trunc_parameter.py ${summary_demux[0]} ${summary_demux[1]} ${params.trunc_qmin} ${params.trunc_rmin}
 		"""
 	}
 	else

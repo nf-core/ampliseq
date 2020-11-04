@@ -56,6 +56,8 @@ def helpMessage() {
 	Cutoffs:
 	  --retain_untrimmed            Cutadapt will retain untrimmed reads
           --maxEE [number]              DADA2 read filtering option, currently only used when --pacbio is set. After truncation, reads with higher than ‘maxEE’ "expected errors" will be discarded. We recommend (to start with) a value corresponding to approximately 1 expected error per 100-200 bp (default: 2)
+          --maxLen [int]                DADA2 read filtering option, remove reads with length greater than maxLen after trimming and truncation (default: 2999)
+          --minLen [int]                DADA2 read filtering option, remove reads with length less than minLen after trimming and truncation (default: 50)
 	  --trunclenf [int]             DADA2 read truncation value for forward strand and single end reads, set this to 0 for no truncation
 	  --trunclenr [int]             DADA2 read truncation value for reverse strand, set this to 0 for no truncation
 	  --trunc_qmin [int]            If --trunclenf and --trunclenr are not set, 
@@ -1055,9 +1057,7 @@ if (!params.multipleSequencingRuns && !params.pacbio){
 		script:
 		"""
 		# Quality filtering with DADA2 filterAndTrim
-		# Might want to add params.minLen and params.maxLen in the future
-		# maxLen set to 2999 as this is the maximum allowed read length in dada2 version 1.12
-		dada2_filter_pacbio.r --infile ${demux} --filterDir dada2_filtered --maxEE ${params.maxEE} --truncLen ${trunc} --minLen 50 --maxLen 2999 --stats filter_stats.tsv --verbose
+		dada2_filter_pacbio.r --infile ${demux} --filterDir dada2_filtered --maxEE ${params.maxEE} --truncLen ${trunc} --minLen ${params.minLen} --maxLen ${params.maxLen} --stats filter_stats.tsv --verbose
 
 		# Estimation of error models with DADA2 learnErrors
 		dada2_errmodels_pacbio.r --filterDir dada2_filtered > err.out

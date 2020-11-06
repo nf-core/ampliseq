@@ -1070,7 +1070,7 @@ if (!params.multipleSequencingRuns && !params.pacbio){
 		# * relative abundancies "rel-feature-table.tsv"
                 # * DADA2 stats to file "denoise_stats.tsv"
 		# * representative sequences "sequences.fasta"
-		dada2_chimrem.r --dadaObj dd.rds --method "pooled" --allowOneOff TRUE --table feature-table.tsv --reltable rel-feature-table.tsv --repseqs sequences.fasta --stats denoise_stats.tsv
+		dada2_chimrem.r --manifest ${demux} --dadaObj dd.rds --method "pooled" --allowOneOff TRUE --table feature-table.tsv --reltable rel-feature-table.tsv --repseqs sequences.fasta --stats denoise_stats.tsv
 
 		# Create qiime2 object from representative sequences
 		qiime tools import --type \'FeatureData[Sequence]\' \

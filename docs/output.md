@@ -111,7 +111,7 @@ DADA2 reduces sequence errors and dereplicates sequences by quality filtering, d
 
 ### Taxonomic classification
 
-ASV abundance and sequences inferred in DADA2 are informative but routinely taxonomic classifications such as family or genus annotation is desireable. ASV sequences are classified by default against the [SILVA](https://www.arb-silva.de/) [v132](https://www.arb-silva.de/documentation/release-132/) database to add taxonomic information, but a custom database is used if provided.
+ASV abundance and sequences inferred in DADA2 are informative but routinely taxonomic classifications such as family or genus annotation is desireable. ASV sequences are classified by default against the [SILVA](https://www.arb-silva.de/) [v132](https://www.arb-silva.de/documentation/release-132/) database to add taxonomic information, but a custom database is used if provided. In particular, a [UNITE](https://unite.ut.ee/repository.php) fasta file can be provided to classify fungal ITS sequences.
 
 **Output files:**
 

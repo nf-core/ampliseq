@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-* [#106](https://github.com/nf-core/ampliseq/issues/106) - Added support for PacBio data 
+* [#106](https://github.com/nf-core/ampliseq/issues/106) - Added support for PacBio data
 
 ### `Fixed`
 

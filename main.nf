@@ -25,7 +25,6 @@ def helpMessage() {
 	                                and a specialized profile such as "binac".
 	  --input [path/to/folder]      Folder containing paired-end demultiplexed fastq files
 	                                Note: All samples have to be sequenced in one run, otherwise also specifiy "--multipleSequencingRuns"
-	  --single_end                  If single end reads. A manifest file is needed to specify path(-s) to demultiplexed fastq files with the reads
 	  --FW_primer [str]             Forward primer sequence
 	  --RV_primer [str]             Reverse primer sequence
           --metadata [path/to/file]     Path to metadata sheet, when missing most downstream analysis are skipped (barplots, PCoA plots, ...). 
@@ -44,7 +43,7 @@ def helpMessage() {
 	                                create overlapping file names that crash MultiQC.
 	  --split [str]                 A string that will be used between the prepended run/folder name and the sample name. (default: "-")
 	                                May not be present in run/folder names and no underscore(s) allowed. Only used with "--multipleSequencingRuns"
-	  --pacbio			If PacBio data. Use this option together with --single_end and --manifest.
+	  --pacbio			If PacBio data. Use this option together with --manifest.
 	  --phred64                     If the sequencing data has PHRED 64 encoded quality scores (default: PHRED 33)
 
 	Filters:
@@ -108,7 +107,7 @@ def helpMessage() {
  * SET UP CONFIGURATION VARIABLES
  */
 
-// Show help emssage
+// Show help message
 if (params.help){
 	helpMessage()
 	exit 0
@@ -205,12 +204,13 @@ if (params.multipleSequencingRuns && params.manifest) {
 	exit 1, "The manifest file does not support multiple sequencing runs at this point."
 }
 
-if (params.single_end && !params.pacbio) {
-        exit 1, "Paired end sequences are expected if other than PacBio data."
+single_end = false
+if (params.pacbio) {
+   single_end = true
 }
 
-if (params.single_end && !params.manifest) {
-        exit 1, "A manifest file is needed for single end reads."
+if (single_end && !params.manifest) {
+        exit 1, "A manifest file is needed for single end reads such as PacBio data."
 }
 
 // AWSBatch sanity checking
@@ -250,7 +250,7 @@ def summary = [:]
 summary['Pipeline Name']  = 'nf-core/ampliseq'
 if(workflow.revision) summary['Pipeline Release'] = workflow.revision
 summary['Run Name']         = custom_runName ?: workflow.runName
-summary['Input']            = params.input
+summary['Input']            = params.manifest ?: params.input
 summary['Max Resources']    = "$params.max_memory memory, $params.max_cpus cpus, $params.max_time time per job"
 if (workflow.containerEngine) summary['Container'] = "$workflow.containerEngine - $workflow.container"
 summary['Output dir']       = params.outdir
@@ -329,7 +329,7 @@ if (!params.Q2imported){
 	/*
 	* Create a channel for optional input manifest file
 	*/
-	 if (params.manifest && !params.single_end) {
+	 if (params.manifest && !single_end) {
 		tsvFile = file(params.manifest).getName()
 		// extracts read files from TSV and distribute into channels
 		Channel
@@ -338,7 +338,7 @@ if (!params.Q2imported){
 			.splitCsv(header:true, sep:'\t')
 			.map { row -> [ row.sampleID, [ file(row.forwardReads, checkIfExists: true), file(row.reverseReads, checkIfExists: true) ] ] }
 			.into { ch_read_pairs; ch_read_pairs_fastqc; ch_read_pairs_name_check }
-	} else if ( params.single_end ) {
+	} else if ( single_end ) {
 	       	  // Manifest file is currently the only available input option for single_end
 		  tsvFile = file(params.manifest).getName()
 		  // extracts read files from TSV and distribute into channels
@@ -488,9 +488,9 @@ if (!params.Q2imported){
 
 			script:
 			discard_untrimmed = params.retain_untrimmed ? '' : '--discard-untrimmed'
-			primers = params.single_end ? "--rc -g ${params.FW_primer}...${params.RV_primer}" : "-g ${params.FW_primer} -G ${params.RV_primer}"
-			out_files = params.single_end ? "-o trimmed/${reads}" : "-o trimmed/${reads[0]} -p trimmed/${reads[1]}"
-			in_files = params.single_end ? "${reads}" : "${reads[0]} ${reads[1]}"
+			primers = single_end ? "--rc -g ${params.FW_primer}...${params.RV_primer}" : "-g ${params.FW_primer} -G ${params.RV_primer}"
+			out_files = single_end ? "-o trimmed/${reads}" : "-o trimmed/${reads[0]} -p trimmed/${reads[1]}"
+			in_files = single_end ? "${reads}" : "${reads[0]} ${reads[1]}"
 			"""
 			mkdir -p trimmed
 			cutadapt ${primers} ${discard_untrimmed} ${out_files} ${in_files} \
@@ -561,7 +561,7 @@ if (!params.Q2imported){
 	/*
 	* Produce manifest file for QIIME2
 	*/
-	if (!params.multipleSequencingRuns && params.single_end){
+	if (!params.multipleSequencingRuns && single_end){
 		ch_fastq_trimmed_manifest
 			.map { name, reads ->
 				def sampleID = name 
@@ -859,7 +859,7 @@ if( !params.Q2imported ){
  * "Warning massage" should be printed but interferes with output: stdout
  * "Error and exit if too short" could be done in the python script itself?
  */
-if ( ! params.single_end ) {
+if ( ! single_end ) {
    process dada_trunc_parameter { 
 
 	input:

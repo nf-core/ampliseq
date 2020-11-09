@@ -660,23 +660,14 @@ if (!params.Q2imported){
 			!params.Q2imported
 		
 			script:
-			if (!params.phred64) {
-				"""
-				qiime tools import \
-					--type 'SampleData[SequencesWithQuality]' \
-					--input-path ${manifest} \
-					--output-path demux.qza \
-					--input-format SingleEndFastqManifestPhred33
-				"""
-			} else {
-				"""
-				qiime tools import \
-					--type 'SampleData[SequencesWithQuality]' \
-					--input-path ${manifest} \
-					--output-path demux.qza \
-					--input-format SingleEndFastqManifestPhred64
-				"""
-			}
+			input_format = params.phred64 ? "PairedEndFastqManifestPhred64" : "PairedEndFastqManifestPhred33"
+			"""
+			qiime tools import \
+				--type 'SampleData[SequencesWithQuality]' \
+				--input-path ${manifest} \
+				--output-path demux.qza \
+				--input-format $input_format
+			"""
 		}
 	} else {
 		process qiime_import_multi {

@@ -57,6 +57,5 @@ jobs:
         run: | 
           nextflow run ${GITHUB_WORKSPACE} -profile test_manifest,docker
       - name: Run pipeline with ITS PacBio reads and Unite database
-        run: |
-	  nextflow run ${GITHUB_WORKSPACE} -profile test_pacbio_its,docker
-	  
+        run: | 
+          nextflow run ${GITHUB_WORKSPACE} -profile test_pacbio_its,docker

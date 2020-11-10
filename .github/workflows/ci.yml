@@ -56,3 +56,7 @@ jobs:
       - name: Run pipeline with manifest input
         run: | 
           nextflow run ${GITHUB_WORKSPACE} -profile test_manifest,docker
+      - name: Run pipeline with ITS PacBio reads and Unite database
+        run: |
+	  nextflow run ${GITHUB_WORKSPACE} -profile test_pacbio_its,docker
+	  

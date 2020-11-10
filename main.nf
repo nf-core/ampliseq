@@ -660,7 +660,7 @@ if (!params.Q2imported){
 			!params.Q2imported
 		
 			script:
-			input_format = params.phred64 ? "PairedEndFastqManifestPhred64" : "PairedEndFastqManifestPhred33"
+			input_format = params.phred64 ? "SingleEndFastqManifestPhred64" : "SingleEndFastqManifestPhred33"
 			"""
 			qiime tools import \
 				--type 'SampleData[SequencesWithQuality]' \

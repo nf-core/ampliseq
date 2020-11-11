@@ -29,7 +29,7 @@ def helpMessage() {
 	  --RV_primer [str]             Reverse primer sequence
           --metadata [path/to/file]     Path to metadata sheet, when missing most downstream analysis are skipped (barplots, PCoA plots, ...). 
                                         File extension is not relevant. Must have a comma separated list of metadata column headers.
-	  --manifest [path/to/file]     Path to manifest.tsv table with the following labels in this exact order: sampleID, forwardReads, reverseReads.
+	  --manifest [path/to/file]     Path to manifest.tsv table with the following labels in this exact order: sampleID, forwardReads, reverseReads. In case of single end reads, the labels should be: sampleID, Reads.
                                         Tab ('\t') must be the table separator. Multiple sequencing runs not supported by manifest at this stage.
 	                                Default is FALSE. 
 	  --qiime_timezone [str]	Needs to be specified to resolve a timezone error (default: 'Europe/Berlin')
@@ -43,6 +43,7 @@ def helpMessage() {
 	                                create overlapping file names that crash MultiQC.
 	  --split [str]                 A string that will be used between the prepended run/folder name and the sample name. (default: "-")
 	                                May not be present in run/folder names and no underscore(s) allowed. Only used with "--multipleSequencingRuns"
+	  --pacbio			If PacBio data. Use this option together with --manifest.
 	  --phred64                     If the sequencing data has PHRED 64 encoded quality scores (default: PHRED 33)
 
 	Filters:
@@ -53,15 +54,19 @@ def helpMessage() {
 
 	Cutoffs:
 	  --retain_untrimmed            Cutadapt will retain untrimmed reads
-	  --trunclenf [int]             DADA2 read truncation value for forward strand
-	  --trunclenr [int]             DADA2 read truncation value for reverse strand
+          --maxEE [number]              DADA2 read filtering option, currently only used when --pacbio is set. After truncation, reads with higher than ‘maxEE’ "expected errors" will be discarded. We recommend (to start with) a value corresponding to approximately 1 expected error per 100-200 bp (default: 2)
+          --maxLen [int]                DADA2 read filtering option, remove reads with length greater than maxLen after trimming and truncation (default: 2999)
+          --minLen [int]                DADA2 read filtering option, remove reads with length less than minLen after trimming and truncation (default: 50)
+	  --trunclenf [int]             DADA2 read truncation value for forward strand and single end reads, set this to 0 for no truncation
+	  --trunclenr [int]             DADA2 read truncation value for reverse strand, set this to 0 for no truncation
 	  --trunc_qmin [int]            If --trunclenf and --trunclenr are not set, these values will be automatically determined using this mean quality score (not preferred) (default: 25)
 	  --trunc_rmin [float]          Assures that values chosen with --trunc_qmin will retain a fraction of reads (default: 0.75)
 
-	References:                     If you have trained a compatible classifier before
+	References:                     If you have trained a compatible classifier before, or want to use a custom database
 	  --classifier [path/to/file]   Path to QIIME2 classifier file (typically *-classifier.qza)
 	  --classifier_removeHash       Remove all hash signs from taxonomy strings, resolves a rare ValueError during classification (process classifier)
-	  --reference_database [path]   Path to the qiime compatible file Silva_132_release.zip (default: "https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip")
+          --reference_database          Path to file with reference database with taxonomies, currently either a qiime compatible file Silva_132_release.zip, or a UNITE fasta file (default: "https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip")
+          --unite                       If reference database is in the format of a UNITE fasta file
 
 	Statistics:
 	  --metadata_category [str]     Comma separated list of metadata column headers for statistics (default: false)
@@ -101,7 +106,7 @@ def helpMessage() {
  * SET UP CONFIGURATION VARIABLES
  */
 
-// Show help emssage
+// Show help message
 if (params.help){
 	helpMessage()
 	exit 0
@@ -198,6 +203,15 @@ if (params.multipleSequencingRuns && params.manifest) {
 	exit 1, "The manifest file does not support multiple sequencing runs at this point."
 }
 
+single_end = false
+if (params.pacbio) {
+   single_end = true
+}
+
+if (single_end && !params.manifest) {
+        exit 1, "A manifest file is needed for single end reads such as PacBio data."
+}
+
 // AWSBatch sanity checking
 if(workflow.profile == 'awsbatch'){
 	if (!params.awsqueue || !params.awsregion) exit 1, "Specify correct --awsqueue and --awsregion parameters on AWSBatch!"
@@ -235,7 +249,7 @@ def summary = [:]
 summary['Pipeline Name']  = 'nf-core/ampliseq'
 if(workflow.revision) summary['Pipeline Release'] = workflow.revision
 summary['Run Name']         = custom_runName ?: workflow.runName
-summary['Input']            = params.input
+summary['Input']            = params.manifest ?: params.input
 summary['Max Resources']    = "$params.max_memory memory, $params.max_cpus cpus, $params.max_time time per job"
 if (workflow.containerEngine) summary['Container'] = "$workflow.containerEngine - $workflow.container"
 summary['Output dir']       = params.outdir
@@ -261,7 +275,7 @@ if (params.email || params.email_on_fail) {
 log.info summary.collect { k,v -> "${k.padRight(18)}: $v" }.join("\n")
 log.info "-\033[2m--------------------------------------------------\033[0m-"
 
-if( !params.trunclenf || !params.trunclenr ){
+if( params.trunclenf == false || params.trunclenr == false ){
 	if ( !params.untilQ2import ) log.info "\n######## WARNING: No DADA2 cutoffs were specified, therefore reads will be truncated where median quality drops below ${params.trunc_qmin} but at least a fraction of ${params.trunc_rmin} of the reads will be retained.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
 }
 // Check the hostnames against configured profiles
@@ -314,7 +328,7 @@ if (!params.Q2imported){
 	/*
 	* Create a channel for optional input manifest file
 	*/
-	 if (params.manifest) {
+	 if (params.manifest && !single_end) {
 		tsvFile = file(params.manifest).getName()
 		// extracts read files from TSV and distribute into channels
 		Channel
@@ -323,6 +337,17 @@ if (!params.Q2imported){
 			.splitCsv(header:true, sep:'\t')
 			.map { row -> [ row.sampleID, [ file(row.forwardReads, checkIfExists: true), file(row.reverseReads, checkIfExists: true) ] ] }
 			.into { ch_read_pairs; ch_read_pairs_fastqc; ch_read_pairs_name_check }
+	} else if ( single_end ) {
+	       	  // Manifest file is currently the only available input option for single_end
+		  tsvFile = file(params.manifest).getName()
+		  // extracts read files from TSV and distribute into channels
+		  Channel
+			.fromPath(params.manifest)
+			.ifEmpty {exit 1, log.info "Cannot find path file ${tsvFile}"}
+			.splitCsv(header:true, sep:'\t')
+			.map { row -> [ row.sampleID, file(row.Reads, checkIfExists: true) ] }
+			.into { ch_read_pairs; ch_read_pairs_fastqc; ch_read_pairs_name_check }
+
 	/*
 	* Create a channel for input read files
 	*/
@@ -441,7 +466,7 @@ if (!params.Q2imported){
 	}
 
 	/*
-	 * Trim each read-pair with cutadapt
+	 * Trim each read or read-pair with cutadapt
 	 */
 	if (!params.multipleSequencingRuns){
 		process trimming {
@@ -462,11 +487,13 @@ if (!params.Q2imported){
 
 			script:
 			discard_untrimmed = params.retain_untrimmed ? '' : '--discard-untrimmed'
+			primers = single_end ? "--rc -g ${params.FW_primer}...${params.RV_primer}" : "-g ${params.FW_primer} -G ${params.RV_primer}"
+			out_files = single_end ? "-o trimmed/${reads}" : "-o trimmed/${reads[0]} -p trimmed/${reads[1]}"
+			in_files = single_end ? "${reads}" : "${reads[0]} ${reads[1]}"
 			"""
 			mkdir -p trimmed
-			cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
-				-o trimmed/${reads[0]} -p trimmed/${reads[1]} \
-				${reads[0]} ${reads[1]} > cutadapt_log_${pair_id}.txt
+			cutadapt ${primers} ${discard_untrimmed} ${out_files} ${in_files} \
+				 > cutadapt_log_${pair_id}.txt
 			"""
 		}
 
@@ -533,7 +560,18 @@ if (!params.Q2imported){
 	/*
 	* Produce manifest file for QIIME2
 	*/
-	if (!params.multipleSequencingRuns){
+	if (!params.multipleSequencingRuns && single_end){
+		ch_fastq_trimmed_manifest
+			.map { name, reads ->
+				def sampleID = name 
+				def Reads = reads
+				[ "${sampleID}" +","+ "${Reads}" + ",forward" ]
+			}
+			.flatten()
+			.collectFile(name: 'manifest.txt', newLine: true, storeDir: "${params.outdir}/demux", seed: "sample-id,absolute-filepath,direction")
+			.set { ch_manifest }
+	
+	} else if (!params.multipleSequencingRuns){
 		ch_fastq_trimmed_manifest
 			.map { name, reads ->
 				def sampleID = name 
@@ -565,7 +603,7 @@ if (!params.Q2imported){
 	/*
 	* Import trimmed files into QIIME2 artefact
 	*/
-	if (!params.multipleSequencingRuns) {
+	if (!params.multipleSequencingRuns && !params.pacbio) {
 		process qiime_import {
 			publishDir "${params.outdir}/demux", mode: params.publish_dir_mode, 
 			saveAs: { filename -> 
@@ -601,7 +639,35 @@ if (!params.Q2imported){
 				--input-path ${manifest} \
 				--output-path demux.qza \
 				--input-format $input_format
-				"""
+			"""
+		}
+	} else if (params.pacbio) {
+		process qiime_import_pacbio{
+			publishDir "${params.outdir}/demux", mode: 'copy', 
+			saveAs: { filename -> 
+				params.keepIntermediates ? filename : null
+				params.untilQ2import ? filename : null }
+
+			input:
+			file(manifest) from ch_manifest
+			env MATPLOTLIBRC from ch_mpl_for_qiime_import
+
+			output:
+			file manifest into ch_dada_import
+			file "demux.qza" into (ch_qiime_demux_import, ch_qiime_demux_vis)
+
+			when:
+			!params.Q2imported
+		
+			script:
+			input_format = params.phred64 ? "SingleEndFastqManifestPhred64" : "SingleEndFastqManifestPhred33"
+			"""
+			qiime tools import \
+				--type 'SampleData[SequencesWithQuality]' \
+				--input-path ${manifest} \
+				--output-path demux.qza \
+				--input-format $input_format
+			"""
 		}
 	} else {
 		process qiime_import_multi {
@@ -643,12 +709,10 @@ if (!params.Q2imported){
 			"""
 		}
 	}
-	ch_qiime_demux_vis
+	ch_qiime_demux_vis  
 		.combine( ch_mpl_for_demux_visualize )
 		.set{ ch_qiime_demux_visualisation }
-
-}
-
+} 
 
 /*
  * Download, unpack, extract and train classifier
@@ -665,7 +729,7 @@ if( !params.classifier ){
 			.set { ch_ref_database }		
 	}
 
-	process make_SILVA_132_16S_classifier {
+	process make_classifier {
 		publishDir "${params.outdir}/DB/", mode: params.publish_dir_mode, 
 		saveAs: {filename -> 
 			if (filename.indexOf("${params.FW_primer}-${params.RV_primer}-${params.dereplication}-classifier.qza") == 0) filename
@@ -682,17 +746,23 @@ if( !params.classifier ){
 		stdout ch_message_classifier_removeHash
 
 		when:
-		!params.onlyDenoising && !params.untilQ2import
+		!params.onlyDenoising || !params.untilQ2import 
 
 		script:
 	  
 		"""
 		export HOME="\${PWD}/HOME"
 
-		unzip -qq $database
+		if [ \"${params.unite}\" = \"true\" ]; then
+                        create_unite_taxfile.py $database db.fa db.tax
+			fasta=\"db.fa\"
+		        taxonomy=\"db.tax\"
+		else
+			unzip -qq $database
+			fasta=\"SILVA_132_QIIME_release/rep_set/rep_set_16S_only/${params.dereplication}/silva_132_${params.dereplication}_16S.fna\"
+			taxonomy=\"SILVA_132_QIIME_release/taxonomy/16S_only/${params.dereplication}/consensus_taxonomy_7_levels.txt\"
+		fi
 
-		fasta=\"SILVA_132_QIIME_release/rep_set/rep_set_16S_only/${params.dereplication}/silva_132_${params.dereplication}_16S.fna\"
-		taxonomy=\"SILVA_132_QIIME_release/taxonomy/16S_only/${params.dereplication}/consensus_taxonomy_7_levels.txt\"
 
 		if [ \"${params.classifier_removeHash}\" = \"true\" ]; then
 			sed \'s/#//g\' \$taxonomy >taxonomy-${params.dereplication}_removeHash.txt
@@ -725,6 +795,7 @@ if( !params.classifier ){
 			--quiet
 		"""
 	}
+
 	ch_message_classifier_removeHash
 		.subscribe { log.info it }
 }
@@ -783,7 +854,8 @@ if( !params.Q2imported ){
  * But at least the fraction of params.trunc_rmin reads is retained
  * "Warning massage" is printed
  */
-process dada_trunc_parameter { 
+if ( ! single_end ) {
+   process dada_trunc_parameter { 
 
 	input:
 	file summary_demux from ch_csv_demux 
@@ -795,7 +867,7 @@ process dada_trunc_parameter {
 	!params.untilQ2import
 
 	script:
-	if( !params.trunclenf || !params.trunclenr ){
+	if( params.trunclenf == false || params.trunclenr == false ){
 		"""
 		dada_trunc_parameter.py ${summary_demux[0]} ${summary_demux[1]} ${params.trunc_qmin} ${params.trunc_rmin}
 		"""
@@ -804,6 +876,27 @@ process dada_trunc_parameter {
 		"""
 		printf "${params.trunclenf},${params.trunclenr}"
 		"""
+  }
+} else {
+  process dada_trunc_se {
+
+  	  output:
+	  stdout ch_dada_trunc
+
+	  when:
+	  !params.untilQ2import
+
+	  script:
+	  if ( params.trunclenf == false ) {
+	     """
+	     printf "0"
+	     """
+	  } else {
+	     """
+	     printf "${params.trunclenf}"
+	     """
+	  }
+  }
 }
 
 if (params.multipleSequencingRuns){
@@ -830,9 +923,12 @@ if (params.multipleSequencingRuns){
 
  
 /*
- * Find ASVs with DADA2 for single sequencing run
+ * Find ASVs with DADA2
+ *    (i) for single sequencing run
+ *    (ii) for PacBio reads
+ *    (iii) for multiple sequencing runs
  */
-if (!params.multipleSequencingRuns){
+if (!params.multipleSequencingRuns && !params.pacbio){
 	process dada_single {
 		tag "$trunc"
 		publishDir "${params.outdir}", mode: params.publish_dir_mode,
@@ -920,6 +1016,78 @@ if (!params.multipleSequencingRuns){
 		biom convert \
 			-i rel-table/feature-table.biom \
 			-o table/rel-feature-table.tsv --to-tsv
+		"""
+	}
+} else if (params.pacbio){
+	process dada_pacBio {
+		
+		publishDir "${params.outdir}", mode: 'copy',
+			saveAs: {filename -> 
+					 if (filename.indexOf("dada_stats.tsv") == 0)         "abundance_table/unfiltered/dada_stats.tsv"
+				else if (filename.indexOf("dada_report.txt") == 0)              "abundance_table/unfiltered/dada_report.txt"
+				else if (filename.indexOf("rel-feature-table.tsv") == 0)         "abundance_table/unfiltered/rel-feature-table.tsv"
+				else if (filename.indexOf("feature-table.tsv") == 0)             "abundance_table/unfiltered/feature-table.tsv"
+				else if (filename.indexOf("feature-table.biom") == 0)     "abundance_table/unfiltered/feature-table.biom"
+				else if (filename.indexOf("sequences.fasta") == 0)                      "representative_sequences/unfiltered/sequences.fasta"
+				else if (filename.indexOf("rep-seqs.qza") == 0)                 "representative_sequences/unfiltered/rep-seqs.qza"
+				else null}
+
+		input:
+		file demux from ch_dada_import
+		val trunc from ch_dada_trunc
+
+		output:
+		file("table.qza") into ch_qiime_table_raw
+		file("rep-seqs.qza") into (ch_qiime_repseq_raw_for_classifier,ch_qiime_repseq_raw_for_filter)
+		file("feature-table.tsv") into ch_tsv_table_raw
+		file("dada_stats.tsv")
+		file("feature-table.biom")
+		file("rel-feature-table.tsv")
+		file("sequences.fasta")
+		file("dada_report.txt")
+
+		when:
+		!params.untilQ2import
+
+		script:
+		"""
+		# Quality filtering with DADA2 filterAndTrim
+		dada2_filter_pacbio.r --infile ${demux} --filterDir dada2_filtered --maxEE ${params.maxEE} --truncLen ${trunc} --minLen ${params.minLen} --maxLen ${params.maxLen} --stats filter_stats.tsv --verbose
+
+		# Estimation of error models with DADA2 learnErrors
+		dada2_errmodels_pacbio.r --filterDir dada2_filtered > err.out
+
+		# Denoise samples with DADA2
+		dada2_denoise_pacbio.r --filterDir dada2_filtered --errModel err.rds --pool TRUE  --verbose > dd.out
+
+		# Chimera removal with DADA2, and produce
+		# * raw count table "feature-table.tsv"
+		# * relative abundancies "rel-feature-table.tsv"
+                # * DADA2 stats to file "denoise_stats.tsv"
+		# * representative sequences "sequences.fasta"
+		dada2_chimrem.r --manifest ${demux} --dadaObj dd.rds --method "pooled" --allowOneOff TRUE --table feature-table.tsv --reltable rel-feature-table.tsv --repseqs sequences.fasta --stats denoise_stats.tsv
+
+		# Create qiime2 object from representative sequences
+		qiime tools import --type \'FeatureData[Sequence]\' \
+			--input-path sequences.fasta \
+			--output-path rep-seqs.qza
+
+		# Create qiime2 object for feature table
+		biom convert -i feature-table.tsv -o feature-table.biom --to-hdf5
+#		make_biom_from_tsv feature-table.tsv feature-table.biom
+		qiime tools import \
+		        --input-path feature-table.biom \
+			--type 'FeatureTable[Frequency]' \
+			--input-format BIOMV210Format \
+			--output-path table.qza
+
+
+		# Produce dada2 report "dada_report.txt" from err.out and dd.out
+		make_dada2_report_pacbio.py err.out dd.out pooled
+
+		# Produce dada2 stats "dada_stats.tsv" from filter_stats.tsv and denoise_stats.tsv
+		make_dada2_stats_pacbio.py filter_stats.tsv denoise_stats.tsv
+
 		"""
 	}
 } else {

@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+* [#106](https://github.com/nf-core/ampliseq/issues/106) - Added support for PacBio data
+
 ### `Fixed`
 
 ### `Dependencies`
+
+* Updated from cutadapt v2.6 to v2.8
 
 ### `Deprecated`
 

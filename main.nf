@@ -358,7 +358,7 @@ if (!params.Q2imported){
 			.from(params.readPaths)
 			.map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
 			.ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-			.map { name, reads -> [ name.toString().take(name.toString().indexOf("_")), reads ] }
+			.map { name, reads -> [ name.toString().indexOf("_") != -1 ? name.toString().take(name.toString().indexOf("_")) : name, reads ] }
 			.into { ch_read_pairs; ch_read_pairs_fastqc; ch_read_pairs_name_check }
 
 	} else if ( !params.readPaths && params.multipleSequencingRuns ) {
@@ -416,7 +416,7 @@ if (!params.Q2imported){
 		Channel
 			.fromFilePairs( params.input + params.extension, size: 2 )
 			.ifEmpty { exit 1, "Cannot find any reads matching: ${params.input}${params.extension}\nNB: Path needs to be enclosed in quotes!" }
-			.map { name, reads -> [ name.toString().take(name.toString().indexOf("_")), reads ] }
+			.map { name, reads -> [ name.toString().indexOf("_") != -1 ? name.toString().take(name.toString().indexOf("_")) : name, reads ] }
 			.into { ch_read_pairs; ch_read_pairs_fastqc }
 	}
 
@@ -586,7 +586,7 @@ if (!params.Q2imported){
 	} else {
 		ch_fastq_trimmed_manifest
 			.map { forward, reverse -> [ forward.drop(forward.findLastIndexOf{"/"})[0], forward, reverse ] } //extract file name
-			.map { name, forward, reverse -> [ name.toString().take(name.toString().indexOf("_")), forward, reverse ] } //extract sample name
+			.map { name, forward, reverse -> [ name.toString().indexOf("_") != -1 ? name.toString().take(name.toString().indexOf("_")) : name, forward, reverse ] } //extract sample name
 			.map { name, forward, reverse -> [ name +","+ forward + ",forward\n" + name +","+ reverse +",reverse" ] } //prepare basic synthax
 			.flatten()
 			.collectFile(storeDir: "${params.outdir}", seed: "sample-id,absolute-filepath,direction\n") { item ->

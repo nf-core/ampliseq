@@ -1,6 +1,5 @@
 # ![nf-core/ampliseq](docs/images/nf-core-ampliseq_logo.png)
 
-[![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A519.10.0-brightgreen.svg)](https://www.nextflow.io/)
 [![nf-core](https://img.shields.io/badge/nf--core-pipeline-brightgreen.svg)](https://nf-co.re/)
 [![DOI](https://zenodo.org/badge/150448201.svg)](https://zenodo.org/badge/latestdoi/150448201)
 [![Cite Preprint](https://img.shields.io/badge/Cite%20Us!-Cite%20Publication-important)](https://doi.org/10.3389/fmicb.2020.550420)

@@ -15,3 +15,6 @@ RUN conda env export --name nf-core-ampliseq-1.2.0dev > nf-core-ampliseq-1.2.0de
 # Instruct R processes to use these empty files instead of clashing with a local version
 RUN touch .Rprofile
 RUN touch .Renviron
+
+## Don't recache on each execution, do that once per build process
+RUN qiime dev refresh-cache

@@ -6,17 +6,20 @@
 
 ## Introduction
 
-<!-- TODO nf-core: Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
-
-## Running the pipeline
+### Running the pipeline
 
 The typical command for running the pipeline is as follows:
 
 ```bash
-nextflow run nf-core/ampliseq --input '*_R{1,2}.fastq.gz' -profile docker
+nextflow run nf-core/ampliseq \
+    -profile singularity \
+    --input "data" \
+    --FW_primer GTGYCAGCMGCCGCGGTAA \
+    --RV_primer GGACTACNVGGGTWTCTAAT \
+    --metadata "data/Metadata.tsv"
 ```
 
-This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
+This will launch the pipeline with the `singularity` configuration profile. See below [`-profile`](#-profile) for more information about profiles.
 
 Note that the pipeline will create the following files in your working directory:
 
@@ -26,6 +29,8 @@ results         # Finished results (configurable, see below)
 .nextflow_log   # Log file from Nextflow
 # Other nextflow hidden files, eg. history of pipeline runs and old logs.
 ```
+
+See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/usage#usage) for more information about pipeline specific parameters.
 
 ### Updating the pipeline
 
@@ -39,7 +44,7 @@ nextflow pull nf-core/ampliseq
 
 It's a good idea to specify a pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
 
-First, go to the [nf-core/ampliseq releases page](https://github.com/nf-core/ampliseq/releases) and find the latest version number - numeric only (eg. `1.3.1`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 1.3.1`.
+First, go to the [nf-core/ampliseq releases page](https://github.com/nf-core/ampliseq/releases) and find the latest version number - numeric only (eg. `1.1.2`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 1.1.2`.
 
 This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future.
 
@@ -75,8 +80,8 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
   * Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity or Podman.
   * A generic configuration profile to be used with [Conda](https://conda.io/docs/)
   * Pulls most software from [Bioconda](https://bioconda.github.io/)
-* `test`
-  * A profile with a complete configuration for automated testing
+* `test`, `test_multi`, `test_manifest`, `test_full`
+  * Profiles with a complete configuration for automated testing
   * Includes links to test data so needs no other parameters
 
 ### `-resume`
@@ -93,12 +98,12 @@ Specify the path to a specific config file (this is a core Nextflow command). Se
 
 Each step in the pipeline has a default set of requirements for number of CPUs, memory and time. For most of the steps in the pipeline, if the job exits with an error code of `143` (exceeded requested resources) it will automatically resubmit with higher requests (2 x original, then 3 x original). If it still fails after three times then the pipeline is stopped.
 
-Whilst these default requirements will hopefully work for most people with most data, you may find that you want to customise the compute resources that the pipeline requests. You can do this by creating a custom config file. For example, to give the workflow process `star` 32GB of memory, you could use the following config:
+Whilst these default requirements will hopefully work for most people with most data, you may find that you want to customise the compute resources that the pipeline requests. You can do this by creating a custom config file. For example, to give the workflow process `classifier` 160GB of memory, you could use the following config:
 
 ```nextflow
 process {
-  withName: star {
-    memory = 32.GB
+  withName: classifier {
+    memory = 160.GB
   }
 }
 ```

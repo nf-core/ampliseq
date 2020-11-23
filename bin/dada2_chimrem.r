@@ -126,7 +126,7 @@ logmsg( sprintf( "Creating count tables and generating sequence file." ) )
 metadata <- read.table(opt$manifest, header = TRUE, sep = ",", colClasses = "character")
 metadata["file"] <- basename(metadata$absolute.filepath)
 nochim2 <- base:::as.data.frame(t(nochim))
-sample_ids <- metadata$sample.id[match(metadata$file,colnames(nochim2))]
+sample_ids <- metadata$sample.id[match(colnames(nochim2),metadata$file)]
 colnames(nochim2) <- sample_ids
 nochim2$seq <- row.names(nochim2)
 row.names(nochim2) <- paste0("ASV_", seq(nrow(nochim2)))

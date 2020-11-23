@@ -12,7 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Fixed`
 
 * [#182](https://github.com/nf-core/ampliseq/issues/182) - Fix input in case there are no underscores in sample IDs
+* [#186](https://github.com/nf-core/ampliseq/issues/186) - Update github actions
 * [#187](https://github.com/nf-core/ampliseq/issues/187) - Sample ids are in incorrect order in feature-table from PacBio data
+* [#190](https://github.com/nf-core/ampliseq/pull/190) - Template update for nf-core/tools version 1.12
 
 ### `Dependencies`
 

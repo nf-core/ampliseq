@@ -53,6 +53,7 @@ def helpMessage() {
 	  --min_samples [int]           Filtering low prevalent features from the feature table (default: 1)                   
 
 	Cutoffs:
+          --double_primer               Cutdapt will be run twice, first to remove reads without primers (default), then a second time to remove reads that erroneously contain a second set of primers, not to be used with "--retain_untrimmed"
 	  --retain_untrimmed            Cutadapt will retain untrimmed reads
           --maxEE [number]              DADA2 read filtering option, currently only used when --pacbio is set. After truncation, reads with higher than ‘maxEE’ "expected errors" will be discarded. We recommend (to start with) a value corresponding to approximately 1 expected error per 100-200 bp (default: 2)
           --maxLen [int]                DADA2 read filtering option, remove reads with length greater than maxLen after trimming and truncation (default: 2999)
@@ -119,7 +120,7 @@ params.plaintext_email = false
 
 ch_output_docs = Channel.fromPath("$baseDir/docs/output.md")
 Channel.fromPath("$baseDir/assets/matplotlibrc")
-	.into { ch_mpl_for_make_classifier; ch_mpl_for_qiime_import; ch_mpl_for_ancom_asv; ch_mpl_for_ancom_tax; ch_mpl_for_ancom; ch_mpl_for_beta_diversity_ord; ch_mpl_for_beta_diversity; ch_mpl_for_alpha_diversity; ch_mpl_for_metadata_pair; ch_mpl_for_metadata_cat; ch_mpl_for_diversity_core; ch_mpl_for_alpha_rare; ch_mpl_for_tree; ch_mpl_for_barcode; ch_mpl_for_relreducetaxa; ch_mpl_for_relasv; ch_mpl_for_export_dada_output; ch_mpl_filter_taxa; ch_mpl_classifier; ch_mpl_dada; ch_mpl_dada_merge; ch_mpl_for_demux_visualize; ch_mpl_for_classifier }
+	.into { ch_mpl_for_clfr_extract_seq; ch_mpl_for_clfr_train; ch_mpl_for_qiime_import; ch_mpl_for_ancom_asv; ch_mpl_for_ancom_tax; ch_mpl_for_ancom; ch_mpl_for_beta_diversity_ord; ch_mpl_for_beta_diversity; ch_mpl_for_alpha_diversity; ch_mpl_for_metadata_pair; ch_mpl_for_metadata_cat; ch_mpl_for_diversity_core; ch_mpl_for_alpha_rare; ch_mpl_for_tree; ch_mpl_for_barcode; ch_mpl_for_relreducetaxa; ch_mpl_for_relasv; ch_mpl_for_export_dada_output; ch_mpl_filter_taxa; ch_mpl_classifier; ch_mpl_dada; ch_mpl_dada_merge; ch_mpl_for_demux_visualize; ch_mpl_for_classifier }
 
 
 /*
@@ -537,7 +538,7 @@ if (!params.Q2imported){
 					${reads[0]} ${reads[1]} >> cutadapt_log_${pair_id}.txt
 				cutadapt -g ${params.FW_primer} -G ${params.RV_primer} --discard-trimmed \
                                         -o trimmed/$folder${params.split}${reads[0]} -p trimmed/$folder${params.split}${reads[1]} \
-                                        firstcutadapt/${reads[0]} firstcutadapt/${reads[1]} >> cutadapt_log_${pair_id}.txt
+                                        firstcutadapt/$folder${params.split}${reads[0]} firstcutadapt/$folder${params.split}${reads[1]} >> cutadapt_log_${pair_id}.txt
 			else
 				cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
                                		-o trimmed/$folder${params.split}${reads[0]} -p trimmed/$folder${params.split}${reads[1]} \
@@ -739,6 +740,7 @@ if (!params.Q2imported){
 
 /*
  * Download, unpack, extract and train classifier
+ * Download, unpack, and extract classifier in one process, train classifier in following process
  * Use "--dereplication 90" for testing and "--dereplication 99" for real datasets
  * Requirements with "--dereplication 99": 1 core (seems not to scale with more?), ~35 Gb mem, ~2:15:00 walltime
  */
@@ -752,20 +754,14 @@ if( !params.classifier ){
 			.set { ch_ref_database }		
 	}
 
-	process make_classifier {
-		publishDir "${params.outdir}/DB/", mode: params.publish_dir_mode, 
-		saveAs: {filename -> 
-			if (filename.indexOf("${params.FW_primer}-${params.RV_primer}-${params.dereplication}-classifier.qza") == 0) filename
-			else if(params.keepIntermediates) filename 
-			else null}
+	process clfr_extract_seq {
 
 		input:
 		file database from ch_ref_database
-		env MATPLOTLIBRC from ch_mpl_for_make_classifier
+		env MATPLOTLIBRC from ch_mpl_for_clfr_extract_seq
 
 		output:
-		file("${params.FW_primer}-${params.RV_primer}-${params.dereplication}-classifier.qza") into ch_qiime_classifier
-		file("*.qza")
+		file("*.qza") into ch_qiime_pretrain
 		stdout ch_message_classifier_removeHash
 
 		when:
@@ -809,6 +805,33 @@ if( !params.classifier ){
 			--p-r-primer ${params.RV_primer} \
 			--o-reads ${params.FW_primer}-${params.RV_primer}-${params.dereplication}-ref-seq.qza \
 			--quiet
+		"""
+	}
+
+        ch_message_classifier_removeHash
+                .subscribe { log.info it }
+
+        process clfr_train {
+                publishDir "${params.outdir}/DB/", mode: params.publish_dir_mode,
+                saveAs: {filename ->
+                        if (filename.indexOf("${params.FW_primer}-${params.RV_primer}-${params.dereplication}-classifier.qza") == 0) filename
+                        else if(params.keepIntermediates) filename
+                        else null}
+
+                input:
+                file '*' from ch_qiime_pretrain
+                env MATPLOTLIBRC from ch_mpl_for_clfr_train
+
+                output:
+                file("${params.FW_primer}-${params.RV_primer}-${params.dereplication}-classifier.qza") into ch_qiime_classifier
+
+                when:
+                !params.onlyDenoising || !params.untilQ2import
+
+                script:
+
+                """
+                export HOME="\${PWD}/HOME"
 
 		#Train classifier
 		qiime feature-classifier fit-classifier-naive-bayes \
@@ -819,8 +842,6 @@ if( !params.classifier ){
 		"""
 	}
 
-	ch_message_classifier_removeHash
-		.subscribe { log.info it }
 }
 
 /*

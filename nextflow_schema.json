@@ -76,6 +76,11 @@
                     "description": "Cutadapt will retain untrimmed reads, choose only if input reads are not expected to contain primer sequences.",
                     "help_text": "When read sequences are trimmed, untrimmed read pairs are discarded routinely. Use this option to retain untrimmed read pairs. This is usually not recommended and is only of advantage for specific protocols that prevent sequencing PCR primers. \n\nFor example:\n\n```bash\n--retain_untrimmed\n```"
                 },
+                "double_primer": {
+                    "type": "boolean",
+                    "description": "Cutadapt will be run twice to ensure removal of potential double primers",
+                    "help_text": "Cutdapt will be run twice, first to remove reads without primers (default), then a second time to remove reads that erroneously contain a second set of primers, not to be used with `--retain_untrimmed`"
+                },
                 "trunclenf": {
                     "type": "integer",
                     "description": "DADA2 read truncation value for forward strand, set this to 0 for no truncation",

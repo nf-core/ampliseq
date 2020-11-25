@@ -120,7 +120,7 @@ params.plaintext_email = false
 
 ch_output_docs = Channel.fromPath("$baseDir/docs/output.md")
 Channel.fromPath("$baseDir/assets/matplotlibrc")
-	.into { ch_mpl_for_clfr_extract_seq; ch_mpl_for_clfr_train; ch_mpl_for_qiime_import; ch_mpl_for_ancom_asv; ch_mpl_for_ancom_tax; ch_mpl_for_ancom; ch_mpl_for_beta_diversity_ord; ch_mpl_for_beta_diversity; ch_mpl_for_alpha_diversity; ch_mpl_for_metadata_pair; ch_mpl_for_metadata_cat; ch_mpl_for_diversity_core; ch_mpl_for_alpha_rare; ch_mpl_for_tree; ch_mpl_for_barcode; ch_mpl_for_relreducetaxa; ch_mpl_for_relasv; ch_mpl_for_export_dada_output; ch_mpl_filter_taxa; ch_mpl_classifier; ch_mpl_dada; ch_mpl_dada_merge; ch_mpl_for_demux_visualize; ch_mpl_for_classifier }
+	.into { ch_mpl_for_classifier_extract_seq; ch_mpl_for_classifier_train; ch_mpl_for_qiime_import; ch_mpl_for_ancom_asv; ch_mpl_for_ancom_tax; ch_mpl_for_ancom; ch_mpl_for_beta_diversity_ord; ch_mpl_for_beta_diversity; ch_mpl_for_alpha_diversity; ch_mpl_for_metadata_pair; ch_mpl_for_metadata_cat; ch_mpl_for_diversity_core; ch_mpl_for_alpha_rare; ch_mpl_for_tree; ch_mpl_for_barcode; ch_mpl_for_relreducetaxa; ch_mpl_for_relasv; ch_mpl_for_export_dada_output; ch_mpl_filter_taxa; ch_mpl_classifier; ch_mpl_dada; ch_mpl_dada_merge; ch_mpl_for_demux_visualize; ch_mpl_for_classifier }
 
 
 /*
@@ -211,6 +211,10 @@ if (params.pacbio) {
 
 if (single_end && !params.manifest) {
         exit 1, "A manifest file is needed for single end reads such as PacBio data."
+}
+
+if (params.double_primer && params.retain_untrimmed) { 
+	exit 1, "Incompatible parameters --double_primer and --retain_untrimmed cannot be set at the same time."
 }
 
 // AWSBatch sanity checking
@@ -495,7 +499,7 @@ if (!params.Q2imported){
 			in_files = single_end ? "${reads}" : "${reads[0]} ${reads[1]}"
 			"""
 			mkdir -p trimmed
-			if [[ $params.double_primer=TRUE && $discard_untrimmed="--discard-untrimmed" ]]; then
+			if [[ $params.double_primer == TRUE && $discard_untrimmed == "--discard-untrimmed" ]]; then
 	                        mkdir -p firstcutadapt
 				cutadapt ${primers} ${discard_untrimmed} \
 					${int_out_files} \
@@ -531,7 +535,7 @@ if (!params.Q2imported){
 			discard_untrimmed = params.retain_untrimmed ? '' : '--discard-untrimmed'
 			"""
 			mkdir -p trimmed
-			if [[ $params.double_primer=TRUE && $discard_untrimmed="--discard-untrimmed" ]]; then
+			if [[ $params.double_primer == TRUE && $discard_untrimmed == "--discard-untrimmed" ]]; then
 				mkdir -p firstcutadapt
 				cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
 					-o firstcutadapt/$folder${params.split}${reads[0]} -p firstcutadapt/$folder${params.split}${reads[1]} \
@@ -754,11 +758,11 @@ if( !params.classifier ){
 			.set { ch_ref_database }		
 	}
 
-	process clfr_extract_seq {
+	process classifier_extract_seq {
 
 		input:
 		file database from ch_ref_database
-		env MATPLOTLIBRC from ch_mpl_for_clfr_extract_seq
+		env MATPLOTLIBRC from ch_mpl_for_classifier_extract_seq
 
 		output:
 		file("*.qza") into ch_qiime_pretrain
@@ -811,7 +815,7 @@ if( !params.classifier ){
         ch_message_classifier_removeHash
                 .subscribe { log.info it }
 
-        process clfr_train {
+        process classifier_train {
                 publishDir "${params.outdir}/DB/", mode: params.publish_dir_mode,
                 saveAs: {filename ->
                         if (filename.indexOf("${params.FW_primer}-${params.RV_primer}-${params.dereplication}-classifier.qza") == 0) filename
@@ -820,7 +824,7 @@ if( !params.classifier ){
 
                 input:
                 file '*' from ch_qiime_pretrain
-                env MATPLOTLIBRC from ch_mpl_for_clfr_train
+                env MATPLOTLIBRC from ch_mpl_for_classifier_train
 
                 output:
                 file("${params.FW_primer}-${params.RV_primer}-${params.dereplication}-classifier.qza") into ch_qiime_classifier

@@ -499,7 +499,7 @@ if (!params.Q2imported){
 			in_files = single_end ? "${reads}" : "${reads[0]} ${reads[1]}"
 			"""
 			mkdir -p trimmed
-			if [[ $params.double_primer == TRUE && $discard_untrimmed == "--discard-untrimmed" ]]; then
+			if [[ ${params.double_primer} && !${params.retain_untrimmed} ]]; then
 	                        mkdir -p firstcutadapt
 				cutadapt ${primers} ${discard_untrimmed} \
 					${int_out_files} \
@@ -535,7 +535,7 @@ if (!params.Q2imported){
 			discard_untrimmed = params.retain_untrimmed ? '' : '--discard-untrimmed'
 			"""
 			mkdir -p trimmed
-			if [[ $params.double_primer == TRUE && $discard_untrimmed == "--discard-untrimmed" ]]; then
+			if [[ ${params.double_primer} && !${params.retain_untrimmed} ]]; then
 				mkdir -p firstcutadapt
 				cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
 					-o firstcutadapt/$folder${params.split}${reads[0]} -p firstcutadapt/$folder${params.split}${reads[1]} \

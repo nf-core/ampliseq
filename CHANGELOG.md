@@ -17,7 +17,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [#187](https://github.com/nf-core/ampliseq/issues/187) - Sample ids are in incorrect order in feature-table from PacBio data
 * [#190](https://github.com/nf-core/ampliseq/pull/190) - Template update for nf-core/tools version 1.12
 * [#147](https://github.com/nf-core/ampliseq/issues/147) - Split `make_classifier` in two different processes that can be allocated different resources
-* [#197](https://github.com/nf-core/ampliseq/issues/197) - "--double_primer" does not run cutadapt twice
 
 ### `Dependencies`
 

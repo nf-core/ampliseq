@@ -20,7 +20,7 @@ jobs:
     strategy:
       matrix:
         # Nextflow versions: check pipeline minimum and current latest
-        nxf_ver: ['19.10.0', '']
+        nxf_ver: ['20.04.0', '']
     steps:
       - name: Check out pipeline code
         uses: actions/checkout@v2
@@ -43,6 +43,8 @@ jobs:
           docker tag nfcore/ampliseq:dev nfcore/ampliseq:dev
 
       - name: Install Nextflow
+        env:
+          CAPSULE_LOG: none
         run: |
           wget -qO- get.nextflow.io | bash
           sudo mv nextflow /usr/local/bin/
@@ -59,3 +61,6 @@ jobs:
       - name: Run pipeline with ITS PacBio reads and Unite database
         run: | 
           nextflow run ${GITHUB_WORKSPACE} -profile test_pacbio_its,docker
+      - name: Run pipeline with double cutadapt steps on test data with double primers
+        run: |
+          nextflow run ${GITHUB_WORKSPACE} -profile test_doubleprimers,docker

@@ -8,11 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 * [#106](https://github.com/nf-core/ampliseq/issues/106) - Added support for PacBio data
+* [#157](https://github.com/nf-core/ampliseq/issues/157) - Added possibility to run double cutadapt steps, `--double_primer`
 
 ### `Fixed`
 
 * [#182](https://github.com/nf-core/ampliseq/issues/182) - Fix input in case there are no underscores in sample IDs
 * [#186](https://github.com/nf-core/ampliseq/issues/186) - Update github actions
+* [#187](https://github.com/nf-core/ampliseq/issues/187) - Sample ids are in incorrect order in feature-table from PacBio data
+* [#190](https://github.com/nf-core/ampliseq/pull/190) - Template update for nf-core/tools version 1.12
+* [#147](https://github.com/nf-core/ampliseq/issues/147) - Split `make_classifier` in two different processes that can be allocated different resources
 
 ### `Dependencies`
 

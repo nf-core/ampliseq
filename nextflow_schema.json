@@ -118,9 +118,11 @@
                     "description": "Path to taxonomic reference database, currently accepts a qiime compatible file Silva_132_release.zip or a UNITE fasta file",
                     "help_text": "By default, the workflow downloads SILVA (https://www.arb-silva.de/) v132 (https://www.arb-silva.de/documentation/release-132/) and extracts reference sequences and taxonomy clustered at 99% similarity and trains a Naive Bayes classifier to assign taxonomy to features."
                 },
-                "unite": {
-                    "type": "boolean",
-                    "description": "If reference database is in the format of a UNITE fasta file instead of SILVA zip file"
+                "taxon_reference": {
+                    "type": "string",
+                    "default": "silva",
+                    "description": "Specify which database to use for taxonomic assignment. Either silva or unite (default: silva)."
+                    "help_text": "By default, uses SILVA for taxonomic assignment, but can also use UNITE. If so, specify the UNITE fasta file with --reference_database."
                 },
                 "classifier": {
                     "type": "string",

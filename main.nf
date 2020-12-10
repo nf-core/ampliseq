@@ -216,11 +216,9 @@ if (single_end && !params.manifest) {
 if (params.double_primer && params.retain_untrimmed) { 
 	exit 1, "Incompatible parameters --double_primer and --retain_untrimmed cannot be set at the same time."
 }
-//${params.taxon_reference} != 'silva' || ${params.taxon_reference} != 'unite'
-//"--taxon_reference need to be set to either silva or unite"
-System.err.println("${params.taxon_reference}")
+
 if (!params.classifier){
-        if (!(params.taxon_reference == 'silva' || params.taxon_reference == 'unite')) exit 1, "${params.taxon_reference} ==~ 'silva' || ${params.taxon_reference} ==~ 'unite'"
+        if (!(params.taxon_reference == 'silva' || params.taxon_reference == 'unite')) exit 1, "--taxon_reference need to be set to either silva or unite"
 }
 
 // AWSBatch sanity checking

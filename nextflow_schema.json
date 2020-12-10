@@ -121,7 +121,7 @@
                 "taxon_reference": {
                     "type": "string",
                     "default": "silva",
-                    "description": "Specify which database to use for taxonomic assignment. Either silva or unite (default: silva)."
+                    "description": "Specify which database to use for taxonomic assignment. Either silva or unite (default: silva).",
                     "help_text": "By default, uses SILVA for taxonomic assignment, but can also use UNITE. If so, specify the UNITE fasta file with --reference_database."
                 },
                 "classifier": {

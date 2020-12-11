@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 * [#106](https://github.com/nf-core/ampliseq/issues/106) - Added support for PacBio data
+* Added `--taxon_reference` to be able to support both 'silva' and 'unite'
 * [#157](https://github.com/nf-core/ampliseq/issues/157) - Added possibility to run double cutadapt steps, `--double_primer`
 
 ### `Fixed`

@@ -66,7 +66,6 @@ nf-core/ampliseq was originally written by Daniel Straub ([@d4straub](https://gi
 We thank the following people for their extensive assistance in the development
 of this pipeline:
 
-
 ## Contributions and Support
 
 If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).

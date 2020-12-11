@@ -1,11 +1,10 @@
-# nf-core/rrna-ampliseq: Documentation
+# nf-core/ampliseq: Documentation
 
-The nf-core/rrna-ampliseq documentation is split into the following files:
+The nf-core/ampliseq documentation is split into the following pages:
 
-1. [Installation](installation.md)
-2. [Running the pipeline](usage.md)
-3. Pipeline configuration
-    * [Adding your own system](configuration/adding_your_own.md)
-    * [Reference genomes](configuration/reference_genomes.md)
-4. [Output and how to interpret the results](output.md)
-5. [Troubleshooting](troubleshooting.md)
+* [Usage](usage.md)
+  * An overview of how the pipeline works, how to run it and a description of all of the different command-line flags.
+* [Output](output.md)
+  * An overview of the different results produced by the pipeline and how to interpret them.
+
+You can find a lot more documentation about installing, configuring and running nf-core pipelines on the website: [https://nf-co.re](https://nf-co.re)

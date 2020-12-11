@@ -1,9 +1,15 @@
-name: nf-core-rrna-ampliseq-1.0dev
+# You can use this file to create a conda environment for this pipeline:
+#   conda env create -f environment.yml
+name: nf-core-ampliseq-1.2.0dev
 channels:
   - conda-forge
   - bioconda
   - defaults
 dependencies:
-  - fastqc=0.11.7 #newest version
-  - multiqc=1.6 #newest version
-  - cutadapt=1.18 #newest version
+  - conda-forge::python=3.7.3
+  - conda-forge::markdown=3.1.1
+  - conda-forge::pymdown-extensions=6.0
+  - conda-forge::pygments=2.5.2
+  # TODO nf-core: Add required software dependencies here
+  - bioconda::fastqc=0.11.8
+  - bioconda::multiqc=1.7

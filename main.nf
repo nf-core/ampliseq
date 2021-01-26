@@ -754,7 +754,7 @@ if (!params.Q2imported){
  */
 
 if( !params.classifier ){
-	if( !params.onlyDenoising ){
+	if( !params.onlyDenoising && !params.skip_taxonomy ){
 		Channel.fromPath("${params.reference_database}")
 			.set { ch_ref_database }
 	} else {

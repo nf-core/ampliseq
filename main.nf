@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 /*
 ========================================================================================
-						 nf-core/ampliseq
+                         nf-core/ampliseq
 ========================================================================================
  nf-core/ampliseq Analysis Pipeline.
  #### Homepage / Documentation
@@ -2171,6 +2171,7 @@ workflow.onComplete {
     }
 
 }
+
 
 def nfcoreHeader() {
     // Log colors ANSI codes

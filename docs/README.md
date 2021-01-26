@@ -8,7 +8,7 @@ The nf-core/ampliseq documentation is split into the following pages:
   * An overview of the different results produced by the pipeline and how to interpret them.
 * [Troubleshooting](https://nf-co.re/usage/troubleshooting)
 
-You can find a lot more documentation about [installing](https://nf-co.re/usage/installation), [configuring](https://nf-co.re/usage/adding_own_config) and running nf-core pipelines on the website: [https://nf-co.re](https://nf-co.re)
+You can find a lot more documentation about installing, configuring and running nf-core pipelines on the website: [https://nf-co.re](https://nf-co.re)
 
 ## Credits
 

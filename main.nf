@@ -39,8 +39,7 @@ def helpMessage() {
 	                                The prepended "/" is required, also one "*" is required for sample names and "{1,2}" indicates read orientation
 	  --multipleSequencingRuns      If samples were sequenced in multiple sequencing runs. Expects one subfolder per sequencing run
 	                                in the folder specified by "--input" containing sequencing data of the specific run. These folders 
-	                                may not contain underscores. Also, fastQC is skipped because multiple sequencing runs might 
-	                                create overlapping file names that crash MultiQC.
+	                                may not contain underscores.
 	  --split [str]                 A string that will be used between the prepended run/folder name and the sample name. (default: "-")
 	                                May not be present in run/folder names and no underscore(s) allowed. Only used with "--multipleSequencingRuns"
 	  --pacbio			If PacBio data. Use this option together with --manifest.

@@ -498,7 +498,7 @@ if (!params.Q2imported){
 			mkdir -p trimmed
 			if [[ \"${params.double_primer}\" = \"true\" && \"${params.retain_untrimmed}\" = \"false\" ]]; then
 				#rename files to list results correctly in MultiQC
-	            if [ \"${single_end}\" = \"true\" ]; then
+				if [ \"${single_end}\" = \"true\" ]; then
 					ln -s "${reads}" "first-trimming_${reads}"
 				else
 					ln -s "${reads[0]}" "first-trimming_${reads[0]}"
@@ -508,13 +508,13 @@ if (!params.Q2imported){
 				cutadapt ${primers} ${discard_untrimmed} \
 					${out_1_files} \
 					${in_1_files} >> cutadapt_log_${pair_id}.txt
-                cutadapt ${primers} --discard-trimmed \
-                    ${out_files} \
-                    ${in_2_files} >> cutadapt_log_${pair_id}.txt
+				cutadapt ${primers} --discard-trimmed \
+					${out_files} \
+					${in_2_files} >> cutadapt_log_${pair_id}.txt
 			else
 				cutadapt ${primers} ${discard_untrimmed} \
-                    ${out_files} ${in_files} \
-                    >> cutadapt_log_${pair_id}.txt
+					${out_files} ${in_files} \
+					>> cutadapt_log_${pair_id}.txt
 			fi
 			"""
 		}

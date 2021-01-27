@@ -136,13 +136,6 @@ if (params.Q2imported) {
 	params.skip_multiqc = false
 }
 
-//Currently, fastqc doesnt work for multiple runs when sample names are identical. These names are encoded in the sequencing file itself.
-if (params.multipleSequencingRuns) {
-	params.skip_fastqc = true
-} else {
-	params.skip_fastqc = false
-}
-
 params.onlyDenoising = false
 if (params.onlyDenoising || params.untilQ2import) {
 	params.skip_abundance_tables = true
@@ -465,7 +458,10 @@ if (!params.Q2imported){
 
 			script: 
 			"""
-			fastqc -q ${reads}
+			#Rename files so that there is no possible overlap
+			ln -s "${reads[0]}" "$folder${params.split}${reads[0]}"
+			ln -s "${reads[1]}" "$folder${params.split}${reads[1]}"
+			fastqc -q "$folder${params.split}${reads[0]}" "$folder${params.split}${reads[1]}"
 			"""
 		}
 	}
@@ -493,24 +489,32 @@ if (!params.Q2imported){
 			script:
 			discard_untrimmed = params.retain_untrimmed ? '' : '--discard-untrimmed'
 			primers = single_end ? "--rc -g ${params.FW_primer}...${params.RV_primer}" : "-g ${params.FW_primer} -G ${params.RV_primer}"
-			int_out_files = single_end ? "-o firstcutadapt/${reads}" : "-o firstcutadapt/${reads[0]} -p firstcutadapt/${reads[1]}"
-			int_in_files = single_end ? "firstcutadapt/${reads}" : "firstcutadapt/${reads[0]} firstcutadapt/${reads[1]}"
+			in_2_files = single_end ? "second-trimming_${reads}" : "second-trimming_${reads[0]} second-trimming_${reads[1]}" 
+			out_1_files = single_end ? "-o second-trimming_${reads}" : "-o second-trimming_${reads[0]} -p second-trimming_${reads[1]}"
+			in_1_files = single_end ? "first-trimming_${reads}" : "first-trimming_${reads[0]} first-trimming_${reads[1]}" //these have to be symlinked below
 			out_files = single_end ? "-o trimmed/${reads}" : "-o trimmed/${reads[0]} -p trimmed/${reads[1]}"
 			in_files = single_end ? "${reads}" : "${reads[0]} ${reads[1]}"
 			"""
 			mkdir -p trimmed
-			if [[ ${params.double_primer} && !${params.retain_untrimmed} ]]; then
-	                        mkdir -p firstcutadapt
+			if [[ \"${params.double_primer}\" = \"true\" && \"${params.retain_untrimmed}\" = \"false\" ]]; then
+				#rename files to list results correctly in MultiQC
+	            if [ \"${single_end}\" = \"true\" ]; then
+					ln -s "${reads}" "first-trimming_${reads}"
+				else
+					ln -s "${reads[0]}" "first-trimming_${reads[0]}"
+					ln -s "${reads[1]}" "first-trimming_${reads[1]}"
+				fi
+
 				cutadapt ${primers} ${discard_untrimmed} \
-					${int_out_files} \
-					${in_files} >> cutadapt_log_${pair_id}.txt
-                                cutadapt ${primers} --discard-trimmed \
-                                        ${out_files} \
-                                        ${int_in_files} >> cutadapt_log_${pair_id}.txt
+					${out_1_files} \
+					${in_1_files} >> cutadapt_log_${pair_id}.txt
+                cutadapt ${primers} --discard-trimmed \
+                    ${out_files} \
+                    ${in_2_files} >> cutadapt_log_${pair_id}.txt
 			else
 				cutadapt ${primers} ${discard_untrimmed} \
-                                        ${out_files} ${in_files} \
-                                        >> cutadapt_log_${pair_id}.txt
+                    ${out_files} ${in_files} \
+                    >> cutadapt_log_${pair_id}.txt
 			fi
 			"""
 		}
@@ -529,24 +533,33 @@ if (!params.Q2imported){
 		
 			output:
 			file "trimmed/*.*" into (ch_fastq_trimmed, ch_fastq_trimmed_manifest, ch_fastq_trimmed_qiime)
-			file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
+			file "cutadapt_log_$folder${params.split}${pair_id}.txt" into ch_fastq_cutadapt_log
 
 			script:
 			discard_untrimmed = params.retain_untrimmed ? '' : '--discard-untrimmed'
 			"""
 			mkdir -p trimmed
-			if [[ ${params.double_primer} && !${params.retain_untrimmed} ]]; then
+			if [[ \"${params.double_primer}\" = \"true\" && \"${params.retain_untrimmed}\" = \"false\" ]]; then
 				mkdir -p firstcutadapt
+				#Rename files so that MultiQC will pick them up correctely as first trimming
+				ln -s "${reads[0]}" "first-trimming_$folder${params.split}${reads[0]}"
+				ln -s "${reads[1]}" "first-trimming_$folder${params.split}${reads[1]}"
 				cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
 					-o firstcutadapt/$folder${params.split}${reads[0]} -p firstcutadapt/$folder${params.split}${reads[1]} \
-					${reads[0]} ${reads[1]} >> cutadapt_log_${pair_id}.txt
+					"first-trimming_$folder${params.split}${reads[0]}" "first-trimming_$folder${params.split}${reads[1]}" >> cutadapt_log_$folder${params.split}${pair_id}.txt
+				#Rename files so that MultiQC will pick them up correctely as second trimming
+				ln -s "firstcutadapt/$folder${params.split}${reads[0]}" "second-trimming_$folder${params.split}${reads[0]}"
+				ln -s "firstcutadapt/$folder${params.split}${reads[1]}" "second-trimming_$folder${params.split}${reads[1]}"
 				cutadapt -g ${params.FW_primer} -G ${params.RV_primer} --discard-trimmed \
                                         -o trimmed/$folder${params.split}${reads[0]} -p trimmed/$folder${params.split}${reads[1]} \
-                                        firstcutadapt/$folder${params.split}${reads[0]} firstcutadapt/$folder${params.split}${reads[1]} >> cutadapt_log_${pair_id}.txt
+                                        second-trimming_$folder${params.split}${reads[0]} second-trimming_$folder${params.split}${reads[1]} >> cutadapt_log_$folder${params.split}${pair_id}.txt
 			else
+				#first, rename files so that MultiQC will pick them up correctely
+				ln -s "${reads[0]}" "$folder${params.split}${reads[0]}"
+				ln -s "${reads[1]}" "$folder${params.split}${reads[1]}"
 				cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
                                		-o trimmed/$folder${params.split}${reads[0]} -p trimmed/$folder${params.split}${reads[1]} \
-                                	${reads[0]} ${reads[1]} > cutadapt_log_${pair_id}.txt
+                                	$folder${params.split}${reads[0]} $folder${params.split}${reads[1]} > cutadapt_log_$folder${params.split}${pair_id}.txt
 			fi
 			"""
 		}

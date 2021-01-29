@@ -66,7 +66,7 @@ def helpMessage() {
 	  --classifier [path/to/file]   Path to QIIME2 classifier file (typically *-classifier.qza)
 	  --classifier_removeHash       Remove all hash signs from taxonomy strings, resolves a rare ValueError during classification (process classifier)
 	  --reference_database          Path to file with reference database with taxonomies, currently either a qiime compatible file Silva_132_release.zip, or a UNITE fasta file (default: "https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip")
-	  --unite                       If reference database is in the format of a UNITE fasta file
+	  --taxon_reference             Specify which database to use for taxonomic assignment. Either 'silva' or 'unite' (default: 'silva')
 
 	Statistics:
 	  --metadata_category [str]     Comma separated list of metadata column headers for statistics (default: false)
@@ -207,6 +207,10 @@ if (single_end && !params.manifest) {
 
 if (params.double_primer && params.retain_untrimmed) { 
 	exit 1, "Incompatible parameters --double_primer and --retain_untrimmed cannot be set at the same time."
+}
+
+if (!params.classifier){
+        if (!(params.taxon_reference == 'silva' || params.taxon_reference == 'unite')) exit 1, "--taxon_reference need to be set to either 'silva' or 'unite'"
 }
 
 // AWSBatch sanity checking
@@ -788,7 +792,7 @@ if( !params.classifier ){
 		"""
 		export HOME="\${PWD}/HOME"
 
-		if [ \"${params.unite}\" = \"true\" ]; then
+		if [ ${params.taxon_reference} = \"unite\" ]; then
                         create_unite_taxfile.py $database db.fa db.tax
 			fasta=\"db.fa\"
 		        taxonomy=\"db.tax\"

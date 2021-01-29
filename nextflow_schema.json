@@ -63,21 +63,23 @@
                 "maxEE": {
                     "type": "integer",
                     "default": 2,
-                    "description": "DADA2 read filtering option, currently only used when --pacbio is set",
+                    "description": "DADA2 read filtering option",
                     "help_text": "After truncation, reads with higher than \u2018maxEE\u2019 \"expected errors\" will be discarded. In case of very long reads, you might want to increase this value.  We recommend (to start with) a value corresponding to approximately 1 expected error per 100-200 bp (default: 2)",
                     "fa_icon": "fas fa-equals"
                 },
                 "maxLen": {
                     "type": "integer",
                     "default": 2999,
-                    "description": "DADA2 read filtering option, remove reads with length greater than maxLen after trimming and truncation",
-                    "fa_icon": "fas fa-less-than-equal"
+                    "description": "DADA2 read filtering option [PacBio only]",
+                    "fa_icon": "fas fa-less-than-equal",
+                    "help_text": "Remove reads with length greater than maxLen after trimming and truncation."
                 },
                 "minLen": {
                     "type": "integer",
                     "default": 50,
-                    "description": "DADA2 read filtering option, remove reads with length less than minLen after trimming and truncation",
-                    "fa_icon": "fas fa-greater-than-equal"
+                    "description": "DADA2 read filtering option [PacBio only]",
+                    "fa_icon": "fas fa-greater-than-equal",
+                    "help_text": "Remove reads with length less than minLen after trimming and truncation."
                 },
                 "retain_untrimmed": {
                     "type": "boolean",

@@ -27,12 +27,12 @@ def helpMessage() {
 	                                Note: All samples have to be sequenced in one run, otherwise also specifiy "--multipleSequencingRuns"
 	  --FW_primer [str]             Forward primer sequence
 	  --RV_primer [str]             Reverse primer sequence
-          --metadata [path/to/file]     Path to metadata sheet, when missing most downstream analysis are skipped (barplots, PCoA plots, ...). 
-                                        File extension is not relevant. Must have a comma separated list of metadata column headers.
+	  --metadata [path/to/file]     Path to metadata sheet, when missing most downstream analysis are skipped (barplots, PCoA plots, ...). 
+	                                File extension is not relevant. Must have a comma separated list of metadata column headers.
 	  --manifest [path/to/file]     Path to manifest.tsv table with the following labels in this exact order: sampleID, forwardReads, reverseReads. In case of single end reads, the labels should be: sampleID, Reads.
-                                        Tab ('\t') must be the table separator. Multiple sequencing runs not supported by manifest at this stage.
+	                                Tab ('\t') must be the table separator. Multiple sequencing runs not supported by manifest at this stage.
 	                                Default is FALSE. 
-	  --qiime_timezone [str]	Needs to be specified to resolve a timezone error (default: 'Europe/Berlin')
+	  --qiime_timezone [str]        Needs to be specified to resolve a timezone error (default: 'Europe/Berlin')
 
 	Other input options:
 	  --extension [str]             Naming of sequencing files (default: "/*_R{1,2}_001.fastq.gz"). 
@@ -42,7 +42,7 @@ def helpMessage() {
 	                                may not contain underscores.
 	  --split [str]                 A string that will be used between the prepended run/folder name and the sample name. (default: "-")
 	                                May not be present in run/folder names and no underscore(s) allowed. Only used with "--multipleSequencingRuns"
-	  --pacbio			If PacBio data. Use this option together with --manifest.
+	  --pacbio                      If PacBio data. Use this option together with --manifest.
 	  --phred64                     If the sequencing data has PHRED 64 encoded quality scores (default: PHRED 33)
 
 	Filters:
@@ -52,11 +52,11 @@ def helpMessage() {
 	  --min_samples [int]           Filtering low prevalent features from the feature table (default: 1)                   
 
 	Cutoffs:
-          --double_primer               Cutdapt will be run twice, first to remove reads without primers (default), then a second time to remove reads that erroneously contain a second set of primers, not to be used with "--retain_untrimmed"
+	  --double_primer               Cutdapt will be run twice, first to remove reads without primers (default), then a second time to remove reads that erroneously contain a second set of primers, not to be used with "--retain_untrimmed"
 	  --retain_untrimmed            Cutadapt will retain untrimmed reads
-          --maxEE [number]              DADA2 read filtering option, currently only used when --pacbio is set. After truncation, reads with higher than ‘maxEE’ "expected errors" will be discarded. We recommend (to start with) a value corresponding to approximately 1 expected error per 100-200 bp (default: 2)
-          --maxLen [int]                DADA2 read filtering option, remove reads with length greater than maxLen after trimming and truncation (default: 2999)
-          --minLen [int]                DADA2 read filtering option, remove reads with length less than minLen after trimming and truncation (default: 50)
+	  --maxEE [number]              DADA2 read filtering option. After truncation, reads with higher than ‘maxEE’ "expected errors" will be discarded. We recommend (to start with) a value corresponding to approximately 1 expected error per 100-200 bp (default: 2)
+	  --maxLen [int]                DADA2 read filtering option [PacBio only], remove reads with length greater than maxLen after trimming and truncation (default: 2999)
+	  --minLen [int]                DADA2 read filtering option [PacBio only], remove reads with length less than minLen after trimming and truncation (default: 50)
 	  --trunclenf [int]             DADA2 read truncation value for forward strand and single end reads, set this to 0 for no truncation
 	  --trunclenr [int]             DADA2 read truncation value for reverse strand, set this to 0 for no truncation
 	  --trunc_qmin [int]            If --trunclenf and --trunclenr are not set, these values will be automatically determined using this mean quality score (not preferred) (default: 25)
@@ -65,8 +65,8 @@ def helpMessage() {
 	References:                     If you have trained a compatible classifier before, or want to use a custom database
 	  --classifier [path/to/file]   Path to QIIME2 classifier file (typically *-classifier.qza)
 	  --classifier_removeHash       Remove all hash signs from taxonomy strings, resolves a rare ValueError during classification (process classifier)
-          --reference_database          Path to file with reference database with taxonomies, currently either a qiime compatible file Silva_132_release.zip, or a UNITE fasta file (default: "https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip")
-          --taxon_reference             Specify which database to use for taxonomic assignment. Either 'silva' or 'unite' (default: 'silva')
+	  --reference_database          Path to file with reference database with taxonomies, currently either a qiime compatible file Silva_132_release.zip, or a UNITE fasta file (default: "https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip")
+	  --taxon_reference             Specify which database to use for taxonomic assignment. Either 'silva' or 'unite' (default: 'silva')
 
 	Statistics:
 	  --metadata_category [str]     Comma separated list of metadata column headers for statistics (default: false)
@@ -79,12 +79,12 @@ def helpMessage() {
 	  --Q2imported [path/to/file]   Path to imported reads (e.g. "demux.qza"), used after visually choosing DADA2 parameter
 	  --onlyDenoising               Skip all steps after denoising, produce only sequences and abundance tables on ASV level
 	  --keepIntermediates           Keep additional intermediate files, such as trimmed reads or various QIIME2 archives
-      --outdir [file]               The output directory where the results will be saved
-      --publish_dir_mode [str]      Mode for publishing results in the output directory. Available: symlink, rellink, link, copy, copyNoFollow, move (Default: copy)
-      --email [email]               Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits
-      --email_on_fail [email]       Same as --email, except only send mail if the workflow is not successful
-      --max_multiqc_email_size [str]  Threshold size for MultiQC report to be attached in notification email. If file generated by pipeline exceeds the threshold, it will not be attached (Default: 25MB)
-      -name [str]                   Name for the pipeline run. If not specified, Nextflow will automatically generate a random mnemonic
+	  --outdir [file]               The output directory where the results will be saved
+	  --publish_dir_mode [str]      Mode for publishing results in the output directory. Available: symlink, rellink, link, copy, copyNoFollow, move (Default: copy)
+	  --email [email]               Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits
+	  --email_on_fail [email]       Same as --email, except only send mail if the workflow is not successful
+	  --max_multiqc_email_size [str]  Threshold size for MultiQC report to be attached in notification email. If file generated by pipeline exceeds the threshold, it will not be attached (Default: 25MB)
+	  -name [str]                   Name for the pipeline run. If not specified, Nextflow will automatically generate a random mnemonic
 
 	Skipping steps:
 	  --skip_fastqc                 Skip FastQC
@@ -95,10 +95,10 @@ def helpMessage() {
 	  --skip_diversity_indices      Skip alpha and beta diversity analysis
 	  --skip_ancom                  Skip differential abundance testing
 
-    AWSBatch options:
-      --awsqueue [str]                The AWSBatch JobQueue that needs to be set when running on AWSBatch
-      --awsregion [str]               The AWS Region for your AWS Batch job to run on
-      --awscli [str]                  Path to the AWS CLI tool
+	AWSBatch options:
+	  --awsqueue [str]                The AWSBatch JobQueue that needs to be set when running on AWSBatch
+	  --awsregion [str]               The AWS Region for your AWS Batch job to run on
+	  --awscli [str]                  Path to the AWS CLI tool
 	""".stripIndent()
 }
 
@@ -1040,6 +1040,8 @@ if (!params.multipleSequencingRuns && !params.pacbio){
 			--i-demultiplexed-seqs ${demux}  \
 			--p-trunc-len-f \${trunclen[0]} \
 			--p-trunc-len-r \${trunclen[1]} \
+			--p-max-ee-f ${params.maxEE} \
+			--p-max-ee-r ${params.maxEE} \
 			--p-n-threads 0  \
 			--o-table table.qza  \
 			--o-representative-sequences rep-seqs.qza  \
@@ -1181,6 +1183,8 @@ if (!params.multipleSequencingRuns && !params.pacbio){
 			--i-demultiplexed-seqs ${demux}  \
 			--p-trunc-len-f ${trunclenf} \
 			--p-trunc-len-r ${trunclenr} \
+			--p-max-ee-f ${params.maxEE} \
+			--p-max-ee-r ${params.maxEE} \
 			--p-n-threads 0  \
 			--o-table ${demux.baseName}-table.qza  \
 			--o-representative-sequences ${demux.baseName}-rep-seqs.qza  \

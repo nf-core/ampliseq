@@ -54,9 +54,9 @@ def helpMessage() {
 	Cutoffs:
 	  --double_primer               Cutdapt will be run twice, first to remove reads without primers (default), then a second time to remove reads that erroneously contain a second set of primers, not to be used with "--retain_untrimmed"
 	  --retain_untrimmed            Cutadapt will retain untrimmed reads
-	  --maxEE [number]              DADA2 read filtering option, currently only used when --pacbio is set. After truncation, reads with higher than ‘maxEE’ "expected errors" will be discarded. We recommend (to start with) a value corresponding to approximately 1 expected error per 100-200 bp (default: 2)
-	  --maxLen [int]                DADA2 read filtering option, remove reads with length greater than maxLen after trimming and truncation (default: 2999)
-	  --minLen [int]                DADA2 read filtering option, remove reads with length less than minLen after trimming and truncation (default: 50)
+	  --maxEE [number]              DADA2 read filtering option. After truncation, reads with higher than ‘maxEE’ "expected errors" will be discarded. We recommend (to start with) a value corresponding to approximately 1 expected error per 100-200 bp (default: 2)
+	  --maxLen [int]                DADA2 read filtering option [PacBio only], remove reads with length greater than maxLen after trimming and truncation (default: 2999)
+	  --minLen [int]                DADA2 read filtering option [PacBio only], remove reads with length less than minLen after trimming and truncation (default: 50)
 	  --trunclenf [int]             DADA2 read truncation value for forward strand and single end reads, set this to 0 for no truncation
 	  --trunclenr [int]             DADA2 read truncation value for reverse strand, set this to 0 for no truncation
 	  --trunc_qmin [int]            If --trunclenf and --trunclenr are not set, these values will be automatically determined using this mean quality score (not preferred) (default: 25)
@@ -1036,6 +1036,8 @@ if (!params.multipleSequencingRuns && !params.pacbio){
 			--i-demultiplexed-seqs ${demux}  \
 			--p-trunc-len-f \${trunclen[0]} \
 			--p-trunc-len-r \${trunclen[1]} \
+			--p-max-ee-f ${params.maxEE} \
+			--p-max-ee-r ${params.maxEE} \
 			--p-n-threads 0  \
 			--o-table table.qza  \
 			--o-representative-sequences rep-seqs.qza  \
@@ -1177,6 +1179,8 @@ if (!params.multipleSequencingRuns && !params.pacbio){
 			--i-demultiplexed-seqs ${demux}  \
 			--p-trunc-len-f ${trunclenf} \
 			--p-trunc-len-r ${trunclenr} \
+			--p-max-ee-f ${params.maxEE} \
+			--p-max-ee-r ${params.maxEE} \
 			--p-n-threads 0  \
 			--o-table ${demux.baseName}-table.qza  \
 			--o-representative-sequences ${demux.baseName}-rep-seqs.qza  \

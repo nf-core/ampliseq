@@ -16,7 +16,7 @@
 
 ## Introduction
 
-**nfcore/ampliseq** is a bioinformatics analysis pipeline used for 16S rRNA amplicon sequencing data (currently supported is Illumina paired end data).
+**nfcore/ampliseq** is a bioinformatics analysis pipeline used for 16S rRNA or ITS amplicon sequencing data (currently supported is Illumina paired end or PacBio).
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It comes with docker containers making installation trivial and results highly reproducible.
 
@@ -53,7 +53,7 @@ By default, the pipeline currently performs the following:
 * Taxonomical classification based on [SILVA](https://www.arb-silva.de/) [v132](https://www.arb-silva.de/documentation/release-132/) or [UNITE](https://unite.ut.ee/) database
 * excludes unwanted taxa, produces absolute and relative feature/taxa count tables and plots, plots alpha rarefaction curves, computes alpha and beta diversity indices and plots thereof ([QIIME2](https://www.nature.com/articles/s41587-019-0209-9))
 * Calls differentially abundant taxa ([ANCOM](https://www.ncbi.nlm.nih.gov/pubmed/26028277))
-* Overall pipeline run summaries (`MultiQC`)
+* Overall pipeline run summaries ([MultiQC](https://multiqc.info/))
 
 ## Documentation
 

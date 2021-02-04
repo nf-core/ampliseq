@@ -34,13 +34,13 @@ jobs:
 
       - name: Build new docker image
         if: env.MATCHED_FILES
-        run: docker build --no-cache . -t nfcore/ampliseq:1.2.0
+        run: docker build --no-cache . -t nfcore/ampliseq:dev
 
       - name: Pull docker image
         if: ${{ !env.MATCHED_FILES }}
         run: |
           docker pull nfcore/ampliseq:dev
-          docker tag nfcore/ampliseq:dev nfcore/ampliseq:1.2.0
+          docker tag nfcore/ampliseq:dev nfcore/ampliseq:dev
 
       - name: Install Nextflow
         env:

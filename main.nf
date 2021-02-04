@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 /*
 ========================================================================================
-						 nf-core/ampliseq
+                         nf-core/ampliseq
 ========================================================================================
  nf-core/ampliseq Analysis Pipeline.
  #### Homepage / Documentation
@@ -27,22 +27,22 @@ def helpMessage() {
 	                                Note: All samples have to be sequenced in one run, otherwise also specifiy "--multipleSequencingRuns"
 	  --FW_primer [str]             Forward primer sequence
 	  --RV_primer [str]             Reverse primer sequence
-          --metadata [path/to/file]     Path to metadata sheet, when missing most downstream analysis are skipped (barplots, PCoA plots, ...). 
-                                        File extension is not relevant. Must have a comma separated list of metadata column headers.
-	  --manifest [path/to/file]     Path to manifest.tsv table with the following labels in this exact order: sampleID, forwardReads, reverseReads.
-                                        Tab ('\t') must be the table separator. Multiple sequencing runs not supported by manifest at this stage.
+	  --metadata [path/to/file]     Path to metadata sheet, when missing most downstream analysis are skipped (barplots, PCoA plots, ...). 
+	                                File extension is not relevant. Must have a comma separated list of metadata column headers.
+	  --manifest [path/to/file]     Path to manifest.tsv table with the following labels in this exact order: sampleID, forwardReads, reverseReads. In case of single end reads, the labels should be: sampleID, Reads.
+	                                Tab ('\t') must be the table separator. Multiple sequencing runs not supported by manifest at this stage.
 	                                Default is FALSE. 
-	  --qiime_timezone [str]	Needs to be specified to resolve a timezone error (default: 'Europe/Berlin')
+	  --qiime_timezone [str]        Needs to be specified to resolve a timezone error (default: 'Europe/Berlin')
 
 	Other input options:
 	  --extension [str]             Naming of sequencing files (default: "/*_R{1,2}_001.fastq.gz"). 
 	                                The prepended "/" is required, also one "*" is required for sample names and "{1,2}" indicates read orientation
 	  --multipleSequencingRuns      If samples were sequenced in multiple sequencing runs. Expects one subfolder per sequencing run
 	                                in the folder specified by "--input" containing sequencing data of the specific run. These folders 
-	                                may not contain underscores. Also, fastQC is skipped because multiple sequencing runs might 
-	                                create overlapping file names that crash MultiQC.
+	                                may not contain underscores.
 	  --split [str]                 A string that will be used between the prepended run/folder name and the sample name. (default: "-")
 	                                May not be present in run/folder names and no underscore(s) allowed. Only used with "--multipleSequencingRuns"
+	  --pacbio                      If PacBio data. Use this option together with --manifest.
 	  --phred64                     If the sequencing data has PHRED 64 encoded quality scores (default: PHRED 33)
 
 	Filters:
@@ -52,16 +52,21 @@ def helpMessage() {
 	  --min_samples [int]           Filtering low prevalent features from the feature table (default: 1)                   
 
 	Cutoffs:
+	  --double_primer               Cutdapt will be run twice, first to remove reads without primers (default), then a second time to remove reads that erroneously contain a second set of primers, not to be used with "--retain_untrimmed"
 	  --retain_untrimmed            Cutadapt will retain untrimmed reads
-	  --trunclenf [int]             DADA2 read truncation value for forward strand
-	  --trunclenr [int]             DADA2 read truncation value for reverse strand
+	  --maxEE [number]              DADA2 read filtering option. After truncation, reads with higher than ‘maxEE’ "expected errors" will be discarded. We recommend (to start with) a value corresponding to approximately 1 expected error per 100-200 bp (default: 2)
+	  --maxLen [int]                DADA2 read filtering option [PacBio only], remove reads with length greater than maxLen after trimming and truncation (default: 2999)
+	  --minLen [int]                DADA2 read filtering option [PacBio only], remove reads with length less than minLen after trimming and truncation (default: 50)
+	  --trunclenf [int]             DADA2 read truncation value for forward strand and single end reads, set this to 0 for no truncation
+	  --trunclenr [int]             DADA2 read truncation value for reverse strand, set this to 0 for no truncation
 	  --trunc_qmin [int]            If --trunclenf and --trunclenr are not set, these values will be automatically determined using this mean quality score (not preferred) (default: 25)
 	  --trunc_rmin [float]          Assures that values chosen with --trunc_qmin will retain a fraction of reads (default: 0.75)
 
-	References:                     If you have trained a compatible classifier before
+	References:                     If you have trained a compatible classifier before, or want to use a custom database
 	  --classifier [path/to/file]   Path to QIIME2 classifier file (typically *-classifier.qza)
 	  --classifier_removeHash       Remove all hash signs from taxonomy strings, resolves a rare ValueError during classification (process classifier)
-	  --reference_database [path]   Path to the qiime compatible file Silva_132_release.zip (default: "https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip")
+	  --reference_database          Path to file with reference database with taxonomies, currently either a qiime compatible file Silva_132_release.zip, or a UNITE fasta file (default: "https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip")
+	  --taxon_reference             Specify which database to use for taxonomic assignment. Either 'silva' or 'unite' (default: 'silva')
 
 	Statistics:
 	  --metadata_category [str]     Comma separated list of metadata column headers for statistics (default: false)
@@ -74,12 +79,12 @@ def helpMessage() {
 	  --Q2imported [path/to/file]   Path to imported reads (e.g. "demux.qza"), used after visually choosing DADA2 parameter
 	  --onlyDenoising               Skip all steps after denoising, produce only sequences and abundance tables on ASV level
 	  --keepIntermediates           Keep additional intermediate files, such as trimmed reads or various QIIME2 archives
-      --outdir [file]               The output directory where the results will be saved
-      --publish_dir_mode [str]      Mode for publishing results in the output directory. Available: symlink, rellink, link, copy, copyNoFollow, move (Default: copy)
-      --email [email]               Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits
-      --email_on_fail [email]       Same as --email, except only send mail if the workflow is not successful
-      --max_multiqc_email_size [str]  Threshold size for MultiQC report to be attached in notification email. If file generated by pipeline exceeds the threshold, it will not be attached (Default: 25MB)
-      -name [str]                   Name for the pipeline run. If not specified, Nextflow will automatically generate a random mnemonic
+	  --outdir [file]               The output directory where the results will be saved
+	  --publish_dir_mode [str]      Mode for publishing results in the output directory. Available: symlink, rellink, link, copy, copyNoFollow, move (Default: copy)
+	  --email [email]               Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits
+	  --email_on_fail [email]       Same as --email, except only send mail if the workflow is not successful
+	  --max_multiqc_email_size [str]  Threshold size for MultiQC report to be attached in notification email. If file generated by pipeline exceeds the threshold, it will not be attached (Default: 25MB)
+	  -name [str]                   Name for the pipeline run. If not specified, Nextflow will automatically generate a random mnemonic
 
 	Skipping steps:
 	  --skip_fastqc                 Skip FastQC
@@ -90,10 +95,10 @@ def helpMessage() {
 	  --skip_diversity_indices      Skip alpha and beta diversity analysis
 	  --skip_ancom                  Skip differential abundance testing
 
-    AWSBatch options:
-      --awsqueue [str]                The AWSBatch JobQueue that needs to be set when running on AWSBatch
-      --awsregion [str]               The AWS Region for your AWS Batch job to run on
-      --awscli [str]                  Path to the AWS CLI tool
+	AWSBatch options:
+	  --awsqueue [str]                The AWSBatch JobQueue that needs to be set when running on AWSBatch
+	  --awsregion [str]               The AWS Region for your AWS Batch job to run on
+	  --awscli [str]                  Path to the AWS CLI tool
 	""".stripIndent()
 }
 
@@ -101,7 +106,7 @@ def helpMessage() {
  * SET UP CONFIGURATION VARIABLES
  */
 
-// Show help emssage
+// Show help message
 if (params.help){
 	helpMessage()
 	exit 0
@@ -112,9 +117,9 @@ params.name = false
 params.email = false
 params.plaintext_email = false
 
-ch_output_docs = Channel.fromPath("$baseDir/docs/output.md")
-Channel.fromPath("$baseDir/assets/matplotlibrc")
-	.into { ch_mpl_for_make_classifier; ch_mpl_for_qiime_import; ch_mpl_for_ancom_asv; ch_mpl_for_ancom_tax; ch_mpl_for_ancom; ch_mpl_for_beta_diversity_ord; ch_mpl_for_beta_diversity; ch_mpl_for_alpha_diversity; ch_mpl_for_metadata_pair; ch_mpl_for_metadata_cat; ch_mpl_for_diversity_core; ch_mpl_for_alpha_rare; ch_mpl_for_tree; ch_mpl_for_barcode; ch_mpl_for_relreducetaxa; ch_mpl_for_relasv; ch_mpl_for_export_dada_output; ch_mpl_filter_taxa; ch_mpl_classifier; ch_mpl_dada; ch_mpl_dada_merge; ch_mpl_for_demux_visualize; ch_mpl_for_classifier }
+ch_output_docs = Channel.fromPath("$projectDir/docs/output.md")
+Channel.fromPath("$projectDir/assets/matplotlibrc")
+	.into { ch_mpl_for_classifier_extract_seq; ch_mpl_for_classifier_train; ch_mpl_for_qiime_import; ch_mpl_for_ancom_asv; ch_mpl_for_ancom_tax; ch_mpl_for_ancom; ch_mpl_for_beta_diversity_ord; ch_mpl_for_beta_diversity; ch_mpl_for_alpha_diversity; ch_mpl_for_metadata_pair; ch_mpl_for_metadata_cat; ch_mpl_for_diversity_core; ch_mpl_for_alpha_rare; ch_mpl_for_tree; ch_mpl_for_barcode; ch_mpl_for_relreducetaxa; ch_mpl_for_relasv; ch_mpl_for_export_dada_output; ch_mpl_filter_taxa; ch_mpl_classifier; ch_mpl_dada; ch_mpl_dada_merge; ch_mpl_for_demux_visualize; ch_mpl_for_classifier }
 
 
 /*
@@ -128,13 +133,6 @@ if (params.Q2imported) {
 	params.skip_multiqc = true
 } else {
 	params.skip_multiqc = false
-}
-
-//Currently, fastqc doesnt work for multiple runs when sample names are identical. These names are encoded in the sequencing file itself.
-if (params.multipleSequencingRuns) {
-	params.skip_fastqc = true
-} else {
-	params.skip_fastqc = false
 }
 
 params.onlyDenoising = false
@@ -198,6 +196,23 @@ if (params.multipleSequencingRuns && params.manifest) {
 	exit 1, "The manifest file does not support multiple sequencing runs at this point."
 }
 
+single_end = false
+if (params.pacbio) {
+   single_end = true
+}
+
+if (single_end && !params.manifest) {
+        exit 1, "A manifest file is needed for single end reads such as PacBio data."
+}
+
+if (params.double_primer && params.retain_untrimmed) { 
+	exit 1, "Incompatible parameters --double_primer and --retain_untrimmed cannot be set at the same time."
+}
+
+if (!params.classifier){
+        if (!(params.taxon_reference == 'silva' || params.taxon_reference == 'unite')) exit 1, "--taxon_reference need to be set to either 'silva' or 'unite'"
+}
+
 // AWSBatch sanity checking
 if(workflow.profile == 'awsbatch'){
 	if (!params.awsqueue || !params.awsregion) exit 1, "Specify correct --awsqueue and --awsregion parameters on AWSBatch!"
@@ -223,10 +238,10 @@ if (workflow.profile.contains('awsbatch')) {
 }
 
 // Stage config files
-ch_multiqc_config = file("$baseDir/assets/multiqc_config.yaml", checkIfExists: true)
+ch_multiqc_config = file("$projectDir/assets/multiqc_config.yaml", checkIfExists: true)
 ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config, checkIfExists: true) : Channel.empty()
-ch_output_docs = file("$baseDir/docs/output.md", checkIfExists: true)
-ch_output_docs_images = file("$baseDir/docs/images/", checkIfExists: true)
+ch_output_docs = file("$projectDir/docs/output.md", checkIfExists: true)
+ch_output_docs_images = file("$projectDir/docs/images/", checkIfExists: true)
 
 
 // Header log info
@@ -235,7 +250,7 @@ def summary = [:]
 summary['Pipeline Name']  = 'nf-core/ampliseq'
 if(workflow.revision) summary['Pipeline Release'] = workflow.revision
 summary['Run Name']         = custom_runName ?: workflow.runName
-summary['Input']            = params.input
+summary['Input']            = params.manifest ?: params.input
 summary['Max Resources']    = "$params.max_memory memory, $params.max_cpus cpus, $params.max_time time per job"
 if (workflow.containerEngine) summary['Container'] = "$workflow.containerEngine - $workflow.container"
 summary['Output dir']       = params.outdir
@@ -261,7 +276,7 @@ if (params.email || params.email_on_fail) {
 log.info summary.collect { k,v -> "${k.padRight(18)}: $v" }.join("\n")
 log.info "-\033[2m--------------------------------------------------\033[0m-"
 
-if( !params.trunclenf || !params.trunclenr ){
+if( params.trunclenf == false || params.trunclenr == false ){
 	if ( !params.untilQ2import ) log.info "\n######## WARNING: No DADA2 cutoffs were specified, therefore reads will be truncated where median quality drops below ${params.trunc_qmin} but at least a fraction of ${params.trunc_rmin} of the reads will be retained.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
 }
 // Check the hostnames against configured profiles
@@ -314,7 +329,7 @@ if (!params.Q2imported){
 	/*
 	* Create a channel for optional input manifest file
 	*/
-	 if (params.manifest) {
+	 if (params.manifest && !single_end) {
 		tsvFile = file(params.manifest).getName()
 		// extracts read files from TSV and distribute into channels
 		Channel
@@ -323,6 +338,17 @@ if (!params.Q2imported){
 			.splitCsv(header:true, sep:'\t')
 			.map { row -> [ row.sampleID, [ file(row.forwardReads, checkIfExists: true), file(row.reverseReads, checkIfExists: true) ] ] }
 			.into { ch_read_pairs; ch_read_pairs_fastqc; ch_read_pairs_name_check }
+	} else if ( single_end ) {
+	       	  // Manifest file is currently the only available input option for single_end
+		  tsvFile = file(params.manifest).getName()
+		  // extracts read files from TSV and distribute into channels
+		  Channel
+			.fromPath(params.manifest)
+			.ifEmpty {exit 1, log.info "Cannot find path file ${tsvFile}"}
+			.splitCsv(header:true, sep:'\t')
+			.map { row -> [ row.sampleID, file(row.Reads, checkIfExists: true) ] }
+			.into { ch_read_pairs; ch_read_pairs_fastqc; ch_read_pairs_name_check }
+
 	/*
 	* Create a channel for input read files
 	*/
@@ -333,7 +359,7 @@ if (!params.Q2imported){
 			.from(params.readPaths)
 			.map { row -> [ row[0], [file(row[1][0]), file(row[1][1])]] }
 			.ifEmpty { exit 1, "params.readPaths was empty - no input files supplied" }
-			.map { name, reads -> [ name.toString().take(name.toString().indexOf("_")), reads ] }
+			.map { name, reads -> [ name.toString().indexOf("_") != -1 ? name.toString().take(name.toString().indexOf("_")) : name, reads ] }
 			.into { ch_read_pairs; ch_read_pairs_fastqc; ch_read_pairs_name_check }
 
 	} else if ( !params.readPaths && params.multipleSequencingRuns ) {
@@ -391,7 +417,7 @@ if (!params.Q2imported){
 		Channel
 			.fromFilePairs( params.input + params.extension, size: 2 )
 			.ifEmpty { exit 1, "Cannot find any reads matching: ${params.input}${params.extension}\nNB: Path needs to be enclosed in quotes!" }
-			.map { name, reads -> [ name.toString().take(name.toString().indexOf("_")), reads ] }
+			.map { name, reads -> [ name.toString().indexOf("_") != -1 ? name.toString().take(name.toString().indexOf("_")) : name, reads ] }
 			.into { ch_read_pairs; ch_read_pairs_fastqc }
 	}
 
@@ -435,13 +461,16 @@ if (!params.Q2imported){
 
 			script: 
 			"""
-			fastqc -q ${reads}
+			#Rename files so that there is no possible overlap
+			ln -s "${reads[0]}" "$folder${params.split}${reads[0]}"
+			ln -s "${reads[1]}" "$folder${params.split}${reads[1]}"
+			fastqc -q "$folder${params.split}${reads[0]}" "$folder${params.split}${reads[1]}"
 			"""
 		}
 	}
 
 	/*
-	 * Trim each read-pair with cutadapt
+	 * Trim each read or read-pair with cutadapt
 	 */
 	if (!params.multipleSequencingRuns){
 		process trimming {
@@ -462,11 +491,34 @@ if (!params.Q2imported){
 
 			script:
 			discard_untrimmed = params.retain_untrimmed ? '' : '--discard-untrimmed'
+			primers = single_end ? "--rc -g ${params.FW_primer}...${params.RV_primer}" : "-g ${params.FW_primer} -G ${params.RV_primer}"
+			in_2_files = single_end ? "second-trimming_${reads}" : "second-trimming_${reads[0]} second-trimming_${reads[1]}" 
+			out_1_files = single_end ? "-o second-trimming_${reads}" : "-o second-trimming_${reads[0]} -p second-trimming_${reads[1]}"
+			in_1_files = single_end ? "first-trimming_${reads}" : "first-trimming_${reads[0]} first-trimming_${reads[1]}" //these have to be symlinked below
+			out_files = single_end ? "-o trimmed/${reads}" : "-o trimmed/${reads[0]} -p trimmed/${reads[1]}"
+			in_files = single_end ? "${reads}" : "${reads[0]} ${reads[1]}"
 			"""
 			mkdir -p trimmed
-			cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
-				-o trimmed/${reads[0]} -p trimmed/${reads[1]} \
-				${reads[0]} ${reads[1]} > cutadapt_log_${pair_id}.txt
+			if [[ \"${params.double_primer}\" = \"true\" && \"${params.retain_untrimmed}\" = \"false\" ]]; then
+				#rename files to list results correctly in MultiQC
+				if [ \"${single_end}\" = \"true\" ]; then
+					ln -s "${reads}" "first-trimming_${reads}"
+				else
+					ln -s "${reads[0]}" "first-trimming_${reads[0]}"
+					ln -s "${reads[1]}" "first-trimming_${reads[1]}"
+				fi
+
+				cutadapt ${primers} ${discard_untrimmed} \
+					${out_1_files} \
+					${in_1_files} >> cutadapt_log_${pair_id}.txt
+				cutadapt ${primers} --discard-trimmed \
+					${out_files} \
+					${in_2_files} >> cutadapt_log_${pair_id}.txt
+			else
+				cutadapt ${primers} ${discard_untrimmed} \
+					${out_files} ${in_files} \
+					>> cutadapt_log_${pair_id}.txt
+			fi
 			"""
 		}
 
@@ -484,15 +536,34 @@ if (!params.Q2imported){
 		
 			output:
 			file "trimmed/*.*" into (ch_fastq_trimmed, ch_fastq_trimmed_manifest, ch_fastq_trimmed_qiime)
-			file "cutadapt_log_*.txt" into ch_fastq_cutadapt_log
+			file "cutadapt_log_$folder${params.split}${pair_id}.txt" into ch_fastq_cutadapt_log
 
 			script:
 			discard_untrimmed = params.retain_untrimmed ? '' : '--discard-untrimmed'
 			"""
 			mkdir -p trimmed
-			cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
-				-o trimmed/$folder${params.split}${reads[0]} -p trimmed/$folder${params.split}${reads[1]} \
-				${reads[0]} ${reads[1]} > cutadapt_log_${pair_id}.txt
+			if [[ \"${params.double_primer}\" = \"true\" && \"${params.retain_untrimmed}\" = \"false\" ]]; then
+				mkdir -p firstcutadapt
+				#Rename files so that MultiQC will pick them up correctely as first trimming
+				ln -s "${reads[0]}" "first-trimming_$folder${params.split}${reads[0]}"
+				ln -s "${reads[1]}" "first-trimming_$folder${params.split}${reads[1]}"
+				cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
+					-o firstcutadapt/$folder${params.split}${reads[0]} -p firstcutadapt/$folder${params.split}${reads[1]} \
+					"first-trimming_$folder${params.split}${reads[0]}" "first-trimming_$folder${params.split}${reads[1]}" >> cutadapt_log_$folder${params.split}${pair_id}.txt
+				#Rename files so that MultiQC will pick them up correctely as second trimming
+				ln -s "firstcutadapt/$folder${params.split}${reads[0]}" "second-trimming_$folder${params.split}${reads[0]}"
+				ln -s "firstcutadapt/$folder${params.split}${reads[1]}" "second-trimming_$folder${params.split}${reads[1]}"
+				cutadapt -g ${params.FW_primer} -G ${params.RV_primer} --discard-trimmed \
+                                        -o trimmed/$folder${params.split}${reads[0]} -p trimmed/$folder${params.split}${reads[1]} \
+                                        second-trimming_$folder${params.split}${reads[0]} second-trimming_$folder${params.split}${reads[1]} >> cutadapt_log_$folder${params.split}${pair_id}.txt
+			else
+				#first, rename files so that MultiQC will pick them up correctely
+				ln -s "${reads[0]}" "$folder${params.split}${reads[0]}"
+				ln -s "${reads[1]}" "$folder${params.split}${reads[1]}"
+				cutadapt -g ${params.FW_primer} -G ${params.RV_primer} ${discard_untrimmed} \
+                               		-o trimmed/$folder${params.split}${reads[0]} -p trimmed/$folder${params.split}${reads[1]} \
+                                	$folder${params.split}${reads[0]} $folder${params.split}${reads[1]} > cutadapt_log_$folder${params.split}${pair_id}.txt
+			fi
 			"""
 		}
 	}
@@ -523,7 +594,6 @@ if (!params.Q2imported){
 		rtitle = custom_runName ? "--title \"$custom_runName\"" : ''
 		rfilename = custom_runName ? "--filename " + custom_runName.replaceAll('\\W','_').replaceAll('_+','_') + "_multiqc_report" : ''
 		custom_config_file = params.multiqc_config ? "--config $mqc_custom_config" : ''
-		// TODO nf-core: Specify which MultiQC modules to use with -m for a faster run time
 		"""
 		multiqc --interactive -f $rtitle $rfilename $custom_config_file .
 		"""
@@ -533,7 +603,18 @@ if (!params.Q2imported){
 	/*
 	* Produce manifest file for QIIME2
 	*/
-	if (!params.multipleSequencingRuns){
+	if (!params.multipleSequencingRuns && single_end){
+		ch_fastq_trimmed_manifest
+			.map { name, reads ->
+				def sampleID = name 
+				def Reads = reads
+				[ "${sampleID}" +","+ "${Reads}" + ",forward" ]
+			}
+			.flatten()
+			.collectFile(name: 'manifest.txt', newLine: true, storeDir: "${params.outdir}/demux", seed: "sample-id,absolute-filepath,direction")
+			.set { ch_manifest }
+	
+	} else if (!params.multipleSequencingRuns){
 		ch_fastq_trimmed_manifest
 			.map { name, reads ->
 				def sampleID = name 
@@ -548,7 +629,7 @@ if (!params.Q2imported){
 	} else {
 		ch_fastq_trimmed_manifest
 			.map { forward, reverse -> [ forward.drop(forward.findLastIndexOf{"/"})[0], forward, reverse ] } //extract file name
-			.map { name, forward, reverse -> [ name.toString().take(name.toString().indexOf("_")), forward, reverse ] } //extract sample name
+			.map { name, forward, reverse -> [ name.toString().indexOf("_") != -1 ? name.toString().take(name.toString().indexOf("_")) : name, forward, reverse ] } //extract sample name
 			.map { name, forward, reverse -> [ name +","+ forward + ",forward\n" + name +","+ reverse +",reverse" ] } //prepare basic synthax
 			.flatten()
 			.collectFile(storeDir: "${params.outdir}", seed: "sample-id,absolute-filepath,direction\n") { item ->
@@ -565,7 +646,7 @@ if (!params.Q2imported){
 	/*
 	* Import trimmed files into QIIME2 artefact
 	*/
-	if (!params.multipleSequencingRuns) {
+	if (!params.multipleSequencingRuns && !params.pacbio) {
 		process qiime_import {
 			publishDir "${params.outdir}/demux", mode: params.publish_dir_mode, 
 			saveAs: { filename -> 
@@ -601,7 +682,35 @@ if (!params.Q2imported){
 				--input-path ${manifest} \
 				--output-path demux.qza \
 				--input-format $input_format
-				"""
+			"""
+		}
+	} else if (params.pacbio) {
+		process qiime_import_pacbio{
+			publishDir "${params.outdir}/demux", mode: 'copy', 
+			saveAs: { filename -> 
+				params.keepIntermediates ? filename : null
+				params.untilQ2import ? filename : null }
+
+			input:
+			file(manifest) from ch_manifest
+			env MATPLOTLIBRC from ch_mpl_for_qiime_import
+
+			output:
+			file manifest into ch_dada_import
+			file "demux.qza" into (ch_qiime_demux_import, ch_qiime_demux_vis)
+
+			when:
+			!params.Q2imported
+		
+			script:
+			input_format = params.phred64 ? "SingleEndFastqManifestPhred64" : "SingleEndFastqManifestPhred33"
+			"""
+			qiime tools import \
+				--type 'SampleData[SequencesWithQuality]' \
+				--input-path ${manifest} \
+				--output-path demux.qza \
+				--input-format $input_format
+			"""
 		}
 	} else {
 		process qiime_import_multi {
@@ -643,21 +752,20 @@ if (!params.Q2imported){
 			"""
 		}
 	}
-	ch_qiime_demux_vis
+	ch_qiime_demux_vis  
 		.combine( ch_mpl_for_demux_visualize )
 		.set{ ch_qiime_demux_visualisation }
-
-}
-
+} 
 
 /*
  * Download, unpack, extract and train classifier
+ * Download, unpack, and extract classifier in one process, train classifier in following process
  * Use "--dereplication 90" for testing and "--dereplication 99" for real datasets
  * Requirements with "--dereplication 99": 1 core (seems not to scale with more?), ~35 Gb mem, ~2:15:00 walltime
  */
 
 if( !params.classifier ){
-	if( !params.onlyDenoising ){
+	if( !params.onlyDenoising && !params.skip_taxonomy ){
 		Channel.fromPath("${params.reference_database}")
 			.set { ch_ref_database }
 	} else {
@@ -665,34 +773,34 @@ if( !params.classifier ){
 			.set { ch_ref_database }		
 	}
 
-	process make_SILVA_132_16S_classifier {
-		publishDir "${params.outdir}/DB/", mode: params.publish_dir_mode, 
-		saveAs: {filename -> 
-			if (filename.indexOf("${params.FW_primer}-${params.RV_primer}-${params.dereplication}-classifier.qza") == 0) filename
-			else if(params.keepIntermediates) filename 
-			else null}
+	process classifier_extract_seq {
 
 		input:
 		file database from ch_ref_database
-		env MATPLOTLIBRC from ch_mpl_for_make_classifier
+		env MATPLOTLIBRC from ch_mpl_for_classifier_extract_seq
 
 		output:
-		file("${params.FW_primer}-${params.RV_primer}-${params.dereplication}-classifier.qza") into ch_qiime_classifier
-		file("*.qza")
+		file("*.qza") into ch_qiime_pretrain
 		stdout ch_message_classifier_removeHash
 
 		when:
-		!params.onlyDenoising && !params.untilQ2import
+		!params.onlyDenoising || !params.untilQ2import 
 
 		script:
 	  
 		"""
 		export HOME="\${PWD}/HOME"
 
-		unzip -qq $database
+		if [ ${params.taxon_reference} = \"unite\" ]; then
+                        create_unite_taxfile.py $database db.fa db.tax
+			fasta=\"db.fa\"
+		        taxonomy=\"db.tax\"
+		else
+			unzip -qq $database
+			fasta=\"SILVA_132_QIIME_release/rep_set/rep_set_16S_only/${params.dereplication}/silva_132_${params.dereplication}_16S.fna\"
+			taxonomy=\"SILVA_132_QIIME_release/taxonomy/16S_only/${params.dereplication}/consensus_taxonomy_7_levels.txt\"
+		fi
 
-		fasta=\"SILVA_132_QIIME_release/rep_set/rep_set_16S_only/${params.dereplication}/silva_132_${params.dereplication}_16S.fna\"
-		taxonomy=\"SILVA_132_QIIME_release/taxonomy/16S_only/${params.dereplication}/consensus_taxonomy_7_levels.txt\"
 
 		if [ \"${params.classifier_removeHash}\" = \"true\" ]; then
 			sed \'s/#//g\' \$taxonomy >taxonomy-${params.dereplication}_removeHash.txt
@@ -716,6 +824,33 @@ if( !params.classifier ){
 			--p-r-primer ${params.RV_primer} \
 			--o-reads ${params.FW_primer}-${params.RV_primer}-${params.dereplication}-ref-seq.qza \
 			--quiet
+		"""
+	}
+
+        ch_message_classifier_removeHash
+                .subscribe { log.info it }
+
+        process classifier_train {
+                publishDir "${params.outdir}/DB/", mode: params.publish_dir_mode,
+                saveAs: {filename ->
+                        if (filename.indexOf("${params.FW_primer}-${params.RV_primer}-${params.dereplication}-classifier.qza") == 0) filename
+                        else if(params.keepIntermediates) filename
+                        else null}
+
+                input:
+                file '*' from ch_qiime_pretrain
+                env MATPLOTLIBRC from ch_mpl_for_classifier_train
+
+                output:
+                file("${params.FW_primer}-${params.RV_primer}-${params.dereplication}-classifier.qza") into ch_qiime_classifier
+
+                when:
+                !params.onlyDenoising || !params.untilQ2import
+
+                script:
+
+                """
+                export HOME="\${PWD}/HOME"
 
 		#Train classifier
 		qiime feature-classifier fit-classifier-naive-bayes \
@@ -725,8 +860,7 @@ if( !params.classifier ){
 			--quiet
 		"""
 	}
-	ch_message_classifier_removeHash
-		.subscribe { log.info it }
+
 }
 
 /*
@@ -783,7 +917,8 @@ if( !params.Q2imported ){
  * But at least the fraction of params.trunc_rmin reads is retained
  * "Warning massage" is printed
  */
-process dada_trunc_parameter { 
+if ( ! single_end ) {
+   process dada_trunc_parameter { 
 
 	input:
 	file summary_demux from ch_csv_demux 
@@ -795,7 +930,7 @@ process dada_trunc_parameter {
 	!params.untilQ2import
 
 	script:
-	if( !params.trunclenf || !params.trunclenr ){
+	if( params.trunclenf == false || params.trunclenr == false ){
 		"""
 		dada_trunc_parameter.py ${summary_demux[0]} ${summary_demux[1]} ${params.trunc_qmin} ${params.trunc_rmin}
 		"""
@@ -804,6 +939,27 @@ process dada_trunc_parameter {
 		"""
 		printf "${params.trunclenf},${params.trunclenr}"
 		"""
+  }
+} else {
+  process dada_trunc_se {
+
+  	  output:
+	  stdout ch_dada_trunc
+
+	  when:
+	  !params.untilQ2import
+
+	  script:
+	  if ( params.trunclenf == false ) {
+	     """
+	     printf "0"
+	     """
+	  } else {
+	     """
+	     printf "${params.trunclenf}"
+	     """
+	  }
+  }
 }
 
 if (params.multipleSequencingRuns){
@@ -830,9 +986,12 @@ if (params.multipleSequencingRuns){
 
  
 /*
- * Find ASVs with DADA2 for single sequencing run
+ * Find ASVs with DADA2
+ *    (i) for single sequencing run
+ *    (ii) for PacBio reads
+ *    (iii) for multiple sequencing runs
  */
-if (!params.multipleSequencingRuns){
+if (!params.multipleSequencingRuns && !params.pacbio){
 	process dada_single {
 		tag "$trunc"
 		publishDir "${params.outdir}", mode: params.publish_dir_mode,
@@ -880,6 +1039,8 @@ if (!params.multipleSequencingRuns){
 			--i-demultiplexed-seqs ${demux}  \
 			--p-trunc-len-f \${trunclen[0]} \
 			--p-trunc-len-r \${trunclen[1]} \
+			--p-max-ee-f ${params.maxEE} \
+			--p-max-ee-r ${params.maxEE} \
 			--p-n-threads 0  \
 			--o-table table.qza  \
 			--o-representative-sequences rep-seqs.qza  \
@@ -922,6 +1083,78 @@ if (!params.multipleSequencingRuns){
 			-o table/rel-feature-table.tsv --to-tsv
 		"""
 	}
+} else if (params.pacbio){
+	process dada_pacBio {
+		
+		publishDir "${params.outdir}", mode: 'copy',
+			saveAs: {filename -> 
+					 if (filename.indexOf("dada_stats.tsv") == 0)         "abundance_table/unfiltered/dada_stats.tsv"
+				else if (filename.indexOf("dada_report.txt") == 0)              "abundance_table/unfiltered/dada_report.txt"
+				else if (filename.indexOf("rel-feature-table.tsv") == 0)         "abundance_table/unfiltered/rel-feature-table.tsv"
+				else if (filename.indexOf("feature-table.tsv") == 0)             "abundance_table/unfiltered/feature-table.tsv"
+				else if (filename.indexOf("feature-table.biom") == 0)     "abundance_table/unfiltered/feature-table.biom"
+				else if (filename.indexOf("sequences.fasta") == 0)                      "representative_sequences/unfiltered/sequences.fasta"
+				else if (filename.indexOf("rep-seqs.qza") == 0)                 "representative_sequences/unfiltered/rep-seqs.qza"
+				else null}
+
+		input:
+		file demux from ch_dada_import
+		val trunc from ch_dada_trunc
+
+		output:
+		file("table.qza") into ch_qiime_table_raw
+		file("rep-seqs.qza") into (ch_qiime_repseq_raw_for_classifier,ch_qiime_repseq_raw_for_filter)
+		file("feature-table.tsv") into ch_tsv_table_raw
+		file("dada_stats.tsv")
+		file("feature-table.biom")
+		file("rel-feature-table.tsv")
+		file("sequences.fasta")
+		file("dada_report.txt")
+
+		when:
+		!params.untilQ2import
+
+		script:
+		"""
+		# Quality filtering with DADA2 filterAndTrim
+		dada2_filter_pacbio.r --infile ${demux} --filterDir dada2_filtered --maxEE ${params.maxEE} --truncLen ${trunc} --minLen ${params.minLen} --maxLen ${params.maxLen} --stats filter_stats.tsv --verbose
+
+		# Estimation of error models with DADA2 learnErrors
+		dada2_errmodels_pacbio.r --filterDir dada2_filtered > err.out
+
+		# Denoise samples with DADA2
+		dada2_denoise_pacbio.r --filterDir dada2_filtered --errModel err.rds --pool TRUE  --verbose > dd.out
+
+		# Chimera removal with DADA2, and produce
+		# * raw count table "feature-table.tsv"
+		# * relative abundancies "rel-feature-table.tsv"
+                # * DADA2 stats to file "denoise_stats.tsv"
+		# * representative sequences "sequences.fasta"
+		dada2_chimrem.r --manifest ${demux} --dadaObj dd.rds --method "pooled" --allowOneOff TRUE --table feature-table.tsv --reltable rel-feature-table.tsv --repseqs sequences.fasta --stats denoise_stats.tsv
+
+		# Create qiime2 object from representative sequences
+		qiime tools import --type \'FeatureData[Sequence]\' \
+			--input-path sequences.fasta \
+			--output-path rep-seqs.qza
+
+		# Create qiime2 object for feature table
+		biom convert -i feature-table.tsv -o feature-table.biom --to-hdf5
+#		make_biom_from_tsv feature-table.tsv feature-table.biom
+		qiime tools import \
+		        --input-path feature-table.biom \
+			--type 'FeatureTable[Frequency]' \
+			--input-format BIOMV210Format \
+			--output-path table.qza
+
+
+		# Produce dada2 report "dada_report.txt" from err.out and dd.out
+		make_dada2_report_pacbio.py err.out dd.out pooled
+
+		# Produce dada2 stats "dada_stats.tsv" from filter_stats.tsv and denoise_stats.tsv
+		make_dada2_stats_pacbio.py filter_stats.tsv denoise_stats.tsv
+
+		"""
+	}
 } else {
 	process dada_multi {
 		tag "${demux.baseName} ${trunclenf} ${trunclenr}"
@@ -949,6 +1182,8 @@ if (!params.multipleSequencingRuns){
 			--i-demultiplexed-seqs ${demux}  \
 			--p-trunc-len-f ${trunclenf} \
 			--p-trunc-len-r ${trunclenr} \
+			--p-max-ee-f ${params.maxEE} \
+			--p-max-ee-r ${params.maxEE} \
 			--p-n-threads 0  \
 			--o-table ${demux.baseName}-table.qza  \
 			--o-representative-sequences ${demux.baseName}-rep-seqs.qza  \
@@ -1866,7 +2101,6 @@ workflow.onComplete {
     email_fields['summary']['Nextflow Build'] = workflow.nextflow.build
     email_fields['summary']['Nextflow Compile Timestamp'] = workflow.nextflow.timestamp
 
-    // TODO nf-core: If not using MultiQC, strip out this code (including params.max_multiqc_email_size)
     // On success try attach the multiqc report
     def mqc_report = null
     try {
@@ -1889,18 +2123,18 @@ workflow.onComplete {
 
     // Render the TXT template
     def engine = new groovy.text.GStringTemplateEngine()
-    def tf = new File("$baseDir/assets/email_template.txt")
+    def tf = new File("$projectDir/assets/email_template.txt")
     def txt_template = engine.createTemplate(tf).make(email_fields)
     def email_txt = txt_template.toString()
 
     // Render the HTML template
-    def hf = new File("$baseDir/assets/email_template.html")
+    def hf = new File("$projectDir/assets/email_template.html")
     def html_template = engine.createTemplate(hf).make(email_fields)
     def email_html = html_template.toString()
 
     // Render the sendmail template
-    def smail_fields = [ email: email_address, subject: subject, email_txt: email_txt, email_html: email_html, baseDir: "$baseDir", mqcFile: mqc_report, mqcMaxSize: params.max_multiqc_email_size.toBytes() ]
-    def sf = new File("$baseDir/assets/sendmail_template.txt")
+    def smail_fields = [ email: email_address, subject: subject, email_txt: email_txt, email_html: email_html, projectDir: "$projectDir", mqcFile: mqc_report, mqcMaxSize: params.max_multiqc_email_size.toBytes() ]
+    def sf = new File("$projectDir/assets/sendmail_template.txt")
     def sendmail_template = engine.createTemplate(sf).make(smail_fields)
     def sendmail_html = sendmail_template.toString()
 
@@ -1951,6 +2185,7 @@ workflow.onComplete {
     }
 
 }
+
 
 def nfcoreHeader() {
     // Log colors ANSI codes

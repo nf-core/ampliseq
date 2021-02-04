@@ -20,27 +20,32 @@
                 "FW_primer": {
                     "type": "string",
                     "description": "Forward primer sequence",
-                    "help_text": "In amplicon sequencing methods, PCR with specific primers produces the amplicon of interest. These primer sequences need to be trimmed from the reads before further processing and are also required for producing an appropriate classifier. \n\nFor example:\n\n```bash\n--FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT\n```"
+                    "help_text": "In amplicon sequencing methods, PCR with specific primers produces the amplicon of interest. These primer sequences need to be trimmed from the reads before further processing and are also required for producing an appropriate classifier. \n\nFor example:\n\n```bash\n--FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT\n```",
+                    "fa_icon": "fas fa-arrow-circle-right"
                 },
                 "RV_primer": {
                     "type": "string",
                     "description": "Reverse primer sequence",
-                    "help_text": "In amplicon sequencing methods, PCR with specific primers produces the amplicon of interest. These primer sequences need to be trimmed from the reads before further processing and are also required for producing an appropriate classifier. \n\nFor example:\n\n```bash\n--FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT\n```"
+                    "help_text": "In amplicon sequencing methods, PCR with specific primers produces the amplicon of interest. These primer sequences need to be trimmed from the reads before further processing and are also required for producing an appropriate classifier. \n\nFor example:\n\n```bash\n--FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT\n```",
+                    "fa_icon": "fas fa-arrow-alt-circle-left"
                 },
                 "metadata": {
                     "type": "string",
                     "description": "Path to metadata sheet, when missing most downstream analysis are skipped (barplots, PCoA plots, ...).",
-                    "help_text": "This is optional, but for performing downstream analysis such as barplots, diversity indices or differential abundance testing, a metadata file is essential. \n\nFor example:\n\n```bash\n--metadata \"path/to/metadata.tsv\"\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The metadata file has to follow the QIIME2 specifications (https://docs.qiime2.org/2019.10/tutorials/metadata/)\n3. In case of multiple sequencing runs, specific naming of samples are required, see `--multipleSequencingRuns`\n\nThe first column in the metadata file is the identifier (ID) column and defines the sample or feature IDs associated with your study. Metadata files are not required to have additional metadata columns, so a file containing only an ID column is a valid QIIME 2 metadata file. Additional columns defining metadata associated with each sample or feature ID are optional.\n**NB**: without additional columns there might be no groupings for the downstream analyses.\n\nIdentifiers should be 36 characters long or less, and also contain only ASCII alphanumeric characters (i.e. in the range of [a-z], [A-Z], or [0-9]), the period (.) character, or the dash (-) character. By default all numeric columns, blanks or NA are removed, and only columns with multiple different values but not all unique are selected.\n\nThe columns which are to be assessed can be specified by `--metadata_category`. If `--metadata_category` isn't specified than all columns that fit the specification are automatically chosen."
+                    "help_text": "This is optional, but for performing downstream analysis such as barplots, diversity indices or differential abundance testing, a metadata file is essential. \n\nFor example:\n\n```bash\n--metadata \"path/to/metadata.tsv\"\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The metadata file has to follow the QIIME2 specifications (https://docs.qiime2.org/2019.10/tutorials/metadata/)\n3. In case of multiple sequencing runs, specific naming of samples are required, see `--multipleSequencingRuns`\n\nThe first column in the metadata file is the identifier (ID) column and defines the sample or feature IDs associated with your study. Metadata files are not required to have additional metadata columns, so a file containing only an ID column is a valid QIIME 2 metadata file. Additional columns defining metadata associated with each sample or feature ID are optional.\n**NB**: without additional columns there might be no groupings for the downstream analyses.\n\nIdentifiers should be 36 characters long or less, and also contain only ASCII alphanumeric characters (i.e. in the range of [a-z], [A-Z], or [0-9]), the period (.) character, or the dash (-) character. By default all numeric columns, blanks or NA are removed, and only columns with multiple different values but not all unique are selected.\n\nThe columns which are to be assessed can be specified by `--metadata_category`. If `--metadata_category` isn't specified than all columns that fit the specification are automatically chosen.",
+                    "fa_icon": "fas fa-file-csv"
                 },
                 "multipleSequencingRuns": {
                     "type": "boolean",
                     "description": "If samples were sequenced in multiple sequencing runs",
-                    "help_text": "If samples were sequenced in multiple sequencing runs. Expects one subfolder per sequencing run in the folder specified by `--input` containing sequencing data of the specific run. FastQC and MultiQC are skipped by default to prevent possible issues.\n\nTo prevent overlapping sample names from multiple sequencing runs, sample names obtained from the sequencing files will be renamed automatically by adding the folder name as prefix separated by a string specified by `--split`. Accordingly, the sample name column in the metadata file `--metadata` require values following `subfolder-samplename`.\n\nExample for input data organization:\n\n```bash\ndata\n  |-run1\n  |  |-sample1_1_L001_R{1,2}_001.fastq.gz\n  |  |-sample2_1_L001_R{1,2}_001.fastq.gz\n  |\n  |-run2\n     |-sample3_1_L001_R{1,2}_001.fastq.gz\n     |-sample4_1_L001_R{1,2}_001.fastq.gz\n```\n\nIn this example the first column in the metadata file requires the values `run1-sample1` ... `run2-sample4` (instead of `sample1`, ..., `sample4`).\n\nExample command to analyze this data in one pipeline run:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input \"data\" \\\n    --FW_primer GTGYCAGCMGCCGCGGTAA \\\n    --RV_primer GGACTACNVGGGTWTCTAAT \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multipleSequencingRuns\n```\n\n##### Visually choosing sequencing read truncation cutoffs\n\nWhile `--untilQ2import` with `--multipleSequencingRuns` is currently supported, `--Q2imported` is not. The pipeline can be first run with `--untilQ2import`, than `--trunclenf` and `--trunclenr` are visually chosen, and then the pipeline can be continued without `--untilQ2import` but with `--trunlenf`, `--trunlenr`, and `-resume`.\n\nFor example:\n\n(1) To produce quality plots and choose truncation values:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input \"data\" \\\n    --FW_primer GTGYCAGCMGCCGCGGTAA \\\n    --RV_primer GGACTACNVGGGTWTCTAAT \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multipleSequencingRuns \\\n    --untilQ2import\n```\n\n(2) To finish analysis:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input \"data\" \\\n    --FW_primer GTGYCAGCMGCCGCGGTAA \\\n    --RV_primer GGACTACNVGGGTWTCTAAT \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multipleSequencingRuns \\\n    --trunclenf 200 \\\n    --trunclenr 180 \\\n    -resume\n```"
+                    "help_text": "Expects one subfolder per sequencing run in the folder specified by `--input` containing sequencing data of the specific run.\n\nTo prevent overlapping sample names from multiple sequencing runs, sample names obtained from the sequencing files will be renamed automatically by adding the folder name as prefix separated by a string specified by `--split`. Accordingly, the sample name column in the metadata file `--metadata` require values following `subfolder-samplename`.\n\nExample for input data organization:\n\n```bash\ndata\n  |-run1\n  |  |-sample1_1_L001_R{1,2}_001.fastq.gz\n  |  |-sample2_1_L001_R{1,2}_001.fastq.gz\n  |\n  |-run2\n     |-sample3_1_L001_R{1,2}_001.fastq.gz\n     |-sample4_1_L001_R{1,2}_001.fastq.gz\n```\n\nIn this example the first column in the metadata file requires the values `run1-sample1` ... `run2-sample4` (instead of `sample1`, ..., `sample4`).\n\nExample command to analyze this data in one pipeline run:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input \"data\" \\\n    --FW_primer GTGYCAGCMGCCGCGGTAA \\\n    --RV_primer GGACTACNVGGGTWTCTAAT \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multipleSequencingRuns\n```\n\n##### Visually choosing sequencing read truncation cutoffs\n\nWhile `--untilQ2import` with `--multipleSequencingRuns` is currently supported, `--Q2imported` is not. The pipeline can be first run with `--untilQ2import`, than `--trunclenf` and `--trunclenr` are visually chosen, and then the pipeline can be continued without `--untilQ2import` but with `--trunlenf`, `--trunlenr`, and `-resume`.\n\nFor example:\n\n(1) To produce quality plots and choose truncation values:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input \"data\" \\\n    --FW_primer GTGYCAGCMGCCGCGGTAA \\\n    --RV_primer GGACTACNVGGGTWTCTAAT \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multipleSequencingRuns \\\n    --untilQ2import\n```\n\n(2) To finish analysis:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input \"data\" \\\n    --FW_primer GTGYCAGCMGCCGCGGTAA \\\n    --RV_primer GGACTACNVGGGTWTCTAAT \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multipleSequencingRuns \\\n    --trunclenf 200 \\\n    --trunclenr 180 \\\n    -resume\n```",
+                    "fa_icon": "fas fa-running"
                 },
                 "manifest": {
                     "type": "string",
-                    "description": "Path to ta- separated table with sample IDs, forward and reverse sequencing files",
-                    "help_text": "You can submit a manifest file as an alternative way to provide input reads. No submission of read files with `--input` is required this way.\n\nA manifest must be a tab-separated file that must have the following labels in this exact order: `sampleID`, `forwardReads`, `reverseReads`. The sample identifiers must be listed under `sampleID`. Paths to forward and reverse reads must be reported under `forwardReads` and `reverseReads`, respectively.\n\nMultiple sequencing runs not supported by `--manifest` at this stage."
+                    "description": "Path to tab-separated table with sample IDs and paths to sequencing files",
+                    "help_text": "You can submit a manifest file as an alternative way to provide input reads. No submission of read files with `--input` is required this way.\n\nA manifest must be a tab-separated file that must have the following labels in this exact order: `sampleID`, `forwardReads`, `reverseReads`. In case of single-end reads, such as PacBio data, the labels should be: `sampleID`, `Reads`. The sample identifiers must be listed under `sampleID`. Paths to forward and reverse reads must be reported under `forwardReads` and `reverseReads`, respectively. Path to single-end must be reported under `Reads`.\n\nMultiple sequencing runs not supported by `--manifest` at this stage.",
+                    "fa_icon": "fas fa-file-csv"
                 }
             },
             "required": [
@@ -55,26 +60,57 @@
             "description": "",
             "default": "",
             "properties": {
+                "maxEE": {
+                    "type": "integer",
+                    "default": 2,
+                    "description": "DADA2 read filtering option",
+                    "help_text": "After truncation, reads with higher than \u2018maxEE\u2019 \"expected errors\" will be discarded. In case of very long reads, you might want to increase this value.  We recommend (to start with) a value corresponding to approximately 1 expected error per 100-200 bp (default: 2)",
+                    "fa_icon": "fas fa-equals"
+                },
+                "maxLen": {
+                    "type": "integer",
+                    "default": 2999,
+                    "description": "DADA2 read filtering option [PacBio only]",
+                    "fa_icon": "fas fa-less-than-equal",
+                    "help_text": "Remove reads with length greater than maxLen after trimming and truncation."
+                },
+                "minLen": {
+                    "type": "integer",
+                    "default": 50,
+                    "description": "DADA2 read filtering option [PacBio only]",
+                    "fa_icon": "fas fa-greater-than-equal",
+                    "help_text": "Remove reads with length less than minLen after trimming and truncation."
+                },
                 "retain_untrimmed": {
                     "type": "boolean",
                     "description": "Cutadapt will retain untrimmed reads, choose only if input reads are not expected to contain primer sequences.",
-                    "help_text": "When read sequences are trimmed, untrimmed read pairs are discarded routinely. Use this option to retain untrimmed read pairs. This is usually not recommended and is only of advantage for specific protocols that prevent sequencing PCR primers. \n\nFor example:\n\n```bash\n--retain_untrimmed\n```"
+                    "help_text": "When read sequences are trimmed, untrimmed read pairs are discarded routinely. Use this option to retain untrimmed read pairs. This is usually not recommended and is only of advantage for specific protocols that prevent sequencing PCR primers. \n\nFor example:\n\n```bash\n--retain_untrimmed\n```",
+                    "fa_icon": "far fa-plus-square"
+                },
+                "double_primer": {
+                    "type": "boolean",
+                    "description": "Cutadapt will be run twice to ensure removal of potential double primers",
+                    "help_text": "Cutdapt will be run twice, first to remove reads without primers (default), then a second time to remove reads that erroneously contain a second set of primers, not to be used with `--retain_untrimmed`",
+                    "fa_icon": "fas fa-project-diagram"
                 },
                 "trunclenf": {
                     "type": "integer",
-                    "description": "DADA2 read truncation value for forward strand",
-                    "help_text": "Read denoising by DADA2 creates an error profile specific to a sequencing run and uses this to correct sequencing errors. This method requires all reads to have the same length and as high quality as possible while maintaining at least 20 bp overlap for merging. One cutoff for the forward read `--trunclenf` and one for the reverse read `--trunclenr` truncate all longer reads at that position and drop all shorter reads.\nThese cutoffs are usually chosen visually using `--untilQ2import`, inspecting the quality plots in \"results/demux\", and resuming analysis with `--Q2imported`. If not set, these cutoffs will be determined automatically for the position before the mean quality score drops below `--trunc_qmin`.\n\nFor example:\n\n```bash\n--trunclenf 180 --trunclenr 120\n```\n\nPlease note:\n\n1. Overly aggressive truncation might lead to insufficient overlap for read merging\n2. Too little truncation might reduce denoised reads\n3. The code choosing these values automatically cannot take the points above into account, therefore setting `--trunclenf` and `--trunclenr` is recommended"
+                    "description": "DADA2 read truncation value for forward strand, set this to 0 for no truncation",
+                    "help_text": "Read denoising by DADA2 creates an error profile specific to a sequencing run and uses this to correct sequencing errors. This method requires all reads to have the same length and as high quality as possible while maintaining at least 20 bp overlap for merging. One cutoff for the forward read `--trunclenf` and one for the reverse read `--trunclenr` truncate all longer reads at that position and drop all shorter reads.\nThese cutoffs are usually chosen visually using `--untilQ2import`, inspecting the quality plots in \"results/demux\", and resuming analysis with `--Q2imported`. If not set, these cutoffs will be determined automatically for the position before the mean quality score drops below `--trunc_qmin`.\n\nFor example:\n\n```bash\n--trunclenf 180 --trunclenr 120\n```\n\nPlease note:\n\n1. Overly aggressive truncation might lead to insufficient overlap for read merging\n2. Too little truncation might reduce denoised reads\n3. The code choosing these values automatically cannot take the points above into account, therefore setting `--trunclenf` and `--trunclenr` is recommended",
+                    "fa_icon": "fas fa-ban"
                 },
                 "trunclenr": {
                     "type": "integer",
-                    "description": "DADA2 read truncation value for reverse strand",
-                    "help_text": "Read denoising by DADA2 creates an error profile specific to a sequencing run and uses this to correct sequencing errors. This method requires all reads to have the same length and as high quality as possible while maintaining at least 20 bp overlap for merging. One cutoff for the forward read `--trunclenf` and one for the reverse read `--trunclenr` truncate all longer reads at that position and drop all shorter reads.\nThese cutoffs are usually chosen visually using `--untilQ2import`, inspecting the quality plots in \"results/demux\", and resuming analysis with `--Q2imported`. If not set, these cutoffs will be determined automatically for the position before the mean quality score drops below `--trunc_qmin`.\n\nFor example:\n\n```bash\n--trunclenf 180 --trunclenr 120\n```\n\nPlease note:\n\n1. Overly aggressive truncation might lead to insufficient overlap for read merging\n2. Too little truncation might reduce denoised reads\n3. The code choosing these values automatically cannot take the points above into account, therefore setting `--trunclenf` and `--trunclenr` is recommended"
+                    "description": "DADA2 read truncation value for reverse strand, set this to 0 for no truncation",
+                    "help_text": "Read denoising by DADA2 creates an error profile specific to a sequencing run and uses this to correct sequencing errors. This method requires all reads to have the same length and as high quality as possible while maintaining at least 20 bp overlap for merging. One cutoff for the forward read `--trunclenf` and one for the reverse read `--trunclenr` truncate all longer reads at that position and drop all shorter reads.\nThese cutoffs are usually chosen visually using `--untilQ2import`, inspecting the quality plots in \"results/demux\", and resuming analysis with `--Q2imported`. If not set, these cutoffs will be determined automatically for the position before the mean quality score drops below `--trunc_qmin`.\n\nFor example:\n\n```bash\n--trunclenf 180 --trunclenr 120\n```\n\nPlease note:\n\n1. Overly aggressive truncation might lead to insufficient overlap for read merging\n2. Too little truncation might reduce denoised reads\n3. The code choosing these values automatically cannot take the points above into account, therefore setting `--trunclenf` and `--trunclenr` is recommended",
+                    "fa_icon": "fas fa-ban"
                 },
                 "trunc_qmin": {
                     "type": "integer",
                     "default": 25,
                     "description": "If --trunclenf and --trunclenr are not set, these values will be automatically determined using this median quality score",
-                    "help_text": "Automatically determine `--trunclenf` and `--trunclenr` before the median quality score drops below `--trunc_qmin` (default: 25). The fraction of reads retained is defined by `--trunc_rmin`, which might override the quality cutoff.\n\nFor example:\n\n```bash\n--trunc_qmin 35\n```\n\nPlease note:\n\n1. The code choosing `--trunclenf` and `--trunclenr` using `--trunc_qmin` automatically cannot take amplicon length or overlap requirements for merging into account, therefore use with caution.\n2. The default value of 25 is recommended. However, high quality data with a large paired sequence overlap might justify a higher value (e.g. 35). Also, very low quality data might require a lower value.\n3. If the quality cutoff is too low to include a certain fraction of reads that is specified by `--trunc_rmin` (default: 0.75, meaning at least 75% percent of reads are retained), a lower cutoff according to `--trunc_rmin` superseeds the quality cutoff."
+                    "help_text": "Automatically determine `--trunclenf` and `--trunclenr` before the median quality score drops below `--trunc_qmin` (default: 25). The fraction of reads retained is defined by `--trunc_rmin`, which might override the quality cutoff.\n\nFor example:\n\n```bash\n--trunc_qmin 35\n```\n\nPlease note:\n\n1. The code choosing `--trunclenf` and `--trunclenr` using `--trunc_qmin` automatically cannot take amplicon length or overlap requirements for merging into account, therefore use with caution.\n2. The default value of 25 is recommended. However, high quality data with a large paired sequence overlap might justify a higher value (e.g. 35). Also, very low quality data might require a lower value.\n3. If the quality cutoff is too low to include a certain fraction of reads that is specified by `--trunc_rmin` (default: 0.75, meaning at least 75% percent of reads are retained), a lower cutoff according to `--trunc_rmin` superseeds the quality cutoff.",
+                    "fa_icon": "fas fa-greater-than-equal"
                 },
                 "trunc_rmin": {
                     "type": "number",
@@ -94,8 +130,14 @@
                 "reference_database": {
                     "type": "string",
                     "default": "https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip",
-                    "description": "Path to the qiime compatible file Silva_132_release.zip",
+                    "description": "Path to taxonomic reference database, currently accepts a qiime compatible file Silva_132_release.zip or a UNITE fasta file",
                     "help_text": "By default, the workflow downloads SILVA (https://www.arb-silva.de/) v132 (https://www.arb-silva.de/documentation/release-132/) and extracts reference sequences and taxonomy clustered at 99% similarity and trains a Naive Bayes classifier to assign taxonomy to features."
+                },
+                "taxon_reference": {
+                    "type": "string",
+                    "default": "silva",
+                    "description": "Specify which database to use for taxonomic assignment. Either 'silva' or 'unite' (default: 'silva').",
+                    "help_text": "By default, uses SILVA for taxonomic assignment, but can also use UNITE. If so, specify the UNITE fasta file with --reference_database."
                 },
                 "classifier": {
                     "type": "string",
@@ -157,6 +199,10 @@
                     "type": "string",
                     "description": "Comma separated list of metadata column headers for statistics.",
                     "help_text": "Here columns in the metadata sheet can be chosen with groupings that are used for diversity indices and differential abundance analysis. By default, all suitable columns in the metadata sheet will be used if this option is not specified. Suitable are columns which are categorical (not numerical) and have multiple different values which are not all unique. For example:\n\n```bash\n--metadata_category \"treatment1,treatment2\"\n```\n\nPlease note the following requirements:\n\n1. Comma separated list enclosed in quotes\n2. May not contain whitespace characters\n3. Each comma separated term has to match exactly one column name in the metadata sheet"
+                },
+                "pacbio": {
+                    "type": "boolean",
+                    "description": "If PacBio data. Use this option together with --manifest"
                 },
                 "phred64": {
                     "type": "boolean",
@@ -270,11 +316,13 @@
                 "help": {
                     "type": "boolean",
                     "description": "Display help text.",
+                    "hidden": true,
                     "fa_icon": "fas fa-question-circle"
                 },
                 "publish_dir_mode": {
                     "type": "string",
                     "default": "copy",
+                    "hidden": true,
                     "description": "Method used to save pipeline results to output directory.",
                     "help_text": "The Nextflow `publishDir` option specifies which intermediate files should be saved to the output directory. This option tells the pipeline what method should be used to move these files. See [Nextflow docs](https://www.nextflow.io/docs/latest/process.html#publishdir) for details.",
                     "fa_icon": "fas fa-copy",
@@ -291,6 +339,7 @@
                     "type": "string",
                     "description": "Workflow name.",
                     "fa_icon": "fas fa-fingerprint",
+                    "hidden": true,
                     "help_text": "A custom name for the pipeline run. Unlike the core nextflow `-name` option with one hyphen this parameter can be reused multiple times, for example if using `-resume`. Passed through to steps such as MultiQC and used for things like report filenames and titles."
                 },
                 "email_on_fail": {
@@ -298,12 +347,14 @@
                     "description": "Email address for completion summary, only when pipeline fails.",
                     "fa_icon": "fas fa-exclamation-triangle",
                     "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
+                    "hidden": true,
                     "help_text": "This works exactly as with `--email`, except emails are only sent if the workflow is not successful."
                 },
                 "plaintext_email": {
                     "type": "boolean",
                     "description": "Send plain-text email instead of HTML.",
                     "fa_icon": "fas fa-remove-format",
+                    "hidden": true,
                     "help_text": "Set to receive plain-text e-mails instead of HTML formatted."
                 },
                 "max_multiqc_email_size": {
@@ -311,24 +362,41 @@
                     "description": "File size limit when attaching MultiQC reports to summary emails.",
                     "default": "25.MB",
                     "fa_icon": "fas fa-file-upload",
+                    "hidden": true,
                     "help_text": "If file generated by pipeline exceeds the threshold, it will not be attached."
                 },
                 "monochrome_logs": {
                     "type": "boolean",
                     "description": "Do not use coloured log outputs.",
                     "fa_icon": "fas fa-palette",
+                    "hidden": true,
                     "help_text": "Set to disable colourful command line output and live life in monochrome."
                 },
                 "multiqc_config": {
                     "type": "string",
                     "description": "Custom config file to supply to MultiQC.",
-                    "fa_icon": "fas fa-cog"
+                    "fa_icon": "fas fa-cog",
+                    "hidden": true
                 },
                 "tracedir": {
                     "type": "string",
                     "description": "Directory to keep pipeline Nextflow logs and reports.",
                     "default": "${params.outdir}/pipeline_info",
-                    "fa_icon": "fas fa-cogs"
+                    "fa_icon": "fas fa-cogs",
+                    "hidden": true
+                },
+                "clusterOptions": {
+                    "type": "string",
+                    "hidden": true
+                },
+                "awsqueue": {
+                    "type": "string",
+                    "hidden": true
+                },
+                "awsregion": {
+                    "type": "string",
+                    "default": "eu-west-1",
+                    "hidden": true
                 }
             }
         },
@@ -343,6 +411,7 @@
                     "type": "string",
                     "description": "Git commit id for Institutional configs.",
                     "default": "master",
+                    "hidden": true,
                     "fa_icon": "fas fa-users-cog",
                     "help_text": "Provide git commit id for custom Institutional configs hosted at `nf-core/configs`. This was implemented for reproducibility purposes. Default: `master`.\n\n```bash\n## Download and use config file with following git commit id\n--custom_config_version d52db660777c4bf36546ddb188ec530c3ada1b96\n```"
                 },
@@ -350,47 +419,66 @@
                     "type": "string",
                     "description": "Base directory for Institutional configs.",
                     "default": "https://raw.githubusercontent.com/nf-core/configs/master",
+                    "hidden": true,
                     "help_text": "If you're running offline, nextflow will not be able to fetch the institutional config files from the internet. If you don't need them, then this is not a problem. If you do need them, you should download the files from the repo and tell nextflow where to find them with the `custom_config_base` option. For example:\n\n```bash\n## Download and unzip the config files\ncd /path/to/my/configs\nwget https://github.com/nf-core/configs/archive/master.zip\nunzip master.zip\n\n## Run the pipeline\ncd /path/to/my/data\nnextflow run /path/to/pipeline/ --custom_config_base /path/to/my/configs/configs-master/\n```\n\n> Note that the nf-core/tools helper package has a `download` command to download all required pipeline files + singularity containers + institutional configs in one go for you, to make this process easier.",
                     "fa_icon": "fas fa-users-cog"
                 },
                 "hostnames": {
                     "type": "string",
                     "description": "Institutional configs hostname.",
+                    "hidden": true,
                     "fa_icon": "fas fa-users-cog"
                 },
                 "config_profile_description": {
                     "type": "string",
                     "description": "Institutional config description.",
+                    "hidden": true,
                     "fa_icon": "fas fa-users-cog"
                 },
                 "config_profile_contact": {
                     "type": "string",
                     "description": "Institutional config contact information.",
+                    "hidden": true,
                     "fa_icon": "fas fa-users-cog"
                 },
                 "config_profile_url": {
                     "type": "string",
                     "description": "Institutional config URL link.",
+                    "hidden": true,
                     "fa_icon": "fas fa-users-cog"
-                },
-                "clusterOptions": {
-                    "type": "string",
-                    "hidden": true
                 }
             }
         },
-        "other_options": {
-            "title": "Other options",
+        "max_job_request_options": {
+            "title": "Max job request options",
             "type": "object",
-            "description": "",
-            "default": "",
+            "fa_icon": "fab fa-acquisitions-incorporated",
+            "description": "Set the top limit for requested resources for any single job.",
+            "help_text": "If you are running on a smaller system, a pipeline step requesting more resources than are available may cause the Nextflow to stop the run with an error. These options allow you to cap the maximum resources requested by any single job so that the pipeline will run on your system.\n\nNote that you can not _increase_ the resources requested by any job using these options. For that you will need your own configuration file. See [the nf-core website](https://nf-co.re/usage/configuration) for details.",
             "properties": {
-                "awsregion": {
-                    "type": "string",
-                    "default": "eu-west-1"
+                "max_cpus": {
+                    "type": "integer",
+                    "description": "Maximum number of CPUs that can be requested    for any single job.",
+                    "default": 16,
+                    "fa_icon": "fas fa-microchip",
+                    "hidden": true,
+                    "help_text": "Use to set an upper-limit for the CPU requirement for each process. Should be an integer e.g. `--max_cpus 1`"
                 },
-                "awsqueue": {
-                    "type": "string"
+                "max_memory": {
+                    "type": "string",
+                    "description": "Maximum amount of memory that can be requested for any single job.",
+                    "default": "128.GB",
+                    "fa_icon": "fas fa-memory",
+                    "hidden": true,
+                    "help_text": "Use to set an upper-limit for the memory requirement for each process. Should be a string in the format integer-unit e.g. `--max_memory '8.GB'`"
+                },
+                "max_time": {
+                    "type": "string",
+                    "description": "Maximum amount of time that can be requested for any single job.",
+                    "default": "240.h",
+                    "fa_icon": "far fa-clock",
+                    "hidden": true,
+                    "help_text": "Use to set an upper-limit for the time requirement for each process. Should be a string in the format integer-unit e.g. `--max_time '2.h'`"
                 }
             }
         }
@@ -424,7 +512,7 @@
             "$ref": "#/definitions/institutional_config_options"
         },
         {
-            "$ref": "#/definitions/other_options"
+            "$ref": "#/definitions/max_job_request_options"
         }
     ]
 }

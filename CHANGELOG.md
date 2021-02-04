@@ -1,7 +1,32 @@
-# nf-core/ampliseq
+# nf-core/ampliseq: Changelog
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## nf-core/ampliseq version 1.2.0 "Teal Bronze Lion" - 2021
+
+### `Added`
+
+* [#106](https://github.com/nf-core/ampliseq/issues/106) - Added support for PacBio data
+* Added `--taxon_reference` to be able to support both 'silva' and 'unite'
+* [#157](https://github.com/nf-core/ampliseq/issues/157) - Added possibility to run double cutadapt steps, `--double_primer`
+* [#211](https://github.com/nf-core/ampliseq/issues/211) - Added quality filter option `--maxEE`
+
+### `Fixed`
+
+* [#182](https://github.com/nf-core/ampliseq/issues/182) - Fix input in case there are no underscores in sample IDs
+* [#186](https://github.com/nf-core/ampliseq/issues/186) - Update github actions
+* [#187](https://github.com/nf-core/ampliseq/issues/187) - Sample ids are in incorrect order in feature-table from PacBio data
+* [#201](https://github.com/nf-core/ampliseq/pull/201) - Template update for nf-core/tools version 1.12.1
+* [#147](https://github.com/nf-core/ampliseq/issues/147) - Split `make_classifier` in two different processes that can be allocated different resources
+* [#183](https://github.com/nf-core/ampliseq/issues/183) - Don't fetch taxonomy/create classifier when run with `--skip_taxonomy`
+* [#180](https://github.com/nf-core/ampliseq/issues/180) - MultiQC, cutadapt and fastQC now work with `--multipleSequencingRuns`
+
+### `Dependencies`
+
+* Updated from cutadapt v2.6 to v2.8
+
+### `Deprecated`
 
 ## nf-core/ampliseq version 1.1.3 - 2020
 

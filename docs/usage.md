@@ -44,7 +44,7 @@ nextflow pull nf-core/ampliseq
 
 It's a good idea to specify a pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
 
-First, go to the [nf-core/ampliseq releases page](https://github.com/nf-core/ampliseq/releases) and find the latest version number - numeric only (eg. `1.1.2`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 1.1.2`.
+First, go to the [nf-core/ampliseq releases page](https://github.com/nf-core/ampliseq/releases) and find the latest version number - numeric only (eg. `1.3.1`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 1.3.1`.
 
 This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future.
 
@@ -80,7 +80,7 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
   * Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity or Podman.
   * A generic configuration profile to be used with [Conda](https://conda.io/docs/)
   * Pulls most software from [Bioconda](https://bioconda.github.io/)
-* `test`, `test_multi`, `test_manifest`, `test_full`
+* `test`, `test_multi`, `test_manifest`, `test_full`, `test_pacbio_its`, `test_doubleprimers`
   * Profiles with a complete configuration for automated testing
   * Includes links to test data so needs no other parameters
 

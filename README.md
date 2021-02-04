@@ -1,13 +1,14 @@
 # ![nf-core/ampliseq](docs/images/nf-core-ampliseq_logo.png)
 
-[![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A519.10.0-brightgreen.svg)](https://www.nextflow.io/)
+**16S rRNA amplicon sequencing analysis workflow using QIIME2**.
+
 [![nf-core](https://img.shields.io/badge/nf--core-pipeline-brightgreen.svg)](https://nf-co.re/)
 [![DOI](https://zenodo.org/badge/150448201.svg)](https://zenodo.org/badge/latestdoi/150448201)
 [![Cite Preprint](https://img.shields.io/badge/Cite%20Us!-Cite%20Publication-important)](https://doi.org/10.3389/fmicb.2020.550420)
 
 [![GitHub Actions CI Status](https://github.com/nf-core/ampliseq/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/ampliseq/actions)
 [![GitHub Actions Linting Status](https://github.com/nf-core/ampliseq/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/ampliseq/actions)
-[![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A519.10.0-brightgreen.svg)](https://www.nextflow.io/)
+[![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A520.04.0-brightgreen.svg)](https://www.nextflow.io/)
 
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg)](https://bioconda.github.io/)
 [![Docker](https://img.shields.io/docker/automated/nfcore/ampliseq.svg)](https://hub.docker.com/r/nfcore/ampliseq)
@@ -15,7 +16,7 @@
 
 ## Introduction
 
-**nfcore/ampliseq** is a bioinformatics analysis pipeline used for 16S rRNA amplicon sequencing data (currently supported is Illumina paired end data).
+**nfcore/ampliseq** is a bioinformatics analysis pipeline used for 16S rRNA or ITS amplicon sequencing data (currently supported is Illumina paired end or PacBio).
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It comes with docker containers making installation trivial and results highly reproducible.
 
@@ -39,17 +40,36 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
     nextflow run nf-core/ampliseq -profile <docker/singularity/podman/conda/institute> --input "data" --FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT --metadata "data/Metadata.tsv"
     ```
 
-See [usage docs](https://nf-co.re/ampliseq/usage) for all of the available options when running the pipeline.
+See [usage docs](https://nf-co.re/ampliseq/usage) and [parameter docs](https://nf-co.re/ampliseq/parameters) for all of the available options when running the pipeline.
+
+## Pipeline Summary
+
+By default, the pipeline currently performs the following:
+
+* Sequencing quality control ([FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
+* Trimming of reads ([Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200))
+* Illumina read processing with [QIIME2](https://www.nature.com/articles/s41587-019-0209-9)
+* Infer Amplicon Sequence Variants (ASVs) ([DADA2](https://doi.org/10.1038/nmeth.3869))
+* Taxonomical classification based on [SILVA](https://www.arb-silva.de/) [v132](https://www.arb-silva.de/documentation/release-132/) or [UNITE](https://unite.ut.ee/) database
+* excludes unwanted taxa, produces absolute and relative feature/taxa count tables and plots, plots alpha rarefaction curves, computes alpha and beta diversity indices and plots thereof ([QIIME2](https://www.nature.com/articles/s41587-019-0209-9))
+* Calls differentially abundant taxa ([ANCOM](https://www.ncbi.nlm.nih.gov/pubmed/26028277))
+* Overall pipeline run summaries ([MultiQC](https://multiqc.info/))
 
 ## Documentation
 
 The nf-core/ampliseq pipeline comes with documentation about the pipeline: [usage](https://nf-co.re/ampliseq/usage) and [output](https://nf-co.re/ampliseq/output).
 
-The workflow processes raw data from FastQ inputs ([FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)), trims primer sequences from the reads ([Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200)), imports data into [QIIME2](https://www.nature.com/articles/s41587-019-0209-9), generates amplicon sequencing variants (ASV, [DADA2](https://www.nature.com/articles/nmeth.3869)), classifies features against the [SILVA](https://www.arb-silva.de/) [v132](https://www.arb-silva.de/documentation/release-132/) database, excludes unwanted taxa, produces absolute and relative feature/taxa count tables and plots, plots alpha rarefaction curves, computes alpha and beta diversity indices and plots thereof, and finally calls differentially abundant taxa ([ANCOM](https://www.ncbi.nlm.nih.gov/pubmed/26028277)). See the [output documentation](docs/output.md) for more details of the results.
-
 ## Credits
 
-These scripts were originally written for use at the [Quantitative Biology Center (QBiC)](http://www.qbic.life) and [Microbial Ecology, Center for Applied Geosciences](http://www.uni-tuebingen.de/de/104325), part of Eberhard Karls Universität Tübingen (Germany) by Daniel Straub ([@d4straub](https://github.com/d4straub)) and Alexander Peltzer ([@apeltzer](https://github.com/apeltzer)).
+nf-core/ampliseq was originally written by Daniel Straub ([@d4straub](https://github.com/d4straub)) and Alexander Peltzer ([@apeltzer](https://github.com/apeltzer)) for use at the [Quantitative Biology Center (QBiC)](http://www.qbic.life) and [Microbial Ecology, Center for Applied Geosciences](http://www.uni-tuebingen.de/de/104325), part of Eberhard Karls Universität Tübingen (Germany).
+
+We thank the following people for their extensive assistance in the development of this pipeline (in alphabetical order):
+
+* [Daniel Lundin](https://github.com/erikrikarddaniel)
+* [Diego Brambilla](https://github.com/DiegoBrambilla)
+* [Emelie Nilsson](https://github.com/emnilsson)
+* [Jeanette Tångrot](https://github.com/jtangrot)
+* [Sabrina Krakau](https://github.com/skrakau)
 
 ## Contributions and Support
 
@@ -57,7 +77,7 @@ If you would like to contribute to this pipeline, please see the [contributing g
 
 For further information or help, don't hesitate to get in touch on the [Slack `#ampliseq` channel](https://nfcore.slack.com/channels/ampliseq) (you can join with [this invite](https://nf-co.re/join/slack)).
 
-## Citation
+## Citations
 
 If you use `nf-core/ampliseq` for your analysis, please cite the `ampliseq` article as follows:
 > Daniel Straub, Nia Blackwell, Adrian Langarica-Fuentes, Alexander Peltzer, Sven Nahnsen, Sara Kleindienst **Interpretations of Environmental Microbial Community Studies Are Biased by the Selected 16S rRNA (Gene) Amplicon Sequencing Pipeline** *Frontiers in Microbiology* 2020, 11:2652 [doi: 10.3389/fmicb.2020.550420](https://doi.org/10.3389/fmicb.2020.550420).
@@ -72,3 +92,7 @@ You can cite the `nf-core` publication as follows:
 >
 > _Nat Biotechnol._ 2020 Feb 13. doi: [10.1038/s41587-020-0439-x](https://dx.doi.org/10.1038/s41587-020-0439-x).
 > ReadCube: [Full Access Link](https://rdcu.be/b1GjZ)
+
+<!-- TODO In addition, references of tools and data used in this pipeline are as follows: -->
+
+<!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->

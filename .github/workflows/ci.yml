@@ -20,29 +20,31 @@ jobs:
     strategy:
       matrix:
         # Nextflow versions: check pipeline minimum and current latest
-        nxf_ver: ['19.10.0', '']
+        nxf_ver: ['20.04.0', '']
     steps:
       - name: Check out pipeline code
         uses: actions/checkout@v2
 
       - name: Check if Dockerfile or Conda environment changed
-        uses: technote-space/get-diff-action@v1
+        uses: technote-space/get-diff-action@v4
         with:
-          PREFIX_FILTER: |
+          FILES: |
             Dockerfile
             environment.yml
 
       - name: Build new docker image
-        if: env.GIT_DIFF
-        run: docker build --no-cache . -t nfcore/ampliseq:1.1.3
+        if: env.MATCHED_FILES
+        run: docker build --no-cache . -t nfcore/ampliseq:1.2.0
 
       - name: Pull docker image
-        if: ${{ !env.GIT_DIFF }}
+        if: ${{ !env.MATCHED_FILES }}
         run: |
           docker pull nfcore/ampliseq:dev
-          docker tag nfcore/ampliseq:dev nfcore/ampliseq:1.1.3
+          docker tag nfcore/ampliseq:dev nfcore/ampliseq:1.2.0
 
       - name: Install Nextflow
+        env:
+          CAPSULE_LOG: none
         run: |
           wget -qO- get.nextflow.io | bash
           sudo mv nextflow /usr/local/bin/
@@ -56,3 +58,9 @@ jobs:
       - name: Run pipeline with manifest input
         run: | 
           nextflow run ${GITHUB_WORKSPACE} -profile test_manifest,docker
+      - name: Run pipeline with ITS PacBio reads and Unite database
+        run: | 
+          nextflow run ${GITHUB_WORKSPACE} -profile test_pacbio_its,docker
+      - name: Run pipeline with double cutadapt steps on test data with double primers
+        run: |
+          nextflow run ${GITHUB_WORKSPACE} -profile test_doubleprimers,docker

@@ -20,7 +20,7 @@ jobs:
     strategy:
       matrix:
         # Nextflow versions: check pipeline minimum and current latest
-        nxf_ver: ['20.04.0', '']
+        nxf_ver: ['20.11.0-edge']
     steps:
       - name: Check out pipeline code
         uses: actions/checkout@v2
@@ -32,15 +32,15 @@ jobs:
             Dockerfile
             environment.yml
 
-      - name: Build new docker image
-        if: env.MATCHED_FILES
-        run: docker build --no-cache . -t nfcore/ampliseq:dev
+#      - name: Build new docker image
+#        if: env.MATCHED_FILES
+#        run: docker build --no-cache . -t nfcore/ampliseq:dev
 
-      - name: Pull docker image
-        if: ${{ !env.MATCHED_FILES }}
-        run: |
-          docker pull nfcore/ampliseq:dev
-          docker tag nfcore/ampliseq:dev nfcore/ampliseq:dev
+#      - name: Pull docker image
+#        if: ${{ !env.MATCHED_FILES }}
+#        run: |
+#          docker pull nfcore/ampliseq:dev
+#          docker tag nfcore/ampliseq:dev nfcore/ampliseq:dev
 
       - name: Install Nextflow
         env:
@@ -49,18 +49,18 @@ jobs:
           wget -qO- get.nextflow.io | bash
           sudo mv nextflow /usr/local/bin/
 
-      - name: Run pipeline with test data
-        run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test,docker
-      - name: Run pipeline with multi test data
-        run: | 
-          nextflow run ${GITHUB_WORKSPACE} -profile test_multi,docker
+#      - name: Run pipeline with test data
+#        run: |
+#          nextflow run ${GITHUB_WORKSPACE} -profile test,docker
+#      - name: Run pipeline with multi test data
+#        run: | 
+#          nextflow run ${GITHUB_WORKSPACE} -profile test_multi,docker
       - name: Run pipeline with manifest input
         run: | 
           nextflow run ${GITHUB_WORKSPACE} -profile test_manifest,docker
-      - name: Run pipeline with ITS PacBio reads and Unite database
-        run: | 
-          nextflow run ${GITHUB_WORKSPACE} -profile test_pacbio_its,docker
-      - name: Run pipeline with double cutadapt steps on test data with double primers
-        run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test_doubleprimers,docker
+#      - name: Run pipeline with ITS PacBio reads and Unite database
+#        run: | 
+#          nextflow run ${GITHUB_WORKSPACE} -profile test_pacbio_its,docker
+#      - name: Run pipeline with double cutadapt steps on test data with double primers
+#        run: |
+#          nextflow run ${GITHUB_WORKSPACE} -profile test_doubleprimers,docker

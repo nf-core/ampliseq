@@ -82,7 +82,6 @@ At this point of the analysis the trimmed reads are imported into QIIME2 and an 
 
 * `demux/`  
   * `index.html`: Quality plots that can be viewed in your web browser.
-  * `demux.qza` (only when --untilQ2import is true): QIIME2 artefact for imported reads.
 
 All following analysis steps are performed in QIIME2, except DADA2 in the case of pacbio data.
 

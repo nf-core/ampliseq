@@ -3,15 +3,23 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## nf-core/ampliseq version 1.3.0dev
+## nf-core/ampliseq version 2.0dev
+
+Re-wrote whole pipeline in [DSL2](https://www.nextflow.io/docs/latest/dsl2.html) instead of DSL1.
 
 ### `Added`
+* Added `--single_end` for single-ended Illumina data
+* A manifest input file now also allows multiple sequencing runs by using the optional column `run`.
 
 ### `Fixed`
 
 ### `Dependencies`
+* Updated from cutadapt v2.8 to v3.2
+* Updated DADA2 from v1.10 to v1.18.0, now not using QIIME2 for ASV generation any more
 
 ### `Deprecated`
+* `--manifest` is superseeded by `--input` that can now handle a manifest file input (required extension: `.tsv`) or folder that contains read files
+* `--Q2imported` & `untilQ2import` are removed because pausing at that point is not neccessary
 
 ## nf-core/ampliseq version 1.2.0 "Teal Bronze Lion" - 2021
 

@@ -14,8 +14,8 @@
                 "input": {
                     "type": "string",
                     "fa_icon": "fas fa-dna",
-                    "description": "Folder containing paired-end demultiplexed FastQ files",
-                    "help_text": "Use this to specify the location of your input paired-end FastQ files.  \n\nFor example:\n\n```bash\n--input 'path/to/data'\n```\n\nExample for input data organization from one sequencing run with two samples:\n\n```bash\ndata\n  |-sample1_1_L001_R1_001.fastq.gz\n  |-sample1_1_L001_R2_001.fastq.gz\n  |-sample2_1_L001_R1_001.fastq.gz\n  |-sample2_1_L001_R2_001.fastq.gz\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The folder must contain gzip compressed paired-end demultiplexed fastq files. If the file names do not follow the default (`\"/*_R{1,2}_001.fastq.gz\"`), please check `--extension`.\n3. If your data is scattered, a directory with symlinks to your actual data might be a solution.\n4. All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed. Sequencing data originating from multiple sequencing runs requires additionally the parameter `--multipleSequencingRuns` and a specific folder structure."
+                    "description": "Either a tab-seperated sample sheet or a folder containing zipped FastQ files",
+                    "help_text": "##### Folder containing zipped FastQ files\n\nFor example:\n\n```bash\n--input 'path/to/data'\n```\n\nExample for input data organization from one sequencing run with two samples:\n\n```bash\ndata\n  |-sample1_1_L001_R1_001.fastq.gz\n  |-sample1_1_L001_R2_001.fastq.gz\n  |-sample2_1_L001_R1_001.fastq.gz\n  |-sample2_1_L001_R2_001.fastq.gz\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The folder must contain gzip compressed paired-end demultiplexed fastq files. If the file names do not follow the default (`\"/*_R{1,2}_001.fastq.gz\"`), please check `--extension`.\n3. Text before the first underscore `_` is used as sampleIDs, these must be unique\n4. If your data is scattered, a directory with symlinks to your actual data might be a solution.\n5. All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed. Sequencing data originating from multiple sequencing runs requires additionally the parameter `--multipleSequencingRuns` and a specific folder structure.\n\n##### Sample sheet\n\nThe sample sheet file is an alternative way to provide input reads, it must be a tab-separated file ending with `.tsv` that must have two to four columns with the following headers: `sampleID`, `forwardReads`, `reverseReads`,`run`. \n\nUnique sample identifiers must be listed under `sampleID`. If the data is paired-end, a column named `reverseReads` is required. Paths to forward and reverse reads must be reported under `forwardReads` and `reverseReads`, respectively. Multiple sequencing runs can be indicated in an optional column `run`."
                 },
                 "FW_primer": {
                     "type": "string",
@@ -35,17 +35,19 @@
                     "help_text": "This is optional, but for performing downstream analysis such as barplots, diversity indices or differential abundance testing, a metadata file is essential. \n\nFor example:\n\n```bash\n--metadata \"path/to/metadata.tsv\"\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The metadata file has to follow the QIIME2 specifications (https://docs.qiime2.org/2019.10/tutorials/metadata/)\n3. In case of multiple sequencing runs, specific naming of samples are required, see `--multipleSequencingRuns`\n\nThe first column in the metadata file is the identifier (ID) column and defines the sample or feature IDs associated with your study. Metadata files are not required to have additional metadata columns, so a file containing only an ID column is a valid QIIME 2 metadata file. Additional columns defining metadata associated with each sample or feature ID are optional.\n**NB**: without additional columns there might be no groupings for the downstream analyses.\n\nIdentifiers should be 36 characters long or less, and also contain only ASCII alphanumeric characters (i.e. in the range of [a-z], [A-Z], or [0-9]), the period (.) character, or the dash (-) character. By default all numeric columns, blanks or NA are removed, and only columns with multiple different values but not all unique are selected.\n\nThe columns which are to be assessed can be specified by `--metadata_category`. If `--metadata_category` isn't specified than all columns that fit the specification are automatically chosen.",
                     "fa_icon": "fas fa-file-csv"
                 },
+                "single_end": {
+                    "type": "boolean",
+                    "description": "If data is single end"
+                },
                 "multipleSequencingRuns": {
                     "type": "boolean",
                     "description": "If samples were sequenced in multiple sequencing runs",
                     "help_text": "Expects one subfolder per sequencing run in the folder specified by `--input` containing sequencing data of the specific run.\n\nTo prevent overlapping sample names from multiple sequencing runs, sample names obtained from the sequencing files will be renamed automatically by adding the folder name as prefix separated by a string specified by `--split`. Accordingly, the sample name column in the metadata file `--metadata` require values following `subfolder-samplename`.\n\nExample for input data organization:\n\n```bash\ndata\n  |-run1\n  |  |-sample1_1_L001_R{1,2}_001.fastq.gz\n  |  |-sample2_1_L001_R{1,2}_001.fastq.gz\n  |\n  |-run2\n     |-sample3_1_L001_R{1,2}_001.fastq.gz\n     |-sample4_1_L001_R{1,2}_001.fastq.gz\n```\n\nIn this example the first column in the metadata file requires the values `run1-sample1` ... `run2-sample4` (instead of `sample1`, ..., `sample4`).\n\nExample command to analyze this data in one pipeline run:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input \"data\" \\\n    --FW_primer GTGYCAGCMGCCGCGGTAA \\\n    --RV_primer GGACTACNVGGGTWTCTAAT \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multipleSequencingRuns\n```\n\n##### Visually choosing sequencing read truncation cutoffs\n\nWhile `--untilQ2import` with `--multipleSequencingRuns` is currently supported, `--Q2imported` is not. The pipeline can be first run with `--untilQ2import`, than `--trunclenf` and `--trunclenr` are visually chosen, and then the pipeline can be continued without `--untilQ2import` but with `--trunlenf`, `--trunlenr`, and `-resume`.\n\nFor example:\n\n(1) To produce quality plots and choose truncation values:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input \"data\" \\\n    --FW_primer GTGYCAGCMGCCGCGGTAA \\\n    --RV_primer GGACTACNVGGGTWTCTAAT \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multipleSequencingRuns \\\n    --untilQ2import\n```\n\n(2) To finish analysis:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input \"data\" \\\n    --FW_primer GTGYCAGCMGCCGCGGTAA \\\n    --RV_primer GGACTACNVGGGTWTCTAAT \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multipleSequencingRuns \\\n    --trunclenf 200 \\\n    --trunclenr 180 \\\n    -resume\n```",
                     "fa_icon": "fas fa-running"
                 },
-                "manifest": {
-                    "type": "string",
-                    "description": "Path to tab-separated table with sample IDs and paths to sequencing files",
-                    "help_text": "You can submit a manifest file as an alternative way to provide input reads. No submission of read files with `--input` is required this way.\n\nA manifest must be a tab-separated file that must have the following labels in this exact order: `sampleID`, `forwardReads`, `reverseReads`. In case of single-end reads, such as PacBio data, the labels should be: `sampleID`, `Reads`. The sample identifiers must be listed under `sampleID`. Paths to forward and reverse reads must be reported under `forwardReads` and `reverseReads`, respectively. Path to single-end must be reported under `Reads`.\n\nMultiple sequencing runs not supported by `--manifest` at this stage.",
-                    "fa_icon": "fas fa-file-csv"
+                "illumina_its": {
+                    "type": "boolean",
+                    "description": "If analysing ITS amplicons or any other region with large length variability with Illumina paired end reads"
                 }
             },
             "required": [
@@ -190,10 +192,11 @@
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
             "properties": {
-                "readPaths": {
+                "sample_inference": {
                     "type": "string",
-                    "hidden": true,
-                    "description": "Path to test sequencing read files"
+                    "default": "pooled",
+                    "help_text": "If samples are treated independent (lowest sensitivity and lowest resources), pooled (highest sensitivity and resources) or pseudo-pooled (balance between required resources and sensitivity).",
+                    "description": "Mode of sample inference: \"independent\", \"pooled\" or \"pseudo\""
                 },
                 "metadata_category": {
                     "type": "string",
@@ -245,33 +248,16 @@
                 }
             }
         },
-        "run_only_partial_workflow": {
-            "title": "Run only partial workflow",
-            "type": "object",
-            "description": "",
-            "default": "",
-            "properties": {
-                "untilQ2import": {
-                    "type": "boolean",
-                    "description": "Skip all steps after importing into QIIME2, used for visually choosing DADA2 parameter `--trunclenf` and `--trunclenr`"
-                },
-                "Q2imported": {
-                    "type": "string",
-                    "description": "Path to imported reads (e.g. \"demux.qza\")",
-                    "help_text": "Analysis starting with a QIIME2 artefact with trimmed reads, typically produced before with `--untilQ2import`. This is only supported for data from a single sequencing run.\n\nFor data from multiple sequencing runs with `--multipleSequencingRuns` the pipeline can be first run with `--untilQ2import` and next run without `--untilQ2import` but with `-resume`."
-                },
-                "onlyDenoising": {
-                    "type": "boolean",
-                    "description": "Skip all steps after denoising, produce only sequences and abundance tables on ASV level"
-                }
-            }
-        },
         "skipping_specific_steps": {
             "title": "Skipping specific steps",
             "type": "object",
             "description": "",
             "default": "",
             "properties": {
+                "onlyDenoising": {
+                    "type": "boolean",
+                    "description": "Skip all steps after denoising, produce only sequences and abundance tables on ASV level"
+                },
                 "skip_fastqc": {
                     "type": "boolean",
                     "description": "Skip FastQC"
@@ -397,6 +383,18 @@
                     "type": "string",
                     "default": "eu-west-1",
                     "hidden": true
+                },
+                "enable_conda": {
+                    "type": "string",
+                    "hidden": true
+                },
+                "multiqc_title": {
+                    "type": "string",
+                    "hidden": true
+                },
+                "singularity_pull_docker_container": {
+                    "type": "string",
+                    "hidden": true
                 }
             }
         },
@@ -481,6 +479,37 @@
                     "help_text": "Use to set an upper-limit for the time requirement for each process. Should be a string in the format integer-unit e.g. `--max_time '2.h'`"
                 }
             }
+        },
+        "deprecated": {
+            "title": "Deprecated",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "manifest": {
+                    "type": "string",
+                    "description": "Path to tab-separated table with sample IDs and paths to sequencing files",
+                    "help_text": "You can submit a manifest file as an alternative way to provide input reads. No submission of read files with `--input` is required this way.\n\nA manifest must be a tab-separated file that must have the following labels in this exact order: `sampleID`, `forwardReads`, `reverseReads`. In case of single-end reads, such as PacBio data, the labels should be: `sampleID`, `forwardReads`. The sample identifiers must be listed under `sampleID`. Paths to forward and reverse reads must be reported under `forwardReads` and `reverseReads`, respectively. \n\nMultiple sequencing runs can be indicated in an optional column `run`.",
+                    "fa_icon": "fas fa-file-csv",
+                    "hidden": true
+                },
+                "untilQ2import": {
+                    "type": "boolean",
+                    "description": "Skip all steps after importing into QIIME2, used for visually choosing DADA2 parameter `--trunclenf` and `--trunclenr`",
+                    "hidden": true
+                },
+                "readPaths": {
+                    "type": "string",
+                    "hidden": true,
+                    "description": "Path to test sequencing read files"
+                },
+                "Q2imported": {
+                    "type": "string",
+                    "description": "Path to imported reads (e.g. \"demux.qza\")",
+                    "help_text": "Analysis starting with a QIIME2 artefact with trimmed reads, typically produced before with `--untilQ2import`. This is only supported for data from a single sequencing run.\n\nFor data from multiple sequencing runs with `--multipleSequencingRuns` the pipeline can be first run with `--untilQ2import` and next run without `--untilQ2import` but with `-resume`.",
+                    "hidden": true
+                }
+            }
         }
     },
     "allOf": [
@@ -500,9 +529,6 @@
             "$ref": "#/definitions/other_input_output_options"
         },
         {
-            "$ref": "#/definitions/run_only_partial_workflow"
-        },
-        {
             "$ref": "#/definitions/skipping_specific_steps"
         },
         {
@@ -513,6 +539,9 @@
         },
         {
             "$ref": "#/definitions/max_job_request_options"
+        },
+        {
+            "$ref": "#/definitions/deprecated"
         }
     ]
 }

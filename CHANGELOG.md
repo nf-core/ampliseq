@@ -5,12 +5,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## nf-core/ampliseq version 2.0dev
 
-Re-wrote whole pipeline in [DSL2](https://www.nextflow.io/docs/latest/dsl2.html) instead of DSL1.
+Re-wrote whole pipeline in [DSL2](https://www.nextflow.io/docs/latest/dsl2.html) instead of DSL1
 
 ### `Added`
 
 * Added `--single_end` for single-ended Illumina data
-* A manifest input file now also allows multiple sequencing runs by using the optional column `run`.
+* Added `--dada_ref_taxonomy` for taxonomic classification with DADA2's assignTaxonomy function
+* `--input` may point at a samples sheet ending with `.tsv` that allows analysis of multiple sequencing runs by reading the optional column `run`
 
 ### `Fixed`
 

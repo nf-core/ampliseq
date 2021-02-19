@@ -155,6 +155,11 @@
                     "default": 99,
                     "description": "Dereplication of the database. Must bematching SILVA v132 and its subfolders. Database size is descreasing, but taxonomical assignments as well.",
                     "hidden": true
+                },
+                "dada_ref_taxonomy": {
+                    "type": "string",
+                    "help_text": "Choose any taxonomy (not species!) database from https://benjjneb.github.io/dada2/training.html",
+                    "description": "Path to DADA2-formatted reference taxonomy database"
                 }
             },
             "fa_icon": "fas fa-database"

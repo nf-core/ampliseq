@@ -229,11 +229,12 @@ process DADA_CHIMERA_REMOVAL {
     
     output:
     tuple val(meta), path("*.ASVtable.rds"), emit: rds
-    tuple val(meta), path("*.ASVtable.tsv"), emit: tsv
     path "*.version.txt"       , emit: version
 
     script:
     def software      = getSoftwareName(task.process)
+    def no_samples    = meta.id.size()
+    def first_sample  = meta.id.first()
     """
     #!/usr/bin/env Rscript
     suppressPackageStartupMessages(library(dada2))
@@ -242,12 +243,8 @@ process DADA_CHIMERA_REMOVAL {
 
     #remove chimera
     seqtab.nochim <- removeBimeraDenovo(seqtab, $options.args, multithread=TRUE, verbose=TRUE)
+    if ( ${no_samples} == 1 ) { rownames(seqtab.nochim) <- "${first_sample}" }
     saveRDS(seqtab.nochim,"${meta.run}.ASVtable.rds")
-    df <- t(seqtab.nochim)
-    df <- cbind(sequence = rownames(df), df)
-    colnames(df) <- gsub('_1.filt.fastq.gz', '', colnames(df))
-    colnames(df) <- gsub('.filt.fastq.gz', '', colnames(df))
-    write.table( df, file = "${meta.run}.ASVtable.tsv", sep = "\t", row.names = FALSE, quote = FALSE)
 
     write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
     """
@@ -363,16 +360,19 @@ process DADA_MERGE_AND_PUBLISH {
 
     input:
     path(files)
+    path(rds)
     
     output:
     path( "DADA2_stats.tsv" )
-    path( "ASV_table.tsv" )
-    //path "*.version.txt"       , emit: version
+    path( "ASV_table.tsv" ), emit: asvtable
+    path( "ASV_table.rds" ), emit: rds
+    path "*.version.txt"       , emit: version
 
     script:
     def software      = getSoftwareName(task.process)
     """
     #!/usr/bin/env Rscript
+    suppressPackageStartupMessages(library(dada2))
 
     #combine stats files
     for (data in sort(list.files(".", pattern = ".stats.tsv", full.names = TRUE))) {
@@ -385,17 +385,58 @@ process DADA_MERGE_AND_PUBLISH {
     }
     write.table( stats, file = "DADA2_stats.tsv", sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
 
-    #combine ASV files
-    files <- sort(list.files(".", pattern = ".ASVtable.tsv", full.names = TRUE))
-    print(files)
-    print(files[1])
-    asv <- read.csv(files[1], header=TRUE, sep="\t")
-    for (file in files[c(-1)]) {
-        temp <-read.csv(file, header=TRUE, sep="\t")
-        asv <-merge(asv, temp, by="sequence",all=TRUE)
-        rm(temp)
+    #combine dada-class objects
+    files <- sort(list.files(".", pattern = ".ASVtable.rds", full.names = TRUE))
+    if ( length(files) == 1 ) {
+        ASVtab = readRDS(files[1])
+    } else {
+        ASVtab <- mergeSequenceTables(tables=files, repeats = "error", orderBy = "abundance", tryRC = FALSE)
     }
-    write.table( asv, file = "ASV_table.tsv", sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
+    saveRDS(ASVtab, "ASV_table.rds")
 
+    df <- t(ASVtab)
+    df <- cbind(sequence = rownames(df), df)
+    colnames(df) <- gsub('_1.filt.fastq.gz', '', colnames(df))
+    colnames(df) <- gsub('.filt.fastq.gz', '', colnames(df))
+    write.table( df, file = "ASV_table.tsv", sep = "\t", row.names = FALSE, quote = FALSE)
+
+    write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
+    """
+}
+
+process DADA_ASSIGN_TAXONOMY {
+    label 'process_high'
+    publishDir "${params.outdir}",
+        mode: params.publish_dir_mode,
+        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
+
+    conda (params.enable_conda ? "bioconductor-dada2=1.18.0--r40h5f743cb_0" : null)
+    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
+        container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.18.0--r40h5f743cb_0"
+    } else {
+        container "quay.io/biocontainers/bioconductor-dada2:1.18.0--r40h5f743cb_0"
+    }
+
+    input:
+    path(rds)
+    path(database)
+    
+    output:
+    path( "ASV_tax.tsv" )
+    path "*.version.txt"       , emit: version
+
+    script:
+    def software      = getSoftwareName(task.process)
+    """
+    #!/usr/bin/env Rscript
+    suppressPackageStartupMessages(library(dada2))
+
+    ASV_table <- readRDS(\"$rds\")
+
+    taxa <- assignTaxonomy(ASV_table, \"$database\", $options.args, multithread = TRUE, verbose=TRUE)
+    taxa <- cbind(sequence = rownames(taxa), taxa)
+    write.table(taxa, file = "ASV_tax.tsv", sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
+
+    write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
     """
 }

@@ -44,6 +44,11 @@ if (params.classifier) {
 		   .set { ch_qiime_classifier }
 }
 
+if (params.dada_ref_taxonomy && !params.onlyDenoising) {
+	Channel.fromPath("${params.dada_ref_taxonomy}", checkIfExists: true)
+		   .set { ch_dada_ref_taxonomy }
+} else { ch_dada_ref_taxonomy = Channel.empty() }
+
 /*
  * Sanity check input values
  */
@@ -121,7 +126,9 @@ def dada_chimera_removal_options = modules['dada_chimera_removal']
 
 def multiqc_options         = modules['multiqc']
 multiqc_options.args       += params.multiqc_title ? " --title \"$params.multiqc_title\"" : ''
-//if (params.skip_alignment)  { multiqc_options['publish_dir'] = '' }
+
+def dada_assign_taxonomy_options  = modules['dada_assign_taxonomy']
+dada_assign_taxonomy_options.args += ", tryRC = TRUE"
 
 include { RENAME_RAW_DATA_FILES              } from './modules/local/process/rename_raw_data_files'
 include { DADA_FILTER_AND_TRIM               } from './modules/local/process/dada'                        addParams( options: dada_filter_and_trim_options            )
@@ -131,6 +138,7 @@ include { DADA_DENOISING                     } from './modules/local/process/dad
 include { DADA_CHIMERA_REMOVAL               } from './modules/local/process/dada'                        addParams( options: dada_chimera_removal_options            )
 include { DADA_STATS                         } from './modules/local/process/dada'
 include { DADA_MERGE_AND_PUBLISH             } from './modules/local/process/dada'
+include { DADA_ASSIGN_TAXONOMY               } from './modules/local/process/dada'                        addParams( options: dada_assign_taxonomy_options            )
 include { MULTIQC                            } from './modules/local/process/multiqc'                     addParams( options: multiqc_options                                             )
 include { GET_SOFTWARE_VERSIONS              } from './modules/local/process/get_software_versions'       addParams( options: [publish_files : ['csv':'']]                                )
 
@@ -326,16 +334,23 @@ workflow AMPLISEQ {
 	DADA_FILTER_AND_TRIM ( CUTADAPT.out.reads )
 	ch_software_versions = ch_software_versions.mix(DADA_FILTER_AND_TRIM.out.version.first().ifEmpty(null))
 
-	//drop meta.id & group by sequencing run
+	//group by sequencing run
+	//TODO: DADA2 drops sample names if only 1 sample is analysed, this is problematic!
 	DADA_FILTER_AND_TRIM.out.reads
 		.map {
 			info, reads ->
 				def meta = [:]
 				meta.run = info.run
 				meta.single_end = info.single_end
-				[ meta, reads ] }
+				[ meta, reads, info.id ] }
 		.groupTuple(by: 0 )
-		.map { it ->  [ it[0], it[1].flatten() ] }
+		.map {
+			info, reads, ids ->
+				def meta = [:]
+				meta.run = info.run
+				meta.single_end = info.single_end
+				meta.id = ids.flatten()
+				[ meta, reads.flatten() ] }
 		.set { ch_filt_reads }
 
 	DADA_ERROR_MODEL ( ch_filt_reads )
@@ -350,16 +365,22 @@ workflow AMPLISEQ {
 
 	DADA_CHIMERA_REMOVAL ( DADA_DENOISING.out.seqtab )
 
-	//drop meta.id & group by meta
+	//group by sequencing run & group by meta
 	DADA_FILTER_AND_TRIM.out.log
 		.map {
 			info, reads ->
 				def meta = [:]
 				meta.run = info.run
 				meta.single_end = info.single_end
-				[ meta, reads ] }
+				[ meta, reads, info.id ] }
 		.groupTuple(by: 0 )
-		.map { it ->  [ it[0], it[1].flatten() ] }
+		.map {
+			info, reads, ids ->
+				def meta = [:]
+				meta.run = info.run
+				meta.single_end = info.single_end
+				meta.id = ids.flatten()
+				[ meta, reads.flatten() ] }
 		.join( DADA_DENOISING.out.denoised )
 		.join( DADA_DENOISING.out.mergers )
 		.join( DADA_CHIMERA_REMOVAL.out.rds )
@@ -367,16 +388,12 @@ workflow AMPLISEQ {
 	DADA_STATS ( ch_track_numbers )
 
 	//merge if several runs, otherwise just publish
-	//TODO: if sampleIDs start with a number, an X will be added as prefix, that might be better prevented.
-	DADA_CHIMERA_REMOVAL.out.tsv
-		.map { meta, tsv -> tsv }
-		.mix( DADA_STATS.out.stats.map { meta, stats -> stats } )
-		.collect()
-		.set { ch_dada_results }
-	DADA_MERGE_AND_PUBLISH ( ch_dada_results )
+	DADA_MERGE_AND_PUBLISH ( 
+		DADA_STATS.out.stats.map { meta, stats -> stats }.collect(), 
+		DADA_CHIMERA_REMOVAL.out.rds.map { meta, rds -> rds }.collect() )
 
 	//taxonomic classification with dada2
-
+	DADA_ASSIGN_TAXONOMY ( DADA_MERGE_AND_PUBLISH.out.rds, ch_dada_ref_taxonomy )
 
 
     /*

@@ -155,17 +155,23 @@ include { GET_SOFTWARE_VERSIONS              } from './modules/local/process/get
 /*
  * MODULE: Installed directly from nf-core/modules
  */
-def fastqc_options            = modules['fastqc']
+def fastqc_options              = modules['fastqc']
 
-def cutadapt_options            = modules['cutadapt']
-cutadapt_options.args          += params.retain_untrimmed ? '' : " --discard-untrimmed"
 //TODO: add another option: params.illumina_its which should be "-g ${params.FW_primer} -a ${params.RV_primer_RevComp} -G ${params.RV_primer} -A ${params.FW_primer_RevComp} -n 2"
 //TODO: probably when params.illumina_its than also params.retain_untrimmed, have to test
-cutadapt_options.args          += !single_end ? " -g ${params.FW_primer} -G ${params.RV_primer}" : params.pacbio ? " --rc -g ${params.FW_primer}...${params.RV_primer}" : " -g ${params.FW_primer}"
+def cutadapt_options_args       = !single_end ? " -g ${params.FW_primer} -G ${params.RV_primer}" : params.pacbio ? " --rc -g ${params.FW_primer}...${params.RV_primer}" : " -g ${params.FW_primer}"
+def cutadapt_options 			= modules['cutadapt']
+cutadapt_options.args          += cutadapt_options_args
+cutadapt_options.args          += params.retain_untrimmed ? '' : " --discard-untrimmed"
+def cutadapt_2nd_options        = [:]
+cutadapt_2nd_options.args       = cutadapt_options_args
+cutadapt_2nd_options.args      += " --discard-trimmed"
+cutadapt_2nd_options.suffix     = "_double-primer"
 
 //include { MULTIQC } from './modules/nf-core/software/multiqc/main' addParams( options: multiqc_options    )
 include { FASTQC } from './modules/nf-core/software/fastqc/main' addParams( options: fastqc_options    )
 include { CUTADAPT } from './modules/nf-core/software/cutadapt/main' addParams( options: cutadapt_options    )
+include { CUTADAPT as CUTADAPT_2ND } from './modules/nf-core/software/cutadapt/main' addParams( options: cutadapt_2nd_options    )
 
 /*
  * SUBWORKFLOW: Consisting entirely of nf-core/modules
@@ -316,26 +322,20 @@ workflow AMPLISEQ {
     /*
      * MODULE: Cutadapt
      */
-    CUTADAPT ( RENAME_RAW_DATA_FILES.out )
+    CUTADAPT ( RENAME_RAW_DATA_FILES.out ).reads.set { ch_trimmed_reads }
     ch_software_versions = ch_software_versions.mix(CUTADAPT.out.version.first().ifEmpty(null))
 
 	if (params.double_primer) {
-		//TODO: this needs renaming of files with another prefix, e.g. https://github.com/nf-core/ampliseq/blob/1e76f1c0c6d270572573a6ad76aa40bfc185c3da/main.nf#L502-L521
-		log.warn "that might not work yet"
-		cutadapt_options            = modules['cutadapt']
-		cutadapt_options.args          += single_end ? " --rc -g ${params.FW_primer}...${params.RV_primer}" : " -g ${params.FW_primer} -G ${params.RV_primer}"
-		cutadapt_options.args          += " --discard-trimmed"
-		CUTADAPT ( CUTADAPT.out )
+		CUTADAPT_2ND ( ch_trimmed_reads ).reads.set { ch_trimmed_reads }
 	}
 
     /*
      * SUBWORKFLOW / MODULES : ASV generation with DADA2
      */
-	DADA_FILTER_AND_TRIM ( CUTADAPT.out.reads )
+	DADA_FILTER_AND_TRIM ( ch_trimmed_reads )
 	ch_software_versions = ch_software_versions.mix(DADA_FILTER_AND_TRIM.out.version.first().ifEmpty(null))
 
 	//group by sequencing run
-	//TODO: DADA2 drops sample names if only 1 sample is analysed, this is problematic!
 	DADA_FILTER_AND_TRIM.out.reads
 		.map {
 			info, reads ->

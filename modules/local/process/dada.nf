@@ -4,9 +4,12 @@ include { initOptions; saveFiles; getSoftwareName } from './functions'
 params.options = [:]
 def options    = initOptions(params.options)
 
-process DADA_FILTER_AND_TRIM {
-    tag "$meta.id"
-    label 'process_medium'
+process DADA_QUALITY {
+    tag "$meta"
+    label 'process_low'
+    publishDir "${params.outdir}",
+        mode: params.publish_dir_mode,
+        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
     conda (params.enable_conda ? "bioconductor-dada2=1.18.0--r40h5f743cb_0" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
@@ -19,6 +22,30 @@ process DADA_FILTER_AND_TRIM {
     tuple val(meta), path(reads)
     
     output:
+    path "${meta}_qual_stats.pdf"
+    tuple val(meta), path("*_qual_stats.tsv")       , emit: tsv
+
+    script:
+    """
+    dada_quality.r "${meta}_qual_stats" $options.args
+    """
+}
+
+process DADA_FILTER_AND_TRIM {
+    tag "$meta.id"
+    label 'process_medium'
+
+    conda (params.enable_conda ? "bioconductor-dada2=1.18.0--r40h5f743cb_0" : null)
+    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
+        container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.18.0--r40h5f743cb_0"
+    } else {
+        container "quay.io/biocontainers/bioconductor-dada2:1.18.0--r40h5f743cb_0"
+    }
+
+    input:
+    tuple val(meta), path(reads), val(trunclenf), val(trunclenr)
+    
+    output:
     tuple val(meta), path("${meta.id}.filter_stats.tsv"), emit: log
     tuple val(meta), path("*.filt.fastq.gz"), emit: reads
     path "*.version.txt"       , emit: version
@@ -26,11 +53,15 @@ process DADA_FILTER_AND_TRIM {
     script:
     def software      = getSoftwareName(task.process)
     def in_and_out  = meta.single_end ? "\"${reads}\", \"${meta.id}.filt.fastq.gz\"" : "\"${reads[0]}\", \"${meta.id}_1.filt.fastq.gz\", \"${reads[1]}\", \"${meta.id}_2.filt.fastq.gz\""
+    def trunclenf = trunclenf[1].toInteger()
+    def trunclenr = trunclenr[1].toInteger()
+    def trunc_args = meta.single_end ? "truncLen = $trunclenf" : "truncLen = c($trunclenf, $trunclenr)"
     """
     #!/usr/bin/env Rscript
     suppressPackageStartupMessages(library(dada2))
 
     out <- filterAndTrim($in_and_out, 
+        $trunc_args,
         $options.args,
         compress = TRUE, 
         multithread = TRUE, 
@@ -44,6 +75,9 @@ process DADA_FILTER_AND_TRIM {
 process DADA_ERROR_MODEL {
     tag "$meta.run"
     label 'process_medium'
+    publishDir "${params.outdir}",
+        mode: params.publish_dir_mode,
+        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
     conda (params.enable_conda ? "bioconductor-dada2=1.18.0--r40h5f743cb_0" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
@@ -57,6 +91,7 @@ process DADA_ERROR_MODEL {
     
     output:
     tuple val(meta), path("*.err.rds"), emit: errormodel
+    path("*.err.pdf"), emit: pdf
     path "*.version.txt"       , emit: version
 
     script:
@@ -74,6 +109,14 @@ process DADA_ERROR_MODEL {
         errR <- learnErrors(fnRs, $options.args, multithread = TRUE, verbose = TRUE)
         saveRDS(errR, "${meta.run}_2.err.rds")
 
+        pdf("${meta.run}_1.err.pdf")
+        plotErrors(errF, nominalQ = TRUE)
+        dev.off()
+
+        pdf("${meta.run}_2.err.pdf")
+        plotErrors(errR, nominalQ = TRUE)
+        dev.off()        
+
         write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
         """
     } else {
@@ -85,6 +128,10 @@ process DADA_ERROR_MODEL {
 
         errF <- learnErrors(fnFs, $options.args, multithread = TRUE, verbose = TRUE)
         saveRDS(errF, "${meta.run}.err.rds")
+
+        pdf("${meta.run}.err.pdf")
+        plotErrors(errF, nominalQ = TRUE)
+        dev.off()
 
         write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
         """        

@@ -50,6 +50,18 @@ if (params.dada_ref_taxonomy && !params.onlyDenoising) {
 } else { ch_dada_ref_taxonomy = Channel.empty() }
 
 /*
+ * Set variables
+ */
+
+single_end = params.pacbio ? true : params.single_end
+
+trunclenf = params.trunclenf ? params.trunclenf : 0 
+trunclenr = params.trunclenr ? params.trunclenr : 0
+if (!single_end && !params.illumina_its && (params.trunclenf == false || params.trunclenr == false) ) {
+	log.warn "No DADA2 cutoffs were specified (--trunclenf & --trunclenr), therefore reads will be truncated where median quality drops below ${params.trunc_qmin} (defined by --trunc_qmin) but at least a fraction of ${params.trunc_rmin} (defined by --trunc_rmin) of the reads will be retained.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
+}
+
+/*
  * Sanity check input values
  */
 
@@ -59,11 +71,6 @@ if (!params.input) { exit 1, "Option --input missing" }
 
 if ("${params.split}".indexOf("_") > -1 ) {
 	exit 1, "Underscore is not allowed in --split, please review your input."
-}
-
-single_end = params.single_end
-if (params.pacbio) {
-   single_end = true
 }
 
 //TRUE, FALSE, pseudo allowed, see https://benjjneb.github.io/dada2/pseudo.html#Pseudo-pooling
@@ -97,16 +104,19 @@ def dada_filter_and_trim_options = modules['dada_filter_and_trim']
 dada_filter_and_trim_options.args       += single_end ? ", maxEE = $params.maxEE" : ", maxEE = c($params.maxEE, $params.maxEE)"
 if (params.pacbio) {
 	//PacBio data
-	//TODO: "truncLen = $params.trunclenf" is in ampliseq 1.2.0 "$trunc" which is pruduced for "single_end" here: https://github.com/nf-core/ampliseq/blob/1e76f1c0c6d270572573a6ad76aa40bfc185c3da/main.nf#L944-L962
-	dada_filter_and_trim_options.args   +=", truncQ = 2, truncLen = $params.trunclenf, minLen = $params.minLen, maxLen = $params.maxLen, rm.phix = FALSE"
+	dada_filter_and_trim_options.args   +=", truncQ = 2, minLen = $params.minLen, maxLen = $params.maxLen, rm.phix = FALSE"
 } else if (params.illumina_its) {
 	//Illumina ITS data or other sequences with high length variability
 	dada_filter_and_trim_options.args   += ", truncQ = 2, minLen = $params.minLen, rm.phix = TRUE"
 } else {
 	//Illumina 16S data
-	dada_filter_and_trim_options.args   += single_end ? ", truncLen = $params.trunclenf" : ", truncLen = c($params.trunclenf, $params.trunclenr)"
 	dada_filter_and_trim_options.args   += ", truncQ = 2, rm.phix = TRUE"
 }
+
+def dada_quality_options = modules['dada_quality'] 
+
+def find_trunclen_values_options = [:]
+find_trunclen_values_options.args       ="$params.trunc_qmin $params.trunc_rmin"
 
 //TODO: adjust for single_end & PacBio
 def dada_error_model_options = modules['dada_error_model']
@@ -132,6 +142,8 @@ dada_assign_taxonomy_options.args += ", tryRC = TRUE"
 
 include { RENAME_RAW_DATA_FILES              } from './modules/local/process/rename_raw_data_files'
 include { DADA_FILTER_AND_TRIM               } from './modules/local/process/dada'                        addParams( options: dada_filter_and_trim_options            )
+include { DADA_QUALITY                       } from './modules/local/process/dada'                        addParams( options: dada_quality_options                    )
+include { FIND_TRUNCLEN_VALUES               } from './modules/local/process/find_trunclen_values'        addParams( options: find_trunclen_values_options            )
 include { DADA_ERROR_MODEL                   } from './modules/local/process/dada'                        addParams( options: dada_error_model_options                )
 include { DADA_DEREPLICATE                   } from './modules/local/process/dada'
 include { DADA_DENOISING                     } from './modules/local/process/dada'                        addParams( options: dada_denoising_options                  )
@@ -332,6 +344,44 @@ workflow AMPLISEQ {
     /*
      * SUBWORKFLOW / MODULES : ASV generation with DADA2
      */
+	//plot aggregated quality profile for forward and reverse reads separately
+	if (single_end) {
+		ch_trimmed_reads
+			.map { meta, reads -> [ reads ] }
+			.collect()
+			.map { reads -> [ "single_end", reads ] }
+			.set { ch_all_trimmed_reads }
+	} else {
+		ch_trimmed_reads
+			.map { meta, reads -> [ reads[0] ] }
+			.collect()
+			.map { reads -> [ "FW", reads ] }
+			.set { ch_all_trimmed_fw }
+		ch_trimmed_reads
+			.map { meta, reads -> [ reads[1] ] }
+			.collect()
+			.map { reads -> [ "RV", reads ] }
+			.set { ch_all_trimmed_rv }
+		ch_all_trimmed_fw
+			.mix ( ch_all_trimmed_rv )
+			.set { ch_all_trimmed_reads }
+	}
+	DADA_QUALITY ( ch_all_trimmed_reads )
+	
+	//find truncation values in case they are not supplied
+	if (!single_end && !params.illumina_its && (params.trunclenf == false || params.trunclenr == false) ) {
+		FIND_TRUNCLEN_VALUES ( DADA_QUALITY.out.tsv )
+		FIND_TRUNCLEN_VALUES.out
+			.toSortedList()
+			.set { ch_trunc }
+	} else { 
+		Channel.from( [['FW', trunclenf], ['RV', trunclenr]] )
+			.toSortedList()
+			.set { ch_trunc }
+	}
+	ch_trimmed_reads.combine(ch_trunc).set { ch_trimmed_reads }
+
+	//filter reads
 	DADA_FILTER_AND_TRIM ( ch_trimmed_reads )
 	ch_software_versions = ch_software_versions.mix(DADA_FILTER_AND_TRIM.out.version.first().ifEmpty(null))
 

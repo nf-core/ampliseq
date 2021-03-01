@@ -70,7 +70,7 @@ process DADA_FILTER_AND_TRIM {
         $trunc_args,
         $options.args,
         compress = TRUE, 
-        multithread = TRUE, 
+        multithread = $task.cpus, 
         verbose = TRUE)
     out <- cbind(out, ID = row.names(out))
 
@@ -113,9 +113,9 @@ process DADA_ERROR_MODEL {
         fnFs <- sort(list.files(".", pattern = "_1.filt.fastq.gz", full.names = TRUE))
         fnRs <- sort(list.files(".", pattern = "_2.filt.fastq.gz", full.names = TRUE))
 
-        errF <- learnErrors(fnFs, $options.args, multithread = TRUE, verbose = TRUE)
+        errF <- learnErrors(fnFs, $options.args, multithread = $task.cpus, verbose = TRUE)
         saveRDS(errF, "${meta.run}_1.err.rds")
-        errR <- learnErrors(fnRs, $options.args, multithread = TRUE, verbose = TRUE)
+        errR <- learnErrors(fnRs, $options.args, multithread = $task.cpus, verbose = TRUE)
         saveRDS(errR, "${meta.run}_2.err.rds")
 
         pdf("${meta.run}_1.err.pdf")
@@ -136,7 +136,7 @@ process DADA_ERROR_MODEL {
 
         fnFs <- sort(list.files(".", pattern = ".filt.fastq.gz", full.names = TRUE))
 
-        errF <- learnErrors(fnFs, $options.args, multithread = TRUE, verbose = TRUE)
+        errF <- learnErrors(fnFs, $options.args, multithread = $task.cpus, verbose = TRUE)
         saveRDS(errF, "${meta.run}.err.rds")
 
         pdf("${meta.run}.err.pdf")
@@ -237,9 +237,9 @@ process DADA_DENOISING {
         derepRs = readRDS("${dereplicated[1]}")
 
         #denoising
-        dadaFs <- dada(derepFs, err = errF, $options.args, multithread = TRUE)
+        dadaFs <- dada(derepFs, err = errF, $options.args, multithread = $task.cpus)
         saveRDS(dadaFs, "${meta.run}_1.dada.rds")
-        dadaRs <- dada(derepRs, err = errR, $options.args, multithread = TRUE)
+        dadaRs <- dada(derepRs, err = errR, $options.args, multithread = $task.cpus)
         saveRDS(dadaRs, "${meta.run}_2.dada.rds")
 
         #make table
@@ -261,7 +261,7 @@ process DADA_DENOISING {
         derepFs = readRDS("${dereplicated}")
 
         #denoising
-        dadaFs <- dada(derepFs, err = errF, $options.args, multithread = TRUE)
+        dadaFs <- dada(derepFs, err = errF, $options.args, multithread = $task.cpus)
         saveRDS(dadaFs, "${meta.run}.dada.rds")
 
         #make table
@@ -310,7 +310,7 @@ process DADA_CHIMERA_REMOVAL {
     seqtab = readRDS("${seqtab}")
 
     #remove chimera
-    seqtab.nochim <- removeBimeraDenovo(seqtab, $options.args, multithread=TRUE, verbose=TRUE)
+    seqtab.nochim <- removeBimeraDenovo(seqtab, $options.args, multithread=$task.cpus, verbose=TRUE)
     if ( ${no_samples} == 1 ) { rownames(seqtab.nochim) <- "${first_sample}" }
     saveRDS(seqtab.nochim,"${meta.run}.ASVtable.rds")
 
@@ -503,7 +503,7 @@ process DADA_ASSIGN_TAXONOMY {
 
     ASV_table <- readRDS(\"$rds\")
 
-    taxa <- assignTaxonomy(ASV_table, \"$database\", $options.args, multithread = TRUE, verbose=TRUE)
+    taxa <- assignTaxonomy(ASV_table, \"$database\", $options.args, multithread = $task.cpus, verbose=TRUE)
     taxa <- cbind(sequence = rownames(taxa), taxa)
     write.table(taxa, file = "ASV_tax.tsv", sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
 

@@ -173,6 +173,7 @@ def cutadapt_2nd_options        = [:]
 cutadapt_2nd_options.args       = cutadapt_options_args
 cutadapt_2nd_options.args      += " --discard-trimmed"
 cutadapt_2nd_options.suffix     = "_double-primer"
+cutadapt_2nd_options.publish_files = ['log':'']
 
 //include { MULTIQC } from './modules/nf-core/software/multiqc/main' addParams( options: multiqc_options    )
 include { FASTQC } from './modules/nf-core/software/fastqc/main' addParams( options: fastqc_options    )

@@ -33,20 +33,14 @@ if (params.onlyDenoising) {
  */
 if (params.metadata) {
 	ch_metadata = Channel.fromPath("${params.metadata}", checkIfExists: true)
-		//.into { ch_metadata_for_barplot; ch_metadata_for_alphararefaction; ch_metadata_for_diversity_core; ch_metadata_for_alpha_diversity; ch_metadata_for_metadata_category_all; ch_metadata_for_metadata_category_pairwise; ch_metadata_for_beta_diversity; ch_metadata_for_beta_diversity_ordination; ch_metadata_for_ancom; ch_metadata_for_ancom_tax; ch_metadata_for_ancom_asv }
-} else {
-	Channel.from()
-		.into { ch_metadata_for_barplot; ch_metadata_for_alphararefaction; ch_metadata_for_diversity_core; ch_metadata_for_alpha_diversity; ch_metadata_for_metadata_category_all; ch_metadata_for_metadata_category_pairwise; ch_metadata_for_beta_diversity; ch_metadata_for_beta_diversity_ordination; ch_metadata_for_ancom; ch_metadata_for_ancom_tax; ch_metadata_for_ancom_asv }
-}
+} else { ch_metadata = Channel.empty() }
 
 if (params.classifier) {
-	Channel.fromPath("${params.classifier}", checkIfExists: true)
-		   .set { ch_qiime_classifier }
-}
+	ch_qiime_classifier = Channel.fromPath("${params.classifier}", checkIfExists: true)
+} else { ch_qiime_classifier = Channel.empty() }
 
 if (params.dada_ref_taxonomy && !params.onlyDenoising) {
-	Channel.fromPath("${params.dada_ref_taxonomy}", checkIfExists: true)
-		   .set { ch_dada_ref_taxonomy }
+	ch_dada_ref_taxonomy = Channel.fromPath("${params.dada_ref_taxonomy}", checkIfExists: true)
 } else { ch_dada_ref_taxonomy = Channel.empty() }
 
 /*

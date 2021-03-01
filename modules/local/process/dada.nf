@@ -24,16 +24,21 @@ process DADA_QUALITY {
     output:
     path "${meta}_qual_stats.pdf"
     tuple val(meta), path("*_qual_stats.tsv")       , emit: tsv
+    path "*.args.txt", emit: args
 
     script:
     """
     dada_quality.r "${meta}_qual_stats" $options.args
+    echo "plotQualityProfile\t$options.args" > "plotQualityProfile.args.txt"
     """
 }
 
 process DADA_FILTER_AND_TRIM {
     tag "$meta.id"
     label 'process_medium'
+    publishDir "${params.outdir}",
+        mode: params.publish_dir_mode,
+        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
     conda (params.enable_conda ? "bioconductor-dada2=1.18.0--r40h5f743cb_0" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
@@ -49,6 +54,7 @@ process DADA_FILTER_AND_TRIM {
     tuple val(meta), path("${meta.id}.filter_stats.tsv"), emit: log
     tuple val(meta), path("*.filt.fastq.gz"), emit: reads
     path "*.version.txt"       , emit: version
+    path "*.args.txt", emit: args
 
     script:
     def software      = getSoftwareName(task.process)
@@ -67,7 +73,9 @@ process DADA_FILTER_AND_TRIM {
         multithread = TRUE, 
         verbose = TRUE)
     out <- cbind(out, ID = row.names(out))
+
     write.table( out, file = "${meta.id}.filter_stats.tsv", sep = "\t", row.names = FALSE, quote = FALSE)
+    write.table(paste("filterAndTrim\t$trunc_args","$options.args",sep=","), file = "filterAndTrim.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
     write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
     """
 }
@@ -93,6 +101,7 @@ process DADA_ERROR_MODEL {
     tuple val(meta), path("*.err.rds"), emit: errormodel
     path("*.err.pdf"), emit: pdf
     path "*.version.txt"       , emit: version
+    path "*.args.txt", emit: args
 
     script:
     def software      = getSoftwareName(task.process)
@@ -117,6 +126,7 @@ process DADA_ERROR_MODEL {
         plotErrors(errR, nominalQ = TRUE)
         dev.off()        
 
+        write.table("learnErrors\t$options.args", file = "learnErrors.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
         write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
         """
     } else {
@@ -133,6 +143,7 @@ process DADA_ERROR_MODEL {
         plotErrors(errF, nominalQ = TRUE)
         dev.off()
 
+        write.table("learnErrors\t$options.args", file = "learnErrors.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
         write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
         """        
     }
@@ -191,6 +202,9 @@ process DADA_DEREPLICATE {
 process DADA_DENOISING {
     tag "$meta.run"
     label 'process_medium'
+    publishDir "${params.outdir}",
+        mode: params.publish_dir_mode,
+        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
     conda (params.enable_conda ? "bioconductor-dada2=1.18.0--r40h5f743cb_0" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
@@ -207,6 +221,7 @@ process DADA_DENOISING {
     tuple val(meta), path("*.seqtab.rds"), emit: seqtab
     tuple val(meta), path("*.mergers.rds"), emit: mergers
     path "*.version.txt"       , emit: version
+    path "*.args.txt", emit: args
 
     script:
     def software      = getSoftwareName(task.process)
@@ -233,6 +248,7 @@ process DADA_DENOISING {
         seqtab <- makeSequenceTable(mergers)
         saveRDS(seqtab, "${meta.run}.seqtab.rds")
 
+        write.table("dada\t$options.args", file = "dada.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
         write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
         """
     } else {
@@ -255,6 +271,7 @@ process DADA_DENOISING {
         #dummy file to fulfill output rules
         saveRDS("dummy", "dummy_${meta.run}.mergers.rds")
 
+        write.table("dada\t$options.args", file = "dada.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
         write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
         """        
     }
@@ -263,6 +280,9 @@ process DADA_DENOISING {
 process DADA_CHIMERA_REMOVAL {
     tag "$meta.run"
     label 'process_medium'
+    publishDir "${params.outdir}",
+        mode: params.publish_dir_mode,
+        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
     conda (params.enable_conda ? "bioconductor-dada2=1.18.0--r40h5f743cb_0" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
@@ -277,6 +297,7 @@ process DADA_CHIMERA_REMOVAL {
     output:
     tuple val(meta), path("*.ASVtable.rds"), emit: rds
     path "*.version.txt"       , emit: version
+    path "*.args.txt", emit: args
 
     script:
     def software      = getSoftwareName(task.process)
@@ -293,6 +314,7 @@ process DADA_CHIMERA_REMOVAL {
     if ( ${no_samples} == 1 ) { rownames(seqtab.nochim) <- "${first_sample}" }
     saveRDS(seqtab.nochim,"${meta.run}.ASVtable.rds")
 
+    write.table('removeBimeraDenovo\t$options.args', file = "removeBimeraDenovo.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
     write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
     """
 }
@@ -471,6 +493,7 @@ process DADA_ASSIGN_TAXONOMY {
     output:
     path( "ASV_tax.tsv" )
     path "*.version.txt"       , emit: version
+    path "*.args.txt", emit: args
 
     script:
     def software      = getSoftwareName(task.process)
@@ -484,6 +507,7 @@ process DADA_ASSIGN_TAXONOMY {
     taxa <- cbind(sequence = rownames(taxa), taxa)
     write.table(taxa, file = "ASV_tax.tsv", sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
 
+    write.table("assignTaxonomy\t$options.args", file = "assignTaxonomy.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
     write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
     """
 }

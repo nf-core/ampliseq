@@ -26,7 +26,7 @@ for (cycle in cycles) {
     subdata <- data[data[, "Cycle"] == cycle, ]
     score <- list()
     #convert to list to calculate median
-    for (j in nrow(subdata)) {score <- unlist(c(score, rep(subdata$Score[j], subdata$Count[j])))}
+    for (j in 1:nrow(subdata)) {score <- unlist(c(score, rep(subdata$Score[j], subdata$Count[j])))}
     temp = data.frame(Cycle=cycle, Count=sum(subdata$Count), Median=median(score), stringsAsFactors=FALSE)
     df <- rbind(df, temp) 
 }

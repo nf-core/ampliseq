@@ -94,57 +94,51 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 // Don't overwrite global params.modules, create a copy instead and use that within the main script.
 def modules = params.modules.clone()
 
-def dada_filter_and_trim_options = modules['dada_filter_and_trim']
-dada_filter_and_trim_options.args       += single_end ? ", maxEE = $params.maxEE" : ", maxEE = c($params.maxEE, $params.maxEE)"
+def dada2_filtntrim_options = modules['dada2_filtntrim']
+dada2_filtntrim_options.args       += single_end ? ", maxEE = $params.maxEE" : ", maxEE = c($params.maxEE, $params.maxEE)"
 if (params.pacbio) {
 	//PacBio data
-	dada_filter_and_trim_options.args   +=", truncQ = 2, minLen = $params.minLen, maxLen = $params.maxLen, rm.phix = FALSE"
+	dada2_filtntrim_options.args   +=", minLen = $params.minLen, maxLen = $params.maxLen, rm.phix = FALSE"
 } else if (params.illumina_its) {
 	//Illumina ITS data or other sequences with high length variability
-	dada_filter_and_trim_options.args   += ", truncQ = 2, minLen = $params.minLen, rm.phix = TRUE"
+	dada2_filtntrim_options.args   += ", minLen = $params.minLen, maxLen = $params.maxLen, rm.phix = TRUE"
 } else {
 	//Illumina 16S data
-	dada_filter_and_trim_options.args   += ", truncQ = 2, rm.phix = TRUE"
+	dada2_filtntrim_options.args   += ", minLen = $params.minLen, maxLen = $params.maxLen, rm.phix = TRUE"
 }
 
-def dada_quality_options = modules['dada_quality'] 
+def dada2_quality_options = modules['dada2_quality'] 
 
-def find_trunclen_values_options = [:]
-find_trunclen_values_options.args       ="$params.trunc_qmin $params.trunc_rmin"
+def trunclen_options = [:]
+trunclen_options.args       ="$params.trunc_qmin $params.trunc_rmin"
 
 //TODO: adjust for single_end & PacBio
-def dada_error_model_options = modules['dada_error_model']
-dada_error_model_options.args       += ", nbases = 1e8" //default is 1e8
-if (params.pacbio) {
-	//PacBio data
-	dada_error_model_options.args   +=", errorEstimationFunction = PacBioErrfun"
-} else {
-	//Illumina data
-	dada_error_model_options.args   +=", errorEstimationFunction = loessErrfun"
-}
+def dada2_err_options = modules['dada2_err']
+dada2_err_options.args   += params.pacbio ? ", errorEstimationFunction = PacBioErrfun" : ", errorEstimationFunction = loessErrfun"
 
-def dada_denoising_options = modules['dada_denoising']
-dada_denoising_options.args         += params.sample_inference == "pseudo" ? ", pool = \"pseudo\"" : params.sample_inference == "pooled" ? ", pool = TRUE" : ", pool = FALSE"
+def dada2_denoising_options = modules['dada2_denoising']
+dada2_denoising_options.args         += params.sample_inference == "pseudo" ? ", pool = \"pseudo\"" : params.sample_inference == "pooled" ? ", pool = TRUE" : ", pool = FALSE"
 
-def dada_chimera_removal_options = modules['dada_chimera_removal']
+def dada2_rmchimera_options = modules['dada2_rmchimera']
 
 def multiqc_options         = modules['multiqc']
 multiqc_options.args       += params.multiqc_title ? " --title \"$params.multiqc_title\"" : ''
 
-def dada_assign_taxonomy_options  = modules['dada_assign_taxonomy']
-dada_assign_taxonomy_options.args += ", tryRC = TRUE"
+def dada2_taxonomy_options  = modules['dada2_taxonomy']
+dada2_taxonomy_options.args += params.pacbio ? ", tryRC = TRUE" : ""
 
 include { RENAME_RAW_DATA_FILES              } from './modules/local/process/rename_raw_data_files'
-include { DADA_FILTER_AND_TRIM               } from './modules/local/process/dada'                        addParams( options: dada_filter_and_trim_options            )
-include { DADA_QUALITY                       } from './modules/local/process/dada'                        addParams( options: dada_quality_options                    )
-include { FIND_TRUNCLEN_VALUES               } from './modules/local/process/find_trunclen_values'        addParams( options: find_trunclen_values_options            )
-include { DADA_ERROR_MODEL                   } from './modules/local/process/dada'                        addParams( options: dada_error_model_options                )
-include { DADA_DEREPLICATE                   } from './modules/local/process/dada'
-include { DADA_DENOISING                     } from './modules/local/process/dada'                        addParams( options: dada_denoising_options                  )
-include { DADA_CHIMERA_REMOVAL               } from './modules/local/process/dada'                        addParams( options: dada_chimera_removal_options            )
-include { DADA_STATS                         } from './modules/local/process/dada'
-include { DADA_MERGE_AND_PUBLISH             } from './modules/local/process/dada'
-include { DADA_ASSIGN_TAXONOMY               } from './modules/local/process/dada'                        addParams( options: dada_assign_taxonomy_options            )
+include { DADA2_FILTNTRIM               } from './modules/local/process/dada2'                        addParams( options: dada2_filtntrim_options            )
+include { DADA2_QUALITY                       } from './modules/local/process/dada2'                        addParams( options: dada2_quality_options                    )
+include { TRUNCLEN               } from './modules/local/process/trunclen'        addParams( options: trunclen_options            )
+include { DADA2_ERR                   } from './modules/local/process/dada2'                        addParams( options: dada2_err_options                )
+include { DADA2_DEREPLICATE                   } from './modules/local/process/dada2'                        addParams( options: modules['dada2_dereplicate']             )
+include { DADA2_DENOISING                     } from './modules/local/process/dada2'                        addParams( options: dada2_denoising_options                  )
+include { DADA2_RMCHIMERA               } from './modules/local/process/dada2'                        addParams( options: dada2_rmchimera_options            )
+include { DADA2_STATS                         } from './modules/local/process/dada2'                        addParams( options: modules['dada2_stats']                   )
+include { DADA2_MERGE             } from './modules/local/process/dada2'                        addParams( options: modules['dada2_merge']       )
+include { DADA2_TAXONOMY               } from './modules/local/process/dada2'                        addParams( options: dada2_taxonomy_options            )
+include { QIIME2_INTAX             } from './modules/local/process/qiime2' 
 include { MULTIQC                            } from './modules/local/process/multiqc'                     addParams( options: multiqc_options                                             )
 include { GET_SOFTWARE_VERSIONS              } from './modules/local/process/get_software_versions'       addParams( options: [publish_files : ['csv':'']]                                )
 
@@ -361,12 +355,12 @@ workflow AMPLISEQ {
 			.mix ( ch_all_trimmed_rv )
 			.set { ch_all_trimmed_reads }
 	}
-	DADA_QUALITY ( ch_all_trimmed_reads )
+	DADA2_QUALITY ( ch_all_trimmed_reads )
 	
 	//find truncation values in case they are not supplied
 	if (!single_end && !params.illumina_its && (params.trunclenf == false || params.trunclenr == false) ) {
-		FIND_TRUNCLEN_VALUES ( DADA_QUALITY.out.tsv )
-		FIND_TRUNCLEN_VALUES.out
+		TRUNCLEN ( DADA2_QUALITY.out.tsv )
+		TRUNCLEN.out
 			.toSortedList()
 			.set { ch_trunc }
 	} else { 
@@ -377,11 +371,11 @@ workflow AMPLISEQ {
 	ch_trimmed_reads.combine(ch_trunc).set { ch_trimmed_reads }
 
 	//filter reads
-	DADA_FILTER_AND_TRIM ( ch_trimmed_reads )
-	ch_software_versions = ch_software_versions.mix(DADA_FILTER_AND_TRIM.out.version.first().ifEmpty(null))
+	DADA2_FILTNTRIM ( ch_trimmed_reads )
+	ch_software_versions = ch_software_versions.mix(DADA2_FILTNTRIM.out.version.first().ifEmpty(null))
 
 	//group by sequencing run
-	DADA_FILTER_AND_TRIM.out.reads
+	DADA2_FILTNTRIM.out.reads
 		.map {
 			info, reads ->
 				def meta = [:]
@@ -398,20 +392,21 @@ workflow AMPLISEQ {
 				[ meta, reads.flatten() ] }
 		.set { ch_filt_reads }
 
-	DADA_ERROR_MODEL ( ch_filt_reads )
+	// TODO: the following two processes are (often?!) re-started when using -resume, channel magic before might cause this?
+	DADA2_ERR ( ch_filt_reads )
 
-	DADA_DEREPLICATE ( ch_filt_reads )
+	DADA2_DEREPLICATE ( ch_filt_reads )
 
 	//group by meta
-	DADA_DEREPLICATE.out.dereplicated
-		.join( DADA_ERROR_MODEL.out.errormodel )
+	DADA2_DEREPLICATE.out.dereplicated
+		.join( DADA2_ERR.out.errormodel )
 		.set { ch_derep_errormodel }
-	DADA_DENOISING ( ch_derep_errormodel  )
+	DADA2_DENOISING ( ch_derep_errormodel  )
 
-	DADA_CHIMERA_REMOVAL ( DADA_DENOISING.out.seqtab )
+	DADA2_RMCHIMERA ( DADA2_DENOISING.out.seqtab )
 
 	//group by sequencing run & group by meta
-	DADA_FILTER_AND_TRIM.out.log
+	DADA2_FILTNTRIM.out.log
 		.map {
 			info, reads ->
 				def meta = [:]
@@ -426,20 +421,24 @@ workflow AMPLISEQ {
 				meta.single_end = info.single_end
 				meta.id = ids.flatten()
 				[ meta, reads.flatten() ] }
-		.join( DADA_DENOISING.out.denoised )
-		.join( DADA_DENOISING.out.mergers )
-		.join( DADA_CHIMERA_REMOVAL.out.rds )
+		.join( DADA2_DENOISING.out.denoised )
+		.join( DADA2_DENOISING.out.mergers )
+		.join( DADA2_RMCHIMERA.out.rds )
 		.set { ch_track_numbers }
-	DADA_STATS ( ch_track_numbers )
+	DADA2_STATS ( ch_track_numbers )
 
 	//merge if several runs, otherwise just publish
-	DADA_MERGE_AND_PUBLISH ( 
-		DADA_STATS.out.stats.map { meta, stats -> stats }.collect(), 
-		DADA_CHIMERA_REMOVAL.out.rds.map { meta, rds -> rds }.collect() )
+	DADA2_MERGE ( 
+		DADA2_STATS.out.stats.map { meta, stats -> stats }.collect(), 
+		DADA2_RMCHIMERA.out.rds.map { meta, rds -> rds }.collect() )
 
 	//taxonomic classification with dada2
-	DADA_ASSIGN_TAXONOMY ( DADA_MERGE_AND_PUBLISH.out.rds, ch_dada_ref_taxonomy )
+	DADA2_TAXONOMY ( DADA2_MERGE.out.rds, ch_dada_ref_taxonomy )
 
+    /*
+     * SUBWORKFLOW / MODULES : Downstream analysis with QIIME2
+     */
+	//QIIME2_INTAX ( DADA2_TAXONOMY.out.tsv )
 
     /*
      * MODULE: Pipeline reporting

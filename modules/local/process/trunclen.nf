@@ -4,7 +4,7 @@ include { initOptions; saveFiles; getSoftwareName } from './functions'
 params.options = [:]
 def options    = initOptions(params.options)
 
-process FIND_TRUNCLEN_VALUES {
+process TRUNCLEN {
     //tag "$meta"
     label 'process_low'
 
@@ -23,6 +23,6 @@ process FIND_TRUNCLEN_VALUES {
 
     script:
     """
-    find_trunclen_values.py $qual_stats $options.args
+    trunclen.py $qual_stats $options.args
     """
 }

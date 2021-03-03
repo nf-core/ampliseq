@@ -4,14 +4,14 @@ include { initOptions; saveFiles; getSoftwareName } from './functions'
 params.options = [:]
 def options    = initOptions(params.options)
 
-process DADA_QUALITY {
+process DADA2_QUALITY {
     tag "$meta"
     label 'process_low'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
-    conda (params.enable_conda ? "bioconductor-dada2=1.18.0--r40h5f743cb_0" : null)
+    conda (params.enable_conda ? "bioconductor-dada2=1.18.0" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
         container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.18.0--r40h5f743cb_0"
     } else {
@@ -22,25 +22,25 @@ process DADA_QUALITY {
     tuple val(meta), path(reads)
     
     output:
-    path "${meta}_qual_stats.pdf"
+    path "${meta}_qual_stats.pdf", emit: pdf
     tuple val(meta), path("*_qual_stats.tsv")       , emit: tsv
     path "*.args.txt", emit: args
 
     script:
     """
     dada_quality.r "${meta}_qual_stats" $options.args
-    echo "plotQualityProfile\t$options.args" > "plotQualityProfile.args.txt"
+    echo 'plotQualityProfile\t$options.args' > "plotQualityProfile.args.txt"
     """
 }
 
-process DADA_FILTER_AND_TRIM {
+process DADA2_FILTNTRIM {
     tag "$meta.id"
     label 'process_medium'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
-    conda (params.enable_conda ? "bioconductor-dada2=1.18.0--r40h5f743cb_0" : null)
+    conda (params.enable_conda ? "bioconductor-dada2=1.18.0" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
         container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.18.0--r40h5f743cb_0"
     } else {
@@ -75,19 +75,19 @@ process DADA_FILTER_AND_TRIM {
     out <- cbind(out, ID = row.names(out))
 
     write.table( out, file = "${meta.id}.filter_stats.tsv", sep = "\t", row.names = FALSE, quote = FALSE)
-    write.table(paste("filterAndTrim\t$trunc_args","$options.args",sep=","), file = "filterAndTrim.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
+    write.table(paste('filterAndTrim\t$trunc_args','$options.args',sep=","), file = "filterAndTrim.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
     write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
     """
 }
 
-process DADA_ERROR_MODEL {
+process DADA2_ERR {
     tag "$meta.run"
     label 'process_medium'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
-    conda (params.enable_conda ? "bioconductor-dada2=1.18.0--r40h5f743cb_0" : null)
+    conda (params.enable_conda ? "bioconductor-dada2=1.18.0" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
         container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.18.0--r40h5f743cb_0"
     } else {
@@ -126,7 +126,7 @@ process DADA_ERROR_MODEL {
         plotErrors(errR, nominalQ = TRUE)
         dev.off()        
 
-        write.table("learnErrors\t$options.args", file = "learnErrors.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
+        write.table('learnErrors\t$options.args', file = "learnErrors.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
         write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
         """
     } else {
@@ -143,17 +143,17 @@ process DADA_ERROR_MODEL {
         plotErrors(errF, nominalQ = TRUE)
         dev.off()
 
-        write.table("learnErrors\t$options.args", file = "learnErrors.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
+        write.table('learnErrors\t$options.args', file = "learnErrors.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
         write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
         """        
     }
 }
 
-process DADA_DEREPLICATE {
+process DADA2_DEREPLICATE {
     tag "$meta.run"
     label 'process_medium'
 
-    conda (params.enable_conda ? "bioconductor-dada2=1.18.0--r40h5f743cb_0" : null)
+    conda (params.enable_conda ? "bioconductor-dada2=1.18.0" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
         container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.18.0--r40h5f743cb_0"
     } else {
@@ -199,14 +199,14 @@ process DADA_DEREPLICATE {
     }
 }
 
-process DADA_DENOISING {
+process DADA2_DENOISING {
     tag "$meta.run"
     label 'process_medium'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
-    conda (params.enable_conda ? "bioconductor-dada2=1.18.0--r40h5f743cb_0" : null)
+    conda (params.enable_conda ? "bioconductor-dada2=1.18.0" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
         container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.18.0--r40h5f743cb_0"
     } else {
@@ -248,7 +248,7 @@ process DADA_DENOISING {
         seqtab <- makeSequenceTable(mergers)
         saveRDS(seqtab, "${meta.run}.seqtab.rds")
 
-        write.table("dada\t$options.args", file = "dada.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
+        write.table('dada\t$options.args', file = "dada.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
         write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
         """
     } else {
@@ -271,20 +271,20 @@ process DADA_DENOISING {
         #dummy file to fulfill output rules
         saveRDS("dummy", "dummy_${meta.run}.mergers.rds")
 
-        write.table("dada\t$options.args", file = "dada.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
+        write.table('dada\t$options.args', file = "dada.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
         write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
         """        
     }
 }
 
-process DADA_CHIMERA_REMOVAL {
+process DADA2_RMCHIMERA {
     tag "$meta.run"
     label 'process_medium'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
-    conda (params.enable_conda ? "bioconductor-dada2=1.18.0--r40h5f743cb_0" : null)
+    conda (params.enable_conda ? "bioconductor-dada2=1.18.0" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
         container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.18.0--r40h5f743cb_0"
     } else {
@@ -319,11 +319,14 @@ process DADA_CHIMERA_REMOVAL {
     """
 }
 
-process DADA_STATS {
+process DADA2_STATS {
     tag "$meta.run"
     label 'process_low'
+    publishDir "${params.outdir}",
+        mode: params.publish_dir_mode,
+        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
-    conda (params.enable_conda ? "bioconductor-dada2=1.18.0--r40h5f743cb_0" : null)
+    conda (params.enable_conda ? "bioconductor-dada2=1.18.0" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
         container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.18.0--r40h5f743cb_0"
     } else {
@@ -414,13 +417,13 @@ process DADA_STATS {
     }
 }
 
-process DADA_MERGE_AND_PUBLISH {
+process DADA2_MERGE {
     label 'process_low'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
-    conda (params.enable_conda ? "bioconductor-dada2=1.18.0--r40h5f743cb_0" : null)
+    conda (params.enable_conda ? "bioconductor-dada2=1.18.0" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
         container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.18.0--r40h5f743cb_0"
     } else {
@@ -432,7 +435,7 @@ process DADA_MERGE_AND_PUBLISH {
     path(rds)
     
     output:
-    path( "DADA2_stats.tsv" )
+    path( "DADA2_stats.tsv" ), emit: statstable
     path( "ASV_table.tsv" ), emit: asvtable
     path( "ASV_table.rds" ), emit: rds
     path "*.version.txt"       , emit: version
@@ -473,13 +476,13 @@ process DADA_MERGE_AND_PUBLISH {
     """
 }
 
-process DADA_ASSIGN_TAXONOMY {
+process DADA2_TAXONOMY {
     label 'process_high'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
-    conda (params.enable_conda ? "bioconductor-dada2=1.18.0--r40h5f743cb_0" : null)
+    conda (params.enable_conda ? "bioconductor-dada2=1.18.0" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
         container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.18.0--r40h5f743cb_0"
     } else {
@@ -491,7 +494,7 @@ process DADA_ASSIGN_TAXONOMY {
     path(database)
     
     output:
-    path( "ASV_tax.tsv" )
+    path( "ASV_tax.tsv" ), emit: tsv
     path "*.version.txt"       , emit: version
     path "*.args.txt", emit: args
 
@@ -507,7 +510,7 @@ process DADA_ASSIGN_TAXONOMY {
     taxa <- cbind(sequence = rownames(taxa), taxa)
     write.table(taxa, file = "ASV_tax.tsv", sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
 
-    write.table("assignTaxonomy\t$options.args", file = "assignTaxonomy.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
+    write.table('assignTaxonomy\t$options.args', file = "assignTaxonomy.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
     write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
     """
 }

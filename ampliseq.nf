@@ -127,20 +127,21 @@ multiqc_options.args       += params.multiqc_title ? " --title \"$params.multiqc
 def dada2_taxonomy_options  = modules['dada2_taxonomy']
 dada2_taxonomy_options.args += params.pacbio ? ", tryRC = TRUE" : ""
 
-include { RENAME_RAW_DATA_FILES              } from './modules/local/process/rename_raw_data_files'
-include { DADA2_FILTNTRIM               } from './modules/local/process/dada2'                        addParams( options: dada2_filtntrim_options            )
-include { DADA2_QUALITY                       } from './modules/local/process/dada2'                        addParams( options: dada2_quality_options                    )
-include { TRUNCLEN               } from './modules/local/process/trunclen'        addParams( options: trunclen_options            )
-include { DADA2_ERR                   } from './modules/local/process/dada2'                        addParams( options: dada2_err_options                )
-include { DADA2_DEREPLICATE                   } from './modules/local/process/dada2'                        addParams( options: modules['dada2_dereplicate']             )
-include { DADA2_DENOISING                     } from './modules/local/process/dada2'                        addParams( options: dada2_denoising_options                  )
-include { DADA2_RMCHIMERA               } from './modules/local/process/dada2'                        addParams( options: dada2_rmchimera_options            )
-include { DADA2_STATS                         } from './modules/local/process/dada2'                        addParams( options: modules['dada2_stats']                   )
-include { DADA2_MERGE             } from './modules/local/process/dada2'                        addParams( options: modules['dada2_merge']       )
-include { DADA2_TAXONOMY               } from './modules/local/process/dada2'                        addParams( options: dada2_taxonomy_options            )
-include { QIIME2_INTAX             } from './modules/local/process/qiime2' 
-include { MULTIQC                            } from './modules/local/process/multiqc'                     addParams( options: multiqc_options                                             )
-include { GET_SOFTWARE_VERSIONS              } from './modules/local/process/get_software_versions'       addParams( options: [publish_files : ['csv':'']]                                )
+include { PARSE_INPUT                   } from './modules/local/subworkflow/parse_input'              addParams( options: [:]                             )
+include { RENAME_RAW_DATA_FILES         } from './modules/local/process/rename_raw_data_files'
+include { DADA2_FILTNTRIM               } from './modules/local/process/dada2'                        addParams( options: dada2_filtntrim_options         )
+include { DADA2_QUALITY                 } from './modules/local/process/dada2'                        addParams( options: dada2_quality_options           )
+include { TRUNCLEN                      } from './modules/local/process/trunclen'                     addParams( options: trunclen_options                )
+include { DADA2_ERR                     } from './modules/local/process/dada2'                        addParams( options: dada2_err_options               )
+include { DADA2_DEREPLICATE             } from './modules/local/process/dada2'                        addParams( options: modules['dada2_dereplicate']    )
+include { DADA2_DENOISING               } from './modules/local/process/dada2'                        addParams( options: dada2_denoising_options         )
+include { DADA2_RMCHIMERA               } from './modules/local/process/dada2'                        addParams( options: dada2_rmchimera_options         )
+include { DADA2_STATS                   } from './modules/local/process/dada2'                        addParams( options: modules['dada2_stats']          )
+include { DADA2_MERGE                   } from './modules/local/process/dada2'                        addParams( options: modules['dada2_merge']          )
+include { DADA2_TAXONOMY                } from './modules/local/process/dada2'                        addParams( options: dada2_taxonomy_options          )
+include { QIIME2_INTAX                  } from './modules/local/process/qiime2' 
+include { MULTIQC                       } from './modules/local/process/multiqc'                      addParams( options: multiqc_options                 )
+include { GET_SOFTWARE_VERSIONS         } from './modules/local/process/get_software_versions'        addParams( options: [publish_files : ['csv':'']]    )
 
 /*
  * SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
@@ -185,130 +186,16 @@ include { CUTADAPT as CUTADAPT_2ND } from './modules/nf-core/software/cutadapt/m
 // Info required for completion email and summary
 def multiqc_report      = []
 
-// Function to get list of [ meta, [ fastq_1, fastq_2 ] ]
-def parse_samplesheet(LinkedHashMap row) {
-	//Check if manifest contains column sampleID  & forwardReads
-	if (row.sampleID == null || row.forwardReads == null) { 
-		exit 1, "ERROR: Please check input samplesheet -> Column 'sampleID' and 'forwardReads' are required but not detected."
-	}
-	//Check if manifest contains a column for reverse reads
-	if (row.reverseReads == null && !single_end) { 
-		exit 1, "ERROR: Please check input samplesheet -> Column 'reverseReads' is missing. In case you do have only single ended reads, please specify '--single_end' or '--pacbio'."
-	}
-	//read meta info
-    def meta = [:]
-    meta.id           = row.sampleID
-    meta.single_end   = single_end.toBoolean()
-	meta.run          = row.run == null ? "1" : row.run
-	//read data info
-    def array = []
-    if (!file(row.forwardReads).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> Forward read FastQ file does not exist!\n${row.forwardReads}"
-    }
-    if (meta.single_end) {
-        array = [ meta, [ file(row.forwardReads) ] ]
-    } else {
-		if (!file(row.reverseReads).exists()) {
-            exit 1, "ERROR: Please check input samplesheet -> Reverse read FastQ file does not exist!\n${row.reverseReads}"
-        }
-        array = [ meta, [ file(row.forwardReads), file(row.reverseReads) ] ]
-    }
-    return array
-}
-
 workflow AMPLISEQ {
 
 	/*
 	* Create a channel for input read files
 	*/
-	if ( params.input.toString().toLowerCase().endsWith("tsv") ) {
-		// Sample sheet input
-
-		tsvFile = file(params.input).getName()
-		// extracts read files from TSV and distribute into channels
-		Channel
-			.fromPath(params.input)
-			.ifEmpty {exit 1, log.info "Cannot find path file ${tsvFile}"}
-			.splitCsv(header:true, sep:'\t')
-			.map { parse_samplesheet(it) }
-			.set { ch_reads }
-	} else {
-		// Folder input
-
-		//Check folders in folder when multipleSequencingRuns
-		folders = params.multipleSequencingRuns ? "/*" : ""
-		if ( single_end ) {
-			//Get files - single end
-			Channel
-				.fromPath( params.input + folders + params.extension )
-				.ifEmpty { exit 1, "Cannot find any reads matching: \"${params.input}${params.extension}\"\nPlease revise the input folder (\"--input\"): \"${params.input}\"\nand the input file pattern (\"--extension\"): \"${params.extension}\"\nIf you have multiple sequencing runs, please add \"--multipleSequencingRuns\".\nNB: Path needs to be enclosed in quotes!" }
-				.map { read ->
-						def meta = [:]
-						meta.id           = read.baseName.toString().indexOf("_") != -1 ? read.baseName.toString().take(read.baseName.toString().indexOf("_")) : read.baseName
-						meta.single_end   = single_end.toBoolean()
-						meta.run          = params.multipleSequencingRuns ? read.take(read.findLastIndexOf{"/"})[-1] : "1"
-						[ meta, read ] }
-				.set { ch_reads }
-		} else {
-			//Get files - paired end
-			Channel
-				.fromFilePairs( params.input + folders + params.extension, size: 2 )
-				.ifEmpty { exit 1, "Cannot find any reads matching: \"${params.input}${params.extension}\"\nPlease revise the input folder (\"--input\"): \"${params.input}\"\nand the input file pattern (\"--extension\"): \"${params.extension}\"\nIf you have multiple sequencing runs, please add \"--multipleSequencingRuns\".\nNB: Path needs to be enclosed in quotes!" }
-				.map { name, reads ->
-						def meta = [:]
-						meta.id           = name.toString().indexOf("_") != -1 ? name.toString().take(name.toString().indexOf("_")) : name
-						meta.single_end   = single_end.toBoolean()
-						meta.run          = params.multipleSequencingRuns ? reads[0].take(reads[0].findLastIndexOf{"/"})[-1] : "1"
-						[ meta, reads ] }
-				.set { ch_reads }
-		}
-		if (params.multipleSequencingRuns) {
-			//Get folder information
-			ch_reads
-				.flatMap { meta, reads -> [ meta.run ] }
-				.unique()
-				.set { ch_folders }
-			//Report folders with sequencing files
-			ch_folders
-				.collect()
-				.subscribe {
-					String folders = it.toString().replace("[", "").replace("]","") 
-					log.info "\nFound the folder(s) \"$folders\" containing sequencing read files matching \"${params.extension}\" in \"${params.input}\".\n" }
-			//Stop if folder count is 1 and params.multipleSequencingRuns
-			ch_folders
-				.count()
-				.subscribe { if ( it == 1 ) exit 1, "Found only one folder with read data but \"--multipleSequencingRuns\" was specified. Please review data input." }
-			//Stop if folder names contain "_" or "${params.split}"
-			//TODO: this might be not neccessary if params.split is removed
-			ch_folders
-				.subscribe { 
-					if ( it.toString().indexOf("${params.split}") > -1 ) exit 1, "Folder name \"$it\" contains \"${params.split}\", but may not. Please review data input or choose another string using \"--split [str]\" (no underscore allowed!)."
-					if ( it.toString().indexOf("_") > -1 ) exit 1, "Folder name \"$it\" contains \"_\", but may not. Please review data input." 
-				}
-		}
-	}
+	PARSE_INPUT ( params.input, single_end, params.multipleSequencingRuns, params.extension ).set { ch_reads }
 
     /*
      * MODULE: Rename files
      */
-	//Check whether all sampleID = meta.id are unique
-	//TODO: if not all sampleID unique, rename files with meta.run? //if ( params.multipleSequencingRuns ) { "meta.id" = "$meta.run${params.split}$meta.id" }
-	//TODO: params.split might not be neccessary any more, decide when integrating QIIME2
-	ch_reads
-		.map { meta, reads -> [ meta.id ] }
-		.count()
-		.set { ch_ids }
-	ch_reads
-		.map { meta, reads -> [ meta.id ] }
-		.unique()
-		.count()
-		.mix( ch_ids )
-		.collect()
-		.subscribe { k = it[0]; n = it[1];
-			if ( k != n ) exit 1, "Please review data input, sampleIDs ($k) are not unique ($n).";
-			}
-
-	//rename files as in FASTQC to get same sample names everywhere!
 	RENAME_RAW_DATA_FILES ( ch_reads )
 
     /*

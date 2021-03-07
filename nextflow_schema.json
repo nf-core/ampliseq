@@ -42,7 +42,7 @@
                 "multipleSequencingRuns": {
                     "type": "boolean",
                     "description": "If samples were sequenced in multiple sequencing runs",
-                    "help_text": "Expects one subfolder per sequencing run in the folder specified by `--input` containing sequencing data of the specific run.\n\nTo prevent overlapping sample names from multiple sequencing runs, sample names obtained from the sequencing files will be renamed automatically by adding the folder name as prefix separated by a string specified by `--split`. Accordingly, the sample name column in the metadata file `--metadata` require values following `subfolder-samplename`.\n\nExample for input data organization:\n\n```bash\ndata\n  |-run1\n  |  |-sample1_1_L001_R{1,2}_001.fastq.gz\n  |  |-sample2_1_L001_R{1,2}_001.fastq.gz\n  |\n  |-run2\n     |-sample3_1_L001_R{1,2}_001.fastq.gz\n     |-sample4_1_L001_R{1,2}_001.fastq.gz\n```\n\nIn this example the first column in the metadata file requires the values `run1-sample1` ... `run2-sample4` (instead of `sample1`, ..., `sample4`).\n\nExample command to analyze this data in one pipeline run:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input \"data\" \\\n    --FW_primer GTGYCAGCMGCCGCGGTAA \\\n    --RV_primer GGACTACNVGGGTWTCTAAT \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multipleSequencingRuns\n```\n\n##### Visually choosing sequencing read truncation cutoffs\n\nWhile `--untilQ2import` with `--multipleSequencingRuns` is currently supported, `--Q2imported` is not. The pipeline can be first run with `--untilQ2import`, than `--trunclenf` and `--trunclenr` are visually chosen, and then the pipeline can be continued without `--untilQ2import` but with `--trunlenf`, `--trunlenr`, and `-resume`.\n\nFor example:\n\n(1) To produce quality plots and choose truncation values:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input \"data\" \\\n    --FW_primer GTGYCAGCMGCCGCGGTAA \\\n    --RV_primer GGACTACNVGGGTWTCTAAT \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multipleSequencingRuns \\\n    --untilQ2import\n```\n\n(2) To finish analysis:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input \"data\" \\\n    --FW_primer GTGYCAGCMGCCGCGGTAA \\\n    --RV_primer GGACTACNVGGGTWTCTAAT \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multipleSequencingRuns \\\n    --trunclenf 200 \\\n    --trunclenr 180 \\\n    -resume\n```",
+                    "help_text": "Expects one sub-folder per sequencing run in the folder specified by `--input` containing sequencing data of the specific run.\nSample IDs are taken from sequencing files, specifically the string before the first underscore will be the sample ID. Sample IDs across all sequencing runs (all sequencing files) have to be unique. If this is not the case, please use a sample sheet as input instead.\n\nExample for input data organization:\n\n```bash\ndata\n  |-run1\n  |  |-sample1_1_L001_R{1,2}_001.fastq.gz\n  |  |-sample2_1_L001_R{1,2}_001.fastq.gz\n  |\n  |-run2\n     |-sample3_1_L001_R{1,2}_001.fastq.gz\n     |-sample4_1_L001_R{1,2}_001.fastq.gz\n```\n\nExample command to analyze this data in one pipeline run:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input \"data\" \\\n    --FW_primer GTGYCAGCMGCCGCGGTAA \\\n    --RV_primer GGACTACNVGGGTWTCTAAT \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multipleSequencingRuns\n```",
                     "fa_icon": "fas fa-running"
                 },
                 "illumina_its": {
@@ -215,12 +215,6 @@
                 "phred64": {
                     "type": "boolean",
                     "description": "If the sequencing data has PHRED 64 encoded quality scores, otherwise PHRED 33 is assumed"
-                },
-                "split": {
-                    "type": "string",
-                    "default": "-",
-                    "description": "A string that will be used between the prepended run/folder name and the sample name. Only used with \"--multipleSequencingRuns\".",
-                    "help_text": "A string that will be used between the prepended run/folder name and the sample name. Only used with `--multipleSequencingRuns` (default: `\"-\"`).\n\nFor example using the string `link`:\n\n```bash\n--split \"link\"\n```\n\nPlease note:\n\n1. Run/folder names may not contain the string specified by `--split`\n2. No underscore(s) allowed\n3. Must be enclosed in quotes\n4. The metadata sheet has to be adjusted, instead of using `run-sample` in the first column, in this example `runlinksample` is required"
                 },
                 "extension": {
                     "type": "string",
@@ -512,6 +506,13 @@
                     "type": "string",
                     "description": "Path to imported reads (e.g. \"demux.qza\")",
                     "help_text": "Analysis starting with a QIIME2 artefact with trimmed reads, typically produced before with `--untilQ2import`. This is only supported for data from a single sequencing run.\n\nFor data from multiple sequencing runs with `--multipleSequencingRuns` the pipeline can be first run with `--untilQ2import` and next run without `--untilQ2import` but with `-resume`.",
+                    "hidden": true
+                },
+                "split": {
+                    "type": "string",
+                    "default": "-",
+                    "description": "A string that will be used between the prepended run/folder name and the sample name. Only used with \"--multipleSequencingRuns\".",
+                    "help_text": "A string that will be used between the prepended run/folder name and the sample name. Only used with `--multipleSequencingRuns` (default: `\"-\"`).\n\nFor example using the string `link`:\n\n```bash\n--split \"link\"\n```\n\nPlease note:\n\n1. Run/folder names may not contain the string specified by `--split`\n2. No underscore(s) allowed\n3. Must be enclosed in quotes\n4. The metadata sheet has to be adjusted, instead of using `run-sample` in the first column, in this example `runlinksample` is required",
                     "hidden": true
                 }
             }

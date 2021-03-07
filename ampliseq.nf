@@ -65,10 +65,6 @@ if (!params.FW_primer) { exit 1, "Option --FW_primer missing" }
 if (!params.RV_primer) { exit 1, "Option --RV_primer missing" }
 if (!params.input) { exit 1, "Option --input missing" }
 
-if ("${params.split}".indexOf("_") > -1 ) {
-	exit 1, "Underscore is not allowed in --split, please review your input."
-}
-
 //TRUE, FALSE, pseudo allowed, see https://benjjneb.github.io/dada2/pseudo.html#Pseudo-pooling
 if (!["pooled", "independent", "pseudo"].contains(params.sample_inference)) {
 	exit 1, "Please set --sample_inference to one of the following:\n\t-\"independent\" (lowest sensitivity and lowest resources),\n\t-\"pseudo\" (balance between required resources and sensitivity),\n\t-\"pooled\" (highest sensitivity and resources)."

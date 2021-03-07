@@ -435,9 +435,11 @@ process DADA2_MERGE {
     path(rds)
     
     output:
-    path( "DADA2_stats.tsv" ), emit: statstable
-    path( "ASV_table.tsv" ), emit: asvtable
-    path( "ASV_table.rds" ), emit: rds
+    path( "DADA2_stats.tsv" ), emit: dada2stats
+    path( "DADA2_table.tsv" ), emit: dada2asv
+    path( "ASV_table.tsv" ), emit: asv
+    path( "ASV_seqs.fasta" ), emit: fasta
+    path( "DADA2_table.rds" ), emit: rds
     path "*.version.txt"       , emit: version
 
     script:
@@ -464,13 +466,28 @@ process DADA2_MERGE {
     } else {
         ASVtab <- mergeSequenceTables(tables=files, repeats = "error", orderBy = "abundance", tryRC = FALSE)
     }
-    saveRDS(ASVtab, "ASV_table.rds")
+    saveRDS(ASVtab, "DADA2_table.rds")
 
     df <- t(ASVtab)
-    df <- cbind(sequence = rownames(df), df)
     colnames(df) <- gsub('_1.filt.fastq.gz', '', colnames(df))
     colnames(df) <- gsub('.filt.fastq.gz', '', colnames(df))
-    write.table( df, file = "ASV_table.tsv", sep = "\t", row.names = FALSE, quote = FALSE)
+    df <- data.frame(sequence = rownames(df), df)
+    row.names(df) <- paste0("ASV_", seq(nrow(df)))
+    df <- data.frame(ASV_ID=row.names(df), df)
+
+    # file to publish
+    write.table( df, file = "DADA2_table.tsv", sep = "\t", row.names = FALSE, quote = FALSE)
+
+    # Write fasta file with ASV sequences to file
+    fasta.tab <- df[,c("ASV_ID","sequence")]
+    fasta.tab\$ASV_ID <- gsub("ASV_",">ASV_",fasta.tab\$ASV_ID)
+    fasta.tab.join <- c(rbind( fasta.tab\$ASV_ID, fasta.tab\$sequence ))
+    write( fasta.tab.join, file = 'ASV_seqs.fasta' )
+
+    # Write ASV file with ASV abundances to file
+    df\$sequence <- NULL
+    df\$ASV_ID <- NULL
+    write.table( df, file = "ASV_table.tsv", sep="\t", row.names = TRUE, col.names = NA, quote = FALSE)
 
     write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
     """
@@ -490,7 +507,7 @@ process DADA2_TAXONOMY {
     }
 
     input:
-    path(rds)
+    path(fasta)
     path(database)
     
     output:
@@ -503,10 +520,10 @@ process DADA2_TAXONOMY {
     """
     #!/usr/bin/env Rscript
     suppressPackageStartupMessages(library(dada2))
+    set.seed(100) # Initialize random number generator for reproducibility
 
-    ASV_table <- readRDS(\"$rds\")
-
-    taxa <- assignTaxonomy(ASV_table, \"$database\", $options.args, multithread = $task.cpus, verbose=TRUE)
+    seq <- getSequences(\"$fasta\", collapse = TRUE, silence = FALSE)
+    taxa <- assignTaxonomy(seq, \"$database\", $options.args, multithread = $task.cpus, verbose=TRUE)
     taxa <- cbind(sequence = rownames(taxa), taxa)
     write.table(taxa, file = "ASV_tax.tsv", sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
 

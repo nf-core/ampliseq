@@ -139,7 +139,9 @@ include { DADA2_RMCHIMERA               } from './modules/local/process/dada2'  
 include { DADA2_STATS                   } from './modules/local/process/dada2'                        addParams( options: modules['dada2_stats']          )
 include { DADA2_MERGE                   } from './modules/local/process/dada2'                        addParams( options: modules['dada2_merge']          )
 include { DADA2_TAXONOMY                } from './modules/local/process/dada2'                        addParams( options: dada2_taxonomy_options          )
-include { QIIME2_INTAX                  } from './modules/local/process/qiime2' 
+include { QIIME2_INASV                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_inasv']         )
+include { QIIME2_INSEQ                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_inseq']         )
+include { QIIME2_INTAX                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_intax']         )
 include { MULTIQC                       } from './modules/local/process/multiqc'                      addParams( options: multiqc_options                 )
 include { GET_SOFTWARE_VERSIONS         } from './modules/local/process/get_software_versions'        addParams( options: [publish_files : ['csv':'']]    )
 
@@ -319,12 +321,24 @@ workflow AMPLISEQ {
 		DADA2_STATS.out.stats.map { meta, stats -> stats }.collect(), 
 		DADA2_RMCHIMERA.out.rds.map { meta, rds -> rds }.collect() )
 
-	//taxonomic classification with dada2
-	DADA2_TAXONOMY ( DADA2_MERGE.out.rds, ch_dada_ref_taxonomy )
+    /*
+     * SUBWORKFLOW / MODULES : Taxonomic classification with DADA2 and/or QIIME2
+     */
+	//TODO: alternative entry point for fasta to solve https://github.com/nf-core/ampliseq/issues/202, probably as "--input seq.fasta" with fna/fa/fasta extension?!
+
+	//DADA2
+	DADA2_TAXONOMY ( DADA2_MERGE.out.fasta, ch_dada_ref_taxonomy )
+	//TODO: addSpecies when database supplied
+
+	//QIIME2
+	QIIME2_INSEQ ( DADA2_MERGE.out.fasta )
+	ch_software_versions = ch_software_versions.mix( QIIME2_INSEQ.out.version.ifEmpty(null) ) //TODO: usually a .first() is here, dont know why this leads here to a warning
 
     /*
      * SUBWORKFLOW / MODULES : Downstream analysis with QIIME2
      */
+	QIIME2_INASV ( DADA2_MERGE.out.asv )
+
 	//QIIME2_INTAX ( DADA2_TAXONOMY.out.tsv )
 
     /*

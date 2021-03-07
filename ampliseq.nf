@@ -275,11 +275,10 @@ workflow AMPLISEQ {
 				def meta = [:]
 				meta.run = info.run
 				meta.single_end = info.single_end
-				meta.id = ids.flatten()
-				[ meta, reads.flatten() ] }
+				meta.id = ids.flatten().sort()
+				[ meta, reads.flatten().sort() ] }
 		.set { ch_filt_reads }
 
-	// TODO: the following two processes are (often?!) re-started when using -resume, channel magic before might cause this?
 	DADA2_ERR ( ch_filt_reads )
 
 	DADA2_DEREPLICATE ( ch_filt_reads )
@@ -306,8 +305,8 @@ workflow AMPLISEQ {
 				def meta = [:]
 				meta.run = info.run
 				meta.single_end = info.single_end
-				meta.id = ids.flatten()
-				[ meta, reads.flatten() ] }
+				meta.id = ids.flatten().sort()
+				[ meta, reads.flatten().sort() ] }
 		.join( DADA2_DENOISING.out.denoised )
 		.join( DADA2_DENOISING.out.mergers )
 		.join( DADA2_RMCHIMERA.out.rds )

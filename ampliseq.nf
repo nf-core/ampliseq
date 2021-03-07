@@ -59,6 +59,8 @@ if (!single_end && !params.illumina_its && (params.trunclenf == false || params.
  * Sanity check input values
  */
 
+if (params.enable_conda) { log.warn "Conda is enabled (--enable_conda), any steps involving QIIME2 are not available. Use a container engine instead of conda to enable all software." }
+
 if (!params.FW_primer) { exit 1, "Option --FW_primer missing" }
 if (!params.RV_primer) { exit 1, "Option --RV_primer missing" }
 if (!params.input) { exit 1, "Option --input missing" }
@@ -331,13 +333,16 @@ workflow AMPLISEQ {
 	//TODO: addSpecies when database supplied
 
 	//QIIME2
-	QIIME2_INSEQ ( DADA2_MERGE.out.fasta )
-	ch_software_versions = ch_software_versions.mix( QIIME2_INSEQ.out.version.ifEmpty(null) ) //TODO: usually a .first() is here, dont know why this leads here to a warning
-
+	if (!params.enable_conda) {
+		QIIME2_INSEQ ( DADA2_MERGE.out.fasta )
+		ch_software_versions = ch_software_versions.mix( QIIME2_INSEQ.out.version.ifEmpty(null) ) //TODO: usually a .first() is here, dont know why this leads here to a warning
+	}
     /*
      * SUBWORKFLOW / MODULES : Downstream analysis with QIIME2
      */
-	QIIME2_INASV ( DADA2_MERGE.out.asv )
+	if (!params.enable_conda) {
+		QIIME2_INASV ( DADA2_MERGE.out.asv )
+	}
 
 	//QIIME2_INTAX ( DADA2_TAXONOMY.out.tsv )
 

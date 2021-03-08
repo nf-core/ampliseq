@@ -20,7 +20,7 @@ jobs:
     strategy:
       matrix:
         # Nextflow versions: check pipeline minimum and current latest
-        nxf_ver: ['20.11.0-edge']
+        nxf_ver: ['21.02.0-edge']
     steps:
       - name: Check out pipeline code
         uses: actions/checkout@v2
@@ -32,15 +32,15 @@ jobs:
             Dockerfile
             environment.yml
 
-#      - name: Build new docker image
-#        if: env.MATCHED_FILES
-#        run: docker build --no-cache . -t nfcore/ampliseq:dev
+      - name: Build new docker image
+        if: env.MATCHED_FILES
+        run: docker build --no-cache . -t nfcore/ampliseq:dev
 
-#      - name: Pull docker image
-#        if: ${{ !env.MATCHED_FILES }}
-#        run: |
-#          docker pull nfcore/ampliseq:dev
-#          docker tag nfcore/ampliseq:dev nfcore/ampliseq:dev
+      - name: Pull docker image
+        if: ${{ !env.MATCHED_FILES }}
+        run: |
+          docker pull nfcore/ampliseq:dev
+          docker tag nfcore/ampliseq:dev nfcore/ampliseq:dev
 
       - name: Install Nextflow
         env:

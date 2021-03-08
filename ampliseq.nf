@@ -155,6 +155,8 @@ include { DADA2_TAXONOMY                } from './modules/local/process/dada2'  
 include { DADA2_ADDSPECIES              } from './modules/local/process/dada2'                        addParams( options: dada2_addspecies_options        )
 include { QIIME2_PREPTAX                } from './modules/local/subworkflow/qiime2_preptax'           addParams( options: modules['qiime2_preptax']       )
 include { QIIME2_TAXONOMY               } from './modules/local/subworkflow/qiime2_taxonomy'          addParams( options: modules['qiime2_taxonomy']      )
+include { QIIME2_INSEQ                  } from './modules/local/process/qiime2'                       //addParams( options: modules['qiime2_inasv']         )
+include { QIIME2_FILTERTAXA             } from './modules/local/process/qiime2'                       //addParams( options: modules['qiime2_inasv']         )
 include { QIIME2_INASV                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_inasv']         )
 include { QIIME2_INTAX                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_intax']         )
 include { MULTIQC                       } from './modules/local/process/multiqc'                      addParams( options: multiqc_options                 )
@@ -366,6 +368,22 @@ workflow AMPLISEQ {
      */
 	if (!params.enable_conda) {
 		QIIME2_INASV ( DADA2_MERGE.out.asv )
+		QIIME2_INSEQ ( DADA2_MERGE.out.fasta )
+		if (params.exclude_taxa != "none" || params.min_frequency || params.min_samples) {
+			QIIME2_FILTERTAXA (
+					QIIME2_INASV.out.qza,
+					QIIME2_INSEQ.out.qza,
+					QIIME2_TAXONOMY.out.qza,
+					params.min_frequency,
+					params.min_samples,
+					params.exclude_taxa
+			)
+			ch_asv = QIIME2_FILTERTAXA.out.asv
+			ch_seq = QIIME2_FILTERTAXA.out.seq
+		} else {
+			ch_asv = QIIME2_INASV.out.qza
+			ch_seq = QIIME2_INSEQ.out.qza
+		}
 	}
 
 	//QIIME2_INTAX ( DADA2_TAXONOMY.out.tsv )

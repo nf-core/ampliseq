@@ -39,6 +39,14 @@ if (params.classifier) {
 	ch_qiime_classifier = Channel.fromPath("${params.classifier}", checkIfExists: true)
 } else { ch_qiime_classifier = Channel.empty() }
 
+if( params.tax_to_classifier && params.fasta_to_classifier && !params.onlyDenoising && !params.skip_taxonomy ){
+	ch_fasta_to_classifier = Channel.fromPath("${params.fasta_to_classifier}", checkIfExists: true)
+	ch_tax_to_classifier = Channel.fromPath("${params.tax_to_classifier}", checkIfExists: true)
+} else { 
+	ch_fasta_to_classifier = Channel.empty()
+	ch_tax_to_classifier = Channel.empty()
+}
+
 if (params.dada_ref_taxonomy && !params.onlyDenoising) {
 	ch_dada_ref_taxonomy = Channel.fromPath("${params.dada_ref_taxonomy}", checkIfExists: true)
 } else { ch_dada_ref_taxonomy = Channel.empty() }
@@ -145,8 +153,9 @@ include { DADA2_STATS                   } from './modules/local/process/dada2'  
 include { DADA2_MERGE                   } from './modules/local/process/dada2'                        addParams( options: modules['dada2_merge']          )
 include { DADA2_TAXONOMY                } from './modules/local/process/dada2'                        addParams( options: dada2_taxonomy_options          )
 include { DADA2_ADDSPECIES              } from './modules/local/process/dada2'                        addParams( options: dada2_addspecies_options        )
+include { QIIME2_PREPTAX                } from './modules/local/subworkflow/qiime2_preptax'           addParams( options: modules['qiime2_preptax']       )
+include { QIIME2_TAXONOMY               } from './modules/local/subworkflow/qiime2_taxonomy'          addParams( options: modules['qiime2_taxonomy']      )
 include { QIIME2_INASV                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_inasv']         )
-include { QIIME2_INSEQ                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_inseq']         )
 include { QIIME2_INTAX                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_intax']         )
 include { MULTIQC                       } from './modules/local/process/multiqc'                      addParams( options: multiqc_options                 )
 include { GET_SOFTWARE_VERSIONS         } from './modules/local/process/get_software_versions'        addParams( options: [publish_files : ['csv':'']]    )
@@ -337,8 +346,20 @@ workflow AMPLISEQ {
 
 	//QIIME2
 	if (!params.enable_conda) {
-		QIIME2_INSEQ ( DADA2_MERGE.out.fasta )
-		ch_software_versions = ch_software_versions.mix( QIIME2_INSEQ.out.version.ifEmpty(null) ) //TODO: usually a .first() is here, dont know why this leads here to a warning
+		if (params.tax_to_classifier && params.fasta_to_classifier && !params.onlyDenoising && !params.skip_taxonomy) {
+			QIIME2_PREPTAX (
+				ch_fasta_to_classifier,
+				ch_tax_to_classifier,
+				params.FW_primer,
+				params.RV_primer
+			)
+			ch_qiime_classifier = QIIME2_PREPTAX.out.classifier
+		}
+		QIIME2_TAXONOMY ( 
+			DADA2_MERGE.out.fasta,
+			ch_qiime_classifier
+		)
+		ch_software_versions = ch_software_versions.mix( QIIME2_TAXONOMY.out.version.first().ifEmpty(null) ) //TODO: usually a .first() is here, dont know why this leads here to a warning
 	}
     /*
      * SUBWORKFLOW / MODULES : Downstream analysis with QIIME2

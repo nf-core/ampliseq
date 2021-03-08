@@ -11,7 +11,7 @@ if len(sys.argv) != 3:
     exit("Usage: count_table_max_reads.py <unfiltered_feature-table.tsv> <filtered_feature-table.tsv>")
 
 #read tsv and skip first two rows
-data_unfiltered = pd.read_csv(sys.argv[1], sep='\t', skiprows=[0]) #count table
+data_unfiltered = pd.read_csv(sys.argv[1], sep='\t', skiprows=None) #count table
 data_filtered = pd.read_csv(sys.argv[2], sep='\t', skiprows=[0]) #count table
 
 #drop feature ids

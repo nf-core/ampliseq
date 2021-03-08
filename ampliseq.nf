@@ -158,6 +158,7 @@ include { QIIME2_TAXONOMY               } from './modules/local/subworkflow/qiim
 include { QIIME2_INSEQ                  } from './modules/local/process/qiime2'                       //addParams( options: modules['qiime2_inasv']         )
 include { QIIME2_FILTERTAXA             } from './modules/local/process/qiime2'                       //addParams( options: modules['qiime2_inasv']         )
 include { QIIME2_INASV                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_inasv']         )
+include { FILTER_STATS                  } from './modules/local/process/filter_stats'                 //addParams( options: modules['filter_stats']         )
 include { QIIME2_INTAX                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_intax']         )
 include { MULTIQC                       } from './modules/local/process/multiqc'                      addParams( options: multiqc_options                 )
 include { GET_SOFTWARE_VERSIONS         } from './modules/local/process/get_software_versions'        addParams( options: [publish_files : ['csv':'']]    )
@@ -378,6 +379,7 @@ workflow AMPLISEQ {
 					params.min_samples,
 					params.exclude_taxa
 			)
+			FILTER_STATS ( DADA2_MERGE.out.asv, QIIME2_FILTERTAXA.out.tsv )
 			ch_asv = QIIME2_FILTERTAXA.out.asv
 			ch_seq = QIIME2_FILTERTAXA.out.seq
 		} else {

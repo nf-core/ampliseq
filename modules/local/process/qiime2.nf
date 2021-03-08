@@ -232,6 +232,7 @@ process QIIME2_FILTERTAXA {
 
     output:
     path("filtered-table.qza"), emit: asv
+    path("filtered-table.tsv"), emit: tsv
     path("filtered-sequences.qza"), emit: seq
     path "*.version.txt"       , emit: version
 
@@ -269,6 +270,15 @@ process QIIME2_FILTERTAXA {
         --i-data \$filtered_sequences \
         --i-table filtered-table.qza \
         --o-filtered-data filtered-sequences.qza
+
+    #produce raw count table in biom format "table/feature-table.biom"
+    qiime tools export --input-path filtered-table.qza  \
+        --output-path table
+    #produce raw count table
+    biom convert -i table/feature-table.biom \
+        -o table/feature-table.tsv  \
+        --to-tsv
+    cp table/feature-table.tsv filtered-table.tsv
 
     echo \$(qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g") > ${software}.version.txt
     """

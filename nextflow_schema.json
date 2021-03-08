@@ -158,8 +158,13 @@
                 },
                 "dada_ref_taxonomy": {
                     "type": "string",
-                    "help_text": "Choose any taxonomy (not species!) database from https://benjjneb.github.io/dada2/training.html",
+                    "help_text": "Choose any taxonomy database from https://benjjneb.github.io/dada2/training.html (\"*train_set*\", not \"*species_assignment*\"), e.g. \"https://zenodo.org/record/4310151/files/rdp_train_set_18.fa.gz\".",
                     "description": "Path to DADA2-formatted reference taxonomy database"
+                },
+                "dada_ref_species": {
+                    "type": "string",
+                    "description": "Path to DADA2-formatted reference species taxonomy database",
+                    "help_text": "Choose any species taxonomy database from https://benjjneb.github.io/dada2/training.html (\"*species_assignment*\", not \"*train_set*\") , e.g. \"https://zenodo.org/record/4310151/files/rdp_species_assignment_18.fa.gz\"."
                 }
             },
             "fa_icon": "fas fa-database"

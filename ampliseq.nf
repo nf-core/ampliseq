@@ -43,6 +43,10 @@ if (params.dada_ref_taxonomy && !params.onlyDenoising) {
 	ch_dada_ref_taxonomy = Channel.fromPath("${params.dada_ref_taxonomy}", checkIfExists: true)
 } else { ch_dada_ref_taxonomy = Channel.empty() }
 
+if (params.dada_ref_species && params.dada_ref_taxonomy && !params.onlyDenoising) {
+	ch_dada_ref_species = Channel.fromPath("${params.dada_ref_species}", checkIfExists: true)
+} else { ch_dada_ref_species = Channel.empty() }
+
 /*
  * Set variables
  */
@@ -125,6 +129,9 @@ multiqc_options.args       += params.multiqc_title ? " --title \"$params.multiqc
 def dada2_taxonomy_options  = modules['dada2_taxonomy']
 dada2_taxonomy_options.args += params.pacbio ? ", tryRC = TRUE" : ""
 
+def dada2_addspecies_options  = modules['dada2_addspecies']
+dada2_addspecies_options.args += params.pacbio ? ", tryRC = TRUE" : ""
+
 include { PARSE_INPUT                   } from './modules/local/subworkflow/parse_input'              addParams( options: [:]                             )
 include { RENAME_RAW_DATA_FILES         } from './modules/local/process/rename_raw_data_files'
 include { DADA2_FILTNTRIM               } from './modules/local/process/dada2'                        addParams( options: dada2_filtntrim_options         )
@@ -137,6 +144,7 @@ include { DADA2_RMCHIMERA               } from './modules/local/process/dada2'  
 include { DADA2_STATS                   } from './modules/local/process/dada2'                        addParams( options: modules['dada2_stats']          )
 include { DADA2_MERGE                   } from './modules/local/process/dada2'                        addParams( options: modules['dada2_merge']          )
 include { DADA2_TAXONOMY                } from './modules/local/process/dada2'                        addParams( options: dada2_taxonomy_options          )
+include { DADA2_ADDSPECIES              } from './modules/local/process/dada2'                        addParams( options: dada2_addspecies_options        )
 include { QIIME2_INASV                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_inasv']         )
 include { QIIME2_INSEQ                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_inseq']         )
 include { QIIME2_INTAX                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_intax']         )
@@ -325,7 +333,7 @@ workflow AMPLISEQ {
 
 	//DADA2
 	DADA2_TAXONOMY ( DADA2_MERGE.out.fasta, ch_dada_ref_taxonomy )
-	//TODO: addSpecies when database supplied
+	DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_dada_ref_species )
 
 	//QIIME2
 	if (!params.enable_conda) {

@@ -329,29 +329,33 @@ process QIIME2_EXPORT_ABSOLUTE {
 	path(taxonomy)
 
 	output:
-	path("representative_sequences/sequences.fasta"), emit: fasta
-	path("table/feature-table.tsv"), emit: tsv
-	path("table/feature-table.biom"), emit: biom
-	path("representative_sequences/*")
-	path("table/abs-abund-table-*.tsv")
+	path("rep-seq.fasta"), emit: fasta
+	path("feature-table.tsv"), emit: tsv
+	path("feature-table.biom"), emit: biom
+	path("seven_number_summary.tsv")
+    path("descriptive_stats.tsv")
+	path("abs-abund-table-*.tsv")
 
     script:
 	"""
 	#produce raw count table in biom format "table/feature-table.biom"
 	qiime tools export --input-path ${table}  \
 		--output-path table
+    cp table/feature-table.biom .
     
 	#produce raw count table "table/feature-table.tsv"
 	biom convert -i table/feature-table.biom \
-		-o table/feature-table.tsv  \
+		-o feature-table.tsv  \
 		--to-tsv
     
-	#produce representative sequence fasta file "representative_sequences/sequences.fasta"
+	#produce representative sequence fasta file "sequences.fasta"
 	qiime feature-table tabulate-seqs  \
 		--i-data ${repseq}  \
 		--o-visualization rep-seqs.qzv
 	qiime tools export --input-path rep-seqs.qzv  \
 		--output-path representative_sequences
+    cp representative_sequences/sequences.fasta rep-seq.fasta
+    cp representative_sequences/*.tsv .
 
 	##on several taxa level
 	array=( 2 3 4 5 6 7 )
@@ -369,7 +373,7 @@ process QIIME2_EXPORT_ABSOLUTE {
 		#convert to tab separated text file
 		biom convert \
 			-i table-\$i/feature-table.biom \
-			-o table/abs-abund-table-\$i.tsv --to-tsv
+			-o abs-abund-table-\$i.tsv --to-tsv
 	done
 	"""
 }

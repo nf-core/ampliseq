@@ -2,7 +2,7 @@
 args = commandArgs(trailingOnly=TRUE)
 
 if(length(args) < 1){
-    stop("Usage: metadataCategory.r <metadata.tsv>")
+    stop("Usage: metadata_all.r <metadata.tsv>")
 }
 
 metadata <- args[1]

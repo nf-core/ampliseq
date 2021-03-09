@@ -141,6 +141,8 @@ include { QIIME2_INASV                  } from './modules/local/process/qiime2' 
 include { FILTER_STATS                  } from './modules/local/process/filter_stats'                 addParams( options: modules['filter_stats']         )
 include { QIIME2_BARPLOT                } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_barplot']       )
 include { QIIME2_EXPORT                 } from './modules/local/subworkflow/qiime2_export'            addParams( absolute_options: modules['qiime2_export_absolute'], relasv_options: modules['qiime2_export_relasv'],reltax_options: modules['qiime2_export_reltax'],combine_table_options: modules['combine_table']         )
+include { METADATA_ALL                  } from './modules/local/process/metadata_all'
+include { METADATA_PAIRWISE             } from './modules/local/process/metadata_pairwise'
 include { QIIME2_INTAX                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_intax']         )
 include { MULTIQC                       } from './modules/local/process/multiqc'                      addParams( options: multiqc_options                 )
 include { GET_SOFTWARE_VERSIONS         } from './modules/local/process/get_software_versions'        addParams( options: [publish_files : ['csv':'']]    )
@@ -385,21 +387,31 @@ workflow AMPLISEQ {
 			QIIME2_BARPLOT ( ch_metadata, ch_asv, ch_tax )
 		}
 
-		//metadataCategory.r //-> required for diversities & ancom
-		//metadataCategoryPairwise.r //-> required for diversities
+		//Select metadata categories for diversity analysis & ancom
+		if (!params.skip_ancom || !params.skip_diversity_indices) {
+			METADATA_ALL ( ch_metadata, params.metadata_category )
+		}
 
-		//Diversities
-			//TREE ( ch_seq ) //-> required for diversity indices
-			//alpha_rarefaction ( ch_metadata, ch_asv, QIIME2_TREE.out.qza, maxdepth=\$(count_table_minmax_reads.py "QIIME2_FILTERTAXA.out.tsv" maximum 2>&1) )
-			//diversity_core ( ch_metadata, ch_asv, QIIME2_TREE.out.qza, mindepth=\$(count_table_minmax_reads.py "QIIME2_FILTERTAXA.out.tsv" minimum 2>&1) )
-			//alpha_diversity ( ch_metadata, DIVERSITY_CORE.out.qza, metadataCategory.out.categories )
-			//beta_diversity ( ch_metadata, DIVERSITY_CORE.out.qza, metadataCategory.out.categories )
-			//beta_diversity_ordination ( ch_metadata, DIVERSITY_CORE.out.qza )
-		
-		//ANCOM -> samples with empty column should be removed to allow for sub-table comparisons 
-			//prepare_ancom ( ch_metadata, ch_asv, metadataCategory.out.categories  )
-			//ancom_tax
-			//ancom_asv	
+		//Calculate diversity indices
+		if (!params.skip_diversity_indices) {
+			METADATA_PAIRWISE ( ch_metadata )
+			//Diversities
+				//TREE ( ch_seq ) //-> required for diversity indices
+				//alpha_rarefaction ( ch_metadata, ch_asv, QIIME2_TREE.out.qza, maxdepth=\$(count_table_minmax_reads.py "QIIME2_FILTERTAXA.out.tsv" maximum 2>&1) )
+				//diversity_core ( ch_metadata, ch_asv, QIIME2_TREE.out.qza, mindepth=\$(count_table_minmax_reads.py "QIIME2_FILTERTAXA.out.tsv" minimum 2>&1) )
+				//alpha_diversity ( ch_metadata, DIVERSITY_CORE.out.qza, METADATA_PAIRWISE.out.categories )
+				//beta_diversity ( ch_metadata, DIVERSITY_CORE.out.qza, METADATA_PAIRWISE.out.categories )
+				//beta_diversity_ordination ( ch_metadata, DIVERSITY_CORE.out.qza )
+		}
+		/*
+		//Perform ANCOM tests
+		if (!params.skip_ancom) {	
+			//ANCOM -> samples with empty column should be removed to allow for sub-table comparisons 
+				//prepare_ancom ( ch_metadata, ch_asv, METADATA_PAIRWISE.out.categories  )
+				//ancom_tax
+				//ancom_asv
+		}
+		*/
 	}
 
     /*

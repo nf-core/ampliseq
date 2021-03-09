@@ -159,6 +159,7 @@ include { QIIME2_INSEQ                  } from './modules/local/process/qiime2' 
 include { QIIME2_FILTERTAXA             } from './modules/local/process/qiime2'                       //addParams( options: modules['qiime2_inasv']         )
 include { QIIME2_INASV                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_inasv']         )
 include { FILTER_STATS                  } from './modules/local/process/filter_stats'                 //addParams( options: modules['filter_stats']         )
+include { QIIME2_BARPLOT                } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_barplot']         )
 include { QIIME2_INTAX                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_intax']         )
 include { MULTIQC                       } from './modules/local/process/multiqc'                      addParams( options: multiqc_options                 )
 include { GET_SOFTWARE_VERSIONS         } from './modules/local/process/get_software_versions'        addParams( options: [publish_files : ['csv':'']]    )
@@ -362,19 +363,22 @@ workflow AMPLISEQ {
 			DADA2_MERGE.out.fasta,
 			ch_qiime_classifier
 		)
+		ch_tax = QIIME2_TAXONOMY.out.qza
 		ch_software_versions = ch_software_versions.mix( QIIME2_TAXONOMY.out.version.first().ifEmpty(null) ) //TODO: usually a .first() is here, dont know why this leads here to a warning
 	}
     /*
      * SUBWORKFLOW / MODULES : Downstream analysis with QIIME2
      */
+	//TODO: use QIIME2_INTAX ( DADA2_TAXONOMY.out.tsv )
 	if (!params.enable_conda) {
+		//Import into QIIME2 & filtering by taxonomy & prevalence & counts
 		QIIME2_INASV ( DADA2_MERGE.out.asv )
 		QIIME2_INSEQ ( DADA2_MERGE.out.fasta )
 		if (params.exclude_taxa != "none" || params.min_frequency || params.min_samples) {
 			QIIME2_FILTERTAXA (
 					QIIME2_INASV.out.qza,
 					QIIME2_INSEQ.out.qza,
-					QIIME2_TAXONOMY.out.qza,
+					ch_tax,
 					params.min_frequency,
 					params.min_samples,
 					params.exclude_taxa
@@ -386,9 +390,30 @@ workflow AMPLISEQ {
 			ch_asv = QIIME2_INASV.out.qza
 			ch_seq = QIIME2_INSEQ.out.qza
 		}
-	}
+		//Export various ASV tables
+			//export_filtered_dada_output (optional)
+			//RelativeAbundanceASV (optional)
+			//RelativeAbundanceReducedTaxa (optional)
+			//combinetable.r (optional), seems similar to DADA2_table.tsv but with additionally taxonomy merged
 
-	//QIIME2_INTAX ( DADA2_TAXONOMY.out.tsv )
+		QIIME2_BARPLOT ( ch_metadata, ch_asv, ch_tax )
+
+		//metadataCategory.r //-> required for diversities & ancom
+		//metadataCategoryPairwise.r //-> required for diversities
+
+		//Diversities
+			//TREE ( ch_seq ) //-> required for diversity indices
+			//alpha_rarefaction ( ch_metadata, ch_asv, QIIME2_TREE.out.qza, maxdepth=\$(count_table_minmax_reads.py "QIIME2_FILTERTAXA.out.tsv" maximum 2>&1) )
+			//diversity_core ( ch_metadata, ch_asv, QIIME2_TREE.out.qza, mindepth=\$(count_table_minmax_reads.py "QIIME2_FILTERTAXA.out.tsv" minimum 2>&1) )
+			//alpha_diversity ( ch_metadata, DIVERSITY_CORE.out.qza, metadataCategory.out.categories )
+			//beta_diversity ( ch_metadata, DIVERSITY_CORE.out.qza, metadataCategory.out.categories )
+			//beta_diversity_ordination ( ch_metadata, DIVERSITY_CORE.out.qza )
+		
+		//ANCOM -> samples with empty column should be removed to allow for sub-table comparisons 
+			//prepare_ancom ( ch_metadata, ch_asv, metadataCategory.out.categories  )
+			//ancom_tax
+			//ancom_asv	
+	}
 
     /*
      * MODULE: Pipeline reporting

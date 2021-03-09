@@ -346,8 +346,10 @@ workflow AMPLISEQ {
 	//TODO: alternative entry point for fasta to solve https://github.com/nf-core/ampliseq/issues/202, probably as "--input seq.fasta" with fna/fa/fasta extension?!
 
 	//DADA2
-	DADA2_TAXONOMY ( DADA2_MERGE.out.fasta, ch_dada_ref_taxonomy )
-	DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_dada_ref_species )
+	if (!params.onlyDenoising && !params.skip_taxonomy) {
+		DADA2_TAXONOMY ( DADA2_MERGE.out.fasta, ch_dada_ref_taxonomy )
+		DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_dada_ref_species )
+	}
 
 	//QIIME2
 	if (!params.enable_conda) {
@@ -392,9 +394,13 @@ workflow AMPLISEQ {
 			ch_seq = QIIME2_INSEQ.out.qza
 		}
 		//Export various ASV tables
+		if (!params.skip_abundance_tables) {
 		QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, QIIME2_TAXONOMY.out.tsv )
+		}
 
-		QIIME2_BARPLOT ( ch_metadata, ch_asv, ch_tax )
+		if (!params.skip_barplot) {
+			QIIME2_BARPLOT ( ch_metadata, ch_asv, ch_tax )
+		}
 
 		//metadataCategory.r //-> required for diversities & ancom
 		//metadataCategoryPairwise.r //-> required for diversities

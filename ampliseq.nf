@@ -9,26 +9,6 @@ params.summary_params = [:]
 ////////////////////////////////////////////////////
 
 /*
- * Define pipeline steps
- */
-params.onlyDenoising = false
-if (params.onlyDenoising) {
-	params.skip_abundance_tables = true
-	params.skip_barplot = true
-	params.skip_taxonomy = true
-	params.skip_alpha_rarefaction = true
-	params.skip_diversity_indices = true
-	params.skip_ancom = true
-} else {
-	params.skip_abundance_tables = false
-	params.skip_barplot = false
-	params.skip_taxonomy = false
-	params.skip_alpha_rarefaction = false
-	params.skip_diversity_indices = false
-	params.skip_ancom = false
-}
-
-/*
  * Import input files
  */
 if (params.metadata) {

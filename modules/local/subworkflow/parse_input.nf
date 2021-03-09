@@ -14,82 +14,91 @@ workflow PARSE_INPUT {
     extension
     
     main:
-	if ( input.toString().toLowerCase().endsWith("tsv") ) {
-		// Sample sheet input
-
-		tsvFile = file(input).getName()
-		// extracts read files from TSV and distribute into channels
-		Channel
-			.fromPath(input)
-			.ifEmpty {exit 1, log.info "Cannot find path file ${tsvFile}"}
-			.splitCsv(header:true, sep:'\t')
-			.map { parse_samplesheet(it, single_end) }
-			.set { ch_reads }
+	if ( input.toString().toLowerCase().endsWith("fasta") ) {
+		// Fasta input directely for classification
+		ch_fasta = Channel.fromPath(input, checkIfExists: true)
+		ch_reads = Channel.empty()
 	} else {
-		// Folder input
+		ch_fasta = Channel.empty()
+		
+		if ( input.toString().toLowerCase().endsWith("tsv") ) {
+			// Sample sheet input
 
-		//Check folders in folder when multipleSequencingRuns
-		folders = multipleSequencingRuns ? "/*" : ""
-		if ( single_end ) {
-			//Get files - single end
+			tsvFile = file(input).getName()
+			// extracts read files from TSV and distribute into channels
 			Channel
-				.fromPath( input + folders + extension )
-				.ifEmpty { exit 1, "Cannot find any reads matching: \"${input}${extension}\"\nPlease revise the input folder (\"--input\"): \"${input}\"\nand the input file pattern (\"--extension\"): \"${extension}\"\nIf you have multiple sequencing runs, please add \"--multipleSequencingRuns\".\nNB: Path needs to be enclosed in quotes!" }
-				.map { read ->
-						def meta = [:]
-						meta.id           = read.baseName.toString().indexOf("_") != -1 ? read.baseName.toString().take(read.baseName.toString().indexOf("_")) : read.baseName
-						meta.single_end   = single_end.toBoolean()
-						meta.run          = multipleSequencingRuns ? read.take(read.findLastIndexOf{"/"})[-1] : "1"
-						[ meta, read ] }
+				.fromPath(input)
+				.ifEmpty {exit 1, log.info "Cannot find path file ${tsvFile}"}
+				.splitCsv(header:true, sep:'\t')
+				.map { parse_samplesheet(it, single_end) }
 				.set { ch_reads }
 		} else {
-			//Get files - paired end
-			Channel
-				.fromFilePairs( input + folders + extension, size: 2 )
-				.ifEmpty { exit 1, "Cannot find any reads matching: \"${input}${extension}\"\nPlease revise the input folder (\"--input\"): \"${input}\"\nand the input file pattern (\"--extension\"): \"${extension}\"\nIf you have multiple sequencing runs, please add \"--multipleSequencingRuns\".\nNB: Path needs to be enclosed in quotes!" }
-				.map { name, reads ->
-						def meta = [:]
-						meta.id           = name.toString().indexOf("_") != -1 ? name.toString().take(name.toString().indexOf("_")) : name
-						meta.single_end   = single_end.toBoolean()
-						meta.run          = multipleSequencingRuns ? reads[0].take(reads[0].findLastIndexOf{"/"})[-1] : "1"
-						[ meta, reads ] }
-				.set { ch_reads }
+			// Folder input
+
+			//Check folders in folder when multipleSequencingRuns
+			folders = multipleSequencingRuns ? "/*" : ""
+			if ( single_end ) {
+				//Get files - single end
+				Channel
+					.fromPath( input + folders + extension )
+					.ifEmpty { exit 1, "Cannot find any reads matching: \"${input}${extension}\"\nPlease revise the input folder (\"--input\"): \"${input}\"\nand the input file pattern (\"--extension\"): \"${extension}\"\nIf you have multiple sequencing runs, please add \"--multipleSequencingRuns\".\nNB: Path needs to be enclosed in quotes!" }
+					.map { read ->
+							def meta = [:]
+							meta.id           = read.baseName.toString().indexOf("_") != -1 ? read.baseName.toString().take(read.baseName.toString().indexOf("_")) : read.baseName
+							meta.single_end   = single_end.toBoolean()
+							meta.run          = multipleSequencingRuns ? read.take(read.findLastIndexOf{"/"})[-1] : "1"
+							[ meta, read ] }
+					.set { ch_reads }
+			} else {
+				//Get files - paired end
+				Channel
+					.fromFilePairs( input + folders + extension, size: 2 )
+					.ifEmpty { exit 1, "Cannot find any reads matching: \"${input}${extension}\"\nPlease revise the input folder (\"--input\"): \"${input}\"\nand the input file pattern (\"--extension\"): \"${extension}\"\nIf you have multiple sequencing runs, please add \"--multipleSequencingRuns\".\nNB: Path needs to be enclosed in quotes!" }
+					.map { name, reads ->
+							def meta = [:]
+							meta.id           = name.toString().indexOf("_") != -1 ? name.toString().take(name.toString().indexOf("_")) : name
+							meta.single_end   = single_end.toBoolean()
+							meta.run          = multipleSequencingRuns ? reads[0].take(reads[0].findLastIndexOf{"/"})[-1] : "1"
+							[ meta, reads ] }
+					.set { ch_reads }
+			}
+			if (multipleSequencingRuns) {
+				//Get folder information
+				ch_reads
+					.flatMap { meta, reads -> [ meta.run ] }
+					.unique()
+					.set { ch_folders }
+				//Report folders with sequencing files
+				ch_folders
+					.collect()
+					.subscribe {
+						String folders = it.toString().replace("[", "").replace("]","") 
+						log.info "\nFound the folder(s) \"$folders\" containing sequencing read files matching \"${extension}\" in \"${input}\".\n" }
+				//Stop if folder count is 1 and multipleSequencingRuns
+				ch_folders
+					.count()
+					.subscribe { if ( it == 1 ) exit 1, "Found only one folder with read data but \"--multipleSequencingRuns\" was specified. Please review data input." }
+			}
 		}
-		if (multipleSequencingRuns) {
-			//Get folder information
-			ch_reads
-				.flatMap { meta, reads -> [ meta.run ] }
-				.unique()
-				.set { ch_folders }
-			//Report folders with sequencing files
-			ch_folders
-				.collect()
-				.subscribe {
-					String folders = it.toString().replace("[", "").replace("]","") 
-					log.info "\nFound the folder(s) \"$folders\" containing sequencing read files matching \"${extension}\" in \"${input}\".\n" }
-			//Stop if folder count is 1 and multipleSequencingRuns
-			ch_folders
-				.count()
-				.subscribe { if ( it == 1 ) exit 1, "Found only one folder with read data but \"--multipleSequencingRuns\" was specified. Please review data input." }
-		}
+
+		//Check whether all sampleID = meta.id are unique
+		//TODO: if not all sampleID unique, rename files with meta.run? //if ( multipleSequencingRuns ) { "meta.id" = "$meta.run${split}$meta.id" }
+		ch_reads
+			.map { meta, reads -> [ meta.id ] }
+			.count()
+			.set { ch_ids }
+		ch_reads
+			.map { meta, reads -> [ meta.id ] }
+			.unique()
+			.count()
+			.mix( ch_ids )
+			.collect()
+			.subscribe { k = it[0]; n = it[1];
+				if ( k != n ) exit 1, "Please review data input, sampleIDs ($k) are not unique ($n).";
+				}
 	}
 
-	//Check whether all sampleID = meta.id are unique
-	//TODO: if not all sampleID unique, rename files with meta.run? //if ( multipleSequencingRuns ) { "meta.id" = "$meta.run${split}$meta.id" }
-	ch_reads
-		.map { meta, reads -> [ meta.id ] }
-		.count()
-		.set { ch_ids }
-	ch_reads
-		.map { meta, reads -> [ meta.id ] }
-		.unique()
-		.count()
-		.mix( ch_ids )
-		.collect()
-		.subscribe { k = it[0]; n = it[1];
-			if ( k != n ) exit 1, "Please review data input, sampleIDs ($k) are not unique ($n).";
-			}
-
     emit:
-    ch_reads // channel: [ val(meta), [ reads ] ]
+    reads   = ch_reads
+	fasta   = ch_fasta
 }

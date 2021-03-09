@@ -11,7 +11,7 @@ Re-wrote whole pipeline in [DSL2](https://www.nextflow.io/docs/latest/dsl2.html)
 
 * Added `--single_end` for single-ended Illumina data
 * Added `--dada_ref_taxonomy` and `--dada_ref_species` for taxonomic classification with DADA2's assignTaxonomy and addSpecies functions
-* `--input` may point at a samples sheet ending with `.tsv` that allows analysis of multiple sequencing runs by reading the optional column `run`
+* `--input` may point (1) at a fasta file ending with `.fasta` that will be taxonomically classified, (2) at a samples sheet ending with `.tsv` that allows analysis of multiple sequencing runs by reading the optional column `run`, or (3) at a folder input.
 
 ### `Fixed`
 

@@ -193,7 +193,9 @@ workflow AMPLISEQ {
 	/*
 	* Create a channel for input read files
 	*/
-	PARSE_INPUT ( params.input, single_end, params.multipleSequencingRuns, params.extension ).set { ch_reads }
+	PARSE_INPUT ( params.input, single_end, params.multipleSequencingRuns, params.extension )
+	ch_reads = PARSE_INPUT.out.reads
+	ch_fasta = PARSE_INPUT.out.fasta
 
     /*
      * MODULE: Rename files
@@ -323,11 +325,12 @@ workflow AMPLISEQ {
     /*
      * SUBWORKFLOW / MODULES : Taxonomic classification with DADA2 and/or QIIME2
      */
-	//TODO: alternative entry point for fasta to solve https://github.com/nf-core/ampliseq/issues/202, probably as "--input seq.fasta" with fna/fa/fasta extension?!
+	//Alternative entry point for fasta that is being classified
+	ch_fasta =  params.input.toString().toLowerCase().endsWith("fasta") ? ch_fasta : DADA2_MERGE.out.fasta
 
 	//DADA2
 	if (!params.onlyDenoising && !params.skip_taxonomy) {
-		DADA2_TAXONOMY ( DADA2_MERGE.out.fasta, ch_dada_ref_taxonomy )
+		DADA2_TAXONOMY ( ch_fasta, ch_dada_ref_taxonomy )
 		DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_dada_ref_species )
 	}
 
@@ -343,7 +346,7 @@ workflow AMPLISEQ {
 			ch_qiime_classifier = QIIME2_PREPTAX.out.classifier
 		}
 		QIIME2_TAXONOMY ( 
-			DADA2_MERGE.out.fasta,
+			ch_fasta,
 			ch_qiime_classifier
 		)
 		ch_tax = QIIME2_TAXONOMY.out.qza
@@ -356,7 +359,7 @@ workflow AMPLISEQ {
 	if (!params.onlyDenoising && !params.enable_conda) {
 		//Import into QIIME2 & filtering by taxonomy & prevalence & counts
 		QIIME2_INASV ( DADA2_MERGE.out.asv )
-		QIIME2_INSEQ ( DADA2_MERGE.out.fasta )
+		QIIME2_INSEQ ( ch_fasta )
 		if (params.exclude_taxa != "none" || params.min_frequency || params.min_samples) {
 			QIIME2_FILTERTAXA (
 					QIIME2_INASV.out.qza,

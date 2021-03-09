@@ -352,7 +352,7 @@ workflow AMPLISEQ {
 	}
 
 	//QIIME2
-	if (!params.enable_conda) {
+	if (!params.onlyDenoising && !params.enable_conda) {
 		if (params.tax_to_classifier && params.fasta_to_classifier && !params.onlyDenoising && !params.skip_taxonomy) {
 			QIIME2_PREPTAX (
 				ch_fasta_to_classifier,
@@ -373,7 +373,7 @@ workflow AMPLISEQ {
      * SUBWORKFLOW / MODULES : Downstream analysis with QIIME2
      */
 	//TODO: use QIIME2_INTAX ( DADA2_TAXONOMY.out.tsv )
-	if (!params.enable_conda) {
+	if (!params.onlyDenoising && !params.enable_conda) {
 		//Import into QIIME2 & filtering by taxonomy & prevalence & counts
 		QIIME2_INASV ( DADA2_MERGE.out.asv )
 		QIIME2_INSEQ ( DADA2_MERGE.out.fasta )

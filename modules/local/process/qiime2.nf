@@ -14,13 +14,11 @@ process QIIME2_INASV {
     container "quay.io/qiime2/core:2021.2"
 
     input:
-    //tuple val(meta), path(asv)
     path(asv)
     
     output:
-    //tuple val(meta), path("table.qza"), emit: qza
-    path("table.qza"), emit: qza
-    path "*.version.txt"       , emit: version
+    path("table.qza")    , emit: qza
+    path "*.version.txt" , emit: version
 
     script:
     def software      = getSoftwareName(task.process)
@@ -46,13 +44,11 @@ process QIIME2_INSEQ {
     container "quay.io/qiime2/core:2021.2"
 
     input:
-    //tuple val(meta), path(seq)
     path(seq)
     
     output:
-    //tuple val(meta), path("rep-seqs.qza"), emit: qza
     path("rep-seqs.qza"), emit: qza
-    path "*.version.txt"       , emit: version
+    path "*.version.txt", emit: version
 
     script:
     def software      = getSoftwareName(task.process)
@@ -82,8 +78,7 @@ process QIIME2_INTAX {
     path(tax)
     
     output:
-    //tuple val(meta), path("taxonomy.qza"), emit: qza
-    path "*.version.txt"       , emit: version
+    path "*.version.txt" , emit: version
 
     script:
     def software      = getSoftwareName(task.process)
@@ -113,7 +108,7 @@ process QIIME2_EXTRACT {
     
     output:
     tuple val(meta), path("*.qza"), emit: qza
-    path "*.version.txt"       , emit: version
+    path "*.version.txt"          , emit: version
 
     script:
     def software      = getSoftwareName(task.process)
@@ -154,7 +149,7 @@ process QIIME2_TRAIN {
     
     output:
     path("*-classifier.qza"), emit: qza
-    path "*.version.txt"       , emit: version
+    path "*.version.txt"    , emit: version
 
     script:
     def software      = getSoftwareName(task.process)
@@ -186,7 +181,7 @@ process QIIME2_CLASSIFY {
     output:
     path("taxonomy.qza"), emit: qza
     path("taxonomy.tsv"), emit: tsv
-    path "*.version.txt"       , emit: version
+    path "*.version.txt", emit: version
 
     script:
     def software      = getSoftwareName(task.process)
@@ -299,9 +294,11 @@ process QIIME2_BARPLOT {
 	path(taxonomy)
 
 	output:
-	path("barplot/*"), emit: folder
+	path("barplot/*")   , emit: folder
+    path "*.version.txt", emit: version
 
-    script:  
+    script:
+    def software     = getSoftwareName(task.process)
 	"""
 	qiime taxa barplot  \
 		--i-table ${table}  \
@@ -311,6 +308,8 @@ process QIIME2_BARPLOT {
 		--verbose
 	qiime tools export --input-path taxa-bar-plots.qzv  \
 		--output-path barplot
+
+    echo \$(qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g") > ${software}.version.txt
 	"""
 }
 
@@ -329,14 +328,16 @@ process QIIME2_EXPORT_ABSOLUTE {
 	path(taxonomy)
 
 	output:
-	path("rep-seq.fasta"), emit: fasta
-	path("feature-table.tsv"), emit: tsv
-	path("feature-table.biom"), emit: biom
-	path("seven_number_summary.tsv")
-    path("descriptive_stats.tsv")
-	path("abs-abund-table-*.tsv")
+	path("rep-seq.fasta")            , emit: fasta
+	path("feature-table.tsv")        , emit: tsv
+	path("feature-table.biom")       , emit: biom
+	path("seven_number_summary.tsv") , emit: summary
+    path("descriptive_stats.tsv")    , emit: descr
+	path("abs-abund-table-*.tsv")    , emit: abundtable
+    path "*.version.txt"             , emit: version
 
     script:
+    def software     = getSoftwareName(task.process)
 	"""
 	#produce raw count table in biom format "table/feature-table.biom"
 	qiime tools export --input-path ${table}  \
@@ -375,6 +376,8 @@ process QIIME2_EXPORT_ABSOLUTE {
 			-i table-\$i/feature-table.biom \
 			-o abs-abund-table-\$i.tsv --to-tsv
 	done
+
+    echo \$(qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g") > ${software}.version.txt
 	"""
 }
 
@@ -392,8 +395,10 @@ process QIIME2_EXPORT_RELASV {
 
 	output:
 	path("rel-table-ASV.tsv"), emit: tsv
+    path "*.version.txt"     , emit: version
 
     script:
+    def software     = getSoftwareName(task.process)
 	"""
 	#convert to relative abundances
 	qiime feature-table relative-frequency \
@@ -406,6 +411,8 @@ process QIIME2_EXPORT_RELASV {
 	#convert to tab separated text file "rel-table-ASV.tsv"
 	biom convert -i relative-table-ASV/feature-table.biom \
 		-o rel-table-ASV.tsv --to-tsv
+
+    echo \$(qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g") > ${software}.version.txt
 	"""
 }
 
@@ -423,11 +430,11 @@ process QIIME2_EXPORT_RELTAX {
 	path(taxonomy)
 
 	output:
-	path("*.tsv")
+	path("*.tsv")        , emit: tsv
+    path "*.version.txt" , emit: version
 
-	when:
-	!params.skip_abundance_tables && !params.skip_taxonomy
-
+    script:
+    def software     = getSoftwareName(task.process)
 	"""
 	##on several taxa level
 	array=( 2 3 4 5 6 )
@@ -452,5 +459,7 @@ process QIIME2_EXPORT_RELTAX {
 			-i relative-table-\$i/feature-table.biom \
 			-o rel-table-\$i.tsv --to-tsv
 	done
+
+    echo \$(qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g") > ${software}.version.txt
 	"""
 }

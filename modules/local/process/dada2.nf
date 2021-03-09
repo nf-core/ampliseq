@@ -22,9 +22,9 @@ process DADA2_QUALITY {
     tuple val(meta), path(reads)
     
     output:
-    path "${meta}_qual_stats.pdf", emit: pdf
-    tuple val(meta), path("*_qual_stats.tsv")       , emit: tsv
-    path "*.args.txt", emit: args
+    path "${meta}_qual_stats.pdf"            , emit: pdf
+    tuple val(meta), path("*_qual_stats.tsv"), emit: tsv
+    path "*.args.txt"                        , emit: args
 
     script:
     """
@@ -51,17 +51,17 @@ process DADA2_FILTNTRIM {
     tuple val(meta), path(reads), val(trunclenf), val(trunclenr)
     
     output:
-    tuple val(meta), path("${meta.id}.filter_stats.tsv"), emit: log
-    tuple val(meta), path("*.filt.fastq.gz"), emit: reads
-    path "*.version.txt"       , emit: version
-    path "*.args.txt", emit: args
+    tuple val(meta), path("*.filter_stats.tsv"), emit: log
+    tuple val(meta), path("*.filt.fastq.gz")   , emit: reads
+    path "*.version.txt"                       , emit: version
+    path "*.args.txt"                          , emit: args
 
     script:
-    def software      = getSoftwareName(task.process)
+    def software    = getSoftwareName(task.process)
     def in_and_out  = meta.single_end ? "\"${reads}\", \"${meta.id}.filt.fastq.gz\"" : "\"${reads[0]}\", \"${meta.id}_1.filt.fastq.gz\", \"${reads[1]}\", \"${meta.id}_2.filt.fastq.gz\""
-    def trunclenf = trunclenf[1].toInteger()
-    def trunclenr = trunclenr[1].toInteger()
-    def trunc_args = meta.single_end ? "truncLen = $trunclenf" : "truncLen = c($trunclenf, $trunclenr)"
+    def trunclenf   = trunclenf[1].toInteger()
+    def trunclenr   = trunclenr[1].toInteger()
+    def trunc_args  = meta.single_end ? "truncLen = $trunclenf" : "truncLen = c($trunclenf, $trunclenr)"
     """
     #!/usr/bin/env Rscript
     suppressPackageStartupMessages(library(dada2))
@@ -99,9 +99,9 @@ process DADA2_ERR {
     
     output:
     tuple val(meta), path("*.err.rds"), emit: errormodel
-    path("*.err.pdf"), emit: pdf
-    path "*.version.txt"       , emit: version
-    path "*.args.txt", emit: args
+    tuple val(meta), path("*.err.pdf"), emit: pdf
+    path "*.version.txt"              , emit: version
+    path "*.args.txt"                 , emit: args
 
     script:
     def software      = getSoftwareName(task.process)
@@ -165,7 +165,7 @@ process DADA2_DEREPLICATE {
     
     output:
     tuple val(meta), path("*.derep.rds"), emit: dereplicated
-    path "*.version.txt"       , emit: version
+    path "*.version.txt"                , emit: version
 
     script:
     def software      = getSoftwareName(task.process)
@@ -217,11 +217,11 @@ process DADA2_DENOISING {
     tuple val(meta), path(dereplicated), path(errormodel)
     
     output:
-    tuple val(meta), path("*.dada.rds"), emit: denoised
-    tuple val(meta), path("*.seqtab.rds"), emit: seqtab
+    tuple val(meta), path("*.dada.rds")   , emit: denoised
+    tuple val(meta), path("*.seqtab.rds") , emit: seqtab
     tuple val(meta), path("*.mergers.rds"), emit: mergers
-    path "*.version.txt"       , emit: version
-    path "*.args.txt", emit: args
+    path "*.version.txt"                  , emit: version
+    path "*.args.txt"                     , emit: args
 
     script:
     def software      = getSoftwareName(task.process)
@@ -296,8 +296,8 @@ process DADA2_RMCHIMERA {
     
     output:
     tuple val(meta), path("*.ASVtable.rds"), emit: rds
-    path "*.version.txt"       , emit: version
-    path "*.args.txt", emit: args
+    path "*.version.txt"                   , emit: version
+    path "*.args.txt"                      , emit: args
 
     script:
     def software      = getSoftwareName(task.process)
@@ -338,7 +338,7 @@ process DADA2_STATS {
     
     output:
     tuple val(meta), path("*.stats.tsv"), emit: stats
-    path "*.version.txt"       , emit: version
+    path "*.version.txt"                , emit: version
 
     script:
     def software      = getSoftwareName(task.process)
@@ -437,10 +437,10 @@ process DADA2_MERGE {
     output:
     path( "DADA2_stats.tsv" ), emit: dada2stats
     path( "DADA2_table.tsv" ), emit: dada2asv
-    path( "ASV_table.tsv" ), emit: asv
-    path( "ASV_seqs.fasta" ), emit: fasta
+    path( "ASV_table.tsv" )  , emit: asv
+    path( "ASV_seqs.fasta" ) , emit: fasta
     path( "DADA2_table.rds" ), emit: rds
-    path "*.version.txt"       , emit: version
+    path "*.version.txt"     , emit: version
 
     script:
     def software      = getSoftwareName(task.process)
@@ -513,8 +513,8 @@ process DADA2_TAXONOMY {
     output:
     path( "ASV_tax.tsv" ), emit: tsv
     path( "ASV_tax.rds" ), emit: rds
-    path "*.version.txt"       , emit: version
-    path "*.args.txt", emit: args
+    path "*.version.txt" , emit: version
+    path "*.args.txt"    , emit: args
 
     script:
     def software      = getSoftwareName(task.process)
@@ -555,8 +555,8 @@ process DADA2_ADDSPECIES {
     
     output:
     path( "ASV_tax_species.tsv" ), emit: tsv
-    path "*.version.txt"       , emit: version
-    path "*.args.txt", emit: args
+    path "*.version.txt"         , emit: version
+    path "*.args.txt"            , emit: args
 
     script:
     def software      = getSoftwareName(task.process)

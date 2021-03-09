@@ -160,6 +160,7 @@ include { QIIME2_FILTERTAXA             } from './modules/local/process/qiime2' 
 include { QIIME2_INASV                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_inasv']         )
 include { FILTER_STATS                  } from './modules/local/process/filter_stats'                 //addParams( options: modules['filter_stats']         )
 include { QIIME2_BARPLOT                } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_barplot']         )
+include { QIIME2_EXPORT                 } from './modules/local/subworkflow/qiime2_export'            addParams( absolute_options: modules['qiime2_export_absolute'], relasv_options: modules['qiime2_export_relasv'],reltax_options: modules['qiime2_export_reltax'],combine_table_options: modules['combine_table']         )
 include { QIIME2_INTAX                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_intax']         )
 include { MULTIQC                       } from './modules/local/process/multiqc'                      addParams( options: multiqc_options                 )
 include { GET_SOFTWARE_VERSIONS         } from './modules/local/process/get_software_versions'        addParams( options: [publish_files : ['csv':'']]    )
@@ -391,10 +392,7 @@ workflow AMPLISEQ {
 			ch_seq = QIIME2_INSEQ.out.qza
 		}
 		//Export various ASV tables
-			//export_filtered_dada_output (optional)
-			//RelativeAbundanceASV (optional)
-			//RelativeAbundanceReducedTaxa (optional)
-			//combinetable.r (optional), seems similar to DADA2_table.tsv but with additionally taxonomy merged
+		QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, QIIME2_TAXONOMY.out.tsv )
 
 		QIIME2_BARPLOT ( ch_metadata, ch_asv, ch_tax )
 

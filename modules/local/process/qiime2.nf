@@ -437,7 +437,7 @@ process QIIME2_EXPORT_RELTAX {
     def software     = getSoftwareName(task.process)
 	"""
 	##on several taxa level
-	array=( 2 3 4 5 6 )
+	array=( 2 3 4 5 6 7 )
 
 	for i in \${array[@]}
 	do
@@ -484,7 +484,6 @@ process QIIME2_TREE {
     script:
     def software     = getSoftwareName(task.process) 
 	"""
-	export HOME="\${PWD}/HOME"
 	qiime alignment mafft \
 		--i-sequences ${repseq} \
 		--o-alignment aligned-rep-seqs.qza \

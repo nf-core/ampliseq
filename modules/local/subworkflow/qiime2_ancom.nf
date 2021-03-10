@@ -30,7 +30,6 @@ workflow QIIME2_ANCOM {
     }
 
     //ANCOM on various taxonomic levels
-    //TODO: this part might benefit also other subworkflows/processes, such as QIIME2_EXPORT
     ch_taxlevel = Channel.from( 2, 3, 4, 5, 6 )
     ch_metadata
         .combine( QIIME2_FILTERASV.out.qza.flatten() )

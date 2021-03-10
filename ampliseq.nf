@@ -140,9 +140,10 @@ include { QIIME2_FILTERTAXA             } from './modules/local/process/qiime2' 
 include { QIIME2_INASV                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_inasv']         )
 include { FILTER_STATS                  } from './modules/local/process/filter_stats'                 addParams( options: modules['filter_stats']         )
 include { QIIME2_BARPLOT                } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_barplot']       )
-include { QIIME2_EXPORT                 } from './modules/local/subworkflow/qiime2_export'            addParams( absolute_options: modules['qiime2_export_absolute'], relasv_options: modules['qiime2_export_relasv'],reltax_options: modules['qiime2_export_reltax'],combine_table_options: modules['combine_table']         )
+include { QIIME2_EXPORT                 } from './modules/local/subworkflow/qiime2_export'            addParams( absolute_options: modules['qiime2_export_absolute'], relasv_options: modules['qiime2_export_relasv'],reltax_options: modules['qiime2_export_reltax'],combine_table_options: modules['combine_table'] )
 include { METADATA_ALL                  } from './modules/local/process/metadata_all'
 include { METADATA_PAIRWISE             } from './modules/local/process/metadata_pairwise'
+include { QIIME2_DIVERSITY              } from './modules/local/subworkflow/qiime2_diversity'         addParams( tree_options: modules['qiime2_tree'], alphararefaction_options: modules['qiime2_alphararefaction'], diversity_core_options: modules['qiime2_diversity_core'], diversity_alpha_options: modules['qiime2_diversity_alpha'], diversity_beta_options: modules['qiime2_diversity_beta'], diversity_betaord_options: modules['qiime2_diversity_betaord'] )
 include { QIIME2_INTAX                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_intax']         )
 include { MULTIQC                       } from './modules/local/process/multiqc'                      addParams( options: multiqc_options                 )
 include { GET_SOFTWARE_VERSIONS         } from './modules/local/process/get_software_versions'        addParams( options: [publish_files : ['csv':'']]    )
@@ -390,18 +391,21 @@ workflow AMPLISEQ {
 		//Select metadata categories for diversity analysis & ancom
 		if (!params.skip_ancom || !params.skip_diversity_indices) {
 			METADATA_ALL ( ch_metadata, params.metadata_category )
+			METADATA_PAIRWISE ( ch_metadata )
 		}
 
-		//Calculate diversity indices
-		if (!params.skip_diversity_indices) {
-			METADATA_PAIRWISE ( ch_metadata )
-			//Diversities
-				//TREE ( ch_seq ) //-> required for diversity indices
-				//alpha_rarefaction ( ch_metadata, ch_asv, QIIME2_TREE.out.qza, maxdepth=\$(count_table_minmax_reads.py "QIIME2_FILTERTAXA.out.tsv" maximum 2>&1) )
-				//diversity_core ( ch_metadata, ch_asv, QIIME2_TREE.out.qza, mindepth=\$(count_table_minmax_reads.py "QIIME2_FILTERTAXA.out.tsv" minimum 2>&1) )
-				//alpha_diversity ( ch_metadata, DIVERSITY_CORE.out.qza, METADATA_PAIRWISE.out.categories )
-				//beta_diversity ( ch_metadata, DIVERSITY_CORE.out.qza, METADATA_PAIRWISE.out.categories )
-				//beta_diversity_ordination ( ch_metadata, DIVERSITY_CORE.out.qza )
+		//Diversity indices
+		if (!params.skip_alpha_rarefaction || !params.skip_diversity_indices) {
+			QIIME2_DIVERSITY ( 
+				ch_metadata,
+				ch_asv,
+				ch_seq,
+				QIIME2_FILTERTAXA.out.tsv,
+				METADATA_PAIRWISE.out,
+				METADATA_ALL.out,
+				params.skip_alpha_rarefaction,
+				params.skip_diversity_indices
+			)
 		}
 		/*
 		//Perform ANCOM tests

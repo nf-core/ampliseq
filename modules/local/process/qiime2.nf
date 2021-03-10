@@ -463,3 +463,247 @@ process QIIME2_EXPORT_RELTAX {
     echo \$(qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g") > ${software}.version.txt
 	"""
 }
+
+process QIIME2_TREE {
+    label 'process_medium'
+    publishDir "${params.outdir}",
+        mode: params.publish_dir_mode,
+        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
+
+    conda (params.enable_conda ? { exit 1 "QIIME2 has no conda package" } : null)
+    container "quay.io/qiime2/core:2021.2"
+
+	input:
+	path(repseq)
+
+	output:
+	path("rooted-tree.qza"), emit: qza
+	path("tree.nwk")       , emit: nwk
+    path "*.version.txt"   , emit: version
+
+    script:
+    def software     = getSoftwareName(task.process) 
+	"""
+	export HOME="\${PWD}/HOME"
+	qiime alignment mafft \
+		--i-sequences ${repseq} \
+		--o-alignment aligned-rep-seqs.qza \
+		--p-n-threads ${task.cpus}
+	qiime alignment mask \
+		--i-alignment aligned-rep-seqs.qza \
+		--o-masked-alignment masked-aligned-rep-seqs.qza
+	qiime phylogeny fasttree \
+		--i-alignment masked-aligned-rep-seqs.qza \
+		--p-n-threads ${task.cpus} \
+		--o-tree unrooted-tree.qza
+	qiime phylogeny midpoint-root \
+		--i-tree unrooted-tree.qza \
+		--o-rooted-tree rooted-tree.qza
+	qiime tools export --input-path rooted-tree.qza  \
+		--output-path phylogenetic_tree
+    cp phylogenetic_tree/tree.nwk .
+
+    echo \$(qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g") > ${software}.version.txt
+	"""
+}
+
+process QIIME2_ALPHARAREFACTION {
+    label 'process_low'
+    publishDir "${params.outdir}",
+        mode: params.publish_dir_mode,
+        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
+
+    conda (params.enable_conda ? { exit 1 "QIIME2 has no conda package" } : null)
+    container "quay.io/qiime2/core:2021.2"
+
+	input:
+	path(metadata)
+	path(table)
+	path(tree)
+	path(stats)
+
+	output:
+	path("alpha-rarefaction/*"), emit: rarefaction
+    path "*.version.txt"       , emit: version
+
+    script:
+    def software     = getSoftwareName(task.process) 
+	"""
+	maxdepth=\$(count_table_minmax_reads.py $stats maximum 2>&1)
+
+	#check values
+	if [ \"\$maxdepth\" -gt \"75000\" ]; then maxdepth=\"75000\"; fi
+	if [ \"\$maxdepth\" -gt \"5000\" ]; then maxsteps=\"250\"; else maxsteps=\$((maxdepth/20)); fi
+	qiime diversity alpha-rarefaction  \
+		--i-table ${table}  \
+		--i-phylogeny ${tree}  \
+		--p-max-depth \$maxdepth  \
+		--m-metadata-file ${metadata}  \
+		--p-steps \$maxsteps  \
+		--p-iterations 10  \
+		--o-visualization alpha-rarefaction.qzv
+	qiime tools export --input-path alpha-rarefaction.qzv  \
+		--output-path alpha-rarefaction
+
+    echo \$(qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g") > ${software}.version.txt
+	"""
+}
+
+process QIIME2_DIVERSITY_CORE {
+    label 'process_low'
+    publishDir "${params.outdir}",
+        mode: params.publish_dir_mode,
+        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
+
+    conda (params.enable_conda ? { exit 1 "QIIME2 has no conda package" } : null)
+    container "quay.io/qiime2/core:2021.2"
+
+	input:
+	path(metadata)
+	path(table)
+	path(tree)
+	path(stats)
+
+	output:
+	path("diversity_core/*_pcoa_results.qza")   , emit: pcoa
+	path("diversity_core/*_vector.qza")         , emit: vector
+	path("diversity_core/*_distance_matrix.qza"), emit: distance
+    path "*.version.txt"                        , emit: version
+	path("*rarefaction.txt")                    , emit: depth
+
+    script:
+    def software     = getSoftwareName(task.process) 
+	"""
+	mindepth=\$(count_table_minmax_reads.py $stats minimum 2>&1)
+	if [ \"\$mindepth\" -gt \"10000\" ]; then echo \$mindepth >\"Use the sampling depth of \$mindepth for rarefaction.txt\" ; fi
+	if [ \"\$mindepth\" -lt \"10000\" -a \"\$mindepth\" -gt \"5000\" ]; then echo \$mindepth >\"WARNING The sampling depth of \$mindepth is quite small for rarefaction.txt\" ; fi
+	if [ \"\$mindepth\" -lt \"5000\" -a \"\$mindepth\" -gt \"1000\" ]; then echo \$mindepth >\"WARNING The sampling depth of \$mindepth is very small for rarefaction.txt\" ; fi
+	if [ \"\$mindepth\" -lt \"1000\" ]; then echo \$mindepth >\"WARNING The sampling depth of \$mindepth seems too small for rarefaction.txt\" ; fi
+	
+	qiime diversity core-metrics-phylogenetic \
+		--m-metadata-file ${metadata} \
+		--i-phylogeny ${tree} \
+		--i-table ${table} \
+		--p-sampling-depth \$mindepth \
+		--output-dir diversity_core \
+		--p-n-jobs-or-threads ${task.cpus} \
+		--verbose
+
+    echo \$(qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g") > ${software}.version.txt
+	"""
+}
+
+process QIIME2_DIVERSITY_ALPHA {
+    tag "${core.baseName}"
+    label 'process_low'
+    publishDir "${params.outdir}",
+        mode: params.publish_dir_mode,
+        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
+
+    conda (params.enable_conda ? { exit 1 "QIIME2 has no conda package" } : null)
+    container "quay.io/qiime2/core:2021.2"
+
+	input:
+    tuple path(metadata), path(core), val(category)
+
+	output:
+	path("alpha_diversity/*"), emit: alpha
+    path "*.version.txt"     , emit: version
+
+    script:
+    def software     = getSoftwareName(task.process)
+    if ( category.length() > 0 ) {
+        """
+        qiime diversity alpha-group-significance \
+            --i-alpha-diversity ${core} \
+            --m-metadata-file ${metadata} \
+            --o-visualization ${core.baseName}-vis.qzv
+        qiime tools export --input-path ${core.baseName}-vis.qzv \
+            --output-path "alpha_diversity/${core.baseName}"
+
+        echo \$(qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g") > ${software}.version.txt
+        """
+    } else {
+        """
+        mkdir alpha_diversity
+        echo "" > "alpha_diversity/No column in ${metadata.baseName} seemed suitable.txt
+        echo \$(qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g") > ${software}.version.txt
+        """        
+    }
+}
+
+process QIIME2_DIVERSITY_BETA {
+    tag "${core.baseName}"
+    label 'process_low'
+    publishDir "${params.outdir}",
+        mode: params.publish_dir_mode,
+        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
+
+    conda (params.enable_conda ? { exit 1 "QIIME2 has no conda package" } : null)
+    container "quay.io/qiime2/core:2021.2"
+
+	input:
+    tuple path(metadata), path(core), val(category)
+
+	output:
+	path("beta_diversity/*"), emit: beta
+    path "*.version.txt"    , emit: version
+
+    script:
+    def software     = getSoftwareName(task.process)
+    if ( category.length() > 0 ) {
+        """
+        IFS=',' read -r -a metacategory <<< \"$category\"
+        for j in \"\${metacategory[@]}\"
+        do
+            qiime diversity beta-group-significance \
+                --i-distance-matrix ${core} \
+                --m-metadata-file ${metadata} \
+                --m-metadata-column \"\$j\" \
+                --o-visualization ${core.baseName}-\$j.qzv \
+                --p-pairwise
+            qiime tools export --input-path ${core.baseName}-\$j.qzv \
+                --output-path beta_diversity/${core.baseName}-\$j
+        done
+
+        echo \$(qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g") > ${software}.version.txt
+        """
+    } else {
+        """
+        mkdir beta_diversity
+        echo "" > "beta_diversity/No column in ${metadata.baseName} seemed suitable.txt
+        echo \$(qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g") > ${software}.version.txt
+        """        
+    }
+}
+
+process QIIME2_DIVERSITY_BETAORD {
+    tag "${core.baseName}"
+    label 'process_low'
+    publishDir "${params.outdir}",
+        mode: params.publish_dir_mode,
+        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
+
+    conda (params.enable_conda ? { exit 1 "QIIME2 has no conda package" } : null)
+    container "quay.io/qiime2/core:2021.2"
+
+	input:
+    tuple path(metadata), path(core)
+
+	output:
+	path("beta_diversity/*"), emit: beta
+    path "*.version.txt"    , emit: version
+
+    script:
+    def software     = getSoftwareName(task.process) 
+	"""
+	qiime emperor plot \
+		--i-pcoa ${core} \
+		--m-metadata-file ${metadata} \
+		--o-visualization ${core.baseName}-vis.qzv
+	qiime tools export --input-path ${core.baseName}-vis.qzv \
+		--output-path beta_diversity/${core.baseName}-PCoA
+
+    echo \$(qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g") > ${software}.version.txt
+	"""
+}

@@ -354,7 +354,7 @@ workflow AMPLISEQ {
 			ch_qiime_classifier
 		)
 		ch_tax = QIIME2_TAXONOMY.out.qza
-		ch_software_versions = ch_software_versions.mix( QIIME2_TAXONOMY.out.version.first().ifEmpty(null) ) //TODO: usually a .first() is here, dont know why this leads here to a warning
+		ch_software_versions = ch_software_versions.mix( QIIME2_TAXONOMY.out.version.ifEmpty(null) ) //usually a .first() is here, dont know why this leads here to a warning
 	}
     /*
      * SUBWORKFLOW / MODULES : Downstream analysis with QIIME2

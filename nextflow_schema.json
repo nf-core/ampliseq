@@ -51,9 +51,9 @@
                 }
             },
             "required": [
+                "input",
                 "FW_primer",
-                "RV_primer",
-                "input"
+                "RV_primer"
             ],
             "fa_icon": "fas fa-terminal"
         },
@@ -147,10 +147,6 @@
                     "description": "Path to QIIME2 trained classifier file (typically *-classifier.qza)",
                     "help_text": "If you have trained a compatible classifier before, from sources such as SILVA (https://www.arb-silva.de/), Greengenes (http://greengenes.secondgenome.com/downloads) or RDP (https://rdp.cme.msu.edu/). \n\nFor example:\n\n```bash\n--classifier \"FW_primer-RV_primer-classifier.qza\"\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The classifier is a Naive Bayes classifier produced by \"qiime feature-classifier fit-classifier-naive-bayes\" (e.g. by this pipeline or from (https://docs.qiime2.org/2019.10/data-resources/))\n3. The primer pair for the amplicon PCR and the computing of the classifier are exactly the same (or fulllength, potentially lower performance)\n4. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses (0.21.2)"
                 },
-                "classifier_removeHash": {
-                    "type": "boolean",
-                    "description": "Remove all hash signs from taxonomy strings, resolves a rare ValueError during classification (process classifier)"
-                },
                 "dereplication": {
                     "type": "integer",
                     "default": 99,
@@ -218,10 +214,6 @@
                     "type": "boolean",
                     "description": "If PacBio data. Use this option together with --manifest"
                 },
-                "phred64": {
-                    "type": "boolean",
-                    "description": "If the sequencing data has PHRED 64 encoded quality scores, otherwise PHRED 33 is assumed"
-                },
                 "extension": {
                     "type": "string",
                     "default": "/*_R{1,2}_001.fastq.gz",
@@ -240,12 +232,6 @@
                     "fa_icon": "fas fa-envelope",
                     "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
                     "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
-                },
-                "qiime_timezone": {
-                    "type": "string",
-                    "default": "Europe/Berlin",
-                    "description": "Needs to be specified to resolve a timezone error",
-                    "help_text": "If a timezone error occurs, this parameter needs to be specified (default: 'Europe/Berlin'). Find your appropriate timezone with e.g. tzselect.\nNote, this affects the timezone of the entire software environment."
                 },
                 "keepIntermediates": {
                     "type": "boolean",
@@ -498,10 +484,24 @@
                     "fa_icon": "fas fa-file-csv",
                     "hidden": true
                 },
+                "phred64": {
+                    "type": "boolean",
+                    "description": "If the sequencing data has PHRED 64 encoded quality scores, otherwise PHRED 33 is assumed"
+                },
                 "untilQ2import": {
                     "type": "boolean",
                     "description": "Skip all steps after importing into QIIME2, used for visually choosing DADA2 parameter `--trunclenf` and `--trunclenr`",
                     "hidden": true
+                },
+                "qiime_timezone": {
+                    "type": "string",
+                    "default": "Europe/Berlin",
+                    "description": "Needs to be specified to resolve a timezone error",
+                    "help_text": "If a timezone error occurs, this parameter needs to be specified (default: 'Europe/Berlin'). Find your appropriate timezone with e.g. tzselect.\nNote, this affects the timezone of the entire software environment."
+                },
+                "classifier_removeHash": {
+                    "type": "boolean",
+                    "description": "Remove all hash signs from taxonomy strings, resolves a rare ValueError during classification (process classifier)"
                 },
                 "readPaths": {
                     "type": "string",

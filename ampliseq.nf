@@ -144,6 +144,7 @@ include { QIIME2_EXPORT                 } from './modules/local/subworkflow/qiim
 include { METADATA_ALL                  } from './modules/local/process/metadata_all'
 include { METADATA_PAIRWISE             } from './modules/local/process/metadata_pairwise'
 include { QIIME2_DIVERSITY              } from './modules/local/subworkflow/qiime2_diversity'         addParams( tree_options: modules['qiime2_tree'], alphararefaction_options: modules['qiime2_alphararefaction'], diversity_core_options: modules['qiime2_diversity_core'], diversity_alpha_options: modules['qiime2_diversity_alpha'], diversity_beta_options: modules['qiime2_diversity_beta'], diversity_betaord_options: modules['qiime2_diversity_betaord'] )
+include { QIIME2_ANCOM                  } from './modules/local/subworkflow/qiime2_ancom'             addParams( filterasv_options: modules['qiime2_filterasv'], ancom_tax_options: modules['qiime2_ancom_tax'], ancom_asv_options: modules['qiime2_ancom_asv'] )
 include { QIIME2_INTAX                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_intax']         )
 include { MULTIQC                       } from './modules/local/process/multiqc'                      addParams( options: multiqc_options                 )
 include { GET_SOFTWARE_VERSIONS         } from './modules/local/process/get_software_versions'        addParams( options: [publish_files : ['csv':'']]    )
@@ -407,15 +408,16 @@ workflow AMPLISEQ {
 				params.skip_diversity_indices
 			)
 		}
-		/*
+		
 		//Perform ANCOM tests
 		if (!params.skip_ancom) {	
-			//ANCOM -> samples with empty column should be removed to allow for sub-table comparisons 
-				//prepare_ancom ( ch_metadata, ch_asv, METADATA_PAIRWISE.out.categories  )
-				//ancom_tax
-				//ancom_asv
+			QIIME2_ANCOM (
+				ch_metadata,
+				ch_asv,
+				METADATA_ALL.out,
+				ch_tax
+			)
 		}
-		*/
 	}
 
     /*

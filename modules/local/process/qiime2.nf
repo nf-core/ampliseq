@@ -626,7 +626,7 @@ process QIIME2_DIVERSITY_ALPHA {
     } else {
         """
         mkdir alpha_diversity
-        echo "" > "alpha_diversity/No column in ${metadata.baseName} seemed suitable.txt
+        echo "" > "alpha_diversity/WARNING No column in ${metadata.baseName} seemed suitable.txt"
         echo \$(qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g") > ${software}.version.txt
         """        
     }
@@ -671,7 +671,7 @@ process QIIME2_DIVERSITY_BETA {
     } else {
         """
         mkdir beta_diversity
-        echo "" > "beta_diversity/No column in ${metadata.baseName} seemed suitable.txt
+        echo "" > "beta_diversity/WARNING No column in ${metadata.baseName} seemed suitable.txt"
         echo \$(qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g") > ${software}.version.txt
         """        
     }
@@ -706,4 +706,125 @@ process QIIME2_DIVERSITY_BETAORD {
 
     echo \$(qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g") > ${software}.version.txt
 	"""
+}
+
+process QIIME2_FILTERASV {
+    tag "${category}"
+    label 'process_low'
+    publishDir "${params.outdir}",
+        mode: params.publish_dir_mode,
+        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
+
+    conda (params.enable_conda ? { exit 1 "QIIME2 has no conda package" } : null)
+    container "quay.io/qiime2/core:2021.2"
+
+	input:
+    path(metadata)
+    path(table)
+    val(category)
+
+	output:
+	path("*.qza")       , emit: qza
+    path "*.version.txt", emit: version
+
+    script:
+    def software     = getSoftwareName(task.process)
+    if ( category.length() > 0 ) {
+        """
+        IFS=',' read -r -a metacategory <<< \"$category\"
+
+        #remove samples that do not have any value
+        for j in \"\${metacategory[@]}\"
+        do
+            qiime feature-table filter-samples \
+                --i-table ${table} \
+                --m-metadata-file ${metadata} \
+                --p-where \"\$j<>\'\'\" \
+                --o-filtered-table \$j.qza
+        done
+
+        echo \$(qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g") > ${software}.version.txt
+        """
+    } else {
+        """
+        mkdir beta_diversity
+        echo "" > "WARNING No column in ${metadata.baseName} seemed suitable.qza"
+        echo \$(qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g") > ${software}.version.txt
+        """        
+    }
+}
+
+process QIIME2_ANCOM_TAX {
+    tag "${table.baseName} - taxonomic level: ${taxlevel}"
+    label 'process_medium'
+    publishDir "${params.outdir}",
+        mode: params.publish_dir_mode,
+        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
+
+    conda (params.enable_conda ? { exit 1 "QIIME2 has no conda package" } : null)
+    container "quay.io/qiime2/core:2021.2"
+
+	input:
+    tuple path(metadata), path(table), path(taxonomy) ,val(taxlevel)
+
+	output:
+	path("ancom/*")     , emit: ancom
+    path "*.version.txt", emit: version
+
+    script:
+    def software     = getSoftwareName(task.process)
+    """
+	qiime taxa collapse \
+		--i-table ${table} \
+		--i-taxonomy ${taxonomy} \
+		--p-level ${taxlevel} \
+		--o-collapsed-table lvl${taxlevel}-${table}
+	qiime composition add-pseudocount \
+		--i-table lvl${taxlevel}-${table} \
+		--o-composition-table comp-lvl${taxlevel}-${table}
+	qiime composition ancom \
+		--i-table comp-lvl${taxlevel}-${table} \
+		--m-metadata-file ${metadata} \
+		--m-metadata-column ${table.baseName} \
+		--o-visualization comp-lvl${taxlevel}-${table.baseName}.qzv
+	qiime tools export --input-path comp-lvl${taxlevel}-${table.baseName}.qzv \
+		--output-path ancom/Category-${table.baseName}-level-${taxlevel}
+
+    echo \$(qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g") > ${software}.version.txt
+    """
+}
+
+process QIIME2_ANCOM_ASV {
+    tag "${table.baseName}"
+    label 'process_medium'
+    publishDir "${params.outdir}",
+        mode: params.publish_dir_mode,
+        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
+
+    conda (params.enable_conda ? { exit 1 "QIIME2 has no conda package" } : null)
+    container "quay.io/qiime2/core:2021.2"
+
+	input:
+    tuple path(metadata), path(table)
+
+	output:
+	path("ancom/*")     , emit: ancom
+    path "*.version.txt", emit: version
+
+    script:
+    def software     = getSoftwareName(task.process)
+    """
+	qiime composition add-pseudocount \
+		--i-table ${table} \
+		--o-composition-table comp-${table}
+	qiime composition ancom \
+		--i-table comp-${table} \
+		--m-metadata-file ${metadata} \
+		--m-metadata-column ${table.baseName} \
+		--o-visualization comp-${table.baseName}.qzv
+	qiime tools export --input-path comp-${table.baseName}.qzv \
+		--output-path ancom/Category-${table.baseName}-ASV
+
+    echo \$(qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g") > ${software}.version.txt
+    """
 }

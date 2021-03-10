@@ -16,13 +16,13 @@ data <- data[ , !nums]
 vector <- character()
 for (i in 2:ncol(data)) {
 
-#remove blanks or NA
-cleandata <- data[!(is.na(data[i]) | data[i]==""),]
+    #remove blanks or NA
+    cleandata <- data[!(is.na(data[i]) | data[i]==""),]
 
-#select only columns with multiple different values but not all unique 
-if (nrow(unique(cleandata[i])) > 1 & nrow(unique(cleandata[i])) < nrow(cleandata[i])) {
-    vector <- c(vector, colnames(cleandata[i]))
-}
+    #select only columns with multiple different values but not all unique 
+    if (nrow(unique(cleandata[i])) > 1 & nrow(unique(cleandata[i])) < nrow(cleandata[i])) {
+        vector <- c(vector, colnames(cleandata[i]))
+    }
 }
 vector <- paste(vector, collapse=",")
 cat(vector)

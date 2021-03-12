@@ -100,6 +100,8 @@ process DADA2_ERR {
     output:
     tuple val(meta), path("*.err.rds"), emit: errormodel
     tuple val(meta), path("*.err.pdf"), emit: pdf
+    tuple val(meta), path("*.err.log"), emit: log
+    tuple val(meta), path("*.err.convergence.txt"), emit: convergence
     path "*.version.txt"              , emit: version
     path "*.args.txt"                 , emit: args
 
@@ -113,10 +115,12 @@ process DADA2_ERR {
         fnFs <- sort(list.files(".", pattern = "_1.filt.fastq.gz", full.names = TRUE))
         fnRs <- sort(list.files(".", pattern = "_2.filt.fastq.gz", full.names = TRUE))
 
+        sink(file = "${meta.run}.err.log")
         errF <- learnErrors(fnFs, $options.args, multithread = $task.cpus, verbose = TRUE)
         saveRDS(errF, "${meta.run}_1.err.rds")
         errR <- learnErrors(fnRs, $options.args, multithread = $task.cpus, verbose = TRUE)
         saveRDS(errR, "${meta.run}_2.err.rds")
+        sink(file = NULL)
 
         pdf("${meta.run}_1.err.pdf")
         plotErrors(errF, nominalQ = TRUE)
@@ -124,7 +128,15 @@ process DADA2_ERR {
 
         pdf("${meta.run}_2.err.pdf")
         plotErrors(errR, nominalQ = TRUE)
-        dev.off()        
+        dev.off()
+        
+        sink(file = "${meta.run}_1.err.convergence.txt")
+        dada2:::checkConvergence(errF)
+        sink(file = NULL)
+
+        sink(file = "${meta.run}_2.err.convergence.txt")
+        dada2:::checkConvergence(errR)
+        sink(file = NULL)
 
         write.table('learnErrors\t$options.args', file = "learnErrors.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
         write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
@@ -136,12 +148,18 @@ process DADA2_ERR {
 
         fnFs <- sort(list.files(".", pattern = ".filt.fastq.gz", full.names = TRUE))
 
+        sink(file = "${meta.run}.err.log")
         errF <- learnErrors(fnFs, $options.args, multithread = $task.cpus, verbose = TRUE)
         saveRDS(errF, "${meta.run}.err.rds")
+        sink(file = NULL)
 
         pdf("${meta.run}.err.pdf")
         plotErrors(errF, nominalQ = TRUE)
         dev.off()
+
+        sink(file = "${meta.run}.err.convergence.txt")
+        dada2:::checkConvergence(errF)
+        sink(file = NULL)
 
         write.table('learnErrors\t$options.args', file = "learnErrors.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
         write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
@@ -220,6 +238,7 @@ process DADA2_DENOISING {
     tuple val(meta), path("*.dada.rds")   , emit: denoised
     tuple val(meta), path("*.seqtab.rds") , emit: seqtab
     tuple val(meta), path("*.mergers.rds"), emit: mergers
+    tuple val(meta), path("*.dada.log")   , emit: log
     path "*.version.txt"                  , emit: version
     path "*.args.txt"                     , emit: args
 
@@ -237,10 +256,12 @@ process DADA2_DENOISING {
         derepRs = readRDS("${dereplicated[1]}")
 
         #denoising
+        sink(file = "${meta.run}.dada.log")
         dadaFs <- dada(derepFs, err = errF, $options.args, multithread = $task.cpus)
         saveRDS(dadaFs, "${meta.run}_1.dada.rds")
         dadaRs <- dada(derepRs, err = errR, $options.args, multithread = $task.cpus)
         saveRDS(dadaRs, "${meta.run}_2.dada.rds")
+        sink(file = NULL)
 
         #make table
         mergers <- mergePairs(dadaFs, derepFs, dadaRs, derepRs, $options.args2, verbose=TRUE)
@@ -262,8 +283,10 @@ process DADA2_DENOISING {
         derepFs = readRDS("${dereplicated}")
 
         #denoising
+        sink(file = "${meta.run}.dada.log")
         dadaFs <- dada(derepFs, err = errF, $options.args, multithread = $task.cpus)
         saveRDS(dadaFs, "${meta.run}.dada.rds")
+        sink(file = NULL)
 
         #make table
         seqtab <- makeSequenceTable(dadaFs)

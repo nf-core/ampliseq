@@ -392,8 +392,11 @@ workflow AMPLISEQ {
 
 		//Select metadata categories for diversity analysis & ancom
 		if (!params.skip_ancom || !params.skip_diversity_indices) {
-			METADATA_ALL ( ch_metadata, params.metadata_category )
-			METADATA_PAIRWISE ( ch_metadata )
+			METADATA_ALL ( ch_metadata, params.metadata_category ).set { ch_metacolumn_all }
+			METADATA_PAIRWISE ( ch_metadata ).set { ch_metacolumn_pairwise }
+		} else { 
+			ch_metacolumn_all = Channel.empty()
+			ch_metacolumn_pairwise = Channel.empty()
 		}
 
 		//Diversity indices
@@ -403,8 +406,8 @@ workflow AMPLISEQ {
 				ch_asv,
 				ch_seq,
 				QIIME2_FILTERTAXA.out.tsv,
-				METADATA_PAIRWISE.out,
-				METADATA_ALL.out,
+				ch_metacolumn_pairwise,
+				ch_metacolumn_all,
 				params.skip_alpha_rarefaction,
 				params.skip_diversity_indices
 			)
@@ -415,7 +418,7 @@ workflow AMPLISEQ {
 			QIIME2_ANCOM (
 				ch_metadata,
 				ch_asv,
-				METADATA_ALL.out,
+				ch_metacolumn_all,
 				ch_tax
 			)
 		}

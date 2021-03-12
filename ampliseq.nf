@@ -108,6 +108,7 @@ dada2_err_options.args   += params.pacbio ? ", errorEstimationFunction = PacBioE
 
 def dada2_denoising_options = modules['dada2_denoising']
 dada2_denoising_options.args         += params.sample_inference == "pseudo" ? ", pool = \"pseudo\"" : params.sample_inference == "pooled" ? ", pool = TRUE" : ", pool = FALSE"
+dada2_denoising_options.args2        += params.concatenate_reads ? ", justConcatenate = TRUE" : ", justConcatenate = FALSE"
 
 def dada2_rmchimera_options = modules['dada2_rmchimera']
 

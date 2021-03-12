@@ -2,7 +2,7 @@
 include { initOptions; saveFiles; getSoftwareName } from './functions'
 
 params.options = [:]
-def options    = initOptions(params.options)
+options    = initOptions(params.options)
 
 process DADA2_QUALITY {
     tag "$meta"
@@ -243,12 +243,13 @@ process DADA2_DENOISING {
         saveRDS(dadaRs, "${meta.run}_2.dada.rds")
 
         #make table
-        mergers <- mergePairs(dadaFs, derepFs, dadaRs, derepRs, verbose=TRUE)
+        mergers <- mergePairs(dadaFs, derepFs, dadaRs, derepRs, $options.args2, verbose=TRUE)
         saveRDS(mergers, "${meta.run}.mergers.rds")
         seqtab <- makeSequenceTable(mergers)
         saveRDS(seqtab, "${meta.run}.seqtab.rds")
 
         write.table('dada\t$options.args', file = "dada.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
+        write.table('mergePairs\t$options.args2', file = "mergePairs.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
         write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
         """
     } else {

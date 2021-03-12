@@ -44,10 +44,6 @@
                     "description": "If samples were sequenced in multiple sequencing runs",
                     "help_text": "Expects one sub-folder per sequencing run in the folder specified by `--input` containing sequencing data of the specific run.\nSample IDs are taken from sequencing files, specifically the string before the first underscore will be the sample ID. Sample IDs across all sequencing runs (all sequencing files) have to be unique. If this is not the case, please use a sample sheet as input instead.\n\nExample for input data organization:\n\n```bash\ndata\n  |-run1\n  |  |-sample1_1_L001_R{1,2}_001.fastq.gz\n  |  |-sample2_1_L001_R{1,2}_001.fastq.gz\n  |\n  |-run2\n     |-sample3_1_L001_R{1,2}_001.fastq.gz\n     |-sample4_1_L001_R{1,2}_001.fastq.gz\n```\n\nExample command to analyze this data in one pipeline run:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input \"data\" \\\n    --FW_primer GTGYCAGCMGCCGCGGTAA \\\n    --RV_primer GGACTACNVGGGTWTCTAAT \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multipleSequencingRuns\n```",
                     "fa_icon": "fas fa-running"
-                },
-                "illumina_its": {
-                    "type": "boolean",
-                    "description": "If analysing ITS amplicons or any other region with large length variability with Illumina paired end reads"
                 }
             },
             "required": [
@@ -56,6 +52,61 @@
                 "RV_primer"
             ],
             "fa_icon": "fas fa-terminal"
+        },
+        "other_input_output_options": {
+            "title": "Other input/output options",
+            "type": "object",
+            "fa_icon": "fas fa-terminal",
+            "description": "Define where the pipeline should find input data and save output data.",
+            "properties": {
+                "illumina_its": {
+                    "type": "boolean",
+                    "description": "If analysing ITS amplicons or any other region with large length variability with Illumina paired end reads"
+                },
+                "concatenate_reads": {
+                    "type": "boolean",
+                    "description": "Not recommended: When paired end reads are not sufficiently overlapping for merging.",
+                    "help_text": "This parameters specifies that paired-end reads are not merged after denoising but concatenated (separated by 10 N's). This is of advantage when an amplicon was sequenced that is too long for merging (i.e. bad experimental design). This is an alternative to only analyzing the forward or reverse read in case of non-overlapping paired-end sequencing data.\n\nThis parameter is not recommended to set!"
+                },
+                "sample_inference": {
+                    "type": "string",
+                    "default": "pooled",
+                    "help_text": "If samples are treated independent (lowest sensitivity and lowest resources), pooled (highest sensitivity and resources) or pseudo-pooled (balance between required resources and sensitivity).",
+                    "description": "Mode of sample inference: \"independent\", \"pooled\" or \"pseudo\""
+                },
+                "metadata_category": {
+                    "type": "string",
+                    "description": "Comma separated list of metadata column headers for statistics.",
+                    "help_text": "Here columns in the metadata sheet can be chosen with groupings that are used for diversity indices and differential abundance analysis. By default, all suitable columns in the metadata sheet will be used if this option is not specified. Suitable are columns which are categorical (not numerical) and have multiple different values which are not all unique. For example:\n\n```bash\n--metadata_category \"treatment1,treatment2\"\n```\n\nPlease note the following requirements:\n\n1. Comma separated list enclosed in quotes\n2. May not contain whitespace characters\n3. Each comma separated term has to match exactly one column name in the metadata sheet"
+                },
+                "pacbio": {
+                    "type": "boolean",
+                    "description": "If PacBio data. Use this option together with --manifest"
+                },
+                "extension": {
+                    "type": "string",
+                    "default": "/*_R{1,2}_001.fastq.gz",
+                    "description": "Naming of sequencing files",
+                    "help_text": "Indicates the naming of sequencing files (default: `\"/*_R{1,2}_001.fastq.gz\"`).\n\nPlease note:\n\n1. The prepended slash (`/`) is required\n2. The star (`*`) is the required wildcard for sample names\n3. The curly brackets (`{}`) enclose the orientation for paired end reads, seperated by a comma (`,`).\n4. The pattern must be enclosed in quotes\n\nFor example for one sample (name: `1`) with forward (file: `1_a.fastq.gz`) and reverse (file: `1_b.fastq.gz`) reads in folder `data`:\n\n```bash\n--input \"data\" --extension \"/*_{a,b}.fastq.gz\"\n```"
+                },
+                "outdir": {
+                    "type": "string",
+                    "description": "The output directory where the results will be saved.",
+                    "default": "./results",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "email": {
+                    "type": "string",
+                    "description": "Email address for completion summary.",
+                    "fa_icon": "fas fa-envelope",
+                    "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
+                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
+                },
+                "keepIntermediates": {
+                    "type": "boolean",
+                    "description": "Keep additional intermediate files, such as trimmed reads or various QIIME2 archives"
+                }
+            }
         },
         "cutoffs": {
             "title": "Cutoffs",
@@ -192,52 +243,6 @@
                 }
             },
             "fa_icon": "fas fa-filter"
-        },
-        "other_input_output_options": {
-            "title": "Other input/output options",
-            "type": "object",
-            "fa_icon": "fas fa-terminal",
-            "description": "Define where the pipeline should find input data and save output data.",
-            "properties": {
-                "sample_inference": {
-                    "type": "string",
-                    "default": "pooled",
-                    "help_text": "If samples are treated independent (lowest sensitivity and lowest resources), pooled (highest sensitivity and resources) or pseudo-pooled (balance between required resources and sensitivity).",
-                    "description": "Mode of sample inference: \"independent\", \"pooled\" or \"pseudo\""
-                },
-                "metadata_category": {
-                    "type": "string",
-                    "description": "Comma separated list of metadata column headers for statistics.",
-                    "help_text": "Here columns in the metadata sheet can be chosen with groupings that are used for diversity indices and differential abundance analysis. By default, all suitable columns in the metadata sheet will be used if this option is not specified. Suitable are columns which are categorical (not numerical) and have multiple different values which are not all unique. For example:\n\n```bash\n--metadata_category \"treatment1,treatment2\"\n```\n\nPlease note the following requirements:\n\n1. Comma separated list enclosed in quotes\n2. May not contain whitespace characters\n3. Each comma separated term has to match exactly one column name in the metadata sheet"
-                },
-                "pacbio": {
-                    "type": "boolean",
-                    "description": "If PacBio data. Use this option together with --manifest"
-                },
-                "extension": {
-                    "type": "string",
-                    "default": "/*_R{1,2}_001.fastq.gz",
-                    "description": "Naming of sequencing files",
-                    "help_text": "Indicates the naming of sequencing files (default: `\"/*_R{1,2}_001.fastq.gz\"`).\n\nPlease note:\n\n1. The prepended slash (`/`) is required\n2. The star (`*`) is the required wildcard for sample names\n3. The curly brackets (`{}`) enclose the orientation for paired end reads, seperated by a comma (`,`).\n4. The pattern must be enclosed in quotes\n\nFor example for one sample (name: `1`) with forward (file: `1_a.fastq.gz`) and reverse (file: `1_b.fastq.gz`) reads in folder `data`:\n\n```bash\n--input \"data\" --extension \"/*_{a,b}.fastq.gz\"\n```"
-                },
-                "outdir": {
-                    "type": "string",
-                    "description": "The output directory where the results will be saved.",
-                    "default": "./results",
-                    "fa_icon": "fas fa-folder-open"
-                },
-                "email": {
-                    "type": "string",
-                    "description": "Email address for completion summary.",
-                    "fa_icon": "fas fa-envelope",
-                    "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
-                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
-                },
-                "keepIntermediates": {
-                    "type": "boolean",
-                    "description": "Keep additional intermediate files, such as trimmed reads or various QIIME2 archives"
-                }
-            }
         },
         "skipping_specific_steps": {
             "title": "Skipping specific steps",
@@ -486,7 +491,8 @@
                 },
                 "phred64": {
                     "type": "boolean",
-                    "description": "If the sequencing data has PHRED 64 encoded quality scores, otherwise PHRED 33 is assumed"
+                    "description": "If the sequencing data has PHRED 64 encoded quality scores, otherwise PHRED 33 is assumed",
+                    "hidden": true
                 },
                 "untilQ2import": {
                     "type": "boolean",
@@ -497,11 +503,13 @@
                     "type": "string",
                     "default": "Europe/Berlin",
                     "description": "Needs to be specified to resolve a timezone error",
-                    "help_text": "If a timezone error occurs, this parameter needs to be specified (default: 'Europe/Berlin'). Find your appropriate timezone with e.g. tzselect.\nNote, this affects the timezone of the entire software environment."
+                    "help_text": "If a timezone error occurs, this parameter needs to be specified (default: 'Europe/Berlin'). Find your appropriate timezone with e.g. tzselect.\nNote, this affects the timezone of the entire software environment.",
+                    "hidden": true
                 },
                 "classifier_removeHash": {
                     "type": "boolean",
-                    "description": "Remove all hash signs from taxonomy strings, resolves a rare ValueError during classification (process classifier)"
+                    "description": "Remove all hash signs from taxonomy strings, resolves a rare ValueError during classification (process classifier)",
+                    "hidden": true
                 },
                 "readPaths": {
                     "type": "string",
@@ -529,6 +537,9 @@
             "$ref": "#/definitions/main_arguments"
         },
         {
+            "$ref": "#/definitions/other_input_output_options"
+        },
+        {
             "$ref": "#/definitions/cutoffs"
         },
         {
@@ -536,9 +547,6 @@
         },
         {
             "$ref": "#/definitions/filtering"
-        },
-        {
-            "$ref": "#/definitions/other_input_output_options"
         },
         {
             "$ref": "#/definitions/skipping_specific_steps"

@@ -43,9 +43,10 @@ single_end = params.pacbio ? true : params.single_end
 
 trunclenf = params.trunclenf ? params.trunclenf : 0 
 trunclenr = params.trunclenr ? params.trunclenr : 0
-if (!single_end && !params.illumina_its && (params.trunclenf == false || params.trunclenr == false) ) {
+if ( !single_end && !params.illumina_pe_its && (params.trunclenf == false || params.trunclenr == false) ) {
+	find_truncation_values = true
 	log.warn "No DADA2 cutoffs were specified (--trunclenf & --trunclenr), therefore reads will be truncated where median quality drops below ${params.trunc_qmin} (defined by --trunc_qmin) but at least a fraction of ${params.trunc_rmin} (defined by --trunc_rmin) of the reads will be retained.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
-}
+} else { find_truncation_values = false }
 
 /*
  * Sanity check input values
@@ -89,7 +90,7 @@ dada2_filtntrim_options.args       += single_end ? ", maxEE = $params.maxEE" : "
 if (params.pacbio) {
 	//PacBio data
 	dada2_filtntrim_options.args   +=", minLen = $params.minLen, maxLen = $params.maxLen, rm.phix = FALSE"
-} else if (params.illumina_its) {
+} else if (params.illumina_pe_its) {
 	//Illumina ITS data or other sequences with high length variability
 	dada2_filtntrim_options.args   += ", minLen = $params.minLen, maxLen = $params.maxLen, rm.phix = TRUE"
 } else {
@@ -165,19 +166,42 @@ include { GET_SOFTWARE_VERSIONS         } from './modules/local/process/get_soft
  */
 def fastqc_options              = modules['fastqc']
 
-//TODO: add another option: params.illumina_its which should be "-g ${params.FW_primer} -a ${params.RV_primer_RevComp} -G ${params.RV_primer} -A ${params.FW_primer_RevComp} -n 2"
-//TODO: probably when params.illumina_its than also params.retain_untrimmed, have to test
-def cutadapt_options_args       = !single_end ? " -g ${params.FW_primer} -G ${params.RV_primer}" : params.pacbio ? " --rc -g ${params.FW_primer}...${params.RV_primer}" : " -g ${params.FW_primer}"
+if (params.pacbio) {
+	//PacBio data
+	cutadapt_options_args       = " --rc -g ${params.FW_primer}...${params.RV_primer}"
+} else if (params.single_end) {
+	//Illumina SE
+	cutadapt_options_args       = " -g ${params.FW_primer}"
+} else {
+	//Illumina PE
+	cutadapt_options_args       = " -g ${params.FW_primer} -G ${params.RV_primer}"
+}
+
 def cutadapt_options 			= modules['cutadapt']
 cutadapt_options.args          += cutadapt_options_args
 cutadapt_options.args          += params.retain_untrimmed ? '' : " --discard-untrimmed"
-def cutadapt_2nd_options        = modules['cutadapt_2nd']
-cutadapt_2nd_options.args      += cutadapt_options_args
+
+//prepare reverse complement primers to remove those in read-throughs
+// Get the complement of a DNA sequence
+// Complement table taken from http://arep.med.harvard.edu/labgc/adnan/projects/Utilities/revcomp.html
+def make_complement(String seq) {
+	def complements = [ A:'T', T:'A', U:'A', G:'C', C:'G', Y:'R', R:'Y', S:'S', W:'W', K:'M', M:'K', B:'V', D:'H', H:'D', V:'B', N:'N' ]
+	comp = seq.toUpperCase().collect { base -> complements[ base ] ?: 'X' }.join()
+	return comp
+}
+FW_primer_RevComp = make_complement ( "${params.FW_primer}".reverse() )
+RV_primer_RevComp = make_complement ( "${params.RV_primer}".reverse() )
+def cutadapt_readthrough_options      = modules['cutadapt_readthrough']
+cutadapt_readthrough_options.args    += " -a ${RV_primer_RevComp} -A ${FW_primer_RevComp}"
+
+def cutadapt_doubleprimer_options        = modules['cutadapt_doubleprimer']
+cutadapt_doubleprimer_options.args      += cutadapt_options_args
 
 //include { MULTIQC } from './modules/nf-core/software/multiqc/main' addParams( options: multiqc_options    )
 include { FASTQC } from './modules/nf-core/software/fastqc/main' addParams( options: fastqc_options    )
 include { CUTADAPT } from './modules/nf-core/software/cutadapt/main' addParams( options: cutadapt_options    )
-include { CUTADAPT as CUTADAPT_2ND } from './modules/nf-core/software/cutadapt/main' addParams( options: cutadapt_2nd_options    )
+include { CUTADAPT as CUTADAPT_READTHROUGH } from './modules/nf-core/software/cutadapt/main' addParams( options: cutadapt_readthrough_options    )
+include { CUTADAPT as CUTADAPT_DOUBLEPRIMER } from './modules/nf-core/software/cutadapt/main' addParams( options: cutadapt_doubleprimer_options    )
 
 /*
  * SUBWORKFLOW: Consisting entirely of nf-core/modules
@@ -219,8 +243,12 @@ workflow AMPLISEQ {
     CUTADAPT ( RENAME_RAW_DATA_FILES.out ).reads.set { ch_trimmed_reads }
     ch_software_versions = ch_software_versions.mix(CUTADAPT.out.version.first().ifEmpty(null))
 
+	if (params.illumina_pe_its) {
+		CUTADAPT_READTHROUGH ( ch_trimmed_reads ).reads.set { ch_trimmed_reads }
+	}
+
 	if (params.double_primer) {
-		CUTADAPT_2ND ( ch_trimmed_reads ).reads.set { ch_trimmed_reads }
+		CUTADAPT_DOUBLEPRIMER ( ch_trimmed_reads ).reads.set { ch_trimmed_reads }
 	}
 
     /*
@@ -251,7 +279,7 @@ workflow AMPLISEQ {
 	DADA2_QUALITY ( ch_all_trimmed_reads )
 	
 	//find truncation values in case they are not supplied
-	if (!single_end && !params.illumina_its && (params.trunclenf == false || params.trunclenr == false) ) {
+	if ( find_truncation_values ) {
 		TRUNCLEN ( DADA2_QUALITY.out.tsv )
 		TRUNCLEN.out
 			.toSortedList()

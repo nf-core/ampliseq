@@ -59,7 +59,7 @@
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
             "properties": {
-                "illumina_its": {
+                "illumina_pe_its": {
                     "type": "boolean",
                     "description": "If analysing ITS amplicons or any other region with large length variability with Illumina paired end reads"
                 },

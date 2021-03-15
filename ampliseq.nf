@@ -171,11 +171,8 @@ def cutadapt_options_args       = !single_end ? " -g ${params.FW_primer} -G ${pa
 def cutadapt_options 			= modules['cutadapt']
 cutadapt_options.args          += cutadapt_options_args
 cutadapt_options.args          += params.retain_untrimmed ? '' : " --discard-untrimmed"
-def cutadapt_2nd_options        = [:]
-cutadapt_2nd_options.args       = cutadapt_options_args
-cutadapt_2nd_options.args      += " --discard-trimmed"
-cutadapt_2nd_options.suffix     = "_double-primer"
-cutadapt_2nd_options.publish_files = ['log':'']
+def cutadapt_2nd_options        = modules['cutadapt_2nd']
+cutadapt_2nd_options.args      += cutadapt_options_args
 
 //include { MULTIQC } from './modules/nf-core/software/multiqc/main' addParams( options: multiqc_options    )
 include { FASTQC } from './modules/nf-core/software/fastqc/main' addParams( options: fastqc_options    )

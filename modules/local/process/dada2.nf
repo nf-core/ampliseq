@@ -398,7 +398,7 @@ process DADA2_STATS {
             track <- cbind(filter_and_trim, sapply(dadaFs, getN), sapply(dadaRs, getN), sapply(mergers, getN), rowSums(seqtab.nochim))
         }
         colnames(track) <- c("input", "filtered", "denoisedF", "denoisedR", "merged", "nonchim")
-        track <- cbind(sample = gsub('_1.trim.fastq.gz', '', rownames(track)), track)
+        track <- cbind(sample = sub(pattern = "(.*?)\\\\..*\$", replacement = "\\\\1", rownames(track)), track)
         write.table( track, file = "${meta.run}.stats.tsv", sep = "\t", row.names = FALSE, quote = FALSE)
 
         write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
@@ -433,7 +433,7 @@ process DADA2_STATS {
             track <- cbind(filter_and_trim, sapply(dadaFs, getN), rowSums(seqtab.nochim))
         }
         colnames(track) <- c("input", "filtered", "denoised", "nonchim")
-        track <- cbind(sample = gsub('.trim.fastq.gz', '', rownames(track)), track)
+        track <- cbind(sample = sub(pattern = "(.*?)\\\\..*\$", replacement = "\\\\1", rownames(track)), track)
         write.table( track, file = "${meta.run}.stats.tsv", sep = "\t", row.names = FALSE, quote = FALSE)
 
         write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)

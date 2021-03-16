@@ -96,6 +96,11 @@ workflow PARSE_INPUT {
 			.subscribe { k = it[0]; n = it[1];
 				if ( k != n ) exit 1, "Please review data input, sampleIDs ($k) are not unique ($n).";
 				}
+
+		//Check that no dots "." are in sampleID
+		ch_reads
+			.map { meta, reads -> [ meta.id ] }
+			.subscribe { if ( "$it".contains(".") ) exit 1, "Please review data input, sampleIDs may not contain dots, but \"$it\" does." }
 	}
 
     emit:

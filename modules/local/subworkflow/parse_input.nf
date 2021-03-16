@@ -82,20 +82,15 @@ workflow PARSE_INPUT {
 		}
 
 		//Check whether all sampleID = meta.id are unique
-		//TODO: if not all sampleID unique, rename files with meta.run? //if ( multipleSequencingRuns ) { "meta.id" = "$meta.run${split}$meta.id" }
 		ch_reads
 			.map { meta, reads -> [ meta.id ] }
-			.count()
-			.set { ch_ids }
-		ch_reads
-			.map { meta, reads -> [ meta.id ] }
-			.unique()
-			.count()
-			.mix( ch_ids )
-			.collect()
-			.subscribe { k = it[0]; n = it[1];
-				if ( k != n ) exit 1, "Please review data input, sampleIDs ($k) are not unique ($n).";
+			.toList()
+			.subscribe { 
+				if( it.size() != it.unique().size() ) {
+					ids = it.take(10);
+					exit 1, "Please review data input, sample IDs are not unique! First IDs are $ids" 
 				}
+			}
 
 		//Check that no dots "." are in sampleID
 		ch_reads

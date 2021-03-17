@@ -58,7 +58,6 @@ if (!params.FW_primer) { exit 1, "Option --FW_primer missing" }
 if (!params.RV_primer) { exit 1, "Option --RV_primer missing" }
 if (!params.input) { exit 1, "Option --input missing" }
 
-//TRUE, FALSE, pseudo allowed, see https://benjjneb.github.io/dada2/pseudo.html#Pseudo-pooling
 if (!["pooled", "independent", "pseudo"].contains(params.sample_inference)) {
 	exit 1, "Please set --sample_inference to one of the following:\n\t-\"independent\" (lowest sensitivity and lowest resources),\n\t-\"pseudo\" (balance between required resources and sensitivity),\n\t-\"pooled\" (highest sensitivity and resources)."
 }
@@ -103,7 +102,6 @@ def dada2_quality_options = modules['dada2_quality']
 def trunclen_options = [:]
 trunclen_options.args       ="$params.trunc_qmin $params.trunc_rmin"
 
-//TODO: adjust for single_end & PacBio
 def dada2_err_options = modules['dada2_err']
 dada2_err_options.args   += params.pacbio ? ", errorEstimationFunction = PacBioErrfun" : ", errorEstimationFunction = loessErrfun"
 
@@ -135,18 +133,13 @@ include { DADA2_STATS                   } from './modules/local/process/dada2'  
 include { DADA2_MERGE                   } from './modules/local/process/dada2'                        addParams( options: modules['dada2_merge']          )
 include { DADA2_TAXONOMY                } from './modules/local/process/dada2'                        addParams( options: dada2_taxonomy_options          )
 include { DADA2_ADDSPECIES              } from './modules/local/process/dada2'                        addParams( options: dada2_addspecies_options        )
-include { QIIME2_PREPTAX                } from './modules/local/subworkflow/qiime2_preptax'           addParams( options: modules['qiime2_preptax']       )
-include { QIIME2_TAXONOMY               } from './modules/local/subworkflow/qiime2_taxonomy'          addParams( options: modules['qiime2_taxonomy']      )
 include { QIIME2_INSEQ                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_inseq']         )
 include { QIIME2_FILTERTAXA             } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_filtertaxa']    )
 include { QIIME2_INASV                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_inasv']         )
 include { FILTER_STATS                  } from './modules/local/process/filter_stats'                 addParams( options: modules['filter_stats']         )
 include { QIIME2_BARPLOT                } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_barplot']       )
-include { QIIME2_EXPORT                 } from './modules/local/subworkflow/qiime2_export'            addParams( absolute_options: modules['qiime2_export_absolute'], relasv_options: modules['qiime2_export_relasv'],reltax_options: modules['qiime2_export_reltax'],combine_table_options: modules['combine_table'] )
 include { METADATA_ALL                  } from './modules/local/process/metadata_all'
 include { METADATA_PAIRWISE             } from './modules/local/process/metadata_pairwise'
-include { QIIME2_DIVERSITY              } from './modules/local/subworkflow/qiime2_diversity'         addParams( tree_options: modules['qiime2_tree'], alphararefaction_options: modules['qiime2_alphararefaction'], diversity_core_options: modules['qiime2_diversity_core'], diversity_alpha_options: modules['qiime2_diversity_alpha'], diversity_beta_options: modules['qiime2_diversity_beta'], diversity_betaord_options: modules['qiime2_diversity_betaord'] )
-include { QIIME2_ANCOM                  } from './modules/local/subworkflow/qiime2_ancom'             addParams( filterasv_options: modules['qiime2_filterasv'], ancom_tax_options: modules['qiime2_ancom_tax'], ancom_asv_options: modules['qiime2_ancom_asv'] )
 include { QIIME2_INTAX                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_intax']         )
 include { MULTIQC                       } from './modules/local/process/multiqc'                      addParams( options: multiqc_options                 )
 include { GET_SOFTWARE_VERSIONS         } from './modules/local/process/get_software_versions'        addParams( options: [publish_files : ['csv':'']]    )
@@ -155,7 +148,11 @@ include { GET_SOFTWARE_VERSIONS         } from './modules/local/process/get_soft
  * SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
  */
 
- //TODO
+include { QIIME2_PREPTAX                } from './modules/local/subworkflow/qiime2_preptax'           addParams( options: modules['qiime2_preptax']       )
+include { QIIME2_TAXONOMY               } from './modules/local/subworkflow/qiime2_taxonomy'          addParams( options: modules['qiime2_taxonomy']      )
+include { QIIME2_EXPORT                 } from './modules/local/subworkflow/qiime2_export'            addParams( absolute_options: modules['qiime2_export_absolute'], relasv_options: modules['qiime2_export_relasv'],reltax_options: modules['qiime2_export_reltax'],combine_table_options: modules['combine_table'] )
+include { QIIME2_DIVERSITY              } from './modules/local/subworkflow/qiime2_diversity'         addParams( tree_options: modules['qiime2_tree'], alphararefaction_options: modules['qiime2_alphararefaction'], diversity_core_options: modules['qiime2_diversity_core'], diversity_alpha_options: modules['qiime2_diversity_alpha'], diversity_beta_options: modules['qiime2_diversity_beta'], diversity_betaord_options: modules['qiime2_diversity_betaord'] )
+include { QIIME2_ANCOM                  } from './modules/local/subworkflow/qiime2_ancom'             addParams( filterasv_options: modules['qiime2_filterasv'], ancom_tax_options: modules['qiime2_ancom_tax'], ancom_asv_options: modules['qiime2_ancom_asv'] )
 
  ////////////////////////////////////////////////////
 /* --    IMPORT NF-CORE MODULES/SUBWORKFLOWS   -- */

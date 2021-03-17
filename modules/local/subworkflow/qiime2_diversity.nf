@@ -43,8 +43,6 @@ workflow QIIME2_DIVERSITY {
         //Print warning if rarefaction depth is <10000
         QIIME2_DIVERSITY_CORE.out.depth.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","QIIME2_DIVERSITY_CORE: ") }
 
-        //TODO: anything that uses ch_metacolumn_pairwise: remove samples with empty values!!
-
         //alpha_diversity ( ch_metadata, DIVERSITY_CORE.out.qza, ch_metacolumn_all )
         ch_metadata
             .combine( QIIME2_DIVERSITY_CORE.out.vector.flatten() )

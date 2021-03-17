@@ -4,8 +4,8 @@
 
 params.options = [:]
 
-include { QIIME2_INSEQ                  } from '../process/qiime2' addParams( options: params.options )
-include { QIIME2_CLASSIFY               } from '../process/qiime2' addParams( options: params.options )
+include { QIIME2_INSEQ                  } from '../../modules/local/qiime2_inseq'    addParams( options: params.options )
+include { QIIME2_CLASSIFY               } from '../../modules/local/qiime2_classify' addParams( options: params.options )
 
 workflow QIIME2_TAXONOMY {
     take:

@@ -4,7 +4,7 @@
 
 params.options = [:]
 
-include { parse_samplesheet } from '../process/parse_samplesheet' addParams( options: params.options )
+include { parse_samplesheet } from '../../modules/local/parse_samplesheet' addParams( options: params.options )
 
 workflow PARSE_INPUT {
     take:

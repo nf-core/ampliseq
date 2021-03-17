@@ -120,39 +120,39 @@ dada2_taxonomy_options.args += params.pacbio ? ", tryRC = TRUE" : ""
 def dada2_addspecies_options  = modules['dada2_addspecies']
 dada2_addspecies_options.args += params.pacbio ? ", tryRC = TRUE" : ""
 
-include { PARSE_INPUT                   } from './modules/local/subworkflow/parse_input'              addParams( options: [:]                             )
-include { RENAME_RAW_DATA_FILES         } from './modules/local/process/rename_raw_data_files'
-include { DADA2_FILTNTRIM               } from './modules/local/process/dada2'                        addParams( options: dada2_filtntrim_options         )
-include { DADA2_QUALITY                 } from './modules/local/process/dada2'                        addParams( options: dada2_quality_options           )
-include { TRUNCLEN                      } from './modules/local/process/trunclen'                     addParams( options: trunclen_options                )
-include { DADA2_ERR                     } from './modules/local/process/dada2'                        addParams( options: dada2_err_options               )
-include { DADA2_DEREPLICATE             } from './modules/local/process/dada2'                        addParams( options: modules['dada2_dereplicate']    )
-include { DADA2_DENOISING               } from './modules/local/process/dada2'                        addParams( options: dada2_denoising_options         )
-include { DADA2_RMCHIMERA               } from './modules/local/process/dada2'                        addParams( options: dada2_rmchimera_options         )
-include { DADA2_STATS                   } from './modules/local/process/dada2'                        addParams( options: modules['dada2_stats']          )
-include { DADA2_MERGE                   } from './modules/local/process/dada2'                        addParams( options: modules['dada2_merge']          )
-include { DADA2_TAXONOMY                } from './modules/local/process/dada2'                        addParams( options: dada2_taxonomy_options          )
-include { DADA2_ADDSPECIES              } from './modules/local/process/dada2'                        addParams( options: dada2_addspecies_options        )
-include { QIIME2_INSEQ                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_inseq']         )
-include { QIIME2_FILTERTAXA             } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_filtertaxa']    )
-include { QIIME2_INASV                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_inasv']         )
-include { FILTER_STATS                  } from './modules/local/process/filter_stats'                 addParams( options: modules['filter_stats']         )
-include { QIIME2_BARPLOT                } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_barplot']       )
-include { METADATA_ALL                  } from './modules/local/process/metadata_all'
-include { METADATA_PAIRWISE             } from './modules/local/process/metadata_pairwise'
-include { QIIME2_INTAX                  } from './modules/local/process/qiime2'                       addParams( options: modules['qiime2_intax']         )
-include { MULTIQC                       } from './modules/local/process/multiqc'                      addParams( options: multiqc_options                 )
-include { GET_SOFTWARE_VERSIONS         } from './modules/local/process/get_software_versions'        addParams( options: [publish_files : ['csv':'']]    )
+include { RENAME_RAW_DATA_FILES         } from '../modules/local/rename_raw_data_files'
+include { DADA2_FILTNTRIM               } from '../modules/local/dada2_filtntrim'              addParams( options: dada2_filtntrim_options         )
+include { DADA2_QUALITY                 } from '../modules/local/dada2_quality'                addParams( options: dada2_quality_options           )
+include { TRUNCLEN                      } from '../modules/local/trunclen'                     addParams( options: trunclen_options                )
+include { DADA2_ERR                     } from '../modules/local/dada2_err'                    addParams( options: dada2_err_options               )
+include { DADA2_DEREPLICATE             } from '../modules/local/dada2_dereplicate'            addParams( options: modules['dada2_dereplicate']    )
+include { DADA2_DENOISING               } from '../modules/local/dada2_denoising'              addParams( options: dada2_denoising_options         )
+include { DADA2_RMCHIMERA               } from '../modules/local/dada2_rmchimera'              addParams( options: dada2_rmchimera_options         )
+include { DADA2_STATS                   } from '../modules/local/dada2_stats'                  addParams( options: modules['dada2_stats']          )
+include { DADA2_MERGE                   } from '../modules/local/dada2_merge'                  addParams( options: modules['dada2_merge']          )
+include { DADA2_TAXONOMY                } from '../modules/local/dada2_taxonomy'               addParams( options: dada2_taxonomy_options          )
+include { DADA2_ADDSPECIES              } from '../modules/local/dada2_addspecies'             addParams( options: dada2_addspecies_options        )
+include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'                 addParams( options: modules['qiime2_inseq']         )
+include { QIIME2_FILTERTAXA             } from '../modules/local/qiime2_filtertaxa'            addParams( options: modules['qiime2_filtertaxa']    )
+include { QIIME2_INASV                  } from '../modules/local/qiime2_inasv'                 addParams( options: modules['qiime2_inasv']         )
+include { FILTER_STATS                  } from '../modules/local/filter_stats'                 addParams( options: modules['filter_stats']         )
+include { QIIME2_BARPLOT                } from '../modules/local/qiime2_barplot'               addParams( options: modules['qiime2_barplot']       )
+include { METADATA_ALL                  } from '../modules/local/metadata_all'
+include { METADATA_PAIRWISE             } from '../modules/local/metadata_pairwise'
+include { QIIME2_INTAX                  } from '../modules/local/qiime2_intax'                 addParams( options: modules['qiime2_intax']         )
+include { MULTIQC                       } from '../modules/local/multiqc'                      addParams( options: multiqc_options                 )
+include { GET_SOFTWARE_VERSIONS         } from '../modules/local/get_software_versions'        addParams( options: [publish_files : ['csv':'']]    )
 
 /*
  * SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
  */
 
-include { QIIME2_PREPTAX                } from './modules/local/subworkflow/qiime2_preptax'           addParams( options: modules['qiime2_preptax']       )
-include { QIIME2_TAXONOMY               } from './modules/local/subworkflow/qiime2_taxonomy'          addParams( options: modules['qiime2_taxonomy']      )
-include { QIIME2_EXPORT                 } from './modules/local/subworkflow/qiime2_export'            addParams( absolute_options: modules['qiime2_export_absolute'], relasv_options: modules['qiime2_export_relasv'],reltax_options: modules['qiime2_export_reltax'],combine_table_options: modules['combine_table'] )
-include { QIIME2_DIVERSITY              } from './modules/local/subworkflow/qiime2_diversity'         addParams( tree_options: modules['qiime2_tree'], alphararefaction_options: modules['qiime2_alphararefaction'], diversity_core_options: modules['qiime2_diversity_core'], diversity_alpha_options: modules['qiime2_diversity_alpha'], diversity_beta_options: modules['qiime2_diversity_beta'], diversity_betaord_options: modules['qiime2_diversity_betaord'] )
-include { QIIME2_ANCOM                  } from './modules/local/subworkflow/qiime2_ancom'             addParams( filterasv_options: modules['qiime2_filterasv'], ancom_tax_options: modules['qiime2_ancom_tax'], ancom_asv_options: modules['qiime2_ancom_asv'] )
+include { PARSE_INPUT                   } from '../subworkflows/local/parse_input'              addParams( options: [:]                             )
+include { QIIME2_PREPTAX                } from '../subworkflows/local/qiime2_preptax'           addParams( options: modules['qiime2_preptax']       )
+include { QIIME2_TAXONOMY               } from '../subworkflows/local/qiime2_taxonomy'          addParams( options: modules['qiime2_taxonomy']      )
+include { QIIME2_EXPORT                 } from '../subworkflows/local/qiime2_export'            addParams( absolute_options: modules['qiime2_export_absolute'], relasv_options: modules['qiime2_export_relasv'],reltax_options: modules['qiime2_export_reltax'],combine_table_options: modules['combine_table'] )
+include { QIIME2_DIVERSITY              } from '../subworkflows/local/qiime2_diversity'         addParams( tree_options: modules['qiime2_tree'], alphararefaction_options: modules['qiime2_alphararefaction'], diversity_core_options: modules['qiime2_diversity_core'], diversity_alpha_options: modules['qiime2_diversity_alpha'], diversity_beta_options: modules['qiime2_diversity_beta'], diversity_betaord_options: modules['qiime2_diversity_betaord'] )
+include { QIIME2_ANCOM                  } from '../subworkflows/local/qiime2_ancom'             addParams( filterasv_options: modules['qiime2_filterasv'], ancom_tax_options: modules['qiime2_ancom_tax'], ancom_asv_options: modules['qiime2_ancom_asv'] )
 
  ////////////////////////////////////////////////////
 /* --    IMPORT NF-CORE MODULES/SUBWORKFLOWS   -- */
@@ -194,11 +194,10 @@ cutadapt_readthrough_options.args    += " -a ${RV_primer_RevComp} -A ${FW_primer
 def cutadapt_doubleprimer_options        = modules['cutadapt_doubleprimer']
 cutadapt_doubleprimer_options.args      += cutadapt_options_args
 
-//include { MULTIQC } from './modules/nf-core/software/multiqc/main' addParams( options: multiqc_options    )
-include { FASTQC } from './modules/nf-core/software/fastqc/main' addParams( options: fastqc_options    )
-include { CUTADAPT } from './modules/nf-core/software/cutadapt/main' addParams( options: cutadapt_options    )
-include { CUTADAPT as CUTADAPT_READTHROUGH } from './modules/nf-core/software/cutadapt/main' addParams( options: cutadapt_readthrough_options    )
-include { CUTADAPT as CUTADAPT_DOUBLEPRIMER } from './modules/nf-core/software/cutadapt/main' addParams( options: cutadapt_doubleprimer_options    )
+include { FASTQC                            } from '../modules/nf-core/software/fastqc/main'   addParams( options: fastqc_options                )
+include { CUTADAPT                          } from '../modules/nf-core/software/cutadapt/main' addParams( options: cutadapt_options              )
+include { CUTADAPT as CUTADAPT_READTHROUGH  } from '../modules/nf-core/software/cutadapt/main' addParams( options: cutadapt_readthrough_options  )
+include { CUTADAPT as CUTADAPT_DOUBLEPRIMER } from '../modules/nf-core/software/cutadapt/main' addParams( options: cutadapt_doubleprimer_options )
 
 /*
  * SUBWORKFLOW: Consisting entirely of nf-core/modules

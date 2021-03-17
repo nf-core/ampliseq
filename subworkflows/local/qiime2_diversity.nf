@@ -9,12 +9,12 @@ params.diversity_alpha_options = [:]
 params.diversity_beta_options = [:]
 params.diversity_betaord_options = [:]
 
-include { QIIME2_TREE                 } from '../process/qiime2'        addParams( options: params.tree_options )
-include { QIIME2_ALPHARAREFACTION     } from '../process/qiime2'        addParams( options: params.alphararefaction_options )
-include { QIIME2_DIVERSITY_CORE       } from '../process/qiime2'        addParams( options: params.diversity_core_options )
-include { QIIME2_DIVERSITY_ALPHA      } from '../process/qiime2'        addParams( options: params.diversity_alpha_options )
-include { QIIME2_DIVERSITY_BETA       } from '../process/qiime2'        addParams( options: params.diversity_beta_options )
-include { QIIME2_DIVERSITY_BETAORD    } from '../process/qiime2'        addParams( options: params.diversity_betaord_options )
+include { QIIME2_TREE                 } from '../../modules/local/qiime2_tree'              addParams( options: params.tree_options              )
+include { QIIME2_ALPHARAREFACTION     } from '../../modules/local/qiime2_alphararefaction'  addParams( options: params.alphararefaction_options  )
+include { QIIME2_DIVERSITY_CORE       } from '../../modules/local/qiime2_diversity_core'    addParams( options: params.diversity_core_options    )
+include { QIIME2_DIVERSITY_ALPHA      } from '../../modules/local/qiime2_diversity_alpha'   addParams( options: params.diversity_alpha_options   )
+include { QIIME2_DIVERSITY_BETA       } from '../../modules/local/qiime2_diversity_beta'    addParams( options: params.diversity_beta_options    )
+include { QIIME2_DIVERSITY_BETAORD    } from '../../modules/local/qiime2_diversity_betaord' addParams( options: params.diversity_betaord_options )
 
 workflow QIIME2_DIVERSITY {
     take:

@@ -52,7 +52,7 @@ workflow {
         /*
          * SUBWORKFLOW: Run main nf-core/ampliseq analysis pipeline
          */
-        include { AMPLISEQ } from './ampliseq' addParams( summary_params: summary_params )
+        include { AMPLISEQ } from './workflows/ampliseq' addParams( summary_params: summary_params )
         AMPLISEQ ()
 }
 

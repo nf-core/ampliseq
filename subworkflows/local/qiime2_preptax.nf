@@ -4,8 +4,8 @@
 
 params.options = [:]
 
-include { QIIME2_EXTRACT } from '../process/qiime2' addParams( options: params.options )
-include { QIIME2_TRAIN   } from '../process/qiime2' addParams( options: params.options )
+include { QIIME2_EXTRACT } from '../../modules/local/qiime2_extract' addParams( options: params.options )
+include { QIIME2_TRAIN   } from '../../modules/local/qiime2_train'   addParams( options: params.options )
 
 workflow QIIME2_PREPTAX {
     take:

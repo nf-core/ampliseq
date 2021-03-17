@@ -113,6 +113,8 @@ process QIIME2_EXTRACT {
     script:
     def software      = getSoftwareName(task.process)
     """
+    export HOME="\${PWD}/HOME"
+    
     ### Import
     qiime tools import --type \'FeatureData[Sequence]\' \
         --input-path ${database[0]} \

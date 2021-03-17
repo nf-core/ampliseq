@@ -16,7 +16,7 @@
 
 ## Introduction
 
-**nfcore/ampliseq** is a bioinformatics analysis pipeline used for 16S rRNA or ITS amplicon sequencing data (currently supported is Illumina paired end or PacBio).
+**nfcore/ampliseq** is a bioinformatics analysis pipeline used for amplicon sequencing data, focussing on 16S rRNA or ITS regions. Supported is single-end or paired-end Illumina and PacBio data.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It comes with docker containers making installation trivial and results highly reproducible.
 
@@ -37,7 +37,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 4. Start running your own analysis!
 
     ```bash
-    nextflow run nf-core/ampliseq -profile <docker/singularity/podman/conda/institute> --input "data" --FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT --metadata "data/Metadata.tsv"
+    nextflow run nf-core/ampliseq -profile <docker/singularity/podman/conda/institute> --input "data" --FW_primer "GTGYCAGCMGCCGCGGTAA" --RV_primer "GGACTACNVGGGTWTCTAAT" --metadata "data/Metadata.tsv"
     ```
 
 See [usage docs](https://nf-co.re/ampliseq/usage) and [parameter docs](https://nf-co.re/ampliseq/parameters) for all of the available options when running the pipeline.
@@ -48,10 +48,9 @@ By default, the pipeline currently performs the following:
 
 * Sequencing quality control ([FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
 * Trimming of reads ([Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200))
-* Illumina read processing with [QIIME2](https://www.nature.com/articles/s41587-019-0209-9)
 * Infer Amplicon Sequence Variants (ASVs) ([DADA2](https://doi.org/10.1038/nmeth.3869))
-* Taxonomical classification based on [SILVA](https://www.arb-silva.de/) [v132](https://www.arb-silva.de/documentation/release-132/) or [UNITE](https://unite.ut.ee/) database
-* excludes unwanted taxa, produces absolute and relative feature/taxa count tables and plots, plots alpha rarefaction curves, computes alpha and beta diversity indices and plots thereof ([QIIME2](https://www.nature.com/articles/s41587-019-0209-9))
+* Taxonomical classification using DADA2 or [QIIME2](https://www.nature.com/articles/s41587-019-0209-9)
+* Excludes unwanted taxa, produces absolute and relative feature/taxa count tables and plots, plots alpha rarefaction curves, computes alpha and beta diversity indices and plots thereof ([QIIME2](https://www.nature.com/articles/s41587-019-0209-9))
 * Calls differentially abundant taxa ([ANCOM](https://www.ncbi.nlm.nih.gov/pubmed/26028277))
 * Overall pipeline run summaries ([MultiQC](https://multiqc.info/))
 
@@ -96,11 +95,11 @@ You can cite the `nf-core` publication as follows:
 In addition, references of tools and data used in this pipeline are as follows:
 
 * FastQC, "Andrews, Simon. "FastQC: a quality control tool for high throughput sequence data." (2010)."
-* Cutadapt "Martin, Marcel. "Cutadapt removes adapter sequences from high-throughput sequencing reads." EMBnet. journal 17.1 (2011): pp-10."
+* Cutadapt, "Martin, Marcel. "Cutadapt removes adapter sequences from high-throughput sequencing reads." EMBnet. journal 17.1 (2011): pp-10."
 * DADA2, "Callahan, Benjamin J., et al. "DADA2: high-resolution sample inference from Illumina amplicon data." Nature methods 13.7 (2016): 581."
 * The taxonomic database you are using, e.g. by default:
   * SILVA database, "Quast, Pruesse, et al. 2013. 'The SILVA ribosomal RNA gene database project: improved data processing and web-based tools', Nucleic Acids Research, 41: D590-D96."
-* If you find the downstream analysis helpful:
+* If you find QC aggregation by MultiQC helpful:
   * MultiQC, "Ewels, Philip, et al. "MultiQC: summarize analysis results for multiple tools and samples in a single report." Bioinformatics 32.19 (2016): 3047-3048."
 * If you find the downstream analysis helpful:
   * QIIME2, "Bolyen, Evan, et al. "Reproducible, interactive, scalable and extensible microbiome data science using QIIME 2." Nature Biotechnology 37 (2019): 852–857."

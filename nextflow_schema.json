@@ -15,35 +15,25 @@
                     "type": "string",
                     "fa_icon": "fas fa-dna",
                     "description": "Either a tab-seperated sample sheet, a fasta file, or a folder containing zipped FastQ files",
-                    "help_text": "may point at a \n- folder containing zipped fasta files\n- sample sheet ending with `.tsv` that points towards zipped fasta files\n- fasta file ending with `.fasta` that will be taxonomically classified\n\n##### Folder containing zipped FastQ files\n\nFor example:\n\n```bash\n--input 'path/to/data'\n```\n\nExample for input data organization from one sequencing run with two samples:\n\n```bash\ndata\n  |-sample1_1_L001_R1_001.fastq.gz\n  |-sample1_1_L001_R2_001.fastq.gz\n  |-sample2_1_L001_R1_001.fastq.gz\n  |-sample2_1_L001_R2_001.fastq.gz\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The folder must contain gzip compressed demultiplexed fastq files. If the file names do not follow the default (`\"/*_R{1,2}_001.fastq.gz\"`), please check `--extension`.\n3. Text before the first underscore `_` is used as sampleIDs, these must be unique\n4. If your data is scattered, a directory with symlinks to your actual data might be a solution or produce a sample sheet\n5. All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed. Sequencing data originating from multiple sequencing runs requires additionally the parameter `--multipleSequencingRuns` and a specific folder structure.\n\n##### Sample sheet\n\nThe sample sheet file is an alternative way to provide input reads, it must be a tab-separated file ending with `.tsv` that must have two to four columns with the following headers: \n- `sampleID` (required): Unique sample identifiers, any string\n- `forwardReads` (required): Paths to (forward) reads zipped FastQ files\n- `reverseReads` (optional): Paths to reverse reads zipped FastQ files, required if the data is paired-end\n- `run`  (optional): If the data was produced by multiple sequencing runs, any string\n\n##### Fasta file\n\nWhen pointing at a file ending with `fasta`, the containing sequences will be taxonomically classified."
+                    "help_text": "Points to the main pipeline input, one of the following:\n- folder containing compressed fasta files\n- sample sheet ending with `.tsv` that points towards compressed fasta files\n- fasta file ending with `.fasta` that will be taxonomically classified\n\nRelated parameters are:\n- `--pacbio` if the sequencing data is PacBio data (default expected: paired-end Illumina data)\n- `--single_end` if the sequencing data is single-ended Illumina data (default expected: paired-end Illumina data)\n- `--multipleSequencingRuns` (folder input only) if the sequencing data originates from multiple sequencing runs\n- `--extension` (folder input only) if the sequencing file names do not follow the default (`\"/*_R{1,2}_001.fastq.gz\"`)\n\n##### Folder containing zipped FastQ files\n\nFor example:\n\n```bash\n--input 'path/to/data'\n```\n\nExample for input data organization from one sequencing run with two samples:\n\n```bash\ndata\n  |-sample1_1_L001_R1_001.fastq.gz\n  |-sample1_1_L001_R2_001.fastq.gz\n  |-sample2_1_L001_R1_001.fastq.gz\n  |-sample2_1_L001_R2_001.fastq.gz\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The folder must contain gzip compressed demultiplexed fastq files. If the file names do not follow the default (`\"/*_R{1,2}_001.fastq.gz\"`), please check `--extension`.\n3. Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique\n4. If your data is scattered, a directory with symlinks to your actual data might be a solution or produce a sample sheet\n5. All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed. Sequencing data originating from multiple sequencing runs requires additionally the parameter `--multipleSequencingRuns` and a specific folder structure.\n\n##### Sample sheet\n\nThe sample sheet file is an alternative way to provide input reads, it must be a tab-separated file ending with `.tsv` that must have two to four columns with the following headers: \n- `sampleID` (required): Unique sample identifiers, any unique string (may not contain dots `.`)\n- `forwardReads` (required): Paths to (forward) reads zipped FastQ files\n- `reverseReads` (optional): Paths to reverse reads zipped FastQ files, required if the data is paired-end\n- `run` (optional): If the data was produced by multiple sequencing runs, any string\n\nFor example:\n\n```bash\n--input 'path/to/samplesheet.tsv'\n```\n\n##### Fasta file\n\nWhen pointing at a file ending with `fasta`, the containing sequences will be taxonomically classified. All other pipeline steps will be skipped.\n\nThis can be used to taxonomically classify previously produced ASV/OTU sequences.\n\nFor example:\n\n```bash\n--input 'path/to/amplicon_sequences.fasta'\n```"
                 },
                 "FW_primer": {
                     "type": "string",
                     "description": "Forward primer sequence",
-                    "help_text": "In amplicon sequencing methods, PCR with specific primers produces the amplicon of interest. These primer sequences need to be trimmed from the reads before further processing and are also required for producing an appropriate classifier. \n\nFor example:\n\n```bash\n--FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT\n```",
+                    "help_text": "In amplicon sequencing methods, PCR with specific primers produces the amplicon of interest. These primer sequences need to be trimmed from the reads before further processing and are also required for producing an appropriate classifier. Do not use here any technical sequence such as adapter sequences but only the primer sequence that matches the biological amplicon.\n\nFor example:\n\n```bash\n--FW_primer \"GTGYCAGCMGCCGCGGTAA\" --RV_primer \"GGACTACNVGGGTWTCTAAT\"\n```",
                     "fa_icon": "fas fa-arrow-circle-right"
                 },
                 "RV_primer": {
                     "type": "string",
                     "description": "Reverse primer sequence",
-                    "help_text": "In amplicon sequencing methods, PCR with specific primers produces the amplicon of interest. These primer sequences need to be trimmed from the reads before further processing and are also required for producing an appropriate classifier. \n\nFor example:\n\n```bash\n--FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT\n```",
+                    "help_text": "In amplicon sequencing methods, PCR with specific primers produces the amplicon of interest. These primer sequences need to be trimmed from the reads before further processing and are also required for producing an appropriate classifier. Do not use here any technical sequence such as adapter sequences but only the primer sequence that matches the biological amplicon.\n\nFor example:\n\n```bash\n--FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT\n```",
                     "fa_icon": "fas fa-arrow-alt-circle-left"
                 },
                 "metadata": {
                     "type": "string",
                     "description": "Path to metadata sheet, when missing most downstream analysis are skipped (barplots, PCoA plots, ...).",
-                    "help_text": "This is optional, but for performing downstream analysis such as barplots, diversity indices or differential abundance testing, a metadata file is essential. \n\nFor example:\n\n```bash\n--metadata \"path/to/metadata.tsv\"\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The metadata file has to follow the QIIME2 specifications (https://docs.qiime2.org/2019.10/tutorials/metadata/)\n3. In case of multiple sequencing runs, specific naming of samples are required, see `--multipleSequencingRuns`\n\nThe first column in the metadata file is the identifier (ID) column and defines the sample or feature IDs associated with your study. Metadata files are not required to have additional metadata columns, so a file containing only an ID column is a valid QIIME 2 metadata file. Additional columns defining metadata associated with each sample or feature ID are optional.\n**NB**: without additional columns there might be no groupings for the downstream analyses.\n\nIdentifiers should be 36 characters long or less, and also contain only ASCII alphanumeric characters (i.e. in the range of [a-z], [A-Z], or [0-9]), the period (.) character, or the dash (-) character. By default all numeric columns, blanks or NA are removed, and only columns with multiple different values but not all unique are selected.\n\nThe columns which are to be assessed can be specified by `--metadata_category`. If `--metadata_category` isn't specified than all columns that fit the specification are automatically chosen.",
+                    "help_text": "This is optional, but for performing downstream analysis such as barplots, diversity indices or differential abundance testing, a metadata file is essential.\n\nRelated parameter:\n- `--metadata_category` (optional) to choose columns that are used for testing significance\n\nFor example:\n\n```bash\n--metadata \"path/to/metadata.tsv\"\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The metadata file has to follow the QIIME2 specifications (https://docs.qiime2.org/2021.2/tutorials/metadata/)\n\nThe first column in the tab-separated metadata file is the sample identifier column (required header: `ID`) and defines the sample or feature IDs associated with your study. Metadata files are not required to have additional metadata columns, so a file containing only an ID column is a valid QIIME 2 metadata file. Additional columns defining metadata associated with each sample or feature ID are optional.\n**NB**: without additional columns there might be no groupings for the downstream analyses.\n\nSample identifiers should be 36 characters long or less, and also contain only ASCII alphanumeric characters (i.e. in the range of [a-z], [A-Z], or [0-9]), or the dash (-) character. For downstream analysis, by default all numeric columns, blanks or NA are removed, and only columns with multiple different values but not all unique are selected.\n\nThe columns which are to be assessed can be specified by `--metadata_category`. If `--metadata_category` isn't specified than all columns that fit the specification are automatically chosen.",
                     "fa_icon": "fas fa-file-csv"
-                },
-                "single_end": {
-                    "type": "boolean",
-                    "description": "If data is single end"
-                },
-                "multipleSequencingRuns": {
-                    "type": "boolean",
-                    "description": "If samples were sequenced in multiple sequencing runs",
-                    "help_text": "Expects one sub-folder per sequencing run in the folder specified by `--input` containing sequencing data of the specific run.\nSample IDs are taken from sequencing files, specifically the string before the first underscore will be the sample ID. Sample IDs across all sequencing runs (all sequencing files) have to be unique. If this is not the case, please use a sample sheet as input instead.\n\nExample for input data organization:\n\n```bash\ndata\n  |-run1\n  |  |-sample1_1_L001_R{1,2}_001.fastq.gz\n  |  |-sample2_1_L001_R{1,2}_001.fastq.gz\n  |\n  |-run2\n     |-sample3_1_L001_R{1,2}_001.fastq.gz\n     |-sample4_1_L001_R{1,2}_001.fastq.gz\n```\n\nExample command to analyze this data in one pipeline run:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input \"data\" \\\n    --FW_primer GTGYCAGCMGCCGCGGTAA \\\n    --RV_primer GGACTACNVGGGTWTCTAAT \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multipleSequencingRuns\n```",
-                    "fa_icon": "fas fa-running"
                 }
             },
             "required": [
@@ -59,29 +49,45 @@
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
             "properties": {
+                "pacbio": {
+                    "type": "boolean",
+                    "description": "If data is single-ended PacBio reads instead of Illumina"
+                },
+                "single_end": {
+                    "type": "boolean",
+                    "description": "If data is single-ended Illumina reads instead of paired-end"
+                },
+                "multipleSequencingRuns": {
+                    "type": "boolean",
+                    "description": "If samples were sequenced in multiple sequencing runs",
+                    "help_text": "Expects one sub-folder per sequencing run in the folder specified by `--input` containing sequencing data of the specific run.\nSample identifiers are taken from sequencing files, specifically the string before the first underscore will be the sample ID. Sample IDs across all sequencing runs (all sequencing files) have to be unique. If this is not the case, please use a sample sheet as input instead.\n\nExample for input data organization:\n\n```bash\ndata\n  |-run1\n  |  |-sample1_1_L001_R1_001.fastq.gz\n  |  |-sample1_1_L001_R2_001.fastq.gz\n  |  |-sample2_1_L001_R1_001.fastq.gz\n  |  |-sample2_1_L001_R2_001.fastq.gz\n  |\n  |-run2\n     |-sample3_1_L001_R1_001.fastq.gz\n     |-sample3_1_L001_R2_001.fastq.gz\n     |-sample4_1_L001_R1_001.fastq.gz\n     |-sample4_1_L001_R2_001.fastq.gz\n```\n\nExample command to analyze this data in one pipeline run:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input \"data\" \\\n    --FW_primer \"GTGYCAGCMGCCGCGGTAA\" \\\n    --RV_primer \"GGACTACNVGGGTWTCTAAT\" \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multipleSequencingRuns\n```",
+                    "fa_icon": "fas fa-running"
+                },
                 "illumina_pe_its": {
                     "type": "boolean",
-                    "description": "If analysing ITS amplicons or any other region with large length variability with Illumina paired end reads"
+                    "description": "If analysing ITS amplicons or any other region with large length variability with Illumina paired end reads",
+                    "help_text": "This will cause the pipeline to\n- not truncate input reads if not `--trunclenf` and `--trunclenr` are overwriting defaults\n- remove reverse complement primers from the end of reads in case the read length exceeds the amplicon length"
                 },
                 "concatenate_reads": {
                     "type": "boolean",
                     "description": "Not recommended: When paired end reads are not sufficiently overlapping for merging.",
-                    "help_text": "This parameters specifies that paired-end reads are not merged after denoising but concatenated (separated by 10 N's). This is of advantage when an amplicon was sequenced that is too long for merging (i.e. bad experimental design). This is an alternative to only analyzing the forward or reverse read in case of non-overlapping paired-end sequencing data.\n\nThis parameter is not recommended to set!"
+                    "help_text": "This parameters specifies that paired-end reads are not merged after denoising but concatenated (separated by 10 N's). This is of advantage when an amplicon was sequenced that is too long for merging (i.e. bad experimental design). This is an alternative to only analyzing the forward or reverse read in case of non-overlapping paired-end sequencing data.\n\n**This parameter is not recommended! Only if all other options fail.**"
                 },
                 "sample_inference": {
                     "type": "string",
                     "default": "pooled",
                     "help_text": "If samples are treated independent (lowest sensitivity and lowest resources), pooled (highest sensitivity and resources) or pseudo-pooled (balance between required resources and sensitivity).",
-                    "description": "Mode of sample inference: \"independent\", \"pooled\" or \"pseudo\""
+                    "description": "Mode of sample inference: \"independent\", \"pooled\" or \"pseudo\"",
+                    "enum": [
+                        "independent",
+                        "pooled",
+                        "pseudo"
+                    ]
                 },
                 "metadata_category": {
                     "type": "string",
                     "description": "Comma separated list of metadata column headers for statistics.",
                     "help_text": "Here columns in the metadata sheet can be chosen with groupings that are used for diversity indices and differential abundance analysis. By default, all suitable columns in the metadata sheet will be used if this option is not specified. Suitable are columns which are categorical (not numerical) and have multiple different values which are not all unique. For example:\n\n```bash\n--metadata_category \"treatment1,treatment2\"\n```\n\nPlease note the following requirements:\n\n1. Comma separated list enclosed in quotes\n2. May not contain whitespace characters\n3. Each comma separated term has to match exactly one column name in the metadata sheet"
-                },
-                "pacbio": {
-                    "type": "boolean",
-                    "description": "If PacBio data. Use this option together with --manifest"
                 },
                 "extension": {
                     "type": "string",
@@ -101,10 +107,6 @@
                     "fa_icon": "fas fa-envelope",
                     "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
                     "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
-                },
-                "keepIntermediates": {
-                    "type": "boolean",
-                    "description": "Keep additional intermediate files, such as trimmed reads or various QIIME2 archives"
                 }
             }
         },
@@ -118,59 +120,61 @@
                     "type": "integer",
                     "default": 2,
                     "description": "DADA2 read filtering option",
-                    "help_text": "After truncation, reads with higher than \u2018maxEE\u2019 \"expected errors\" will be discarded. In case of very long reads, you might want to increase this value.  We recommend (to start with) a value corresponding to approximately 1 expected error per 100-200 bp (default: 2)",
+                    "help_text": "After truncation, reads with higher than `maxEE` \"expected errors\" will be discarded. In case of very long reads, you might want to increase this value.  We recommend (to start with) a value corresponding to approximately 1 expected error per 100-200 bp (default: 2)",
                     "fa_icon": "fas fa-equals"
                 },
                 "maxLen": {
-                    "type": "integer",
-                    "default": 2999,
-                    "description": "DADA2 read filtering option [PacBio only]",
+                    "type": "string",
+                    "description": "DADA2 read filtering optio",
                     "fa_icon": "fas fa-less-than-equal",
-                    "help_text": "Remove reads with length greater than maxLen after trimming and truncation."
+                    "help_text": "Remove reads with length greater than `maxLen` after trimming and truncation. Must be a positive integer. Default is \"Inf\", therefore no removal of any reads.",
+                    "default": "Inf"
                 },
                 "minLen": {
                     "type": "integer",
                     "default": 50,
-                    "description": "DADA2 read filtering option [PacBio only]",
+                    "description": "DADA2 read filtering option",
                     "fa_icon": "fas fa-greater-than-equal",
-                    "help_text": "Remove reads with length less than minLen after trimming and truncation."
+                    "help_text": "Remove reads with length less than `minLen` after trimming and truncation."
                 },
                 "retain_untrimmed": {
                     "type": "boolean",
                     "description": "Cutadapt will retain untrimmed reads, choose only if input reads are not expected to contain primer sequences.",
-                    "help_text": "When read sequences are trimmed, untrimmed read pairs are discarded routinely. Use this option to retain untrimmed read pairs. This is usually not recommended and is only of advantage for specific protocols that prevent sequencing PCR primers. \n\nFor example:\n\n```bash\n--retain_untrimmed\n```",
+                    "help_text": "When read sequences are trimmed, untrimmed read pairs are discarded routinely. Use this option to retain untrimmed read pairs. This is usually not recommended and is only of advantage for specific protocols that prevent sequencing PCR primers. ",
                     "fa_icon": "far fa-plus-square"
                 },
                 "double_primer": {
                     "type": "boolean",
                     "description": "Cutadapt will be run twice to ensure removal of potential double primers",
-                    "help_text": "Cutdapt will be run twice, first to remove reads without primers (default), then a second time to remove reads that erroneously contain a second set of primers, not to be used with `--retain_untrimmed`",
+                    "help_text": "Cutdapt will be run twice, first to remove reads without primers (default), then a second time to remove reads that erroneously contain a second set of primers, not to be used with `--retain_untrimmed`.",
                     "fa_icon": "fas fa-project-diagram"
                 },
                 "trunclenf": {
                     "type": "integer",
                     "description": "DADA2 read truncation value for forward strand, set this to 0 for no truncation",
-                    "help_text": "Read denoising by DADA2 creates an error profile specific to a sequencing run and uses this to correct sequencing errors. This method requires all reads to have the same length and as high quality as possible while maintaining at least 20 bp overlap for merging. One cutoff for the forward read `--trunclenf` and one for the reverse read `--trunclenr` truncate all longer reads at that position and drop all shorter reads.\nThese cutoffs are usually chosen visually using `--untilQ2import`, inspecting the quality plots in \"results/demux\", and resuming analysis with `--Q2imported`. If not set, these cutoffs will be determined automatically for the position before the mean quality score drops below `--trunc_qmin`.\n\nFor example:\n\n```bash\n--trunclenf 180 --trunclenr 120\n```\n\nPlease note:\n\n1. Overly aggressive truncation might lead to insufficient overlap for read merging\n2. Too little truncation might reduce denoised reads\n3. The code choosing these values automatically cannot take the points above into account, therefore setting `--trunclenf` and `--trunclenr` is recommended",
+                    "help_text": "Read denoising by DADA2 creates an error profile specific to a sequencing run and uses this to correct sequencing errors. This method prefers when all reads to have the same length and as high quality as possible while maintaining at least 20 bp overlap for merging. One cutoff for the forward read `--trunclenf` and one for the reverse read `--trunclenr` truncate all longer reads at that position and drop all shorter reads.\nIf not set, these cutoffs will be determined automatically for the position before the mean quality score drops below `--trunc_qmin`.\n\nFor example:\n\n```bash\n--trunclenf 180 --trunclenr 120\n```\n\nPlease note:\n\n1. Overly aggressive truncation might lead to insufficient overlap for read merging\n2. Too little truncation might reduce denoised reads\n3. The code choosing these values automatically cannot take the points above into account, therefore checking read numbers is essential",
                     "fa_icon": "fas fa-ban"
                 },
                 "trunclenr": {
                     "type": "integer",
                     "description": "DADA2 read truncation value for reverse strand, set this to 0 for no truncation",
-                    "help_text": "Read denoising by DADA2 creates an error profile specific to a sequencing run and uses this to correct sequencing errors. This method requires all reads to have the same length and as high quality as possible while maintaining at least 20 bp overlap for merging. One cutoff for the forward read `--trunclenf` and one for the reverse read `--trunclenr` truncate all longer reads at that position and drop all shorter reads.\nThese cutoffs are usually chosen visually using `--untilQ2import`, inspecting the quality plots in \"results/demux\", and resuming analysis with `--Q2imported`. If not set, these cutoffs will be determined automatically for the position before the mean quality score drops below `--trunc_qmin`.\n\nFor example:\n\n```bash\n--trunclenf 180 --trunclenr 120\n```\n\nPlease note:\n\n1. Overly aggressive truncation might lead to insufficient overlap for read merging\n2. Too little truncation might reduce denoised reads\n3. The code choosing these values automatically cannot take the points above into account, therefore setting `--trunclenf` and `--trunclenr` is recommended",
+                    "help_text": "Read denoising by DADA2 creates an error profile specific to a sequencing run and uses this to correct sequencing errors. This method prefers when all reads to have the same length and as high quality as possible while maintaining at least 20 bp overlap for merging. One cutoff for the forward read `--trunclenf` and one for the reverse read `--trunclenr` truncate all longer reads at that position and drop all shorter reads.\nIf not set, these cutoffs will be determined automatically for the position before the mean quality score drops below `--trunc_qmin`.\n\nFor example:\n\n```bash\n--trunclenf 180 --trunclenr 120\n```\n\nPlease note:\n\n1. Overly aggressive truncation might lead to insufficient overlap for read merging\n2. Too little truncation might reduce denoised reads\n3. The code choosing these values automatically cannot take the points above into account, therefore checking read numbers is essential",
                     "fa_icon": "fas fa-ban"
                 },
                 "trunc_qmin": {
                     "type": "integer",
                     "default": 25,
                     "description": "If --trunclenf and --trunclenr are not set, these values will be automatically determined using this median quality score",
-                    "help_text": "Automatically determine `--trunclenf` and `--trunclenr` before the median quality score drops below `--trunc_qmin` (default: 25). The fraction of reads retained is defined by `--trunc_rmin`, which might override the quality cutoff.\n\nFor example:\n\n```bash\n--trunc_qmin 35\n```\n\nPlease note:\n\n1. The code choosing `--trunclenf` and `--trunclenr` using `--trunc_qmin` automatically cannot take amplicon length or overlap requirements for merging into account, therefore use with caution.\n2. The default value of 25 is recommended. However, high quality data with a large paired sequence overlap might justify a higher value (e.g. 35). Also, very low quality data might require a lower value.\n3. If the quality cutoff is too low to include a certain fraction of reads that is specified by `--trunc_rmin` (default: 0.75, meaning at least 75% percent of reads are retained), a lower cutoff according to `--trunc_rmin` superseeds the quality cutoff.",
+                    "help_text": "Automatically determine `--trunclenf` and `--trunclenr` before the median quality score drops below `--trunc_qmin`. The fraction of reads retained is defined by `--trunc_rmin`, which might override the quality cutoff.\n\nFor example:\n\n```bash\n--trunc_qmin 35\n```\n\nPlease note:\n\n1. The code choosing `--trunclenf` and `--trunclenr` using `--trunc_qmin` automatically cannot take amplicon length or overlap requirements for merging into account, therefore use with caution.\n2. A minimum value of 25 is recommended. However, high quality data with a large paired sequence overlap might justify a higher value (e.g. 35). Also, very low quality data might require a lower value.\n3. If the quality cutoff is too low to include a certain fraction of reads that is specified by `--trunc_rmin` (e.g. 0.75 means at least 75% percent of reads are retained), a lower cutoff according to `--trunc_rmin` superseeds the quality cutoff.",
                     "fa_icon": "fas fa-greater-than-equal"
                 },
                 "trunc_rmin": {
                     "type": "number",
                     "default": 0.75,
                     "description": "Assures that values chosen with --trunc_qmin will retain a fraction of reads.",
-                    "help_text": "Value can range from 0 to 1. 0 means no reads need to be retained and 1 means all reads need to be retained. The minimum lengths of --trunc_qmin and --trunc_rmin are chosen as DADA2 cutoffs."
+                    "help_text": "Value can range from 0 to 1. 0 means no reads need to be retained and 1 means all reads need to be retained. The minimum lengths of --trunc_qmin and --trunc_rmin are chosen as DADA2 cutoffs.",
+                    "minimum": 0,
+                    "maximum": 1
                 }
             },
             "fa_icon": "fas fa-filter"

@@ -113,8 +113,8 @@ process QIIME2_EXTRACT {
     script:
     def software      = getSoftwareName(task.process)
     """
-    export HOME="\${PWD}/HOME"
-    
+    export XDG_CONFIG_HOME="\${PWD}/HOME"
+
     ### Import
     qiime tools import --type \'FeatureData[Sequence]\' \
         --input-path ${database[0]} \
@@ -156,6 +156,8 @@ process QIIME2_TRAIN {
     script:
     def software      = getSoftwareName(task.process)
     """
+    export XDG_CONFIG_HOME="\${PWD}/HOME"
+
     #Train classifier
     qiime feature-classifier fit-classifier-naive-bayes \
         --i-reference-reads ${meta.FW_primer}-${meta.RV_primer}-ref-seq.qza \
@@ -188,6 +190,8 @@ process QIIME2_CLASSIFY {
     script:
     def software      = getSoftwareName(task.process)
     """
+    export XDG_CONFIG_HOME="\${PWD}/HOME"
+
     qiime feature-classifier classify-sklearn  \
         --i-classifier ${trained_classifier}  \
         --p-n-jobs ${task.cpus}  \
@@ -238,6 +242,8 @@ process QIIME2_FILTERTAXA {
     def minsamples   = "${params.min_samples}" == "false" ? 1 : "${params.min_samples}"
     def software     = getSoftwareName(task.process)
     """
+    export XDG_CONFIG_HOME="\${PWD}/HOME"
+
     if ! [ \"${exclude_taxa}\" = \"none\" ]; then
         #filter sequences
         qiime taxa filter-seqs \
@@ -302,6 +308,8 @@ process QIIME2_BARPLOT {
     script:
     def software     = getSoftwareName(task.process)
 	"""
+    export XDG_CONFIG_HOME="\${PWD}/HOME"
+
 	qiime taxa barplot  \
 		--i-table ${table}  \
 		--i-taxonomy ${taxonomy}  \
@@ -341,6 +349,8 @@ process QIIME2_EXPORT_ABSOLUTE {
     script:
     def software     = getSoftwareName(task.process)
 	"""
+    export XDG_CONFIG_HOME="\${PWD}/HOME"
+
 	#produce raw count table in biom format "table/feature-table.biom"
 	qiime tools export --input-path ${table}  \
 		--output-path table
@@ -402,6 +412,8 @@ process QIIME2_EXPORT_RELASV {
     script:
     def software     = getSoftwareName(task.process)
 	"""
+    export XDG_CONFIG_HOME="\${PWD}/HOME"
+
 	#convert to relative abundances
 	qiime feature-table relative-frequency \
 		--i-table ${table} \
@@ -438,6 +450,8 @@ process QIIME2_EXPORT_RELTAX {
     script:
     def software     = getSoftwareName(task.process)
 	"""
+    export XDG_CONFIG_HOME="\${PWD}/HOME"
+
 	##on several taxa level
 	array=( 2 3 4 5 6 7 )
 
@@ -486,6 +500,8 @@ process QIIME2_TREE {
     script:
     def software     = getSoftwareName(task.process) 
 	"""
+    export XDG_CONFIG_HOME="\${PWD}/HOME"
+
 	qiime alignment mafft \
 		--i-sequences ${repseq} \
 		--o-alignment aligned-rep-seqs.qza \
@@ -530,6 +546,8 @@ process QIIME2_ALPHARAREFACTION {
     script:
     def software     = getSoftwareName(task.process) 
 	"""
+    export XDG_CONFIG_HOME="\${PWD}/HOME"
+
 	maxdepth=\$(count_table_minmax_reads.py $stats maximum 2>&1)
 
 	#check values
@@ -575,6 +593,8 @@ process QIIME2_DIVERSITY_CORE {
     script:
     def software     = getSoftwareName(task.process) 
 	"""
+    export XDG_CONFIG_HOME="\${PWD}/HOME"
+
 	mindepth=\$(count_table_minmax_reads.py $stats minimum 2>&1)
 	if [ \"\$mindepth\" -gt \"10000\" ]; then echo \$mindepth >\"Use the sampling depth of \$mindepth for rarefaction.txt\" ; fi
 	if [ \"\$mindepth\" -lt \"10000\" -a \"\$mindepth\" -gt \"5000\" ]; then echo \$mindepth >\"WARNING The sampling depth of \$mindepth is quite small for rarefaction.txt\" ; fi
@@ -615,6 +635,8 @@ process QIIME2_DIVERSITY_ALPHA {
     def software     = getSoftwareName(task.process)
     if ( category.length() > 0 ) {
         """
+        export XDG_CONFIG_HOME="\${PWD}/HOME"
+
         qiime diversity alpha-group-significance \
             --i-alpha-diversity ${core} \
             --m-metadata-file ${metadata} \
@@ -654,6 +676,8 @@ process QIIME2_DIVERSITY_BETA {
     def software     = getSoftwareName(task.process)
     if ( category.length() > 0 ) {
         """
+        export XDG_CONFIG_HOME="\${PWD}/HOME"
+
         IFS=',' read -r -a metacategory <<< \"$category\"
         for j in \"\${metacategory[@]}\"
         do
@@ -698,6 +722,8 @@ process QIIME2_DIVERSITY_BETAORD {
     script:
     def software     = getSoftwareName(task.process) 
 	"""
+    export XDG_CONFIG_HOME="\${PWD}/HOME"
+
 	qiime emperor plot \
 		--i-pcoa ${core} \
 		--m-metadata-file ${metadata} \
@@ -732,6 +758,8 @@ process QIIME2_FILTERASV {
     def software     = getSoftwareName(task.process)
     if ( category.length() > 0 ) {
         """
+        export XDG_CONFIG_HOME="\${PWD}/HOME"
+
         IFS=',' read -r -a metacategory <<< \"$category\"
 
         #remove samples that do not have any value
@@ -775,6 +803,8 @@ process QIIME2_ANCOM_TAX {
     script:
     def software     = getSoftwareName(task.process)
     """
+    export XDG_CONFIG_HOME="\${PWD}/HOME"
+
 	qiime taxa collapse \
 		--i-table ${table} \
 		--i-taxonomy ${taxonomy} \
@@ -815,6 +845,8 @@ process QIIME2_ANCOM_ASV {
     script:
     def software     = getSoftwareName(task.process)
     """
+    export XDG_CONFIG_HOME="\${PWD}/HOME"
+    
 	qiime composition add-pseudocount \
 		--i-table ${table} \
 		--o-composition-table comp-${table}

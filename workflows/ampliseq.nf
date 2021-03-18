@@ -23,7 +23,7 @@ if (params.classifier) {
 	ch_qiime_classifier = Channel.fromPath("${params.classifier}", checkIfExists: true)
 } else { ch_qiime_classifier = Channel.empty() }
 
-if( params.tax_to_classifier && params.fasta_to_classifier && !params.onlyDenoising && !params.skip_taxonomy ){
+if( params.tax_to_classifier && params.fasta_to_classifier && !params.skip_taxonomy ){
 	ch_fasta_to_classifier = Channel.fromPath("${params.fasta_to_classifier}", checkIfExists: true)
 	ch_tax_to_classifier = Channel.fromPath("${params.tax_to_classifier}", checkIfExists: true)
 } else { 
@@ -31,11 +31,11 @@ if( params.tax_to_classifier && params.fasta_to_classifier && !params.onlyDenois
 	ch_tax_to_classifier = Channel.empty()
 }
 
-if (params.dada_ref_taxonomy && !params.onlyDenoising) {
+if (params.dada_ref_taxonomy && !params.skip_taxonomy) {
 	ch_dada_ref_taxonomy = Channel.fromPath("${params.dada_ref_taxonomy}", checkIfExists: true)
 } else { ch_dada_ref_taxonomy = Channel.empty() }
 
-if (params.dada_ref_species && params.dada_ref_taxonomy && !params.onlyDenoising) {
+if (params.dada_ref_species && params.dada_ref_taxonomy && !params.skip_taxonomy) {
 	ch_dada_ref_species = Channel.fromPath("${params.dada_ref_species}", checkIfExists: true)
 } else { ch_dada_ref_species = Channel.empty() }
 
@@ -53,7 +53,7 @@ if ( !single_end && !params.illumina_pe_its && (params.trunclenf == false || par
 } else { find_truncation_values = false }
 
 //only run QIIME2 when taxonomy is actually calculated and all required data is available
-if ( !params.onlyDenoising && !params.enable_conda && !params.skip_taxonomy && ((params.tax_to_classifier && params.fasta_to_classifier) || params.classifier) ) {
+if ( !params.enable_conda && !params.skip_taxonomy && ((params.tax_to_classifier && params.fasta_to_classifier) || params.classifier) ) {
 	run_qiime2 = true
 } else { run_qiime2 = false }
 
@@ -364,7 +364,7 @@ workflow AMPLISEQ {
 	ch_fasta =  params.input.toString().toLowerCase().endsWith("fasta") ? ch_fasta : DADA2_MERGE.out.fasta
 
 	//DADA2
-	if (!params.onlyDenoising && !params.skip_taxonomy) {
+	if (!params.skip_taxonomy) {
 		DADA2_TAXONOMY ( ch_fasta, ch_dada_ref_taxonomy )
 		DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_dada_ref_species )
 	}

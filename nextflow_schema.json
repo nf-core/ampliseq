@@ -254,10 +254,6 @@
             "description": "",
             "default": "",
             "properties": {
-                "onlyDenoising": {
-                    "type": "boolean",
-                    "description": "Skip all steps after denoising, produce only sequences and abundance tables on ASV level"
-                },
                 "skip_fastqc": {
                     "type": "boolean",
                     "description": "Skip FastQC"
@@ -531,6 +527,11 @@
                     "default": "-",
                     "description": "A string that will be used between the prepended run/folder name and the sample name. Only used with \"--multipleSequencingRuns\".",
                     "help_text": "A string that will be used between the prepended run/folder name and the sample name. Only used with `--multipleSequencingRuns` (default: `\"-\"`).\n\nFor example using the string `link`:\n\n```bash\n--split \"link\"\n```\n\nPlease note:\n\n1. Run/folder names may not contain the string specified by `--split`\n2. No underscore(s) allowed\n3. Must be enclosed in quotes\n4. The metadata sheet has to be adjusted, instead of using `run-sample` in the first column, in this example `runlinksample` is required",
+                    "hidden": true
+                },
+                "onlyDenoising": {
+                    "type": "boolean",
+                    "description": "Skip all steps after denoising, produce only sequences and abundance tables on ASV level",
                     "hidden": true
                 }
             }

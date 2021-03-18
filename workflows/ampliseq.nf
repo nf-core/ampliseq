@@ -395,7 +395,7 @@ workflow AMPLISEQ {
 		//Import into QIIME2 & filtering by taxonomy & prevalence & counts
 		QIIME2_INASV ( DADA2_MERGE.out.asv )
 		QIIME2_INSEQ ( ch_fasta )
-		if (params.exclude_taxa != "none" || params.min_frequency || params.min_samples) {
+		if (params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1) {
 			QIIME2_FILTERTAXA (
 					QIIME2_INASV.out.qza,
 					QIIME2_INSEQ.out.qza,

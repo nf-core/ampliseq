@@ -29,8 +29,6 @@ process QIIME2_FILTERTAXA {
     path "*.version.txt"       , emit: version
 
     script:
-    def minfrequency = "${min_frequency}" == "false" ? 1 : "${min_frequency}"
-    def minsamples   = "${params.min_samples}" == "false" ? 1 : "${params.min_samples}"
     def software     = getSoftwareName(task.process)
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
@@ -56,8 +54,8 @@ process QIIME2_FILTERTAXA {
     fi
     qiime feature-table filter-features \
         --i-table \$filtered_table \
-        --p-min-frequency ${minfrequency} \
-        --p-min-samples ${minsamples} \
+        --p-min-frequency ${min_frequency} \
+        --p-min-samples ${min_samples} \
         --o-filtered-table filtered-table.qza
     
     qiime feature-table filter-seqs \

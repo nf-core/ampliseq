@@ -430,7 +430,7 @@ workflow AMPLISEQ {
 		}
 
 		//Diversity indices
-		if (!params.skip_alpha_rarefaction || !params.skip_diversity_indices) {
+		if ( params.metadata && (!params.skip_alpha_rarefaction || !params.skip_diversity_indices) ) {
 			QIIME2_DIVERSITY ( 
 				ch_metadata,
 				ch_asv,
@@ -444,7 +444,7 @@ workflow AMPLISEQ {
 		}
 		
 		//Perform ANCOM tests
-		if (!params.skip_ancom) {	
+		if ( !params.skip_ancom && params.metadata ) {	
 			QIIME2_ANCOM (
 				ch_metadata,
 				ch_asv,

@@ -11,6 +11,10 @@ params.summary_params = [:]
 /*
  * Import input files
  */
+// TODO Expected to be overwritten by taxonomic database changes
+params.tax_to_classifier = false
+params.fasta_to_classifier = false
+
 if (params.metadata) {
 	ch_metadata = Channel.fromPath("${params.metadata}", checkIfExists: true)
 } else { ch_metadata = Channel.empty() }
@@ -47,6 +51,11 @@ if ( !single_end && !params.illumina_pe_its && (params.trunclenf == false || par
 	find_truncation_values = true
 	log.warn "No DADA2 cutoffs were specified (--trunclenf & --trunclenr), therefore reads will be truncated where median quality drops below ${params.trunc_qmin} (defined by --trunc_qmin) but at least a fraction of ${params.trunc_rmin} (defined by --trunc_rmin) of the reads will be retained.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
 } else { find_truncation_values = false }
+
+//only run QIIME2 when taxonomy is actually calculated and all required data is available
+if ( !params.onlyDenoising && !params.enable_conda && !params.skip_taxonomy && ((params.tax_to_classifier && params.fasta_to_classifier) || params.classifier) ) {
+	run_qiime2 = true
+} else { run_qiime2 = false }
 
 /*
  * Sanity check input values
@@ -361,8 +370,8 @@ workflow AMPLISEQ {
 	}
 
 	//QIIME2
-	if (!params.onlyDenoising && !params.enable_conda) {
-		if (params.tax_to_classifier && params.fasta_to_classifier && !params.onlyDenoising && !params.skip_taxonomy) {
+	if ( run_qiime2 ) {
+		if (params.tax_to_classifier && params.fasta_to_classifier && !params.classifier) {
 			QIIME2_PREPTAX (
 				ch_fasta_to_classifier,
 				ch_tax_to_classifier,
@@ -382,7 +391,7 @@ workflow AMPLISEQ {
      * SUBWORKFLOW / MODULES : Downstream analysis with QIIME2
      */
 	//TODO: use QIIME2_INTAX ( DADA2_TAXONOMY.out.tsv )
-	if (!params.onlyDenoising && !params.enable_conda) {
+	if ( run_qiime2 ) {
 		//Import into QIIME2 & filtering by taxonomy & prevalence & counts
 		QIIME2_INASV ( DADA2_MERGE.out.asv )
 		QIIME2_INSEQ ( ch_fasta )

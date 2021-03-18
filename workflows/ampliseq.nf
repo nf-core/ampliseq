@@ -220,6 +220,7 @@ include { CUTADAPT as CUTADAPT_DOUBLEPRIMER } from '../modules/nf-core/software/
 def multiqc_report      = []
 
 workflow AMPLISEQ {
+	ch_software_versions = Channel.empty()
 
 	/*
 	* Create a channel for input read files
@@ -238,9 +239,8 @@ workflow AMPLISEQ {
      */
     if (!params.skip_fastqc) {
         FASTQC ( RENAME_RAW_DATA_FILES.out ).html.set { fastqc_html }
+		ch_software_versions = ch_software_versions.mix(FASTQC.out.version.first().ifEmpty(null))
     }
-    ch_software_versions = Channel.empty()
-    ch_software_versions = ch_software_versions.mix(FASTQC.out.version.first().ifEmpty(null))
 
     /*
      * MODULE: Cutadapt

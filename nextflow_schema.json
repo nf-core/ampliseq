@@ -387,16 +387,23 @@
                     "hidden": true
                 },
                 "enable_conda": {
-                    "type": "string",
-                    "hidden": true
+                    "type": "boolean",
+                    "description": "Run this workflow with Conda. You can also use '-profile conda' instead of providing this parameter.",
+                    "hidden": true,
+                    "fa_icon": "fas fa-bacon"
                 },
                 "multiqc_title": {
                     "type": "string",
-                    "hidden": true
+                    "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
+                    "hidden": true,
+                    "fa_icon": "fas fa-file-signature"
                 },
                 "singularity_pull_docker_container": {
-                    "type": "string",
-                    "hidden": true
+                    "type": "boolean",
+                    "description": "Instead of directly downloading Singularity images for use with Singularity, force the workflow to pull and convert Docker containers instead.",
+                    "hidden": true,
+                    "fa_icon": "fas fa-toolbox",
+                    "help_text": "This may be useful for example if you are unable to directly pull Singularity containers to run the pipeline due to http/https proxy issues."
                 }
             }
         },

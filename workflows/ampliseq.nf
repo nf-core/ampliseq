@@ -465,7 +465,7 @@ workflow AMPLISEQ {
      * MultiQC
      */
     if (!params.skip_multiqc) {
-        workflow_summary    = Schema.params_summary_multiqc(workflow, params.summary_params)
+        workflow_summary    = MultiqcSchema.params_summary_multiqc(workflow, params.summary_params)
         ch_workflow_summary = Channel.value(workflow_summary)
 
         MULTIQC (

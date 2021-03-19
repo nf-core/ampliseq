@@ -487,63 +487,7 @@
             "type": "object",
             "description": "",
             "default": "",
-            "properties": {
-                "manifest": {
-                    "type": "string",
-                    "description": "Path to tab-separated table with sample IDs and paths to sequencing files",
-                    "help_text": "You can submit a manifest file as an alternative way to provide input reads. No submission of read files with `--input` is required this way.\n\nA manifest must be a tab-separated file that must have the following labels in this exact order: `sampleID`, `forwardReads`, `reverseReads`. In case of single-end reads, such as PacBio data, the labels should be: `sampleID`, `forwardReads`. The sample identifiers must be listed under `sampleID`. Paths to forward and reverse reads must be reported under `forwardReads` and `reverseReads`, respectively. \n\nMultiple sequencing runs can be indicated in an optional column `run`.",
-                    "fa_icon": "fas fa-file-csv",
-                    "hidden": true,
-                    "default": "False"
-                },
-                "phred64": {
-                    "type": "boolean",
-                    "description": "If the sequencing data has PHRED 64 encoded quality scores, otherwise PHRED 33 is assumed",
-                    "hidden": true
-                },
-                "untilQ2import": {
-                    "type": "boolean",
-                    "description": "Skip all steps after importing into QIIME2, used for visually choosing DADA2 parameter `--trunclenf` and `--trunclenr`",
-                    "hidden": true
-                },
-                "qiime_timezone": {
-                    "type": "string",
-                    "default": "Europe/Berlin",
-                    "description": "Needs to be specified to resolve a timezone error",
-                    "help_text": "If a timezone error occurs, this parameter needs to be specified (default: 'Europe/Berlin'). Find your appropriate timezone with e.g. tzselect.\nNote, this affects the timezone of the entire software environment.",
-                    "hidden": true
-                },
-                "classifier_removeHash": {
-                    "type": "boolean",
-                    "description": "Remove all hash signs from taxonomy strings, resolves a rare ValueError during classification (process classifier)",
-                    "hidden": true
-                },
-                "readPaths": {
-                    "type": "string",
-                    "hidden": true,
-                    "description": "Path to test sequencing read files",
-                    "default": "False"
-                },
-                "Q2imported": {
-                    "type": "string",
-                    "description": "Path to imported reads (e.g. \"demux.qza\")",
-                    "help_text": "Analysis starting with a QIIME2 artefact with trimmed reads, typically produced before with `--untilQ2import`. This is only supported for data from a single sequencing run.\n\nFor data from multiple sequencing runs with `--multipleSequencingRuns` the pipeline can be first run with `--untilQ2import` and next run without `--untilQ2import` but with `-resume`.",
-                    "hidden": true,
-                    "default": "False"
-                },
-                "split": {
-                    "type": "string",
-                    "default": "-",
-                    "description": "A string that will be used between the prepended run/folder name and the sample name. Only used with \"--multipleSequencingRuns\".",
-                    "help_text": "A string that will be used between the prepended run/folder name and the sample name. Only used with `--multipleSequencingRuns` (default: `\"-\"`).\n\nFor example using the string `link`:\n\n```bash\n--split \"link\"\n```\n\nPlease note:\n\n1. Run/folder names may not contain the string specified by `--split`\n2. No underscore(s) allowed\n3. Must be enclosed in quotes\n4. The metadata sheet has to be adjusted, instead of using `run-sample` in the first column, in this example `runlinksample` is required",
-                    "hidden": true
-                },
-                "onlyDenoising": {
-                    "type": "boolean",
-                    "description": "Skip all steps after denoising, produce only sequences and abundance tables on ASV level",
-                    "hidden": true
-                }
-            }
+            "properties": {}
         }
     },
     "allOf": [

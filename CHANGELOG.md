@@ -21,7 +21,7 @@ Re-wrote whole pipeline in [DSL2](https://www.nextflow.io/docs/latest/dsl2.html)
 * Updated from cutadapt v2.8 to v3.2
 * Updated DADA2 from v1.10 to v1.18.0, now not using QIIME2 for ASV generation any more
 
-### `Deprecated`
+### `Removed`
 
 * `--manifest` is superseeded by `--input` that can now also handle a sample sheet file input (required extension: `.tsv`)
 * `--Q2imported` and `untilQ2import` are removed because pausing at that point is not neccessary

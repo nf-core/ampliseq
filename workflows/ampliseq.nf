@@ -156,7 +156,7 @@ include { GET_SOFTWARE_VERSIONS         } from '../modules/local/get_software_ve
  * SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
  */
 
-include { PARSE_INPUT                   } from '../subworkflows/local/parse_input'              addParams( options: [:]                             )
+include { PARSE_INPUT                   } from '../subworkflows/local/parse_input'
 include { QIIME2_PREPTAX                } from '../subworkflows/local/qiime2_preptax'           addParams( options: modules['qiime2_preptax']       )
 include { QIIME2_TAXONOMY               } from '../subworkflows/local/qiime2_taxonomy'          addParams( options: modules['qiime2_taxonomy']      )
 include { QIIME2_EXPORT                 } from '../subworkflows/local/qiime2_export'            addParams( absolute_options: modules['qiime2_export_absolute'], relasv_options: modules['qiime2_export_relasv'],reltax_options: modules['qiime2_export_reltax'],combine_table_options: modules['combine_table'] )

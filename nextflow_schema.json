@@ -377,15 +377,6 @@
                     "type": "string",
                     "hidden": true
                 },
-                "awsqueue": {
-                    "type": "string",
-                    "hidden": true
-                },
-                "awsregion": {
-                    "type": "string",
-                    "default": "eu-west-1",
-                    "hidden": true
-                },
                 "enable_conda": {
                     "type": "boolean",
                     "description": "Run this workflow with Conda. You can also use '-profile conda' instead of providing this parameter.",

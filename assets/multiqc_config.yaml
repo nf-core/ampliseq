@@ -7,6 +7,5 @@ report_section_order:
         order: -1000
     nf-core-ampliseq-summary:
         order: -1001
-        
-#export_plots clashes with current MatPlotLib
-#export_plots: true
+
+export_plots: true

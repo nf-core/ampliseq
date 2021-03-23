@@ -32,7 +32,7 @@ if( params.tax_to_classifier && params.fasta_to_classifier && !params.skip_taxon
 }
 
 if (params.dada_ref_taxonomy && !params.skip_taxonomy) {
-	ch_dada_ref_taxonomy = Channel.fromPath("${params.dada_ref_taxonomy}", checkIfExists: true)
+	ch_dada_ref_taxonomy = Channel.fromList(params.genomes[params.dada_ref_taxonomy]["file"]).map { file(it) }
 } else { ch_dada_ref_taxonomy = Channel.empty() }
 
 if (params.dada_ref_species && params.dada_ref_taxonomy && !params.skip_taxonomy) {
@@ -139,6 +139,7 @@ include { DADA2_DENOISING               } from '../modules/local/dada2_denoising
 include { DADA2_RMCHIMERA               } from '../modules/local/dada2_rmchimera'              addParams( options: dada2_rmchimera_options         )
 include { DADA2_STATS                   } from '../modules/local/dada2_stats'                  addParams( options: modules['dada2_stats']          )
 include { DADA2_MERGE                   } from '../modules/local/dada2_merge'                  addParams( options: modules['dada2_merge']          )
+include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
 include { DADA2_TAXONOMY                } from '../modules/local/dada2_taxonomy'               addParams( options: dada2_taxonomy_options          )
 include { DADA2_ADDSPECIES              } from '../modules/local/dada2_addspecies'             addParams( options: dada2_addspecies_options        )
 include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'                 addParams( options: modules['qiime2_inseq']         )
@@ -365,8 +366,9 @@ workflow AMPLISEQ {
 
 	//DADA2
 	if (!params.skip_taxonomy) {
-		DADA2_TAXONOMY ( ch_fasta, ch_dada_ref_taxonomy )
-		DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_dada_ref_species )
+		FORMAT_TAXONOMY ( ch_dada_ref_taxonomy )
+		DADA2_TAXONOMY ( ch_fasta, FORMAT_TAXONOMY.out.assigntax )
+		DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, FORMAT_TAXONOMY.out.addspecies )
 	}
 
 	//QIIME2

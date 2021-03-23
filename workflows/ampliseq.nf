@@ -53,7 +53,7 @@ if ( !single_end && !params.illumina_pe_its && (params.trunclenf == false || par
 } else { find_truncation_values = false }
 
 //only run QIIME2 when taxonomy is actually calculated and all required data is available
-if ( !params.enable_conda && !params.skip_taxonomy && ((params.tax_to_classifier && params.fasta_to_classifier) || params.classifier) ) {
+if ( !params.enable_conda && !params.skip_taxonomy ) {
 	run_qiime2 = true
 } else { run_qiime2 = false }
 
@@ -389,7 +389,6 @@ workflow AMPLISEQ {
 			ch_fasta,
 			ch_qiime_classifier
 		)
-		ch_tax = QIIME2_TAXONOMY.out.qza
 		ch_software_versions = ch_software_versions.mix( QIIME2_TAXONOMY.out.version.ifEmpty(null) ) //usually a .first() is here, dont know why this leads here to a warning
 	}
     /*

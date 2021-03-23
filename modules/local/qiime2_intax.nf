@@ -5,6 +5,7 @@ params.options = [:]
 options    = initOptions(params.options)
 
 process QIIME2_INTAX {
+    tag "${asv},${tax}"
     label 'process_low'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,

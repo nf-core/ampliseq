@@ -360,8 +360,10 @@ workflow AMPLISEQ {
     /*
      * SUBWORKFLOW / MODULES : Taxonomic classification with DADA2 and/or QIIME2
      */
-	//Alternative entry point for fasta that is being classified
-	ch_fasta =  params.input.toString().toLowerCase().endsWith("fasta") ? ch_fasta : DADA2_MERGE.out.fasta
+	//Alternative entry point for fasta that is being classified - the if clause needs to be the opposite (i.e. with !) of that in subworkflow/local/parse.nf
+	if ( !(params.input.toString().toLowerCase().endsWith(".fasta") || params.input.toString().toLowerCase().endsWith(".fna") || params.input.toString().toLowerCase().endsWith(".fa") )) {
+		ch_fasta = DADA2_MERGE.out.fasta
+	}
 
 	//DADA2
 	if (!params.skip_taxonomy) {

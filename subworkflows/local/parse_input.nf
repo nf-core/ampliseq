@@ -14,7 +14,7 @@ workflow PARSE_INPUT {
     extension
     
     main:
-	if ( input.toString().toLowerCase().endsWith("fasta") ) {
+	if ( input.toString().toLowerCase().endsWith(".fasta") || input.toString().toLowerCase().endsWith(".fna") || input.toString().toLowerCase().endsWith(".fa") ) {
 		// Fasta input directely for classification
 		ch_fasta = Channel.fromPath(input, checkIfExists: true)
 		ch_reads = Channel.empty()

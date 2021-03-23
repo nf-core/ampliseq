@@ -7,3 +7,6 @@ tests/
 testing/
 testing*
 *.pyc
+.*.sw?
+.Rproj.user
+.Rhistory

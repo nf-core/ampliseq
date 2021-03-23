@@ -11,8 +11,8 @@ process FORMAT_TAXONOMY {
     path(database)
     
     output:
-    path( "*assignTaxonomy.fna" ), emit: assigntax
-    path( "*addSpecies.fna"), emit: addspecies
+    path( "*assignTaxonomy.fna*" ), emit: assigntax
+    path( "*addSpecies.fna*"), emit: addspecies
 
     script:
     """

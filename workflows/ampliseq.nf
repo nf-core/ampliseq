@@ -366,7 +366,7 @@ workflow AMPLISEQ {
 
 	//DADA2
 	if (!params.skip_taxonomy) {
-		FORMAT_TAXONOMY ( ch_dada_ref_taxonomy )
+		FORMAT_TAXONOMY ( ch_dada_ref_taxonomy.collect() )
 		DADA2_TAXONOMY ( ch_fasta, FORMAT_TAXONOMY.out.assigntax )
 		if (params.dada_ref_species) {
 			DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, FORMAT_TAXONOMY.out.addspecies )

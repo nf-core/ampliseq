@@ -368,7 +368,12 @@ workflow AMPLISEQ {
 	if (!params.skip_taxonomy) {
 		FORMAT_TAXONOMY ( ch_dada_ref_taxonomy )
 		DADA2_TAXONOMY ( ch_fasta, FORMAT_TAXONOMY.out.assigntax )
-		DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, FORMAT_TAXONOMY.out.addspecies )
+		if (params.dada_ref_species) {
+			DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, FORMAT_TAXONOMY.out.addspecies )
+			ch_dada2_tax = DADA2_ADDSPECIES.out.tsv
+		} else { 
+			ch_dada2_tax = DADA2_TAXONOMY.out.tsv
+		}
 	}
 
 	//QIIME2
@@ -392,11 +397,15 @@ workflow AMPLISEQ {
     /*
      * SUBWORKFLOW / MODULES : Downstream analysis with QIIME2
      */
-	//TODO: use QIIME2_INTAX ( DADA2_TAXONOMY.out.tsv )
 	if ( run_qiime2 ) {
-		//Import into QIIME2 & filtering by taxonomy & prevalence & counts
+		//Import into QIIME2
+		QIIME2_INTAX ( DADA2_MERGE.out.dada2asv, ch_dada2_tax ) // prefer DADA2_ADDSPECIES.out.tsv over DADA2_TAXONOMY.out.tsv
 		QIIME2_INASV ( DADA2_MERGE.out.asv )
 		QIIME2_INSEQ ( ch_fasta )
+
+		ch_tax = QIIME2_INTAX.out.qza.ifEmpty( QIIME2_TAXONOMY.out.qza ) //prefer DADA2 taxonomy assigment over QIIME2 taxonomy assignment
+
+		//Filtering by taxonomy & prevalence & counts
 		if (params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1) {
 			QIIME2_FILTERTAXA (
 					QIIME2_INASV.out.qza,

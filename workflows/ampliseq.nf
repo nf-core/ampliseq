@@ -36,7 +36,7 @@ if (params.dada_ref_taxonomy && !params.skip_taxonomy) {
 } else { ch_dada_ref_taxonomy = Channel.empty() }
 
 if (params.dada_ref_species && params.dada_ref_taxonomy && !params.skip_taxonomy) {
-	ch_dada_ref_species = Channel.fromPath("${params.dada_ref_species}", checkIfExists: true)
+	ch_dada_ref_species = Channel.fromList(params.genomes[params.dada_ref_taxonomy]["file"]).map { file(it) }
 } else { ch_dada_ref_species = Channel.empty() }
 
 /*

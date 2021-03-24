@@ -399,12 +399,24 @@ workflow AMPLISEQ {
      * SUBWORKFLOW / MODULES : Downstream analysis with QIIME2
      */
 	if ( run_qiime2 ) {
-		//Import into QIIME2
-		QIIME2_INTAX ( DADA2_MERGE.out.dada2asv, ch_dada2_tax ) // prefer DADA2_ADDSPECIES.out.tsv over DADA2_TAXONOMY.out.tsv
+		//Import ASV abundance table and sequences into QIIME2
 		QIIME2_INASV ( DADA2_MERGE.out.asv )
 		QIIME2_INSEQ ( ch_fasta )
 
-		ch_tax = QIIME2_INTAX.out.qza.ifEmpty( QIIME2_TAXONOMY.out.qza ) //prefer DADA2 taxonomy assigment over QIIME2 taxonomy assignment
+		//Import taxonomic classification into QIIME2, if available
+		if ( params.skip_taxonomy ) {
+			log.info "Skip taxonomy classification"
+			ch_tax = Channel.empty()
+		} else if ( params.dada_ref_taxonomy ) {
+			log.info "Use DADA2 taxonomy classification"
+			ch_tax = QIIME2_INTAX ( DADA2_MERGE.out.dada2asv, ch_dada2_tax ).qza
+		} else if ( (params.tax_to_classifier && params.fasta_to_classifier) || params.classifier ) {
+			log.info "Use QIIME2 taxonomy classification"
+			ch_tax = QIIME2_TAXONOMY.out.qza
+		} else { 
+			log.info "Use no taxonomy classification"
+			ch_tax = Channel.empty() 
+		}
 
 		//Filtering by taxonomy & prevalence & counts
 		if (params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1) {

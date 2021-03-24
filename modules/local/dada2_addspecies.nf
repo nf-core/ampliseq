@@ -5,6 +5,7 @@ params.options = [:]
 options    = initOptions(params.options)
 
 process DADA2_ADDSPECIES {
+    tag "${taxtable},${database}"
     label 'process_high'
     label 'single_cpu'
     publishDir "${params.outdir}",

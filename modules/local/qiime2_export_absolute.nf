@@ -52,7 +52,7 @@ process QIIME2_EXPORT_ABSOLUTE {
     cp representative_sequences/*.tsv .
 
 	##on several taxa level
-	array=( 2 3 4 5 6 7 )
+	array=( 2 3 4 5 6 )
 	for i in \${array[@]}
 	do
 		#collapse taxa

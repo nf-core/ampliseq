@@ -39,7 +39,7 @@ jobs:
   profiles:
     name: Run workflow profile
     # Only run on push if this is the nf-core dev branch (merged PRs)
-    if: ${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/mag') }}
+    if: ${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/ampliseq') }}
     runs-on: ubuntu-latest
     env:
       NXF_VER: '20.10.0'

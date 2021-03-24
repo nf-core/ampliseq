@@ -53,6 +53,7 @@ For further reading and documentation see the [FastQC help pages](http://www.bio
 **Output files:**
 
 * `cutadapt/`: directory containing log files with retained reads, trimming percentage, etc. for each sample.
+  * `cutadapt_summary.tsv`: Summary of read numbers that pass cutadapt.
 
 ### MultiQC
 

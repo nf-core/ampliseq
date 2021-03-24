@@ -157,22 +157,6 @@ include { GET_SOFTWARE_VERSIONS         } from '../modules/local/get_software_ve
  * SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
  */
 
-include { PARSE_INPUT                   } from '../subworkflows/local/parse_input'
-include { QIIME2_PREPTAX                } from '../subworkflows/local/qiime2_preptax'           addParams( options: modules['qiime2_preptax']       )
-include { QIIME2_TAXONOMY               } from '../subworkflows/local/qiime2_taxonomy'          addParams( options: modules['qiime2_taxonomy']      )
-include { QIIME2_EXPORT                 } from '../subworkflows/local/qiime2_export'            addParams( absolute_options: modules['qiime2_export_absolute'], relasv_options: modules['qiime2_export_relasv'],reltax_options: modules['qiime2_export_reltax'],combine_table_options: modules['combine_table'] )
-include { QIIME2_DIVERSITY              } from '../subworkflows/local/qiime2_diversity'         addParams( tree_options: modules['qiime2_tree'], alphararefaction_options: modules['qiime2_alphararefaction'], diversity_core_options: modules['qiime2_diversity_core'], diversity_alpha_options: modules['qiime2_diversity_alpha'], diversity_beta_options: modules['qiime2_diversity_beta'], diversity_betaord_options: modules['qiime2_diversity_betaord'] )
-include { QIIME2_ANCOM                  } from '../subworkflows/local/qiime2_ancom'             addParams( filterasv_options: modules['qiime2_filterasv'], ancom_tax_options: modules['qiime2_ancom_tax'], ancom_asv_options: modules['qiime2_ancom_asv'] )
-
- ////////////////////////////////////////////////////
-/* --    IMPORT NF-CORE MODULES/SUBWORKFLOWS   -- */
-////////////////////////////////////////////////////
-
-/*
- * MODULE: Installed directly from nf-core/modules
- */
-def fastqc_options              = modules['fastqc']
-
 if (params.pacbio) {
 	//PacBio data
 	cutadapt_options_args       = " --rc -g ${params.FW_primer}...${params.RV_primer}"
@@ -204,10 +188,24 @@ cutadapt_readthrough_options.args    += " -a ${RV_primer_RevComp} -A ${FW_primer
 def cutadapt_doubleprimer_options        = modules['cutadapt_doubleprimer']
 cutadapt_doubleprimer_options.args      += cutadapt_options_args
 
+include { PARSE_INPUT                   } from '../subworkflows/local/parse_input'
+include { QIIME2_PREPTAX                } from '../subworkflows/local/qiime2_preptax'           addParams( options: modules['qiime2_preptax']       )
+include { QIIME2_TAXONOMY               } from '../subworkflows/local/qiime2_taxonomy'          addParams( options: modules['qiime2_taxonomy']      )
+include { CUTADAPT_WORKFLOW             } from '../subworkflows/local/cutadapt_workflow'        addParams( standard_options: cutadapt_options, readthrough_options: cutadapt_readthrough_options,doubleprimer_options: cutadapt_doubleprimer_options,summary_options: modules['cutadapt_summary'],summary_merge_options: modules['cutadapt_summary_merge'] )
+include { QIIME2_EXPORT                 } from '../subworkflows/local/qiime2_export'            addParams( absolute_options: modules['qiime2_export_absolute'], relasv_options: modules['qiime2_export_relasv'],reltax_options: modules['qiime2_export_reltax'],combine_table_options: modules['combine_table'] )
+include { QIIME2_DIVERSITY              } from '../subworkflows/local/qiime2_diversity'         addParams( tree_options: modules['qiime2_tree'], alphararefaction_options: modules['qiime2_alphararefaction'], diversity_core_options: modules['qiime2_diversity_core'], diversity_alpha_options: modules['qiime2_diversity_alpha'], diversity_beta_options: modules['qiime2_diversity_beta'], diversity_betaord_options: modules['qiime2_diversity_betaord'] )
+include { QIIME2_ANCOM                  } from '../subworkflows/local/qiime2_ancom'             addParams( filterasv_options: modules['qiime2_filterasv'], ancom_tax_options: modules['qiime2_ancom_tax'], ancom_asv_options: modules['qiime2_ancom_asv'] )
+
+ ////////////////////////////////////////////////////
+/* --    IMPORT NF-CORE MODULES/SUBWORKFLOWS   -- */
+////////////////////////////////////////////////////
+
+/*
+ * MODULE: Installed directly from nf-core/modules
+ */
+def fastqc_options              = modules['fastqc']
+
 include { FASTQC                            } from '../modules/nf-core/software/fastqc/main'   addParams( options: fastqc_options                )
-include { CUTADAPT                          } from '../modules/nf-core/software/cutadapt/main' addParams( options: cutadapt_options              )
-include { CUTADAPT as CUTADAPT_READTHROUGH  } from '../modules/nf-core/software/cutadapt/main' addParams( options: cutadapt_readthrough_options  )
-include { CUTADAPT as CUTADAPT_DOUBLEPRIMER } from '../modules/nf-core/software/cutadapt/main' addParams( options: cutadapt_doubleprimer_options )
 
 /*
  * SUBWORKFLOW: Consisting entirely of nf-core/modules
@@ -246,16 +244,12 @@ workflow AMPLISEQ {
     /*
      * MODULE: Cutadapt
      */
-    CUTADAPT ( RENAME_RAW_DATA_FILES.out ).reads.set { ch_trimmed_reads }
-    ch_software_versions = ch_software_versions.mix(CUTADAPT.out.version.first().ifEmpty(null))
-
-	if (params.illumina_pe_its) {
-		CUTADAPT_READTHROUGH ( ch_trimmed_reads ).reads.set { ch_trimmed_reads }
-	}
-
-	if (params.double_primer) {
-		CUTADAPT_DOUBLEPRIMER ( ch_trimmed_reads ).reads.set { ch_trimmed_reads }
-	}
+    CUTADAPT_WORKFLOW ( 
+		RENAME_RAW_DATA_FILES.out,
+		params.illumina_pe_its,
+		params.double_primer
+	).reads.set { ch_trimmed_reads }
+    ch_software_versions = ch_software_versions.mix(CUTADAPT_WORKFLOW.out.version.first().ifEmpty(null))
 
     /*
      * SUBWORKFLOW / MODULES : ASV generation with DADA2
@@ -498,7 +492,7 @@ workflow AMPLISEQ {
             GET_SOFTWARE_VERSIONS.out.yaml.collect(),
             ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'),
             FASTQC.out.zip.collect{it[1]}.ifEmpty([]),
-            CUTADAPT.out.log.collect{it[1]}.ifEmpty([])
+            CUTADAPT_WORKFLOW.out.logs.collect{it[1]}.ifEmpty([])
         )
         multiqc_report = MULTIQC.out.report.toList()
     }

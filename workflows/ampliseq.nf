@@ -53,7 +53,7 @@ if ( !single_end && !params.illumina_pe_its && (params.trunclenf == false || par
 } else { find_truncation_values = false }
 
 //only run QIIME2 when taxonomy is actually calculated and all required data is available
-if ( !params.enable_conda && !params.skip_taxonomy && ((params.tax_to_classifier && params.fasta_to_classifier) || params.classifier) ) {
+if ( !params.enable_conda && !params.skip_taxonomy ) {
 	run_qiime2 = true
 } else { run_qiime2 = false }
 
@@ -361,8 +361,10 @@ workflow AMPLISEQ {
     /*
      * SUBWORKFLOW / MODULES : Taxonomic classification with DADA2 and/or QIIME2
      */
-	//Alternative entry point for fasta that is being classified
-	ch_fasta =  params.input.toString().toLowerCase().endsWith("fasta") ? ch_fasta : DADA2_MERGE.out.fasta
+	//Alternative entry point for fasta that is being classified - the if clause needs to be the opposite (i.e. with !) of that in subworkflow/local/parse.nf
+	if ( !(params.input.toString().toLowerCase().endsWith(".fasta") || params.input.toString().toLowerCase().endsWith(".fna") || params.input.toString().toLowerCase().endsWith(".fa") )) {
+		ch_fasta = DADA2_MERGE.out.fasta
+	}
 
 	//DADA2
 	if (!params.skip_taxonomy) {
@@ -391,19 +393,30 @@ workflow AMPLISEQ {
 			ch_fasta,
 			ch_qiime_classifier
 		)
-		ch_tax = QIIME2_TAXONOMY.out.qza
 		ch_software_versions = ch_software_versions.mix( QIIME2_TAXONOMY.out.version.ifEmpty(null) ) //usually a .first() is here, dont know why this leads here to a warning
 	}
     /*
      * SUBWORKFLOW / MODULES : Downstream analysis with QIIME2
      */
 	if ( run_qiime2 ) {
-		//Import into QIIME2
-		QIIME2_INTAX ( DADA2_MERGE.out.dada2asv, ch_dada2_tax ) // prefer DADA2_ADDSPECIES.out.tsv over DADA2_TAXONOMY.out.tsv
+		//Import ASV abundance table and sequences into QIIME2
 		QIIME2_INASV ( DADA2_MERGE.out.asv )
 		QIIME2_INSEQ ( ch_fasta )
 
-		ch_tax = QIIME2_INTAX.out.qza.ifEmpty( QIIME2_TAXONOMY.out.qza ) //prefer DADA2 taxonomy assigment over QIIME2 taxonomy assignment
+		//Import taxonomic classification into QIIME2, if available
+		if ( params.skip_taxonomy ) {
+			log.info "Skip taxonomy classification"
+			ch_tax = Channel.empty()
+		} else if ( params.dada_ref_taxonomy ) {
+			log.info "Use DADA2 taxonomy classification"
+			ch_tax = QIIME2_INTAX ( DADA2_MERGE.out.dada2asv, ch_dada2_tax ).qza
+		} else if ( (params.tax_to_classifier && params.fasta_to_classifier) || params.classifier ) {
+			log.info "Use QIIME2 taxonomy classification"
+			ch_tax = QIIME2_TAXONOMY.out.qza
+		} else { 
+			log.info "Use no taxonomy classification"
+			ch_tax = Channel.empty() 
+		}
 
 		//Filtering by taxonomy & prevalence & counts
 		if (params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1) {

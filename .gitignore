@@ -10,3 +10,5 @@ testing*
 .*.sw?
 .Rproj.user
 .Rhistory
+.screenrc
+ampliseq.Rproj

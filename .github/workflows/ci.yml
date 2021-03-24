@@ -35,12 +35,29 @@ jobs:
       - name: Run pipeline with test data
         run: |
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker
-      - name: Run pipeline with multi test data
-        run: | 
-          nextflow run ${GITHUB_WORKSPACE} -profile test_multi,docker
-      - name: Run pipeline with ITS PacBio reads and Unite database
-        run: | 
-          nextflow run ${GITHUB_WORKSPACE} -profile test_pacbio_its,docker
-      - name: Run pipeline with double cutadapt steps on test data with double primers
+
+  profiles:
+    name: Run workflow profile
+    # Only run on push if this is the nf-core dev branch (merged PRs)
+    if: ${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/ampliseq') }}
+    runs-on: ubuntu-latest
+    env:
+      NXF_VER: '20.10.0'
+      NXF_ANSI_LOG: false
+    strategy:
+      matrix:
+        # Run remaining test profiles with minimum nextflow version
+        profile: [test_multi, test_pacbio_its, test_doubleprimers]
+    steps:
+      - name: Check out pipeline code
+        uses: actions/checkout@v2
+
+      - name: Install Nextflow
+        env:
+          CAPSULE_LOG: none
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test_doubleprimers,docker
+          wget -qO- get.nextflow.io | bash
+          sudo mv nextflow /usr/local/bin/
+      - name: Run pipeline with ${{ matrix.profile }} test profile
+        run: |
+          nextflow run ${GITHUB_WORKSPACE} -profile ${{ matrix.profile }},docker

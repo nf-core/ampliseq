@@ -28,8 +28,9 @@ Re-wrote whole pipeline in nextflow [DSL2](https://www.nextflow.io/docs/latest/d
 * `--manifest` is superseeded by `--input` that can now also handle a sample sheet file input (required extension: `.tsv`)
 * `--Q2imported` and `untilQ2import` are removed because pausing at that point is not neccessary
 * `--split` is no longer supported, therefore all sample IDs have to be unique
-* `--classifier_removeHash` and `--qiime_timezone` became unnessessary
+* `--classifier_removeHash` and `--qiime_timezone` became unnecessary
 * `--onlyDenoising` is deprecated in favour of `--skip_taxonomy` (which does the exact same thing)
+* `--taxon_reference` became unnecessary
 
 ## nf-core/ampliseq version 1.2.0 "Teal Bronze Lion" - 2021
 

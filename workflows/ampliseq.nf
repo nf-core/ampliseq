@@ -71,10 +71,6 @@ if (params.double_primer && params.retain_untrimmed) {
 	exit 1, "Incompatible parameters --double_primer and --retain_untrimmed cannot be set at the same time."
 }
 
-if (!params.classifier){
-        if (!(params.taxon_reference == 'silva' || params.taxon_reference == 'unite')) exit 1, "--taxon_reference need to be set to either 'silva' or 'unite'"
-}
-
 ////////////////////////////////////////////////////
 /* --          CONFIG FILES                    -- */
 ////////////////////////////////////////////////////

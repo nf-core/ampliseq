@@ -35,10 +35,6 @@ if (params.dada_ref_taxonomy && !params.skip_taxonomy) {
 	ch_dada_ref_taxonomy = Channel.fromList(params.genomes[params.dada_ref_taxonomy]["file"]).map { file(it) }
 } else { ch_dada_ref_taxonomy = Channel.empty() }
 
-if (params.dada_ref_species && params.dada_ref_taxonomy && !params.skip_taxonomy) {
-	ch_dada_ref_species = Channel.fromPath("${params.dada_ref_species}", checkIfExists: true)
-} else { ch_dada_ref_species = Channel.empty() }
-
 /*
  * Set variables
  */
@@ -73,10 +69,6 @@ if (!["pooled", "independent", "pseudo"].contains(params.sample_inference)) {
 
 if (params.double_primer && params.retain_untrimmed) { 
 	exit 1, "Incompatible parameters --double_primer and --retain_untrimmed cannot be set at the same time."
-}
-
-if (!params.classifier){
-        if (!(params.taxon_reference == 'silva' || params.taxon_reference == 'unite')) exit 1, "--taxon_reference need to be set to either 'silva' or 'unite'"
 }
 
 ////////////////////////////////////////////////////
@@ -364,12 +356,8 @@ workflow AMPLISEQ {
 	if (!params.skip_taxonomy) {
 		FORMAT_TAXONOMY ( ch_dada_ref_taxonomy.collect() )
 		DADA2_TAXONOMY ( ch_fasta, FORMAT_TAXONOMY.out.assigntax )
-		if (params.dada_ref_species) {
-			DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, FORMAT_TAXONOMY.out.addspecies )
-			ch_dada2_tax = DADA2_ADDSPECIES.out.tsv
-		} else { 
-			ch_dada2_tax = DADA2_TAXONOMY.out.tsv
-		}
+		DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, FORMAT_TAXONOMY.out.addspecies )
+		ch_dada2_tax = DADA2_ADDSPECIES.out.tsv
 	}
 
 	//QIIME2

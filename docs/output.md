@@ -100,7 +100,7 @@ Additionally, DADA2 taxonomically classifies the ASVs using pre-trained database
 
 **Quantitative Insights Into Microbial Ecology 2** ([QIIME2](https://qiime2.org/)) is a next-generation microbiome bioinformatics platform and the successor of the widely used [QIIME1](https://www.nature.com/articles/nmeth.f.303).
 
-ASV sequences and counts as produced before with DADA2 are imported into QIIME2 and further analysed. First, ASVs are taxonomically classified (`--taxon_reference`,`--classifier`), than filtered (`--exclude_taxa`, `--min_frequency`, `--min_samples`), and abundance tables exported. Following, diversity indices are calculated and testing for differential abundant features between sample groups is performed.
+ASV sequences and counts as produced before with DADA2 are imported into QIIME2 and further analysed. First, ASVs are taxonomically classified (`--reference_database`,`--classifier`), than filtered (`--exclude_taxa`, `--min_frequency`, `--min_samples`), and abundance tables exported. Following, diversity indices are calculated and testing for differential abundant features between sample groups is performed.
 
 #### Taxonomic classification
 

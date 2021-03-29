@@ -11,7 +11,7 @@ params.summary_params = [:]
 /*
  * Import input files
  */
-// TODO Expected to be overwritten by taxonomic database changes
+// TODO Expected to be overwritten by taxonomic database changes, this is for QIIME2 only. DADA2 taxonomic classification uses "conf/ref_databases.config"
 params.tax_to_classifier = false
 params.fasta_to_classifier = false
 

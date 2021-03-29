@@ -186,12 +186,6 @@
             "description": "",
             "default": "",
             "properties": {
-                "reference_database": {
-                    "type": "string",
-                    "default": "https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip",
-                    "description": "Path to taxonomic reference database, currently accepts a qiime compatible file Silva_132_release.zip or a UNITE fasta file",
-                    "help_text": "By default, the workflow downloads SILVA (https://www.arb-silva.de/) v132 (https://www.arb-silva.de/documentation/release-132/) and extracts reference sequences and taxonomy clustered at 99% similarity and trains a Naive Bayes classifier to assign taxonomy to features."
-                },
                 "classifier": {
                     "type": "string",
                     "description": "Path to QIIME2 trained classifier file (typically *-classifier.qza)",

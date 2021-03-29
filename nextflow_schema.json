@@ -192,12 +192,6 @@
                     "help_text": "If you have trained a compatible classifier before, from sources such as SILVA (https://www.arb-silva.de/), Greengenes (http://greengenes.secondgenome.com/downloads) or RDP (https://rdp.cme.msu.edu/). \n\nFor example:\n\n```bash\n--classifier \"FW_primer-RV_primer-classifier.qza\"\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The classifier is a Naive Bayes classifier produced by \"qiime feature-classifier fit-classifier-naive-bayes\" (e.g. by this pipeline or from (https://docs.qiime2.org/2019.10/data-resources/))\n3. The primer pair for the amplicon PCR and the computing of the classifier are exactly the same (or fulllength, potentially lower performance)\n4. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses (0.21.2)",
                     "default": "False"
                 },
-                "dereplication": {
-                    "type": "integer",
-                    "default": 99,
-                    "description": "Dereplication of the database. Must bematching SILVA v132 and its subfolders. Database size is descreasing, but taxonomical assignments as well.",
-                    "hidden": true
-                },
                 "dada_ref_taxonomy": {
                     "type": "string",
                     "help_text": "Choose any of the databases that are supported, see conf/ref_databases.config, and optionally also specify the version. This will download the desired database, format it to produce a file that is compatible with dada_taxonomy and another file that is compatible with dada_addspecies.",

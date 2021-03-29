@@ -31,7 +31,7 @@ Re-wrote whole pipeline in nextflow [DSL2](https://www.nextflow.io/docs/latest/d
 * `--classifier_removeHash` and `--qiime_timezone` became unnecessary
 * `--onlyDenoising` is deprecated in favour of `--skip_taxonomy` (which does the exact same thing)
 * `--taxon_reference` became unnecessary
-* `--reference_database` is currently not supported as it is QIIME2 specific. Either a more general solution will be supported soon or QIIME2 classification will be removed.
+* `--reference_database`, `--dereplication` are currently not supported as they are QIIME2 specific. Either a more general solution will be supported soon or QIIME2 classification will be removed.
 
 ## nf-core/ampliseq version 1.2.0 "Teal Bronze Lion" - 2021
 

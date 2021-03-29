@@ -7,6 +7,7 @@ options    = initOptions(params.options)
 process QIIME2_ANCOM_ASV {
     tag "${table.baseName}"
     label 'process_medium'
+    label 'process_long'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }

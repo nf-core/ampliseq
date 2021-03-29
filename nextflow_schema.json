@@ -186,23 +186,11 @@
             "description": "",
             "default": "",
             "properties": {
-                "reference_database": {
-                    "type": "string",
-                    "default": "https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_132_release.zip",
-                    "description": "Path to taxonomic reference database, currently accepts a qiime compatible file Silva_132_release.zip or a UNITE fasta file",
-                    "help_text": "By default, the workflow downloads SILVA (https://www.arb-silva.de/) v132 (https://www.arb-silva.de/documentation/release-132/) and extracts reference sequences and taxonomy clustered at 99% similarity and trains a Naive Bayes classifier to assign taxonomy to features."
-                },
                 "classifier": {
                     "type": "string",
                     "description": "Path to QIIME2 trained classifier file (typically *-classifier.qza)",
                     "help_text": "If you have trained a compatible classifier before, from sources such as SILVA (https://www.arb-silva.de/), Greengenes (http://greengenes.secondgenome.com/downloads) or RDP (https://rdp.cme.msu.edu/). \n\nFor example:\n\n```bash\n--classifier \"FW_primer-RV_primer-classifier.qza\"\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The classifier is a Naive Bayes classifier produced by \"qiime feature-classifier fit-classifier-naive-bayes\" (e.g. by this pipeline or from (https://docs.qiime2.org/2019.10/data-resources/))\n3. The primer pair for the amplicon PCR and the computing of the classifier are exactly the same (or fulllength, potentially lower performance)\n4. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses (0.21.2)",
                     "default": "False"
-                },
-                "dereplication": {
-                    "type": "integer",
-                    "default": 99,
-                    "description": "Dereplication of the database. Must bematching SILVA v132 and its subfolders. Database size is descreasing, but taxonomical assignments as well.",
-                    "hidden": true
                 },
                 "dada_ref_taxonomy": {
                     "type": "string",
@@ -308,13 +296,6 @@
                         "copyNoFollow",
                         "move"
                     ]
-                },
-                "name": {
-                    "type": "string",
-                    "description": "Workflow name.",
-                    "fa_icon": "fas fa-fingerprint",
-                    "hidden": true,
-                    "help_text": "A custom name for the pipeline run. Unlike the core nextflow `-name` option with one hyphen this parameter can be reused multiple times, for example if using `-resume`. Passed through to steps such as MultiQC and used for things like report filenames and titles."
                 },
                 "email_on_fail": {
                     "type": "string",

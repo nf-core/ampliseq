@@ -11,7 +11,7 @@ params.summary_params = [:]
 /*
  * Import input files
  */
-// TODO Expected to be overwritten by taxonomic database changes
+// TODO Expected to be overwritten by taxonomic database changes, this is for QIIME2 only. DADA2 taxonomic classification uses "conf/ref_databases.config"
 params.tax_to_classifier = false
 params.fasta_to_classifier = false
 
@@ -429,6 +429,10 @@ workflow AMPLISEQ {
 		//Select metadata categories for diversity analysis & ancom
 		if (!params.skip_ancom || !params.skip_diversity_indices) {
 			METADATA_ALL ( ch_metadata, params.metadata_category ).set { ch_metacolumn_all }
+			//return empty channel if no appropriate column was found
+			ch_metacolumn_all.branch { passed: it != "" }.set { result }
+			ch_metacolumn_all = result.passed
+    
 			METADATA_PAIRWISE ( ch_metadata ).set { ch_metacolumn_pairwise }
 		} else { 
 			ch_metacolumn_all = Channel.empty()

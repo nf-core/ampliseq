@@ -7,7 +7,7 @@
 tar xzf *.gz
 
 # Remove leading "k__" and the like and replace space with underscore to create assignTaxonomy.fna
-cat */*.fasta | sed 's/;s__.*//' | sed 's/[a-z]__//g' | sed 's/ /_/g' > assignTaxonomy.fna
+cat */developer/*.fasta | sed 's/;s__.*//' | sed 's/[a-z]__//g' | sed 's/ /_/g' > assignTaxonomy.fna
 
 # Reformat to addSpecies format
 sed 's/>\([^|]\+\)|\([^|]\+|[^|]\+\)|.*/>\2 \1/' assignTaxonomy.fna | sed 's/_/ /g' > addSpecies.fna

@@ -46,6 +46,6 @@ process CUTADAPT_SUMMARY_MERGE {
     } else {
         """
         cp $files cutadapt_summary.tsv
-        """        
+        """
     }
 }

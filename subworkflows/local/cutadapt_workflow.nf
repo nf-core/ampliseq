@@ -20,7 +20,6 @@ workflow CUTADAPT_WORKFLOW {
     ch_file
 	illumina_pe_its
     double_primer
-    
     main:
     CUTADAPT ( ch_file ).reads.set { ch_trimmed_reads }
 	CUTADAPT.out.log
@@ -53,7 +52,6 @@ workflow CUTADAPT_WORKFLOW {
 	} else {
 		CUTADAPT_SUMMARY_MERGE ( "copy", CUTADAPT_SUMMARY.out.tsv )
 	}
-	
 
     emit:
     reads   = ch_trimmed_reads

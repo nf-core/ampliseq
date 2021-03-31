@@ -15,11 +15,11 @@ params.summary_params = [:]
 params.tax_to_classifier = false
 params.fasta_to_classifier = false
 
-if (params.metadata) {
+if (params.metadata != "") {
 	ch_metadata = Channel.fromPath("${params.metadata}", checkIfExists: true)
 } else { ch_metadata = Channel.empty() }
 
-if (params.classifier) {
+if (params.classifier != "") {
 	ch_qiime_classifier = Channel.fromPath("${params.classifier}", checkIfExists: true)
 } else { ch_qiime_classifier = Channel.empty() }
 
@@ -362,7 +362,7 @@ workflow AMPLISEQ {
 
 	//QIIME2
 	if ( run_qiime2 ) {
-		if (params.tax_to_classifier && params.fasta_to_classifier && !params.classifier) {
+		if (params.tax_to_classifier && params.fasta_to_classifier && params.classifier == "") {
 			QIIME2_PREPTAX (
 				ch_fasta_to_classifier,
 				ch_tax_to_classifier,
@@ -392,7 +392,7 @@ workflow AMPLISEQ {
 		} else if ( params.dada_ref_taxonomy ) {
 			log.info "Use DADA2 taxonomy classification"
 			ch_tax = QIIME2_INTAX ( DADA2_MERGE.out.dada2asv, ch_dada2_tax ).qza
-		} else if ( (params.tax_to_classifier && params.fasta_to_classifier) || params.classifier ) {
+		} else if ( (params.tax_to_classifier && params.fasta_to_classifier) || params.classifier != "" ) {
 			log.info "Use QIIME2 taxonomy classification"
 			ch_tax = QIIME2_TAXONOMY.out.qza
 		} else { 
@@ -440,7 +440,7 @@ workflow AMPLISEQ {
 		}
 
 		//Diversity indices
-		if ( params.metadata && (!params.skip_alpha_rarefaction || !params.skip_diversity_indices) ) {
+		if ( params.metadata != "" && (!params.skip_alpha_rarefaction || !params.skip_diversity_indices) ) {
 			QIIME2_DIVERSITY ( 
 				ch_metadata,
 				ch_asv,
@@ -454,7 +454,7 @@ workflow AMPLISEQ {
 		}
 		
 		//Perform ANCOM tests
-		if ( !params.skip_ancom && params.metadata ) {	
+		if ( !params.skip_ancom && params.metadata != "" ) {	
 			QIIME2_ANCOM (
 				ch_metadata,
 				ch_asv,

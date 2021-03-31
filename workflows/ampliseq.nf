@@ -391,7 +391,7 @@ workflow AMPLISEQ {
 			ch_tax = Channel.empty()
 		} else if ( params.dada_ref_taxonomy ) {
 			log.info "Use DADA2 taxonomy classification"
-			ch_tax = QIIME2_INTAX ( DADA2_MERGE.out.dada2asv, ch_dada2_tax ).qza
+			ch_tax = QIIME2_INTAX ( ch_dada2_tax ).qza
 		} else if ( (params.tax_to_classifier && params.fasta_to_classifier) || params.classifier ) {
 			log.info "Use QIIME2 taxonomy classification"
 			ch_tax = QIIME2_TAXONOMY.out.qza

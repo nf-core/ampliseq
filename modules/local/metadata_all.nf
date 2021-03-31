@@ -22,7 +22,7 @@ process METADATA_ALL {
 	stdout
 
 	script:
-	if( metadata_category == "" ) {
+	if( !metadata_category ) {
 		"""
 		metadata_all.r ${metadata}
 		"""

@@ -7,6 +7,7 @@ options    = initOptions(params.options)
 process QIIME2_ANCOM_TAX {
     tag "${table.baseName} - taxonomic level: ${taxlevel}"
     label 'process_medium'
+	label 'single_cpu'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }

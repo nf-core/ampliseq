@@ -3,15 +3,35 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## nf-core/ampliseq version 1.3.0dev
+## nf-core/ampliseq version 2.0.0dev
+
+Re-wrote whole pipeline in nextflow [DSL2](https://www.nextflow.io/docs/latest/dsl2.html) instead of DSL1
 
 ### `Added`
+
+* `--single_end` for single-ended Illumina data
+* `--dada_ref_taxonomy` for taxonomic classification with DADA2's assignTaxonomy and addSpecies functions
+* `--input` may point (1) at a fasta file ending with `.fasta`/`.fna`/`.fa` that will be taxonomically classified, (2) at a samples sheet ending with `.tsv` that allows analysis of multiple sequencing runs by reading the optional column `run`, or (3) at a folder input
+* `--sample_inference`, `--concatenate_reads`, `--illumina_pe_its`; please check the documentation for their function
+* Summary of cutadapt satistics
+* Taxonomic classification by DADA2
 
 ### `Fixed`
 
 ### `Dependencies`
 
-### `Deprecated`
+* Updated from cutadapt v2.8 to v3.2
+* Updated DADA2 from v1.10 to v1.18.0, now not using QIIME2 for ASV generation any more
+
+### `Removed`
+
+* `--manifest` is superseeded by `--input` that can now also handle a sample sheet file input (required extension: `.tsv`)
+* `--Q2imported` and `untilQ2import` are removed because pausing at that point is not neccessary
+* `--split` is no longer supported, therefore all sample IDs have to be unique
+* `--classifier_removeHash` and `--qiime_timezone` became unnecessary
+* `--onlyDenoising` is deprecated in favour of `--skip_taxonomy` (which does the exact same thing)
+* `--taxon_reference` became unnecessary
+* `--reference_database`, `--dereplication` are currently not supported as they are QIIME2 specific. Either a more general solution will be supported soon or QIIME2 classification will be removed.
 
 ## nf-core/ampliseq version 1.2.0 "Teal Bronze Lion" - 2021
 

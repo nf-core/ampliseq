@@ -194,7 +194,7 @@
                 },
                 "dada_ref_taxonomy": {
                     "type": "string",
-                    "help_text": "Choose any of the databases that are supported, see conf/ref_databases.config, and optionally also specify the version. This will download the desired database, format it to produce a file that is compatible with dada_taxonomy and another file that is compatible with dada_addspecies.",
+                    "help_text": "Choose any of the databases that are supported, see conf/ref_databases.config, and optionally also specify the version. This will download the desired database, format it to produce a file that is compatible with dada_taxonomy and another file that is compatible with dada_addspecies. For Unite databases, we're using the developer version of the files labeled as 'Includes singletons set as RefS (in dynamic files)'.",
                     "description": "Name of database, and optionally also version number, that are supported, see conf/ref_databases.config",
                     "default": "silva=138"
                 }

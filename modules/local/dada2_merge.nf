@@ -34,6 +34,7 @@ process DADA2_MERGE {
     """
     #!/usr/bin/env Rscript
     suppressPackageStartupMessages(library(dada2))
+    suppressPackageStartupMessages(library(digest))
 
     #combine stats files
     for (data in sort(list.files(".", pattern = ".stats.tsv", full.names = TRUE))) {
@@ -59,22 +60,21 @@ process DADA2_MERGE {
     colnames(df) <- gsub('_1.filt.fastq.gz', '', colnames(df))
     colnames(df) <- gsub('.filt.fastq.gz', '', colnames(df))
     df <- data.frame(sequence = rownames(df), df)
-    row.names(df) <- paste0("ASV_", seq(nrow(df)))
-    df <- data.frame(ASV_ID=row.names(df), df)
+    # Create an md5 sum of the sequences as ASV_ID and rearrange columns
+    df\$ASV_ID <- sapply(df\$sequence, digest, algo='md5', serialize = FALSE)
+    df <- df[,c(ncol(df),3:ncol(df)-1,1)]
 
     # file to publish
-    write.table( df, file = "DADA2_table.tsv", sep = "\t", row.names = FALSE, quote = FALSE)
+    write.table(df, file = "DADA2_table.tsv", sep = "\t", row.names = FALSE, quote = FALSE)
 
     # Write fasta file with ASV sequences to file
-    fasta.tab <- df[,c("ASV_ID","sequence")]
-    fasta.tab\$ASV_ID <- gsub("ASV_",">ASV_",fasta.tab\$ASV_ID)
-    fasta.tab.join <- c(rbind( fasta.tab\$ASV_ID, fasta.tab\$sequence ))
-    write( fasta.tab.join, file = 'ASV_seqs.fasta' )
+    write.table(data.frame(s = sprintf(">%s\n%s", df\$ASV_ID, df\$sequence)), 'ASV_seqs.fasta', col.names = FALSE, row.names = FALSE, quote = FALSE)
 
     # Write ASV file with ASV abundances to file
     df\$sequence <- NULL
+    rownames(df) <- df\$ASV_ID
     df\$ASV_ID <- NULL
-    write.table( df, file = "ASV_table.tsv", sep="\t", row.names = TRUE, col.names = NA, quote = FALSE)
+    write.table(df, file = "ASV_table.tsv", sep="\t", row.names = TRUE, col.names = NA, quote = FALSE)
 
     write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
     """

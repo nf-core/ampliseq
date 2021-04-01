@@ -5,7 +5,7 @@ params.options = [:]
 options    = initOptions(params.options)
 
 process QIIME2_INTAX {
-    tag "${asv},${tax}"
+    tag "${tax}"
     label 'process_low'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
@@ -15,7 +15,6 @@ process QIIME2_INTAX {
     container "quay.io/qiime2/core:2021.2"
 
     input:
-    path(asv) //DADA2_table.tsv
     path(tax) //ASV_tax_species.tsv
     
     output:
@@ -25,7 +24,7 @@ process QIIME2_INTAX {
     script:
     def software      = getSoftwareName(task.process)
     """
-    parse_dada2_taxonomy.r $asv $tax
+    parse_dada2_taxonomy.r $tax
 
     qiime tools import \
         --type 'FeatureData[Taxonomy]' \

@@ -37,9 +37,13 @@ process DADA2_TAXONOMY {
 
     seq <- getSequences(\"$fasta\", collapse = TRUE, silence = FALSE)
     taxa <- assignTaxonomy(seq, \"$database\", $options.args, multithread = $task.cpus, verbose=TRUE)
-    saveRDS(taxa, "ASV_tax.rds")
 
-    taxa <- cbind(sequence = rownames(taxa), taxa)
+    # Make a data frame, add ASV_ID from seq and put that first before writing to file
+    taxa <- data.frame(taxa)
+    taxa\$ASV_ID <- names(seq)
+    taxa <- taxa[, c(ncol(taxa), 2:ncol(taxa)-1)]
+    taxa\$sequence <- rownames(taxa)
+    saveRDS(taxa, "ASV_tax.rds")
     write.table(taxa, file = "ASV_tax.tsv", sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
 
     write.table('assignTaxonomy\t$options.args', file = "assignTaxonomy.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)

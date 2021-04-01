@@ -12,3 +12,4 @@ testing*
 .Rhistory
 .screenrc
 ampliseq.Rproj
+results_test/*

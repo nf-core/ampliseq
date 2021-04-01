@@ -32,6 +32,10 @@ if( params.tax_to_classifier && params.fasta_to_classifier && !params.skip_taxon
 }
 
 if (params.dada_ref_taxonomy && !params.skip_taxonomy) {
+	// Check if genome exists in the config file
+	if (params.genomes && params.dada_ref_taxonomy && !params.genomes.containsKey(params.dada_ref_taxonomy)) {
+		exit 1, "The provided reference taxonomy '${params.dada_ref_taxonomy}' is not available in the 'conf/ref_databases.config' file. Currently the available reference taxonomies are ${params.genomes.keySet().join(', ')}"
+	}
 	ch_dada_ref_taxonomy = Channel.fromList(params.genomes[params.dada_ref_taxonomy]["file"]).map { file(it) }
 } else { ch_dada_ref_taxonomy = Channel.empty() }
 

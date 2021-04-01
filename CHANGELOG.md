@@ -18,10 +18,13 @@ Re-wrote whole pipeline in nextflow [DSL2](https://www.nextflow.io/docs/latest/d
 
 ### `Fixed`
 
+* Template update for nf-core/tools version 1.13.3
+
 ### `Dependencies`
 
 * Updated from cutadapt v2.8 to v3.2
 * Updated DADA2 from v1.10 to v1.18.0, now not using QIIME2 for ASV generation any more
+* Updated QIIME2 to v2021.2
 
 ### `Removed`
 

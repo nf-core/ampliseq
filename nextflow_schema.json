@@ -15,7 +15,7 @@
                     "type": "string",
                     "fa_icon": "fas fa-dna",
                     "description": "Either a tab-seperated sample sheet, a fasta file, or a folder containing zipped FastQ files",
-                    "help_text": "Points to the main pipeline input, one of the following:\n- folder containing compressed fastq files\n- sample sheet ending with `.tsv` that points towards compressed fastq files\n- fasta file ending with `.fasta`, `.fna` or `.fa` that will be taxonomically classified\n\nRelated parameters are:\n- `--pacbio` if the sequencing data is PacBio data (default expected: paired-end Illumina data)\n- `--single_end` if the sequencing data is single-ended Illumina data (default expected: paired-end Illumina data)\n- `--multipleSequencingRuns` (folder input only) if the sequencing data originates from multiple sequencing runs\n- `--extension` (folder input only) if the sequencing file names do not follow the default (`\"/*_R{1,2}_001.fastq.gz\"`)\n\n##### Folder containing zipped FastQ files\n\nFor example:\n\n```bash\n--input 'path/to/data'\n```\n\nExample for input data organization from one sequencing run with two samples:\n\n```bash\ndata\n  |-sample1_1_L001_R1_001.fastq.gz\n  |-sample1_1_L001_R2_001.fastq.gz\n  |-sample2_1_L001_R1_001.fastq.gz\n  |-sample2_1_L001_R2_001.fastq.gz\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The folder must contain gzip compressed demultiplexed fastq files. If the file names do not follow the default (`\"/*_R{1,2}_001.fastq.gz\"`), please check `--extension`.\n3. Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique\n4. If your data is scattered, a directory with symlinks to your actual data might be a solution or produce a sample sheet\n5. All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed. Sequencing data originating from multiple sequencing runs requires additionally the parameter `--multipleSequencingRuns` and a specific folder structure.\n\n##### Sample sheet\n\nThe sample sheet file is an alternative way to provide input reads, it must be a tab-separated file ending with `.tsv` that must have two to four columns with the following headers: \n- `sampleID` (required): Unique sample identifiers, any unique string (may not contain dots `.`)\n- `forwardReads` (required): Paths to (forward) reads zipped FastQ files\n- `reverseReads` (optional): Paths to reverse reads zipped FastQ files, required if the data is paired-end\n- `run` (optional): If the data was produced by multiple sequencing runs, any string\n\nFor example:\n\n```bash\n--input 'path/to/samplesheet.tsv'\n```\n\n##### Fasta file\n\nWhen pointing at a file ending with `.fasta`, `.fna` or `.fa`, the containing sequences will be taxonomically classified. All other pipeline steps will be skipped.\n\nThis can be used to taxonomically classify previously produced ASV/OTU sequences.\n\nFor example:\n\n```bash\n--input 'path/to/amplicon_sequences.fasta'\n```"
+                    "help_text": "Points to the main pipeline input, one of the following:\n- folder containing compressed fastq files\n- sample sheet ending with `.tsv` that points towards compressed fastq files\n- fasta file ending with `.fasta`, `.fna` or `.fa` that will be taxonomically classified\n\nRelated parameters are:\n- `--pacbio` if the sequencing data is PacBio data (default expected: paired-end Illumina data)\n- `--single_end` if the sequencing data is single-ended Illumina data (default expected: paired-end Illumina data)\n- `--multiple_sequencing_runs` (folder input only) if the sequencing data originates from multiple sequencing runs\n- `--extension` (folder input only) if the sequencing file names do not follow the default (`\"/*_R{1,2}_001.fastq.gz\"`)\n\n##### Folder containing zipped FastQ files\n\nFor example:\n\n```bash\n--input 'path/to/data'\n```\n\nExample for input data organization from one sequencing run with two samples:\n\n```bash\ndata\n  |-sample1_1_L001_R1_001.fastq.gz\n  |-sample1_1_L001_R2_001.fastq.gz\n  |-sample2_1_L001_R1_001.fastq.gz\n  |-sample2_1_L001_R2_001.fastq.gz\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The folder must contain gzip compressed demultiplexed fastq files. If the file names do not follow the default (`\"/*_R{1,2}_001.fastq.gz\"`), please check `--extension`.\n3. Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique\n4. If your data is scattered, a directory with symlinks to your actual data might be a solution or produce a sample sheet\n5. All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed. Sequencing data originating from multiple sequencing runs requires additionally the parameter `--multiple_sequencing_runs` and a specific folder structure.\n\n##### Sample sheet\n\nThe sample sheet file is an alternative way to provide input reads, it must be a tab-separated file ending with `.tsv` that must have two to four columns with the following headers: \n- `sampleID` (required): Unique sample identifiers, any unique string (may not contain dots `.`)\n- `forwardReads` (required): Paths to (forward) reads zipped FastQ files\n- `reverseReads` (optional): Paths to reverse reads zipped FastQ files, required if the data is paired-end\n- `run` (optional): If the data was produced by multiple sequencing runs, any string\n\nFor example:\n\n```bash\n--input 'path/to/samplesheet.tsv'\n```\n\n##### Fasta file\n\nWhen pointing at a file ending with `.fasta`, `.fna` or `.fa`, the containing sequences will be taxonomically classified. All other pipeline steps will be skipped.\n\nThis can be used to taxonomically classify previously produced ASV/OTU sequences.\n\nFor example:\n\n```bash\n--input 'path/to/amplicon_sequences.fasta'\n```"
                 },
                 "FW_primer": {
                     "type": "string",
@@ -57,10 +57,10 @@
                     "type": "boolean",
                     "description": "If data is single-ended Illumina reads instead of paired-end"
                 },
-                "multipleSequencingRuns": {
+                "multiple_sequencing_runs": {
                     "type": "boolean",
                     "description": "If samples were sequenced in multiple sequencing runs",
-                    "help_text": "Expects one sub-folder per sequencing run in the folder specified by `--input` containing sequencing data of the specific run.\nSample identifiers are taken from sequencing files, specifically the string before the first underscore will be the sample ID. Sample IDs across all sequencing runs (all sequencing files) have to be unique. If this is not the case, please use a sample sheet as input instead.\n\nExample for input data organization:\n\n```bash\ndata\n  |-run1\n  |  |-sample1_1_L001_R1_001.fastq.gz\n  |  |-sample1_1_L001_R2_001.fastq.gz\n  |  |-sample2_1_L001_R1_001.fastq.gz\n  |  |-sample2_1_L001_R2_001.fastq.gz\n  |\n  |-run2\n     |-sample3_1_L001_R1_001.fastq.gz\n     |-sample3_1_L001_R2_001.fastq.gz\n     |-sample4_1_L001_R1_001.fastq.gz\n     |-sample4_1_L001_R2_001.fastq.gz\n```\n\nExample command to analyze this data in one pipeline run:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input \"data\" \\\n    --FW_primer \"GTGYCAGCMGCCGCGGTAA\" \\\n    --RV_primer \"GGACTACNVGGGTWTCTAAT\" \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multipleSequencingRuns\n```",
+                    "help_text": "Expects one sub-folder per sequencing run in the folder specified by `--input` containing sequencing data of the specific run.\nSample identifiers are taken from sequencing files, specifically the string before the first underscore will be the sample ID. Sample IDs across all sequencing runs (all sequencing files) have to be unique. If this is not the case, please use a sample sheet as input instead.\n\nExample for input data organization:\n\n```bash\ndata\n  |-run1\n  |  |-sample1_1_L001_R1_001.fastq.gz\n  |  |-sample1_1_L001_R2_001.fastq.gz\n  |  |-sample2_1_L001_R1_001.fastq.gz\n  |  |-sample2_1_L001_R2_001.fastq.gz\n  |\n  |-run2\n     |-sample3_1_L001_R1_001.fastq.gz\n     |-sample3_1_L001_R2_001.fastq.gz\n     |-sample4_1_L001_R1_001.fastq.gz\n     |-sample4_1_L001_R2_001.fastq.gz\n```\n\nExample command to analyze this data in one pipeline run:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input \"data\" \\\n    --FW_primer \"GTGYCAGCMGCCGCGGTAA\" \\\n    --RV_primer \"GGACTACNVGGGTWTCTAAT\" \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multiple_sequencing_runs\n```",
                     "fa_icon": "fas fa-running"
                 },
                 "illumina_pe_its": {
@@ -116,27 +116,6 @@
             "description": "",
             "default": "",
             "properties": {
-                "maxEE": {
-                    "type": "integer",
-                    "default": 2,
-                    "description": "DADA2 read filtering option",
-                    "help_text": "After truncation, reads with higher than `maxEE` \"expected errors\" will be discarded. In case of very long reads, you might want to increase this value.  We recommend (to start with) a value corresponding to approximately 1 expected error per 100-200 bp (default: 2)",
-                    "fa_icon": "fas fa-equals"
-                },
-                "maxLen": {
-                    "type": "string",
-                    "description": "DADA2 read filtering optio",
-                    "fa_icon": "fas fa-less-than-equal",
-                    "help_text": "Remove reads with length greater than `maxLen` after trimming and truncation. Must be a positive integer. Default is \"Inf\", therefore no removal of any reads.",
-                    "default": "Inf"
-                },
-                "minLen": {
-                    "type": "integer",
-                    "default": 50,
-                    "description": "DADA2 read filtering option",
-                    "fa_icon": "fas fa-greater-than-equal",
-                    "help_text": "Remove reads with length less than `minLen` after trimming and truncation."
-                },
                 "retain_untrimmed": {
                     "type": "boolean",
                     "description": "Cutadapt will retain untrimmed reads, choose only if input reads are not expected to contain primer sequences.",
@@ -175,6 +154,27 @@
                     "help_text": "Value can range from 0 to 1. 0 means no reads need to be retained and 1 means all reads need to be retained. The minimum lengths of --trunc_qmin and --trunc_rmin are chosen as DADA2 cutoffs.",
                     "minimum": 0,
                     "maximum": 1
+                },
+                "max_ee": {
+                    "type": "integer",
+                    "default": 2,
+                    "description": "DADA2 read filtering option",
+                    "help_text": "After truncation, reads with higher than `max_ee` \"expected errors\" will be discarded. In case of very long reads, you might want to increase this value.  We recommend (to start with) a value corresponding to approximately 1 expected error per 100-200 bp (default: 2)",
+                    "fa_icon": "fas fa-equals"
+                },
+                "max_len": {
+                    "type": "string",
+                    "description": "DADA2 read filtering optio",
+                    "fa_icon": "fas fa-less-than-equal",
+                    "help_text": "Remove reads with length greater than `max_len` after trimming and truncation. Must be a positive integer. Default is \"Inf\", therefore no removal of any reads.",
+                    "default": "Inf"
+                },
+                "min_len": {
+                    "type": "integer",
+                    "default": 50,
+                    "description": "DADA2 read filtering option",
+                    "fa_icon": "fas fa-greater-than-equal",
+                    "help_text": "Remove reads with length less than `min_len` after trimming and truncation."
                 }
             },
             "fa_icon": "fas fa-filter"
@@ -185,16 +185,27 @@
             "description": "",
             "default": "",
             "properties": {
-                "classifier": {
-                    "type": "string",
-                    "description": "Path to QIIME2 trained classifier file (typically *-classifier.qza)",
-                    "help_text": "If you have trained a compatible classifier before, from sources such as SILVA (https://www.arb-silva.de/), Greengenes (http://greengenes.secondgenome.com/downloads) or RDP (https://rdp.cme.msu.edu/). \n\nFor example:\n\n```bash\n--classifier \"FW_primer-RV_primer-classifier.qza\"\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The classifier is a Naive Bayes classifier produced by \"qiime feature-classifier fit-classifier-naive-bayes\" (e.g. by this pipeline or from (https://docs.qiime2.org/2019.10/data-resources/))\n3. The primer pair for the amplicon PCR and the computing of the classifier are exactly the same (or fulllength, potentially lower performance)\n4. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses (0.21.2)"
-                },
                 "dada_ref_taxonomy": {
                     "type": "string",
                     "help_text": "Choose any of the databases that are supported, see conf/ref_databases.config, and optionally also specify the version. This will download the desired database, format it to produce a file that is compatible with dada_taxonomy and another file that is compatible with dada_addspecies. For Unite databases, we're using the developer version of the files labeled as 'Includes singletons set as RefS (in dynamic files)'.",
                     "description": "Name of database, and optionally also version number, that are supported, see conf/ref_databases.config",
                     "default": "silva=138"
+                },
+                "classifier": {
+                    "type": "string",
+                    "description": "Path to QIIME2 trained classifier file (typically *-classifier.qza)",
+                    "help_text": "If you have trained a compatible classifier before, from sources such as SILVA (https://www.arb-silva.de/), Greengenes (http://greengenes.secondgenome.com/downloads) or RDP (https://rdp.cme.msu.edu/). \n\nFor example:\n\n```bash\n--classifier \"FW_primer-RV_primer-classifier.qza\"\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The classifier is a Naive Bayes classifier produced by \"qiime feature-classifier fit-classifier-naive-bayes\" (e.g. by this pipeline or from (https://docs.qiime2.org/2019.10/data-resources/))\n3. The primer pair for the amplicon PCR and the computing of the classifier are exactly the same (or fulllength, potentially lower performance)\n4. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses (0.21.2)",
+                    "hidden": true
+                },
+                "tax_to_classifier": {
+                    "type": "string",
+                    "description": "Path to file with taxonomies for taxonomic classification with QIIME2",
+                    "hidden": true
+                },
+                "fasta_to_classifier": {
+                    "type": "string",
+                    "description": "Path to file with sequences in fasta format for taxonomic classification with QIIME2",
+                    "hidden": true
                 }
             },
             "fa_icon": "fas fa-database"
@@ -236,21 +247,21 @@
                     "type": "boolean",
                     "description": "Skip FastQC"
                 },
-                "skip_alpha_rarefaction": {
+                "skip_taxonomy": {
                     "type": "boolean",
-                    "description": "Skip alpha rarefaction"
+                    "description": "Skip taxonomic classification"
                 },
                 "skip_barplot": {
                     "type": "boolean",
                     "description": "Skip producing barplot"
                 },
-                "skip_taxonomy": {
-                    "type": "boolean",
-                    "description": "Skip taxonomic classification"
-                },
                 "skip_abundance_tables": {
                     "type": "boolean",
                     "description": "Skip producing any relative abundance tables"
+                },
+                "skip_alpha_rarefaction": {
+                    "type": "boolean",
+                    "description": "Skip alpha rarefaction"
                 },
                 "skip_diversity_indices": {
                     "type": "boolean",
@@ -352,10 +363,6 @@
                     "hidden": true,
                     "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
                 },
-                "clusterOptions": {
-                    "type": "string",
-                    "hidden": true
-                },
                 "enable_conda": {
                     "type": "boolean",
                     "description": "Run this workflow with Conda. You can also use '-profile conda' instead of providing this parameter.",
@@ -403,6 +410,12 @@
                 "hostnames": {
                     "type": "string",
                     "description": "Institutional configs hostname.",
+                    "hidden": true,
+                    "fa_icon": "fas fa-users-cog"
+                },
+                "config_profile_name": {
+                    "type": "string",
+                    "description": "Institutional config name.",
                     "hidden": true,
                     "fa_icon": "fas fa-users-cog"
                 },
@@ -460,12 +473,6 @@
                     "help_text": "Use to set an upper-limit for the time requirement for each process. Should be a string in the format integer-unit e.g. `--max_time '2.h'`"
                 }
             }
-        },
-        "deprecated": {
-            "title": "Deprecated",
-            "type": "object",
-            "description": "",
-            "default": ""
         }
     },
     "allOf": [
@@ -495,9 +502,6 @@
         },
         {
             "$ref": "#/definitions/max_job_request_options"
-        },
-        {
-            "$ref": "#/definitions/deprecated"
         }
     ]
 }

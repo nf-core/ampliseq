@@ -10,7 +10,7 @@ workflow PARSE_INPUT {
     take:
     input // file.tsv or folder
 	single_end
-    multipleSequencingRuns
+    multiple_sequencing_runs
     extension
     
     main:
@@ -35,34 +35,34 @@ workflow PARSE_INPUT {
 		} else {
 			// Folder input
 
-			//Check folders in folder when multipleSequencingRuns
-			folders = multipleSequencingRuns ? "/*" : ""
+			//Check folders in folder when multiple_sequencing_runs
+			folders = multiple_sequencing_runs ? "/*" : ""
 			if ( single_end ) {
 				//Get files - single end
 				Channel
 					.fromPath( input + folders + extension )
-					.ifEmpty { exit 1, "Cannot find any reads matching: \"${input}${extension}\"\nPlease revise the input folder (\"--input\"): \"${input}\"\nand the input file pattern (\"--extension\"): \"${extension}\"\nIf you have multiple sequencing runs, please add \"--multipleSequencingRuns\".\nNB: Path needs to be enclosed in quotes!" }
+					.ifEmpty { exit 1, "Cannot find any reads matching: \"${input}${extension}\"\nPlease revise the input folder (\"--input\"): \"${input}\"\nand the input file pattern (\"--extension\"): \"${extension}\"\nIf you have multiple sequencing runs, please add \"--multiple_sequencing_runs\".\nNB: Path needs to be enclosed in quotes!" }
 					.map { read ->
 							def meta = [:]
 							meta.id           = read.baseName.toString().indexOf("_") != -1 ? read.baseName.toString().take(read.baseName.toString().indexOf("_")) : read.baseName
 							meta.single_end   = single_end.toBoolean()
-							meta.run          = multipleSequencingRuns ? read.take(read.findLastIndexOf{"/"})[-1] : "1"
+							meta.run          = multiple_sequencing_runs ? read.take(read.findLastIndexOf{"/"})[-1] : "1"
 							[ meta, read ] }
 					.set { ch_reads }
 			} else {
 				//Get files - paired end
 				Channel
 					.fromFilePairs( input + folders + extension, size: 2 )
-					.ifEmpty { exit 1, "Cannot find any reads matching: \"${input}${extension}\"\nPlease revise the input folder (\"--input\"): \"${input}\"\nand the input file pattern (\"--extension\"): \"${extension}\"\nIf you have multiple sequencing runs, please add \"--multipleSequencingRuns\".\nNB: Path needs to be enclosed in quotes!" }
+					.ifEmpty { exit 1, "Cannot find any reads matching: \"${input}${extension}\"\nPlease revise the input folder (\"--input\"): \"${input}\"\nand the input file pattern (\"--extension\"): \"${extension}\"\nIf you have multiple sequencing runs, please add \"--multiple_sequencing_runs\".\nNB: Path needs to be enclosed in quotes!" }
 					.map { name, reads ->
 							def meta = [:]
 							meta.id           = name.toString().indexOf("_") != -1 ? name.toString().take(name.toString().indexOf("_")) : name
 							meta.single_end   = single_end.toBoolean()
-							meta.run          = multipleSequencingRuns ? reads[0].take(reads[0].findLastIndexOf{"/"})[-1] : "1"
+							meta.run          = multiple_sequencing_runs ? reads[0].take(reads[0].findLastIndexOf{"/"})[-1] : "1"
 							[ meta, reads ] }
 					.set { ch_reads }
 			}
-			if (multipleSequencingRuns) {
+			if (multiple_sequencing_runs) {
 				//Get folder information
 				ch_reads
 					.flatMap { meta, reads -> [ meta.run ] }
@@ -74,10 +74,10 @@ workflow PARSE_INPUT {
 					.subscribe {
 						String folders = it.toString().replace("[", "").replace("]","") 
 						log.info "\nFound the folder(s) \"$folders\" containing sequencing read files matching \"${extension}\" in \"${input}\".\n" }
-				//Stop if folder count is 1 and multipleSequencingRuns
+				//Stop if folder count is 1 and multiple_sequencing_runs
 				ch_folders
 					.count()
-					.subscribe { if ( it == 1 ) exit 1, "Found only one folder with read data but \"--multipleSequencingRuns\" was specified. Please review data input." }
+					.subscribe { if ( it == 1 ) exit 1, "Found only one folder with read data but \"--multiple_sequencing_runs\" was specified. Please review data input." }
 			}
 		}
 

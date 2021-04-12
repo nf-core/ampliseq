@@ -16,6 +16,14 @@ Re-wrote whole pipeline in nextflow [DSL2](https://www.nextflow.io/docs/latest/d
 * Summary of cutadapt satistics
 * Taxonomic classification by DADA2
 
+### `Changed`
+
+* Updated CamelCase parameters to be lower_case_snake_case:
+  * `multipleSequencingRuns` to `multiple_sequencing_runs`
+  * `minLen` to `min_len`
+  * `maxLen` to `max_len`
+  * `maxEE` to `max_ee`
+
 ### `Fixed`
 
 * Template update for nf-core/tools version 1.13.3

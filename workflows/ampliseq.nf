@@ -11,10 +11,6 @@ params.summary_params = [:]
 /*
  * Import input files
  */
-// TODO Expected to be overwritten by taxonomic database changes, this is for QIIME2 only. DADA2 taxonomic classification uses "conf/ref_databases.config"
-params.tax_to_classifier = false
-params.fasta_to_classifier = false
-
 if (params.metadata) {
 	ch_metadata = Channel.fromPath("${params.metadata}", checkIfExists: true)
 } else { ch_metadata = Channel.empty() }
@@ -90,16 +86,16 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 def modules = params.modules.clone()
 
 def dada2_filtntrim_options = modules['dada2_filtntrim']
-dada2_filtntrim_options.args       += single_end ? ", maxEE = $params.maxEE" : ", maxEE = c($params.maxEE, $params.maxEE)"
+dada2_filtntrim_options.args       += single_end ? ", maxEE = $params.max_ee" : ", maxEE = c($params.max_ee, $params.max_ee)"
 if (params.pacbio) {
 	//PacBio data
-	dada2_filtntrim_options.args   +=", minLen = $params.minLen, maxLen = $params.maxLen, rm.phix = FALSE"
+	dada2_filtntrim_options.args   +=", minLen = $params.min_len, maxLen = $params.max_len, rm.phix = FALSE"
 } else if (params.illumina_pe_its) {
 	//Illumina ITS data or other sequences with high length variability
-	dada2_filtntrim_options.args   += ", minLen = $params.minLen, maxLen = $params.maxLen, rm.phix = TRUE"
+	dada2_filtntrim_options.args   += ", minLen = $params.min_len, maxLen = $params.max_len, rm.phix = TRUE"
 } else {
 	//Illumina 16S data
-	dada2_filtntrim_options.args   += ", minLen = $params.minLen, maxLen = $params.maxLen, rm.phix = TRUE"
+	dada2_filtntrim_options.args   += ", minLen = $params.min_len, maxLen = $params.max_len, rm.phix = TRUE"
 }
 
 def dada2_quality_options = modules['dada2_quality'] 
@@ -220,7 +216,7 @@ workflow AMPLISEQ {
 	/*
 	* Create a channel for input read files
 	*/
-	PARSE_INPUT ( params.input, single_end, params.multipleSequencingRuns, params.extension )
+	PARSE_INPUT ( params.input, single_end, params.multiple_sequencing_runs, params.extension )
 	ch_reads = PARSE_INPUT.out.reads
 	ch_fasta = PARSE_INPUT.out.fasta
 

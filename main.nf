@@ -11,6 +11,8 @@
 
 nextflow.enable.dsl = 2
 
+log.info Headers.nf_core(workflow, params.monochrome_logs)
+
 ////////////////////////////////////////////////////
 /* --               PRINT HELP                 -- */
 ////////////////////////////////////////////////////
@@ -28,6 +30,13 @@ if (params.help) {
 
 def summary_params = NfcoreSchema.params_summary_map(workflow, params, json_schema)
 log.info NfcoreSchema.params_summary_log(workflow, params, json_schema)
+
+////////////////////////////////////////////////////
+/* --         VALIDATE PARAMETERS              -- */
+////////////////////////////////////////////////////
+if (params.validate_params) {
+    NfcoreSchema.validateParameters(params, json_schema, log)
+}
 
 ////////////////////////////////////////////////////
 /* --          PARAMETER CHECKS                -- */
@@ -54,6 +63,15 @@ workflow {
          */
         include { AMPLISEQ } from './workflows/ampliseq' addParams( summary_params: summary_params )
         AMPLISEQ ()
+}
+
+////////////////////////////////////////////////////
+/* --          CHECK PARAMETER ON ERROR        -- */
+////////////////////////////////////////////////////
+
+workflow.onError {
+    // Print unexpected parameters - easiest is to just rerun validation
+    NfcoreSchema.validateParameters(params, json_schema, log)
 }
 
 ////////////////////////////////////////////////////

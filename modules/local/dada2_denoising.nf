@@ -26,7 +26,7 @@ process DADA2_DENOISING {
     tuple val(meta), path("*.dada.rds")   , emit: denoised
     tuple val(meta), path("*.seqtab.rds") , emit: seqtab
     tuple val(meta), path("*.mergers.rds"), emit: mergers
-    tuple val(meta), path("*.dada.log")   , emit: log
+    tuple val(meta), path("*.log")        , emit: log
     path "*.version.txt"                  , emit: version
     path "*.args.txt"                     , emit: args
 

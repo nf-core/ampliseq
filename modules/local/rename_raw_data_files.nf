@@ -8,7 +8,7 @@ process RENAME_RAW_DATA_FILES {
     tag "$meta.id"
     label 'process_low'
 
-    conda (params.enable_conda ? 'bioconda::cutadapt:3.2=py38h0213d0e_0' : null)
+    conda (params.enable_conda ? 'bioconda::cutadapt=3.2=py38h0213d0e_0' : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
         container 'https://depot.galaxyproject.org/singularity/cutadapt:3.2--py38h0213d0e_0'
     } else {

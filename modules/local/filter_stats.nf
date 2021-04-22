@@ -10,7 +10,7 @@ process FILTER_STATS {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
-    conda (params.enable_conda ? "pandas=1.1.5--py39ha9443f7_0" : null)
+    conda (params.enable_conda ? "pandas=1.1.5" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
         container "https://depot.galaxyproject.org/singularity/pandas:1.1.5"
     } else {

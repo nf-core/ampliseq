@@ -37,8 +37,10 @@ process DADA2_ADDSPECIES {
 
     taxtable <- readRDS(\"$taxtable\")
     taxa <- addSpecies(taxtable, \"$database\", $options.args, verbose=TRUE)
-    # Put the sequence last
-    taxa <- taxa[,c(colnames(taxa)[!colnames(taxa) %in% 'sequence'], 'sequence')]
+    # Make a data frame, put the sequence last, store ASV ids in column ASV_ID
+    tmp <- data.frame(row.names(taxa)) # To separate ASV_ID from sequence
+    taxa <- data.frame(ASV_ID = row.names(tmp), taxa, sequence = tmp[,], row.names=row.names(tmp))
+
     write.table(taxa, file = "ASV_tax_species.tsv", sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
 
     write.table('addSpecies\t$options.args', file = "addSpecies.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)

@@ -72,9 +72,7 @@ process DADA2_MERGE {
 
     # Write ASV file with ASV abundances to file
     df\$sequence <- NULL
-    rownames(df) <- df\$ASV_ID
-    df\$ASV_ID <- NULL
-    write.table(df, file = "ASV_table.tsv", sep="\t", row.names = TRUE, col.names = NA, quote = FALSE)
+    write.table(df, file = "ASV_table.tsv", sep="\t", row.names = FALSE, quote = FALSE)
 
     write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
     """

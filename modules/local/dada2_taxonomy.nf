@@ -39,9 +39,9 @@ process DADA2_TAXONOMY {
     taxa <- assignTaxonomy(seq, \"$database\", $options.args, multithread = $task.cpus, verbose=TRUE, outputBootstraps = TRUE)
 
     # Make a data frame, add ASV_ID from seq, set confidence to the bootstrap for the most specific taxon and reorder columns before writing to file
-    t <- data.frame(taxa)
-    t\$ASV_ID <- names(seq)
-    t\$confidence <- with(t, 
+    tx <- data.frame(taxa)
+    tx\$ASV_ID <- names(seq)
+    tx\$confidence <- with(tx, 
         ifelse(!is.na(tax.Genus), boot.Genus, 
             ifelse(!is.na(tax.Family), boot.Family,
                 ifelse(!is.na(tax.Order), boot.Order,
@@ -55,15 +55,15 @@ process DADA2_TAXONOMY {
         )
     )/100
     taxa <- data.frame(
-        ASV_ID = t\$ASV_ID,
-        Kingdom = t\$tax.Kingdom,
-        Phylum = t\$tax.Phylum,
-        Class = t\$tax.Class,
-        Order = t\$tax.Order,
-        Family = t\$tax.Family,
-        Genus = t\$tax.Genus,
-        confidence = t\$confidence,
-        sequence = rownames(t)
+        ASV_ID = tx\$ASV_ID,
+        Kingdom = tx\$tax.Kingdom,
+        Phylum = tx\$tax.Phylum,
+        Class = tx\$tax.Class,
+        Order = tx\$tax.Order,
+        Family = tx\$tax.Family,
+        Genus = tx\$tax.Genus,
+        confidence = tx\$confidence,
+        sequence = rownames(tx)
     )
     write.table(taxa, file = "ASV_tax.tsv", sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
 

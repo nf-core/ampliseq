@@ -36,20 +36,20 @@ process DADA2_ADDSPECIES {
     set.seed(100) # Initialize random number generator for reproducibility
 
     taxtable <- readRDS(\"$taxtable\")
-    t <- addSpecies(taxtable, \"$database\", $options.args, verbose=TRUE)
+    tx <- addSpecies(taxtable, \"$database\", $options.args, verbose=TRUE)
 
     # Create a table with specified column order
     taxa <- data.frame(
-        ASV_ID = t\$ASV_ID,
-        Kingdom = t\$Kingdom,
-        Phylum = t\$Phylum,
-        Class = t\$Class,
-        Order = t\$Order,
-        Family = t\$Family,
-        Genus = t\$Genus,
-        Species = t\$Species,
-        confidence = t\$confidence,
-        sequence = rownames(t)
+        ASV_ID = tx\$ASV_ID,
+        Kingdom = tx\$Kingdom,
+        Phylum = tx\$Phylum,
+        Class = tx\$Class,
+        Order = tx\$Order,
+        Family = tx\$Family,
+        Genus = tx\$Genus,
+        Species = tx\$Species,
+        confidence = tx\$confidence,
+        sequence = rownames(tx)
     )
 
     write.table(taxa, file = "ASV_tax_species.tsv", sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)

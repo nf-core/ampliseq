@@ -38,15 +38,8 @@ process DADA2_TAXONOMY {
     seq <- getSequences(\"$fasta\", collapse = TRUE, silence = FALSE)
     taxa <- assignTaxonomy(seq, \"$database\", $options.args, multithread = $task.cpus, verbose=TRUE, outputBootstraps = TRUE)
 
-
-    #saveRDS(taxa, "ASV_tax.rds")
-
-    # Make a data frame, adding ASV_ID (from seq) first and sequence last before writing to file
-    #taxa <- data.frame(ASV_ID = names(seq), taxa, sequence = row.names(taxa), row.names = names(seq))
-
     # Make a data frame, add ASV_ID from seq, set confidence to the bootstrap for the most specific taxon and reorder columns before writing to file
-    tx <- data.frame(taxa)
-    tx\$ASV_ID <- names(seq)
+    tx <- data.frame(ASV_ID = names(seq), taxa, sequence = row.names(taxa\$tax), row.names = names(seq))
     tx\$confidence <- with(tx, 
         ifelse(!is.na(tax.Genus), boot.Genus, 
             ifelse(!is.na(tax.Family), boot.Family,
@@ -69,14 +62,14 @@ process DADA2_TAXONOMY {
         Family = tx\$tax.Family,
         Genus = tx\$tax.Genus,
         confidence = tx\$confidence,
-        sequence = rownames(tx)
-    )
+        sequence = tx\$sequence,
+ 	row.names = names(seq)
+   )
 
     write.table(taxa_export, file = "ASV_tax.tsv", sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
 
     # Save a version with rownames for addSpecies
-    rownames(taxa_export) <- rownames(taxa)
-    taxa_export\$sequence <- NULL
+    taxa_export <- cbind( ASV_ID = tx\$ASV_ID, taxa\$tax, confidence = tx\$confidence )
     saveRDS(taxa_export, "ASV_tax.rds")
 
     write.table('assignTaxonomy\t$options.args', file = "assignTaxonomy.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)

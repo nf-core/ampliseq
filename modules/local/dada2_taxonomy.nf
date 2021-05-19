@@ -21,9 +21,10 @@ process DADA2_TAXONOMY {
     input:
     path(fasta)
     path(database)
+    val(outfile)
     
     output:
-    path( "ASV_tax.tsv" ), emit: tsv
+    path(outfile), emit: tsv
     path( "ASV_tax.rds" ), emit: rds
     path "*.version.txt" , emit: version
     path "*.args.txt"    , emit: args
@@ -66,7 +67,7 @@ process DADA2_TAXONOMY {
  	row.names = names(seq)
    )
 
-    write.table(taxa_export, file = "ASV_tax.tsv", sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
+    write.table(taxa_export, file = \"$outfile\", sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
 
     # Save a version with rownames for addSpecies
     taxa_export <- cbind( ASV_ID = tx\$ASV_ID, taxa\$tax, confidence = tx\$confidence )

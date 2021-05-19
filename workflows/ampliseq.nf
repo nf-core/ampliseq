@@ -132,9 +132,10 @@ include { DADA2_RMCHIMERA               } from '../modules/local/dada2_rmchimera
 include { DADA2_STATS                   } from '../modules/local/dada2_stats'                  addParams( options: modules['dada2_stats']          )
 include { DADA2_MERGE                   } from '../modules/local/dada2_merge'                  addParams( options: modules['dada2_merge']          )
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
-include { ITSX_CUTASV                          } from '../modules/local/itsx_cutasv'
+include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
 include { DADA2_TAXONOMY                } from '../modules/local/dada2_taxonomy'               addParams( options: dada2_taxonomy_options          )
 include { DADA2_ADDSPECIES              } from '../modules/local/dada2_addspecies'             addParams( options: dada2_addspecies_options        )
+include { FORMAT_TAXRESULTS             } from '../modules/local/format_taxresults'
 include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'                 addParams( options: modules['qiime2_inseq']         )
 include { QIIME2_FILTERTAXA             } from '../modules/local/qiime2_filtertaxa'            addParams( options: modules['qiime2_filtertaxa']    )
 include { QIIME2_INASV                  } from '../modules/local/qiime2_inasv'                 addParams( options: modules['qiime2_inasv']         )
@@ -353,18 +354,22 @@ workflow AMPLISEQ {
 		ch_fasta = DADA2_MERGE.out.fasta
 	}
 
-	//Cut out ITS region if long ITS long reads
-	if (params.cut_its) {
-	        ITSX_CUTASV ( ch_fasta )
-		ch_fasta = ITSX_CUTASV.out.fasta
-	}
-
 	//DADA2
 	if (!params.skip_taxonomy) {
 		FORMAT_TAXONOMY ( ch_dada_ref_taxonomy.collect() )
-		DADA2_TAXONOMY ( ch_fasta, FORMAT_TAXONOMY.out.assigntax )
-		DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, FORMAT_TAXONOMY.out.addspecies )
-		ch_dada2_tax = DADA2_ADDSPECIES.out.tsv
+		if (!params.cut_its) {
+			DADA2_TAXONOMY ( ch_fasta, FORMAT_TAXONOMY.out.assigntax, 'ASV_tax.tsv' )
+			DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, FORMAT_TAXONOMY.out.addspecies, 'ASV_tax_species.tsv' )
+			ch_dada2_tax = DADA2_ADDSPECIES.out.tsv
+		//Cut out ITS region if long ITS reads
+		} else {
+		        ITSX_CUTASV ( ch_fasta )
+			ch_cut_fasta = ITSX_CUTASV.out.fasta
+			DADA2_TAXONOMY ( ch_cut_fasta, FORMAT_TAXONOMY.out.assigntax, 'ASV_ITS_tax.tsv' )
+			DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, FORMAT_TAXONOMY.out.addspecies, 'ASV_ITS_tax_species.tsv' )
+			FORMAT_TAXRESULTS ( DADA2_TAXONOMY.out.tsv, DADA2_ADDSPECIES.out.tsv, ch_fasta )
+		        ch_dada2_tax = FORMAT_TAXRESULTS.out.tsv
+	        }
 	}
 
 	//QIIME2

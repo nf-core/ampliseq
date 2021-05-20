@@ -247,6 +247,10 @@
                     "type": "boolean",
                     "description": "Skip FastQC"
                 },
+                "skip_qiime": {
+                    "type": "boolean",
+                    "description": "Skip all steps that are executed by QIIME2, including QIIME2 software download, taxonomy assignment by QIIME2, barplots, relative abundance tables, diversity analysis, differential abundance testing."
+                },
                 "skip_taxonomy": {
                     "type": "boolean",
                     "description": "Skip taxonomic classification"

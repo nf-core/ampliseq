@@ -15,6 +15,7 @@ Re-wrote whole pipeline in nextflow [DSL2](https://www.nextflow.io/docs/latest/d
 * `--sample_inference`, `--concatenate_reads`, `--illumina_pe_its`; please check the documentation for their function
 * Summary of cutadapt satistics
 * Taxonomic classification by DADA2
+* `--skip_qiime` to prevent any steps that are executed with QIIME2
 
 ### `Changed`
 

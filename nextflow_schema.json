@@ -75,7 +75,7 @@
                 },
                 "sample_inference": {
                     "type": "string",
-                    "default": "pooled",
+                    "default": "independent",
                     "help_text": "If samples are treated independent (lowest sensitivity and lowest resources), pooled (highest sensitivity and resources) or pseudo-pooled (balance between required resources and sensitivity).",
                     "description": "Mode of sample inference: \"independent\", \"pooled\" or \"pseudo\"",
                     "enum": [
@@ -246,6 +246,10 @@
                 "skip_fastqc": {
                     "type": "boolean",
                     "description": "Skip FastQC"
+                },
+                "skip_qiime": {
+                    "type": "boolean",
+                    "description": "Skip all steps that are executed by QIIME2, including QIIME2 software download, taxonomy assignment by QIIME2, barplots, relative abundance tables, diversity analysis, differential abundance testing."
                 },
                 "skip_taxonomy": {
                     "type": "boolean",

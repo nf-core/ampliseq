@@ -75,7 +75,7 @@
                 },
                 "sample_inference": {
                     "type": "string",
-                    "default": "pooled",
+                    "default": "independent",
                     "help_text": "If samples are treated independent (lowest sensitivity and lowest resources), pooled (highest sensitivity and resources) or pseudo-pooled (balance between required resources and sensitivity).",
                     "description": "Mode of sample inference: \"independent\", \"pooled\" or \"pseudo\"",
                     "enum": [

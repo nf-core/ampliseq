@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## nf-core/ampliseq version 2.0.0dev
+## v2.0.0dev - [date]
 
 Re-wrote whole pipeline in nextflow [DSL2](https://www.nextflow.io/docs/latest/dsl2.html) instead of DSL1
 
@@ -26,7 +26,7 @@ Re-wrote whole pipeline in nextflow [DSL2](https://www.nextflow.io/docs/latest/d
 
 ### `Fixed`
 
-* Template update for nf-core/tools version 1.13.3
+* Template update for nf-core/tools version 1.14
 
 ### `Dependencies`
 

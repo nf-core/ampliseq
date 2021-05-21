@@ -60,6 +60,7 @@ process DADA2_STATS {
         }
         colnames(track) <- c("input", "filtered", "denoisedF", "denoisedR", "merged", "nonchim")
         track <- cbind(sample = sub(pattern = "(.*?)\\\\..*\$", replacement = "\\\\1", rownames(track)), track)
+        track\$sample <- sub(pattern = "_1\$", replacement = "", track\$sample)
         write.table( track, file = "${meta.run}.stats.tsv", sep = "\t", row.names = FALSE, quote = FALSE)
 
         write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)

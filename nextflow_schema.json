@@ -79,7 +79,7 @@
                 },
                 "sample_inference": {
                     "type": "string",
-                    "default": "pooled",
+                    "default": "independent",
                     "help_text": "If samples are treated independent (lowest sensitivity and lowest resources), pooled (highest sensitivity and resources) or pseudo-pooled (balance between required resources and sensitivity).",
                     "description": "Mode of sample inference: \"independent\", \"pooled\" or \"pseudo\"",
                     "enum": [
@@ -250,6 +250,10 @@
                 "skip_fastqc": {
                     "type": "boolean",
                     "description": "Skip FastQC"
+                },
+                "skip_qiime": {
+                    "type": "boolean",
+                    "description": "Skip all steps that are executed by QIIME2, including QIIME2 software download, taxonomy assignment by QIIME2, barplots, relative abundance tables, diversity analysis, differential abundance testing."
                 },
                 "skip_taxonomy": {
                     "type": "boolean",
@@ -463,7 +467,7 @@
                     "description": "Maximum amount of memory that can be requested for any single job.",
                     "default": "128.GB",
                     "fa_icon": "fas fa-memory",
-                    "pattern": "^[\\d\\.]+\\s*.(K|M|G|T)?B$",
+                    "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
                     "hidden": true,
                     "help_text": "Use to set an upper-limit for the memory requirement for each process. Should be a string in the format integer-unit e.g. `--max_memory '8.GB'`"
                 },
@@ -472,7 +476,7 @@
                     "description": "Maximum amount of time that can be requested for any single job.",
                     "default": "240.h",
                     "fa_icon": "far fa-clock",
-                    "pattern": "^[\\d\\.]+\\.*(s|m|h|d)$",
+                    "pattern": "^(\\d+\\.?\\s*(s|m|h|day)\\s*)+$",
                     "hidden": true,
                     "help_text": "Use to set an upper-limit for the time requirement for each process. Should be a string in the format integer-unit e.g. `--max_time '2.h'`"
                 }

@@ -49,7 +49,7 @@ if ( !single_end && !params.illumina_pe_its && (params.trunclenf == false || par
 } else { find_truncation_values = false }
 
 //only run QIIME2 when taxonomy is actually calculated and all required data is available
-if ( !params.enable_conda && !params.skip_taxonomy ) {
+if ( !params.enable_conda && !params.skip_taxonomy && !params.skip_qiime ) {
 	run_qiime2 = true
 } else { run_qiime2 = false }
 

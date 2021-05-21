@@ -132,6 +132,7 @@ include { DADA2_RMCHIMERA               } from '../modules/local/dada2_rmchimera
 include { DADA2_STATS                   } from '../modules/local/dada2_stats'                  addParams( options: modules['dada2_stats']          )
 include { DADA2_MERGE                   } from '../modules/local/dada2_merge'                  addParams( options: modules['dada2_merge']          )
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
+include { MERGE_STATS                   } from '../modules/local/merge_stats'                  addParams( options: modules['merge_stats']          )
 include { DADA2_TAXONOMY                } from '../modules/local/dada2_taxonomy'               addParams( options: dada2_taxonomy_options          )
 include { DADA2_ADDSPECIES              } from '../modules/local/dada2_addspecies'             addParams( options: dada2_addspecies_options        )
 include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'                 addParams( options: modules['qiime2_inseq']         )
@@ -343,6 +344,9 @@ workflow AMPLISEQ {
 	DADA2_MERGE ( 
 		DADA2_STATS.out.stats.map { meta, stats -> stats }.collect(), 
 		DADA2_RMCHIMERA.out.rds.map { meta, rds -> rds }.collect() )
+
+	//merge cutadapt_summary and dada_stats files
+	MERGE_STATS (CUTADAPT_WORKFLOW.out.summary, DADA2_MERGE.out.dada2stats)
 
     /*
      * SUBWORKFLOW / MODULES : Taxonomic classification with DADA2 and/or QIIME2

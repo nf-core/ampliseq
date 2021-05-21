@@ -26,6 +26,7 @@ and processes data using the following steps:
       * [Alpha diversity indices](#alpha-diversity-indices) - Diversity within samples
       * [Beta diversity indices](#beta-diversity-indices) - Diversity between samples (e.g. PCoA plots)
       * [ANCOM](#ancom) - Differential abundance analysis
+    * [Read count report](#Read-count-report) - Report of read counts during various steps of the pipeline
     * [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
   * [Citations](#citations)
 
@@ -218,6 +219,14 @@ ANCOM is applied to each suitable or specified metadata column for 6 taxonomic l
   * `Category-<treatment>-<taxonomic level>/index.html`
     * treatment: depends on your metadata sheet or what metadata categories you have specified
     * taxonomic level: level-2 (phylum), level-3 (class), level-4 (order), level-5 (family), level-6 (genus), ASV
+
+## Read count report
+
+This report includes information on how many reads per sample passed each pipeline step in which a loss can occur. Specifically, how many read pairs entered cutadapt, were reverse complemented, passed trimming; how many read pairs entered DADA2, were denoised, merged and non-chimeric; and how many counts were lost during excluding unwanted tax and removing low abundance/prevalence sequences in QIIME2.
+
+**Output files:**
+
+* `overall_summary.tsv`
 
 ## Pipeline information
 

@@ -56,5 +56,6 @@ workflow CUTADAPT_WORKFLOW {
     emit:
     reads   = ch_trimmed_reads
 	logs    = CUTADAPT.out.log
+	summary = CUTADAPT_SUMMARY_MERGE.out.tsv
 	version = CUTADAPT.out.version
 }

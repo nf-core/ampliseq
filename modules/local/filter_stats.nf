@@ -22,7 +22,7 @@ process FILTER_STATS {
 	path(filtered)
 
 	output:
-	path("count_table_filter_stats.tsv")
+	path("count_table_filter_stats.tsv"), emit: tsv
 	
     script:
     def software     = getSoftwareName(task.process)

@@ -25,8 +25,14 @@ sums_filtered = df_filtered.sum()
 #merge dataframes
 out =  sums_unfiltered.to_frame(name = 'unfiltered').join(sums_filtered.to_frame(name = 'filtered'))
 out['lost'] = out['unfiltered'] - out['filtered']
-out['retained [%]'] = out['filtered'] / out['unfiltered'] *100
-out['lost [%]'] = (100 - out['retained [%]'])
+out['retained_percent'] = out['filtered'] / out['unfiltered'] *100
+out['lost_percent'] = (100 - out['retained_percent'])
+
+#add column with sample names at beginning
+out = out.rename_axis('sample').reset_index()
+
+#rename columns
+out = out.rename(columns={'unfiltered': 'input_tax_filter', 'filtered': 'filtered_tax_filter'})
 
 #write file
-out.to_csv('count_table_filter_stats.tsv', sep='\t')
+out.to_csv('count_table_filter_stats.tsv', sep='\t', index=False)

@@ -133,6 +133,7 @@ include { DADA2_STATS                   } from '../modules/local/dada2_stats'   
 include { DADA2_MERGE                   } from '../modules/local/dada2_merge'                  addParams( options: modules['dada2_merge']          )
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
 include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
+include { MERGE_STATS                   } from '../modules/local/merge_stats'                  addParams( options: modules['merge_stats']          )
 include { DADA2_TAXONOMY                } from '../modules/local/dada2_taxonomy'               addParams( options: dada2_taxonomy_options          )
 include { DADA2_ADDSPECIES              } from '../modules/local/dada2_addspecies'             addParams( options: dada2_addspecies_options        )
 include { FORMAT_TAXRESULTS             } from '../modules/local/format_taxresults'
@@ -140,6 +141,7 @@ include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'  
 include { QIIME2_FILTERTAXA             } from '../modules/local/qiime2_filtertaxa'            addParams( options: modules['qiime2_filtertaxa']    )
 include { QIIME2_INASV                  } from '../modules/local/qiime2_inasv'                 addParams( options: modules['qiime2_inasv']         )
 include { FILTER_STATS                  } from '../modules/local/filter_stats'                 addParams( options: modules['filter_stats']         )
+include { MERGE_STATS as MERGE_STATS_FILTERTAXA } from '../modules/local/merge_stats'          addParams( options: modules['merge_stats']          )
 include { QIIME2_BARPLOT                } from '../modules/local/qiime2_barplot'               addParams( options: modules['qiime2_barplot']       )
 include { METADATA_ALL                  } from '../modules/local/metadata_all'
 include { METADATA_PAIRWISE             } from '../modules/local/metadata_pairwise'
@@ -346,6 +348,9 @@ workflow AMPLISEQ {
 		DADA2_STATS.out.stats.map { meta, stats -> stats }.collect(), 
 		DADA2_RMCHIMERA.out.rds.map { meta, rds -> rds }.collect() )
 
+	//merge cutadapt_summary and dada_stats files
+	MERGE_STATS (CUTADAPT_WORKFLOW.out.summary, DADA2_MERGE.out.dada2stats)
+
     /*
      * SUBWORKFLOW / MODULES : Taxonomic classification with DADA2 and/or QIIME2
      */
@@ -423,6 +428,7 @@ workflow AMPLISEQ {
 					params.exclude_taxa
 			)
 			FILTER_STATS ( DADA2_MERGE.out.asv, QIIME2_FILTERTAXA.out.tsv )
+			MERGE_STATS_FILTERTAXA (MERGE_STATS.out.tsv, FILTER_STATS.out.tsv)
 			ch_asv = QIIME2_FILTERTAXA.out.asv
 			ch_seq = QIIME2_FILTERTAXA.out.seq
 		} else {

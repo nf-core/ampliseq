@@ -153,13 +153,13 @@ include { GET_SOFTWARE_VERSIONS         } from '../modules/local/get_software_ve
 
 if (params.pacbio) {
 	//PacBio data
-	cutadapt_options_args       = " --rc -g ${params.FW_primer}...${params.RV_primer}"
+	cutadapt_options_args       = " --rc -g ${params.FW_primer}...${params.RV_primer} --minimum-length 1"
 } else if (params.single_end) {
 	//Illumina SE
-	cutadapt_options_args       = " -g ${params.FW_primer}"
+	cutadapt_options_args       = " -g ${params.FW_primer} --minimum-length 1"
 } else {
 	//Illumina PE
-	cutadapt_options_args       = " -g ${params.FW_primer} -G ${params.RV_primer}"
+	cutadapt_options_args       = " -g ${params.FW_primer} -G ${params.RV_primer} --minimum-length 1"
 }
 
 def cutadapt_options 			= modules['cutadapt']

@@ -98,6 +98,8 @@ In addition, references of tools and data used in this pipeline are as follows:
 * DADA2, "Callahan, Benjamin J., et al. "DADA2: high-resolution sample inference from Illumina amplicon data." Nature methods 13.7 (2016): 581."
 * The taxonomic database you are using, e.g. by default:
   * SILVA database, "Quast, Pruesse, et al. 2013. 'The SILVA ribosomal RNA gene database project: improved data processing and web-based tools', Nucleic Acids Research, 41: D590-D96."
+* If you are cutting the ASV sequence to the ITS region before taxonomy assignment:
+  * ITSx, "Bengtsson-Palme, Johan, et al. "ITSx: Improved software detection and extraction of ITS1 and ITS2 from ribosomal ITS sequences of fungi and other eukaryotes for use in environmental sequencing." Methods in Ecology and Evolution 4 (2013): 914-919."
 * If you find QC aggregation by MultiQC helpful:
   * MultiQC, "Ewels, Philip, et al. "MultiQC: summarize analysis results for multiple tools and samples in a single report." Bioinformatics 32.19 (2016): 3047-3048."
 * If you find the downstream analysis helpful:

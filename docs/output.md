@@ -17,6 +17,7 @@ and processes data using the following steps:
     * [Cutadapt](#cutadapt) - Primer trimming
     * [MultiQC](#multiqc) - Aggregate report describing results
     * [DADA2](#dada2) - Infer Amplicon Sequence Variants (ASVs) and taxonomic classification
+      * [ITSx](#itsx) - Optionally, taxonomic classification can be performed on ITS region only
     * [QIIME2](#qiime2) - Secondary analysis
       * [Taxonomic classification](#taxonomic-classification) - Taxonomical classification of ASVs
       * [Exclude taxa](#exclude-taxa) - Remove unwanted ASV based on taxonomy
@@ -92,6 +93,18 @@ Additionally, DADA2 taxonomically classifies the ASVs using pre-trained database
   * `*.err.convergence.txt`: Convergence values for DADA2's dada command, should reduce over several magnitudes and approaching 0.
   * `*.err.pdf`: Estimated error rates for each possible transition. The black line shows the estimated error rates after convergence of the machine-learning algorithm. The red line shows the error rates expected under the nominal definition of the Q-score. The estimated error rates (black line) should be a good fit to the observed rates (points), and the error rates should drop with increased quality.
   * `*_qual_stats.pdf`: Overall read quality profiles: heat map of the frequency of each quality score at each base position. The mean quality score at each position is shown by the green line, and the quartiles of the quality score distribution by the orange lines. The red line shows the scaled proportion of reads that extend to at least that position.
+
+#### ITSx
+
+Optionally, the ITS region can be extracted from each ASV sequence using ITSx, and taxonomic classification is performed based on the ITS sequence.
+
+**Output files:**
+
+* `itsx/`
+  * `ASV_ITS_seqs.full.fasta`: Fasta file with ITS region from each ASV sequence.
+* `dada2/`
+  * `ASV_ITS_tax.tsv`: Taxonomic classification with ITS region of each ASV sequence.
+  * `ASV_ITS_tax_species.tsv`: Species classification with ITS region of each ASV sequence.
 
 ### QIIME2
 

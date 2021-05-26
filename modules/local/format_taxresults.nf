@@ -27,7 +27,6 @@ process FORMAT_TAXRESULTS {
 	path("ASV_tax_species.tsv"), emit: tsv
 
         script:
-        def software     = getSoftwareName(task.process)
         """
         add_full_sequence_to_taxfile.py $taxtable $fastafile
         add_full_sequence_to_taxfile.py $taxtable_species $fastafile

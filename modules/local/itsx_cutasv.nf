@@ -18,14 +18,17 @@ process ITSX_CUTASV {
     }
 
     input:
-    path(fasta)
+    path fasta
     
     output:
-    path(  "ASV_ITS_seqs.full.fasta" ), emit: fasta
-    //path( "*addSpecies.fna*"), emit: addspecies
+    path "ASV_ITS_seqs.full.fasta", emit: fasta
+    path "*.version.txt"          , emit: version
 
     script:
+    def software      = getSoftwareName(task.process)
     """
     ITSx -i $fasta -t all --preserve T --date F --positions F --graphical F --save_regions none --cpu ${task.cpus} -o ASV_ITS_seqs
+
+    ITSx -h 2>&1 > /dev/null | tail -n 2 | head -n 1 | cut -f 2 -d ' ' > ${software}.version.txt
     """
 }

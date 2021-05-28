@@ -57,7 +57,11 @@
                     "type": "boolean",
                     "description": "If data is single-ended Illumina reads instead of paired-end"
                 },
-                "multiple_sequencing_runs": {
+                 "cut_its": {
+                    "type": "boolean",
+                    "description": "If data is long read ITS sequences, that need to be cut to ITS region only for taxonomy assignment"
+                },
+               "multiple_sequencing_runs": {
                     "type": "boolean",
                     "description": "If samples were sequenced in multiple sequencing runs",
                     "help_text": "Expects one sub-folder per sequencing run in the folder specified by `--input` containing sequencing data of the specific run.\nSample identifiers are taken from sequencing files, specifically the string before the first underscore will be the sample ID. Sample IDs across all sequencing runs (all sequencing files) have to be unique. If this is not the case, please use a sample sheet as input instead.\n\nExample for input data organization:\n\n```bash\ndata\n  |-run1\n  |  |-sample1_1_L001_R1_001.fastq.gz\n  |  |-sample1_1_L001_R2_001.fastq.gz\n  |  |-sample2_1_L001_R1_001.fastq.gz\n  |  |-sample2_1_L001_R2_001.fastq.gz\n  |\n  |-run2\n     |-sample3_1_L001_R1_001.fastq.gz\n     |-sample3_1_L001_R2_001.fastq.gz\n     |-sample4_1_L001_R1_001.fastq.gz\n     |-sample4_1_L001_R2_001.fastq.gz\n```\n\nExample command to analyze this data in one pipeline run:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input \"data\" \\\n    --FW_primer \"GTGYCAGCMGCCGCGGTAA\" \\\n    --RV_primer \"GGACTACNVGGGTWTCTAAT\" \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multiple_sequencing_runs\n```",
@@ -187,7 +191,7 @@
             "properties": {
                 "dada_ref_taxonomy": {
                     "type": "string",
-                    "help_text": "Choose any of the databases that are supported, see conf/ref_databases.config, and optionally also specify the version. This will download the desired database, format it to produce a file that is compatible with dada_taxonomy and another file that is compatible with dada_addspecies. For Unite databases, we're using the developer version of the files labeled as 'Includes singletons set as RefS (in dynamic files)'.",
+                    "help_text": "Choose any of the databases that are supported, see conf/ref_databases.config, and optionally also specify the version. This will download the desired database, format it to produce a file that is compatible with dada_taxonomy and another file that is compatible with dada_addspecies.",
                     "description": "Name of database, and optionally also version number, that are supported, see conf/ref_databases.config",
                     "default": "silva=138"
                 },

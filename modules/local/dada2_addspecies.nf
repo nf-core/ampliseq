@@ -22,11 +22,12 @@ process DADA2_ADDSPECIES {
     input:
     path(taxtable)
     path(database)
+    val(outfile)
     
     output:
-    path( "ASV_tax_species.tsv" ), emit: tsv
-    path "*.version.txt"         , emit: version
-    path "*.args.txt"            , emit: args
+    path(outfile)       , emit: tsv
+    path "*.version.txt", emit: version
+    path "*.args.txt"   , emit: args
 
     script:
     def software      = getSoftwareName(task.process)
@@ -36,23 +37,26 @@ process DADA2_ADDSPECIES {
     set.seed(100) # Initialize random number generator for reproducibility
 
     taxtable <- readRDS(\"$taxtable\")
+
     tx <- addSpecies(taxtable, \"$database\", $options.args, verbose=TRUE)
 
     # Create a table with specified column order
+    tmp <- data.frame(row.names(tx)) # To separate ASV_ID from sequence
     taxa <- data.frame(
-        ASV_ID = tx\$ASV_ID,
-        Kingdom = tx\$Kingdom,
-        Phylum = tx\$Phylum,
-        Class = tx\$Class,
-        Order = tx\$Order,
-        Family = tx\$Family,
-        Genus = tx\$Genus,
-        Species = tx\$Species,
-        confidence = tx\$confidence,
-        sequence = rownames(tx)
+        ASV_ID = tx[,"ASV_ID"],
+        Kingdom = tx[,"Kingdom"],
+        Phylum = tx[,"Phylum"],
+        Class = tx[,"Class"],
+        Order = tx[,"Order"],
+        Family = tx[,"Family"],
+        Genus = tx[,"Genus"],
+        Species = tx[,"Species"],
+        confidence = tx[,"confidence"],
+	sequence = tmp[,],
+	row.names=row.names(tmp)
     )
 
-    write.table(taxa, file = "ASV_tax_species.tsv", sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
+    write.table(taxa, file = \"$outfile\", sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
 
     write.table('addSpecies\t$options.args', file = "addSpecies.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
     write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)

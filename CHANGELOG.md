@@ -17,7 +17,6 @@ Re-wrote whole pipeline in nextflow [DSL2](https://www.nextflow.io/docs/latest/d
 * [#229](https://github.com/nf-core/mag/pull/229) - `--input` may point (1) at a fasta file ending with `.fasta`/`.fna`/`.fa` that will be taxonomically classified, (2) at a samples sheet ending with `.tsv` that allows analysis of multiple sequencing runs by reading the optional column `run`, or (3) at a folder input
 * [#229](https://github.com/nf-core/mag/pull/229) - `--sample_inference`, `--concatenate_reads`, `--illumina_pe_its`; please check the documentation for their function
 * [#275](https://github.com/nf-core/mag/pull/275) - Read count summary
-* Taxonomic classification by DADA2
 * [#274](https://github.com/nf-core/mag/pull/274) - `--skip_qiime` to prevent any steps that are executed with QIIME2
 * [#272](https://github.com/nf-core/mag/pull/272) - `--cut_its` to cut ASV sequence to ITS region before performing taxonomic classification with DADA2
 

@@ -369,7 +369,7 @@ workflow AMPLISEQ {
 		//Cut out ITS region if long ITS reads
 		} else {
 		        ITSX_CUTASV ( ch_fasta )
-			ch_software_versions = ch_software_versions.mix(ITSX_CUTASV.out.version.first().ifEmpty(null))
+			ch_software_versions = ch_software_versions.mix(ITSX_CUTASV.out.version.ifEmpty(null))
 			ch_cut_fasta = ITSX_CUTASV.out.fasta
 			DADA2_TAXONOMY ( ch_cut_fasta, FORMAT_TAXONOMY.out.assigntax, 'ASV_ITS_tax.tsv' )
 			DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, FORMAT_TAXONOMY.out.addspecies, 'ASV_ITS_tax_species.tsv' )

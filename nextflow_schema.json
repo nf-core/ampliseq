@@ -195,21 +195,15 @@
                     "description": "Name of database, and optionally also version number, that are supported, see conf/ref_databases.config",
                     "default": "silva=138"
                 },
+                "qiime_ref_taxonomy": {
+                    "type": "string",
+                    "help_text": "Choose any of the databases that are supported, see conf/ref_databases.config, and optionally also specify the version. This will download the desired database.",
+                    "description": "Name of database, and optionally also version number, that are supported, see conf/ref_databases.config.\nIf both, `--dada_ref_taxonomy` and `--qiime_ref_taxonomy` are used, DADA2 classification will be used for downstream analysis."
+                },
                 "classifier": {
                     "type": "string",
                     "description": "Path to QIIME2 trained classifier file (typically *-classifier.qza)",
-                    "help_text": "If you have trained a compatible classifier before, from sources such as SILVA (https://www.arb-silva.de/), Greengenes (http://greengenes.secondgenome.com/downloads) or RDP (https://rdp.cme.msu.edu/). \n\nFor example:\n\n```bash\n--classifier \"FW_primer-RV_primer-classifier.qza\"\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The classifier is a Naive Bayes classifier produced by \"qiime feature-classifier fit-classifier-naive-bayes\" (e.g. by this pipeline or from (https://docs.qiime2.org/2019.10/data-resources/))\n3. The primer pair for the amplicon PCR and the computing of the classifier are exactly the same (or fulllength, potentially lower performance)\n4. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses (0.21.2)",
-                    "hidden": true
-                },
-                "tax_to_classifier": {
-                    "type": "string",
-                    "description": "Path to file with taxonomies for taxonomic classification with QIIME2",
-                    "hidden": true
-                },
-                "fasta_to_classifier": {
-                    "type": "string",
-                    "description": "Path to file with sequences in fasta format for taxonomic classification with QIIME2",
-                    "hidden": true
+                    "help_text": "If you have trained a compatible classifier before, from sources such as SILVA (https://www.arb-silva.de/), Greengenes (http://greengenes.secondgenome.com/downloads) or RDP (https://rdp.cme.msu.edu/). \n\nFor example:\n\n```bash\n--classifier \"FW_primer-RV_primer-classifier.qza\"\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The classifier is a Naive Bayes classifier produced by `qiime feature-classifier fit-classifier-naive-bayes` (e.g. by this pipeline)\n3. The primer pair for the amplicon PCR and the computing of the classifier are exactly the same (or full-length, potentially lower performance)\n4. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses"
                 }
             },
             "fa_icon": "fas fa-database"

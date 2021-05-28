@@ -9,46 +9,47 @@ Re-wrote whole pipeline in nextflow [DSL2](https://www.nextflow.io/docs/latest/d
 
 ### `Added`
 
-* [#229](https://github.com/nf-core/mag/pull/229) - `--single_end` for single-ended Illumina data
-* [#229](https://github.com/nf-core/mag/pull/229), [#245](https://github.com/nf-core/mag/pull/245), [#267](https://github.com/nf-core/mag/pull/267)  - Taxonomic classification with DADA2
-* [#229](https://github.com/nf-core/mag/pull/229) - `--dada_ref_taxonomy` for taxonomic classification with DADA2's assignTaxonomy and addSpecies functions
-* [#239](https://github.com/nf-core/mag/pull/239) - Support of RDP database for DADA2 classification
-* [#237](https://github.com/nf-core/mag/pull/237) - Support of UNITE database for DADA2 classification
-* [#229](https://github.com/nf-core/mag/pull/229) - `--input` may point (1) at a fasta file ending with `.fasta`/`.fna`/`.fa` that will be taxonomically classified, (2) at a samples sheet ending with `.tsv` that allows analysis of multiple sequencing runs by reading the optional column `run`, or (3) at a folder input
-* [#229](https://github.com/nf-core/mag/pull/229) - `--sample_inference`, `--concatenate_reads`, `--illumina_pe_its`; please check the documentation for their function
-* [#275](https://github.com/nf-core/mag/pull/275) - Read count summary
-* [#274](https://github.com/nf-core/mag/pull/274) - `--skip_qiime` to prevent any steps that are executed with QIIME2
-* [#272](https://github.com/nf-core/mag/pull/272) - `--cut_its` to cut ASV sequence to ITS region before performing taxonomic classification with DADA2
+* [#229](https://github.com/nf-core/ampliseq/pull/229) - `--single_end` for single-ended Illumina data
+* [#229](https://github.com/nf-core/ampliseq/pull/229), [#245](https://github.com/nf-core/ampliseq/pull/245), [#267](https://github.com/nf-core/ampliseq/pull/267)  - Taxonomic classification with DADA2
+* [#229](https://github.com/nf-core/ampliseq/pull/229) - `--dada_ref_taxonomy` for taxonomic classification with DADA2's assignTaxonomy and addSpecies functions
+* [#278](https://github.com/nf-core/ampliseq/pull/278) - `--qiime_ref_taxonomy` for taxonomic classification with QIIME2
+* [#239](https://github.com/nf-core/ampliseq/pull/239) - Support of RDP database for DADA2 classification
+* [#237](https://github.com/nf-core/ampliseq/pull/237) - Support of UNITE database for DADA2 classification
+* [#229](https://github.com/nf-core/ampliseq/pull/229) - `--input` may point (1) at a fasta file ending with `.fasta`/`.fna`/`.fa` that will be taxonomically classified, (2) at a samples sheet ending with `.tsv` that allows analysis of multiple sequencing runs by reading the optional column `run`, or (3) at a folder input
+* [#229](https://github.com/nf-core/ampliseq/pull/229) - `--sample_inference`, `--concatenate_reads`, `--illumina_pe_its`; please check the documentation for their function
+* [#275](https://github.com/nf-core/ampliseq/pull/275) - Read count summary
+* [#274](https://github.com/nf-core/ampliseq/pull/274) - `--skip_qiime` to prevent any steps that are executed with QIIME2
+* [#272](https://github.com/nf-core/ampliseq/pull/272) - `--cut_its` to cut ASV sequence to ITS region before performing taxonomic classification with DADA2
 
 ### `Changed`
 
-* [#254](https://github.com/nf-core/mag/pull/254) - Updated CamelCase parameters to be lower_case_snake_case:
+* [#254](https://github.com/nf-core/ampliseq/pull/254) - Updated CamelCase parameters to be lower_case_snake_case:
   * `multipleSequencingRuns` to `multiple_sequencing_runs`
   * `minLen` to `min_len`
   * `maxLen` to `max_len`
   * `maxEE` to `max_ee`
-* [#277](https://github.com/nf-core/mag/pull/277) - Requires nextflow version `>= 21.04.0`
+* [#277](https://github.com/nf-core/ampliseq/pull/277) - Requires nextflow version `>= 21.04.0`
 
 ### `Fixed`
 
-* [#273](https://github.com/nf-core/mag/pull/273) - Template update for nf-core/tools version 1.14
+* [#273](https://github.com/nf-core/ampliseq/pull/273) - Template update for nf-core/tools version 1.14
 
 ### `Dependencies`
 
-* [#272](https://github.com/nf-core/mag/pull/272) - New dependency ITSx v1.1.3
-* [#229](https://github.com/nf-core/mag/pull/229) - Updated from cutadapt v2.8 to v3.2
-* [#229](https://github.com/nf-core/mag/pull/229) - Updated DADA2 from v1.10 to v1.18.0, now not using QIIME2 for ASV generation any more
-* [#229](https://github.com/nf-core/mag/pull/229) - Updated QIIME2 to v2021.2
+* [#272](https://github.com/nf-core/ampliseq/pull/272) - New dependency ITSx v1.1.3
+* [#229](https://github.com/nf-core/ampliseq/pull/229) - Updated from cutadapt v2.8 to v3.2
+* [#229](https://github.com/nf-core/ampliseq/pull/229) - Updated DADA2 from v1.10 to v1.18.0, now not using QIIME2 for ASV generation any more
+* [#229](https://github.com/nf-core/ampliseq/pull/229) - Updated QIIME2 to v2021.2
 
 ### `Removed`
 
-* [#229](https://github.com/nf-core/mag/pull/229) - `--manifest` is superseeded by `--input` that can now also handle a sample sheet file input (required extension: `.tsv`)
-* [#229](https://github.com/nf-core/mag/pull/229) - `--Q2imported` and `untilQ2import` are removed because pausing at that point is not neccessary
-* [#229](https://github.com/nf-core/mag/pull/229) - `--split` is no longer supported, therefore all sample IDs have to be unique
-* [#229](https://github.com/nf-core/mag/pull/229) - `--classifier_removeHash` and `--qiime_timezone` became unnecessary
-* [#229](https://github.com/nf-core/mag/pull/229) - `--onlyDenoising` is deprecated in favour of `--skip_taxonomy` (which does the exact same thing)
+* [#229](https://github.com/nf-core/ampliseq/pull/229) - `--manifest` is superseeded by `--input` that can now also handle a sample sheet file input (required extension: `.tsv`)
+* [#229](https://github.com/nf-core/ampliseq/pull/229) - `--Q2imported` and `untilQ2import` are removed because pausing at that point is not neccessary
+* [#229](https://github.com/nf-core/ampliseq/pull/229) - `--split` is no longer supported, therefore all sample IDs have to be unique
+* [#229](https://github.com/nf-core/ampliseq/pull/229) - `--classifier_removeHash` and `--qiime_timezone` became unnecessary
+* [#229](https://github.com/nf-core/ampliseq/pull/229) - `--onlyDenoising` is deprecated in favour of `--skip_taxonomy` (which does the exact same thing)
 * `--taxon_reference` became unnecessary
-* `--reference_database`, `--dereplication` are currently not supported as they are QIIME2 specific. Either a more general solution will be supported soon or QIIME2 classification will be removed.
+* [#229](https://github.com/nf-core/ampliseq/pull/229) - `--reference_database` and `--dereplication` are not supported any more. `--qiime_ref_taxonomy` allows now choosing a taxonomic reference
 
 ## nf-core/ampliseq version 1.2.0 "Teal Bronze Lion" - 2021
 

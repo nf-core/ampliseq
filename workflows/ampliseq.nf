@@ -416,7 +416,7 @@ workflow AMPLISEQ {
 		} else if ( params.dada_ref_taxonomy ) {
 			log.info "Use DADA2 taxonomy classification"
 			ch_tax = QIIME2_INTAX ( ch_dada2_tax ).qza
-		} else if ( qiime_ref_taxonomy || params.classifier ) {
+		} else if ( params.qiime_ref_taxonomy || params.classifier ) {
 			log.info "Use QIIME2 taxonomy classification"
 			ch_tax = QIIME2_TAXONOMY.out.qza
 		} else { 

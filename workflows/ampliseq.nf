@@ -19,21 +19,21 @@ if (params.classifier) {
 	ch_qiime_classifier = Channel.fromPath("${params.classifier}", checkIfExists: true)
 } else { ch_qiime_classifier = Channel.empty() }
 
-if( params.tax_to_classifier && params.fasta_to_classifier && !params.skip_taxonomy ){
-	ch_fasta_to_classifier = Channel.fromPath("${params.fasta_to_classifier}", checkIfExists: true)
-	ch_tax_to_classifier = Channel.fromPath("${params.tax_to_classifier}", checkIfExists: true)
-} else { 
-	ch_fasta_to_classifier = Channel.empty()
-	ch_tax_to_classifier = Channel.empty()
-}
-
 if (params.dada_ref_taxonomy && !params.skip_taxonomy) {
-	// Check if genome exists in the config file
-	if (params.genomes && params.dada_ref_taxonomy && !params.genomes.containsKey(params.dada_ref_taxonomy)) {
-		exit 1, "The provided reference taxonomy '${params.dada_ref_taxonomy}' is not available in the 'conf/ref_databases.config' file. Currently the available reference taxonomies are ${params.genomes.keySet().join(', ')}"
+	// Check if ref_taxonomy exists in the config file
+	if (params.dada_ref_databases && params.dada_ref_taxonomy && !params.dada_ref_databases.containsKey(params.dada_ref_taxonomy)) {
+		exit 1, "The provided DADA2 reference taxonomy '${params.dada_ref_taxonomy}' is not available in the 'conf/ref_databases.config' file. Currently the available reference taxonomies are ${params.dada_ref_databases.keySet().join(', ')}"
 	}
-	ch_dada_ref_taxonomy = Channel.fromList(params.genomes[params.dada_ref_taxonomy]["file"]).map { file(it) }
+	ch_dada_ref_taxonomy = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["file"]).map { file(it) }
 } else { ch_dada_ref_taxonomy = Channel.empty() }
+
+if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
+	// Check if ref_taxonomy exists in the config file
+	if (params.qiime_ref_databases && params.qiime_ref_taxonomy && !params.qiime_ref_databases.containsKey(params.qiime_ref_taxonomy)) {
+		exit 1, "The provided QIIME2 reference taxonomy '${params.qiime_ref_taxonomy}' is not available in the 'conf/ref_databases.config' file. Currently the available reference taxonomies are ${params.qiime_ref_databases.keySet().join(', ')}"
+	}
+	ch_qiime_ref_taxonomy = Channel.fromList(params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"]).map { file(it) }
+} else { ch_qiime_ref_taxonomy = Channel.empty() }
 
 /*
  * Set variables
@@ -387,10 +387,9 @@ workflow AMPLISEQ {
 
 	//QIIME2
 	if ( run_qiime2 ) {
-		if (params.tax_to_classifier && params.fasta_to_classifier && !params.classifier) {
+		if (params.qiime_ref_taxonomy && !params.classifier) {
 			QIIME2_PREPTAX (
-				ch_fasta_to_classifier,
-				ch_tax_to_classifier,
+				ch_qiime_ref_taxonomy.collect(),
 				params.FW_primer,
 				params.RV_primer
 			)
@@ -417,7 +416,7 @@ workflow AMPLISEQ {
 		} else if ( params.dada_ref_taxonomy ) {
 			log.info "Use DADA2 taxonomy classification"
 			ch_tax = QIIME2_INTAX ( ch_dada2_tax ).qza
-		} else if ( (params.tax_to_classifier && params.fasta_to_classifier) || params.classifier ) {
+		} else if ( qiime_ref_taxonomy || params.classifier ) {
 			log.info "Use QIIME2 taxonomy classification"
 			ch_tax = QIIME2_TAXONOMY.out.qza
 		} else { 

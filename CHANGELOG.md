@@ -12,6 +12,7 @@ Re-wrote whole pipeline in nextflow [DSL2](https://www.nextflow.io/docs/latest/d
 * [#229](https://github.com/nf-core/mag/pull/229) - `--single_end` for single-ended Illumina data
 * [#229](https://github.com/nf-core/mag/pull/229), [#245](https://github.com/nf-core/mag/pull/245), [#267](https://github.com/nf-core/mag/pull/267)  - Taxonomic classification with DADA2
 * [#229](https://github.com/nf-core/mag/pull/229) - `--dada_ref_taxonomy` for taxonomic classification with DADA2's assignTaxonomy and addSpecies functions
+* [#278](https://github.com/nf-core/mag/pull/278) - `--qiime_ref_taxonomy` for taxonomic classification with QIIME2
 * [#239](https://github.com/nf-core/mag/pull/239) - Support of RDP database for DADA2 classification
 * [#237](https://github.com/nf-core/mag/pull/237) - Support of UNITE database for DADA2 classification
 * [#229](https://github.com/nf-core/mag/pull/229) - `--input` may point (1) at a fasta file ending with `.fasta`/`.fna`/`.fa` that will be taxonomically classified, (2) at a samples sheet ending with `.tsv` that allows analysis of multiple sequencing runs by reading the optional column `run`, or (3) at a folder input
@@ -48,7 +49,7 @@ Re-wrote whole pipeline in nextflow [DSL2](https://www.nextflow.io/docs/latest/d
 * [#229](https://github.com/nf-core/mag/pull/229) - `--classifier_removeHash` and `--qiime_timezone` became unnecessary
 * [#229](https://github.com/nf-core/mag/pull/229) - `--onlyDenoising` is deprecated in favour of `--skip_taxonomy` (which does the exact same thing)
 * `--taxon_reference` became unnecessary
-* `--reference_database`, `--dereplication` are currently not supported as they are QIIME2 specific. Either a more general solution will be supported soon or QIIME2 classification will be removed.
+* [#229](https://github.com/nf-core/mag/pull/229) - `--reference_database` and `--dereplication` are currently not supported any more. `--qiime_ref_taxonomy` allows now choosing a taxonomic reference
 
 ## nf-core/ampliseq version 1.2.0 "Teal Bronze Lion" - 2021
 

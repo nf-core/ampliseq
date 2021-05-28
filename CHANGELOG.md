@@ -49,7 +49,7 @@ Re-wrote whole pipeline in nextflow [DSL2](https://www.nextflow.io/docs/latest/d
 * [#229](https://github.com/nf-core/ampliseq/pull/229) - `--classifier_removeHash` and `--qiime_timezone` became unnecessary
 * [#229](https://github.com/nf-core/ampliseq/pull/229) - `--onlyDenoising` is deprecated in favour of `--skip_taxonomy` (which does the exact same thing)
 * `--taxon_reference` became unnecessary
-* [#229](https://github.com/nf-core/ampliseq/pull/229) - `--reference_database` and `--dereplication` are currently not supported any more. `--qiime_ref_taxonomy` allows now choosing a taxonomic reference
+* [#229](https://github.com/nf-core/ampliseq/pull/229) - `--reference_database` and `--dereplication` are not supported any more. `--qiime_ref_taxonomy` allows now choosing a taxonomic reference
 
 ## nf-core/ampliseq version 1.2.0 "Teal Bronze Lion" - 2021
 

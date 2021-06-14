@@ -40,7 +40,7 @@ if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
  */
 
 single_end = params.pacbio ? true : params.single_end
-// single_end = params.iontorrent ? true : params.single_end
+single_end = params.iontorrent ? true : params.single_end
 
 trunclenf = params.trunclenf ? params.trunclenf : 0 
 trunclenr = params.trunclenr ? params.trunclenr : 0

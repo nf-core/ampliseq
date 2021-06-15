@@ -39,8 +39,9 @@ if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
  * Set variables
  */
 
-single_end = params.pacbio ? true : params.single_end
-single_end = params.iontorrent ? true : params.single_end
+if (  params.pacbio || params.iontorrent ) {
+   single_end = true
+}
 
 trunclenf = params.trunclenf ? params.trunclenf : 0 
 trunclenr = params.trunclenr ? params.trunclenr : 0

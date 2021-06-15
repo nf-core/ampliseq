@@ -132,6 +132,7 @@ dada2_taxonomy_options.args += params.pacbio ? ", tryRC = TRUE" : ""
 dada2_taxonomy_options.args += params.iontorrent ? ", tryRC = TRUE" : ""
 
 def dada2_addspecies_options  = modules['dada2_addspecies']
+dada2_addspecies_options.args += params.pacbio ? ", tryRC = TRUE" : ""
 dada2_addspecies_options.args += params.iontorrent ? ", tryRC = TRUE" : ""
 
 include { RENAME_RAW_DATA_FILES         } from '../modules/local/rename_raw_data_files'

@@ -39,6 +39,7 @@ if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
  * Set variables
  */
 
+single_end = params.single_end
 if (  params.pacbio || params.iontorrent ) {
    single_end = true
 }

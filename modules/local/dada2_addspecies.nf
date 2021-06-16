@@ -44,6 +44,7 @@ process DADA2_ADDSPECIES {
     tmp <- data.frame(row.names(tx)) # To separate ASV_ID from sequence
     taxa <- data.frame(
         ASV_ID = tx[,"ASV_ID"],
+        Domain = tx[,"Domain"],
         Kingdom = tx[,"Kingdom"],
         Phylum = tx[,"Phylum"],
         Class = tx[,"Class"],

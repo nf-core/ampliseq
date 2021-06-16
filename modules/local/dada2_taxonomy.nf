@@ -47,7 +47,9 @@ process DADA2_TAXONOMY {
                 ifelse(!is.na(tax.Order), boot.Order,
                     ifelse(!is.na(tax.Class), boot.Class,
                         ifelse(!is.na(tax.Phylum), boot.Phylum,
-                            ifelse(!is.na(tax.Kingdom), boot.Kingdom, 0)
+                            ifelse(!is.na(tax.Kingdom), boot.Kingdom,
+                                ifelse(!is.na(tax.Domain), boot.Domain, 0)
+                            )
                         )
                     )
                 )
@@ -56,6 +58,7 @@ process DADA2_TAXONOMY {
     )/100
     taxa_export <- data.frame(
         ASV_ID = tx\$ASV_ID,
+        Domain = tx\$tax.Domain,
         Kingdom = tx\$tax.Kingdom,
         Phylum = tx\$tax.Phylum,
         Class = tx\$tax.Class,

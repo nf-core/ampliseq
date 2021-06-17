@@ -6,7 +6,7 @@ def parse_samplesheet(LinkedHashMap row, single_end) {
 	}
 	//Check if manifest contains a column for reverse reads
 	if (row.reverseReads == null && !single_end) { 
-		exit 1, "ERROR: Please check input samplesheet -> Column 'reverseReads' is missing. In case you do have only single ended reads, please specify '--single_end' or '--pacbio'."
+		exit 1, "ERROR: Please check input samplesheet -> Column 'reverseReads' is missing. In case you do have only single ended reads, please specify '--single_end', '--pacbio', or '--iontorrent'."
 	}
 	//read meta info
     def meta = [:]

@@ -39,7 +39,10 @@ if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
  * Set variables
  */
 
-single_end = params.pacbio ? true : params.single_end
+single_end = params.single_end
+if (  params.pacbio || params.iontorrent ) {
+   single_end = true
+}
 
 trunclenf = params.trunclenf ? params.trunclenf : 0 
 trunclenr = params.trunclenr ? params.trunclenr : 0
@@ -89,13 +92,16 @@ def dada2_filtntrim_options = modules['dada2_filtntrim']
 dada2_filtntrim_options.args       += single_end ? ", maxEE = $params.max_ee" : ", maxEE = c($params.max_ee, $params.max_ee)"
 if (params.pacbio) {
 	//PacBio data
-	dada2_filtntrim_options.args   +=", minLen = $params.min_len, maxLen = $params.max_len, rm.phix = FALSE"
+	dada2_filtntrim_options.args   +=", trimLeft = 0, minLen = $params.min_len, maxLen = $params.max_len, rm.phix = FALSE"
+} else if (params.iontorrent) {
+	//Ion-torrent data
+	dada2_filtntrim_options.args   += ", trimLeft = 15, minLen = $params.min_len, maxLen = $params.max_len, rm.phix = TRUE"
 } else if (params.illumina_pe_its) {
 	//Illumina ITS data or other sequences with high length variability
-	dada2_filtntrim_options.args   += ", minLen = $params.min_len, maxLen = $params.max_len, rm.phix = TRUE"
+	dada2_filtntrim_options.args   += ", trimLeft = 0, minLen = $params.min_len, maxLen = $params.max_len, rm.phix = TRUE"
 } else {
 	//Illumina 16S data
-	dada2_filtntrim_options.args   += ", minLen = $params.min_len, maxLen = $params.max_len, rm.phix = TRUE"
+	dada2_filtntrim_options.args   += ", trimLeft = 0, minLen = $params.min_len, maxLen = $params.max_len, rm.phix = TRUE"
 }
 
 def dada2_quality_options = modules['dada2_quality'] 
@@ -107,6 +113,12 @@ def dada2_err_options = modules['dada2_err']
 dada2_err_options.args   += params.pacbio ? ", errorEstimationFunction = PacBioErrfun" : ", errorEstimationFunction = loessErrfun"
 
 def dada2_denoising_options = modules['dada2_denoising']
+if (params.iontorrent) {
+	//Ion-torrent data
+	dada2_denoising_options.args   += ", BAND_SIZE = 32, HOMOPOLYMER_GAP_PENALTY = -1"
+} else {
+	dada2_denoising_options.args   += ", BAND_SIZE = 16, HOMOPOLYMER_GAP_PENALTY = NULL"
+}
 dada2_denoising_options.args         += params.sample_inference == "pseudo" ? ", pool = \"pseudo\"" : params.sample_inference == "pooled" ? ", pool = TRUE" : ", pool = FALSE"
 dada2_denoising_options.args2        += params.concatenate_reads ? ", justConcatenate = TRUE" : ", justConcatenate = FALSE"
 
@@ -117,9 +129,11 @@ multiqc_options.args       += params.multiqc_title ? " --title \"$params.multiqc
 
 def dada2_taxonomy_options  = modules['dada2_taxonomy']
 dada2_taxonomy_options.args += params.pacbio ? ", tryRC = TRUE" : ""
+dada2_taxonomy_options.args += params.iontorrent ? ", tryRC = TRUE" : ""
 
 def dada2_addspecies_options  = modules['dada2_addspecies']
 dada2_addspecies_options.args += params.pacbio ? ", tryRC = TRUE" : ""
+dada2_addspecies_options.args += params.iontorrent ? ", tryRC = TRUE" : ""
 
 include { RENAME_RAW_DATA_FILES         } from '../modules/local/rename_raw_data_files'
 include { DADA2_FILTNTRIM               } from '../modules/local/dada2_filtntrim'              addParams( options: dada2_filtntrim_options         )
@@ -155,6 +169,9 @@ include { GET_SOFTWARE_VERSIONS         } from '../modules/local/get_software_ve
 
 if (params.pacbio) {
 	//PacBio data
+	cutadapt_options_args       = " --rc -g ${params.FW_primer}...${params.RV_primer}"
+} else if (params.iontorrent) {
+	//IonTorrent data
 	cutadapt_options_args       = " --rc -g ${params.FW_primer}...${params.RV_primer}"
 } else if (params.single_end) {
 	//Illumina SE

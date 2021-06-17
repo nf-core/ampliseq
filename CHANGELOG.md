@@ -20,6 +20,7 @@ Re-wrote whole pipeline in nextflow [DSL2](https://www.nextflow.io/docs/latest/d
 * [#275](https://github.com/nf-core/ampliseq/pull/275) - Read count summary
 * [#274](https://github.com/nf-core/ampliseq/pull/274) - `--skip_qiime` to prevent any steps that are executed with QIIME2
 * [#272](https://github.com/nf-core/ampliseq/pull/272) - `--cut_its` to cut ASV sequence to ITS region before performing taxonomic classification with DADA2
+* [#280](https://github.com/nf-core/ampliseq/pull/280) - Added support for IonTorrent data
 
 ### `Changed`
 

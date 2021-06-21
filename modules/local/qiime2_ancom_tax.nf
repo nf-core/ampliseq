@@ -7,7 +7,7 @@ options    = initOptions(params.options)
 process QIIME2_ANCOM_TAX {
     tag "${table.baseName} - taxonomic level: ${taxlevel}"
     label 'process_medium'
-	label 'single_cpu'
+    label 'single_cpu'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
@@ -15,18 +15,17 @@ process QIIME2_ANCOM_TAX {
     conda (params.enable_conda ? { exit 1 "QIIME2 has no conda package" } : null)
     container "quay.io/qiime2/core:2021.2"
 
-	input:
+    input:
     tuple path(metadata), path(table), path(taxonomy) ,val(taxlevel)
 
-	output:
-	path("ancom/*")     , emit: ancom
+    output:
+    path "ancom/*"      , emit: ancom
     path "*.version.txt", emit: version
 
     script:
     def software     = getSoftwareName(task.process)
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
-
     mkdir ancom
 
     # Sum data at the specified level
@@ -40,9 +39,8 @@ process QIIME2_ANCOM_TAX {
     qiime tools export --input-path lvl${taxlevel}-${table} --output-path exported/
     biom convert -i exported/feature-table.biom -o ancom/lvl${taxlevel}-${table}.feature-table.tsv --to-tsv
 
-    if [ \$(grep -v '^#' -c ancom/lvl${taxlevel}-${table}.feature-table.tsv) -le 1 ]; then
-        echo "Summing your at level ${taxlevel} produced a single row, ANCOM can't proceed." | tee ancom/lvl${taxlevel}-${table}.status
-        echo "Did you select the wrong taxonomy reference?" | tee -a ancom/lvl${taxlevel}-${table}.status
+    if [ \$(grep -v '^#' -c ancom/lvl${taxlevel}-${table}.feature-table.tsv) -lt 2 ]; then
+        echo ${taxlevel} > ancom/\"WARNING Summing your data at taxonomic level ${taxlevel} produced less than two rows (taxa), ANCOM can't proceed -- did you specify a bad reference taxonomy?\".txt
     else
         qiime composition add-pseudocount \
                 --i-table lvl${taxlevel}-${table} \

@@ -27,21 +27,34 @@ process QIIME2_ANCOM_TAX {
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
 
-	qiime taxa collapse \
-		--i-table ${table} \
-		--i-taxonomy ${taxonomy} \
-		--p-level ${taxlevel} \
-		--o-collapsed-table lvl${taxlevel}-${table}
-	qiime composition add-pseudocount \
-		--i-table lvl${taxlevel}-${table} \
-		--o-composition-table comp-lvl${taxlevel}-${table}
-	qiime composition ancom \
-		--i-table comp-lvl${taxlevel}-${table} \
-		--m-metadata-file ${metadata} \
-		--m-metadata-column ${table.baseName} \
-		--o-visualization comp-lvl${taxlevel}-${table.baseName}.qzv
-	qiime tools export --input-path comp-lvl${taxlevel}-${table.baseName}.qzv \
-		--output-path ancom/Category-${table.baseName}-level-${taxlevel}
+    mkdir ancom
+
+    # Sum data at the specified level
+    qiime taxa collapse \
+            --i-table ${table} \
+            --i-taxonomy ${taxonomy} \
+            --p-level ${taxlevel} \
+            --o-collapsed-table lvl${taxlevel}-${table}
+
+    # Extract summarised table and output a file with the number of taxa
+    qiime tools export --input-path lvl${taxlevel}-${table} --output-path exported/
+    biom convert -i exported/feature-table.biom -o ancom/lvl${taxlevel}-${table}.feature-table.tsv --to-tsv
+
+    if [ \$(grep -v '^#' -c ancom/lvl${taxlevel}-${table}.feature-table.tsv) -le 1 ]; then
+        echo "Summing your at level ${taxlevel} produced a single row, ANCOM can't proceed." | tee ancom/lvl${taxlevel}-${table}.status
+        echo "Did you select the wrong taxonomy reference?" | tee -a ancom/lvl${taxlevel}-${table}.status
+    else
+        qiime composition add-pseudocount \
+                --i-table lvl${taxlevel}-${table} \
+                --o-composition-table comp-lvl${taxlevel}-${table}
+        qiime composition ancom \
+                --i-table comp-lvl${taxlevel}-${table} \
+                --m-metadata-file ${metadata} \
+                --m-metadata-column ${table.baseName} \
+                --o-visualization comp-lvl${taxlevel}-${table.baseName}.qzv
+        qiime tools export --input-path comp-lvl${taxlevel}-${table.baseName}.qzv \
+                --output-path ancom/Category-${table.baseName}-level-${taxlevel}
+    fi
 
     echo \$(qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g") > ${software}.version.txt
     """

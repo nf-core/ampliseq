@@ -19,7 +19,7 @@ include { QIIME2_DIVERSITY_BETAORD    } from '../../modules/local/qiime2_diversi
 workflow QIIME2_DIVERSITY {
     take:
     ch_metadata
-	ch_asv
+    ch_asv
     ch_seq
     ch_stats //QIIME2_FILTERTAXA.out.tsv
     ch_metacolumn_pairwise //METADATA_PAIRWISE.out

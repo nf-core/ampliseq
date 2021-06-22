@@ -13,29 +13,29 @@ process QIIME2_BARPLOT {
     conda (params.enable_conda ? { exit 1 "QIIME2 has no conda package" } : null)
     container "quay.io/qiime2/core:2021.2"
 
-	input:
-	path(metadata)
-	path(table)
-	path(taxonomy)
+    input:
+    path(metadata)
+    path(table)
+    path(taxonomy)
 
-	output:
-	path("barplot/*")   , emit: folder
+    output:
+    path("barplot/*")   , emit: folder
     path "*.version.txt", emit: version
 
     script:
     def software     = getSoftwareName(task.process)
-	"""
+    """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
 
-	qiime taxa barplot  \
-		--i-table ${table}  \
-		--i-taxonomy ${taxonomy}  \
-		--m-metadata-file ${metadata}  \
-		--o-visualization taxa-bar-plots.qzv  \
-		--verbose
-	qiime tools export --input-path taxa-bar-plots.qzv  \
-		--output-path barplot
+    qiime taxa barplot  \
+        --i-table ${table}  \
+        --i-taxonomy ${taxonomy}  \
+        --m-metadata-file ${metadata}  \
+        --o-visualization taxa-bar-plots.qzv  \
+        --verbose
+    qiime tools export --input-path taxa-bar-plots.qzv  \
+        --output-path barplot
 
     echo \$(qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g") > ${software}.version.txt
-	"""
+    """
 }

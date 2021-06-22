@@ -15,14 +15,14 @@ process METADATA_PAIRWISE {
         container "quay.io/biocontainers/bioconductor-dada2:1.18.0--r40h5f743cb_0"
     }
 
-	input:
-	path(metadata)
+    input:
+    path(metadata)
 
-	output:
-	stdout
+    output:
+    stdout
 
-	script:
-	"""
-	metadata_pairwise.r ${metadata}
-	"""
+    script:
+    """
+    metadata_pairwise.r ${metadata}
+    """
 }

@@ -23,8 +23,8 @@ process FORMAT_TAXRESULTS {
         path(fastafile)
 
         output:
-	path("ASV_tax.tsv")
-	path("ASV_tax_species.tsv"), emit: tsv
+    path("ASV_tax.tsv")
+    path("ASV_tax_species.tsv"), emit: tsv
 
         script:
         """

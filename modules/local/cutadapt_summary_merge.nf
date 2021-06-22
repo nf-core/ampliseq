@@ -18,12 +18,12 @@ process CUTADAPT_SUMMARY_MERGE {
         container "quay.io/biocontainers/bioconductor-dada2:1.18.0--r40h5f743cb_0"
     }
 
-	input:
+    input:
     val(action)
     path(files)
 
-	output:
-	path("cutadapt_summary.tsv") , emit: tsv
+    output:
+    path("cutadapt_summary.tsv") , emit: tsv
 
     script:
     if (action == "merge") {

@@ -17,12 +17,12 @@ process MERGE_STATS {
         container "quay.io/biocontainers/bioconductor-dada2:1.18.0--r40h5f743cb_0"
     }
 
-	input:
+    input:
     path('file1.tsv')
     path('file2.tsv')
 
-	output:
-	path("overall_summary.tsv") , emit: tsv
+    output:
+    path("overall_summary.tsv") , emit: tsv
 
     script:
     """

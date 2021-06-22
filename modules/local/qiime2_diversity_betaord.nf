@@ -14,25 +14,25 @@ process QIIME2_DIVERSITY_BETAORD {
     conda (params.enable_conda ? { exit 1 "QIIME2 has no conda package" } : null)
     container "quay.io/qiime2/core:2021.2"
 
-	input:
+    input:
     tuple path(metadata), path(core)
 
-	output:
-	path("beta_diversity/*"), emit: beta
+    output:
+    path("beta_diversity/*"), emit: beta
     path "*.version.txt"    , emit: version
 
     script:
     def software     = getSoftwareName(task.process) 
-	"""
+    """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
 
-	qiime emperor plot \
-		--i-pcoa ${core} \
-		--m-metadata-file ${metadata} \
-		--o-visualization ${core.baseName}-vis.qzv
-	qiime tools export --input-path ${core.baseName}-vis.qzv \
-		--output-path beta_diversity/${core.baseName}-PCoA
+    qiime emperor plot \
+        --i-pcoa ${core} \
+        --m-metadata-file ${metadata} \
+        --o-visualization ${core.baseName}-vis.qzv
+    qiime tools export --input-path ${core.baseName}-vis.qzv \
+        --output-path beta_diversity/${core.baseName}-PCoA
 
     echo \$(qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g") > ${software}.version.txt
-	"""
+    """
 }

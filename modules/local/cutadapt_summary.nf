@@ -18,19 +18,19 @@ process CUTADAPT_SUMMARY {
         container "quay.io/biocontainers/python:3.8.3"
     }
 
-	input:
+    input:
     val(name)
-	tuple val(meta), path(logs)
+    tuple val(meta), path(logs)
 
-	output:
-	path("*_summary.tsv") , emit: tsv
+    output:
+    path("*_summary.tsv") , emit: tsv
     path "*.version.txt"  , emit: version
 
     script:
     def software = "python"
     def mode  = meta.single_end ? "single_end" : "paired_end"
-	"""
-	cutadapt_summary.py $mode *.cutadapt.log > ${name}_summary.tsv
+    """
+    cutadapt_summary.py $mode *.cutadapt.log > ${name}_summary.tsv
     echo \$(python --version) > ${software}.version.txt
-	"""
+    """
 }

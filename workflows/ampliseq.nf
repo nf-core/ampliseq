@@ -12,27 +12,27 @@ params.summary_params = [:]
  * Import input files
  */
 if (params.metadata) {
-	ch_metadata = Channel.fromPath("${params.metadata}", checkIfExists: true)
+    ch_metadata = Channel.fromPath("${params.metadata}", checkIfExists: true)
 } else { ch_metadata = Channel.empty() }
 
 if (params.classifier) {
-	ch_qiime_classifier = Channel.fromPath("${params.classifier}", checkIfExists: true)
+    ch_qiime_classifier = Channel.fromPath("${params.classifier}", checkIfExists: true)
 } else { ch_qiime_classifier = Channel.empty() }
 
 if (params.dada_ref_taxonomy && !params.skip_taxonomy) {
-	// Check if ref_taxonomy exists in the config file
-	if (params.dada_ref_databases && params.dada_ref_taxonomy && !params.dada_ref_databases.containsKey(params.dada_ref_taxonomy)) {
-		exit 1, "The provided DADA2 reference taxonomy '${params.dada_ref_taxonomy}' is not available in the 'conf/ref_databases.config' file. Currently the available reference taxonomies are ${params.dada_ref_databases.keySet().join(', ')}"
-	}
-	ch_dada_ref_taxonomy = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["file"]).map { file(it) }
+    // Check if ref_taxonomy exists in the config file
+    if (params.dada_ref_databases && params.dada_ref_taxonomy && !params.dada_ref_databases.containsKey(params.dada_ref_taxonomy)) {
+        exit 1, "The provided DADA2 reference taxonomy '${params.dada_ref_taxonomy}' is not available in the 'conf/ref_databases.config' file. Currently the available reference taxonomies are ${params.dada_ref_databases.keySet().join(', ')}"
+    }
+    ch_dada_ref_taxonomy = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["file"]).map { file(it) }
 } else { ch_dada_ref_taxonomy = Channel.empty() }
 
 if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
-	// Check if ref_taxonomy exists in the config file
-	if (params.qiime_ref_databases && params.qiime_ref_taxonomy && !params.qiime_ref_databases.containsKey(params.qiime_ref_taxonomy)) {
-		exit 1, "The provided QIIME2 reference taxonomy '${params.qiime_ref_taxonomy}' is not available in the 'conf/ref_databases.config' file. Currently the available reference taxonomies are ${params.qiime_ref_databases.keySet().join(', ')}"
-	}
-	ch_qiime_ref_taxonomy = Channel.fromList(params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"]).map { file(it) }
+    // Check if ref_taxonomy exists in the config file
+    if (params.qiime_ref_databases && params.qiime_ref_taxonomy && !params.qiime_ref_databases.containsKey(params.qiime_ref_taxonomy)) {
+        exit 1, "The provided QIIME2 reference taxonomy '${params.qiime_ref_taxonomy}' is not available in the 'conf/ref_databases.config' file. Currently the available reference taxonomies are ${params.qiime_ref_databases.keySet().join(', ')}"
+    }
+    ch_qiime_ref_taxonomy = Channel.fromList(params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"]).map { file(it) }
 } else { ch_qiime_ref_taxonomy = Channel.empty() }
 
 /*
@@ -47,13 +47,13 @@ if (  params.pacbio || params.iontorrent ) {
 trunclenf = params.trunclenf ? params.trunclenf : 0 
 trunclenr = params.trunclenr ? params.trunclenr : 0
 if ( !single_end && !params.illumina_pe_its && (params.trunclenf == false || params.trunclenr == false) ) {
-	find_truncation_values = true
-	log.warn "No DADA2 cutoffs were specified (--trunclenf & --trunclenr), therefore reads will be truncated where median quality drops below ${params.trunc_qmin} (defined by --trunc_qmin) but at least a fraction of ${params.trunc_rmin} (defined by --trunc_rmin) of the reads will be retained.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
+    find_truncation_values = true
+    log.warn "No DADA2 cutoffs were specified (--trunclenf & --trunclenr), therefore reads will be truncated where median quality drops below ${params.trunc_qmin} (defined by --trunc_qmin) but at least a fraction of ${params.trunc_rmin} (defined by --trunc_rmin) of the reads will be retained.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
 } else { find_truncation_values = false }
 
 //only run QIIME2 when taxonomy is actually calculated and all required data is available
 if ( !params.enable_conda && !params.skip_taxonomy && !params.skip_qiime ) {
-	run_qiime2 = true
+    run_qiime2 = true
 } else { run_qiime2 = false }
 
 /*
@@ -67,11 +67,11 @@ if (!params.RV_primer) { exit 1, "Option --RV_primer missing" }
 if (!params.input) { exit 1, "Option --input missing" }
 
 if (!["pooled", "independent", "pseudo"].contains(params.sample_inference)) {
-	exit 1, "Please set --sample_inference to one of the following:\n\t-\"independent\" (lowest sensitivity and lowest resources),\n\t-\"pseudo\" (balance between required resources and sensitivity),\n\t-\"pooled\" (highest sensitivity and resources)."
+    exit 1, "Please set --sample_inference to one of the following:\n\t-\"independent\" (lowest sensitivity and lowest resources),\n\t-\"pseudo\" (balance between required resources and sensitivity),\n\t-\"pooled\" (highest sensitivity and resources)."
 }
 
 if (params.double_primer && params.retain_untrimmed) { 
-	exit 1, "Incompatible parameters --double_primer and --retain_untrimmed cannot be set at the same time."
+    exit 1, "Incompatible parameters --double_primer and --retain_untrimmed cannot be set at the same time."
 }
 
 ////////////////////////////////////////////////////
@@ -91,17 +91,17 @@ def modules = params.modules.clone()
 def dada2_filtntrim_options = modules['dada2_filtntrim']
 dada2_filtntrim_options.args       += single_end ? ", maxEE = $params.max_ee" : ", maxEE = c($params.max_ee, $params.max_ee)"
 if (params.pacbio) {
-	//PacBio data
-	dada2_filtntrim_options.args   +=", trimLeft = 0, minLen = $params.min_len, maxLen = $params.max_len, rm.phix = FALSE"
+    //PacBio data
+    dada2_filtntrim_options.args   +=", trimLeft = 0, minLen = $params.min_len, maxLen = $params.max_len, rm.phix = FALSE"
 } else if (params.iontorrent) {
-	//Ion-torrent data
-	dada2_filtntrim_options.args   += ", trimLeft = 15, minLen = $params.min_len, maxLen = $params.max_len, rm.phix = TRUE"
+    //Ion-torrent data
+    dada2_filtntrim_options.args   += ", trimLeft = 15, minLen = $params.min_len, maxLen = $params.max_len, rm.phix = TRUE"
 } else if (params.illumina_pe_its) {
-	//Illumina ITS data or other sequences with high length variability
-	dada2_filtntrim_options.args   += ", trimLeft = 0, minLen = $params.min_len, maxLen = $params.max_len, rm.phix = TRUE"
+    //Illumina ITS data or other sequences with high length variability
+    dada2_filtntrim_options.args   += ", trimLeft = 0, minLen = $params.min_len, maxLen = $params.max_len, rm.phix = TRUE"
 } else {
-	//Illumina 16S data
-	dada2_filtntrim_options.args   += ", trimLeft = 0, minLen = $params.min_len, maxLen = $params.max_len, rm.phix = TRUE"
+    //Illumina 16S data
+    dada2_filtntrim_options.args   += ", trimLeft = 0, minLen = $params.min_len, maxLen = $params.max_len, rm.phix = TRUE"
 }
 
 def dada2_quality_options = modules['dada2_quality'] 
@@ -114,10 +114,10 @@ dada2_err_options.args   += params.pacbio ? ", errorEstimationFunction = PacBioE
 
 def dada2_denoising_options = modules['dada2_denoising']
 if (params.iontorrent) {
-	//Ion-torrent data
-	dada2_denoising_options.args   += ", BAND_SIZE = 32, HOMOPOLYMER_GAP_PENALTY = -1"
+    //Ion-torrent data
+    dada2_denoising_options.args   += ", BAND_SIZE = 32, HOMOPOLYMER_GAP_PENALTY = -1"
 } else {
-	dada2_denoising_options.args   += ", BAND_SIZE = 16, HOMOPOLYMER_GAP_PENALTY = NULL"
+    dada2_denoising_options.args   += ", BAND_SIZE = 16, HOMOPOLYMER_GAP_PENALTY = NULL"
 }
 dada2_denoising_options.args         += params.sample_inference == "pseudo" ? ", pool = \"pseudo\"" : params.sample_inference == "pooled" ? ", pool = TRUE" : ", pool = FALSE"
 dada2_denoising_options.args2        += params.concatenate_reads ? ", justConcatenate = TRUE" : ", justConcatenate = FALSE"
@@ -168,17 +168,17 @@ include { GET_SOFTWARE_VERSIONS         } from '../modules/local/get_software_ve
  */
 
 if (params.pacbio) {
-	//PacBio data
-	cutadapt_options_args       = " --rc -g ${params.FW_primer}...${params.RV_primer}"
+    //PacBio data
+    cutadapt_options_args       = " --rc -g ${params.FW_primer}...${params.RV_primer}"
 } else if (params.iontorrent) {
-	//IonTorrent data
-	cutadapt_options_args       = " --rc -g ${params.FW_primer}...${params.RV_primer}"
+    //IonTorrent data
+    cutadapt_options_args       = " --rc -g ${params.FW_primer}...${params.RV_primer}"
 } else if (params.single_end) {
-	//Illumina SE
-	cutadapt_options_args       = " -g ${params.FW_primer}"
+    //Illumina SE
+    cutadapt_options_args       = " -g ${params.FW_primer}"
 } else {
-	//Illumina PE
-	cutadapt_options_args       = " -g ${params.FW_primer} -G ${params.RV_primer}"
+    //Illumina PE
+    cutadapt_options_args       = " -g ${params.FW_primer} -G ${params.RV_primer}"
 }
 
 def cutadapt_options 			= modules['cutadapt']
@@ -189,9 +189,9 @@ cutadapt_options.args          += params.retain_untrimmed ? '' : " --discard-unt
 // Get the complement of a DNA sequence
 // Complement table taken from http://arep.med.harvard.edu/labgc/adnan/projects/Utilities/revcomp.html
 def make_complement(String seq) {
-	def complements = [ A:'T', T:'A', U:'A', G:'C', C:'G', Y:'R', R:'Y', S:'S', W:'W', K:'M', M:'K', B:'V', D:'H', H:'D', V:'B', N:'N' ]
-	comp = seq.toUpperCase().collect { base -> complements[ base ] ?: 'X' }.join()
-	return comp
+    def complements = [ A:'T', T:'A', U:'A', G:'C', C:'G', Y:'R', R:'Y', S:'S', W:'W', K:'M', M:'K', B:'V', D:'H', H:'D', V:'B', N:'N' ]
+    comp = seq.toUpperCase().collect { base -> complements[ base ] ?: 'X' }.join()
+    return comp
 }
 FW_primer_RevComp = make_complement ( "${params.FW_primer}".reverse() )
 RV_primer_RevComp = make_complement ( "${params.RV_primer}".reverse() )
@@ -232,279 +232,279 @@ include { FASTQC                            } from '../modules/nf-core/software/
 def multiqc_report      = []
 
 workflow AMPLISEQ {
-	ch_software_versions = Channel.empty()
+    ch_software_versions = Channel.empty()
 
-	/*
-	* Create a channel for input read files
-	*/
-	PARSE_INPUT ( params.input, single_end, params.multiple_sequencing_runs, params.extension )
-	ch_reads = PARSE_INPUT.out.reads
-	ch_fasta = PARSE_INPUT.out.fasta
+    /*
+    * Create a channel for input read files
+    */
+    PARSE_INPUT ( params.input, single_end, params.multiple_sequencing_runs, params.extension )
+    ch_reads = PARSE_INPUT.out.reads
+    ch_fasta = PARSE_INPUT.out.fasta
 
     /*
      * MODULE: Rename files
      */
-	RENAME_RAW_DATA_FILES ( ch_reads )
+    RENAME_RAW_DATA_FILES ( ch_reads )
 
     /*
      * MODULE: FastQC
      */
     if (!params.skip_fastqc) {
         FASTQC ( RENAME_RAW_DATA_FILES.out ).html.set { fastqc_html }
-		ch_software_versions = ch_software_versions.mix(FASTQC.out.version.first().ifEmpty(null))
+        ch_software_versions = ch_software_versions.mix(FASTQC.out.version.first().ifEmpty(null))
     }
 
     /*
      * MODULE: Cutadapt
      */
     CUTADAPT_WORKFLOW ( 
-		RENAME_RAW_DATA_FILES.out,
-		params.illumina_pe_its,
-		params.double_primer
-	).reads.set { ch_trimmed_reads }
+        RENAME_RAW_DATA_FILES.out,
+        params.illumina_pe_its,
+        params.double_primer
+    ).reads.set { ch_trimmed_reads }
     ch_software_versions = ch_software_versions.mix(CUTADAPT_WORKFLOW.out.version.first().ifEmpty(null))
 
     /*
      * SUBWORKFLOW / MODULES : ASV generation with DADA2
      */
-	//plot aggregated quality profile for forward and reverse reads separately
-	if (single_end) {
-		ch_trimmed_reads
-			.map { meta, reads -> [ reads ] }
-			.collect()
-			.map { reads -> [ "single_end", reads ] }
-			.set { ch_all_trimmed_reads }
-	} else {
-		ch_trimmed_reads
-			.map { meta, reads -> [ reads[0] ] }
-			.collect()
-			.map { reads -> [ "FW", reads ] }
-			.set { ch_all_trimmed_fw }
-		ch_trimmed_reads
-			.map { meta, reads -> [ reads[1] ] }
-			.collect()
-			.map { reads -> [ "RV", reads ] }
-			.set { ch_all_trimmed_rv }
-		ch_all_trimmed_fw
-			.mix ( ch_all_trimmed_rv )
-			.set { ch_all_trimmed_reads }
-	}
-	DADA2_QUALITY ( ch_all_trimmed_reads )
-	
-	//find truncation values in case they are not supplied
-	if ( find_truncation_values ) {
-		TRUNCLEN ( DADA2_QUALITY.out.tsv )
-		TRUNCLEN.out
-			.toSortedList()
-			.set { ch_trunc }
-		//add one more warning or reminder that trunclenf and trunclenr were chosen automatically
-		ch_trunc.subscribe { 
-			if ( "${it[0][1]}".toInteger() + "${it[1][1]}".toInteger() <= 10 ) { log.warn "`--trunclenf` was set to ${it[0][1]} and `--trunclenr` to ${it[1][1]}, this is too low! Please either change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr`." }
-			else if ( "${it[0][1]}".toInteger() <= 10 ) { log.warn "`--trunclenf` was set to ${it[0][1]}, this is too low! Please either change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr`." }
-			else if ( "${it[1][1]}".toInteger() <= 10 ) { log.warn "`--trunclenr` was set to ${it[1][1]}, this is too low! Please either change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr`." }
-			else log.warn "Probably everything is fine, but this is a reminder that `--trunclenf` was set automatically to ${it[0][1]} and `--trunclenr` to ${it[1][1]}. If this doesnt seem reasonable, then please change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr` directly."
-			}
-	} else { 
-		Channel.from( [['FW', trunclenf], ['RV', trunclenr]] )
-			.toSortedList()
-			.set { ch_trunc }
-	}
-	ch_trimmed_reads.combine(ch_trunc).set { ch_trimmed_reads }
+    //plot aggregated quality profile for forward and reverse reads separately
+    if (single_end) {
+        ch_trimmed_reads
+            .map { meta, reads -> [ reads ] }
+            .collect()
+            .map { reads -> [ "single_end", reads ] }
+            .set { ch_all_trimmed_reads }
+    } else {
+        ch_trimmed_reads
+            .map { meta, reads -> [ reads[0] ] }
+            .collect()
+            .map { reads -> [ "FW", reads ] }
+            .set { ch_all_trimmed_fw }
+        ch_trimmed_reads
+            .map { meta, reads -> [ reads[1] ] }
+            .collect()
+            .map { reads -> [ "RV", reads ] }
+            .set { ch_all_trimmed_rv }
+        ch_all_trimmed_fw
+            .mix ( ch_all_trimmed_rv )
+            .set { ch_all_trimmed_reads }
+    }
+    DADA2_QUALITY ( ch_all_trimmed_reads )
+    
+    //find truncation values in case they are not supplied
+    if ( find_truncation_values ) {
+        TRUNCLEN ( DADA2_QUALITY.out.tsv )
+        TRUNCLEN.out
+            .toSortedList()
+            .set { ch_trunc }
+        //add one more warning or reminder that trunclenf and trunclenr were chosen automatically
+        ch_trunc.subscribe { 
+            if ( "${it[0][1]}".toInteger() + "${it[1][1]}".toInteger() <= 10 ) { log.warn "`--trunclenf` was set to ${it[0][1]} and `--trunclenr` to ${it[1][1]}, this is too low! Please either change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr`." }
+            else if ( "${it[0][1]}".toInteger() <= 10 ) { log.warn "`--trunclenf` was set to ${it[0][1]}, this is too low! Please either change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr`." }
+            else if ( "${it[1][1]}".toInteger() <= 10 ) { log.warn "`--trunclenr` was set to ${it[1][1]}, this is too low! Please either change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr`." }
+            else log.warn "Probably everything is fine, but this is a reminder that `--trunclenf` was set automatically to ${it[0][1]} and `--trunclenr` to ${it[1][1]}. If this doesnt seem reasonable, then please change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr` directly."
+        }
+    } else { 
+        Channel.from( [['FW', trunclenf], ['RV', trunclenr]] )
+            .toSortedList()
+            .set { ch_trunc }
+    }
+    ch_trimmed_reads.combine(ch_trunc).set { ch_trimmed_reads }
 
-	//filter reads
-	DADA2_FILTNTRIM ( ch_trimmed_reads )
-	ch_software_versions = ch_software_versions.mix(DADA2_FILTNTRIM.out.version.first().ifEmpty(null))
+    //filter reads
+    DADA2_FILTNTRIM ( ch_trimmed_reads )
+    ch_software_versions = ch_software_versions.mix(DADA2_FILTNTRIM.out.version.first().ifEmpty(null))
 
-	//group by sequencing run
-	DADA2_FILTNTRIM.out.reads
-		.map {
-			info, reads ->
-				def meta = [:]
-				meta.run = info.run
-				meta.single_end = info.single_end
-				[ meta, reads, info.id ] }
-		.groupTuple(by: 0 )
-		.map {
-			info, reads, ids ->
-				def meta = [:]
-				meta.run = info.run
-				meta.single_end = info.single_end
-				meta.id = ids.flatten().sort()
-				[ meta, reads.flatten().sort() ] }
-		.set { ch_filt_reads }
+    //group by sequencing run
+    DADA2_FILTNTRIM.out.reads
+        .map {
+            info, reads ->
+                def meta = [:]
+                meta.run = info.run
+                meta.single_end = info.single_end
+                [ meta, reads, info.id ] }
+        .groupTuple(by: 0 )
+        .map {
+            info, reads, ids ->
+                def meta = [:]
+                meta.run = info.run
+                meta.single_end = info.single_end
+                meta.id = ids.flatten().sort()
+                [ meta, reads.flatten().sort() ] }
+        .set { ch_filt_reads }
 
-	DADA2_ERR ( ch_filt_reads )
+    DADA2_ERR ( ch_filt_reads )
 
-	DADA2_DEREPLICATE ( ch_filt_reads )
+    DADA2_DEREPLICATE ( ch_filt_reads )
 
-	//group by meta
-	DADA2_DEREPLICATE.out.dereplicated
-		.join( DADA2_ERR.out.errormodel )
-		.set { ch_derep_errormodel }
-	DADA2_DENOISING ( ch_derep_errormodel  )
+    //group by meta
+    DADA2_DEREPLICATE.out.dereplicated
+        .join( DADA2_ERR.out.errormodel )
+        .set { ch_derep_errormodel }
+    DADA2_DENOISING ( ch_derep_errormodel  )
 
-	DADA2_RMCHIMERA ( DADA2_DENOISING.out.seqtab )
+    DADA2_RMCHIMERA ( DADA2_DENOISING.out.seqtab )
 
-	//group by sequencing run & group by meta
-	DADA2_FILTNTRIM.out.log
-		.map {
-			info, reads ->
-				def meta = [:]
-				meta.run = info.run
-				meta.single_end = info.single_end
-				[ meta, reads, info.id ] }
-		.groupTuple(by: 0 )
-		.map {
-			info, reads, ids ->
-				def meta = [:]
-				meta.run = info.run
-				meta.single_end = info.single_end
-				meta.id = ids.flatten().sort()
-				[ meta, reads.flatten().sort() ] }
-		.join( DADA2_DENOISING.out.denoised )
-		.join( DADA2_DENOISING.out.mergers )
-		.join( DADA2_RMCHIMERA.out.rds )
-		.set { ch_track_numbers }
-	DADA2_STATS ( ch_track_numbers )
+    //group by sequencing run & group by meta
+    DADA2_FILTNTRIM.out.log
+        .map {
+            info, reads ->
+                def meta = [:]
+                meta.run = info.run
+                meta.single_end = info.single_end
+                [ meta, reads, info.id ] }
+        .groupTuple(by: 0 )
+        .map {
+            info, reads, ids ->
+                def meta = [:]
+                meta.run = info.run
+                meta.single_end = info.single_end
+                meta.id = ids.flatten().sort()
+                [ meta, reads.flatten().sort() ] }
+        .join( DADA2_DENOISING.out.denoised )
+        .join( DADA2_DENOISING.out.mergers )
+        .join( DADA2_RMCHIMERA.out.rds )
+        .set { ch_track_numbers }
+    DADA2_STATS ( ch_track_numbers )
 
-	//merge if several runs, otherwise just publish
-	DADA2_MERGE ( 
-		DADA2_STATS.out.stats.map { meta, stats -> stats }.collect(), 
-		DADA2_RMCHIMERA.out.rds.map { meta, rds -> rds }.collect() )
+    //merge if several runs, otherwise just publish
+    DADA2_MERGE ( 
+        DADA2_STATS.out.stats.map { meta, stats -> stats }.collect(), 
+        DADA2_RMCHIMERA.out.rds.map { meta, rds -> rds }.collect() )
 
-	//merge cutadapt_summary and dada_stats files
-	MERGE_STATS (CUTADAPT_WORKFLOW.out.summary, DADA2_MERGE.out.dada2stats)
+    //merge cutadapt_summary and dada_stats files
+    MERGE_STATS (CUTADAPT_WORKFLOW.out.summary, DADA2_MERGE.out.dada2stats)
 
     /*
      * SUBWORKFLOW / MODULES : Taxonomic classification with DADA2 and/or QIIME2
      */
-	//Alternative entry point for fasta that is being classified - the if clause needs to be the opposite (i.e. with !) of that in subworkflow/local/parse.nf
-	if ( !(params.input.toString().toLowerCase().endsWith(".fasta") || params.input.toString().toLowerCase().endsWith(".fna") || params.input.toString().toLowerCase().endsWith(".fa") )) {
-		ch_fasta = DADA2_MERGE.out.fasta
-	}
+    //Alternative entry point for fasta that is being classified - the if clause needs to be the opposite (i.e. with !) of that in subworkflow/local/parse.nf
+    if ( !(params.input.toString().toLowerCase().endsWith(".fasta") || params.input.toString().toLowerCase().endsWith(".fna") || params.input.toString().toLowerCase().endsWith(".fa") )) {
+        ch_fasta = DADA2_MERGE.out.fasta
+    }
 
-	//DADA2
-	if (!params.skip_taxonomy) {
-		FORMAT_TAXONOMY ( ch_dada_ref_taxonomy.collect() )
-		if (!params.cut_its) {
-			DADA2_TAXONOMY ( ch_fasta, FORMAT_TAXONOMY.out.assigntax, 'ASV_tax.tsv' )
-			DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, FORMAT_TAXONOMY.out.addspecies, 'ASV_tax_species.tsv' )
-			ch_dada2_tax = DADA2_ADDSPECIES.out.tsv
-		//Cut out ITS region if long ITS reads
-		} else {
-		        ITSX_CUTASV ( ch_fasta )
-			ch_software_versions = ch_software_versions.mix(ITSX_CUTASV.out.version.ifEmpty(null))
-			ch_cut_fasta = ITSX_CUTASV.out.fasta
-			DADA2_TAXONOMY ( ch_cut_fasta, FORMAT_TAXONOMY.out.assigntax, 'ASV_ITS_tax.tsv' )
-			DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, FORMAT_TAXONOMY.out.addspecies, 'ASV_ITS_tax_species.tsv' )
-			FORMAT_TAXRESULTS ( DADA2_TAXONOMY.out.tsv, DADA2_ADDSPECIES.out.tsv, ch_fasta )
-		        ch_dada2_tax = FORMAT_TAXRESULTS.out.tsv
-	        }
-	}
+    //DADA2
+    if (!params.skip_taxonomy) {
+        FORMAT_TAXONOMY ( ch_dada_ref_taxonomy.collect() )
+        if (!params.cut_its) {
+            DADA2_TAXONOMY ( ch_fasta, FORMAT_TAXONOMY.out.assigntax, 'ASV_tax.tsv' )
+            DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, FORMAT_TAXONOMY.out.addspecies, 'ASV_tax_species.tsv' )
+            ch_dada2_tax = DADA2_ADDSPECIES.out.tsv
+        //Cut out ITS region if long ITS reads
+        } else {
+                ITSX_CUTASV ( ch_fasta )
+            ch_software_versions = ch_software_versions.mix(ITSX_CUTASV.out.version.ifEmpty(null))
+            ch_cut_fasta = ITSX_CUTASV.out.fasta
+            DADA2_TAXONOMY ( ch_cut_fasta, FORMAT_TAXONOMY.out.assigntax, 'ASV_ITS_tax.tsv' )
+            DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, FORMAT_TAXONOMY.out.addspecies, 'ASV_ITS_tax_species.tsv' )
+            FORMAT_TAXRESULTS ( DADA2_TAXONOMY.out.tsv, DADA2_ADDSPECIES.out.tsv, ch_fasta )
+                ch_dada2_tax = FORMAT_TAXRESULTS.out.tsv
+            }
+    }
 
-	//QIIME2
-	if ( run_qiime2 ) {
-		if (params.qiime_ref_taxonomy && !params.classifier) {
-			QIIME2_PREPTAX (
-				ch_qiime_ref_taxonomy.collect(),
-				params.FW_primer,
-				params.RV_primer
-			)
-			ch_qiime_classifier = QIIME2_PREPTAX.out.classifier
-		}
-		QIIME2_TAXONOMY ( 
-			ch_fasta,
-			ch_qiime_classifier
-		)
-		ch_software_versions = ch_software_versions.mix( QIIME2_TAXONOMY.out.version.ifEmpty(null) ) //usually a .first() is here, dont know why this leads here to a warning
-	}
+    //QIIME2
+    if ( run_qiime2 ) {
+        if (params.qiime_ref_taxonomy && !params.classifier) {
+            QIIME2_PREPTAX (
+                ch_qiime_ref_taxonomy.collect(),
+                params.FW_primer,
+                params.RV_primer
+            )
+            ch_qiime_classifier = QIIME2_PREPTAX.out.classifier
+        }
+        QIIME2_TAXONOMY ( 
+            ch_fasta,
+            ch_qiime_classifier
+        )
+        ch_software_versions = ch_software_versions.mix( QIIME2_TAXONOMY.out.version.ifEmpty(null) ) //usually a .first() is here, dont know why this leads here to a warning
+    }
     /*
      * SUBWORKFLOW / MODULES : Downstream analysis with QIIME2
      */
-	if ( run_qiime2 ) {
-		//Import ASV abundance table and sequences into QIIME2
-		QIIME2_INASV ( DADA2_MERGE.out.asv )
-		QIIME2_INSEQ ( ch_fasta )
+    if ( run_qiime2 ) {
+        //Import ASV abundance table and sequences into QIIME2
+        QIIME2_INASV ( DADA2_MERGE.out.asv )
+        QIIME2_INSEQ ( ch_fasta )
 
-		//Import taxonomic classification into QIIME2, if available
-		if ( params.skip_taxonomy ) {
-			log.info "Skip taxonomy classification"
-			ch_tax = Channel.empty()
-		} else if ( params.dada_ref_taxonomy ) {
-			log.info "Use DADA2 taxonomy classification"
-			ch_tax = QIIME2_INTAX ( ch_dada2_tax ).qza
-		} else if ( params.qiime_ref_taxonomy || params.classifier ) {
-			log.info "Use QIIME2 taxonomy classification"
-			ch_tax = QIIME2_TAXONOMY.out.qza
-		} else { 
-			log.info "Use no taxonomy classification"
-			ch_tax = Channel.empty() 
-		}
+        //Import taxonomic classification into QIIME2, if available
+        if ( params.skip_taxonomy ) {
+            log.info "Skip taxonomy classification"
+            ch_tax = Channel.empty()
+        } else if ( params.dada_ref_taxonomy ) {
+            log.info "Use DADA2 taxonomy classification"
+            ch_tax = QIIME2_INTAX ( ch_dada2_tax ).qza
+        } else if ( params.qiime_ref_taxonomy || params.classifier ) {
+            log.info "Use QIIME2 taxonomy classification"
+            ch_tax = QIIME2_TAXONOMY.out.qza
+        } else { 
+            log.info "Use no taxonomy classification"
+            ch_tax = Channel.empty() 
+        }
 
-		//Filtering by taxonomy & prevalence & counts
-		if (params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1) {
-			QIIME2_FILTERTAXA (
-					QIIME2_INASV.out.qza,
-					QIIME2_INSEQ.out.qza,
-					ch_tax,
-					params.min_frequency,
-					params.min_samples,
-					params.exclude_taxa
-			)
-			FILTER_STATS ( DADA2_MERGE.out.asv, QIIME2_FILTERTAXA.out.tsv )
-			MERGE_STATS_FILTERTAXA (MERGE_STATS.out.tsv, FILTER_STATS.out.tsv)
-			ch_asv = QIIME2_FILTERTAXA.out.asv
-			ch_seq = QIIME2_FILTERTAXA.out.seq
-		} else {
-			ch_asv = QIIME2_INASV.out.qza
-			ch_seq = QIIME2_INSEQ.out.qza
-		}
-		//Export various ASV tables
-		if (!params.skip_abundance_tables) {
-		QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, QIIME2_TAXONOMY.out.tsv )
-		}
+        //Filtering by taxonomy & prevalence & counts
+        if (params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1) {
+            QIIME2_FILTERTAXA (
+                    QIIME2_INASV.out.qza,
+                    QIIME2_INSEQ.out.qza,
+                    ch_tax,
+                    params.min_frequency,
+                    params.min_samples,
+                    params.exclude_taxa
+            )
+            FILTER_STATS ( DADA2_MERGE.out.asv, QIIME2_FILTERTAXA.out.tsv )
+            MERGE_STATS_FILTERTAXA (MERGE_STATS.out.tsv, FILTER_STATS.out.tsv)
+            ch_asv = QIIME2_FILTERTAXA.out.asv
+            ch_seq = QIIME2_FILTERTAXA.out.seq
+        } else {
+            ch_asv = QIIME2_INASV.out.qza
+            ch_seq = QIIME2_INSEQ.out.qza
+        }
+        //Export various ASV tables
+        if (!params.skip_abundance_tables) {
+        QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, QIIME2_TAXONOMY.out.tsv )
+        }
 
-		if (!params.skip_barplot) {
-			QIIME2_BARPLOT ( ch_metadata, ch_asv, ch_tax )
-		}
+        if (!params.skip_barplot) {
+            QIIME2_BARPLOT ( ch_metadata, ch_asv, ch_tax )
+        }
 
-		//Select metadata categories for diversity analysis & ancom
-		if (!params.skip_ancom || !params.skip_diversity_indices) {
-			METADATA_ALL ( ch_metadata, params.metadata_category ).set { ch_metacolumn_all }
-			//return empty channel if no appropriate column was found
-			ch_metacolumn_all.branch { passed: it != "" }.set { result }
-			ch_metacolumn_all = result.passed
+        //Select metadata categories for diversity analysis & ancom
+        if (!params.skip_ancom || !params.skip_diversity_indices) {
+            METADATA_ALL ( ch_metadata, params.metadata_category ).set { ch_metacolumn_all }
+            //return empty channel if no appropriate column was found
+            ch_metacolumn_all.branch { passed: it != "" }.set { result }
+            ch_metacolumn_all = result.passed
     
-			METADATA_PAIRWISE ( ch_metadata ).set { ch_metacolumn_pairwise }
-		} else { 
-			ch_metacolumn_all = Channel.empty()
-			ch_metacolumn_pairwise = Channel.empty()
-		}
+            METADATA_PAIRWISE ( ch_metadata ).set { ch_metacolumn_pairwise }
+        } else { 
+            ch_metacolumn_all = Channel.empty()
+            ch_metacolumn_pairwise = Channel.empty()
+        }
 
-		//Diversity indices
-		if ( params.metadata && (!params.skip_alpha_rarefaction || !params.skip_diversity_indices) ) {
-			QIIME2_DIVERSITY ( 
-				ch_metadata,
-				ch_asv,
-				ch_seq,
-				QIIME2_FILTERTAXA.out.tsv,
-				ch_metacolumn_pairwise,
-				ch_metacolumn_all,
-				params.skip_alpha_rarefaction,
-				params.skip_diversity_indices
-			)
-		}
-		
-		//Perform ANCOM tests
-		if ( !params.skip_ancom && params.metadata ) {	
-			QIIME2_ANCOM (
-				ch_metadata,
-				ch_asv,
-				ch_metacolumn_all,
-				ch_tax
-			)
-		}
-	}
+        //Diversity indices
+        if ( params.metadata && (!params.skip_alpha_rarefaction || !params.skip_diversity_indices) ) {
+            QIIME2_DIVERSITY ( 
+                ch_metadata,
+                ch_asv,
+                ch_seq,
+                QIIME2_FILTERTAXA.out.tsv,
+                ch_metacolumn_pairwise,
+                ch_metacolumn_all,
+                params.skip_alpha_rarefaction,
+                params.skip_diversity_indices
+            )
+        }
+        
+        //Perform ANCOM tests
+        if ( !params.skip_ancom && params.metadata ) {	
+            QIIME2_ANCOM (
+                ch_metadata,
+                ch_asv,
+                ch_metacolumn_all,
+                ch_tax
+            )
+        }
+    }
 
     /*
      * MODULE: Pipeline reporting

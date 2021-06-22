@@ -14,21 +14,21 @@ process METADATA_ALL {
         container "quay.io/biocontainers/bioconductor-dada2:1.18.0--r40h5f743cb_0"
     }
 
-	input:
-	path(metadata)
+    input:
+    path(metadata)
     val(metadata_category)
 
-	output:
-	stdout
+    output:
+    stdout
 
-	script:
-	if( !metadata_category ) {
-		"""
-		metadata_all.r ${metadata}
-		"""
+    script:
+    if( !metadata_category ) {
+        """
+        metadata_all.r ${metadata}
+        """
     } else {
-		"""
-		printf ${metadata_category}
-		"""
+        """
+        printf ${metadata_category}
+        """
     }
 }

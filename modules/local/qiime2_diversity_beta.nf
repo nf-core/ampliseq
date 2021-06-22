@@ -14,11 +14,11 @@ process QIIME2_DIVERSITY_BETA {
     conda (params.enable_conda ? { exit 1 "QIIME2 has no conda package" } : null)
     container "quay.io/qiime2/core:2021.2"
 
-	input:
+    input:
     tuple path(metadata), path(core), val(category)
 
-	output:
-	path("beta_diversity/*"), emit: beta
+    output:
+    path("beta_diversity/*"), emit: beta
     path "*.version.txt"    , emit: version
 
     script:

@@ -67,8 +67,8 @@ process DADA2_TAXONOMY {
         Genus = tx\$tax.Genus,
         confidence = tx\$confidence,
         sequence = tx\$sequence,
- 	row.names = names(seq)
-   )
+        row.names = names(seq)
+    )
 
     write.table(taxa_export, file = \"$outfile\", sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
 

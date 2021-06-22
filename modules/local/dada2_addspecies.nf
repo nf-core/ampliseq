@@ -53,8 +53,8 @@ process DADA2_ADDSPECIES {
         Genus = tx[,"Genus"],
         Species = tx[,"Species"],
         confidence = tx[,"confidence"],
-	sequence = tmp[,],
-	row.names=row.names(tmp)
+        sequence = tmp[,],
+        row.names=row.names(tmp)
     )
 
     write.table(taxa, file = \"$outfile\", sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)

@@ -17,16 +17,16 @@ process FILTER_STATS {
         container "quay.io/biocontainers/pandas:1.1.5"
     }
 
-	input:
-	path(unfiltered)
-	path(filtered)
+    input:
+    path(unfiltered)
+    path(filtered)
 
-	output:
-	path("count_table_filter_stats.tsv"), emit: tsv
-	
+    output:
+    path("count_table_filter_stats.tsv"), emit: tsv
+    
     script:
     def software     = getSoftwareName(task.process)
-	"""
-	filter_stats.py $unfiltered $filtered
-	"""
+    """
+    filter_stats.py $unfiltered $filtered
+    """
 }

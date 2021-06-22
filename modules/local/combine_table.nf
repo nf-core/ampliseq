@@ -17,16 +17,16 @@ process COMBINE_TABLE {
         container "quay.io/biocontainers/bioconductor-biostrings:2.58.0--r40h037d062_0"
     }
 
-	input:
-	path(table)
-	path(seq)
-	path(tax)
+    input:
+    path(table)
+    path(seq)
+    path(tax)
 
-	output:
-	path("qiime2_ASV_table.tsv")
+    output:
+    path("qiime2_ASV_table.tsv")
 
     script:
-	"""
-	combine_table.r ${table} ${seq} ${tax}
-	"""
+    """
+    combine_table.r ${table} ${seq} ${tax}
+    """
 }

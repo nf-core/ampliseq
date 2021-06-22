@@ -4,5 +4,5 @@
 # The file for taxonomy assignment, identified by containing "train" in the name,
 # and the file for add species, identified by containing "species" in the name, are renamed 
 
-mv *train*gz assignTaxonomy.fna.gz
+gunzip -c *train*gz | sed 's/>\([^;]*\)/>\1;\1;/' > assignTaxonomy.fna
 mv *species*gz addSpecies.fna.gz

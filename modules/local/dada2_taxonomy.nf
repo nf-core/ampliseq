@@ -37,7 +37,7 @@ process DADA2_TAXONOMY {
     set.seed(100) # Initialize random number generator for reproducibility
 
     seq <- getSequences(\"$fasta\", collapse = TRUE, silence = FALSE)
-    taxa <- assignTaxonomy(seq, \"$database\", $options.args, multithread = $task.cpus, verbose=TRUE, outputBootstraps = TRUE)
+    taxa <- assignTaxonomy(seq, \"$database\", taxLevels = c("Domain", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"), $options.args, multithread = $task.cpus, verbose=TRUE, outputBootstraps = TRUE)
 
     # Make a data frame, add ASV_ID from seq, set confidence to the bootstrap for the most specific taxon and reorder columns before writing to file
     tx <- data.frame(ASV_ID = names(seq), taxa, sequence = row.names(taxa\$tax), row.names = names(seq))
@@ -47,7 +47,9 @@ process DADA2_TAXONOMY {
                 ifelse(!is.na(tax.Order), boot.Order,
                     ifelse(!is.na(tax.Class), boot.Class,
                         ifelse(!is.na(tax.Phylum), boot.Phylum,
-                            ifelse(!is.na(tax.Kingdom), boot.Kingdom, 0)
+                            ifelse(!is.na(tax.Kingdom), boot.Kingdom,
+                                ifelse(!is.na(tax.Domain), boot.Domain, 0)
+                            )
                         )
                     )
                 )
@@ -56,6 +58,7 @@ process DADA2_TAXONOMY {
     )/100
     taxa_export <- data.frame(
         ASV_ID = tx\$ASV_ID,
+        Domain = tx\$tax.Domain,
         Kingdom = tx\$tax.Kingdom,
         Phylum = tx\$tax.Phylum,
         Class = tx\$tax.Class,

@@ -13,7 +13,7 @@ include { QIIME2_ANCOM_ASV                 } from '../../modules/local/qiime2_an
 workflow QIIME2_ANCOM {
     take:
     ch_metadata
-	ch_asv
+    ch_asv
     ch_metacolumn_all
     ch_tax
     
@@ -29,6 +29,7 @@ workflow QIIME2_ANCOM {
         .combine( ch_taxlevel )
         .set{ ch_for_ancom_tax }
     QIIME2_ANCOM_TAX ( ch_for_ancom_tax )
+    QIIME2_ANCOM_TAX.out.ancom.subscribe { if ( it.baseName[0].toString().startsWith("WARNING") ) log.warn it.baseName[0].toString().replace("WARNING ","QIIME2_ANCOM_TAX: ") }
 
     QIIME2_ANCOM_ASV ( ch_metadata.combine( QIIME2_FILTERASV.out.qza.flatten() ) )
 }

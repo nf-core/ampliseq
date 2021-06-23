@@ -217,7 +217,10 @@ include { QIIME2_ANCOM                  } from '../subworkflows/local/qiime2_anc
  * MODULE: Installed directly from nf-core/modules
  */
 def fastqc_options              = modules['fastqc']
+def cutadapt_taxonomy_options   = modules['cutadapt_taxonomy']
+cutadapt_taxonomy_options.args += " -g ${params.FW_primer}...${RV_primer_RevComp}"
 
+include { CUTADAPT as CUTADAPT_TAXONOMY     } from '../modules/nf-core/software/cutadapt/main' addParams( options: cutadapt_taxonomy_options     )
 include { FASTQC                            } from '../modules/nf-core/software/fastqc/main'   addParams( options: fastqc_options                )
 
 /*
@@ -386,20 +389,36 @@ workflow AMPLISEQ {
     //DADA2
     if (!params.skip_taxonomy) {
         FORMAT_TAXONOMY ( ch_dada_ref_taxonomy.collect() )
+        ch_assigntax = FORMAT_TAXONOMY.out.assigntax
+        ch_addspecies = FORMAT_TAXONOMY.out.addspecies
+        //Cut taxonomy to expected amplicon
+        if (params.cut_dada_ref_taxonomy) {
+            ch_assigntax
+                .map { 
+                    db -> 
+                        def meta = [:]
+                        meta.single_end = true 
+                        meta.id = "assignTaxonomy"
+                        [ meta, db ] }
+                .set { ch_assigntax }
+            CUTADAPT_TAXONOMY ( ch_assigntax ).reads
+                .map { meta, db -> db }
+                .set { ch_assigntax }
+        }
         if (!params.cut_its) {
-            DADA2_TAXONOMY ( ch_fasta, FORMAT_TAXONOMY.out.assigntax, 'ASV_tax.tsv' )
-            DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, FORMAT_TAXONOMY.out.addspecies, 'ASV_tax_species.tsv' )
+            DADA2_TAXONOMY ( ch_fasta, ch_assigntax, 'ASV_tax.tsv' )
+            DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_tax_species.tsv' )
             ch_dada2_tax = DADA2_ADDSPECIES.out.tsv
         //Cut out ITS region if long ITS reads
         } else {
-                ITSX_CUTASV ( ch_fasta )
+            ITSX_CUTASV ( ch_fasta )
             ch_software_versions = ch_software_versions.mix(ITSX_CUTASV.out.version.ifEmpty(null))
             ch_cut_fasta = ITSX_CUTASV.out.fasta
-            DADA2_TAXONOMY ( ch_cut_fasta, FORMAT_TAXONOMY.out.assigntax, 'ASV_ITS_tax.tsv' )
-            DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, FORMAT_TAXONOMY.out.addspecies, 'ASV_ITS_tax_species.tsv' )
+            DADA2_TAXONOMY ( ch_cut_fasta, ch_assigntax, 'ASV_ITS_tax.tsv' )
+            DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_ITS_tax_species.tsv' )
             FORMAT_TAXRESULTS ( DADA2_TAXONOMY.out.tsv, DADA2_ADDSPECIES.out.tsv, ch_fasta )
-                ch_dada2_tax = FORMAT_TAXRESULTS.out.tsv
-            }
+            ch_dada2_tax = FORMAT_TAXRESULTS.out.tsv
+        }
     }
 
     //QIIME2
@@ -444,12 +463,12 @@ workflow AMPLISEQ {
         //Filtering by taxonomy & prevalence & counts
         if (params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1) {
             QIIME2_FILTERTAXA (
-                    QIIME2_INASV.out.qza,
-                    QIIME2_INSEQ.out.qza,
-                    ch_tax,
-                    params.min_frequency,
-                    params.min_samples,
-                    params.exclude_taxa
+                QIIME2_INASV.out.qza,
+                QIIME2_INSEQ.out.qza,
+                ch_tax,
+                params.min_frequency,
+                params.min_samples,
+                params.exclude_taxa
             )
             FILTER_STATS ( DADA2_MERGE.out.asv, QIIME2_FILTERTAXA.out.tsv )
             MERGE_STATS_FILTERTAXA (MERGE_STATS.out.tsv, FILTER_STATS.out.tsv)
@@ -461,7 +480,7 @@ workflow AMPLISEQ {
         }
         //Export various ASV tables
         if (!params.skip_abundance_tables) {
-        QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, QIIME2_TAXONOMY.out.tsv )
+            QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, QIIME2_TAXONOMY.out.tsv )
         }
 
         if (!params.skip_barplot) {

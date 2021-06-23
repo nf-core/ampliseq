@@ -52,6 +52,7 @@ For further reading and documentation see the [FastQC help pages](http://www.bio
 
 * `cutadapt/`: directory containing log files with retained reads, trimming percentage, etc. for each sample.
   * `cutadapt_summary.tsv`: Summary of read numbers that pass cutadapt.
+  * `assignTaxonomy.cutadapt.log`: Contains how many expected amplified sequences were extracted from the DADA2 reference taxonomy database. Optional.
 
 ### MultiQC
 

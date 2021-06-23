@@ -199,6 +199,11 @@
                     "description": "Name of database, and optionally also version number, that are supported, see conf/ref_databases.config",
                     "default": "silva=138"
                 },
+                "cut_dada_ref_taxonomy": {
+                    "type": "boolean",
+                    "help_text": "Expected amplified sequences are extracted from the DADA2 reference taxonomy using the primer sequences, that might improve classification. This is not applied to species classification (assignSpecies) but only for lower taxonomic levels (assignTaxonomy).",
+                    "description": "If the expected amplified sequences are extracted from the DADA2 reference taxonomy database"
+                },
                 "qiime_ref_taxonomy": {
                     "type": "string",
                     "help_text": "Choose any of the databases that are supported, see conf/ref_databases.config, and optionally also specify the version. This will download the desired database.",

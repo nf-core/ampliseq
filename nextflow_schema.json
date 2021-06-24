@@ -61,11 +61,11 @@
                     "type": "boolean",
                     "description": "If data is single-ended Illumina reads instead of paired-end"
                 },
-                 "cut_its": {
+                "cut_its": {
                     "type": "boolean",
                     "description": "If data is long read ITS sequences, that need to be cut to ITS region only for taxonomy assignment"
                 },
-               "multiple_sequencing_runs": {
+                "multiple_sequencing_runs": {
                     "type": "boolean",
                     "description": "If samples were sequenced in multiple sequencing runs",
                     "help_text": "Expects one sub-folder per sequencing run in the folder specified by `--input` containing sequencing data of the specific run.\nSample identifiers are taken from sequencing files, specifically the string before the first underscore will be the sample ID. Sample IDs across all sequencing runs (all sequencing files) have to be unique. If this is not the case, please use a sample sheet as input instead.\n\nExample for input data organization:\n\n```bash\ndata\n  |-run1\n  |  |-sample1_1_L001_R1_001.fastq.gz\n  |  |-sample1_1_L001_R2_001.fastq.gz\n  |  |-sample2_1_L001_R1_001.fastq.gz\n  |  |-sample2_1_L001_R2_001.fastq.gz\n  |\n  |-run2\n     |-sample3_1_L001_R1_001.fastq.gz\n     |-sample3_1_L001_R2_001.fastq.gz\n     |-sample4_1_L001_R1_001.fastq.gz\n     |-sample4_1_L001_R2_001.fastq.gz\n```\n\nExample command to analyze this data in one pipeline run:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input \"data\" \\\n    --FW_primer \"GTGYCAGCMGCCGCGGTAA\" \\\n    --RV_primer \"GGACTACNVGGGTWTCTAAT\" \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multiple_sequencing_runs\n```",
@@ -195,9 +195,24 @@
             "properties": {
                 "dada_ref_taxonomy": {
                     "type": "string",
-                    "help_text": "Choose any of the databases that are supported, see conf/ref_databases.config, and optionally also specify the version. This will download the desired database, format it to produce a file that is compatible with dada_taxonomy and another file that is compatible with dada_addspecies.",
-                    "description": "Name of database, and optionally also version number, that are supported, see conf/ref_databases.config",
-                    "default": "silva=138"
+                    "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `silva=138`) . This will download the desired database, format it to produce a file that is compatible with DADA2's assignTaxonomy and another file that is compatible with DADA2's addSpecies.\n\nThe following databases are supported:\n- GTDB - Genome Taxonomy Database - 16S rRNA\n- PR2 - Protist Reference Ribosomal Database - 18S rRNA\n- RDP - Ribosomal Database Project  - 16S rRNA\n- SILVA ribosomal RNA gene database project  - 16S rRNA\n- UNITE - eukaryotic nuclear ribosomal ITS region  - ITS\n\nGenerally, using `gtdb`, `pr2`, `rdp`, `silva`, `unite-fungi`, or `unite-alleuk` will select the most recent supported version. For details on what values are valid, please either use an invalid value such as `x` (causing the pipeline to send an error message with all valid values) or see `conf/ref_databases.config`.",
+                    "description": "Name of supported database, and optionally also version number",
+                    "default": "silva=138",
+                    "enum": [
+                        "gtdb=05-RS95",
+                        "gtdb",
+                        "pr2=4.13.0",
+                        "pr2",
+                        "rdp=18",
+                        "rdp",
+                        "silva=132",
+                        "silva=138",
+                        "silva",
+                        "unite-fungi=8.2",
+                        "unite-fungi",
+                        "unite-alleuk=8.2",
+                        "unite-alleuk"
+                    ]
                 },
                 "cut_dada_ref_taxonomy": {
                     "type": "boolean",
@@ -206,8 +221,17 @@
                 },
                 "qiime_ref_taxonomy": {
                     "type": "string",
-                    "help_text": "Choose any of the databases that are supported, see conf/ref_databases.config, and optionally also specify the version. This will download the desired database.",
-                    "description": "Name of database, and optionally also version number, that are supported, see conf/ref_databases.config.\nIf both, `--dada_ref_taxonomy` and `--qiime_ref_taxonomy` are used, DADA2 classification will be used for downstream analysis."
+                    "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `silva=138`) . This will download the desired database and initiate taxonomic classification with QIIME2 and the chosen database.\n\nIf both, `--dada_ref_taxonomy` and `--qiime_ref_taxonomy` are used, DADA2 classification will be used for downstream analysis.\n\nThe following databases are supported:\n- SILVA ribosomal RNA gene database project - 16S rRNA\n- UNITE - eukaryotic nuclear ribosomal ITS region - ITS\n- Greengenes (only testing!)\n\nGenerally, using `silva`, `unite-fungi`, or `unite-alleuk` will select the most recent supported version. For testing purposes, the tiny database `greengenes85` (dereplicated at 85% sequence similarity) is available. For details on what values are valid, please either use an invalid value such as `x` (causing the pipeline to send an error message with all valid values) or see `conf/ref_databases.config`.",
+                    "description": "Name of supported database, and optionally also version number",
+                    "enum": [
+                        "silva=138",
+                        "silva",
+                        "unite-fungi=8.2",
+                        "unite-fungi",
+                        "unite-alleuk=8.2",
+                        "unite-alleuk",
+                        "greengenes85"
+                    ]
                 },
                 "classifier": {
                     "type": "string",

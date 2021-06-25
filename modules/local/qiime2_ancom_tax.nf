@@ -37,9 +37,9 @@ process QIIME2_ANCOM_TAX {
 
     # Extract summarised table and output a file with the number of taxa
     qiime tools export --input-path lvl${taxlevel}-${table} --output-path exported/
-    biom convert -i exported/feature-table.biom -o ancom/lvl${taxlevel}-${table}.feature-table.tsv --to-tsv
+    biom convert -i exported/feature-table.biom -o ${table.baseName}-level-${taxlevel}.feature-table.tsv --to-tsv
 
-    if [ \$(grep -v '^#' -c ancom/lvl${taxlevel}-${table}.feature-table.tsv) -lt 2 ]; then
+    if [ \$(grep -v '^#' -c ${table.baseName}-level-${taxlevel}.feature-table.tsv) -lt 2 ]; then
         echo ${taxlevel} > ancom/\"WARNING Summing your data at taxonomic level ${taxlevel} produced less than two rows (taxa), ANCOM can't proceed -- did you specify a bad reference taxonomy?\".txt
     else
         qiime composition add-pseudocount \

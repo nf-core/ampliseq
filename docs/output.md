@@ -24,8 +24,9 @@ and processes data using the following steps:
       * [Relative abundance tables](#relative-abundance-tables) - Exported relative abundance tables
       * [Barplot](#barplot) - Interactive barplot
       * [Alpha diversity rarefaction curves](#alpha-diversity-rarefaction-curves) - Rarefaction curves for quality control
-      * [Alpha diversity indices](#alpha-diversity-indices) - Diversity within samples
-      * [Beta diversity indices](#beta-diversity-indices) - Diversity between samples (e.g. PCoA plots)
+      * [Diversity analysis](#diversity-analysis) - 
+        * [Alpha diversity indices](#alpha-diversity-indices) - Diversity within samples
+        * [Beta diversity indices](#beta-diversity-indices) - Diversity between samples (e.g. PCoA plots)
       * [ANCOM](#ancom) - Differential abundance analysis
     * [Read count report](#Read-count-report) - Report of read counts during various steps of the pipeline
     * [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
@@ -76,7 +77,7 @@ DADA2 computes an error model on the sequencing reads (forward and reverse indep
 
 DADA2 reduces sequence errors and dereplicates sequences by quality filtering, denoising, read pair merging (for paired end Illumina reads only) and PCR chimera removal.
 
-Additionally, DADA2 taxonomically classifies the ASVs using pre-trained databases.
+Additionally, DADA2 taxonomically classifies the ASVs using pre-trained databases (specified with `--dada_ref_taxonomy`).
 
 **Output files:**
 
@@ -88,7 +89,7 @@ Additionally, DADA2 taxonomically classifies the ASVs using pre-trained database
   * `DADA2_stats.tsv`: Tracking read numbers through DADA2 processing steps, for each sample.
   * `DADA2_table.rds`: DADA2 ASV table as R object.
   * `DADA2_tables.tsv`: DADA2 ASV table.
-* `dada2/args/`: Directory containing all parameters for DADA2 steps.
+* `dada2/args/`: Directory containing files with all parameters for DADA2 steps.
 * `dada2/log/`: Directory containing log files for DADA2 steps.
 * `dada2/QC/`
   * `*.err.convergence.txt`: Convergence values for DADA2's dada command, should reduce over several magnitudes and approaching 0.
@@ -111,11 +112,11 @@ Optionally, the ITS region can be extracted from each ASV sequence using ITSx, a
 
 **Quantitative Insights Into Microbial Ecology 2** ([QIIME2](https://qiime2.org/)) is a next-generation microbiome bioinformatics platform and the successor of the widely used [QIIME1](https://www.nature.com/articles/nmeth.f.303).
 
-ASV sequences and counts as produced before with DADA2 are imported into QIIME2 and further analysed. First, ASVs are taxonomically classified, than filtered (`--exclude_taxa`, `--min_frequency`, `--min_samples`), and abundance tables exported. Following, diversity indices are calculated and testing for differential abundant features between sample groups is performed.
+ASV sequences, counts, and taxonomic classification as produced before with DADA2 are imported into QIIME2 and further analysed. Optionally, ASVs can be taxonomically classified also with QIIME2 against a database chosen with `--qiime_ref_taxonomy` (but DADA2 taxonomic classification takes precedence). Next, ASVs are filtered (`--exclude_taxa`, `--min_frequency`, `--min_samples`), and abundance tables are exported. Following, diversity indices are calculated and testing for differential abundant features between sample groups is performed.
 
 #### Taxonomic classification
 
-ASV abundance and sequences inferred in DADA2 are informative but routinely taxonomic classifications such as family or genus annotation is desireable.
+Taxonomic classification with QIIME2 is typically similar to DADA2 classifications. However, both options are available. But when taxonomic classification with DADA2 and QIIME2 is performed, DADA2 classification takes precedence over QIIME2 classifications for all downstream analysis.
 
 **Output files:**
 
@@ -160,7 +161,7 @@ Absolute abundance tables produced by the previous steps contain count data, but
   * `rel-table-6.tsv`: Tab-separated relative abundance table at genus level.
   * `rel-table-7.tsv`: Tab-separated relative abundance table at species level.
   * `rel-table-ASV.tsv`: Tab-separated relative abundance table for all ASVs.
-  * `qiime2_ASV_table.tsv`: Tab-separated table for all ASVs with taxonomic classification, sequence and relative abundance.
+  * `qiime2_ASV_table.tsv`: Tab-separated table for all ASVs with taxonomic classification, sequence and relative abundance. *NOTE: This file is based on QIIME2 taxonomic classifications, contrary to all other files that are based on DADA2 classification, if available.*
 
 #### Barplot
 
@@ -180,24 +181,31 @@ Produces rarefaction plots for several alpha diversity indices, and is primarily
 * `qiime2/alpha-rarefaction/`
   * `index.html`: Interactive alphararefaction curve for taxa abundance per sample that can be viewed in your web browser.
 
-#### Alpha diversity indices
+#### Diversity analysis
+
+Diversity measures summarize important sample features (alpha diversity) or differences between samples (bet diversity). To do so, sample data is first rarefied to the minimum number of counts per sample. Also, a phylogenetic tree of all ASVs is computed to provide phylogenetic information.
+
+**Output files:**
+
+* `qiime2/diversity/`
+  * `Use the sampling depth of * for rarefaction.txt`: File that reports the rarefaction depth in the file name and file content.
+* `qiime2/phylogenetic_tree/`
+  * `tree.nwk`: Phylogenetic tree in newick format.
+  * `rooted-tree.qza`: Phylogenetic tree in QIIME2 format.
+
+##### Alpha diversity indices
 
 Alpha diversity measures the species diversity within samples. Diversity calculations are based on sub-sampled data rarefied to the minimum read count of all samples. This step calculates alpha diversity using various methods and performs pairwise comparisons of groups of samples. It is based on a phylogenetic tree of all ASV sequences.
 
 **Output files:**
 
-* `qiime2/phylogenetic_tree/`
-  * `tree.nwk`: Phylogenetic tree in newick format.
-  * `rooted-tree.qza`: Phylogenetic tree in QIIME2 format.
-* `qiime2/diversity/`
-  * `*.txt`: File that describes the rarefaction depth (file name and file contant).
 * `qiime2/diversity/alpha_diversity/`
   * `evenness_vector/index.html`: Pielou’s Evenness.
   * `faith_pd_vector/index.html`: Faith’s Phylogenetic Diversity (qualitiative, phylogenetic).
   * `observed_otus_vector/index.html`: Observed OTUs (qualitative).
   * `shannon_vector/index.html`: Shannon’s diversity index (quantitative).
 
-#### Beta diversity indices
+##### Beta diversity indices
 
 Beta diversity measures the species community differences between samples. Diversity calculations are based on sub-sampled data rarefied to the minimum read count of all samples. This step calculates beta diversity distances using various methods and performs pairwise comparisons of groups of samples. Additionally principle coordinates analysis (PCoA) plots are produced that can be visualized with [Emperor](https://biocore.github.io/emperor/build/html/index.html) in your default browser without the need for installation. This calculations are based on a phylogenetic tree of all ASV sequences.
 
@@ -210,14 +218,9 @@ Beta diversity measures the species community differences between samples. Diver
 
 **Output files:**
 
-* `qiime2/phylogenetic_tree/`
-  * `tree.nwk`: Phylogenetic tree in newick format.
-  * `rooted-tree.qza`: Phylogenetic tree in QIIME2 format.
-* `qiime2/diversity/`
-  * `*.txt`: File that describes the rarefaction depth (file name and file contant).
 * `qiime2/diversity/beta_diversity/`
-  * `<method>_distance_matrix-<treatment>/index.html`
-  * `<method>_pcoa_results-PCoA/index.html`
+  * `<method>_distance_matrix-<treatment>/index.html`: Box plots and significance analysis (PERMANOVA).
+  * `<method>_pcoa_results-PCoA/index.html`: Interactive PCoA plot.
     * method: bray_curtis, jaccard, unweighted_unifrac, weighted_unifrac
     * treatment: depends on your metadata sheet or what metadata categories you have specified
 
@@ -225,12 +228,12 @@ Beta diversity measures the species community differences between samples. Diver
 
 Analysis of Composition of Microbiomes ([ANCOM](https://www.ncbi.nlm.nih.gov/pubmed/26028277)) is applied to identify features that are differentially abundant across sample groups. A key assumption made by ANCOM is that few taxa (less than about 25%) will be differentially abundant between groups otherwise the method will be inaccurate.
 
-ANCOM is applied to each suitable or specified metadata column for 6 taxonomic levels.
+ANCOM is applied to each suitable or specified metadata column for 5 taxonomic levels (2-6).
 
 **Output files:**
 
 * `qiime2/ancom/`
-  * `Category-<treatment>-<taxonomic level>/index.html`
+  * `Category-<treatment>-<taxonomic level>/index.html`: Statistical results and interactive Volcano plot.
     * treatment: depends on your metadata sheet or what metadata categories you have specified
     * taxonomic level: level-2 (phylum), level-3 (class), level-4 (order), level-5 (family), level-6 (genus), ASV
 
@@ -240,7 +243,7 @@ This report includes information on how many reads per sample passed each pipeli
 
 **Output files:**
 
-* `overall_summary.tsv`
+* `overall_summary.tsv`: Tab-separated file with count summary.
 
 ## Pipeline information
 

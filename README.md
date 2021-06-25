@@ -20,7 +20,7 @@
 
 ## Introduction
 
-**nfcore/ampliseq** is a bioinformatics analysis pipeline used for amplicon sequencing data, supporting 16S, ITS and 18S data. Supported is paired-end Illumina or single-end Illumina, PacBio and IonTorrent data.
+**nfcore/ampliseq** is a bioinformatics analysis pipeline used for amplicon sequencing, supporting 16S, ITS and 18S data. Supported is paired-end Illumina or single-end Illumina, PacBio and IonTorrent data. Default is the analysis of 16S rRNA gene amplicons sequenced paired-end with Illumina.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It comes with docker containers making installation trivial and results highly reproducible.
 
@@ -41,6 +41,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 4. Start running your own analysis!
 
     ```bash
+    #16S rRNA gene amplicon analysis of Illumina paired-end data
     nextflow run nf-core/ampliseq -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input "data" --FW_primer "GTGYCAGCMGCCGCGGTAA" --RV_primer "GGACTACNVGGGTWTCTAAT" --metadata "data/Metadata.tsv"
     ```
 

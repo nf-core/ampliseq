@@ -30,7 +30,7 @@ results         # Finished results (configurable, see below)
 # Other nextflow hidden files, eg. history of pipeline runs and old logs.
 ```
 
-See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/usage#usage) for more information about pipeline specific parameters.
+See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters) for more information about pipeline specific parameters.
 
 ### Updating the pipeline
 

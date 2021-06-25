@@ -24,7 +24,7 @@ and processes data using the following steps:
       * [Relative abundance tables](#relative-abundance-tables) - Exported relative abundance tables
       * [Barplot](#barplot) - Interactive barplot
       * [Alpha diversity rarefaction curves](#alpha-diversity-rarefaction-curves) - Rarefaction curves for quality control
-      * [Diversity analysis](#diversity-analysis) - 
+      * [Diversity analysis](#diversity-analysis) - High level overview with divers diversity indices
         * [Alpha diversity indices](#alpha-diversity-indices) - Diversity within samples
         * [Beta diversity indices](#beta-diversity-indices) - Diversity between samples (e.g. PCoA plots)
       * [ANCOM](#ancom) - Differential abundance analysis

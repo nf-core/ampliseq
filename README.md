@@ -1,6 +1,6 @@
 # ![nf-core/ampliseq](docs/images/nf-core-ampliseq_logo.png)
 
-**16S rRNA amplicon sequencing analysis workflow using QIIME2**.
+**Amplicon sequencing analysis workflow using DADA2 and QIIME2**.
 
 [![DOI](https://zenodo.org/badge/150448201.svg)](https://zenodo.org/badge/latestdoi/150448201)
 [![Cite Publication](https://img.shields.io/badge/Cite%20Us!-Cite%20Publication-important)](https://doi.org/10.3389/fmicb.2020.550420)

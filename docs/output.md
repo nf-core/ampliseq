@@ -77,7 +77,7 @@ DADA2 computes an error model on the sequencing reads (forward and reverse indep
 
 DADA2 reduces sequence errors and dereplicates sequences by quality filtering, denoising, read pair merging (for paired end Illumina reads only) and PCR chimera removal.
 
-Additionally, DADA2 taxonomically classifies the ASVs using pre-trained databases (specified with `--dada_ref_taxonomy`).
+Additionally, DADA2 taxonomically classifies the ASVs using a choice of supplied databases (specified with `--dada_ref_taxonomy`).
 
 **Output files:**
 

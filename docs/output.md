@@ -183,7 +183,7 @@ Produces rarefaction plots for several alpha diversity indices, and is primarily
 
 #### Diversity analysis
 
-Diversity measures summarize important sample features (alpha diversity) or differences between samples (bet diversity). To do so, sample data is first rarefied to the minimum number of counts per sample. Also, a phylogenetic tree of all ASVs is computed to provide phylogenetic information.
+Diversity measures summarize important sample features (alpha diversity) or differences between samples (beta diversity). To do so, sample data is first rarefied to the minimum number of counts per sample. Also, a phylogenetic tree of all ASVs is computed to provide phylogenetic information.
 
 **Output files:**
 

@@ -116,7 +116,7 @@ ASV sequences, counts, and taxonomic classification as produced before with DADA
 
 #### Taxonomic classification
 
-Taxonomic classification with QIIME2 is typically similar to DADA2 classifications. However, both options are available. But when taxonomic classification with DADA2 and QIIME2 is performed, DADA2 classification takes precedence over QIIME2 classifications for all downstream analysis.
+Taxonomic classification with QIIME2 is typically similar to DADA2 classifications. However, both options are available. When taxonomic classification with DADA2 and QIIME2 is performed, DADA2 classification takes precedence over QIIME2 classifications for all downstream analysis.
 
 **Output files:**
 

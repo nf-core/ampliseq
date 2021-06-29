@@ -7,3 +7,9 @@ tests/
 testing/
 testing*
 *.pyc
+.*.sw?
+.Rproj.user
+.Rhistory
+.screenrc
+ampliseq.Rproj
+results_test/*

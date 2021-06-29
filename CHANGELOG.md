@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## nf-core/ampliseq version 2.0.0 "Blue Copper Kangaroo" - 2021
+## nf-core/ampliseq version 2.0.0 "Blue Copper Kangaroo" - 2021-06-29
 
 Re-wrote whole pipeline in nextflow [DSL2](https://www.nextflow.io/docs/latest/dsl2.html) instead of DSL1
 
@@ -53,7 +53,7 @@ Re-wrote whole pipeline in nextflow [DSL2](https://www.nextflow.io/docs/latest/d
 * `--taxon_reference` became unnecessary
 * [#229](https://github.com/nf-core/ampliseq/pull/229) - `--reference_database` and `--dereplication` are not supported any more. `--qiime_ref_taxonomy` allows now choosing a taxonomic reference
 
-## nf-core/ampliseq version 1.2.0 "Teal Bronze Lion" - 2021
+## nf-core/ampliseq version 1.2.0 "Teal Bronze Lion" - 2021-02-04
 
 ### `Added`
 
@@ -78,7 +78,7 @@ Re-wrote whole pipeline in nextflow [DSL2](https://www.nextflow.io/docs/latest/d
 
 ### `Deprecated`
 
-## nf-core/ampliseq version 1.1.3 - 2020
+## nf-core/ampliseq version 1.1.3 - 2020-11-02
 
 ### `Added`
 
@@ -102,12 +102,12 @@ Re-wrote whole pipeline in nextflow [DSL2](https://www.nextflow.io/docs/latest/d
 
 * `--reads` is replaced by `--input` due to nf-core/tools v1.10.2
 
-## nf-core/ampliseq version 1.1.2 - 2019
+## nf-core/ampliseq version 1.1.2 - 2019-12-19
 
 * No further changes, except a bugfix for the [timezone](https://github.com/nf-core/ampliseq/issues/114) issue found by @marchoeppner
 * Specification of `--qiime_timezone` might be required to run the analysis appropriately
 
-## nf-core/ampliseq version 1.1.1 - 2019
+## nf-core/ampliseq version 1.1.1 - 2019-12-09
 
 ### Pipeline Updates
 
@@ -118,7 +118,7 @@ Re-wrote whole pipeline in nextflow [DSL2](https://www.nextflow.io/docs/latest/d
 
 * [#78](https://github.com/nf-core/ampliseq/issues/78) - All sequenced classifed to the same species
 
-## nf-core/ampliseq version 1.1.0 "Silver Lime Bee" - 2019
+## nf-core/ampliseq version 1.1.0 "Silver Lime Bee" - 2019-07-15
 
 ### Pipeline updates
 

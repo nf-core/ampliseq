@@ -86,7 +86,7 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
   * Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter or Charliecloud.
   * A generic configuration profile to be used with [Conda](https://conda.io/docs/)
   * Pulls most software from [Bioconda](https://bioconda.github.io/)
-* `test`, `test_multi`, `test_manifest`, `test_full`, `test_pacbio_its`, `test_iontorrent`, `test_doubleprimers`
+* `test`, `test_multi`, `test_full`, `test_pacbio_its`, `test_iontorrent`, `test_doubleprimers`
   * Profiles with a complete configuration for automated testing
   * Includes links to test data so needs no other parameters
 

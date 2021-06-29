@@ -3,6 +3,18 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## nf-core/ampliseq version 2.1.0dev
+
+### `Added`
+
+### `Changed`
+
+### `Fixed`
+
+### `Dependencies`
+
+### `Removed`
+
 ## nf-core/ampliseq version 2.0.0 "Blue Copper Kangaroo" - 2021-06-29
 
 Re-wrote whole pipeline in nextflow [DSL2](https://www.nextflow.io/docs/latest/dsl2.html) instead of DSL1

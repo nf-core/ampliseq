@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+* []() - New version of the PR2 taxonomy database: 4.14.0, contains also some Bacteria, see https://github.com/pr2database/pr2database/releases/tag/v4.14.0
+
 ### `Changed`
 
 ### `Fixed`

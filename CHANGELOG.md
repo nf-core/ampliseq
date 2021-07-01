@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+* [#294](https://github.com/nf-core/ampliseq/pull/294) - New version of the PR2 taxonomy database: 4.14.0, contains also some Bacteria, see [PR2 release 4.14.0 notes](https://github.com/pr2database/pr2database/releases/tag/v4.14.0)
+* [#294](https://github.com/nf-core/ampliseq/pull/294) - New version of the Unite taxonomy databases: 8.3
+
 ### `Changed`
 
 ### `Fixed`

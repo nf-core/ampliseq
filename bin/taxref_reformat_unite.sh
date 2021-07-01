@@ -4,7 +4,7 @@
 # assignTaxonomy.fna and reformats a copy to addSpecies.fna.
 
 # Untar the Unite file
-tar xzf *.gz
+tar xzf *gz
 
 # Remove leading "k__" and the like, remove ranks classified as "unknown",
 # and replace space with underscore to create assignTaxonomy.fna

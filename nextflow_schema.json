@@ -201,6 +201,7 @@
                     "enum": [
                         "gtdb=05-RS95",
                         "gtdb",
+                        "pr2=4.14.0",
                         "pr2=4.13.0",
                         "pr2",
                         "rdp=18",
@@ -208,8 +209,10 @@
                         "silva=132",
                         "silva=138",
                         "silva",
+                        "unite-fungi=8.3",
                         "unite-fungi=8.2",
                         "unite-fungi",
+                        "unite-alleuk=8.3",
                         "unite-alleuk=8.2",
                         "unite-alleuk"
                     ]

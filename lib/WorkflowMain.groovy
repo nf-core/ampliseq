@@ -54,6 +54,14 @@ class WorkflowMain {
             System.exit(0)
         }
 
+        // Check that keys for reference databases are valid
+        if (params.dada_ref_taxonomy && !params.skip_taxonomy) {
+            dadareftaxonomyExistsError(params, log)
+        }
+        if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
+            qiimereftaxonomyExistsError(params, log)
+        }
+
         // Validate workflow parameters via the JSON schema
         if (params.validate_params) {
             NfcoreSchema.validateParameters(workflow, params, log)
@@ -81,15 +89,30 @@ class WorkflowMain {
     }
 
     //
-    // Get attribute from genome config file e.g. fasta
+    // Exit pipeline if incorrect --dada_ref_taxonomy key provided
     //
-    public static String getGenomeAttribute(params, attribute) {
-        def val = ''
-        if (params.genomes && params.genome && params.genomes.containsKey(params.genome)) {
-            if (params.genomes[ params.genome ].containsKey(attribute)) {
-                val = params.genomes[ params.genome ][ attribute ]
-            }
+    private static void dadareftaxonomyExistsError(params, log) {
+       if (params.dada_ref_databases && params.dada_ref_taxonomy && !params.dada_ref_databases.containsKey(params.dada_ref_taxonomy)) {
+            log.error "=============================================================================\n" +
+                "  DADA2 reference database '${params.dada_ref_taxonomy}' not found in any config files provided to the pipeline.\n" +
+                "  Currently, the available reference taxonomy keys for `--dada_ref_taxonomy` are:\n" +
+                "  ${params.dada_ref_databases.keySet().join(", ")}\n" +
+                "==================================================================================="
+            System.exit(1)
         }
-        return val
+    }
+
+    //
+    // Exit pipeline if incorrect --qiime_ref_taxonomy key provided
+    //
+    private static void qiimereftaxonomyExistsError(params, log) {
+       if (params.qiime_ref_databases && params.qiime_ref_taxonomy && !params.qiime_ref_databases.containsKey(params.qiime_ref_taxonomy)) {
+            log.error "=============================================================================\n" +
+                "  QIIME2 reference database '${params.qiime_ref_taxonomy}' not found in any config files provided to the pipeline.\n" +
+                "  Currently, the available reference taxonomy keys for `--qiime_ref_taxonomy` are:\n" +
+                "  ${params.qiime_ref_databases.keySet().join(", ")}\n" +
+                "==================================================================================="
+            System.exit(1)
+        }
     }
 }

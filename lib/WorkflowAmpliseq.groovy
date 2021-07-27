@@ -8,13 +8,6 @@ class WorkflowAmpliseq {
     // Check and validate parameters
     //
     public static void initialise(params, log) {
-        if (params.dada_ref_taxonomy && !params.skip_taxonomy) {
-            dadareftaxonomyExistsError(params, log)
-        }
-        if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
-            qiimereftaxonomyExistsError(params, log)
-        }
- 
         if (params.enable_conda) { log.warn "Conda is enabled (`--enable_conda`), any steps involving QIIME2 are not available. Use a container engine instead of conda to enable all software." }
 
         if (!["pooled", "independent", "pseudo"].contains(params.sample_inference)) {
@@ -56,33 +49,5 @@ class WorkflowAmpliseq {
         yaml_file_text        += "data: |\n"
         yaml_file_text        += "${summary_section}"
         return yaml_file_text
-    }
-
-    //
-    // Exit pipeline if incorrect --dada_ref_taxonomy key provided
-    //
-    private static void dadareftaxonomyExistsError(params, log) {
-       if (params.dada_ref_databases && params.dada_ref_taxonomy && !params.dada_ref_databases.containsKey(params.dada_ref_taxonomy)) {
-            log.error "=============================================================================\n" +
-                "  DADA2 reference database '${params.dada_ref_taxonomy}' not found in any config files provided to the pipeline.\n" +
-                "  Currently, the available reference taxonomy keys for `--dada_ref_taxonomy` are:\n" +
-                "  ${params.dada_ref_databases.keySet().join(", ")}\n" +
-                "==================================================================================="
-            System.exit(1)
-        }
-    }
-
-    //
-    // Exit pipeline if incorrect --qiime_ref_taxonomy key provided
-    //
-    private static void qiimereftaxonomyExistsError(params, log) {
-       if (params.qiime_ref_databases && params.qiime_ref_taxonomy && !params.qiime_ref_databases.containsKey(params.qiime_ref_taxonomy)) {
-            log.error "=============================================================================\n" +
-                "  QIIME2 reference database '${params.qiime_ref_taxonomy}' not found in any config files provided to the pipeline.\n" +
-                "  Currently, the available reference taxonomy keys for `--qiime_ref_taxonomy` are:\n" +
-                "  ${params.qiime_ref_databases.keySet().join(", ")}\n" +
-                "==================================================================================="
-            System.exit(1)
-        }
     }
 }

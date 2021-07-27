@@ -22,7 +22,7 @@ process QIIME2_DIVERSITY_BETAORD {
     path "*.version.txt"    , emit: version
 
     script:
-    def software     = getSoftwareName(task.process) 
+    def software     = getSoftwareName(task.process)
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
 

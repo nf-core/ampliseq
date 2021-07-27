@@ -4,7 +4,7 @@
 # adds sequence to taxonomy based on ASV_ID
 
 import pandas as pd
-import sys, os 
+import sys, os
 
 # Argument check
 if len(sys.argv) != 3:

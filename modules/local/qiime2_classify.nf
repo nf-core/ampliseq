@@ -17,7 +17,7 @@ process QIIME2_CLASSIFY {
     input:
     path(trained_classifier)
     path(repseq)
-    
+
     output:
     path("taxonomy.qza"), emit: qza
     path("taxonomy.tsv"), emit: tsv

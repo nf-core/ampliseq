@@ -22,7 +22,7 @@ process QIIME2_TREE {
     path "*.version.txt"   , emit: version
 
     script:
-    def software     = getSoftwareName(task.process) 
+    def software     = getSoftwareName(task.process)
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
 

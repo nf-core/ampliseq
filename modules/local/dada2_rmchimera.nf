@@ -20,7 +20,7 @@ process DADA2_RMCHIMERA {
 
     input:
     tuple val(meta), path(seqtab)
-    
+
     output:
     tuple val(meta), path("*.ASVtable.rds"), emit: rds
     path "*.version.txt"                   , emit: version

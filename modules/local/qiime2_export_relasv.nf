@@ -29,7 +29,7 @@ process QIIME2_EXPORT_RELASV {
     qiime feature-table relative-frequency \
         --i-table ${table} \
         --o-relative-frequency-table relative-table-ASV.qza
-    
+
     #export to biom
     qiime tools export --input-path relative-table-ASV.qza --output-path relative-table-ASV
 

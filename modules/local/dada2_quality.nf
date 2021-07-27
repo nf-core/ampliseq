@@ -20,7 +20,7 @@ process DADA2_QUALITY {
 
     input:
     tuple val(meta), path(reads)
-    
+
     output:
     path "${meta}_qual_stats.pdf"            , emit: pdf
     tuple val(meta), path("*_qual_stats.tsv"), emit: tsv

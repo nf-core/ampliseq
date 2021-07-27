@@ -4,7 +4,7 @@
 # to generate a tuple of index locations that resemble the cutoff value used for DADA2 in QIIME2.
 
 import pandas as pd
-import sys 
+import sys
 
 #argument check
 if len(sys.argv) != 4:

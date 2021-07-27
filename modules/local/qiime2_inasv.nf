@@ -16,7 +16,7 @@ process QIIME2_INASV {
 
     input:
     path(asv)
-    
+
     output:
     path("table.qza")    , emit: qza
     path "*.version.txt" , emit: version

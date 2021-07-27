@@ -14,7 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
+* [#299](https://github.com/nf-core/ampliseq/pull/299) - Template update for nf-core/tools version 2.0.1
+
 ### `Dependencies`
+* [#299](https://github.com/nf-core/ampliseq/pull/299) - Updated MultiQC to v1.10
 
 ### `Removed`
 
@@ -41,10 +44,10 @@ Re-wrote whole pipeline in nextflow [DSL2](https://www.nextflow.io/docs/latest/d
 ### `Changed`
 
 * [#254](https://github.com/nf-core/ampliseq/pull/254) - Updated CamelCase parameters to be lower_case_snake_case:
-  * `multipleSequencingRuns` to `multiple_sequencing_runs`
-  * `minLen` to `min_len`
-  * `maxLen` to `max_len`
-  * `maxEE` to `max_ee`
+    * `multipleSequencingRuns` to `multiple_sequencing_runs`
+    * `minLen` to `min_len`
+    * `maxLen` to `max_len`
+    * `maxEE` to `max_ee`
 * [#277](https://github.com/nf-core/ampliseq/pull/277) - Requires nextflow version `>= 21.04.0`
 
 ### `Fixed`

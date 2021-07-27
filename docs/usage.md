@@ -8,7 +8,6 @@
 
 The input data can be passed to nf-core/ampliseq in three possible ways using the `--input` parameter, either a folder containing zipped FastQ files, a tab-seperated samplesheet, or a fasta file to be taxonomically classified.
 
-
 ### Direct FASTQ input
 
 The easiest way is to specify directly the path to the folder that contains your input FASTQ files. For example:
@@ -35,10 +34,10 @@ Please note the following additional requirements:
 
 The sample sheet file is an alternative way to provide input reads, it must be a tab-separated file ending with `.tsv` that must have two to four columns with the following headers:
 
-    * sampleID (required): Unique sample identifiers, any unique string (may not contain dots .)
-    * forwardReads (required): Paths to (forward) reads zipped FastQ files
-    * reverseReads (optional): Paths to reverse reads zipped FastQ files, required if the data is paired-end
-    * run (optional): If the data was produced by multiple sequencing runs, any string
+* sampleID (required): Unique sample identifiers, any unique string (may not contain dots .)
+* forwardReads (required): Paths to (forward) reads zipped FastQ files
+* reverseReads (optional): Paths to reverse reads zipped FastQ files, required if the data is paired-end
+* run (optional): If the data was produced by multiple sequencing runs, any string
 
 ```console
 --input '[path to samplesheet file]'

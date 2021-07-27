@@ -212,8 +212,7 @@ def cutadapt_taxonomy_options   = modules['cutadapt_taxonomy']
 cutadapt_taxonomy_options.args += " -g ${params.FW_primer}...${RV_primer_RevComp}"
 
 def multiqc_options         = modules['multiqc']
-//multiqc_options.args       += params.multiqc_title ? " --title \"$params.multiqc_title\"" : '' //old
-multiqc_options.args       += params.multiqc_title ? Utils.joinModuleArgs(["--title \"$params.multiqc_title\""]) : '' //TODO: DOES THIS LINE WORK AS WELL??
+multiqc_options.args       += params.multiqc_title ? Utils.joinModuleArgs(["--title \"$params.multiqc_title\""]) : ''
 
 include { CUTADAPT as CUTADAPT_TAXONOMY     } from '../modules/nf-core/modules/cutadapt/main' addParams( options: cutadapt_taxonomy_options     )
 include { FASTQC                            } from '../modules/nf-core/modules/fastqc/main'   addParams( options: fastqc_options                )

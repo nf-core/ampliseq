@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
+* [#299](https://github.com/nf-core/ampliseq/pull/299) - Template update for nf-core/tools version 2.0.1
+
 ### `Dependencies`
 
 ### `Removed`

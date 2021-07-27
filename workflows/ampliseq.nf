@@ -1,16 +1,41 @@
-////////////////////////////////////////////////////
-/* --         LOCAL PARAMETER VALUES           -- */
-////////////////////////////////////////////////////
+/*
+========================================================================================
+    VALIDATE INPUTS
+========================================================================================
+*/
 
-params.summary_params = [:]
+def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 
-////////////////////////////////////////////////////
-/* --          VALIDATE INPUTS                 -- */
-////////////////////////////////////////////////////
+// Validate input parameters
+WorkflowAmpliseq.initialise(params, log)
+
+// Check input path parameters to see if they exist
+// params.input may be: folder, samplesheet, fasta file, and therefore should not appear here (because tests only for "file")
+def checkPathParamList = [ params.multiqc_config, params.metadata, params.classifier ]
+for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
+
+// Check mandatory parameters
+if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
+if (!params.FW_primer) { exit 1, "Option --FW_primer missing" }
+if (!params.RV_primer) { exit 1, "Option --RV_primer missing" }
 
 /*
- * Import input files
- */
+========================================================================================
+    CONFIG FILES
+========================================================================================
+*/
+
+ch_multiqc_config        = file("$projectDir/assets/multiqc_config.yaml", checkIfExists: true)
+ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config) : Channel.empty()
+
+/*
+========================================================================================
+    INPUT AND VARIABLES
+========================================================================================
+*/
+
+// Input
+
 if (params.metadata) {
     ch_metadata = Channel.fromPath("${params.metadata}", checkIfExists: true)
 } else { ch_metadata = Channel.empty() }
@@ -20,24 +45,14 @@ if (params.classifier) {
 } else { ch_qiime_classifier = Channel.empty() }
 
 if (params.dada_ref_taxonomy && !params.skip_taxonomy) {
-    // Check if ref_taxonomy exists in the config file
-    if (params.dada_ref_databases && params.dada_ref_taxonomy && !params.dada_ref_databases.containsKey(params.dada_ref_taxonomy)) {
-        exit 1, "The provided DADA2 reference taxonomy '${params.dada_ref_taxonomy}' is not available in the 'conf/ref_databases.config' file. Currently the available reference taxonomies are ${params.dada_ref_databases.keySet().join(', ')}"
-    }
     ch_dada_ref_taxonomy = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["file"]).map { file(it) }
 } else { ch_dada_ref_taxonomy = Channel.empty() }
 
 if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
-    // Check if ref_taxonomy exists in the config file
-    if (params.qiime_ref_databases && params.qiime_ref_taxonomy && !params.qiime_ref_databases.containsKey(params.qiime_ref_taxonomy)) {
-        exit 1, "The provided QIIME2 reference taxonomy '${params.qiime_ref_taxonomy}' is not available in the 'conf/ref_databases.config' file. Currently the available reference taxonomies are ${params.qiime_ref_databases.keySet().join(', ')}"
-    }
     ch_qiime_ref_taxonomy = Channel.fromList(params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"]).map { file(it) }
 } else { ch_qiime_ref_taxonomy = Channel.empty() }
 
-/*
- * Set variables
- */
+// Set non-params Variables
 
 single_end = params.single_end
 if (  params.pacbio || params.iontorrent ) {
@@ -48,7 +63,7 @@ trunclenf = params.trunclenf ? params.trunclenf : 0
 trunclenr = params.trunclenr ? params.trunclenr : 0
 if ( !single_end && !params.illumina_pe_its && (params.trunclenf == false || params.trunclenr == false) ) {
     find_truncation_values = true
-    log.warn "No DADA2 cutoffs were specified (--trunclenf & --trunclenr), therefore reads will be truncated where median quality drops below ${params.trunc_qmin} (defined by --trunc_qmin) but at least a fraction of ${params.trunc_rmin} (defined by --trunc_rmin) of the reads will be retained.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
+    log.warn "No DADA2 cutoffs were specified (`--trunclenf` & --`trunclenr`), therefore reads will be truncated where median quality drops below ${params.trunc_qmin} (defined by `--trunc_qmin`) but at least a fraction of ${params.trunc_rmin} (defined by `--trunc_rmin`) of the reads will be retained.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
 } else { find_truncation_values = false }
 
 //only run QIIME2 when taxonomy is actually calculated and all required data is available
@@ -57,33 +72,10 @@ if ( !params.enable_conda && !params.skip_taxonomy && !params.skip_qiime ) {
 } else { run_qiime2 = false }
 
 /*
- * Sanity check input values
- */
-
-if (params.enable_conda) { log.warn "Conda is enabled (--enable_conda), any steps involving QIIME2 are not available. Use a container engine instead of conda to enable all software." }
-
-if (!params.FW_primer) { exit 1, "Option --FW_primer missing" }
-if (!params.RV_primer) { exit 1, "Option --RV_primer missing" }
-if (!params.input) { exit 1, "Option --input missing" }
-
-if (!["pooled", "independent", "pseudo"].contains(params.sample_inference)) {
-    exit 1, "Please set --sample_inference to one of the following:\n\t-\"independent\" (lowest sensitivity and lowest resources),\n\t-\"pseudo\" (balance between required resources and sensitivity),\n\t-\"pooled\" (highest sensitivity and resources)."
-}
-
-if (params.double_primer && params.retain_untrimmed) { 
-    exit 1, "Incompatible parameters --double_primer and --retain_untrimmed cannot be set at the same time."
-}
-
-////////////////////////////////////////////////////
-/* --          CONFIG FILES                    -- */
-////////////////////////////////////////////////////
-
-ch_multiqc_config        = file("$projectDir/assets/multiqc_config.yaml", checkIfExists: true)
-ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config) : Channel.empty()
-
-////////////////////////////////////////////////////
-/* --    IMPORT LOCAL MODULES/SUBWORKFLOWS     -- */
-////////////////////////////////////////////////////
+========================================================================================
+    IMPORT LOCAL MODULES/SUBWORKFLOWS
+========================================================================================
+*/
 
 // Don't overwrite global params.modules, create a copy instead and use that within the main script.
 def modules = params.modules.clone()
@@ -124,9 +116,6 @@ dada2_denoising_options.args2        += params.concatenate_reads ? ", justConcat
 
 def dada2_rmchimera_options = modules['dada2_rmchimera']
 
-def multiqc_options         = modules['multiqc']
-multiqc_options.args       += params.multiqc_title ? " --title \"$params.multiqc_title\"" : ''
-
 def dada2_taxonomy_options  = modules['dada2_taxonomy']
 dada2_taxonomy_options.args += params.pacbio ? ", tryRC = TRUE" : ""
 dada2_taxonomy_options.args += params.iontorrent ? ", tryRC = TRUE" : ""
@@ -160,12 +149,11 @@ include { QIIME2_BARPLOT                } from '../modules/local/qiime2_barplot'
 include { METADATA_ALL                  } from '../modules/local/metadata_all'
 include { METADATA_PAIRWISE             } from '../modules/local/metadata_pairwise'
 include { QIIME2_INTAX                  } from '../modules/local/qiime2_intax'                 addParams( options: modules['qiime2_intax']         )
-include { MULTIQC                       } from '../modules/local/multiqc'                      addParams( options: multiqc_options                 )
-include { GET_SOFTWARE_VERSIONS         } from '../modules/local/get_software_versions'        addParams( options: [publish_files : ['csv':'']]    )
+include { GET_SOFTWARE_VERSIONS         } from '../modules/local/get_software_versions'        addParams( options: [publish_files : ['tsv':'']]    )
 
-/*
- * SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
- */
+//
+// SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
+//
 
 if (params.pacbio) {
     //PacBio data
@@ -209,27 +197,33 @@ include { QIIME2_EXPORT                 } from '../subworkflows/local/qiime2_exp
 include { QIIME2_DIVERSITY              } from '../subworkflows/local/qiime2_diversity'         addParams( tree_options: modules['qiime2_tree'], alphararefaction_options: modules['qiime2_alphararefaction'], diversity_core_options: modules['qiime2_diversity_core'], diversity_alpha_options: modules['qiime2_diversity_alpha'], diversity_beta_options: modules['qiime2_diversity_beta'], diversity_betaord_options: modules['qiime2_diversity_betaord'] )
 include { QIIME2_ANCOM                  } from '../subworkflows/local/qiime2_ancom'             addParams( filterasv_options: modules['qiime2_filterasv'], ancom_tax_options: modules['qiime2_ancom_tax'], ancom_asv_options: modules['qiime2_ancom_asv'] )
 
- ////////////////////////////////////////////////////
-/* --    IMPORT NF-CORE MODULES/SUBWORKFLOWS   -- */
-////////////////////////////////////////////////////
-
 /*
- * MODULE: Installed directly from nf-core/modules
- */
+========================================================================================
+    IMPORT NF-CORE MODULES/SUBWORKFLOWS
+========================================================================================
+*/
+
+//
+// MODULE: Installed directly from nf-core/modules
+//
 def fastqc_options              = modules['fastqc']
+
 def cutadapt_taxonomy_options   = modules['cutadapt_taxonomy']
 cutadapt_taxonomy_options.args += " -g ${params.FW_primer}...${RV_primer_RevComp}"
 
-include { CUTADAPT as CUTADAPT_TAXONOMY     } from '../modules/nf-core/software/cutadapt/main' addParams( options: cutadapt_taxonomy_options     )
-include { FASTQC                            } from '../modules/nf-core/software/fastqc/main'   addParams( options: fastqc_options                )
+def multiqc_options         = modules['multiqc']
+//multiqc_options.args       += params.multiqc_title ? " --title \"$params.multiqc_title\"" : '' //old
+multiqc_options.args       += params.multiqc_title ? Utils.joinModuleArgs(["--title \"$params.multiqc_title\""]) : '' //TODO: DOES THIS LINE WORK AS WELL??
+
+include { CUTADAPT as CUTADAPT_TAXONOMY     } from '../modules/nf-core/modules/cutadapt/main' addParams( options: cutadapt_taxonomy_options     )
+include { FASTQC                            } from '../modules/nf-core/modules/fastqc/main'   addParams( options: fastqc_options                )
+include { MULTIQC                           } from '../modules/nf-core/modules/multiqc/main'  addParams( options: multiqc_options               )
 
 /*
- * SUBWORKFLOW: Consisting entirely of nf-core/modules
- */
-
- ////////////////////////////////////////////////////
-/* --           RUN MAIN WORKFLOW              -- */
-////////////////////////////////////////////////////
+========================================================================================
+    RUN MAIN WORKFLOW
+========================================================================================
+*/
 
 // Info required for completion email and summary
 def multiqc_report      = []
@@ -237,29 +231,29 @@ def multiqc_report      = []
 workflow AMPLISEQ {
     ch_software_versions = Channel.empty()
 
-    /*
-    * Create a channel for input read files
-    */
+    //
+    // Create a channel for input read files
+    //
     PARSE_INPUT ( params.input, single_end, params.multiple_sequencing_runs, params.extension )
     ch_reads = PARSE_INPUT.out.reads
     ch_fasta = PARSE_INPUT.out.fasta
 
-    /*
-     * MODULE: Rename files
-     */
+    //
+    // MODULE: Rename files
+    //
     RENAME_RAW_DATA_FILES ( ch_reads )
 
-    /*
-     * MODULE: FastQC
-     */
+    //
+    // MODULE: Run FastQC
+    //
     if (!params.skip_fastqc) {
         FASTQC ( RENAME_RAW_DATA_FILES.out ).html.set { fastqc_html }
         ch_software_versions = ch_software_versions.mix(FASTQC.out.version.first().ifEmpty(null))
     }
 
-    /*
-     * MODULE: Cutadapt
-     */
+    //
+    // MODULE: Cutadapt
+    //
     CUTADAPT_WORKFLOW ( 
         RENAME_RAW_DATA_FILES.out,
         params.illumina_pe_its,
@@ -267,9 +261,9 @@ workflow AMPLISEQ {
     ).reads.set { ch_trimmed_reads }
     ch_software_versions = ch_software_versions.mix(CUTADAPT_WORKFLOW.out.version.first().ifEmpty(null))
 
-    /*
-     * SUBWORKFLOW / MODULES : ASV generation with DADA2
-     */
+    //
+    // SUBWORKFLOW / MODULES : ASV generation with DADA2
+    //
     //plot aggregated quality profile for forward and reverse reads separately
     if (single_end) {
         ch_trimmed_reads
@@ -378,9 +372,9 @@ workflow AMPLISEQ {
     //merge cutadapt_summary and dada_stats files
     MERGE_STATS (CUTADAPT_WORKFLOW.out.summary, DADA2_MERGE.out.dada2stats)
 
-    /*
-     * SUBWORKFLOW / MODULES : Taxonomic classification with DADA2 and/or QIIME2
-     */
+    //
+    // SUBWORKFLOW / MODULES : Taxonomic classification with DADA2 and/or QIIME2
+    //
     //Alternative entry point for fasta that is being classified - the if clause needs to be the opposite (i.e. with !) of that in subworkflow/local/parse.nf
     if ( !(params.input.toString().toLowerCase().endsWith(".fasta") || params.input.toString().toLowerCase().endsWith(".fna") || params.input.toString().toLowerCase().endsWith(".fa") )) {
         ch_fasta = DADA2_MERGE.out.fasta
@@ -437,9 +431,9 @@ workflow AMPLISEQ {
         )
         ch_software_versions = ch_software_versions.mix( QIIME2_TAXONOMY.out.version.ifEmpty(null) ) //usually a .first() is here, dont know why this leads here to a warning
     }
-    /*
-     * SUBWORKFLOW / MODULES : Downstream analysis with QIIME2
-     */
+    //
+    // SUBWORKFLOW / MODULES : Downstream analysis with QIIME2
+    //
     if ( run_qiime2 ) {
         //Import ASV abundance table and sequences into QIIME2
         QIIME2_INASV ( DADA2_MERGE.out.asv )
@@ -525,42 +519,57 @@ workflow AMPLISEQ {
         }
     }
 
-    /*
-     * MODULE: Pipeline reporting
-     */
-    GET_SOFTWARE_VERSIONS ( 
+    //
+    // MODULE: Pipeline reporting
+    //
+    ch_software_versions
+        .map { it -> if (it) [ it.baseName, it ] }
+        .groupTuple()
+        .map { it[1][0] }
+        .flatten()
+        .collect()
+        .set { ch_software_versions }
+
+    GET_SOFTWARE_VERSIONS (
         ch_software_versions.map { it }.collect()
     )
 
-    /*
-     * MultiQC
-     */
+    //
+    // MODULE: MultiQC
+    //
     if (!params.skip_multiqc) {
-        workflow_summary    = MultiqcSchema.params_summary_multiqc(workflow, params.summary_params)
+        workflow_summary    = WorkflowAmpliseq.paramsSummaryMultiqc(workflow, summary_params)
         ch_workflow_summary = Channel.value(workflow_summary)
 
+        ch_multiqc_files = Channel.empty()
+        ch_multiqc_files = ch_multiqc_files.mix(Channel.from(ch_multiqc_config))
+        ch_multiqc_files = ch_multiqc_files.mix(ch_multiqc_custom_config.collect().ifEmpty([]))
+        ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+        ch_multiqc_files = ch_multiqc_files.mix(GET_SOFTWARE_VERSIONS.out.yaml.collect())
+        ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
+
         MULTIQC (
-            ch_multiqc_config,
-            ch_multiqc_custom_config.collect().ifEmpty([]),
-            GET_SOFTWARE_VERSIONS.out.yaml.collect(),
-            ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'),
-            FASTQC.out.zip.collect{it[1]}.ifEmpty([]),
-            CUTADAPT_WORKFLOW.out.logs.collect{it[1]}.ifEmpty([])
+            ch_multiqc_files.collect()
         )
-        multiqc_report = MULTIQC.out.report.toList()
+        multiqc_report       = MULTIQC.out.report.toList()
+        ch_software_versions = ch_software_versions.mix(MULTIQC.out.version.ifEmpty(null))
     }
 
 }
 
-////////////////////////////////////////////////////
-/* --              COMPLETION EMAIL            -- */
-////////////////////////////////////////////////////
+/*
+========================================================================================
+    COMPLETION EMAIL AND SUMMARY
+========================================================================================
+*/
 
 workflow.onComplete {
-    Completion.email(workflow, params, params.summary_params, projectDir, log, multiqc_report)
-    Completion.summary(workflow, params, log)
+    NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
+    NfcoreTemplate.summary(workflow, params, log)
 }
 
-////////////////////////////////////////////////////
-/* --                  THE END                 -- */
-////////////////////////////////////////////////////
+/*
+========================================================================================
+    THE END
+========================================================================================
+*/

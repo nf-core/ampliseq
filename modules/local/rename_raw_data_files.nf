@@ -8,11 +8,11 @@ process RENAME_RAW_DATA_FILES {
     tag "$meta.id"
     label 'process_low'
 
-    conda (params.enable_conda ? 'bioconda::cutadapt=3.2' : null)
+    conda (params.enable_conda ? "conda-forge::sed=4.7" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container 'https://depot.galaxyproject.org/singularity/cutadapt:3.2--py38h0213d0e_0'
+        container "https://containers.biocontainers.pro/s3/SingImgsRepo/biocontainers/v1.2.0_cv1/biocontainers_v1.2.0_cv1.img"
     } else {
-        container 'quay.io/biocontainers/cutadapt:3.2--py38h0213d0e_0'
+        container "biocontainers/biocontainers:v1.2.0_cv1"
     }
 
     input:

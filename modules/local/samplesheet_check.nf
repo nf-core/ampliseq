@@ -5,6 +5,8 @@ params.options = [:]
 
 process SAMPLESHEET_CHECK {
     tag "$samplesheet"
+    label 'process_low'
+
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:'pipeline_info', meta:[:], publish_by_meta:[]) }

@@ -17,7 +17,7 @@ process TRUNCLEN {
 
     input:
     tuple val(meta), path(qual_stats)
-    
+
     output:
     tuple val(meta), stdout
 

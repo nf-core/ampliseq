@@ -20,7 +20,7 @@ process DADA2_STATS {
 
     input:
     tuple val(meta), path("filter_and_trim_files/*"), path(denoised), path(mergers), path(seqtab_nochim)
-    
+
     output:
     tuple val(meta), path("*.stats.tsv"), emit: stats
     path "*.version.txt"                , emit: version

@@ -22,7 +22,7 @@ process DADA2_TAXONOMY {
     path(fasta)
     path(database)
     val(outfile)
-    
+
     output:
     path(outfile), emit: tsv
     path( "ASV_tax.rds" ), emit: rds

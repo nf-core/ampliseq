@@ -17,7 +17,7 @@ process DADA2_DEREPLICATE {
 
     input:
     tuple val(meta), path(reads)
-    
+
     output:
     tuple val(meta), path("*.derep.rds"), emit: dereplicated
     path "*.version.txt"                , emit: version

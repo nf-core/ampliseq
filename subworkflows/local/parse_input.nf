@@ -12,7 +12,7 @@ workflow PARSE_INPUT {
     single_end
     multiple_sequencing_runs
     extension
-    
+
     main:
     if ( input.toString().toLowerCase().endsWith(".fasta") || input.toString().toLowerCase().endsWith(".fna") || input.toString().toLowerCase().endsWith(".fa") ) {
         // Fasta input directely for classification
@@ -20,7 +20,7 @@ workflow PARSE_INPUT {
         ch_reads = Channel.empty()
     } else {
         ch_fasta = Channel.empty()
-        
+
         if ( input.toString().toLowerCase().endsWith("tsv") ) {
             // Sample sheet input
 
@@ -43,11 +43,11 @@ workflow PARSE_INPUT {
                     .fromPath( input + folders + extension )
                     .ifEmpty { exit 1, "Cannot find any reads matching: \"${input}${extension}\"\nPlease revise the input folder (\"--input\"): \"${input}\"\nand the input file pattern (\"--extension\"): \"${extension}\"\nIf you have multiple sequencing runs, please add \"--multiple_sequencing_runs\".\nNB: Path needs to be enclosed in quotes!" }
                     .map { read ->
-                        	def meta = [:]
-                        	meta.id           = read.baseName.toString().indexOf("_") != -1 ? read.baseName.toString().take(read.baseName.toString().indexOf("_")) : read.baseName
-                        	meta.single_end   = single_end.toBoolean()
-                        	meta.run          = multiple_sequencing_runs ? read.take(read.findLastIndexOf{"/"})[-1] : "1"
-                        	[ meta, read ] }
+                            def meta = [:]
+                            meta.id           = read.baseName.toString().indexOf("_") != -1 ? read.baseName.toString().take(read.baseName.toString().indexOf("_")) : read.baseName
+                            meta.single_end   = single_end.toBoolean()
+                            meta.run          = multiple_sequencing_runs ? read.take(read.findLastIndexOf{"/"})[-1] : "1"
+                            [ meta, read ] }
                     .set { ch_reads }
             } else {
                 //Get files - paired end
@@ -55,11 +55,11 @@ workflow PARSE_INPUT {
                     .fromFilePairs( input + folders + extension, size: 2 )
                     .ifEmpty { exit 1, "Cannot find any reads matching: \"${input}${extension}\"\nPlease revise the input folder (\"--input\"): \"${input}\"\nand the input file pattern (\"--extension\"): \"${extension}\"\nIf you have multiple sequencing runs, please add \"--multiple_sequencing_runs\".\nNB: Path needs to be enclosed in quotes!" }
                     .map { name, reads ->
-                        	def meta = [:]
-                        	meta.id           = name.toString().indexOf("_") != -1 ? name.toString().take(name.toString().indexOf("_")) : name
-                        	meta.single_end   = single_end.toBoolean()
-                        	meta.run          = multiple_sequencing_runs ? reads[0].take(reads[0].findLastIndexOf{"/"})[-1] : "1"
-                        	[ meta, reads ] }
+                            def meta = [:]
+                            meta.id           = name.toString().indexOf("_") != -1 ? name.toString().take(name.toString().indexOf("_")) : name
+                            meta.single_end   = single_end.toBoolean()
+                            meta.run          = multiple_sequencing_runs ? reads[0].take(reads[0].findLastIndexOf{"/"})[-1] : "1"
+                            [ meta, reads ] }
                     .set { ch_reads }
             }
             if (multiple_sequencing_runs) {

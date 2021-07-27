@@ -21,7 +21,7 @@ process DADA2_DENOISING {
 
     input:
     tuple val(meta), path(dereplicated), path(errormodel)
-    
+
     output:
     tuple val(meta), path("*.dada.rds")   , emit: denoised
     tuple val(meta), path("*.seqtab.rds") , emit: seqtab

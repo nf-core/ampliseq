@@ -20,7 +20,7 @@ process DADA2_MERGE {
     input:
     path(files)
     path(rds)
-    
+
     output:
     path( "DADA2_stats.tsv" ), emit: dada2stats
     path( "DADA2_table.tsv" ), emit: dada2asv

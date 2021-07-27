@@ -16,7 +16,7 @@ process QIIME2_INTAX {
 
     input:
     path(tax) //ASV_tax_species.tsv
-    
+
     output:
     path("taxonomy.qza") , emit: qza
     path "*.version.txt" , emit: version

@@ -55,8 +55,8 @@ if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
 // Set non-params Variables
 
 single_end = params.single_end
-if (  params.pacbio || params.iontorrent ) {
-   single_end = true
+if (params.pacbio || params.iontorrent) {
+    single_end = true
 }
 
 trunclenf = params.trunclenf ? params.trunclenf : 0
@@ -286,7 +286,7 @@ workflow AMPLISEQ {
             .set { ch_all_trimmed_reads }
     }
     DADA2_QUALITY ( ch_all_trimmed_reads )
-    
+
     //find truncation values in case they are not supplied
     if ( find_truncation_values ) {
         TRUNCLEN ( DADA2_QUALITY.out.tsv )
@@ -486,7 +486,7 @@ workflow AMPLISEQ {
             //return empty channel if no appropriate column was found
             ch_metacolumn_all.branch { passed: it != "" }.set { result }
             ch_metacolumn_all = result.passed
-    
+
             METADATA_PAIRWISE ( ch_metadata ).set { ch_metacolumn_pairwise }
         } else {
             ch_metacolumn_all = Channel.empty()
@@ -506,9 +506,9 @@ workflow AMPLISEQ {
                 params.skip_diversity_indices
             )
         }
-        
+
         //Perform ANCOM tests
-        if ( !params.skip_ancom && params.metadata ) {	
+        if ( !params.skip_ancom && params.metadata ) {
             QIIME2_ANCOM (
                 ch_metadata,
                 ch_asv,

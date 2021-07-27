@@ -10,7 +10,7 @@ process FORMAT_TAXONOMY_QIIME {
 
     input:
     path(database)
-    
+
     output:
     path( "*.tax" ), emit: tax
     path( "*.fna" ), emit: fasta

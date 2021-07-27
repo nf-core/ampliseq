@@ -13,7 +13,7 @@ workflow QIIME2_PREPTAX {
     ch_dada_ref_taxonomy //channel, list of files
     FW_primer //val
     RV_primer //val
-    
+
     main:
     FORMAT_TAXONOMY_QIIME ( ch_dada_ref_taxonomy )
 

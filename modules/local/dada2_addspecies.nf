@@ -23,7 +23,7 @@ process DADA2_ADDSPECIES {
     path(taxtable)
     path(database)
     val(outfile)
-    
+
     output:
     path(outfile)       , emit: tsv
     path "*.version.txt", emit: version

@@ -86,7 +86,7 @@ class WorkflowMain {
     // Exit pipeline if incorrect --dada_ref_taxonomy key provided
     //
     private static void dadareftaxonomyExistsError(params, log) {
-       if (params.dada_ref_databases && params.dada_ref_taxonomy && !params.dada_ref_databases.containsKey(params.dada_ref_taxonomy)) {
+        if (params.dada_ref_databases && params.dada_ref_taxonomy && !params.dada_ref_databases.containsKey(params.dada_ref_taxonomy)) {
             log.error "=============================================================================\n" +
                 "  DADA2 reference database '${params.dada_ref_taxonomy}' not found in any config files provided to the pipeline.\n" +
                 "  Currently, the available reference taxonomy keys for `--dada_ref_taxonomy` are:\n" +
@@ -100,7 +100,7 @@ class WorkflowMain {
     // Exit pipeline if incorrect --qiime_ref_taxonomy key provided
     //
     private static void qiimereftaxonomyExistsError(params, log) {
-       if (params.qiime_ref_databases && params.qiime_ref_taxonomy && !params.qiime_ref_databases.containsKey(params.qiime_ref_taxonomy)) {
+        if (params.qiime_ref_databases && params.qiime_ref_taxonomy && !params.qiime_ref_databases.containsKey(params.qiime_ref_taxonomy)) {
             log.error "=============================================================================\n" +
                 "  QIIME2 reference database '${params.qiime_ref_taxonomy}' not found in any config files provided to the pipeline.\n" +
                 "  Currently, the available reference taxonomy keys for `--qiime_ref_taxonomy` are:\n" +

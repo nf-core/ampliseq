@@ -12,10 +12,10 @@ if argv[1] != "single_end" and argv[1] != "paired_end":
     exit(usage)
 
 regexes = [r" -o (\S+) ",
-           r"Total (?:read pairs|reads) processed:\s+([0-9,,]+)",
-           r"Reverse-complemented:\s+([0-9,,]+)",
-           r"(?:Pairs|Reads) written .+?:\s+([0-9,,]+)",
-           r"(?:Pairs|Reads) written .+?:.*?\(([^)]+)"]
+    r"Total (?:read pairs|reads) processed:\s+([0-9,,]+)",
+    r"Reverse-complemented:\s+([0-9,,]+)",
+    r"(?:Pairs|Reads) written .+?:\s+([0-9,,]+)",
+    r"(?:Pairs|Reads) written .+?:.*?\(([^)]+)"]
 
 columns = ["sample", "cutadapt_total_processed", "cutadapt_reverse_complemented", "cutadapt_passing_filters", "cutadapt_passing_filters_percent"]
 
@@ -33,10 +33,10 @@ for FILE in argv[2:]:
                 results.append("")
 
         #modify sample names
-        if argv[1] == "single_end":	
+        if argv[1] == "single_end":
             results[0] = results[0].replace(".double-primer.trim.fastq.gz","")
             results[0] = results[0].replace(".trim.fastq.gz","")
-        if argv[1] == "paired_end":	
+        if argv[1] == "paired_end":
             results[0] = results[0].replace(".double-primer_1.trim.fastq.gz","")
             results[0] = results[0].replace("_1.trim.fastq.gz","")
 

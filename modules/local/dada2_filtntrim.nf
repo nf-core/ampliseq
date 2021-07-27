@@ -20,7 +20,7 @@ process DADA2_FILTNTRIM {
 
     input:
     tuple val(meta), path(reads), val(trunclenf), val(trunclenr)
-    
+
     output:
     tuple val(meta), path("*.filter_stats.tsv"), emit: log
     tuple val(meta), path("*.filt.fastq.gz")   , emit: reads

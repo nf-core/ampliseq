@@ -11,7 +11,7 @@ workflow QIIME2_TAXONOMY {
     take:
     ch_fasta
     ch_classifier
-    
+
     main:	
     QIIME2_INSEQ ( ch_fasta )
     QIIME2_CLASSIFY ( ch_classifier, QIIME2_INSEQ.out.qza )

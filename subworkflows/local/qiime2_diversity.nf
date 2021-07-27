@@ -26,8 +26,8 @@ workflow QIIME2_DIVERSITY {
     ch_metacolumn_all //METADATA_ALL.out
     skip_alpha_rarefaction
     skip_diversity_indices
-    
-    main:	
+
+    main:
     //Phylogenetic tree for beta & alpha diversities
     QIIME2_TREE ( ch_seq )
 

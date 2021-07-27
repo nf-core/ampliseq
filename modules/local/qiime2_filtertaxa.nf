@@ -57,7 +57,7 @@ process QIIME2_FILTERTAXA {
         --p-min-frequency ${min_frequency} \
         --p-min-samples ${min_samples} \
         --o-filtered-table filtered-table.qza
-    
+
     qiime feature-table filter-seqs \
         --i-data \$filtered_sequences \
         --i-table filtered-table.qza \

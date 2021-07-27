@@ -20,7 +20,7 @@ process DADA2_ERR {
 
     input:
     tuple val(meta), path(reads)
-    
+
     output:
     tuple val(meta), path("*.err.rds"), emit: errormodel
     tuple val(meta), path("*.err.pdf"), emit: pdf
@@ -53,7 +53,7 @@ process DADA2_ERR {
         pdf("${meta.run}_2.err.pdf")
         plotErrors(errR, nominalQ = TRUE)
         dev.off()
-        
+
         sink(file = "${meta.run}_1.err.convergence.txt")
         dada2:::checkConvergence(errF)
         sink(file = NULL)

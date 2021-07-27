@@ -17,7 +17,7 @@ process QIIME2_EXTRACT {
 
     input:
     tuple val(meta), path(database)
-    
+
     output:
     tuple val(meta), path("*.qza"), emit: qza
     path "*.version.txt"          , emit: version

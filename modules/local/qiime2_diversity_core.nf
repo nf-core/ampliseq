@@ -27,7 +27,7 @@ process QIIME2_DIVERSITY_CORE {
     path("*rarefaction.txt")                    , emit: depth
 
     script:
-    def software     = getSoftwareName(task.process) 
+    def software     = getSoftwareName(task.process)
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
 

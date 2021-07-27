@@ -18,7 +18,7 @@ class WorkflowAmpliseq {
             System.exit(1)
         }
 
-        if (params.double_primer && params.retain_untrimmed) { 
+        if (params.double_primer && params.retain_untrimmed) {
             log.error "Incompatible parameters `--double_primer` and `--retain_untrimmed` cannot be set at the same time."
             System.exit(1)
         }

@@ -18,7 +18,7 @@ readfiles <- sort(list.files(".", pattern = ".fastq.gz", full.names = TRUE))
 plot <- plotQualityProfile(readfiles, n = number_of_records, aggregate = TRUE)
 data <- plot$data
 
-df <- data.frame(Cycle=character(), Count=character(), Median=character(), stringsAsFactors=FALSE) 
+df <- data.frame(Cycle=character(), Count=character(), Median=character(), stringsAsFactors=FALSE)
 cycles <- sort(unique(data$Cycle))
 
 #aggregate data for each sequencing cycle
@@ -28,7 +28,7 @@ for (cycle in cycles) {
     #convert to list to calculate median
     for (j in 1:nrow(subdata)) {score <- unlist(c(score, rep(subdata$Score[j], subdata$Count[j])))}
     temp = data.frame(Cycle=cycle, Count=sum(subdata$Count), Median=median(score), stringsAsFactors=FALSE)
-    df <- rbind(df, temp) 
+    df <- rbind(df, temp)
 }
 
 #write output

@@ -43,10 +43,10 @@ Re-wrote whole pipeline in nextflow [DSL2](https://www.nextflow.io/docs/latest/d
 ### `Changed`
 
 * [#254](https://github.com/nf-core/ampliseq/pull/254) - Updated CamelCase parameters to be lower_case_snake_case:
-  * `multipleSequencingRuns` to `multiple_sequencing_runs`
-  * `minLen` to `min_len`
-  * `maxLen` to `max_len`
-  * `maxEE` to `max_ee`
+    * `multipleSequencingRuns` to `multiple_sequencing_runs`
+    * `minLen` to `min_len`
+    * `maxLen` to `max_len`
+    * `maxEE` to `max_ee`
 * [#277](https://github.com/nf-core/ampliseq/pull/277) - Requires nextflow version `>= 21.04.0`
 
 ### `Fixed`

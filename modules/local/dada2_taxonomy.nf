@@ -41,8 +41,8 @@ process DADA2_TAXONOMY {
 
     # Make a data frame, add ASV_ID from seq, set confidence to the bootstrap for the most specific taxon and reorder columns before writing to file
     tx <- data.frame(ASV_ID = names(seq), taxa, sequence = row.names(taxa\$tax), row.names = names(seq))
-    tx\$confidence <- with(tx, 
-        ifelse(!is.na(tax.Genus), boot.Genus, 
+    tx\$confidence <- with(tx,
+        ifelse(!is.na(tax.Genus), boot.Genus,
             ifelse(!is.na(tax.Family), boot.Family,
                 ifelse(!is.na(tax.Order), boot.Order,
                     ifelse(!is.na(tax.Class), boot.Class,

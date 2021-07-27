@@ -35,10 +35,10 @@ Please note the following additional requirements:
 
 The sample sheet file is an alternative way to provide input reads, it must be a tab-separated file ending with `.tsv` that must have two to four columns with the following headers:
 
-  * sampleID (required): Unique sample identifiers, any unique string (may not contain dots .)
-  * forwardReads (required): Paths to (forward) reads zipped FastQ files
-  * reverseReads (optional): Paths to reverse reads zipped FastQ files, required if the data is paired-end
-  * run (optional): If the data was produced by multiple sequencing runs, any string
+    * sampleID (required): Unique sample identifiers, any unique string (may not contain dots .)
+    * forwardReads (required): Paths to (forward) reads zipped FastQ files
+    * reverseReads (optional): Paths to reverse reads zipped FastQ files, required if the data is paired-end
+    * run (optional): If the data was produced by multiple sequencing runs, any string
 
 ```console
 --input '[path to samplesheet file]'
@@ -148,10 +148,10 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
 * `charliecloud`
     * A generic configuration profile to be used with [Charliecloud](https://hpc.github.io/charliecloud/)
 * `conda`
-  * A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter or Charliecloud.
+    * A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter or Charliecloud.
 * `test`, `test_multi`, `test_full`, `test_pacbio_its`, `test_iontorrent`, `test_doubleprimers`
-  * Profiles with a complete configuration for automated testing
-  * Includes links to test data so needs no other parameters
+    * Profiles with a complete configuration for automated testing
+    * Includes links to test data so needs no other parameters
 
 ### `-resume`
 

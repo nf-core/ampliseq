@@ -47,6 +47,6 @@ process QIIME2_DIVERSITY_BETA {
         mkdir beta_diversity
         echo "" > "beta_diversity/WARNING No column in ${metadata.baseName} seemed suitable.txt"
         echo \$(qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g") > ${software}.version.txt
-        """        
+        """
     }
 }

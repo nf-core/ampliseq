@@ -53,9 +53,9 @@ process DADA2_STATS {
 
         #track reads through pipeline
         getN <- function(x) sum(getUniques(x))
-        if ( nrow(filter_and_trim) == 1 ) { 
+        if ( nrow(filter_and_trim) == 1 ) {
             track <- cbind(filter_and_trim, getN(dadaFs), getN(dadaRs), getN(mergers), rowSums(seqtab.nochim))
-        } else { 
+        } else {
             track <- cbind(filter_and_trim, sapply(dadaFs, getN), sapply(dadaRs, getN), sapply(mergers, getN), rowSums(seqtab.nochim))
         }
         colnames(track) <- c("DADA2_input", "filtered", "denoisedF", "denoisedR", "merged", "nonchim")
@@ -89,9 +89,9 @@ process DADA2_STATS {
 
         #track reads through pipeline
         getN <- function(x) sum(getUniques(x))
-        if ( nrow(filter_and_trim) == 1 ) { 
+        if ( nrow(filter_and_trim) == 1 ) {
             track <- cbind(filter_and_trim, getN(dadaFs), rowSums(seqtab.nochim))
-        } else { 
+        } else {
             track <- cbind(filter_and_trim, sapply(dadaFs, getN), rowSums(seqtab.nochim))
         }
         colnames(track) <- c("input", "filtered", "denoised", "nonchim")
@@ -99,6 +99,6 @@ process DADA2_STATS {
         write.table( track, file = "${meta.run}.stats.tsv", sep = "\t", row.names = FALSE, quote = FALSE)
 
         write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
-        """        
+        """
     }
 }

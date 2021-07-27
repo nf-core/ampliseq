@@ -59,7 +59,7 @@ if (  params.pacbio || params.iontorrent ) {
    single_end = true
 }
 
-trunclenf = params.trunclenf ? params.trunclenf : 0 
+trunclenf = params.trunclenf ? params.trunclenf : 0
 trunclenr = params.trunclenr ? params.trunclenr : 0
 if ( !single_end && !params.illumina_pe_its && (params.trunclenf == false || params.trunclenr == false) ) {
     find_truncation_values = true
@@ -96,7 +96,7 @@ if (params.pacbio) {
     dada2_filtntrim_options.args   += ", trimLeft = 0, minLen = $params.min_len, maxLen = $params.max_len, rm.phix = TRUE"
 }
 
-def dada2_quality_options = modules['dada2_quality'] 
+def dada2_quality_options = modules['dada2_quality']
 
 def trunclen_options = [:]
 trunclen_options.args       ="$params.trunc_qmin $params.trunc_rmin"
@@ -135,7 +135,7 @@ include { DADA2_RMCHIMERA               } from '../modules/local/dada2_rmchimera
 include { DADA2_STATS                   } from '../modules/local/dada2_stats'                  addParams( options: modules['dada2_stats']          )
 include { DADA2_MERGE                   } from '../modules/local/dada2_merge'                  addParams( options: modules['dada2_merge']          )
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
-include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'                  addParams( options: modules['itsx_cutasv']          )         
+include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'                  addParams( options: modules['itsx_cutasv']          )
 include { MERGE_STATS                   } from '../modules/local/merge_stats'                  addParams( options: modules['merge_stats']          )
 include { DADA2_TAXONOMY                } from '../modules/local/dada2_taxonomy'               addParams( options: dada2_taxonomy_options          )
 include { DADA2_ADDSPECIES              } from '../modules/local/dada2_addspecies'             addParams( options: dada2_addspecies_options        )
@@ -253,7 +253,7 @@ workflow AMPLISEQ {
     //
     // MODULE: Cutadapt
     //
-    CUTADAPT_WORKFLOW ( 
+    CUTADAPT_WORKFLOW (
         RENAME_RAW_DATA_FILES.out,
         params.illumina_pe_its,
         params.double_primer
@@ -294,13 +294,13 @@ workflow AMPLISEQ {
             .toSortedList()
             .set { ch_trunc }
         //add one more warning or reminder that trunclenf and trunclenr were chosen automatically
-        ch_trunc.subscribe { 
+        ch_trunc.subscribe {
             if ( "${it[0][1]}".toInteger() + "${it[1][1]}".toInteger() <= 10 ) { log.warn "`--trunclenf` was set to ${it[0][1]} and `--trunclenr` to ${it[1][1]}, this is too low! Please either change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr`." }
             else if ( "${it[0][1]}".toInteger() <= 10 ) { log.warn "`--trunclenf` was set to ${it[0][1]}, this is too low! Please either change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr`." }
             else if ( "${it[1][1]}".toInteger() <= 10 ) { log.warn "`--trunclenr` was set to ${it[1][1]}, this is too low! Please either change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr`." }
             else log.warn "Probably everything is fine, but this is a reminder that `--trunclenf` was set automatically to ${it[0][1]} and `--trunclenr` to ${it[1][1]}. If this doesnt seem reasonable, then please change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr` directly."
         }
-    } else { 
+    } else {
         Channel.from( [['FW', trunclenf], ['RV', trunclenr]] )
             .toSortedList()
             .set { ch_trunc }
@@ -364,8 +364,8 @@ workflow AMPLISEQ {
     DADA2_STATS ( ch_track_numbers )
 
     //merge if several runs, otherwise just publish
-    DADA2_MERGE ( 
-        DADA2_STATS.out.stats.map { meta, stats -> stats }.collect(), 
+    DADA2_MERGE (
+        DADA2_STATS.out.stats.map { meta, stats -> stats }.collect(),
         DADA2_RMCHIMERA.out.rds.map { meta, rds -> rds }.collect() )
 
     //merge cutadapt_summary and dada_stats files
@@ -387,10 +387,10 @@ workflow AMPLISEQ {
         //Cut taxonomy to expected amplicon
         if (params.cut_dada_ref_taxonomy) {
             ch_assigntax
-                .map { 
-                    db -> 
+                .map {
+                    db ->
                         def meta = [:]
-                        meta.single_end = true 
+                        meta.single_end = true
                         meta.id = "assignTaxonomy"
                         [ meta, db ] }
                 .set { ch_assigntax }
@@ -424,7 +424,7 @@ workflow AMPLISEQ {
             )
             ch_qiime_classifier = QIIME2_PREPTAX.out.classifier
         }
-        QIIME2_TAXONOMY ( 
+        QIIME2_TAXONOMY (
             ch_fasta,
             ch_qiime_classifier
         )
@@ -448,9 +448,9 @@ workflow AMPLISEQ {
         } else if ( params.qiime_ref_taxonomy || params.classifier ) {
             log.info "Use QIIME2 taxonomy classification"
             ch_tax = QIIME2_TAXONOMY.out.qza
-        } else { 
+        } else {
             log.info "Use no taxonomy classification"
-            ch_tax = Channel.empty() 
+            ch_tax = Channel.empty()
         }
 
         //Filtering by taxonomy & prevalence & counts
@@ -488,14 +488,14 @@ workflow AMPLISEQ {
             ch_metacolumn_all = result.passed
     
             METADATA_PAIRWISE ( ch_metadata ).set { ch_metacolumn_pairwise }
-        } else { 
+        } else {
             ch_metacolumn_all = Channel.empty()
             ch_metacolumn_pairwise = Channel.empty()
         }
 
         //Diversity indices
         if ( params.metadata && (!params.skip_alpha_rarefaction || !params.skip_diversity_indices) ) {
-            QIIME2_DIVERSITY ( 
+            QIIME2_DIVERSITY (
                 ch_metadata,
                 ch_asv,
                 ch_seq,

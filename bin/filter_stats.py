@@ -4,7 +4,7 @@
 # and reports how much counts were filtered.
 
 import pandas as pd
-import sys 
+import sys
 
 #argument check
 if len(sys.argv) != 3:

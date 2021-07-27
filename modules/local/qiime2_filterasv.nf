@@ -48,6 +48,6 @@ process QIIME2_FILTERASV {
         mkdir beta_diversity
         echo "" > "WARNING No column in ${metadata.baseName} seemed suitable.qza"
         echo \$(qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g") > ${software}.version.txt
-        """        
+        """
     }
 }

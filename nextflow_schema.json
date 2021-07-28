@@ -171,11 +171,10 @@
                     "fa_icon": "fas fa-equals"
                 },
                 "max_len": {
-                    "type": "string",
-                    "description": "DADA2 read filtering optio",
+                    "type": "integer",
+                    "description": "DADA2 read filtering option",
                     "fa_icon": "fas fa-less-than-equal",
-                    "help_text": "Remove reads with length greater than `max_len` after trimming and truncation. Must be a positive integer. Default is \"Inf\", therefore no removal of any reads.",
-                    "default": "Inf"
+                    "help_text": "Remove reads with length greater than `max_len` after trimming and truncation. Must be a positive integer."
                 },
                 "min_len": {
                     "type": "integer",

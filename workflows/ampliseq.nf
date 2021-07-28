@@ -59,6 +59,8 @@ if (params.pacbio || params.iontorrent) {
     single_end = true
 }
 
+max_len = params.max_len ? params.max_len : "Inf"
+
 trunclenf = params.trunclenf ? params.trunclenf : 0
 trunclenr = params.trunclenr ? params.trunclenr : 0
 if ( !single_end && !params.illumina_pe_its && (params.trunclenf == false || params.trunclenr == false) ) {
@@ -84,16 +86,16 @@ def dada2_filtntrim_options = modules['dada2_filtntrim']
 dada2_filtntrim_options.args       += single_end ? ", maxEE = $params.max_ee" : ", maxEE = c($params.max_ee, $params.max_ee)"
 if (params.pacbio) {
     //PacBio data
-    dada2_filtntrim_options.args   +=", trimLeft = 0, minLen = $params.min_len, maxLen = $params.max_len, rm.phix = FALSE"
+    dada2_filtntrim_options.args   +=", trimLeft = 0, minLen = $params.min_len, maxLen = $max_len, rm.phix = FALSE"
 } else if (params.iontorrent) {
     //Ion-torrent data
-    dada2_filtntrim_options.args   += ", trimLeft = 15, minLen = $params.min_len, maxLen = $params.max_len, rm.phix = TRUE"
+    dada2_filtntrim_options.args   += ", trimLeft = 15, minLen = $params.min_len, maxLen = $max_len, rm.phix = TRUE"
 } else if (params.illumina_pe_its) {
     //Illumina ITS data or other sequences with high length variability
-    dada2_filtntrim_options.args   += ", trimLeft = 0, minLen = $params.min_len, maxLen = $params.max_len, rm.phix = TRUE"
+    dada2_filtntrim_options.args   += ", trimLeft = 0, minLen = $params.min_len, maxLen = $max_len, rm.phix = TRUE"
 } else {
     //Illumina 16S data
-    dada2_filtntrim_options.args   += ", trimLeft = 0, minLen = $params.min_len, maxLen = $params.max_len, rm.phix = TRUE"
+    dada2_filtntrim_options.args   += ", trimLeft = 0, minLen = $params.min_len, maxLen = $max_len, rm.phix = TRUE"
 }
 
 def dada2_quality_options = modules['dada2_quality']

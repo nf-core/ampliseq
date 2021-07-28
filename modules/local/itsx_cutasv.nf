@@ -19,7 +19,7 @@ process ITSX_CUTASV {
 
     input:
     path fasta
-    
+
     output:
     path "ASV_ITS_seqs.full.fasta", emit: fasta
     path "*.version.txt"          , emit: version

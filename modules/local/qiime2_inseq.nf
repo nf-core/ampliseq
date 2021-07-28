@@ -16,7 +16,7 @@ process QIIME2_INSEQ {
 
     input:
     path(seq)
-    
+
     output:
     path("rep-seqs.qza"), emit: qza
     path "*.version.txt", emit: version

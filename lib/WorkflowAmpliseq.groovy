@@ -1,11 +1,33 @@
-/*
- * This file holds several functions used to perform JSON parameter validation, help and summary rendering for the nf-core pipeline template.
- */
+//
+// This file holds several functions specific to the workflow/ampliseq.nf in the nf-core/ampliseq pipeline
+//
 
-import groovy.json.JsonSlurper
+class WorkflowAmpliseq {
 
-class MultiqcSchema {
-    static String params_summary_multiqc(workflow, summary) {
+    //
+    // Check and validate parameters
+    //
+    public static void initialise(params, log) {
+        if (params.enable_conda) { log.warn "Conda is enabled (`--enable_conda`), any steps involving QIIME2 are not available. Use a container engine instead of conda to enable all software." }
+
+        if (!["pooled", "independent", "pseudo"].contains(params.sample_inference)) {
+            log.error "Please set `--sample_inference` to one of the following:\n" +
+                "\t-\"independent\" (lowest sensitivity and lowest resources),\n" +
+                "\t-\"pseudo\" (balance between required resources and sensitivity),\n" +
+                "\t-\"pooled\" (highest sensitivity and resources)."
+            System.exit(1)
+        }
+
+        if (params.double_primer && params.retain_untrimmed) {
+            log.error "Incompatible parameters `--double_primer` and `--retain_untrimmed` cannot be set at the same time."
+            System.exit(1)
+        }
+    }
+
+    //
+    // Get workflow summary for MultiQC
+    //
+    public static String paramsSummaryMultiqc(workflow, summary) {
         String summary_section = ''
         for (group in summary.keySet()) {
             def group_params = summary.get(group)  // This gets the parameters of that particular group

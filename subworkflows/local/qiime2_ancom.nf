@@ -16,8 +16,8 @@ workflow QIIME2_ANCOM {
     ch_asv
     ch_metacolumn_all
     ch_tax
-    
-    main:	
+
+    main:
     //Filter ASV table to get rid of samples that have no metadata values
     QIIME2_FILTERASV ( ch_metadata, ch_asv, ch_metacolumn_all )
 

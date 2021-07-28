@@ -21,7 +21,7 @@ process DADA2_DENOISING {
 
     input:
     tuple val(meta), path(dereplicated), path(errormodel)
-    
+
     output:
     tuple val(meta), path("*.dada.rds")   , emit: denoised
     tuple val(meta), path("*.seqtab.rds") , emit: seqtab
@@ -85,6 +85,6 @@ process DADA2_DENOISING {
 
         write.table('dada\t$options.args', file = "dada.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
         write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
-        """        
+        """
     }
 }

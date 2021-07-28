@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Untars a file ending with .gz downloaded from Unite, reformats a bit to 
+# Untars a file ending with .gz downloaded from Unite, reformats a bit to
 # assignTaxonomy.fna and reformats a copy to addSpecies.fna.
 
 # Untar the Unite file

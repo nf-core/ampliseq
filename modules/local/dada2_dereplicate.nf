@@ -17,7 +17,7 @@ process DADA2_DEREPLICATE {
 
     input:
     tuple val(meta), path(reads)
-    
+
     output:
     tuple val(meta), path("*.derep.rds"), emit: dereplicated
     path "*.version.txt"                , emit: version
@@ -50,6 +50,6 @@ process DADA2_DEREPLICATE {
         saveRDS(derepFs, "${meta.run}.derep.rds")
 
         write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
-        """        
+        """
     }
 }

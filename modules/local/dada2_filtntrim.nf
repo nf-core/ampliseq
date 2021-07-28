@@ -20,7 +20,7 @@ process DADA2_FILTNTRIM {
 
     input:
     tuple val(meta), path(reads), val(trunclenf), val(trunclenr)
-    
+
     output:
     tuple val(meta), path("*.filter_stats.tsv"), emit: log
     tuple val(meta), path("*.filt.fastq.gz")   , emit: reads
@@ -37,11 +37,11 @@ process DADA2_FILTNTRIM {
     #!/usr/bin/env Rscript
     suppressPackageStartupMessages(library(dada2))
 
-    out <- filterAndTrim($in_and_out, 
+    out <- filterAndTrim($in_and_out,
         $trunc_args,
         $options.args,
-        compress = TRUE, 
-        multithread = $task.cpus, 
+        compress = TRUE,
+        multithread = $task.cpus,
         verbose = TRUE)
     out <- cbind(out, ID = row.names(out))
 

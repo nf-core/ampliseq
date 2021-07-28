@@ -11,9 +11,9 @@ import sys
 from Bio import SeqIO
 
 usage = """create_unite_taxfile.py <unite.fa> <unite_fasta.fa> <unite_tax.txt>
-  <unite.fa> : Input. Fasta file from UNITE containing taxonomies in description line
-  <unite_fasta.fa> : Output. Name of fasta file.
-  <unite_tax.txt> : Output. Name of text file with taxonomies.
+    <unite.fa> : Input. Fasta file from UNITE containing taxonomies in description line
+    <unite_fasta.fa> : Output. Name of fasta file.
+    <unite_tax.txt> : Output. Name of text file with taxonomies.
 """
 
 #--- Check and read arguments ---#

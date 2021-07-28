@@ -18,11 +18,11 @@ workflow QIIME2_EXPORT {
     ch_seq
     ch_tax
     ch_tax_tsv
-    
+
     main:
     //export_filtered_dada_output (optional)
     QIIME2_EXPORT_ABSOLUTE ( ch_asv, ch_seq, ch_tax )
-    
+
     //RelativeAbundanceASV (optional)
     QIIME2_EXPORT_RELASV ( ch_asv )
 

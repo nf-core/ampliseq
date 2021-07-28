@@ -28,7 +28,7 @@ process QIIME2_ANCOM_ASV {
     def software     = getSoftwareName(task.process)
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
-    
+
     qiime composition add-pseudocount \
         --i-table ${table} \
         --o-composition-table comp-${table}

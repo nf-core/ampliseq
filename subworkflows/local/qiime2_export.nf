@@ -31,4 +31,9 @@ workflow QIIME2_EXPORT {
 
     //combine_table.r (optional), seems similar to DADA2_table.tsv but with additionally taxonomy merged
     COMBINE_TABLE ( QIIME2_EXPORT_RELASV.out.tsv, QIIME2_EXPORT_ABSOLUTE.out.fasta, ch_tax_tsv )
+
+    emit:
+    abs_fasta      = QIIME2_EXPORT_ABSOLUTE.out.fasta
+    abs_tsv        = QIIME2_EXPORT_ABSOLUTE.out.tsv
+    rel_tsv        = QIIME2_EXPORT_RELASV.out.tsv
 }

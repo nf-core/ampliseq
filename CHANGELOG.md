@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Fixed`
 
 * [#299](https://github.com/nf-core/ampliseq/pull/299), [#301](https://github.com/nf-core/ampliseq/pull/301)- Template update for nf-core/tools version 2.1
-* [#304](https://github.com/nf-core/ampliseq/pull/304) - `--max_len` now accepts integers as expected
+* [#305](https://github.com/nf-core/ampliseq/pull/305) - `--max_len` now accepts integers as expected
 
 ### `Dependencies`
 

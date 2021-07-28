@@ -26,9 +26,9 @@ process RENAME_RAW_DATA_FILES {
     if (meta.single_end) {
         """
         if [ ! -f  ${meta.id}.fastq.gz ]; then
-          ln -s $reads ${meta.id}.fastq.gz
+            ln -s $reads ${meta.id}.fastq.gz
         else
-          touch ${meta.id}.fastq.gz
+            touch ${meta.id}.fastq.gz
         fi
         """
     } else {

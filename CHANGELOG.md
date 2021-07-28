@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Fixed`
 
 * [#299](https://github.com/nf-core/ampliseq/pull/299), [#301](https://github.com/nf-core/ampliseq/pull/301)- Template update for nf-core/tools version 2.1
+* [#303](https://github.com/nf-core/ampliseq/pull/303) - Reverse primer of PacBio and IonTorrent reads should be now given to `--RV_primer` in usual direction (before: reverse complement)
 
 ### `Dependencies`
 

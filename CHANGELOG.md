@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
-* [#299](https://github.com/nf-core/ampliseq/pull/299) - Template update for nf-core/tools version 2.0.1
+* [#300](https://github.com/nf-core/ampliseq/pull/300) - Template update for nf-core/tools version 2.1
 
 ### `Dependencies`
 * [#299](https://github.com/nf-core/ampliseq/pull/299) - Updated MultiQC to v1.10

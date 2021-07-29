@@ -27,6 +27,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
                 * [Alpha diversity indices](#alpha-diversity-indices) - Diversity within samples
                 * [Beta diversity indices](#beta-diversity-indices) - Diversity between samples (e.g. PCoA plots)
             * [ANCOM](#ancom) - Differential abundance analysis
+        * [PICRUSt2](#picrust2) - Predict the functional potential of a bacterial community
         * [Read count report](#Read-count-report) - Report of read counts during various steps of the pipeline
         * [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
     * [Citations](#citations)
@@ -274,6 +275,26 @@ ANCOM is applied to each suitable or specified metadata column for 5 taxonomic l
         * taxonomic level: level-2 (phylum), level-3 (class), level-4 (order), level-5 (family), level-6 (genus), ASV
 
 </details>
+
+### PICRUSt2
+
+PICRUSt2 (Phylogenetic Investigation of Communities by Reconstruction of Unobserved States) is a software for predicting functional abundances based only on marker gene sequences. On demand (`--picrust`), Enzyme Classification numbers (EC), KEGG orthologs (KO) and MetaCyc ontology predictions will be made for each sample.
+
+PICRUSt2 is preferentially applied to filtered data by QIIME2 but will use DADA2 output in case QIIME2 isnt run.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+* `PICRUSt2/`
+    * `EC_pred_metagenome_unstrat_descrip.tsv`: Predicted quantifications for Enzyme Classification numbers (EC).
+    * `KO_pred_metagenome_unstrat_descrip.tsv`: Predicted quantifications for KEGG orthologs (KO).
+    * `METACYC_path_abun_unstrat_descrip.tsv`: Predicted quantifications for MetaCyc ontology.
+    * `picrust.args.txt`: File containing arguments from the config file
+* `PICRUSt2/all_output`
+
+</details>
+
+> **NB:** Quantifications are not normalized yet, they can be normalized e.g. by the total sum per sample.
 
 ## Read count report
 

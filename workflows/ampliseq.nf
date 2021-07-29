@@ -151,6 +151,7 @@ include { QIIME2_BARPLOT                } from '../modules/local/qiime2_barplot'
 include { METADATA_ALL                  } from '../modules/local/metadata_all'
 include { METADATA_PAIRWISE             } from '../modules/local/metadata_pairwise'
 include { QIIME2_INTAX                  } from '../modules/local/qiime2_intax'                 addParams( options: modules['qiime2_intax']         )
+include { PICRUST                       } from '../modules/local/picrust'                      addParams( options: modules['picrust']              )
 include { GET_SOFTWARE_VERSIONS         } from '../modules/local/get_software_versions'        addParams( options: [publish_files : ['tsv':'']]    )
 
 //
@@ -518,6 +519,18 @@ workflow AMPLISEQ {
                 ch_tax
             )
         }
+    }
+
+    //
+    // MODULE: Predict functional potential of a bacterial community from marker genes with Picrust2
+    //
+    if ( params.picrust ) {
+        if ( run_qiime2 && !params.skip_abundance_tables && ( params.dada_ref_taxonomy || params.qiime_ref_taxonomy || params.classifier ) && !params.skip_taxonomy ) {
+            PICRUST ( QIIME2_EXPORT.out.abs_fasta, QIIME2_EXPORT.out.abs_tsv, "QIIME2", "This Picrust2 analysis is based on filtered reads from QIIME2" )
+        } else {
+            PICRUST ( ch_fasta, DADA2_MERGE.out.asv, "DADA2", "This Picrust2 analysis is based on unfiltered reads from DADA2" )
+        }
+        ch_software_versions = ch_software_versions.mix(PICRUST.out.version.ifEmpty(null))
     }
 
     //

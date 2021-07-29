@@ -27,7 +27,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
                 * [Alpha diversity indices](#alpha-diversity-indices) - Diversity within samples
                 * [Beta diversity indices](#beta-diversity-indices) - Diversity between samples (e.g. PCoA plots)
             * [ANCOM](#ancom) - Differential abundance analysis
-        * [PICRUSt2](#picrust2) - Predicting functional abundances
+        * [PICRUSt2](#picrust2) - Predict the functional potential of a bacterial community
         * [Read count report](#Read-count-report) - Report of read counts during various steps of the pipeline
         * [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
     * [Citations](#citations)

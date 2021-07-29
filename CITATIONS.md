@@ -63,10 +63,10 @@
 * [PICRUSt2](https://pubmed.ncbi.nlm.nih.gov/32483366/)
     > Douglas GM, Maffei VJ, Zaneveld JR, Yurgel SN, Brown JR, Taylor CM, Huttenhower C, Langille MGI. PICRUSt2 for prediction of metagenome functions. Nat Biotechnol. 2020 Jun;38(6):685-688. doi: 10.1038/s41587-020-0548-6. PMID: 32483366; PMCID: PMC7365738.
 
-* PICRUSt2 is using in this pipeline by default [EPA-ng](https://pubmed.ncbi.nlm.nih.gov/30165689/)
+* PICRUSt2 is by default using [EPA-ng](https://pubmed.ncbi.nlm.nih.gov/30165689/)
     > Barbera P, Kozlov AM, Czech L, Morel B, Darriba D, Flouri T, Stamatakis A. EPA-ng: Massively Parallel Evolutionary Placement of Genetic Sequences. Syst Biol. 2019 Mar 1;68(2):365-369. doi: 10.1093/sysbio/syy054. PMID: 30165689; PMCID: PMC6368480.
 
-* PICRUSt2 is using in this pipeline by default [MinPath](https://pubmed.ncbi.nlm.nih.gov/19680427/)
+* PICRUSt2 is by default using [MinPath](https://pubmed.ncbi.nlm.nih.gov/19680427/)
     > Ye Y, Doak TG. A parsimony approach to biological pathway reconstruction/inference for genomes and metagenomes. PLoS Comput Biol. 2009 Aug;5(8):e1000465. doi: 10.1371/journal.pcbi.1000465. Epub 2009 Aug 14. PMID: 19680427; PMCID: PMC2714467.
 
 ### Summarizing software

@@ -522,10 +522,10 @@ workflow AMPLISEQ {
     }
 
     //
-    // MODULE: Predict functional abundances from marker genes with Picrust2
+    // MODULE: Predict functional potential of a bacterial community from marker genes with Picrust2
     //
     if ( params.picrust ) {
-        if ( run_qiime2 && !params.skip_abundance_tables && ( params.dada_ref_taxonomy || params.qiime_ref_taxonomy || params.classifier ) ) {
+        if ( run_qiime2 && !params.skip_abundance_tables && ( params.dada_ref_taxonomy || params.qiime_ref_taxonomy || params.classifier ) && !params.skip_taxonomy ) {
             PICRUST ( QIIME2_EXPORT.out.abs_fasta, QIIME2_EXPORT.out.abs_tsv, "QIIME2", "This Picrust2 analysis is based on filtered reads from QIIME2" )
         } else {
             PICRUST ( ch_fasta, DADA2_MERGE.out.asv, "DADA2", "This Picrust2 analysis is based on unfiltered reads from DADA2" )

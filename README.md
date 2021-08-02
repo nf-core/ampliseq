@@ -65,18 +65,6 @@ By default, the pipeline currently performs the following:
 
 See [usage docs](https://nf-co.re/ampliseq/usage) and [parameter docs](https://nf-co.re/ampliseq/parameters) for all of the available options when running the pipeline.
 
-## Pipeline Summary
-
-By default, the pipeline currently performs the following:
-
-* Sequencing quality control ([FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-* Trimming of reads ([Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200))
-* Infer Amplicon Sequence Variants (ASVs) ([DADA2](https://doi.org/10.1038/nmeth.3869))
-* Taxonomical classification using DADA2 or [QIIME2](https://www.nature.com/articles/s41587-019-0209-9)
-* Excludes unwanted taxa, produces absolute and relative feature/taxa count tables and plots, plots alpha rarefaction curves, computes alpha and beta diversity indices and plots thereof ([QIIME2](https://www.nature.com/articles/s41587-019-0209-9))
-* Calls differentially abundant taxa ([ANCOM](https://www.ncbi.nlm.nih.gov/pubmed/26028277))
-* Overall pipeline run summaries ([MultiQC](https://multiqc.info/))
-
 ## Documentation
 
 The nf-core/ampliseq pipeline comes with documentation about the pipeline [usage](https://nf-co.re/ampliseq/usage), [parameters](https://nf-co.re/ampliseq/parameters) and [output](https://nf-co.re/ampliseq/output).

@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [#294](https://github.com/nf-core/ampliseq/pull/294) - New version of the Unite taxonomy databases: 8.3
 * [#302](https://github.com/nf-core/ampliseq/pull/302) - Pipeline workflow figure in README.md
 * [#307](https://github.com/nf-core/ampliseq/pull/307) - Functional predictions with PICRUSt2, on demand with `--picrust`
+* [#310](https://github.com/nf-core/ampliseq/pull/310) - Workflow figure in usage.md when using `--multiple_sequencing_runs`
 
 ### `Changed`
 

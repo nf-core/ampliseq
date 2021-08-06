@@ -2,7 +2,7 @@
 
 # Formatting script for sbdi-gtdb files.
 
-# We get the files with numbers as names. Loop over them and find out which 
+# We get the files with numbers as names. Loop over them and find out which
 # looks like assignTaxonomy and addSpecies respectively, gunzip to proper
 # names.
 

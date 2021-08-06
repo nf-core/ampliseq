@@ -38,6 +38,9 @@
 * [GTDB - Genome Taxonomy Database](https://pubmed.ncbi.nlm.nih.gov/30148503/)
     > Parks DH, Chuvochina M, Waite DW, Rinke C, Skarshewski A, Chaumeil PA, Hugenholtz P. A standardized bacterial taxonomy based on genome phylogeny substantially revises the tree of life. Nat Biotechnol. 2018 Nov;36(10):996-1004. doi: 10.1038/nbt.4229. Epub 2018 Aug 27. PMID: 30148503.
 
+* [SBDI-GTDB](https://scilifelab.figshare.com/articles/dataset/SBDI_Sativa_curated_16S_GTDB_database/14869077)
+    > Lundin D, Andersson A. SBDI Sativa curated 16S GTDB database. FigShare. doi: 10.17044/scilifelab.14869077.v1
+
 * [RDP - Ribosomal Database Project](https://pubmed.ncbi.nlm.nih.gov/24288368/)
     > Cole JR, Wang Q, Fish JA, Chai B, McGarrell DM, Sun Y, Brown CT, Porras-Alfaro A, Kuske CR, Tiedje JM. Ribosomal Database Project: data and tools for high throughput rRNA analysis. Nucleic Acids Res. 2014 Jan;42(Database issue):D633-42. doi: 10.1093/nar/gkt1244. Epub 2013 Nov 27. PMID: 24288368; PMCID: PMC3965039.
 

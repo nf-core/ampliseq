@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [#302](https://github.com/nf-core/ampliseq/pull/302) - Pipeline workflow figure in README.md
 * [#307](https://github.com/nf-core/ampliseq/pull/307) - Functional predictions with PICRUSt2, on demand with `--picrust`
 * [#310](https://github.com/nf-core/ampliseq/pull/310) - Workflow figure in usage.md when using `--multiple_sequencing_runs`
+* [#312](https://github.com/nf-core/ampliseq/pull/312) - Added curated GTDB 16S taxonomy: `sbdi-gtdb` as parameter to `--dada_ref_taxonomy`
 
 ### `Changed`
 

@@ -141,7 +141,7 @@ Taxonomic classification with QIIME2 is typically similar to DADA2 classificatio
 
 #### Exclude taxa
 
-Removes unwanted taxa in DADA2 output sequences and abundance tables by taxonomic classification. Unwanted taxa are often off-targets generated in PCR with primers that are not perfectly specific for the target DNA. For example, PCR with commonly used primers also amplifyies mitrochindrial or chloroplast rRNA genes and therefore leads to non-bacteria products. These mitrochondria or chloroplast amplicons are removed in this step by default (`--exclude_taxa`).
+Removes unwanted taxa in DADA2 output sequences and abundance tables by taxonomic classification. Unwanted taxa are often off-targets generated in PCR with primers that are not perfectly specific for the target DNA. For example, PCR with commonly used primers also amplifyies mitrochindrial or chloroplast rRNA genes and therefore leads to non-bacteria products. These mitrochondria or chloroplast amplicons are removed in this step by default (`--exclude_taxa`). The tables are based on the computed taxonomic classification (DADA2 classification takes precedence over QIIME2 classifications).
 
 All following analysis is based on these filtered tables.
 
@@ -167,7 +167,7 @@ All following analysis is based on these filtered tables.
 
 #### Relative abundance tables
 
-Absolute abundance tables produced by the previous steps contain count data, but the compositional nature of 16S rRNA amplicon sequencing requires sequencing depth normalisation. This step computes relative abundance tables for various taxonomic levels and a detailed table for all ASVs with taxonomic classification, sequence and relative abundance for each sample. Typically used for in depth investigation of taxa abundances.
+Absolute abundance tables produced by the previous steps contain count data, but the compositional nature of 16S rRNA amplicon sequencing requires sequencing depth normalisation. This step computes relative abundance tables for various taxonomic levels and detailed tables for all ASVs with taxonomic classification, sequence and relative abundance for each sample. Typically used for in depth investigation of taxa abundances. If not specified, the tables are based on the computed taxonomic classification (DADA2 classification takes precedence over QIIME2 classifications).
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -180,13 +180,14 @@ Absolute abundance tables produced by the previous steps contain count data, but
     * `rel-table-6.tsv`: Tab-separated relative abundance table at genus level.
     * `rel-table-7.tsv`: Tab-separated relative abundance table at species level.
     * `rel-table-ASV.tsv`: Tab-separated relative abundance table for all ASVs.
-    * `qiime2_ASV_table.tsv`: Tab-separated table for all ASVs with taxonomic classification, sequence and relative abundance. *NOTE: This file is based on QIIME2 taxonomic classifications, contrary to all other files that are based on DADA2 classification, if available.*
+    * `rel-table-ASV_with-DADA2-tax.tsv`: Tab-separated table for all ASVs with DADA2 taxonomic classification, sequence and relative abundance.
+    * `rel-table-ASV_with-QIIME2-tax.tsv`: Tab-separated table for all ASVs with QIIME2 taxonomic classification, sequence and relative abundance.
 
 </details>
 
 #### Barplot
 
-Produces an interactive abundance plot count tables that aids exploratory browsing the discovered taxa and their abundance in samples and allows sorting for associated meta data.
+Produces an interactive abundance plot count tables that aids exploratory browsing the discovered taxa and their abundance in samples and allows sorting for associated meta data, DADA2 classification takes precedence over QIIME2 classifications.
 
 <details markdown="1">
 <summary>Output files</summary>

@@ -21,12 +21,14 @@ process COMBINE_TABLE {
     path(table)
     path(seq)
     path(tax)
+    val(outfile)
 
     output:
-    path("qiime2_ASV_table.tsv")
+    path("${outfile}")
 
     script:
     """
     combine_table.r ${table} ${seq} ${tax}
+    mv combined_ASV_table.tsv ${outfile}
     """
 }

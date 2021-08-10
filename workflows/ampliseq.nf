@@ -482,7 +482,7 @@ workflow AMPLISEQ {
         }
         //Export various ASV tables
         if (!params.skip_abundance_tables) {
-            QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, QIIME2_TAXONOMY.out.tsv )
+            QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, QIIME2_TAXONOMY.out.tsv, ch_dada2_tax )
         }
 
         if (!params.skip_barplot) {

@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+* [#313](https://github.com/nf-core/ampliseq/pull/313) - Relative abundance tables in `qiime2/rel_abundance_tables/` on ASV level were renamed and with either DADA2 (`rel-table-ASV_with-DADA2-tax.tsv`) or QIIME2 classifications (`rel-table-ASV_with-QIIME2-tax.tsv`), if available.
+
 ### `Fixed`
 
 * [#306](https://github.com/nf-core/ampliseq/pull/306) - Sample names can now be identical to basenames of read files

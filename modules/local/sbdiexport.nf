@@ -13,29 +13,23 @@ options        = initOptions(params.options)
 process SBDIEXPORT {
     tag '${asvtable},${taxtable}'
     label 'process_low'
-    publishDir "${params.outdir}/sbdi",
+    publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:[:], publish_by_meta:[]) }
+        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:"SBDI", meta:[:], publish_by_meta:[]) }
 
-    conda (params.enable_conda ? "bioconda::r-openxlsx=4.0.17" : null)
+    conda (params.enable_conda ? "bioconda::r-tidyverse=1.2.1" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/r-openxlsx:4.0.17--r3.3.2_0"
+        container "https://depot.galaxyproject.org/singularity/r-tidyverse:1.2.1"
     } else {
-        container "quay.io/biocontainers/r-openxlsx:4.0.17--r3.3.2_0"
+        container "quay.io/biocontainers/r-tidyverse:1.2.1"
     }
 
     input:
-    // TODO nf-core: Where applicable all sample-specific information e.g. "id", "single_end", "read_group"
-    //               MUST be provided as an input via a Groovy Map called "meta".
-    //               This information may not be required in some instances e.g. indexing reference genome files:
-    //               https://github.com/nf-core/modules/blob/master/software/bwa/index/main.nf
-    // TODO nf-core: Where applicable please provide/convert compressed files as input/output
-    //               e.g. "*.fastq.gz" and NOT "*.fastq", "*.bam" and NOT "*.sam" etc.
     path asvtable
     path taxonomytable
 
     output:
-    path "*.xlsx", emit: sbditable
+    path "*.tsv", emit: sbditables
 
     script:
     def software = getSoftwareName(task.process)

@@ -38,13 +38,13 @@ def parse_samplesheet(LinkedHashMap row, single_end) {
 workflow PARSE_INPUT {
     take:
     input // file.tsv or folder
-    is_fast_input
+    is_fasta_input
     single_end
     multiple_sequencing_runs
     extension
 
     main:
-    if ( is_fast_input ) {
+    if ( is_fasta_input ) {
         // Fasta input directely for classification
         ch_fasta = Channel.fromPath(input, checkIfExists: true)
         ch_reads = Channel.empty()

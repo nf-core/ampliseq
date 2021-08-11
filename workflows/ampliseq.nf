@@ -54,6 +54,9 @@ if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
 
 // Set non-params Variables
 
+String[] fasta_extensions = [".fasta", ".fna", ".fa"] // this is the alternative ASV fasta input
+is_fasta_input = WorkflowAmpliseq.checkIfFileHasExtension( params.input.toString().toLowerCase(), fasta_extensions )
+
 single_end = params.single_end
 if (params.pacbio || params.iontorrent) {
     single_end = true
@@ -63,7 +66,7 @@ max_len = params.max_len ? params.max_len : "Inf"
 
 trunclenf = params.trunclenf ? params.trunclenf : 0
 trunclenr = params.trunclenr ? params.trunclenr : 0
-if ( !single_end && !params.illumina_pe_its && (params.trunclenf == false || params.trunclenr == false) ) {
+if ( !single_end && !params.illumina_pe_its && (params.trunclenf == false || params.trunclenr == false) && !is_fasta_input ) {
     find_truncation_values = true
     log.warn "No DADA2 cutoffs were specified (`--trunclenf` & --`trunclenr`), therefore reads will be truncated where median quality drops below ${params.trunc_qmin} (defined by `--trunc_qmin`) but at least a fraction of ${params.trunc_rmin} (defined by `--trunc_rmin`) of the reads will be retained.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
 } else { find_truncation_values = false }
@@ -242,7 +245,7 @@ workflow AMPLISEQ {
     //
     // Create a channel for input read files
     //
-    PARSE_INPUT ( params.input, single_end, params.multiple_sequencing_runs, params.extension )
+    PARSE_INPUT ( params.input, is_fasta_input, single_end, params.multiple_sequencing_runs, params.extension )
     ch_reads = PARSE_INPUT.out.reads
     ch_fasta = PARSE_INPUT.out.fasta
 
@@ -383,8 +386,8 @@ workflow AMPLISEQ {
     //
     // SUBWORKFLOW / MODULES : Taxonomic classification with DADA2 and/or QIIME2
     //
-    //Alternative entry point for fasta that is being classified - the if clause needs to be the opposite (i.e. with !) of that in subworkflow/local/parse.nf
-    if ( !(params.input.toString().toLowerCase().endsWith(".fasta") || params.input.toString().toLowerCase().endsWith(".fna") || params.input.toString().toLowerCase().endsWith(".fa") )) {
+    //Alternative entry point for fasta that is being classified
+    if ( !is_fasta_input ) {
         ch_fasta = DADA2_MERGE.out.fasta
     }
 

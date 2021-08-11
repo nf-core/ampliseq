@@ -25,6 +25,13 @@ class WorkflowAmpliseq {
     }
 
     //
+    // Check string (String s) ends with one entry of an array of strings ("String[] extn")
+    //
+    public static boolean checkIfFileHasExtension(String s, String[] extn) {
+        return Arrays.stream(extn).anyMatch(entry -> s.endsWith(entry));
+    }
+
+    //
     // Get workflow summary for MultiQC
     //
     public static String paramsSummaryMultiqc(workflow, summary) {

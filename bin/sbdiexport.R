@@ -105,4 +105,5 @@ data.frame(
 asvtax   <- asvs %>% 
   inner_join(taxonomy, by = 'ASV_ID') %>%
   rename(asv_id_alias = ASV_ID, DNA_sequence = sequence) %>%
+  rename_with(tolower, Domain:Species) %>%
   write_tsv(sprintf("%s.asv-table.tsv", BASENAME))

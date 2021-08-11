@@ -24,7 +24,6 @@ class WorkflowAmpliseq {
         }
     }
 
-
     //
     // Check string (String s) ends with one entry of an array of strings ("String[] extn")
     //

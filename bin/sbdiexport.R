@@ -2,9 +2,9 @@
 
 # sbdiexport.R
 #
-# A script that collates data from Ampliseq to produce an Excel file as close 
-# to ready for submission to the Swedish Biodiversity Data Infrastructure
-# (SBDI) as possible.
+# A script that collates data from Ampliseq to produce four tsv files as close 
+# as possible to ready for submission to the Swedish Biodiversity Data 
+# Infrastructure (SBDI) as possible.
 #
 # The script expects the following input files to be present in the directory:
 # ASV_table.tsv and ASV_tax_species.tsv.
@@ -16,12 +16,10 @@
 suppressPackageStartupMessages(library(tidyverse))
 
 # Get the library layout and primers from the command line
-args = commandArgs(trailingOnly=TRUE)
+args            <- commandArgs(trailingOnly=TRUE)
 lib_layout      <- args[1]
 fwd_primer_seq  <- args[2]
 rev_primer_seq  <- args[3]
-
-write(sprintf("DEBUG: args: %s", paste(args, collapse = ", ")), stderr())
 
 asvs <- read.delim("ASV_table.tsv", sep = '\t')
 n_samples <- length(colnames(asvs)) - 1
@@ -62,11 +60,11 @@ data.frame(
   'sop' = character(n_samples),
   'target_gene' = character(n_samples),
   'target_subfragment' = character(n_samples),
-  'lib_layout' = character(n_samples),
+  'lib_layout' = rep(lib_layout, n_samples),
   'pcr_primer_name_forward' = character(n_samples),
   'pcr_primer_name_reverse' = character(n_samples),
-  'pcr_primer_forward' = character(n_samples),
-  'pcr_primer_reverse' = character(n_samples),
+  'pcr_primer_forward' = rep(fwd_primer_seq, n_samples),
+  'pcr_primer_reverse' = rep(rev_primer_seq, n_samples),
   'env_broad_scale' = character(n_samples),
   'env_local_scale' = character(n_samples),
   'env_medium' = character(n_samples)
@@ -93,9 +91,18 @@ data.frame(
 # asv-table
 asvtax   <- asvs %>% 
   inner_join(taxonomy, by = 'ASV_ID') %>%
-  rename(asv_id_alias = ASV_ID, DNA_sequence = sequence) %>%
   rename_with(tolower, Domain:Species) %>%
-  rename(specificEpithet = species) %>%
+  rename(
+    specificEpithet = species,
+    asv_id_alias = ASV_ID, 
+    DNA_sequence = sequence
+  ) %>%
+  mutate(
+    domain = str_remove(domain, 'Reversed:_'),
+    associatedSequences = '', 
+    infraspecificEpithet = '',
+    otu = ''
+  ) %>%
+  relocate(DNA_sequence:associatedSequences, .before = domain) %>%
   select(-confidence) %>%
-  mutate(associatedSequences = '', domain = str_remove(domain, 'Reversed:_')) %>%
   write_tsv("asv-table.tsv", na = '')

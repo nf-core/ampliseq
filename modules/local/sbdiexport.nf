@@ -1,17 +1,11 @@
 // Import generic module functions
 include { initOptions; saveFiles; getSoftwareName } from './functions'
 
-// TODO nf-core: A module file SHOULD only define input and output files as command-line parameters.
-//               All other parameters MUST be provided as a string i.e. "options.args"
-//               where "params.options" is a Groovy Map that MUST be provided via the addParams section of the including workflow.
-//               Any parameters that need to be evaluated in the context of a particular sample
-//               e.g. single-end/paired-end data MUST also be defined and evaluated appropriately.
-
 params.options = [:]
 options        = initOptions(params.options)
 
 process SBDIEXPORT {
-    tag "${asvtable},${taxtable}"
+    tag "${asvtable},${taxonomytable}"
     label 'process_low'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,

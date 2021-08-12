@@ -134,6 +134,8 @@ sbdiexport_options.args += params.single_end ? ' single ' : ' paired '
 sbdiexport_options.args += " $params.FW_primer "
 sbdiexport_options.args += " $params.RV_primer "
 
+def sbdiexportreannotate_options  = modules['sbdiexportreannotate']
+
 include { RENAME_RAW_DATA_FILES         } from '../modules/local/rename_raw_data_files'
 include { DADA2_FILTNTRIM               } from '../modules/local/dada2_filtntrim'              addParams( options: dada2_filtntrim_options         )
 include { DADA2_QUALITY                 } from '../modules/local/dada2_quality'                addParams( options: dada2_quality_options           )
@@ -161,6 +163,7 @@ include { METADATA_PAIRWISE             } from '../modules/local/metadata_pairwi
 include { QIIME2_INTAX                  } from '../modules/local/qiime2_intax'                 addParams( options: modules['qiime2_intax']         )
 include { PICRUST                       } from '../modules/local/picrust'                      addParams( options: modules['picrust']              )
 include { SBDIEXPORT                    } from '../modules/local/sbdiexport'                   addParams( options: sbdiexport_options              )
+include { SBDIEXPORTREANNOTATE          } from '../modules/local/sbdiexportreannotate'         addParams( options: sbdiexportreannotate_options    )
 include { GET_SOFTWARE_VERSIONS         } from '../modules/local/get_software_versions'        addParams( options: [publish_files : ['tsv':'']]    )
 
 //
@@ -547,6 +550,7 @@ workflow AMPLISEQ {
     //
     if ( params.sbdiexport ) {
         SBDIEXPORT ( DADA2_MERGE.out.asv, DADA2_ADDSPECIES.out.tsv )
+        SBDIEXPORTREANNOTATE ( DADA2_ADDSPECIES.out.tsv )
     }
 
     //

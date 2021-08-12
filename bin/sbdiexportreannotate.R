@@ -1,0 +1,63 @@
+#!/usr/bin/env Rscript
+
+# sbdiexportreannotate.R
+#
+# A script that collates taxonomy data from Ampliseq to produce an Excel file as close 
+# to ready for submission to the Swedish Biodiversity Data Infrastructure
+# (SBDI) as possible.
+#
+# The script expects the following input file to be present in the directory:
+# ASV_tax_species.tsv.
+#
+# It also expects the following argument: dbversion
+#
+# Author: daniel.lundin@lnu.se
+
+suppressPackageStartupMessages(library(tidyverse))
+
+# Get the library layout and primers from the command line
+args            <- commandArgs(trailingOnly=TRUE)
+dbversion       <- args[1]
+
+taxonomy <- read.delim("ASV_tax_species.tsv", sep = '\t')
+
+taxonomy %>%
+  rename_with(tolower, Domain:Species) %>%
+  rename(
+    asv_id_alias = ASV_ID, 
+    asv_sequence = sequence,
+    specificEpithet = species,
+    annotation_confidence = confidence
+  ) %>%
+  mutate(
+    infraspecificEpithet = '',
+    otu = '',
+    domain = str_remove(domain, 'Reversed:_'),
+    scientificName = case_when(
+      !is.na(specificEpithet)   ~ sprintf("%s %s", genus, specificEpithet),
+      !is.na(genus)             ~ sprintf("%s sp.", genus),
+      !is.na(family)            ~ sprintf("%s sp.", family),
+      !is.na(order)             ~ sprintf("%s sp.", order),
+      !is.na(class)             ~ sprintf("%s sp.", class),
+      !is.na(phylum)            ~ sprintf("%s sp.", phylum),
+      !is.na(domain)            ~ sprintf("%s sp.", domain)
+    ),
+    taxonRank = case_when(
+      !is.na(specificEpithet)   ~ 'species',
+      !is.na(genus)             ~ 'genus',
+      !is.na(family)            ~ 'family',
+      !is.na(order)             ~ 'order',
+      !is.na(class)             ~ 'class',
+      !is.na(phylum)            ~ 'phylum',
+      !is.na(domain)            ~ 'domain',
+      TRUE                      ~ 'unranked'
+    ),
+    date_identified = as.character(lubridate::today()),
+    reference_db = dbversion,
+    annotation_algorithm = 'DADA2:assignTaxonomy:addSpecies',
+    identification_references = 'https://docs.biodiversitydata.se/analyse-data/molecular-tools/#taxonomy-annotation',
+    taxon_remarks = ''
+  ) %>%
+  relocate(asv_sequence, .after = asv_id_alias) %>%
+  relocate(infraspecificEpithet:identification_references, .after = specificEpithet) %>%
+  write_tsv("annotation.tsv", na = '')

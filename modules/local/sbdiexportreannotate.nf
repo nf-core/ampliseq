@@ -5,7 +5,7 @@ params.options = [:]
 options        = initOptions(params.options)
 
 process SBDIEXPORTREANNOTATE {
-    tag "${taxonomytable}"
+    tag "${taxonomytable},${metadata}"
     label 'process_low'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
@@ -20,6 +20,7 @@ process SBDIEXPORTREANNOTATE {
 
     input:
     path taxonomytable
+    path metadata
 
     output:
     path "*.tsv", emit: sbdiannottables

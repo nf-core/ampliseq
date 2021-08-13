@@ -549,8 +549,8 @@ workflow AMPLISEQ {
     // MODULE: Export data in SBDI's (Swedish biodiversity infrastructure) format
     //
     if ( params.sbdiexport ) {
-        SBDIEXPORT ( DADA2_MERGE.out.asv, DADA2_ADDSPECIES.out.tsv )
-        SBDIEXPORTREANNOTATE ( DADA2_ADDSPECIES.out.tsv )
+        SBDIEXPORT ( DADA2_MERGE.out.asv, DADA2_ADDSPECIES.out.tsv, ch_metadata  )
+        SBDIEXPORTREANNOTATE ( DADA2_ADDSPECIES.out.tsv, ch_metadata )
     }
 
     //

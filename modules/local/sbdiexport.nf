@@ -5,7 +5,7 @@ params.options = [:]
 options        = initOptions(params.options)
 
 process SBDIEXPORT {
-    tag "${asvtable},${taxonomytable}"
+    tag "${asvtable},${taxonomytable},${metadata}"
     label 'process_low'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
@@ -21,6 +21,7 @@ process SBDIEXPORT {
     input:
     path asvtable
     path taxonomytable
+    path metadata
 
     output:
     path "*.tsv", emit: sbditables

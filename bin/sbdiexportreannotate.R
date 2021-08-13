@@ -35,12 +35,12 @@ taxonomy %>%
     domain = str_remove(domain, 'Reversed:_'),
     scientificName = case_when(
       !is.na(specificEpithet)   ~ sprintf("%s %s", genus, specificEpithet),
-      !is.na(genus)             ~ sprintf("%s sp.", genus),
-      !is.na(family)            ~ sprintf("%s sp.", family),
-      !is.na(order)             ~ sprintf("%s sp.", order),
-      !is.na(class)             ~ sprintf("%s sp.", class),
-      !is.na(phylum)            ~ sprintf("%s sp.", phylum),
-      !is.na(domain)            ~ sprintf("%s sp.", domain)
+      !is.na(genus)             ~ sprintf("%s", genus),
+      !is.na(family)            ~ sprintf("%s", family),
+      !is.na(order)             ~ sprintf("%s", order),
+      !is.na(class)             ~ sprintf("%s", class),
+      !is.na(phylum)            ~ sprintf("%s", phylum),
+      !is.na(domain)            ~ sprintf("%s", domain)
     ),
     taxonRank = case_when(
       !is.na(specificEpithet)   ~ 'species',

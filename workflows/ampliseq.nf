@@ -161,12 +161,23 @@ include { GET_SOFTWARE_VERSIONS         } from '../modules/local/get_software_ve
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 
+//prepare reverse complement primers to remove those in PacBio, IonTorrent and Illumina read-through cutadapt steps
+// Get the complement of a DNA sequence
+// Complement table taken from http://arep.med.harvard.edu/labgc/adnan/projects/Utilities/revcomp.html
+def make_complement(String seq) {
+    def complements = [ A:'T', T:'A', U:'A', G:'C', C:'G', Y:'R', R:'Y', S:'S', W:'W', K:'M', M:'K', B:'V', D:'H', H:'D', V:'B', N:'N' ]
+    comp = seq.toUpperCase().collect { base -> complements[ base ] ?: 'X' }.join()
+    return comp
+}
+FW_primer_RevComp = make_complement ( "${params.FW_primer}".reverse() )
+RV_primer_RevComp = make_complement ( "${params.RV_primer}".reverse() )
+
 if (params.pacbio) {
     //PacBio data
-    cutadapt_options_args       = " --rc -g ${params.FW_primer}...${params.RV_primer}"
+    cutadapt_options_args       = " --rc -g ${params.FW_primer}...${RV_primer_RevComp}"
 } else if (params.iontorrent) {
     //IonTorrent data
-    cutadapt_options_args       = " --rc -g ${params.FW_primer}...${params.RV_primer}"
+    cutadapt_options_args       = " --rc -g ${params.FW_primer}...${RV_primer_RevComp}"
 } else if (params.single_end) {
     //Illumina SE
     cutadapt_options_args       = " -g ${params.FW_primer}"
@@ -179,16 +190,6 @@ def cutadapt_options 			= modules['cutadapt']
 cutadapt_options.args          += cutadapt_options_args
 cutadapt_options.args          += params.retain_untrimmed ? '' : " --discard-untrimmed"
 
-//prepare reverse complement primers to remove those in read-throughs
-// Get the complement of a DNA sequence
-// Complement table taken from http://arep.med.harvard.edu/labgc/adnan/projects/Utilities/revcomp.html
-def make_complement(String seq) {
-    def complements = [ A:'T', T:'A', U:'A', G:'C', C:'G', Y:'R', R:'Y', S:'S', W:'W', K:'M', M:'K', B:'V', D:'H', H:'D', V:'B', N:'N' ]
-    comp = seq.toUpperCase().collect { base -> complements[ base ] ?: 'X' }.join()
-    return comp
-}
-FW_primer_RevComp = make_complement ( "${params.FW_primer}".reverse() )
-RV_primer_RevComp = make_complement ( "${params.RV_primer}".reverse() )
 def cutadapt_readthrough_options      = modules['cutadapt_readthrough']
 cutadapt_readthrough_options.args    += " -a ${RV_primer_RevComp} -A ${FW_primer_RevComp}"
 

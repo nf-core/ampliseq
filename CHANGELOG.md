@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * [#306](https://github.com/nf-core/ampliseq/pull/306) - Sample names can now be identical to basenames of read files
 * [#299](https://github.com/nf-core/ampliseq/pull/299), [#301](https://github.com/nf-core/ampliseq/pull/301)- Template update for nf-core/tools version 2.1
+* [#303](https://github.com/nf-core/ampliseq/pull/303) - Reverse primer of PacBio and IonTorrent reads should be now given to `--RV_primer` in usual direction (before: reverse complement)
 * [#305](https://github.com/nf-core/ampliseq/pull/305) - `--max_len` now accepts integers as expected
 * [#314](https://github.com/nf-core/ampliseq/pull/314), [#315](https://github.com/nf-core/ampliseq/pull/315) - ASV fasta input via --input fixed (was broken in 2.0.0) and a test profile was added.
 

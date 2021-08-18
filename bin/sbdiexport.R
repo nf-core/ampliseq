@@ -2,8 +2,8 @@
 
 # sbdiexport.R
 #
-# A script that collates data from Ampliseq to produce four tsv files as close 
-# as possible to ready for submission to the Swedish Biodiversity Data 
+# A script that collates data from Ampliseq to produce four tsv files as close
+# as possible to ready for submission to the Swedish Biodiversity Data
 # Infrastructure (SBDI) as possible.
 #
 # The script expects the following arguments: paired|single fwdprimer revprimer asvtable taxonomytable [metadata]
@@ -13,18 +13,18 @@
 suppressPackageStartupMessages(library(tidyverse))
 
 EVENT_COLS <- c(
-    'materialSampleID', 'eventDate', 'samplingProtocol', 'locationID', 'decimalLatitude', 
-    'decimalLongitude', 'geodeticDatum', 'coordinateUncertaintyInMeters', 'recordedBy', 'country', 
-    'municipality', 'verbatimLocality', 'minimumElevationInMeters', 'maximumElevationInMeters', 
+    'materialSampleID', 'eventDate', 'samplingProtocol', 'locationID', 'decimalLatitude',
+    'decimalLongitude', 'geodeticDatum', 'coordinateUncertaintyInMeters', 'recordedBy', 'country',
+    'municipality', 'verbatimLocality', 'minimumElevationInMeters', 'maximumElevationInMeters',
     'minimumDepthInMeters', 'maximumDepthInMeters'
 )
 MIXS_COLS  <- c(
-    'sop', 'target_gene', 'target_subfragment', 'pcr_primer_name_forward', 
+    'sop', 'target_gene', 'target_subfragment', 'pcr_primer_name_forward',
     'pcr_primer_name_reverse', 'env_broad_scale', 'env_local_scale', 'env_medium'
 )
 EMOF_COLS  <- c(
-    'measurementType', 'measurementTypeID', 'measurementValue', 'measurementValueID', 
-    'measurementUnit', 'measurementUnitID', 'measurementAccuracy', 'measurementDeterminedDate', 
+    'measurementType', 'measurementTypeID', 'measurementValue', 'measurementValueID',
+    'measurementUnit', 'measurementUnitID', 'measurementAccuracy', 'measurementDeterminedDate',
     'measurementDeterminedBy', 'measurementMethod', 'measurementRemarks'
 )
 
@@ -113,17 +113,17 @@ for ( c in EMOF_COLS ) {
 emof %>% write_tsv("emof.tsv", na = '')
 
 # asv-table
-asvtax <- asvs %>% 
+asvtax <- asvs %>%
     inner_join(taxonomy, by = 'ASV_ID') %>%
     rename_with(tolower, Domain:Species) %>%
     rename(
         specificEpithet = species,
-        asv_id_alias = ASV_ID, 
+        asv_id_alias = ASV_ID,
         DNA_sequence = sequence
     ) %>%
     mutate(
         domain = str_remove(domain, 'Reversed:_'),
-        associatedSequences = '', 
+        associatedSequences = '',
         infraspecificEpithet = '',
         otu = ''
     ) %>%

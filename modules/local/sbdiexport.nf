@@ -28,7 +28,7 @@ process SBDIEXPORT {
 
     script:
     def software = getSoftwareName(task.process)
-    
+
     """
     sbdiexport.R $options.args $asvtable $taxonomytable $metadata
     """

@@ -551,7 +551,7 @@ workflow AMPLISEQ {
     //
     if ( params.sbdiexport ) {
         SBDIEXPORT ( DADA2_MERGE.out.asv, DADA2_ADDSPECIES.out.tsv, ch_metadata  )
-        SBDIEXPORTREANNOTATE ( DADA2_ADDSPECIES.out.tsv, ch_metadata )
+        SBDIEXPORTREANNOTATE ( DADA2_ADDSPECIES.out.tsv )
     }
 
     //

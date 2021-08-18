@@ -26,8 +26,8 @@ process SBDIEXPORTREANNOTATE {
 
     script:
     def software = getSoftwareName(task.process)
-    
+
     """
-    sbdiexportreannotate.R ${params.dada_ref_databases[params.dada_ref_taxonomy]["dbversion"]} $taxonomytable 
+    sbdiexportreannotate.R ${params.dada_ref_databases[params.dada_ref_taxonomy]["dbversion"]} $taxonomytable
     """
 }

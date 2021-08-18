@@ -9,13 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * [#294](https://github.com/nf-core/ampliseq/pull/294) - New version of the PR2 taxonomy database: 4.14.0, contains also some Bacteria, see [PR2 release 4.14.0 notes](https://github.com/pr2database/pr2database/releases/tag/v4.14.0)
 * [#294](https://github.com/nf-core/ampliseq/pull/294) - New version of the Unite taxonomy databases: 8.3
+* [#302](https://github.com/nf-core/ampliseq/pull/302) - Pipeline workflow figure in README.md
+* [#307](https://github.com/nf-core/ampliseq/pull/307) - Functional predictions with PICRUSt2, on demand with `--picrust`
+* [#310](https://github.com/nf-core/ampliseq/pull/310) - Workflow figure in usage.md when using `--multiple_sequencing_runs`
+* [#312](https://github.com/nf-core/ampliseq/pull/312) - Added curated GTDB 16S taxonomy: `sbdi-gtdb` as parameter to `--dada_ref_taxonomy`
 
 ### `Changed`
 
+* [#313](https://github.com/nf-core/ampliseq/pull/313) - Relative abundance tables in `qiime2/rel_abundance_tables/` on ASV level were renamed and with either DADA2 (`rel-table-ASV_with-DADA2-tax.tsv`) or QIIME2 classifications (`rel-table-ASV_with-QIIME2-tax.tsv`), if available.
+
 ### `Fixed`
 
+* [#306](https://github.com/nf-core/ampliseq/pull/306) - Sample names can now be identical to basenames of read files
 * [#299](https://github.com/nf-core/ampliseq/pull/299), [#301](https://github.com/nf-core/ampliseq/pull/301)- Template update for nf-core/tools version 2.1
 * [#303](https://github.com/nf-core/ampliseq/pull/303) - Reverse primer of PacBio and IonTorrent reads should be now given to `--RV_primer` in usual direction (before: reverse complement)
+* [#305](https://github.com/nf-core/ampliseq/pull/305) - `--max_len` now accepts integers as expected
+* [#314](https://github.com/nf-core/ampliseq/pull/314), [#315](https://github.com/nf-core/ampliseq/pull/315) - ASV fasta input via --input fixed (was broken in 2.0.0) and a test profile was added.
 
 ### `Dependencies`
 

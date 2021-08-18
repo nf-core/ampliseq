@@ -25,7 +25,11 @@ process RENAME_RAW_DATA_FILES {
     // Add soft-links to original FastQs for consistent naming in pipeline
     if (meta.single_end) {
         """
-        [ ! -f  ${meta.id}.fastq.gz ] && ln -s $reads ${meta.id}.fastq.gz
+        if [ ! -f  ${meta.id}.fastq.gz ]; then
+            ln -s $reads ${meta.id}.fastq.gz
+        else
+            touch ${meta.id}.fastq.gz
+        fi
         """
     } else {
         """

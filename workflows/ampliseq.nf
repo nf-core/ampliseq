@@ -54,14 +54,19 @@ if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
 
 // Set non-params Variables
 
+String[] fasta_extensions = [".fasta", ".fna", ".fa"] // this is the alternative ASV fasta input
+is_fasta_input = WorkflowAmpliseq.checkIfFileHasExtension( params.input.toString().toLowerCase(), fasta_extensions )
+
 single_end = params.single_end
 if (params.pacbio || params.iontorrent) {
     single_end = true
 }
 
+max_len = params.max_len ? params.max_len : "Inf"
+
 trunclenf = params.trunclenf ? params.trunclenf : 0
 trunclenr = params.trunclenr ? params.trunclenr : 0
-if ( !single_end && !params.illumina_pe_its && (params.trunclenf == false || params.trunclenr == false) ) {
+if ( !single_end && !params.illumina_pe_its && (params.trunclenf == false || params.trunclenr == false) && !is_fasta_input ) {
     find_truncation_values = true
     log.warn "No DADA2 cutoffs were specified (`--trunclenf` & --`trunclenr`), therefore reads will be truncated where median quality drops below ${params.trunc_qmin} (defined by `--trunc_qmin`) but at least a fraction of ${params.trunc_rmin} (defined by `--trunc_rmin`) of the reads will be retained.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
 } else { find_truncation_values = false }
@@ -84,16 +89,16 @@ def dada2_filtntrim_options = modules['dada2_filtntrim']
 dada2_filtntrim_options.args       += single_end ? ", maxEE = $params.max_ee" : ", maxEE = c($params.max_ee, $params.max_ee)"
 if (params.pacbio) {
     //PacBio data
-    dada2_filtntrim_options.args   +=", trimLeft = 0, minLen = $params.min_len, maxLen = $params.max_len, rm.phix = FALSE"
+    dada2_filtntrim_options.args   +=", trimLeft = 0, minLen = $params.min_len, maxLen = $max_len, rm.phix = FALSE"
 } else if (params.iontorrent) {
     //Ion-torrent data
-    dada2_filtntrim_options.args   += ", trimLeft = 15, minLen = $params.min_len, maxLen = $params.max_len, rm.phix = TRUE"
+    dada2_filtntrim_options.args   += ", trimLeft = 15, minLen = $params.min_len, maxLen = $max_len, rm.phix = TRUE"
 } else if (params.illumina_pe_its) {
     //Illumina ITS data or other sequences with high length variability
-    dada2_filtntrim_options.args   += ", trimLeft = 0, minLen = $params.min_len, maxLen = $params.max_len, rm.phix = TRUE"
+    dada2_filtntrim_options.args   += ", trimLeft = 0, minLen = $params.min_len, maxLen = $max_len, rm.phix = TRUE"
 } else {
     //Illumina 16S data
-    dada2_filtntrim_options.args   += ", trimLeft = 0, minLen = $params.min_len, maxLen = $params.max_len, rm.phix = TRUE"
+    dada2_filtntrim_options.args   += ", trimLeft = 0, minLen = $params.min_len, maxLen = $max_len, rm.phix = TRUE"
 }
 
 def dada2_quality_options = modules['dada2_quality']
@@ -149,6 +154,7 @@ include { QIIME2_BARPLOT                } from '../modules/local/qiime2_barplot'
 include { METADATA_ALL                  } from '../modules/local/metadata_all'
 include { METADATA_PAIRWISE             } from '../modules/local/metadata_pairwise'
 include { QIIME2_INTAX                  } from '../modules/local/qiime2_intax'                 addParams( options: modules['qiime2_intax']         )
+include { PICRUST                       } from '../modules/local/picrust'                      addParams( options: modules['picrust']              )
 include { GET_SOFTWARE_VERSIONS         } from '../modules/local/get_software_versions'        addParams( options: [publish_files : ['tsv':'']]    )
 
 //
@@ -234,7 +240,7 @@ workflow AMPLISEQ {
     //
     // Create a channel for input read files
     //
-    PARSE_INPUT ( params.input, single_end, params.multiple_sequencing_runs, params.extension )
+    PARSE_INPUT ( params.input, is_fasta_input, single_end, params.multiple_sequencing_runs, params.extension )
     ch_reads = PARSE_INPUT.out.reads
     ch_fasta = PARSE_INPUT.out.fasta
 
@@ -375,8 +381,8 @@ workflow AMPLISEQ {
     //
     // SUBWORKFLOW / MODULES : Taxonomic classification with DADA2 and/or QIIME2
     //
-    //Alternative entry point for fasta that is being classified - the if clause needs to be the opposite (i.e. with !) of that in subworkflow/local/parse.nf
-    if ( !(params.input.toString().toLowerCase().endsWith(".fasta") || params.input.toString().toLowerCase().endsWith(".fna") || params.input.toString().toLowerCase().endsWith(".fa") )) {
+    //Alternative entry point for fasta that is being classified
+    if ( !is_fasta_input ) {
         ch_fasta = DADA2_MERGE.out.fasta
     }
 
@@ -474,7 +480,7 @@ workflow AMPLISEQ {
         }
         //Export various ASV tables
         if (!params.skip_abundance_tables) {
-            QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, QIIME2_TAXONOMY.out.tsv )
+            QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, QIIME2_TAXONOMY.out.tsv, ch_dada2_tax )
         }
 
         if (!params.skip_barplot) {
@@ -517,6 +523,18 @@ workflow AMPLISEQ {
                 ch_tax
             )
         }
+    }
+
+    //
+    // MODULE: Predict functional potential of a bacterial community from marker genes with Picrust2
+    //
+    if ( params.picrust ) {
+        if ( run_qiime2 && !params.skip_abundance_tables && ( params.dada_ref_taxonomy || params.qiime_ref_taxonomy || params.classifier ) && !params.skip_taxonomy ) {
+            PICRUST ( QIIME2_EXPORT.out.abs_fasta, QIIME2_EXPORT.out.abs_tsv, "QIIME2", "This Picrust2 analysis is based on filtered reads from QIIME2" )
+        } else {
+            PICRUST ( ch_fasta, DADA2_MERGE.out.asv, "DADA2", "This Picrust2 analysis is based on unfiltered reads from DADA2" )
+        }
+        ch_software_versions = ch_software_versions.mix(PICRUST.out.version.ifEmpty(null))
     }
 
     //

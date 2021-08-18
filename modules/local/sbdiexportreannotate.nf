@@ -20,7 +20,6 @@ process SBDIEXPORTREANNOTATE {
 
     input:
     path taxonomytable
-    path metadata
 
     output:
     path "*.tsv", emit: sbdiannottables
@@ -29,6 +28,6 @@ process SBDIEXPORTREANNOTATE {
     def software = getSoftwareName(task.process)
     
     """
-    sbdiexportreannotate.R ${params.dada_ref_databases[params.dada_ref_taxonomy]["dbversion"]}
+    sbdiexportreannotate.R ${params.dada_ref_databases[params.dada_ref_taxonomy]["dbversion"]} $taxonomytable 
     """
 }

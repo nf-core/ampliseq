@@ -18,8 +18,9 @@ suppressPackageStartupMessages(library(tidyverse))
 # Get the library layout and primers from the command line
 args            <- commandArgs(trailingOnly=TRUE)
 dbversion       <- args[1]
+taxfile         <- args[2]
 
-taxonomy <- read.delim("ASV_tax_species.tsv", sep = '\t')
+taxonomy <- read.delim(taxfile, sep = '\t', stringsAsFactors = FALSE)
 
 taxonomy %>%
   rename_with(tolower, Domain:Species) %>%

@@ -31,8 +31,8 @@ process FORMAT_TAXONOMY_QIIME {
 
     #Giving out information
     echo -e "--qiime_ref_taxonomy: ${params.qiime_ref_taxonomy}\n" >ref_taxonomy.txt
-    echo -e "Title: ${params.dada_ref_databases[params.qiime_ref_taxonomy]["title"]}\n" >>ref_taxonomy.txt
-    echo -e "Citation: ${params.dada_ref_databases[params.qiime_ref_taxonomy]["citation"]}\n" >>ref_taxonomy.txt
-    echo "All entries: ${params.dada_ref_databases[params.qiime_ref_taxonomy]}" >>ref_taxonomy.txt
+    echo -e "Title: ${params.qiime_ref_databases[params.qiime_ref_taxonomy]["title"]}\n" >>ref_taxonomy.txt
+    echo -e "Citation: ${params.qiime_ref_databases[params.qiime_ref_taxonomy]["citation"]}\n" >>ref_taxonomy.txt
+    echo "All entries: ${params.qiime_ref_databases[params.qiime_ref_taxonomy]}" >>ref_taxonomy.txt
     """
 }

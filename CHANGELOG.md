@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Dependencies`
 
 * [#299](https://github.com/nf-core/ampliseq/pull/299) - Updated MultiQC to v1.10
+* [#319](https://github.com/nf-core/ampliseq/pull/319) - Updated DADA2 from 1.18.0 to 1.20.0
 
 ### `Removed`
 

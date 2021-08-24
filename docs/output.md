@@ -93,6 +93,7 @@ Additionally, DADA2 taxonomically classifies the ASVs using a choice of supplied
     * `ASV_table.tsv`: Counts for each ASV sequence.
     * `ASV_tax.tsv`: Taxonomic classification for each ASV sequence.
     * `ASV_tax_species.tsv`: Species classification for each ASV sequence.
+    * `ref_taxonomy.txt`: Information about the used reference taxonomy, such as title, version, citation.
     * `DADA2_stats.tsv`: Tracking read numbers through DADA2 processing steps, for each sample.
     * `DADA2_table.rds`: DADA2 ASV table as R object.
     * `DADA2_tables.tsv`: DADA2 ASV table.
@@ -133,9 +134,10 @@ Taxonomic classification with QIIME2 is typically similar to DADA2 classificatio
 <details markdown="1">
 <summary>Output files</summary>
 
-* `taxonomy/`
+* `qiime2/taxonomy/`
     * `taxonomy.tsv`: Tab-separated table with taxonomic classification for each ASV
     * `*-classifier.qza`: QIIME2 artefact of the trained classifier. Can be supplied to other pipeline runs with `--classifier`
+    * `ref_taxonomy.txt`: Information about the used reference taxonomy, such as title, version, citation.
 
 </details>
 

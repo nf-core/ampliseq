@@ -24,27 +24,27 @@ For example, the following files in folder `data` would be processed as `sample1
 
 ```console
 data
-  |-sample1_1_L001_R1_001.fastq.gz
-  |-sample1_1_L001_R2_001.fastq.gz
-  |-sample2_1_L001_R1_001.fastq.gz
-  |-sample2_1_L001_R2_001.fastq.gz
+    |-sample1_1_L001_R1_001.fastq.gz
+    |-sample1_1_L001_R2_001.fastq.gz
+    |-sample2_1_L001_R1_001.fastq.gz
+    |-sample2_1_L001_R2_001.fastq.gz
 ```
 
 All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed. Sequencing data originating from multiple sequencing runs requires additionally the parameter `--multiple_sequencing_runs` and a specific folder structure, for example:
 
 ```console
 data
-  |-runA
-  |  |-sample1_1_L001_R1_001.fastq.gz
-  |  |-sample1_1_L001_R2_001.fastq.gz
-  |  |-sample2_1_L001_R1_001.fastq.gz
-  |  |-sample2_1_L001_R2_001.fastq.gz
-  |
-  |-runB
-     |-sample3_1_L001_R1_001.fastq.gz
-     |-sample3_1_L001_R2_001.fastq.gz
-     |-sample4_1_L001_R1_001.fastq.gz
-     |-sample4_1_L001_R2_001.fastq.gz
+    |-runA
+    |   |-sample1_1_L001_R1_001.fastq.gz
+    |   |-sample1_1_L001_R2_001.fastq.gz
+    |   |-sample2_1_L001_R1_001.fastq.gz
+    |   |-sample2_1_L001_R2_001.fastq.gz
+    |
+    |-runB
+        |-sample3_1_L001_R1_001.fastq.gz
+        |-sample3_1_L001_R2_001.fastq.gz
+        |-sample4_1_L001_R1_001.fastq.gz
+        |-sample4_1_L001_R2_001.fastq.gz
 ```
 
 Where `sample1` and `sample2` were sequenced in one sequencing run and `sample3` and `sample4` in another sequencing run.

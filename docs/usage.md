@@ -8,6 +8,8 @@
 
 The input data can be passed to nf-core/ampliseq in three possible ways using the `--input` parameter, either a folder containing zipped FastQ files, a tab-seperated samplesheet, or a fasta file to be taxonomically classified.
 
+Optionally, a metadata sheet can be specified for downstream analysis.
+
 ### Direct FASTQ input
 
 The easiest way is to specify directly the path to the folder that contains your input FASTQ files. For example:
@@ -18,48 +20,80 @@ The easiest way is to specify directly the path to the folder that contains your
 
 File names must follow a specific pattern, default is `/*_R{1,2}_001.fastq.gz`, but this can be adjusted with `--extension`.
 
+For example, the following files in folder `data` would be processed as `sample1` and `sample2`:
+
+```console
+data
+  |-sample1_1_L001_R1_001.fastq.gz
+  |-sample1_1_L001_R2_001.fastq.gz
+  |-sample2_1_L001_R1_001.fastq.gz
+  |-sample2_1_L001_R2_001.fastq.gz
+```
+
+All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed. Sequencing data originating from multiple sequencing runs requires additionally the parameter `--multiple_sequencing_runs` and a specific folder structure, for example:
+
+```console
+data
+  |-runA
+  |  |-sample1_1_L001_R1_001.fastq.gz
+  |  |-sample1_1_L001_R2_001.fastq.gz
+  |  |-sample2_1_L001_R1_001.fastq.gz
+  |  |-sample2_1_L001_R2_001.fastq.gz
+  |
+  |-runB
+     |-sample3_1_L001_R1_001.fastq.gz
+     |-sample3_1_L001_R2_001.fastq.gz
+     |-sample4_1_L001_R1_001.fastq.gz
+     |-sample4_1_L001_R2_001.fastq.gz
+```
+
+Where `sample1` and `sample2` were sequenced in one sequencing run and `sample3` and `sample4` in another sequencing run.
+
 Please note the following additional requirements:
 
 * Files names must be unique
 * Valid file extensions: `.fastq.gz`, `.fq.gz` (files must be compressed)
 * The path must be enclosed in quotes
-* The path must have at least one `*` wildcard character
-* When using the pipeline with paired end data, the path must use `{1,2}` (or similar) notation to specify read pairs
+* `--extension` must have at least one `*` wildcard character
+* When using the pipeline with paired end data, the `--extension` must use `{1,2}` (or similar) notation to specify read pairs
 * To run single-end data you must additionally specify `--single_end`
-* Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique
+* Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique (also across sequencing runs)
 * If your data is scattered, produce a sample sheet
-* All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed. Sequencing data originating from multiple sequencing runs requires additionally the parameter `--multiple_sequencing_runs` and a specific folder structure.
 
 ### Samplesheet input
 
 The sample sheet file is an alternative way to provide input reads, it must be a tab-separated file ending with `.tsv` that must have two to four columns with the following headers:
 
-* sampleID (required): Unique sample identifiers, any unique string (may not contain dots .)
-* forwardReads (required): Paths to (forward) reads zipped FastQ files
-* reverseReads (optional): Paths to reverse reads zipped FastQ files, required if the data is paired-end
-* run (optional): If the data was produced by multiple sequencing runs, any string
+| Column | Necessity | Description |
+|-|-|-|
+| sampleID | required | Unique sample identifiers, any unique string (may not contain dots .) |
+| forwardReads | required | Paths to (forward) reads zipped FastQ files |
+| reverseReads | optional | Paths to reverse reads zipped FastQ files, required if the data is paired-end |
+| run | optional | If the data was produced by multiple sequencing runs, any string |
 
 ```console
---input '[path to samplesheet file]'
+--input 'path/to/samplesheet.tsv'
 ```
+
+For example, the samplesheet may contain:
 
 ```console
 sampleID    forwardReads    reverseReads    run
-CONTROL_REP1    S1_L002_R1_001.fastq.gz    S1_L002_R2_001.fastq.gz    1
-CONTROL_REP2    S2_L002_R1_001.fastq.gz    S2_L002_R2_001.fastq.gz    2
-TREATMENT_REP1    S4_L003_R1_001.fastq.gz    S4_L003_R1_001.fastq.gz    1
-TREATMENT_REP2    S5_L003_R1_001.fastq.gz    S5_L003_R1_001.fastq.gz    2
+sample1    ./data/S1_R1_001.fastq.gz    ./data/S1_R2_001.fastq.gz    A
+sample2    ./data/S2_fw.fastq.gz    ./data/S2_rv.fastq.gz    A
+sample3    ./S4x.fastq.gz    ./S4y.fastq.gz    B
+sample4    ./a.fastq.gz    ./b.fastq.gz    B
 ```
 
 Please note the following requirements:
 
-* 2 to 5 tab-seperated columns
+* 2 to 4 tab-seperated columns
 * Valid file extension: `.tsv`
 * Must contain the header `sampleID` and `forwardReads`
-* Nay contain the header `reverseReads` and `run`
+* May contain the header `reverseReads` and `run`
 * Sample IDs must be unique
 * FastQ files must be compressed (`.fastq.gz`, `.fq.gz`)
-* Within one samplesheet either only one type of raw data should be specified
+* Within one samplesheet, only one type of raw data should be specified (same amplicon & sequencing method)
 
 An [example samplesheet](../assets/samplesheet.tsv) has been provided with the pipeline.
 
@@ -68,12 +102,30 @@ An [example samplesheet](../assets/samplesheet.tsv) has been provided with the p
 When pointing at a file ending with `.fasta`, `.fna` or `.fa`, the containing sequences will be taxonomically classified. All other pipeline steps will be skipped.
 
 ```console
---input '[path to fasta file]'
+--input 'path/to/amplicon_sequences.fasta'
 ```
 
 Please note the following requirements:
 
 * Valid file extensions: `.fasta`, `.fna` or `.fa`
+
+### Metadata
+
+The metadata file must be tab-separated with a header line, for more details please see the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters).
+
+```console
+--metadata "path/to/metadata.tsv"
+```
+
+For example:
+
+```console
+ID    condition
+sample1    control
+sample2    treatment
+sample3    control
+sample4    treatment
+```
 
 ## Running the pipeline
 

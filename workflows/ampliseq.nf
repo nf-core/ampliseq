@@ -146,7 +146,7 @@ include { DADA2_DENOISING               } from '../modules/local/dada2_denoising
 include { DADA2_RMCHIMERA               } from '../modules/local/dada2_rmchimera'              addParams( options: dada2_rmchimera_options         )
 include { DADA2_STATS                   } from '../modules/local/dada2_stats'                  addParams( options: modules['dada2_stats']          )
 include { DADA2_MERGE                   } from '../modules/local/dada2_merge'                  addParams( options: modules['dada2_merge']          )
-include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
+include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'              addParams( options: modules['format_taxonomy']      )
 include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'                  addParams( options: modules['itsx_cutasv']          )
 include { MERGE_STATS                   } from '../modules/local/merge_stats'                  addParams( options: modules['merge_stats']          )
 include { DADA2_TAXONOMY                } from '../modules/local/dada2_taxonomy'               addParams( options: dada2_taxonomy_options          )
@@ -206,7 +206,7 @@ def cutadapt_doubleprimer_options        = modules['cutadapt_doubleprimer']
 cutadapt_doubleprimer_options.args      += cutadapt_options_args
 
 include { PARSE_INPUT                   } from '../subworkflows/local/parse_input'
-include { QIIME2_PREPTAX                } from '../subworkflows/local/qiime2_preptax'           addParams( options: modules['qiime2_preptax']       )
+include { QIIME2_PREPTAX                } from '../subworkflows/local/qiime2_preptax'           addParams( preptax_options: modules['qiime2_preptax'], format_options: modules['format_taxonomy_qiime'] )
 include { QIIME2_TAXONOMY               } from '../subworkflows/local/qiime2_taxonomy'          addParams( options: modules['qiime2_taxonomy']      )
 include { CUTADAPT_WORKFLOW             } from '../subworkflows/local/cutadapt_workflow'        addParams( standard_options: cutadapt_options, readthrough_options: cutadapt_readthrough_options,doubleprimer_options: cutadapt_doubleprimer_options,summary_options: modules['cutadapt_summary'],summary_merge_options: modules['cutadapt_summary_merge'] )
 include { QIIME2_EXPORT                 } from '../subworkflows/local/qiime2_export'            addParams( absolute_options: modules['qiime2_export_absolute'], relasv_options: modules['qiime2_export_relasv'],reltax_options: modules['qiime2_export_reltax'],combine_table_options: modules['combine_table'] )

@@ -41,7 +41,8 @@ taxonomy %>%
             !is.na(order)           ~ sprintf("%s", order),
             !is.na(class)           ~ sprintf("%s", class),
             !is.na(phylum)          ~ sprintf("%s", phylum),
-            !is.na(domain)          ~ sprintf("%s", domain)
+            !is.na(kingdom)          ~ sprintf("%s", kingdom),
+            TRUE                    ~ 'Unassigned'
         ),
         taxonRank = case_when(
             !is.na(specificEpithet) ~ 'species',
@@ -50,15 +51,17 @@ taxonomy %>%
             !is.na(order)           ~ 'order',
             !is.na(class)           ~ 'class',
             !is.na(phylum)          ~ 'phylum',
-            !is.na(domain)          ~ 'domain',
-            TRUE                    ~ 'unranked'
+            !is.na(kingdom)         ~ 'kingdom',
+            TRUE                    ~ 'kingdom'
         ),
         date_identified = as.character(lubridate::today()),
         reference_db = dbversion,
         annotation_algorithm = 'DADA2:assignTaxonomy:addSpecies',
         identification_references = 'https://docs.biodiversitydata.se/analyse-data/molecular-tools/#taxonomy-annotation',
-        taxon_remarks = ''
+        taxon_remarks = '',
+        kingdom = ifelse(is.na(kingdom), 'Unassigned', kingdom)
     ) %>%
     relocate(asv_sequence, .after = asv_id_alias) %>%
     relocate(infraspecificEpithet:identification_references, .after = specificEpithet) %>%
+    select(-domain) %>%
     write_tsv("annotation.tsv", na = '')

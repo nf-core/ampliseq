@@ -129,6 +129,13 @@ def dada2_addspecies_options  = modules['dada2_addspecies']
 dada2_addspecies_options.args += params.pacbio ? ", tryRC = TRUE" : ""
 dada2_addspecies_options.args += params.iontorrent ? ", tryRC = TRUE" : ""
 
+def sbdiexport_options   = modules['sbdiexport']
+sbdiexport_options.args += params.single_end ? ' single ' : ' paired '
+sbdiexport_options.args += " $params.FW_primer "
+sbdiexport_options.args += " $params.RV_primer "
+
+def sbdiexportreannotate_options  = modules['sbdiexportreannotate']
+
 include { RENAME_RAW_DATA_FILES         } from '../modules/local/rename_raw_data_files'
 include { DADA2_FILTNTRIM               } from '../modules/local/dada2_filtntrim'              addParams( options: dada2_filtntrim_options         )
 include { DADA2_QUALITY                 } from '../modules/local/dada2_quality'                addParams( options: dada2_quality_options           )
@@ -155,6 +162,8 @@ include { METADATA_ALL                  } from '../modules/local/metadata_all'
 include { METADATA_PAIRWISE             } from '../modules/local/metadata_pairwise'
 include { QIIME2_INTAX                  } from '../modules/local/qiime2_intax'                 addParams( options: modules['qiime2_intax']         )
 include { PICRUST                       } from '../modules/local/picrust'                      addParams( options: modules['picrust']              )
+include { SBDIEXPORT                    } from '../modules/local/sbdiexport'                   addParams( options: sbdiexport_options              )
+include { SBDIEXPORTREANNOTATE          } from '../modules/local/sbdiexportreannotate'         addParams( options: sbdiexportreannotate_options    )
 include { GET_SOFTWARE_VERSIONS         } from '../modules/local/get_software_versions'        addParams( options: [publish_files : ['tsv':'']]    )
 
 //
@@ -535,6 +544,14 @@ workflow AMPLISEQ {
             PICRUST ( ch_fasta, DADA2_MERGE.out.asv, "DADA2", "This Picrust2 analysis is based on unfiltered reads from DADA2" )
         }
         ch_software_versions = ch_software_versions.mix(PICRUST.out.version.ifEmpty(null))
+    }
+
+    //
+    // MODULE: Export data in SBDI's (Swedish biodiversity infrastructure) format
+    //
+    if ( params.sbdiexport ) {
+        SBDIEXPORT ( DADA2_MERGE.out.asv, DADA2_ADDSPECIES.out.tsv, ch_metadata  )
+        SBDIEXPORTREANNOTATE ( DADA2_ADDSPECIES.out.tsv )
     }
 
     //

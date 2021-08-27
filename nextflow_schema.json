@@ -107,6 +107,10 @@
                     "type": "boolean",
                     "description": "If the functional potential of the bacterial community is predicted."
                 },
+                "sbdiexport": {
+                    "type": "boolean",
+                    "description": "If data should be exported in SBDI (Swedish biodiversity infrastructure) Excel format."
+                },
                 "outdir": {
                     "type": "string",
                     "description": "Path to the output directory where the results will be saved.",

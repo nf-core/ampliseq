@@ -299,6 +299,27 @@ PICRUSt2 is preferentially applied to filtered data by QIIME2 but will use DADA2
 
 > **NB:** Quantifications are not normalized yet, they can be normalized e.g. by the total sum per sample.
 
+### SBDI export
+
+You can use the `--sbdiexport` flag (or `sbdiexport = true` in a nextflow config file) to generate tab separated files in preparation for submission to the [Swedish Biodiversity Infrastructure (SBDI)](https://biodiversitydata.se/).
+
+Tables are generated from the DADA2 denoising and taxonomy assignment steps.
+Each table, except `annotation.tsv`, corresponds to one tab in the [submission template](https://asv-portal.biodiversitydata.se/submit).
+See [`docs/usage.md`](docs/usage.md) for further information.
+Most of the fields in the template will not be populated by the export process, but if you run Ampliseq with a sample metadata table (`--metadata`) any fields corresponding to a field in the template will be used.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+* `SBDI/`
+    * `annotation.tsv`: SBDI specific output for taxonomi reannotation, not used in submission to SBDI.
+    * `asv-table.tsv`: asv-table tab of template.
+    * `emof.tsv`: emof tab of template.
+    * `event.tsv`: event tab of template.
+    * `mixs.tsv`: mixs tab of template.
+
+</details>
+
 ## Read count report
 
 This report includes information on how many reads per sample passed each pipeline step in which a loss can occur. Specifically, how many read pairs entered cutadapt, were reverse complemented, passed trimming; how many read pairs entered DADA2, were denoised, merged and non-chimeric; and how many counts were lost during excluding unwanted tax and removing low abundance/prevalence sequences in QIIME2.

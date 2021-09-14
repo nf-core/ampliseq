@@ -15,7 +15,7 @@ Optionally, a metadata sheet can be specified for downstream analysis.
 The easiest way is to specify directly the path to the folder that contains your input FASTQ files. For example:
 
 ```console
---input 'path/to/data'
+--input 'path/to/data/'
 ```
 
 File names must follow a specific pattern, default is `/*_R{1,2}_001.fastq.gz`, but this can be adjusted with `--extension`.

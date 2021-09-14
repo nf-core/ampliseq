@@ -12,16 +12,16 @@ process DADA2_DENOISING {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
-    conda (params.enable_conda ? "bioconductor-dada2=1.18.0" : null)
+    conda (params.enable_conda ? "bioconductor-dada2=1.20.0" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.18.0--r40h5f743cb_0"
+        container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.20.0--r41h399db7b_0"
     } else {
-        container "quay.io/biocontainers/bioconductor-dada2:1.18.0--r40h5f743cb_0"
+        container "quay.io/biocontainers/bioconductor-dada2:1.20.0--r41h399db7b_0"
     }
 
     input:
     tuple val(meta), path(dereplicated), path(errormodel)
-    
+
     output:
     tuple val(meta), path("*.dada.rds")   , emit: denoised
     tuple val(meta), path("*.seqtab.rds") , emit: seqtab
@@ -85,6 +85,6 @@ process DADA2_DENOISING {
 
         write.table('dada\t$options.args', file = "dada.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
         write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
-        """        
+        """
     }
 }

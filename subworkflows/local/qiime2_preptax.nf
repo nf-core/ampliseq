@@ -2,18 +2,19 @@
  * Training of a classifier with QIIME2
  */
 
-params.options = [:]
+params.preptax_options = [:]
+params.format_options = [:]
 
-include { FORMAT_TAXONOMY_QIIME } from '../../modules/local/format_taxonomy_qiime'
-include { QIIME2_EXTRACT        } from '../../modules/local/qiime2_extract' addParams( options: params.options )
-include { QIIME2_TRAIN          } from '../../modules/local/qiime2_train'   addParams( options: params.options )
+include { FORMAT_TAXONOMY_QIIME } from '../../modules/local/format_taxonomy_qiime' addParams( options: params.format_options )
+include { QIIME2_EXTRACT        } from '../../modules/local/qiime2_extract'        addParams( options: params.preptax_options )
+include { QIIME2_TRAIN          } from '../../modules/local/qiime2_train'          addParams( options: params.preptax_options )
 
 workflow QIIME2_PREPTAX {
     take:
     ch_dada_ref_taxonomy //channel, list of files
     FW_primer //val
     RV_primer //val
-    
+
     main:
     FORMAT_TAXONOMY_QIIME ( ch_dada_ref_taxonomy )
 

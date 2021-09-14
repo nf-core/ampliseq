@@ -36,12 +36,12 @@ process QIIME2_EXPORT_ABSOLUTE {
     qiime tools export --input-path ${table}  \
         --output-path table
     cp table/feature-table.biom .
-    
+
     #produce raw count table "table/feature-table.tsv"
     biom convert -i table/feature-table.biom \
         -o feature-table.tsv  \
         --to-tsv
-    
+
     #produce representative sequence fasta file "sequences.fasta"
     qiime feature-table tabulate-seqs  \
         --i-data ${repseq}  \

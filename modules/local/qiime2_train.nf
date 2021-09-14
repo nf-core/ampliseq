@@ -17,7 +17,7 @@ process QIIME2_TRAIN {
 
     input:
     tuple val(meta), path(qza)
-    
+
     output:
     path("*-classifier.qza"), emit: qza
     path "*.version.txt"    , emit: version

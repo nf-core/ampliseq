@@ -6,7 +6,7 @@
 
 # Untar any tar file in the working directory
 for f in *.tar.gz; do
-  tar xzf $f
+    tar xzf $f
 done
 
 # Write the assignTaxonomy() fasta file: assignTaxonomy.fna

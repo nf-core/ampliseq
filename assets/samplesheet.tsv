@@ -1,0 +1,4 @@
+sampleID	forwardReads	reverseReads	run
+SRR10070130	ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR100/030/SRR10070130/SRR10070130_1.fastq.gz	ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR100/030/SRR10070130/SRR10070130_2.fastq.gz	1
+SRR10070131	ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR100/031/SRR10070131/SRR10070131_1.fastq.gz	ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR100/031/SRR10070131/SRR10070131_2.fastq.gz	2
+SRR10070132	ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR100/032/SRR10070132/SRR10070132_1.fastq.gz	ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR100/032/SRR10070132/SRR10070132_2.fastq.gz	2

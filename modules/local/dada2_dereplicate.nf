@@ -8,16 +8,16 @@ process DADA2_DEREPLICATE {
     tag "$meta.run"
     label 'process_medium'
 
-    conda (params.enable_conda ? "bioconductor-dada2=1.18.0" : null)
+    conda (params.enable_conda ? "bioconductor-dada2=1.20.0" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.18.0--r40h5f743cb_0"
+        container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.20.0--r41h399db7b_0"
     } else {
-        container "quay.io/biocontainers/bioconductor-dada2:1.18.0--r40h5f743cb_0"
+        container "quay.io/biocontainers/bioconductor-dada2:1.20.0--r41h399db7b_0"
     }
 
     input:
     tuple val(meta), path(reads)
-    
+
     output:
     tuple val(meta), path("*.derep.rds"), emit: dereplicated
     path "*.version.txt"                , emit: version
@@ -50,6 +50,6 @@ process DADA2_DEREPLICATE {
         saveRDS(derepFs, "${meta.run}.derep.rds")
 
         write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
-        """        
+        """
     }
 }

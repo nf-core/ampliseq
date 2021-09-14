@@ -11,16 +11,16 @@ process DADA2_STATS {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
-    conda (params.enable_conda ? "bioconductor-dada2=1.18.0" : null)
+    conda (params.enable_conda ? "bioconductor-dada2=1.20.0" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.18.0--r40h5f743cb_0"
+        container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.20.0--r41h399db7b_0"
     } else {
-        container "quay.io/biocontainers/bioconductor-dada2:1.18.0--r40h5f743cb_0"
+        container "quay.io/biocontainers/bioconductor-dada2:1.20.0--r41h399db7b_0"
     }
 
     input:
     tuple val(meta), path("filter_and_trim_files/*"), path(denoised), path(mergers), path(seqtab_nochim)
-    
+
     output:
     tuple val(meta), path("*.stats.tsv"), emit: stats
     path "*.version.txt"                , emit: version
@@ -53,9 +53,9 @@ process DADA2_STATS {
 
         #track reads through pipeline
         getN <- function(x) sum(getUniques(x))
-        if ( nrow(filter_and_trim) == 1 ) { 
+        if ( nrow(filter_and_trim) == 1 ) {
             track <- cbind(filter_and_trim, getN(dadaFs), getN(dadaRs), getN(mergers), rowSums(seqtab.nochim))
-        } else { 
+        } else {
             track <- cbind(filter_and_trim, sapply(dadaFs, getN), sapply(dadaRs, getN), sapply(mergers, getN), rowSums(seqtab.nochim))
         }
         colnames(track) <- c("DADA2_input", "filtered", "denoisedF", "denoisedR", "merged", "nonchim")
@@ -89,9 +89,9 @@ process DADA2_STATS {
 
         #track reads through pipeline
         getN <- function(x) sum(getUniques(x))
-        if ( nrow(filter_and_trim) == 1 ) { 
+        if ( nrow(filter_and_trim) == 1 ) {
             track <- cbind(filter_and_trim, getN(dadaFs), rowSums(seqtab.nochim))
-        } else { 
+        } else {
             track <- cbind(filter_and_trim, sapply(dadaFs, getN), rowSums(seqtab.nochim))
         }
         colnames(track) <- c("input", "filtered", "denoised", "nonchim")
@@ -99,6 +99,6 @@ process DADA2_STATS {
         write.table( track, file = "${meta.run}.stats.tsv", sep = "\t", row.names = FALSE, quote = FALSE)
 
         write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
-        """        
+        """
     }
 }

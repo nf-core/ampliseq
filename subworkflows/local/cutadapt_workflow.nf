@@ -8,9 +8,9 @@ params.doubleprimer_options = [:]
 params.summary_options = [:]
 params.summary_merge_options = [:]
 
-include { CUTADAPT                          } from '../../modules/nf-core/software/cutadapt/main' addParams( options: params.standard_options     )
-include { CUTADAPT as CUTADAPT_READTHROUGH  } from '../../modules/nf-core/software/cutadapt/main' addParams( options: params.readthrough_options  )
-include { CUTADAPT as CUTADAPT_DOUBLEPRIMER } from '../../modules/nf-core/software/cutadapt/main' addParams( options: params.doubleprimer_options )
+include { CUTADAPT                          } from '../../modules/nf-core/modules/cutadapt/main' addParams( options: params.standard_options     )
+include { CUTADAPT as CUTADAPT_READTHROUGH  } from '../../modules/nf-core/modules/cutadapt/main' addParams( options: params.readthrough_options  )
+include { CUTADAPT as CUTADAPT_DOUBLEPRIMER } from '../../modules/nf-core/modules/cutadapt/main' addParams( options: params.doubleprimer_options )
 include { CUTADAPT_SUMMARY                                  } from '../../modules/local/cutadapt_summary' addParams( options: params.summary_options     )
 include { CUTADAPT_SUMMARY as CUTADAPT_SUMMARY_DOUBLEPRIMER } from '../../modules/local/cutadapt_summary' addParams( options: params.summary_options     )
 include { CUTADAPT_SUMMARY_MERGE            } from '../../modules/local/cutadapt_summary_merge' addParams( options: params.summary_merge_options       )

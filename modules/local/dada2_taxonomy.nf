@@ -11,18 +11,18 @@ process DADA2_TAXONOMY {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
-    conda (params.enable_conda ? "bioconductor-dada2=1.18.0" : null)
+    conda (params.enable_conda ? "bioconductor-dada2=1.20.0" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.18.0--r40h5f743cb_0"
+        container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.20.0--r41h399db7b_0"
     } else {
-        container "quay.io/biocontainers/bioconductor-dada2:1.18.0--r40h5f743cb_0"
+        container "quay.io/biocontainers/bioconductor-dada2:1.20.0--r41h399db7b_0"
     }
 
     input:
     path(fasta)
     path(database)
     val(outfile)
-    
+
     output:
     path(outfile), emit: tsv
     path( "ASV_tax.rds" ), emit: rds
@@ -41,8 +41,8 @@ process DADA2_TAXONOMY {
 
     # Make a data frame, add ASV_ID from seq, set confidence to the bootstrap for the most specific taxon and reorder columns before writing to file
     tx <- data.frame(ASV_ID = names(seq), taxa, sequence = row.names(taxa\$tax), row.names = names(seq))
-    tx\$confidence <- with(tx, 
-        ifelse(!is.na(tax.Genus), boot.Genus, 
+    tx\$confidence <- with(tx,
+        ifelse(!is.na(tax.Genus), boot.Genus,
             ifelse(!is.na(tax.Family), boot.Family,
                 ifelse(!is.na(tax.Order), boot.Order,
                     ifelse(!is.na(tax.Class), boot.Class,

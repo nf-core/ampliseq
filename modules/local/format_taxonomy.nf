@@ -1,5 +1,14 @@
+// Import generic module functions
+include { initOptions; saveFiles; getSoftwareName } from './functions'
+
+params.options = [:]
+options    = initOptions(params.options)
+
 process FORMAT_TAXONOMY {
     label 'process_low'
+    publishDir "${params.outdir}",
+        mode: params.publish_dir_mode,
+        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
     conda (params.enable_conda ? "conda-forge::sed=4.7" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
@@ -10,13 +19,20 @@ process FORMAT_TAXONOMY {
 
     input:
     path(database)
-    
+
     output:
     path( "*assignTaxonomy.fna*" ), emit: assigntax
     path( "*addSpecies.fna*"), emit: addspecies
+    path( "ref_taxonomy.txt"), emit: ref_tax_info
 
     script:
     """
     ${params.dada_ref_databases[params.dada_ref_taxonomy]["fmtscript"]}
+
+    #Giving out information
+    echo -e "--dada_ref_taxonomy: ${params.dada_ref_taxonomy}\n" >ref_taxonomy.txt
+    echo -e "Title: ${params.dada_ref_databases[params.dada_ref_taxonomy]["title"]}\n" >>ref_taxonomy.txt
+    echo -e "Citation: ${params.dada_ref_databases[params.dada_ref_taxonomy]["citation"]}\n" >>ref_taxonomy.txt
+    echo "All entries: ${params.dada_ref_databases[params.dada_ref_taxonomy]}" >>ref_taxonomy.txt
     """
 }

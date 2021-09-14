@@ -27,7 +27,7 @@ process QIIME2_DIVERSITY_CORE {
     path("*rarefaction.txt")                    , emit: depth
 
     script:
-    def software     = getSoftwareName(task.process) 
+    def software     = getSoftwareName(task.process)
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
 
@@ -36,7 +36,7 @@ process QIIME2_DIVERSITY_CORE {
     if [ \"\$mindepth\" -lt \"10000\" -a \"\$mindepth\" -gt \"5000\" ]; then echo \$mindepth >\"WARNING The sampling depth of \$mindepth is quite small for rarefaction.txt\" ; fi
     if [ \"\$mindepth\" -lt \"5000\" -a \"\$mindepth\" -gt \"1000\" ]; then echo \$mindepth >\"WARNING The sampling depth of \$mindepth is very small for rarefaction.txt\" ; fi
     if [ \"\$mindepth\" -lt \"1000\" ]; then echo \$mindepth >\"WARNING The sampling depth of \$mindepth seems too small for rarefaction.txt\" ; fi
-    
+
     qiime diversity core-metrics-phylogenetic \
         --m-metadata-file ${metadata} \
         --i-phylogeny ${tree} \

@@ -11,16 +11,16 @@ process DADA2_FILTNTRIM {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
-    conda (params.enable_conda ? "bioconductor-dada2=1.18.0" : null)
+    conda (params.enable_conda ? "bioconductor-dada2=1.20.0" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.18.0--r40h5f743cb_0"
+        container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.20.0--r41h399db7b_0"
     } else {
-        container "quay.io/biocontainers/bioconductor-dada2:1.18.0--r40h5f743cb_0"
+        container "quay.io/biocontainers/bioconductor-dada2:1.20.0--r41h399db7b_0"
     }
 
     input:
     tuple val(meta), path(reads), val(trunclenf), val(trunclenr)
-    
+
     output:
     tuple val(meta), path("*.filter_stats.tsv"), emit: log
     tuple val(meta), path("*.filt.fastq.gz")   , emit: reads
@@ -37,11 +37,11 @@ process DADA2_FILTNTRIM {
     #!/usr/bin/env Rscript
     suppressPackageStartupMessages(library(dada2))
 
-    out <- filterAndTrim($in_and_out, 
+    out <- filterAndTrim($in_and_out,
         $trunc_args,
         $options.args,
-        compress = TRUE, 
-        multithread = $task.cpus, 
+        compress = TRUE,
+        multithread = $task.cpus,
         verbose = TRUE)
     out <- cbind(out, ID = row.names(out))
 

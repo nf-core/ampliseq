@@ -4,7 +4,7 @@
 # and reports the maximum or minimum counts of all samples.
 
 import pandas as pd
-import sys 
+import sys
 
 #argument check
 if len(sys.argv) != 3 or sys.argv[2] not in ['maximum','minimum']:

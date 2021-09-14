@@ -15,7 +15,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Removed`
 
-
 ## nf-core/ampliseq version 2.1.0 "Gray Steel Boa" - 2021-09-14
 
 ### `Added`

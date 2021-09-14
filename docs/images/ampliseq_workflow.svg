@@ -3,8 +3,8 @@
    inkscape:export-ydpi="289.40701"
    inkscape:export-xdpi="289.40701"
    inkscape:export-filename="/home/daniel/Desktop/github-ampliseq/figure/ampliseq_workflow.png"
-   sodipodi:docname="ampliseq_workflow.svg"
-   inkscape:version="1.1 (1:1.1+202105261517+ce6663b3b7)"
+   sodipodi:docname="ampliseq2_workflow.svg"
+   inkscape:version="1.1 (ce6663b3b7, 2021-05-25)"
    id="svg8"
    version="1.1"
    viewBox="0 0 272.16501 148.21181"
@@ -217,17 +217,17 @@
      fit-margin-top="0"
      inkscape:document-rotation="0"
      showguides="true"
-     inkscape:window-maximized="1"
-     inkscape:window-y="27"
-     inkscape:window-x="0"
-     inkscape:window-height="1016"
-     inkscape:window-width="1920"
+     inkscape:window-maximized="0"
+     inkscape:window-y="190"
+     inkscape:window-x="144"
+     inkscape:window-height="947"
+     inkscape:window-width="1656"
      showgrid="false"
      inkscape:current-layer="layer1"
      inkscape:document-units="mm"
-     inkscape:cy="525.87918"
-     inkscape:cx="429.03219"
-     inkscape:zoom="0.51627828"
+     inkscape:cy="25.455844"
+     inkscape:cx="248.90159"
+     inkscape:zoom="0.70710678"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="1.0"
@@ -249,6 +249,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -1316,20 +1317,20 @@
        inkscape:export-ydpi="305.81"
        inkscape:export-xdpi="305.81"
        id="text4674"
-       y="183.16125"
-       x="53.708607"
+       y="184.26242"
+       x="10.586206"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;line-height:1.25;font-family:Kalam;-inkscape-font-specification:Kalam;text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:#b3b3b3;fill-opacity:1;stroke:none;stroke-width:0.264583"
        xml:space="preserve"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png"><tspan
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;font-family:Kalam;-inkscape-font-specification:Kalam;text-align:end;text-anchor:end;fill:#b3b3b3;stroke-width:0.264583"
-         y="183.16125"
-         x="53.708607"
+         y="184.26242"
+         x="10.586207"
          sodipodi:role="line"
          id="tspan4673">CC-BY 4<tspan
    style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:sans-serif;stroke-width:0.264583"
-   id="tspan4675">.</tspan>0. Design originally by Zandra Fagernäs</tspan><tspan
-         y="186.68903"
-         x="53.708607"
+   id="tspan4675">.</tspan>0</tspan><tspan
+         y="187.79019"
+         x="10.586206"
          sodipodi:role="line"
          id="tspan4662" /></text>
     <text

@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
+* [#331](https://github.com/nf-core/ampliseq/issues/331) - Improve error message when no data files are found
+
 ### `Dependencies`
 
 ### `Removed`

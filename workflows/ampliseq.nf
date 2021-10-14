@@ -461,9 +461,13 @@ workflow AMPLISEQ {
         } else if ( params.dada_ref_taxonomy ) {
             log.info "Use DADA2 taxonomy classification"
             ch_tax = QIIME2_INTAX ( ch_dada2_tax ).qza
+            tax_agglom_min = params.dada_tax_agglom_min
+            tax_agglom_max = params.dada_tax_agglom_max
         } else if ( params.qiime_ref_taxonomy || params.classifier ) {
             log.info "Use QIIME2 taxonomy classification"
             ch_tax = QIIME2_TAXONOMY.out.qza
+            tax_agglom_min = params.qiime_tax_agglom_min
+            tax_agglom_max = params.qiime_tax_agglom_max
         } else {
             log.info "Use no taxonomy classification"
             ch_tax = Channel.empty()
@@ -489,7 +493,7 @@ workflow AMPLISEQ {
         }
         //Export various ASV tables
         if (!params.skip_abundance_tables) {
-            QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, QIIME2_TAXONOMY.out.tsv, ch_dada2_tax )
+            QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, QIIME2_TAXONOMY.out.tsv, ch_dada2_tax, tax_agglom_min, tax_agglom_max )
         }
 
         if (!params.skip_barplot) {
@@ -529,7 +533,9 @@ workflow AMPLISEQ {
                 ch_metadata,
                 ch_asv,
                 ch_metacolumn_all,
-                ch_tax
+                ch_tax,
+                tax_agglom_min,
+                tax_agglom_max
             )
         }
     }

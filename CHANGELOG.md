@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+* [#336](https://github.com/nf-core/ampliseq/pull/336) - Taxa agglomeration levels with `--dada_tax_agglom_min`, `--dada_tax_agglom_max`, `--qiime_tax_agglom_min`, `--qiime_tax_agglom_max`, with defaults that go to genus level for abundance tables and ANCOM analysis
+
 ### `Changed`
 
 ### `Fixed`

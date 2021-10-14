@@ -458,6 +458,8 @@ workflow AMPLISEQ {
         if ( params.skip_taxonomy ) {
             log.info "Skip taxonomy classification"
             ch_tax = Channel.empty()
+            tax_agglom_min = 1
+            tax_agglom_max = 2
         } else if ( params.dada_ref_taxonomy ) {
             log.info "Use DADA2 taxonomy classification"
             ch_tax = QIIME2_INTAX ( ch_dada2_tax ).qza
@@ -471,6 +473,8 @@ workflow AMPLISEQ {
         } else {
             log.info "Use no taxonomy classification"
             ch_tax = Channel.empty()
+            tax_agglom_min = 1
+            tax_agglom_max = 2
         }
 
         //Filtering by taxonomy & prevalence & counts

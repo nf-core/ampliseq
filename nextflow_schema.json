@@ -196,28 +196,28 @@
                     "default": 2,
                     "description": "Minimum taxonomy agglomeration level for DADA2 classification",
                     "fa_icon": "fas fa-greater-than-equal",
-                    "help_text": "Depends on the database used."
+                    "help_text": "Depends on the reference taxonomy database used."
                 },
                 "dada_tax_agglom_max": {
                     "type": "integer",
                     "default": 7,
                     "description": "Maximum taxonomy agglomeration level for DADA2 classification",
                     "fa_icon": "fas fa-greater-than-equal",
-                    "help_text": "Depends on the database used. Default databases should have genus level at 7."
+                    "help_text": "Depends on the reference taxonomy database used. Default databases should have genus level at 7."
                 },
                 "qiime_tax_agglom_min": {
                     "type": "integer",
                     "default": 2,
                     "description": "Minimum taxonomy agglomeration level for QIIME2 classification",
                     "fa_icon": "fas fa-greater-than-equal",
-                    "help_text": "Depends on the database used."
+                    "help_text": "Depends on the reference taxonomy database used."
                 },
                 "qiime_tax_agglom_max": {
                     "type": "integer",
                     "default": 6,
                     "description": "Maximum taxonomy agglomeration level for QIIME2 classification",
                     "fa_icon": "fas fa-greater-than-equal",
-                    "help_text": "Depends on the database used. Default databases should have genus level at 6."
+                    "help_text": "Depends on the reference taxonomy database used. Default databases should have genus level at 6."
                 }
             },
             "fa_icon": "fas fa-filter"

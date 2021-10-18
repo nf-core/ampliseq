@@ -32,13 +32,8 @@ for FILE in argv[2:]:
             else:
                 results.append("")
 
-        #modify sample names
-        if argv[1] == "single_end":
-            results[0] = results[0].replace(".double-primer.trim.fastq.gz","")
-            results[0] = results[0].replace(".trim.fastq.gz","")
-        if argv[1] == "paired_end":
-            results[0] = results[0].replace(".double-primer_1.trim.fastq.gz","")
-            results[0] = results[0].replace("_1.trim.fastq.gz","")
+        #modify sample names (all before ".")
+        results[0] = results[0].split(".", 1)[0]
 
         #output per file
         print("\t".join(results))

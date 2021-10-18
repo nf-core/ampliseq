@@ -70,13 +70,13 @@ process DADA2_TAXONOMY {
         row.names = names(seq)
     )
 
-    write.table(taxa_export, file = \"$outfile\", sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
+    write.table(taxa_export, file = \"$outfile\", sep = "\\t", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '')
 
     # Save a version with rownames for addSpecies
-    taxa_export <- cbind( ASV_ID = tx\$ASV_ID, taxa\$tax, confidence = tx\$confidence )
+    taxa_export <- cbind( ASV_ID = tx\$ASV_ID, taxa\$tax, confidence = tx\$confidence)
     saveRDS(taxa_export, "ASV_tax.rds")
 
-    write.table('assignTaxonomy\t$options.args', file = "assignTaxonomy.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
-    write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
+    write.table('assignTaxonomy\\t$options.args', file = "assignTaxonomy.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+    write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
     """
 }

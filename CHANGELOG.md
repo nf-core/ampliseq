@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+* [338](https://github.com/nf-core/ampliseq/pull/338) - Write empty space instead of `NA` for missing values in output files.
+
 ### `Fixed`
 
 * [#329](https://github.com/nf-core/ampliseq/issues/329) - Improve error message when no data files are found

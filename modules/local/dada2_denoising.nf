@@ -57,9 +57,9 @@ process DADA2_DENOISING {
         seqtab <- makeSequenceTable(mergers)
         saveRDS(seqtab, "${meta.run}.seqtab.rds")
 
-        write.table('dada\t$options.args', file = "dada.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
-        write.table('mergePairs\t$options.args2', file = "mergePairs.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
-        write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
+        write.table('dada\t$options.args', file = "dada.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+        write.table('mergePairs\t$options.args2', file = "mergePairs.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+        write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
         """
     } else {
         """
@@ -83,8 +83,8 @@ process DADA2_DENOISING {
         #dummy file to fulfill output rules
         saveRDS("dummy", "dummy_${meta.run}.mergers.rds")
 
-        write.table('dada\t$options.args', file = "dada.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
-        write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
+        write.table('dada\t$options.args', file = "dada.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+        write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
         """
     }
 }

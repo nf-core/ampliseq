@@ -34,16 +34,16 @@ process DADA2_STATS {
 
         #combine filter_and_trim files
         for (data in list.files("./filter_and_trim_files", full.names=TRUE)){
-            if (!exists("filter_and_trim")){ filter_and_trim <- read.csv(data, header=TRUE, sep="\t") }
+            if (!exists("filter_and_trim")){ filter_and_trim <- read.csv(data, header=TRUE, sep="\\t") }
             if (exists("filter_and_trim")){
-                tempory <-read.csv(data, header=TRUE, sep="\t")
+                tempory <-read.csv(data, header=TRUE, sep="\\t")
                 filter_and_trim <-unique(rbind(filter_and_trim, tempory))
                 rm(tempory)
             }
         }
         rownames(filter_and_trim) <- filter_and_trim\$ID
         filter_and_trim["ID"] <- NULL
-        #write.table( filter_and_trim, file = "${meta.run}.filter_and_trim.tsv", sep = "\t", row.names = TRUE, quote = FALSE)
+        #write.table( filter_and_trim, file = "${meta.run}.filter_and_trim.tsv", sep = "\\t", row.names = TRUE, quote = FALSE, na = '')
 
         #read data
         dadaFs = readRDS("${denoised[0]}")
@@ -61,9 +61,9 @@ process DADA2_STATS {
         colnames(track) <- c("DADA2_input", "filtered", "denoisedF", "denoisedR", "merged", "nonchim")
         track <- cbind(sample = sub(pattern = "(.*?)\\\\..*\$", replacement = "\\\\1", rownames(track)), track)
         track\$sample <- sub(pattern = "_1\$", replacement = "", track\$sample)
-        write.table( track, file = "${meta.run}.stats.tsv", sep = "\t", row.names = FALSE, quote = FALSE)
+        write.table( track, file = "${meta.run}.stats.tsv", sep = "\\t", row.names = FALSE, quote = FALSE, na = '')
 
-        write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
+        write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
         """
     } else {
         """
@@ -72,16 +72,16 @@ process DADA2_STATS {
 
         #combine filter_and_trim files
         for (data in list.files("./filter_and_trim_files", full.names=TRUE)){
-            if (!exists("filter_and_trim")){ filter_and_trim <- read.csv(data, header=TRUE, sep="\t") }
+            if (!exists("filter_and_trim")){ filter_and_trim <- read.csv(data, header=TRUE, sep="\\t") }
             if (exists("filter_and_trim")){
-                tempory <-read.csv(data, header=TRUE, sep="\t")
+                tempory <-read.csv(data, header=TRUE, sep="\\t")
                 filter_and_trim <-unique(rbind(filter_and_trim, tempory))
                 rm(tempory)
             }
         }
         rownames(filter_and_trim) <- filter_and_trim\$ID
         filter_and_trim["ID"] <- NULL
-        #write.table( filter_and_trim, file = "${meta.run}.filter_and_trim.tsv", sep = "\t", row.names = TRUE, quote = FALSE)
+        #write.table( filter_and_trim, file = "${meta.run}.filter_and_trim.tsv", sep = "\\t", row.names = TRUE, quote = FALSE, na = '')
 
         #read data
         dadaFs = readRDS("${denoised[0]}")
@@ -96,9 +96,9 @@ process DADA2_STATS {
         }
         colnames(track) <- c("input", "filtered", "denoised", "nonchim")
         track <- cbind(sample = sub(pattern = "(.*?)\\\\..*\$", replacement = "\\\\1", rownames(track)), track)
-        write.table( track, file = "${meta.run}.stats.tsv", sep = "\t", row.names = FALSE, quote = FALSE)
+        write.table( track, file = "${meta.run}.stats.tsv", sep = "\\t", row.names = FALSE, quote = FALSE, na = '')
 
-        write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
+        write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
         """
     }
 }

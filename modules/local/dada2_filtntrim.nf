@@ -45,8 +45,8 @@ process DADA2_FILTNTRIM {
         verbose = TRUE)
     out <- cbind(out, ID = row.names(out))
 
-    write.table( out, file = "${meta.id}.filter_stats.tsv", sep = "\t", row.names = FALSE, quote = FALSE)
-    write.table(paste('filterAndTrim\t$trunc_args','$options.args',sep=","), file = "filterAndTrim.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
-    write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
+    write.table( out, file = "${meta.id}.filter_stats.tsv", sep = "\\t", row.names = FALSE, quote = FALSE, na = '')
+    write.table(paste('filterAndTrim\t$trunc_args','$options.args',sep=","), file = "filterAndTrim.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+    write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
     """
 }

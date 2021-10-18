@@ -29,8 +29,8 @@ process CUTADAPT_SUMMARY_MERGE {
     if (action == "merge") {
         """
         #!/usr/bin/env Rscript
-        standard <- read.table(\"${files[0]}\", header = TRUE, sep = "\t", stringsAsFactors = FALSE)
-        doubleprimer <- read.table(\"${files[1]}\", header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+        standard <- read.table(\"${files[0]}\", header = TRUE, sep = "\\t", stringsAsFactors = FALSE)
+        doubleprimer <- read.table(\"${files[1]}\", header = TRUE, sep = "\\t", stringsAsFactors = FALSE)
         colnames(doubleprimer) <- c("sample", "cutadapt_doubleprimer_total_processed", "cutadapt_doubleprimer_reverse_complemented", "cutadapt_doubleprimer_passing_filters", "cutadapt_doubleprimer_passing_filters_percent")
 
         #merge
@@ -41,7 +41,7 @@ process CUTADAPT_SUMMARY_MERGE {
         for(column in remove_columns) df[column]<-NULL
 
         #write
-        write.table(df, file = \"cutadapt_summary.tsv\", quote=FALSE, col.names=TRUE, row.names=FALSE, sep="\t")
+        write.table(df, file = \"cutadapt_summary.tsv\", quote=FALSE, col.names=TRUE, row.names=FALSE, sep="\\t")
         """
     } else {
         """

@@ -38,14 +38,14 @@ process DADA2_MERGE {
 
     #combine stats files
     for (data in sort(list.files(".", pattern = ".stats.tsv", full.names = TRUE))) {
-        if (!exists("stats")){ stats <- read.csv(data, header=TRUE, sep="\t") }
+        if (!exists("stats")){ stats <- read.csv(data, header=TRUE, sep="\\t") }
         if (exists("stats")){
-            temp <-read.csv(data, header=TRUE, sep="\t")
+            temp <-read.csv(data, header=TRUE, sep="\\t")
             stats <-unique(rbind(stats, temp))
             rm(temp)
         }
     }
-    write.table( stats, file = "DADA2_stats.tsv", sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '')
+    write.table( stats, file = "DADA2_stats.tsv", sep = "\\t", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '')
 
     #combine dada-class objects
     files <- sort(list.files(".", pattern = ".ASVtable.rds", full.names = TRUE))
@@ -65,14 +65,14 @@ process DADA2_MERGE {
     df <- df[,c(ncol(df),3:ncol(df)-1,1)]
 
     # file to publish
-    write.table(df, file = "DADA2_table.tsv", sep = "\t", row.names = FALSE, quote = FALSE, na = '')
+    write.table(df, file = "DADA2_table.tsv", sep = "\\t", row.names = FALSE, quote = FALSE, na = '')
 
     # Write fasta file with ASV sequences to file
     write.table(data.frame(s = sprintf(">%s\n%s", df\$ASV_ID, df\$sequence)), 'ASV_seqs.fasta', col.names = FALSE, row.names = FALSE, quote = FALSE, na = '')
 
     # Write ASV file with ASV abundances to file
     df\$sequence <- NULL
-    write.table(df, file = "ASV_table.tsv", sep="\t", row.names = FALSE, quote = FALSE, na = '')
+    write.table(df, file = "ASV_table.tsv", sep="\\t", row.names = FALSE, quote = FALSE, na = '')
 
     write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
     """

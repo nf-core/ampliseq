@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * [#329](https://github.com/nf-core/ampliseq/issues/329) - Improve error message when no data files are found
 * [#330](https://github.com/nf-core/ampliseq/issues/330) - Make `--skip_fastqc` usable again
+* [#339](https://github.com/nf-core/ampliseq/issues/339) - Fix smaple names when using `--double_primer` or `--illumina_pe_its`
 
 ### `Dependencies`
 

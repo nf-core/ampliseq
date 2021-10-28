@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Changed`
 
 * [338](https://github.com/nf-core/ampliseq/pull/338) - Write empty space instead of `NA` for missing values in output files.
+* [342](https://github.com/nf-core/ampliseq/pull/342) - Added PICRUSt2 to summary figure.
 
 ### `Fixed`
 

@@ -36,5 +36,5 @@ outfile = taxfile.replace("ASV_ITS_", "ASV_")
 
 # Join taxonomy and full sequence, write to file
 tax = tax.set_index('ASV_ID').join(seqs.set_index('id'), how='outer')
-tax.to_csv(outfile, sep='\t',na_rep="NA", index_label="ASV_ID")
+tax.to_csv(outfile, sep='\t',na_rep="", index_label="ASV_ID")
 

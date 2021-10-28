@@ -3,6 +3,27 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## nf-core/ampliseq version 2.1.1 - 2021-10-28
+
+### `Added`
+
+* [#336](https://github.com/nf-core/ampliseq/pull/336) - Taxa agglomeration levels with `--dada_tax_agglom_min`, `--dada_tax_agglom_max`, `--qiime_tax_agglom_min`, `--qiime_tax_agglom_max`, with defaults that go to genus level for abundance tables and ANCOM analysis
+
+### `Changed`
+
+* [338](https://github.com/nf-core/ampliseq/pull/338) - Write empty space instead of `NA` for missing values in output files.
+* [342](https://github.com/nf-core/ampliseq/pull/342) - Added PICRUSt2 to summary figure.
+
+### `Fixed`
+
+* [#329](https://github.com/nf-core/ampliseq/issues/329) - Improve error message when no data files are found
+* [#330](https://github.com/nf-core/ampliseq/issues/330) - Make `--skip_fastqc` usable again
+* [#339](https://github.com/nf-core/ampliseq/issues/339) - Fix sample names when using `--double_primer` or `--illumina_pe_its`
+
+### `Dependencies`
+
+### `Removed`
+
 ## nf-core/ampliseq version 2.1.0 "Gray Steel Boa" - 2021-09-14
 
 ### `Added`

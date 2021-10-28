@@ -458,15 +458,23 @@ workflow AMPLISEQ {
         if ( params.skip_taxonomy ) {
             log.info "Skip taxonomy classification"
             ch_tax = Channel.empty()
+            tax_agglom_min = 1
+            tax_agglom_max = 2
         } else if ( params.dada_ref_taxonomy ) {
             log.info "Use DADA2 taxonomy classification"
             ch_tax = QIIME2_INTAX ( ch_dada2_tax ).qza
+            tax_agglom_min = params.dada_tax_agglom_min
+            tax_agglom_max = params.dada_tax_agglom_max
         } else if ( params.qiime_ref_taxonomy || params.classifier ) {
             log.info "Use QIIME2 taxonomy classification"
             ch_tax = QIIME2_TAXONOMY.out.qza
+            tax_agglom_min = params.qiime_tax_agglom_min
+            tax_agglom_max = params.qiime_tax_agglom_max
         } else {
             log.info "Use no taxonomy classification"
             ch_tax = Channel.empty()
+            tax_agglom_min = 1
+            tax_agglom_max = 2
         }
 
         //Filtering by taxonomy & prevalence & counts
@@ -489,7 +497,7 @@ workflow AMPLISEQ {
         }
         //Export various ASV tables
         if (!params.skip_abundance_tables) {
-            QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, QIIME2_TAXONOMY.out.tsv, ch_dada2_tax )
+            QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, QIIME2_TAXONOMY.out.tsv, ch_dada2_tax, tax_agglom_min, tax_agglom_max )
         }
 
         if (!params.skip_barplot) {
@@ -529,7 +537,9 @@ workflow AMPLISEQ {
                 ch_metadata,
                 ch_asv,
                 ch_metacolumn_all,
-                ch_tax
+                ch_tax,
+                tax_agglom_min,
+                tax_agglom_max
             )
         }
     }
@@ -581,7 +591,9 @@ workflow AMPLISEQ {
         ch_multiqc_files = ch_multiqc_files.mix(ch_multiqc_custom_config.collect().ifEmpty([]))
         ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
         ch_multiqc_files = ch_multiqc_files.mix(GET_SOFTWARE_VERSIONS.out.yaml.collect())
-        ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
+        if (!params.skip_fastqc) {
+            ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
+        }
 
         MULTIQC (
             ch_multiqc_files.collect()

@@ -37,7 +37,7 @@ process DADA2_DEREPLICATE {
         derepRs <- derepFastq(filtRs, verbose = TRUE)
         saveRDS(derepRs, "${meta.run}_2.derep.rds")
 
-        write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
+        write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
         """
     } else {
         """
@@ -49,7 +49,7 @@ process DADA2_DEREPLICATE {
         derepFs <- derepFastq(filtFs, verbose = TRUE)
         saveRDS(derepFs, "${meta.run}.derep.rds")
 
-        write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
+        write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
         """
     }
 }

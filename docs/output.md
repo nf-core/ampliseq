@@ -155,12 +155,7 @@ All following analysis is based on these filtered tables.
     * `descriptive_stats.tsv`: Length, mean, etc. of ASV sequences.
     * `seven_number_summary.tsv`: Length of ASV sequences in different quantiles.
 * `qiime2/abundance_tables/`
-    * `abs-abund-table-2.tsv`: Tab-separated absolute abundance table at phylum level.
-    * `abs-abund-table-3.tsv`: Tab-separated absolute abundance table at class level.
-    * `abs-abund-table-4.tsv`: Tab-separated absolute abundance table at order level.
-    * `abs-abund-table-5.tsv`: Tab-separated absolute abundance table at family level.
-    * `abs-abund-table-6.tsv`: Tab-separated absolute abundance table at genus level.
-    * `abs-abund-table-7.tsv`: Tab-separated absolute abundance table at species level.
+    * `abs-abund-table-*.tsv`: Tab-separated absolute abundance table at taxa level `*`, where `*` ranges by default from 2 to 6 or 7, depending on the used reference taxonomy database.
     * `count_table_filter_stats.tsv`: Tab-separated table with information on how much counts were filtered for each sample.
     * `feature-table.biom`: Abundance table in biom format for importing into downstream analysis tools.
     * `feature-table.tsv`: Tab-separated abundance table for each ASV and each sample.
@@ -175,12 +170,7 @@ Absolute abundance tables produced by the previous steps contain count data, but
 <summary>Output files</summary>
 
 * `qiime2/rel_abundance_tables/`
-    * `rel-table-2.tsv`: Tab-separated relative abundance table at phylum level.
-    * `rel-table-3.tsv`: Tab-separated relative abundance table at class level.
-    * `rel-table-4.tsv`: Tab-separated relative abundance table at order level.
-    * `rel-table-5.tsv`: Tab-separated relative abundance table at family level.
-    * `rel-table-6.tsv`: Tab-separated relative abundance table at genus level.
-    * `rel-table-7.tsv`: Tab-separated relative abundance table at species level.
+    * `rel-table-*.tsv`: Tab-separated absolute abundance table at taxa level `*`, where `*` ranges by default from 2 to 6 or 7, depending on the used reference taxonomy database.
     * `rel-table-ASV.tsv`: Tab-separated relative abundance table for all ASVs.
     * `rel-table-ASV_with-DADA2-tax.tsv`: Tab-separated table for all ASVs with DADA2 taxonomic classification, sequence and relative abundance.
     * `rel-table-ASV_with-QIIME2-tax.tsv`: Tab-separated table for all ASVs with QIIME2 taxonomic classification, sequence and relative abundance.

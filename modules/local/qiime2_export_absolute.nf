@@ -17,6 +17,8 @@ process QIIME2_EXPORT_ABSOLUTE {
     path(table)
     path(repseq)
     path(taxonomy)
+    val(tax_agglom_min)
+    val(tax_agglom_max)
 
     output:
     path("rep-seq.fasta")            , emit: fasta
@@ -52,7 +54,7 @@ process QIIME2_EXPORT_ABSOLUTE {
     cp representative_sequences/*.tsv .
 
     ##on several taxa level
-    array=( 2 3 4 5 6 )
+    array=(\$(seq ${tax_agglom_min} 1 ${tax_agglom_max}))
     for i in \${array[@]}
     do
         #collapse taxa

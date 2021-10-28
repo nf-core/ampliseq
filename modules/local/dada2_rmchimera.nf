@@ -41,7 +41,7 @@ process DADA2_RMCHIMERA {
     if ( ${no_samples} == 1 ) { rownames(seqtab.nochim) <- "${first_sample}" }
     saveRDS(seqtab.nochim,"${meta.run}.ASVtable.rds")
 
-    write.table('removeBimeraDenovo\t$options.args', file = "removeBimeraDenovo.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
-    write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
+    write.table('removeBimeraDenovo\t$options.args', file = "removeBimeraDenovo.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+    write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
     """
 }

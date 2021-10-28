@@ -4,7 +4,7 @@
    inkscape:export-xdpi="289.40701"
    inkscape:export-filename="/home/daniel/Desktop/github-ampliseq/figure/ampliseq_workflow.png"
    sodipodi:docname="ampliseq_workflow.svg"
-   inkscape:version="1.1 (ce6663b3b7, 2021-05-25)"
+   inkscape:version="1.1.1 (eb90963e84, 2021-10-02)"
    id="svg8"
    version="1.1"
    viewBox="0 0 272.16501 148.21181"
@@ -225,8 +225,8 @@
      showgrid="false"
      inkscape:current-layer="layer1"
      inkscape:document-units="mm"
-     inkscape:cy="424"
-     inkscape:cx="242.5"
+     inkscape:cy="319"
+     inkscape:cx="699.5"
      inkscape:zoom="2"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
@@ -1198,32 +1198,32 @@
        inkscape:export-ydpi="305.81"
        inkscape:export-xdpi="305.81"
        id="text4732-0-6-5-6-84"
-       y="138.82187"
+       y="139.88019"
        x="193.07434"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        xml:space="preserve"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png"><tspan
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.264583"
-         y="138.82187"
+         y="139.88019"
          x="193.07434"
          sodipodi:role="line"
-         id="tspan19364-3">Quality control</tspan></text>
+         id="tspan19364-3">Predict function</tspan></text>
     <text
        inkscape:export-ydpi="305.81"
        inkscape:export-xdpi="305.81"
        id="text4732-0-6-5-6-6"
-       y="104.29582"
+       y="101.64999"
        x="193.00026"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        xml:space="preserve"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png"><tspan
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.264583"
-         y="104.29582"
+         y="101.64999"
          x="193.00026"
          sodipodi:role="line"
          id="tspan19364-6">Differential</tspan><tspan
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.264583"
-         y="107.8236"
+         y="105.17776"
          x="193.00026"
          sodipodi:role="line"
          id="tspan42325">abundance</tspan></text>
@@ -1233,19 +1233,19 @@
        width="31.516283"
        height="4.9341259"
        x="177.25598"
-       y="109.2495"
+       y="106.07449"
        ry="2.467063"
        rx="2.467063" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        x="187.2323"
-       y="112.74188"
+       y="109.5669"
        id="text4774-5-7-6-5"><tspan
          sodipodi:role="line"
          id="tspan4772-1-3-3-0"
          x="187.2323"
-         y="112.74188"
+         y="109.5669"
          style="font-size:3.175px;stroke-width:0.264583">ANCOM</tspan></text>
     <rect
        style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
@@ -1253,29 +1253,63 @@
        width="31.516283"
        height="4.9341259"
        x="177.25598"
-       y="93.162453"
+       y="92.104118"
        ry="2.467063"
        rx="2.467063" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        x="188.06946"
-       y="96.654839"
+       y="95.596504"
        id="text4774-5-7-6-5-7"><tspan
          sodipodi:role="line"
          id="tspan4772-1-3-3-0-8"
          x="188.06946"
-         y="96.654839"
+         y="95.596504"
          style="font-size:3.175px;stroke-width:0.264583">barplot</tspan></text>
+    <rect
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+       id="rect4770-6-1-7-5"
+       width="32.312801"
+       height="4.9341259"
+       x="176.85773"
+       y="141.0213"
+       ry="2.467063"
+       rx="2.467063" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       x="184.672"
+       y="144.65761"
+       id="text4774-3-0"><tspan
+         sodipodi:role="line"
+         id="tspan4772-2-5"
+         x="184.672"
+         y="144.65761"
+         style="font-size:3.175px;stroke-width:0.264583">PICRUSTt2</tspan></text>
+    <text
+       inkscape:export-ydpi="305.81"
+       inkscape:export-xdpi="305.81"
+       id="text4732-0-6-5-6-84-3"
+       y="129.12531"
+       x="193.07434"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       xml:space="preserve"
+       inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.264583"
+         y="129.12531"
+         x="193.07434"
+         sodipodi:role="line"
+         id="tspan19364-3-6">Quality control</tspan></text>
     <g
        inkscape:export-ydpi="305.81"
        inkscape:export-xdpi="305.81"
-       id="g4902"
-       transform="translate(50.928406,-21.874245)"
+       id="g4902-7"
+       transform="translate(50.928406,-32.629209)"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png">
       <rect
          style="opacity:1;fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
-         id="rect4770-6-1-7-5"
+         id="rect4770-6-1-7-5-53"
          width="32.312801"
          height="4.9341259"
          x="125.92931"
@@ -1287,9 +1321,9 @@
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
          x="130.99323"
          y="166.53186"
-         id="text4774-3-0"><tspan
+         id="text4774-3-0-56"><tspan
            sodipodi:role="line"
-           id="tspan4772-2-5"
+           id="tspan4772-2-5-2"
            x="130.99323"
            y="166.53186"
            style="font-size:3.175px;stroke-width:0.264583">alpha-rarefaction</tspan></text>
@@ -1298,18 +1332,18 @@
        inkscape:export-ydpi="305.81"
        inkscape:export-xdpi="305.81"
        id="text4732-0-6-5-6-8"
-       y="120.8813"
+       y="115.06046"
        x="193.10103"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        xml:space="preserve"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png"><tspan
          id="tspan5207-4"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.264583"
-         y="120.8813"
+         y="115.06046"
          x="193.10103"
          sodipodi:role="line">Alpha- &amp; beta-</tspan><tspan
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.264583"
-         y="124.40908"
+         y="118.58824"
          x="193.10103"
          sodipodi:role="line"
          id="tspan38707">diversity</tspan></text>
@@ -1516,7 +1550,7 @@
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png" />
     <rect
        ry="2.467063"
-       y="125.97389"
+       y="119.62392"
        x="177.25591"
        height="4.9341259"
        width="31.516283"
@@ -1528,7 +1562,7 @@
        rx="2.467063" />
     <text
        id="text4774-5-7-6-5-5"
-       y="129.41946"
+       y="123.06947"
        x="182.89374"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        xml:space="preserve"
@@ -1536,7 +1570,7 @@
        inkscape:export-xdpi="305.81"
        inkscape:export-ydpi="305.81"><tspan
          style="font-size:3.175px;stroke-width:0.264583"
-         y="129.41946"
+         y="123.06947"
          x="182.89374"
          id="tspan4772-1-3-3-0-4"
          sodipodi:role="line">qiime diversity</tspan></text>

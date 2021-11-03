@@ -32,9 +32,9 @@ process DADA2_DEREPLICATE {
         filtFs <- sort(list.files(".", pattern = "_1.filt.fastq.gz", full.names = TRUE))
         filtRs <- sort(list.files(".", pattern = "_2.filt.fastq.gz", full.names = TRUE))
 
-        derepFs <- derepFastq(filtFs, verbose = TRUE)
+        derepFs <- derepFastq(filtFs, n = 10000, verbose = TRUE)
         saveRDS(derepFs, "${meta.run}_1.derep.rds")
-        derepRs <- derepFastq(filtRs, verbose = TRUE)
+        derepRs <- derepFastq(filtRs, n = 10000, verbose = TRUE)
         saveRDS(derepRs, "${meta.run}_2.derep.rds")
 
         write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
@@ -46,7 +46,7 @@ process DADA2_DEREPLICATE {
 
         filtFs <- sort(list.files(".", pattern = ".filt.fastq.gz", full.names = TRUE))
 
-        derepFs <- derepFastq(filtFs, verbose = TRUE)
+        derepFs <- derepFastq(filtFs, n = 10000, verbose = TRUE)
         saveRDS(derepFs, "${meta.run}.derep.rds")
 
         write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)

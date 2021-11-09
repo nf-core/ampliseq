@@ -347,10 +347,10 @@ workflow AMPLISEQ {
 
     DADA2_ERR ( ch_filt_reads )
 
-    DADA2_DEREPLICATE ( ch_filt_reads )
+    //DADA2_DEREPLICATE ( ch_filt_reads )
 
     //group by meta
-    DADA2_DEREPLICATE.out.dereplicated
+    ch_filt_reads
         .join( DADA2_ERR.out.errormodel )
         .set { ch_derep_errormodel }
     DADA2_DENOISING ( ch_derep_errormodel  )

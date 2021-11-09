@@ -12,7 +12,7 @@ process QIIME2_CLASSIFY {
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
     conda (params.enable_conda ? { exit 1 "QIIME2 has no conda package" } : null)
-    container "quay.io/qiime2/core:2021.2"
+    container "quay.io/qiime2/core:2021.4"
 
     input:
     path(trained_classifier)
@@ -30,7 +30,7 @@ process QIIME2_CLASSIFY {
 
     qiime feature-classifier classify-sklearn  \
         --i-classifier ${trained_classifier}  \
-        --p-n-jobs ${task.cpus}  \
+        --p-n-jobs  1\
         --i-reads ${repseq}  \
         --o-classification taxonomy.qza  \
         --verbose

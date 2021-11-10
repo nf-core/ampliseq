@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Removed`
 
+* [#350](https://github.com/nf-core/ampliseq/pull/350) - Remove redundant derepFastq step (has no impact on results)
+
 ## nf-core/ampliseq version 2.1.1 - 2021-10-28
 
 ### `Added`

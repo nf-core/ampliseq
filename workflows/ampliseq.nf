@@ -141,7 +141,6 @@ include { DADA2_FILTNTRIM               } from '../modules/local/dada2_filtntrim
 include { DADA2_QUALITY                 } from '../modules/local/dada2_quality'                addParams( options: dada2_quality_options           )
 include { TRUNCLEN                      } from '../modules/local/trunclen'                     addParams( options: trunclen_options                )
 include { DADA2_ERR                     } from '../modules/local/dada2_err'                    addParams( options: dada2_err_options               )
-include { DADA2_DEREPLICATE             } from '../modules/local/dada2_dereplicate'            addParams( options: modules['dada2_dereplicate']    )
 include { DADA2_DENOISING               } from '../modules/local/dada2_denoising'              addParams( options: dada2_denoising_options         )
 include { DADA2_RMCHIMERA               } from '../modules/local/dada2_rmchimera'              addParams( options: dada2_rmchimera_options         )
 include { DADA2_STATS                   } from '../modules/local/dada2_stats'                  addParams( options: modules['dada2_stats']          )
@@ -347,13 +346,11 @@ workflow AMPLISEQ {
 
     DADA2_ERR ( ch_filt_reads )
 
-    DADA2_DEREPLICATE ( ch_filt_reads )
-
     //group by meta
-    DADA2_DEREPLICATE.out.dereplicated
+    ch_filt_reads
         .join( DADA2_ERR.out.errormodel )
         .set { ch_derep_errormodel }
-    DADA2_DENOISING ( ch_derep_errormodel  )
+    DADA2_DENOISING ( ch_derep_errormodel.dump(tag: 'into_denoising')  )
 
     DADA2_RMCHIMERA ( DADA2_DENOISING.out.seqtab )
 

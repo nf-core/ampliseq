@@ -20,7 +20,7 @@ process DADA2_DENOISING {
     }
 
     input:
-    tuple val(meta), path(dereplicated), path(errormodel)
+    tuple val(meta), path("filtered/*"), path(errormodel)
 
     output:
     tuple val(meta), path("*.dada.rds")   , emit: denoised
@@ -40,19 +40,19 @@ process DADA2_DENOISING {
         errF = readRDS("${errormodel[0]}")
         errR = readRDS("${errormodel[1]}")
 
-        derepFs = readRDS("${dereplicated[0]}")
-        derepRs = readRDS("${dereplicated[1]}")
+        filtFs <- sort(list.files("./filtered/", pattern = "_1.filt.fastq.gz", full.names = TRUE))
+        filtRs <- sort(list.files("./filtered/", pattern = "_2.filt.fastq.gz", full.names = TRUE))
 
         #denoising
         sink(file = "${meta.run}.dada.log")
-        dadaFs <- dada(derepFs, err = errF, $options.args, multithread = $task.cpus)
+        dadaFs <- dada(filtFs, err = errF, $options.args, multithread = $task.cpus)
         saveRDS(dadaFs, "${meta.run}_1.dada.rds")
-        dadaRs <- dada(derepRs, err = errR, $options.args, multithread = $task.cpus)
+        dadaRs <- dada(filtRs, err = errR, $options.args, multithread = $task.cpus)
         saveRDS(dadaRs, "${meta.run}_2.dada.rds")
         sink(file = NULL)
 
         #make table
-        mergers <- mergePairs(dadaFs, derepFs, dadaRs, derepRs, $options.args2, verbose=TRUE)
+        mergers <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, $options.args2, verbose=TRUE)
         saveRDS(mergers, "${meta.run}.mergers.rds")
         seqtab <- makeSequenceTable(mergers)
         saveRDS(seqtab, "${meta.run}.seqtab.rds")
@@ -68,11 +68,11 @@ process DADA2_DENOISING {
 
         errF = readRDS("${errormodel}")
 
-        derepFs = readRDS("${dereplicated}")
+        filtFs <- sort(list.files("./filtered/", pattern = ".fastq.gz", full.names = TRUE))
 
         #denoising
         sink(file = "${meta.run}.dada.log")
-        dadaFs <- dada(derepFs, err = errF, $options.args, multithread = $task.cpus)
+        dadaFs <- dada(filtFs, err = errF, $options.args, multithread = $task.cpus)
         saveRDS(dadaFs, "${meta.run}.dada.rds")
         sink(file = NULL)
 

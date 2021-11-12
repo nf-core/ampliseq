@@ -413,8 +413,10 @@ workflow AMPLISEQ {
         }
         if (!params.cut_its) {
             DADA2_TAXONOMY ( ch_fasta, ch_assigntax, 'ASV_tax.tsv' )
-            DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_tax_species.tsv' )
-            ch_dada2_tax = DADA2_ADDSPECIES.out.tsv
+            if (!params.skip_dada_addspecies) {
+                DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_tax_species.tsv' )
+                ch_dada2_tax = DADA2_ADDSPECIES.out.tsv
+            } else { ch_dada2_tax = DADA2_TAXONOMY.out.tsv }
         //Cut out ITS region if long ITS reads
         } else {
             ITSX_CUTASV ( ch_fasta )

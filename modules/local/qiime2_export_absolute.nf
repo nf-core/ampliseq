@@ -42,7 +42,7 @@ process QIIME2_EXPORT_ABSOLUTE {
     qiime tools export --input-path ${taxonomy}  \
         --output-path table
     # Change the header of the output file
-    echo -i "#OTUID\\ttaxonomy\\tconfidence" > tax_table.tsv
+    echo -e "#OTUID\\ttaxonomy\\tconfidence" > tax_table.tsv
     tail -n +2 table/taxonomy.tsv >> tax_table.tsv
     # Add the taxonomy to the biom file
     biom add-metadata -i feature-table.biom -o feature-table-withtax.biom --observation-metadata-fp tax_table.tsv --sc-separated taxonomy

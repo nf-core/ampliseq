@@ -32,6 +32,16 @@ class WorkflowAmpliseq {
             log.error "Incompatible parameters: `--qiime_tax_agglom_min` may not be greater than `--qiime_tax_agglom_max`."
             System.exit(1)
         }
+
+        if (params.skip_dada_addspecies && params.sbdiexport) {
+            log.error "Incompatible parameters: `--sbdiexport` expects species annotation and therefore excludes `--skip_dada_addspecies`."
+            System.exit(1)
+        }
+
+        if (params.skip_dada_addspecies && params.cut_its) {
+            log.error "Incompatible parameters: `--cut_its` expects species annotation and therefore excludes `--skip_dada_addspecies`."
+            System.exit(1)
+        }
     }
 
     //

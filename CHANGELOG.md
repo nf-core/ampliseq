@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+* [#352](https://github.com/nf-core/ampliseq/pull/352) - `--skip_dada_addspecies` allows to skip species level classification to reduce memory requirements, incompatible with `--sbdiexport` and `--cut_its` that expect species annotation
+
 ### `Changed`
 
 ### `Fixed`

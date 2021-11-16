@@ -43,7 +43,7 @@ process QIIME2_EXPORT_ABSOLUTE {
         --output-path table
     # Change the header of the output file
     echo -e "#OTUID\\ttaxonomy\\tconfidence" > tax_table.tsv
-    tail -n +2 table/taxonomy.tsv | sed 's/\\(.*\\);\\(.*\\)$/\\1\\t\\2/' >> tax_table.tsv
+    tail -n +2 table/taxonomy.tsv | sed 's/\\(.*\\);\\(.*\\)\$/\\1\\t\\2/' >> tax_table.tsv
     # Add the taxonomy to the biom file
     biom add-metadata -i feature-table.biom -o feature-table-withtax.biom --observation-metadata-fp tax_table.tsv --sc-separated taxonomy
 

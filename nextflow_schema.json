@@ -287,6 +287,10 @@
             "description": "",
             "default": "",
             "properties": {
+                "ignore_failed_samples": {
+                    "type": "boolean",
+                    "description": "Lack of reads for individual samples is ignored and the pipeline will continue without those samples."
+                },
                 "exclude_taxa": {
                     "type": "string",
                     "default": "mitochondria,chloroplast",

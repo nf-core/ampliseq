@@ -53,8 +53,25 @@ workflow CUTADAPT_WORKFLOW {
         CUTADAPT_SUMMARY_MERGE ( "copy", CUTADAPT_SUMMARY.out.tsv )
     }
 
+    //Filter empty files
+    ch_trimmed_reads
+        .branch {
+            failed: it[0].single_end ? it[1].size() < 1.KB : it[1][0].size() < 1.KB
+            passed: it[0].single_end ? it[1].size() >= 1.KB : it[1][0].size() >= 1.KB
+        }
+        .set { ch_trimmed_reads_result }
+    ch_trimmed_reads_result.passed.set { ch_trimmed_reads_passed }
+    ch_trimmed_reads_result.failed
+        .map { meta, reads -> [ meta.id ] }
+        .collect()
+        .subscribe {
+            samples = it.join(",")
+            log.error "Samples $samples had too low read count after trimming with cutadapt. Please check whether the correct primer sequences for trimming were supplied."
+            params.ignore_failed_samples ? { log.warn "Ignoring failed samples and continue!" } : System.exit(1)
+        }
+
     emit:
-    reads   = ch_trimmed_reads
+    reads   = ch_trimmed_reads_passed
     logs    = CUTADAPT.out.log
     summary = CUTADAPT_SUMMARY_MERGE.out.tsv
     version = CUTADAPT.out.version

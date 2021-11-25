@@ -66,7 +66,7 @@ workflow CUTADAPT_WORKFLOW {
         .collect()
         .subscribe {
             samples = it.join(",")
-            log.error "Samples $samples had too low read count after trimming with cutadapt. Please check whether the correct primer sequences for trimming were supplied."
+            log.error "Samples $samples had too low read count after trimming with cutadapt. Please check whether the correct primer sequences for trimming were supplied. If you want to ignore that issue and continue running the pipeline, use `--ignore_failed_samples`."
             params.ignore_failed_samples ? { log.warn "Ignoring failed samples and continue!" } : System.exit(1)
         }
 

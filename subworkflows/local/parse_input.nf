@@ -47,7 +47,7 @@ workflow PARSE_INPUT {
     if ( is_fasta_input ) {
         // Fasta input directely for classification
         ch_fasta = Channel.fromPath(input, checkIfExists: true)
-        ch_reads = Channel.empty()
+        ch_reads_passed = Channel.empty()
     } else {
         ch_fasta = Channel.empty()
 

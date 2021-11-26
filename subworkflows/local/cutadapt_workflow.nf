@@ -56,8 +56,8 @@ workflow CUTADAPT_WORKFLOW {
     //Filter empty files
     ch_trimmed_reads
         .branch {
-            failed: it[0].single_end ? it[1].size() < 1.KB : it[1][0].size() < 1.KB
-            passed: it[0].single_end ? it[1].size() >= 1.KB : it[1][0].size() >= 1.KB
+            failed: it[0].single_end ? it[1][0].size() < 1.KB : it[1][0].size() < 1.KB || it[1][1].size() < 1.KB
+            passed: it[0].single_end ? it[1][0].size() >= 1.KB : it[1][0].size() >= 1.KB && it[1][1].size() >= 1.KB
         }
         .set { ch_trimmed_reads_result }
     ch_trimmed_reads_result.passed.set { ch_trimmed_reads_passed }

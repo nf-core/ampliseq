@@ -132,9 +132,26 @@ workflow PARSE_INPUT {
         ch_reads
             .map { meta, reads -> [ meta.id ] }
             .subscribe { if ( "$it".contains(".") ) exit 1, "Please review data input, sampleIDs may not contain dots, but \"$it\" does." }
+
+        //Filter empty files
+        ch_reads
+            .branch {
+                failed: it[0].single_end ? it[1].size() < 1.KB : it[1][0].size() < 1.KB || it[1][1].size() < 1.KB
+                passed: it[0].single_end ? it[1].size() >= 1.KB : it[1][0].size() >= 1.KB && it[1][1].size() >= 1.KB
+            }
+            .set { ch_reads_result }
+        ch_reads_result.passed.set { ch_reads_passed }
+        ch_reads_result.failed
+            .map { meta, reads -> [ meta.id ] }
+            .collect()
+            .subscribe {
+                samples = it.join("\n")
+                log.error "At least one input file for the following sample(s) was too small (<1KB):\n$samples\nEither remove those samples or ignore that issue and samples using `--ignore_empty_input_files`."
+                params.ignore_empty_input_files ? { log.warn "Ignoring failed samples and continue!" } : System.exit(1)
+            }
     }
 
     emit:
-    reads   = ch_reads
+    reads   = ch_reads_passed
     fasta   = ch_fasta
 }

@@ -287,6 +287,14 @@
             "description": "",
             "default": "",
             "properties": {
+                "ignore_empty_input_files": {
+                    "type": "boolean",
+                    "description": "Too small input files size (<1KB) for individual samples is ignored and the pipeline will continue without those samples."
+                },
+                "ignore_failed_trimming": {
+                    "type": "boolean",
+                    "description": "Too small files size (<1KB) for individual samples after primer trimming (cutadapt) is ignored and the pipeline will continue without those samples."
+                },
                 "exclude_taxa": {
                     "type": "string",
                     "default": "mitochondria,chloroplast",

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 * [#352](https://github.com/nf-core/ampliseq/pull/352) - `--skip_dada_addspecies` allows to skip species level classification to reduce memory requirements, incompatible with `--sbdiexport` and `--cut_its` that expect species annotation
+* [#354](https://github.com/nf-core/ampliseq/pull/354) - Input files and files after primer trimming with cutadapt are required to be >1KB (i.e. not empty) and either the pipeline will stop if at least one sample file fails or the failing samples will be ignored when using `--ignore_empty_input_files` or `--ignore_failed_trimming`, respectively.
 
 ### `Changed`
 

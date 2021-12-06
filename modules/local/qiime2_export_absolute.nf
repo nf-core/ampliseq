@@ -21,14 +21,14 @@ process QIIME2_EXPORT_ABSOLUTE {
     val(tax_agglom_max)
 
     output:
-    path("rep-seq.fasta")            , emit: fasta
-    path("feature-table.tsv")        , emit: tsv
-    path("feature-table.biom")       , emit: biom
-    path("feature-table-withtax.biom")       , emit: biomtax
-    path("seven_number_summary.tsv") , emit: summary
-    path("descriptive_stats.tsv")    , emit: descr
-    path("abs-abund-table-*.tsv")    , emit: abundtable
-    path "*.version.txt"             , emit: version
+    path("rep-seq.fasta")              , emit: fasta
+    path("feature-table.tsv")          , emit: tsv
+    path("feature-table.biom")         , emit: biom
+    path("feature-table-withtax.biom") , emit: biomtax
+    path("seven_number_summary.tsv")   , emit: summary
+    path("descriptive_stats.tsv")      , emit: descr
+    path("abs-abund-table-*.tsv")      , emit: abundtable
+    path "*.version.txt"               , emit: version
 
     script:
     def software     = getSoftwareName(task.process)

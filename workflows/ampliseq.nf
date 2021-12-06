@@ -141,7 +141,6 @@ include { DADA2_FILTNTRIM               } from '../modules/local/dada2_filtntrim
 include { DADA2_QUALITY                 } from '../modules/local/dada2_quality'                addParams( options: dada2_quality_options           )
 include { TRUNCLEN                      } from '../modules/local/trunclen'                     addParams( options: trunclen_options                )
 include { DADA2_ERR                     } from '../modules/local/dada2_err'                    addParams( options: dada2_err_options               )
-include { DADA2_DEREPLICATE             } from '../modules/local/dada2_dereplicate'            addParams( options: modules['dada2_dereplicate']    )
 include { DADA2_DENOISING               } from '../modules/local/dada2_denoising'              addParams( options: dada2_denoising_options         )
 include { DADA2_RMCHIMERA               } from '../modules/local/dada2_rmchimera'              addParams( options: dada2_rmchimera_options         )
 include { DADA2_STATS                   } from '../modules/local/dada2_stats'                  addParams( options: modules['dada2_stats']          )
@@ -347,13 +346,11 @@ workflow AMPLISEQ {
 
     DADA2_ERR ( ch_filt_reads )
 
-    //DADA2_DEREPLICATE ( ch_filt_reads )
-
     //group by meta
     ch_filt_reads
         .join( DADA2_ERR.out.errormodel )
         .set { ch_derep_errormodel }
-    DADA2_DENOISING ( ch_derep_errormodel  )
+    DADA2_DENOISING ( ch_derep_errormodel.dump(tag: 'into_denoising')  )
 
     DADA2_RMCHIMERA ( DADA2_DENOISING.out.seqtab )
 
@@ -416,8 +413,10 @@ workflow AMPLISEQ {
         }
         if (!params.cut_its) {
             DADA2_TAXONOMY ( ch_fasta, ch_assigntax, 'ASV_tax.tsv' )
-            DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_tax_species.tsv' )
-            ch_dada2_tax = DADA2_ADDSPECIES.out.tsv
+            if (!params.skip_dada_addspecies) {
+                DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_tax_species.tsv' )
+                ch_dada2_tax = DADA2_ADDSPECIES.out.tsv
+            } else { ch_dada2_tax = DADA2_TAXONOMY.out.tsv }
         //Cut out ITS region if long ITS reads
         } else {
             ITSX_CUTASV ( ch_fasta )
@@ -458,15 +457,23 @@ workflow AMPLISEQ {
         if ( params.skip_taxonomy ) {
             log.info "Skip taxonomy classification"
             ch_tax = Channel.empty()
+            tax_agglom_min = 1
+            tax_agglom_max = 2
         } else if ( params.dada_ref_taxonomy ) {
             log.info "Use DADA2 taxonomy classification"
             ch_tax = QIIME2_INTAX ( ch_dada2_tax ).qza
+            tax_agglom_min = params.dada_tax_agglom_min
+            tax_agglom_max = params.dada_tax_agglom_max
         } else if ( params.qiime_ref_taxonomy || params.classifier ) {
             log.info "Use QIIME2 taxonomy classification"
             ch_tax = QIIME2_TAXONOMY.out.qza
+            tax_agglom_min = params.qiime_tax_agglom_min
+            tax_agglom_max = params.qiime_tax_agglom_max
         } else {
             log.info "Use no taxonomy classification"
             ch_tax = Channel.empty()
+            tax_agglom_min = 1
+            tax_agglom_max = 2
         }
 
         //Filtering by taxonomy & prevalence & counts
@@ -489,7 +496,7 @@ workflow AMPLISEQ {
         }
         //Export various ASV tables
         if (!params.skip_abundance_tables) {
-            QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, QIIME2_TAXONOMY.out.tsv, ch_dada2_tax )
+            QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, QIIME2_TAXONOMY.out.tsv, ch_dada2_tax, tax_agglom_min, tax_agglom_max )
         }
 
         if (!params.skip_barplot) {
@@ -529,7 +536,9 @@ workflow AMPLISEQ {
                 ch_metadata,
                 ch_asv,
                 ch_metacolumn_all,
-                ch_tax
+                ch_tax,
+                tax_agglom_min,
+                tax_agglom_max
             )
         }
     }
@@ -581,7 +590,9 @@ workflow AMPLISEQ {
         ch_multiqc_files = ch_multiqc_files.mix(ch_multiqc_custom_config.collect().ifEmpty([]))
         ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
         ch_multiqc_files = ch_multiqc_files.mix(GET_SOFTWARE_VERSIONS.out.yaml.collect())
-        ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
+        if (!params.skip_fastqc) {
+            ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
+        }
 
         MULTIQC (
             ch_multiqc_files.collect()

@@ -190,6 +190,34 @@
                     "description": "DADA2 read filtering option",
                     "fa_icon": "fas fa-greater-than-equal",
                     "help_text": "Remove reads with length less than `min_len` after trimming and truncation."
+                },
+                "dada_tax_agglom_min": {
+                    "type": "integer",
+                    "default": 2,
+                    "description": "Minimum taxonomy agglomeration level for DADA2 classification",
+                    "fa_icon": "fas fa-greater-than-equal",
+                    "help_text": "Depends on the reference taxonomy database used."
+                },
+                "dada_tax_agglom_max": {
+                    "type": "integer",
+                    "default": 7,
+                    "description": "Maximum taxonomy agglomeration level for DADA2 classification",
+                    "fa_icon": "fas fa-greater-than-equal",
+                    "help_text": "Depends on the reference taxonomy database used. Default databases should have genus level at 7."
+                },
+                "qiime_tax_agglom_min": {
+                    "type": "integer",
+                    "default": 2,
+                    "description": "Minimum taxonomy agglomeration level for QIIME2 classification",
+                    "fa_icon": "fas fa-greater-than-equal",
+                    "help_text": "Depends on the reference taxonomy database used."
+                },
+                "qiime_tax_agglom_max": {
+                    "type": "integer",
+                    "default": 6,
+                    "description": "Maximum taxonomy agglomeration level for QIIME2 classification",
+                    "fa_icon": "fas fa-greater-than-equal",
+                    "help_text": "Depends on the reference taxonomy database used. Default databases should have genus level at 6."
                 }
             },
             "fa_icon": "fas fa-filter"
@@ -259,6 +287,14 @@
             "description": "",
             "default": "",
             "properties": {
+                "ignore_empty_input_files": {
+                    "type": "boolean",
+                    "description": "Too small input files size (<1KB) for individual samples is ignored and the pipeline will continue without those samples."
+                },
+                "ignore_failed_trimming": {
+                    "type": "boolean",
+                    "description": "Too small files size (<1KB) for individual samples after primer trimming (cutadapt) is ignored and the pipeline will continue without those samples."
+                },
                 "exclude_taxa": {
                     "type": "string",
                     "default": "mitochondria,chloroplast",
@@ -297,6 +333,10 @@
                 "skip_taxonomy": {
                     "type": "boolean",
                     "description": "Skip taxonomic classification"
+                },
+                "skip_dada_addspecies": {
+                    "type": "boolean",
+                    "description": "Skip species level when using DADA2 for taxonomic classification, that reduces required memory dramatically under certain conditions. Incompatible with `--sbdiexport` and `--cut_its`"
                 },
                 "skip_barplot": {
                     "type": "boolean",

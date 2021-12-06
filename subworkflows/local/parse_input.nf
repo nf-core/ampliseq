@@ -47,7 +47,7 @@ workflow PARSE_INPUT {
     if ( is_fasta_input ) {
         // Fasta input directely for classification
         ch_fasta = Channel.fromPath(input, checkIfExists: true)
-        ch_reads = Channel.empty()
+        ch_reads_passed = Channel.empty()
     } else {
         ch_fasta = Channel.empty()
 
@@ -67,11 +67,17 @@ workflow PARSE_INPUT {
 
             //Check folders in folder when multiple_sequencing_runs
             folders = multiple_sequencing_runs ? "/*" : ""
+            error_message = "\nCannot find any reads matching: \"${input}${folders}${extension}\"\n"
+            error_message += "Please revise the input folder (\"--input\"): \"${input}\"\n"
+            error_message += "and the input file pattern (\"--extension\"): \"${extension}\"\n"
+            error_message += "*Please note: Path needs to be enclosed in quotes!*\n"
+            error_message += multiple_sequencing_runs ? "If you do not have multiple sequencing runs, please do not use \"--multiple_sequencing_runs\"!\n" : "If you have multiple sequencing runs, please add \"--multiple_sequencing_runs\"!\n"
+            error_message += "In any case, please consult the pipeline documentation.\n"
             if ( single_end ) {
                 //Get files - single end
                 Channel
                     .fromPath( input + folders + extension )
-                    .ifEmpty { exit 1, "Cannot find any reads matching: \"${input}${extension}\"\nPlease revise the input folder (\"--input\"): \"${input}\"\nand the input file pattern (\"--extension\"): \"${extension}\"\nIf you have multiple sequencing runs, please add \"--multiple_sequencing_runs\".\nNB: Path needs to be enclosed in quotes!" }
+                    .ifEmpty { exit 1, "${error_message}" }
                     .map { read ->
                             def meta = [:]
                             meta.id           = read.baseName.toString().indexOf("_") != -1 ? read.baseName.toString().take(read.baseName.toString().indexOf("_")) : read.baseName
@@ -83,7 +89,7 @@ workflow PARSE_INPUT {
                 //Get files - paired end
                 Channel
                     .fromFilePairs( input + folders + extension, size: 2 )
-                    .ifEmpty { exit 1, "Cannot find any reads matching: \"${input}${extension}\"\nPlease revise the input folder (\"--input\"): \"${input}\"\nand the input file pattern (\"--extension\"): \"${extension}\"\nIf you have multiple sequencing runs, please add \"--multiple_sequencing_runs\".\nNB: Path needs to be enclosed in quotes!" }
+                    .ifEmpty { exit 1, "${error_message}" }
                     .map { name, reads ->
                             def meta = [:]
                             meta.id           = name.toString().indexOf("_") != -1 ? name.toString().take(name.toString().indexOf("_")) : name
@@ -126,9 +132,26 @@ workflow PARSE_INPUT {
         ch_reads
             .map { meta, reads -> [ meta.id ] }
             .subscribe { if ( "$it".contains(".") ) exit 1, "Please review data input, sampleIDs may not contain dots, but \"$it\" does." }
+
+        //Filter empty files
+        ch_reads
+            .branch {
+                failed: it[0].single_end ? it[1][0].size() < 1.KB : it[1][0].size() < 1.KB || it[1][1].size() < 1.KB
+                passed: it[0].single_end ? it[1][0].size() >= 1.KB : it[1][0].size() >= 1.KB && it[1][1].size() >= 1.KB
+            }
+            .set { ch_reads_result }
+        ch_reads_result.passed.set { ch_reads_passed }
+        ch_reads_result.failed
+            .map { meta, reads -> [ meta.id ] }
+            .collect()
+            .subscribe {
+                samples = it.join("\n")
+                log.error "At least one input file for the following sample(s) was too small (<1KB):\n$samples\nEither remove those samples or ignore that issue and samples using `--ignore_empty_input_files`."
+                params.ignore_empty_input_files ? { log.warn "Ignoring failed samples and continue!" } : System.exit(1)
+            }
     }
 
     emit:
-    reads   = ch_reads
+    reads   = ch_reads_passed
     fasta   = ch_fasta
 }

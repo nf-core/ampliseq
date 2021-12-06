@@ -16,6 +16,8 @@ process QIIME2_EXPORT_RELTAX {
     input:
     path(table)
     path(taxonomy)
+    val(tax_agglom_min)
+    val(tax_agglom_max)
 
     output:
     path("*.tsv")        , emit: tsv
@@ -27,7 +29,7 @@ process QIIME2_EXPORT_RELTAX {
     export XDG_CONFIG_HOME="\${PWD}/HOME"
 
     ##on several taxa level
-    array=( 2 3 4 5 6 )
+    array=(\$(seq ${tax_agglom_min} 1 ${tax_agglom_max}))
 
     for i in \${array[@]}
     do

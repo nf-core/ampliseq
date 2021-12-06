@@ -20,7 +20,7 @@ process DADA2_DENOISING {
     }
 
     input:
-    tuple val(meta), path(reads), path(errormodel)
+    tuple val(meta), path("filtered/*"), path(errormodel)
 
     output:
     tuple val(meta), path("*.dada.rds")   , emit: denoised
@@ -42,6 +42,9 @@ process DADA2_DENOISING {
         errF = readRDS("${errormodel[0]}")
         errR = readRDS("${errormodel[1]}")
 
+        filtFs <- sort(list.files("./filtered/", pattern = "_1.filt.fastq.gz", full.names = TRUE))
+        filtRs <- sort(list.files("./filtered/", pattern = "_2.filt.fastq.gz", full.names = TRUE))
+
         #denoising
         sink(file = "${meta.run}.dada.log")
         dadaFs <- dada(filtFs, err = errF, $options.args, multithread = $task.cpus)
@@ -56,9 +59,9 @@ process DADA2_DENOISING {
         seqtab <- makeSequenceTable(mergers)
         saveRDS(seqtab, "${meta.run}.seqtab.rds")
 
-        write.table('dada\t$options.args', file = "dada.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
-        write.table('mergePairs\t$options.args2', file = "mergePairs.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
-        write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
+        write.table('dada\t$options.args', file = "dada.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+        write.table('mergePairs\t$options.args2', file = "mergePairs.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+        write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
         """
     } else {
         """
@@ -67,11 +70,11 @@ process DADA2_DENOISING {
 
         errF = readRDS("${errormodel}")
 
-        derepFs = readRDS("${dereplicated}")
+        filtFs <- sort(list.files("./filtered/", pattern = ".fastq.gz", full.names = TRUE))
 
         #denoising
         sink(file = "${meta.run}.dada.log")
-        dadaFs <- dada(derepFs, err = errF, $options.args, multithread = $task.cpus)
+        dadaFs <- dada(filtFs, err = errF, $options.args, multithread = $task.cpus)
         saveRDS(dadaFs, "${meta.run}.dada.rds")
         sink(file = NULL)
 
@@ -82,8 +85,8 @@ process DADA2_DENOISING {
         #dummy file to fulfill output rules
         saveRDS("dummy", "dummy_${meta.run}.mergers.rds")
 
-        write.table('dada\t$options.args', file = "dada.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
-        write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE)
+        write.table('dada\t$options.args', file = "dada.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+        write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
         """
     }
 }

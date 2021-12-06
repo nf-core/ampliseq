@@ -36,7 +36,12 @@ process CUTADAPT {
 
     def trimmed  = meta.single_end ? "-o ${prefix}.trim${fqsuff}" : "-o ${prefix}_1.trim${fqsuff} -p ${prefix}_2.trim${fqsuff}"
     """
-    cutadapt $options.args $trimmed $reads > ${prefix}.cutadapt.log
+    cutadapt \\
+        --cores $task.cpus \\
+        $options.args \\
+        $trimmed \\
+        $reads \\
+        > ${prefix}.cutadapt.log
     echo \$(cutadapt --version) > ${software}.version.txt
     """
 }

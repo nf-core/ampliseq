@@ -36,9 +36,6 @@ process DADA2_DENOISING {
         """
         #!/usr/bin/env Rscript
         suppressPackageStartupMessages(library(dada2))
-        filtFs <- sort(list.files(".", pattern = "_1.filt.fastq.gz", full.names = TRUE))
-        filtRs <- sort(list.files(".", pattern = "_2.filt.fastq.gz", full.names = TRUE))
-
         errF = readRDS("${errormodel[0]}")
         errR = readRDS("${errormodel[1]}")
 

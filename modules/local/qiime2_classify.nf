@@ -30,7 +30,7 @@ process QIIME2_CLASSIFY {
 
     qiime feature-classifier classify-sklearn  \
         --i-classifier ${trained_classifier}  \
-        --p-n-jobs  ${task.cpus}\
+        --p-n-jobs ${task.cpus}  \
         --i-reads ${repseq}  \
         --o-classification taxonomy.qza  \
         --verbose

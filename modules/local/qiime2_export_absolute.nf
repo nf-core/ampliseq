@@ -39,7 +39,6 @@ process QIIME2_EXPORT_ABSOLUTE {
     qiime tools export --input-path ${table}  \
         --output-path table
     cp table/feature-table.biom .
-    
     # Export taxonomy to add to the biom file as metadata
     qiime tools export --input-path ${taxonomy}  \
         --output-path table

@@ -22,21 +22,21 @@ process CUTADAPT {
     tuple val(meta), path(reads)
 
     output:
-    tuple val(meta), path('*.trim.fastq.gz'), emit: reads
+    tuple val(meta), path('*.trim.fast*')   , emit: reads
     tuple val(meta), path('*.log')          , emit: log
     path '*.version.txt'                    , emit: version
 
     script:
     def software = getSoftwareName(task.process)
     def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
-    def trimmed  = meta.single_end ? "-o ${prefix}.trim.fastq.gz" : "-o ${prefix}_1.trim.fastq.gz -p ${prefix}_2.trim.fastq.gz"
+    def fqsuff = ".fastq.gz"
+    if (reads.toString().endsWith("fasta") || reads.toString().endsWith("fna")){
+        fqsuff = ".fasta"
+    }
+
+    def trimmed  = meta.single_end ? "-o ${prefix}.trim${fqsuff}" : "-o ${prefix}_1.trim${fqsuff} -p ${prefix}_2.trim${fqsuff}"
     """
-    cutadapt \\
-        --cores $task.cpus \\
-        $options.args \\
-        $trimmed \\
-        $reads \\
-        > ${prefix}.cutadapt.log
+    cutadapt  $options.args $trimmed $reads > ${prefix}.cutadapt.log
     echo \$(cutadapt --version) > ${software}.version.txt
     """
 }

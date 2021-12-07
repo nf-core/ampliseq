@@ -11,7 +11,7 @@ process QIIME2_EXPORT_ABSOLUTE {
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
     conda (params.enable_conda ? { exit 1 "QIIME2 has no conda package" } : null)
-    container "quay.io/qiime2/core:2021.2"
+    container "quay.io/qiime2/core:2021.4"
 
     input:
     path(table)
@@ -21,13 +21,14 @@ process QIIME2_EXPORT_ABSOLUTE {
     val(tax_agglom_max)
 
     output:
-    path("rep-seq.fasta")            , emit: fasta
-    path("feature-table.tsv")        , emit: tsv
-    path("feature-table.biom")       , emit: biom
-    path("seven_number_summary.tsv") , emit: summary
-    path("descriptive_stats.tsv")    , emit: descr
-    path("abs-abund-table-*.tsv")    , emit: abundtable
-    path "*.version.txt"             , emit: version
+    path("rep-seq.fasta")              , emit: fasta
+    path("feature-table.tsv")          , emit: tsv
+    path("feature-table.biom")         , emit: biom
+    path("feature-table-withtax.biom") , emit: biomtax
+    path("seven_number_summary.tsv")   , emit: summary
+    path("descriptive_stats.tsv")      , emit: descr
+    path("abs-abund-table-*.tsv")      , emit: abundtable
+    path "*.version.txt"               , emit: version
 
     script:
     def software     = getSoftwareName(task.process)
@@ -38,6 +39,14 @@ process QIIME2_EXPORT_ABSOLUTE {
     qiime tools export --input-path ${table}  \
         --output-path table
     cp table/feature-table.biom .
+    # Export taxonomy to add to the biom file as metadata
+    qiime tools export --input-path ${taxonomy}  \
+        --output-path table
+    # Change the header of the output file
+    echo -e "#OTUID\\ttaxonomy\\tconfidence" > tax_table.tsv
+    tail -n +2 table/taxonomy.tsv | sed 's/\\(.*\\);\\(.*\\)\$/\\1\\t\\2/' >> tax_table.tsv
+    # Add the taxonomy to the biom file
+    biom add-metadata -i feature-table.biom -o feature-table-withtax.biom --observation-metadata-fp tax_table.tsv --sc-separated taxonomy
 
     #produce raw count table "table/feature-table.tsv"
     biom convert -i table/feature-table.biom \

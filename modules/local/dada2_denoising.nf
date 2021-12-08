@@ -36,6 +36,7 @@ process DADA2_DENOISING {
         """
         #!/usr/bin/env Rscript
         suppressPackageStartupMessages(library(dada2))
+
         errF = readRDS("${errormodel[0]}")
         errR = readRDS("${errormodel[1]}")
 

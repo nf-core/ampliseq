@@ -12,7 +12,7 @@ process QIIME2_DIVERSITY_ALPHA {
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
     conda (params.enable_conda ? { exit 1 "QIIME2 has no conda package" } : null)
-    container "quay.io/qiime2/core:2021.4"
+    container "quay.io/qiime2/core:2021.2"
 
     input:
     tuple path(metadata), path(core), val(category)

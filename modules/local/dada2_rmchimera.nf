@@ -1,33 +1,22 @@
-// Import generic module functions
-include { initOptions; saveFiles; getSoftwareName } from './functions'
-
-params.options = [:]
-options    = initOptions(params.options)
-
 process DADA2_RMCHIMERA {
     tag "$meta.run"
     label 'process_medium'
-    publishDir "${params.outdir}",
-        mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
     conda (params.enable_conda ? "bioconductor-dada2=1.20.0" : null)
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.20.0--r41h399db7b_0"
-    } else {
-        container "quay.io/biocontainers/bioconductor-dada2:1.20.0--r41h399db7b_0"
-    }
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.20.0--r41h399db7b_0' :
+        'quay.io/biocontainers/bioconductor-dada2:1.20.0--r41h399db7b_0' }"
 
     input:
     tuple val(meta), path(seqtab)
 
     output:
     tuple val(meta), path("*.ASVtable.rds"), emit: rds
-    path "*.version.txt"                   , emit: version
+    path "versions.yml"                    , emit: versions
     path "*.args.txt"                      , emit: args
 
     script:
-    def software      = getSoftwareName(task.process)
+    def args = task.ext.args ?: ''
     def no_samples    = meta.id.size()
     def first_sample  = meta.id.first()
     """
@@ -37,11 +26,11 @@ process DADA2_RMCHIMERA {
     seqtab = readRDS("${seqtab}")
 
     #remove chimera
-    seqtab.nochim <- removeBimeraDenovo(seqtab, $options.args, multithread=$task.cpus, verbose=TRUE)
+    seqtab.nochim <- removeBimeraDenovo(seqtab, $args, multithread=$task.cpus, verbose=TRUE)
     if ( ${no_samples} == 1 ) { rownames(seqtab.nochim) <- "${first_sample}" }
     saveRDS(seqtab.nochim,"${meta.run}.ASVtable.rds")
 
-    write.table('removeBimeraDenovo\t$options.args', file = "removeBimeraDenovo.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
-    write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+    write.table('removeBimeraDenovo\t$args', file = "removeBimeraDenovo.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+    write.table(paste("${task.process}:\n    dada2:", packageVersion("dada2")), file = "versions.yml", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
     """
 }

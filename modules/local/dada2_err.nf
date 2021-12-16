@@ -1,22 +1,11 @@
-// Import generic module functions
-include { initOptions; saveFiles; getSoftwareName } from './functions'
-
-params.options = [:]
-options    = initOptions(params.options)
-
 process DADA2_ERR {
     tag "$meta.run"
     label 'process_medium'
-    publishDir "${params.outdir}",
-        mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
     conda (params.enable_conda ? "bioconductor-dada2=1.20.0" : null)
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.20.0--r41h399db7b_0"
-    } else {
-        container "quay.io/biocontainers/bioconductor-dada2:1.20.0--r41h399db7b_0"
-    }
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.20.0--r41h399db7b_0' :
+        'quay.io/biocontainers/bioconductor-dada2:1.20.0--r41h399db7b_0' }"
 
     input:
     tuple val(meta), path(reads)
@@ -26,11 +15,11 @@ process DADA2_ERR {
     tuple val(meta), path("*.err.pdf"), emit: pdf
     tuple val(meta), path("*.err.log"), emit: log
     tuple val(meta), path("*.err.convergence.txt"), emit: convergence
-    path "*.version.txt"              , emit: version
+    path "versions.yml"               , emit: versions
     path "*.args.txt"                 , emit: args
 
     script:
-    def software      = getSoftwareName(task.process)
+    def args = task.ext.args ?: ''
     if (!meta.single_end) {
         """
         #!/usr/bin/env Rscript
@@ -40,9 +29,9 @@ process DADA2_ERR {
         fnRs <- sort(list.files(".", pattern = "_2.filt.fastq.gz", full.names = TRUE))
 
         sink(file = "${meta.run}.err.log")
-        errF <- learnErrors(fnFs, $options.args, multithread = $task.cpus, verbose = TRUE)
+        errF <- learnErrors(fnFs, $args, multithread = $task.cpus, verbose = TRUE)
         saveRDS(errF, "${meta.run}_1.err.rds")
-        errR <- learnErrors(fnRs, $options.args, multithread = $task.cpus, verbose = TRUE)
+        errR <- learnErrors(fnRs, $args, multithread = $task.cpus, verbose = TRUE)
         saveRDS(errR, "${meta.run}_2.err.rds")
         sink(file = NULL)
 
@@ -62,8 +51,8 @@ process DADA2_ERR {
         dada2:::checkConvergence(errR)
         sink(file = NULL)
 
-        write.table('learnErrors\t$options.args', file = "learnErrors.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
-        write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+        write.table('learnErrors\t$args', file = "learnErrors.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+        write.table(paste("${task.process}:\n    dada2:", packageVersion("dada2")), file = "versions.yml", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
         """
     } else {
         """
@@ -73,7 +62,7 @@ process DADA2_ERR {
         fnFs <- sort(list.files(".", pattern = ".filt.fastq.gz", full.names = TRUE))
 
         sink(file = "${meta.run}.err.log")
-        errF <- learnErrors(fnFs, $options.args, multithread = $task.cpus, verbose = TRUE)
+        errF <- learnErrors(fnFs, $args, multithread = $task.cpus, verbose = TRUE)
         saveRDS(errF, "${meta.run}.err.rds")
         sink(file = NULL)
 
@@ -85,8 +74,8 @@ process DADA2_ERR {
         dada2:::checkConvergence(errF)
         sink(file = NULL)
 
-        write.table('learnErrors\t$options.args', file = "learnErrors.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
-        write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+        write.table('learnErrors\t$args', file = "learnErrors.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+        write.table(paste("${task.process}:\n    dada2:", packageVersion("dada2")), file = "versions.yml", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
         """
     }
 }

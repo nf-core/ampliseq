@@ -2,18 +2,12 @@
  * Check input samplesheet or folder and get read channels
  */
 
-params.standard_options = [:]
-params.readthrough_options = [:]
-params.doubleprimer_options = [:]
-params.summary_options = [:]
-params.summary_merge_options = [:]
-
-include { CUTADAPT                          } from '../../modules/nf-core/modules/cutadapt/main' addParams( options: params.standard_options     )
-include { CUTADAPT as CUTADAPT_READTHROUGH  } from '../../modules/nf-core/modules/cutadapt/main' addParams( options: params.readthrough_options  )
-include { CUTADAPT as CUTADAPT_DOUBLEPRIMER } from '../../modules/nf-core/modules/cutadapt/main' addParams( options: params.doubleprimer_options )
-include { CUTADAPT_SUMMARY                                  } from '../../modules/local/cutadapt_summary' addParams( options: params.summary_options     )
-include { CUTADAPT_SUMMARY as CUTADAPT_SUMMARY_DOUBLEPRIMER } from '../../modules/local/cutadapt_summary' addParams( options: params.summary_options     )
-include { CUTADAPT_SUMMARY_MERGE            } from '../../modules/local/cutadapt_summary_merge' addParams( options: params.summary_merge_options       )
+include { CUTADAPT                          } from '../../modules/nf-core/modules/cutadapt/main'
+include { CUTADAPT as CUTADAPT_READTHROUGH  } from '../../modules/nf-core/modules/cutadapt/main'
+include { CUTADAPT as CUTADAPT_DOUBLEPRIMER } from '../../modules/nf-core/modules/cutadapt/main'
+include { CUTADAPT_SUMMARY                                  } from '../../modules/local/cutadapt_summary'
+include { CUTADAPT_SUMMARY as CUTADAPT_SUMMARY_DOUBLEPRIMER } from '../../modules/local/cutadapt_summary'
+include { CUTADAPT_SUMMARY_MERGE            } from '../../modules/local/cutadapt_summary_merge'
 
 workflow CUTADAPT_WORKFLOW {
     take:
@@ -74,5 +68,5 @@ workflow CUTADAPT_WORKFLOW {
     reads   = ch_trimmed_reads_passed
     logs    = CUTADAPT.out.log
     summary = CUTADAPT_SUMMARY_MERGE.out.tsv
-    version = CUTADAPT.out.version
+    version = CUTADAPT.out.versions
 }

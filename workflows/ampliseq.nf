@@ -82,62 +82,6 @@ if ( !params.enable_conda && !params.skip_taxonomy && !params.skip_qiime ) {
 ========================================================================================
 */
 
-/* //TODO: remove all that, into modules.config!
-// Don't overwrite global params.modules, create a copy instead and use that within the main script.
-def modules = params.modules.clone()
-
-def dada2_filtntrim_options = modules['dada2_filtntrim']
-dada2_filtntrim_options.args       += single_end ? ", maxEE = $params.max_ee" : ", maxEE = c($params.max_ee, $params.max_ee)"
-if (params.pacbio) {
-    //PacBio data
-    dada2_filtntrim_options.args   +=", trimLeft = 0, minLen = $params.min_len, maxLen = $max_len, rm.phix = FALSE"
-} else if (params.iontorrent) {
-    //Ion-torrent data
-    dada2_filtntrim_options.args   += ", trimLeft = 15, minLen = $params.min_len, maxLen = $max_len, rm.phix = TRUE"
-} else if (params.illumina_pe_its) {
-    //Illumina ITS data or other sequences with high length variability
-    dada2_filtntrim_options.args   += ", trimLeft = 0, minLen = $params.min_len, maxLen = $max_len, rm.phix = TRUE"
-} else {
-    //Illumina 16S data
-    dada2_filtntrim_options.args   += ", trimLeft = 0, minLen = $params.min_len, maxLen = $max_len, rm.phix = TRUE"
-}
-
-def dada2_quality_options = modules['dada2_quality']
-
-def trunclen_options = [:]
-trunclen_options.args       ="$params.trunc_qmin $params.trunc_rmin"
-
-def dada2_err_options = modules['dada2_err']
-dada2_err_options.args   += params.pacbio ? ", errorEstimationFunction = PacBioErrfun" : ", errorEstimationFunction = loessErrfun"
-
-def dada2_denoising_options = modules['dada2_denoising']
-if (params.iontorrent) {
-    //Ion-torrent data
-    dada2_denoising_options.args   += ", BAND_SIZE = 32, HOMOPOLYMER_GAP_PENALTY = -1"
-} else {
-    dada2_denoising_options.args   += ", BAND_SIZE = 16, HOMOPOLYMER_GAP_PENALTY = NULL"
-}
-dada2_denoising_options.args         += params.sample_inference == "pseudo" ? ", pool = \"pseudo\"" : params.sample_inference == "pooled" ? ", pool = TRUE" : ", pool = FALSE"
-dada2_denoising_options.args2        += params.concatenate_reads ? ", justConcatenate = TRUE" : ", justConcatenate = FALSE"
-
-def dada2_rmchimera_options = modules['dada2_rmchimera']
-
-def dada2_taxonomy_options  = modules['dada2_taxonomy']
-dada2_taxonomy_options.args += params.pacbio ? ", tryRC = TRUE" : ""
-dada2_taxonomy_options.args += params.iontorrent ? ", tryRC = TRUE" : ""
-
-def dada2_addspecies_options  = modules['dada2_addspecies']
-dada2_addspecies_options.args += params.pacbio ? ", tryRC = TRUE" : ""
-dada2_addspecies_options.args += params.iontorrent ? ", tryRC = TRUE" : ""
-
-def sbdiexport_options   = modules['sbdiexport']
-sbdiexport_options.args += params.single_end ? ' single ' : ' paired '
-sbdiexport_options.args += " $params.FW_primer "
-sbdiexport_options.args += " $params.RV_primer "
-
-def sbdiexportreannotate_options  = modules['sbdiexportreannotate']
-*/
-
 include { RENAME_RAW_DATA_FILES         } from '../modules/local/rename_raw_data_files'
 include { DADA2_FILTNTRIM               } from '../modules/local/dada2_filtntrim'
 include { DADA2_QUALITY                 } from '../modules/local/dada2_quality'
@@ -182,32 +126,6 @@ def make_complement(String seq) {
 FW_primer_RevComp = make_complement ( "${params.FW_primer}".reverse() )
 RV_primer_RevComp = make_complement ( "${params.RV_primer}".reverse() )
 
-/* //TODO: remove all that, into modules.config!
-if (params.pacbio) {
-    //PacBio data
-    cutadapt_options_args       = " --rc -g ${params.FW_primer}...${RV_primer_RevComp}"
-} else if (params.iontorrent) {
-    //IonTorrent data
-    cutadapt_options_args       = " --rc -g ${params.FW_primer}...${RV_primer_RevComp}"
-} else if (params.single_end) {
-    //Illumina SE
-    cutadapt_options_args       = " -g ${params.FW_primer}"
-} else {
-    //Illumina PE
-    cutadapt_options_args       = " -g ${params.FW_primer} -G ${params.RV_primer}"
-}
-
-def cutadapt_options 			= modules['cutadapt']
-cutadapt_options.args          += cutadapt_options_args
-cutadapt_options.args          += params.retain_untrimmed ? '' : " --discard-untrimmed"
-
-def cutadapt_readthrough_options      = modules['cutadapt_readthrough']
-cutadapt_readthrough_options.args    += " -a ${RV_primer_RevComp} -A ${FW_primer_RevComp}"
-
-def cutadapt_doubleprimer_options        = modules['cutadapt_doubleprimer']
-cutadapt_doubleprimer_options.args      += cutadapt_options_args
-*/
-
 include { PARSE_INPUT                   } from '../subworkflows/local/parse_input'
 include { QIIME2_PREPTAX                } from '../subworkflows/local/qiime2_preptax'
 include { QIIME2_TAXONOMY               } from '../subworkflows/local/qiime2_taxonomy'
@@ -225,16 +143,6 @@ include { QIIME2_ANCOM                  } from '../subworkflows/local/qiime2_anc
 //
 // MODULE: Installed directly from nf-core/modules
 //
-
-/* //TODO: remove those following lines
-def fastqc_options              = modules['fastqc']
-
-def cutadapt_taxonomy_options   = modules['cutadapt_taxonomy']
-cutadapt_taxonomy_options.args += " -g ${params.FW_primer}...${RV_primer_RevComp}"
-
-def multiqc_options         = modules['multiqc']
-multiqc_options.args       += params.multiqc_title ? Utils.joinModuleArgs(["--title \"$params.multiqc_title\""]) : ''
-*/
 
 include { CUTADAPT as CUTADAPT_TAXONOMY     } from '../modules/nf-core/modules/cutadapt/main'
 include { FASTQC                            } from '../modules/nf-core/modules/fastqc/main'
@@ -270,7 +178,7 @@ workflow AMPLISEQ {
     // MODULE: Run FastQC
     //
     if (!params.skip_fastqc) {
-        FASTQC ( RENAME_RAW_DATA_FILES.out ).html.set { fastqc_html } //TODO: fastqc_html still needed?
+        FASTQC ( RENAME_RAW_DATA_FILES.out )
         ch_versions = ch_versions.mix(FASTQC.out.versions.first())
     }
 

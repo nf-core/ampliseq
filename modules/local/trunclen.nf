@@ -1,5 +1,5 @@
 process TRUNCLEN {
-    tag "$meta.id"
+    tag "$meta"
     label 'process_low'
 
     conda (params.enable_conda ? "pandas=1.1.5" : null)

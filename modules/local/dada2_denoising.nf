@@ -49,7 +49,7 @@ process DADA2_DENOISING {
 
         write.table('dada\t$args', file = "dada.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
         write.table('mergePairs\t$args2', file = "mergePairs.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
-        write.table(paste("${task.process}:\n    dada2:", packageVersion("dada2")), file = "versions.yml", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+        writeLines(c("\\"${task.process}\\":", paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
         """
     } else {
         """
@@ -74,7 +74,7 @@ process DADA2_DENOISING {
         saveRDS("dummy", "dummy_${meta.run}.mergers.rds")
 
         write.table('dada\t$args', file = "dada.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
-        write.table(paste("${task.process}:\n    dada2:", packageVersion("dada2")), file = "versions.yml", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+        writeLines(c("\\"${task.process}\\":", paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
         """
     }
 }

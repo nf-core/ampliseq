@@ -31,6 +31,6 @@ process DADA2_RMCHIMERA {
     saveRDS(seqtab.nochim,"${meta.run}.ASVtable.rds")
 
     write.table('removeBimeraDenovo\t$args', file = "removeBimeraDenovo.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
-    write.table(paste("${task.process}:\n    dada2:", packageVersion("dada2")), file = "versions.yml", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+    writeLines(c("\\"${task.process}\\":", paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
     """
 }

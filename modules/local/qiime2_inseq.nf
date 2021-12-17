@@ -13,7 +13,6 @@ process QIIME2_INSEQ {
     path "versions.yml", emit: versions
 
     script:
-    def software      = getSoftwareName(task.process)
     """
     qiime tools import \
         --input-path "$seq" \

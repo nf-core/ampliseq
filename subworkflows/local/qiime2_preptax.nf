@@ -29,5 +29,5 @@ workflow QIIME2_PREPTAX {
 
     emit:
     classifier      = QIIME2_TRAIN.out.qza
-    version         = QIIME2_TRAIN.out.versions
+    versions        = QIIME2_TRAIN.out.versions
 }

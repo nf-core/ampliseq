@@ -15,7 +15,7 @@ process DADA2_TAXONOMY {
     output:
     path(outfile), emit: tsv
     path( "ASV_tax.rds" ), emit: rds
-    path "versions.yml" , emit: versions
+    path "versions.yml"  , emit: versions
     path "*.args.txt"    , emit: args
 
     script:
@@ -66,6 +66,6 @@ process DADA2_TAXONOMY {
     saveRDS(taxa_export, "ASV_tax.rds")
 
     write.table('assignTaxonomy\t$args', file = "assignTaxonomy.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
-    write.table(paste("${task.process}:\n    dada2:", packageVersion("dada2")), file = "versions.yml", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+    writeLines(c("\\"${task.process}\\":", paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
     """
 }

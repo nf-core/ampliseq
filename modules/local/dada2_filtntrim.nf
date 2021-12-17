@@ -17,7 +17,7 @@ process DADA2_FILTNTRIM {
     path "*.args.txt"                          , emit: args
 
     script:
-    def args = task.ext.args ?: ''
+    def args        = task.ext.args ?: ''
     def in_and_out  = meta.single_end ? "\"${reads}\", \"${meta.id}.filt.fastq.gz\"" : "\"${reads[0]}\", \"${meta.id}_1.filt.fastq.gz\", \"${reads[1]}\", \"${meta.id}_2.filt.fastq.gz\""
     def trunclenf   = trunclenf[1].toInteger()
     def trunclenr   = trunclenr[1].toInteger()
@@ -36,6 +36,6 @@ process DADA2_FILTNTRIM {
 
     write.table( out, file = "${meta.id}.filter_stats.tsv", sep = "\\t", row.names = FALSE, quote = FALSE, na = '')
     write.table(paste('filterAndTrim\t$trunc_args','$args',sep=","), file = "filterAndTrim.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
-    write.table(paste("${task.process}:\n    dada2:", packageVersion("dada2")), file = "versions.yml", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+    writeLines(c("\\"${task.process}\\":", paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
     """
 }

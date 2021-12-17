@@ -62,8 +62,6 @@ if (params.pacbio || params.iontorrent) {
     single_end = true
 }
 
-max_len = params.max_len ? params.max_len : "Inf"
-
 trunclenf = params.trunclenf ? params.trunclenf : 0
 trunclenr = params.trunclenr ? params.trunclenr : 0
 if ( !single_end && !params.illumina_pe_its && (params.trunclenf == false || params.trunclenr == false) && !is_fasta_input ) {
@@ -109,22 +107,10 @@ include { QIIME2_INTAX                  } from '../modules/local/qiime2_intax'
 include { PICRUST                       } from '../modules/local/picrust'
 include { SBDIEXPORT                    } from '../modules/local/sbdiexport'
 include { SBDIEXPORTREANNOTATE          } from '../modules/local/sbdiexportreannotate'
-include { GET_SOFTWARE_VERSIONS         } from '../modules/local/get_software_versions'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-
-//prepare reverse complement primers to remove those in PacBio, IonTorrent and Illumina read-through cutadapt steps
-// Get the complement of a DNA sequence
-// Complement table taken from http://arep.med.harvard.edu/labgc/adnan/projects/Utilities/revcomp.html
-def make_complement(String seq) {
-    def complements = [ A:'T', T:'A', U:'A', G:'C', C:'G', Y:'R', R:'Y', S:'S', W:'W', K:'M', M:'K', B:'V', D:'H', H:'D', V:'B', N:'N' ]
-    comp = seq.toUpperCase().collect { base -> complements[ base ] ?: 'X' }.join()
-    return comp
-}
-FW_primer_RevComp = make_complement ( "${params.FW_primer}".reverse() )
-RV_primer_RevComp = make_complement ( "${params.RV_primer}".reverse() )
 
 include { PARSE_INPUT                   } from '../subworkflows/local/parse_input'
 include { QIIME2_PREPTAX                } from '../subworkflows/local/qiime2_preptax'

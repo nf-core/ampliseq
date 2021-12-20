@@ -2,12 +2,12 @@
  * Check input samplesheet or folder and get read channels
  */
 
-include { CUTADAPT                          } from '../../modules/nf-core/modules/cutadapt/main'
-include { CUTADAPT as CUTADAPT_READTHROUGH  } from '../../modules/nf-core/modules/cutadapt/main'
-include { CUTADAPT as CUTADAPT_DOUBLEPRIMER } from '../../modules/nf-core/modules/cutadapt/main'
+include { CUTADAPT                                          } from '../../modules/nf-core/modules/cutadapt/main'
+include { CUTADAPT as CUTADAPT_READTHROUGH                  } from '../../modules/nf-core/modules/cutadapt/main'
+include { CUTADAPT as CUTADAPT_DOUBLEPRIMER                 } from '../../modules/nf-core/modules/cutadapt/main'
 include { CUTADAPT_SUMMARY                                  } from '../../modules/local/cutadapt_summary'
 include { CUTADAPT_SUMMARY as CUTADAPT_SUMMARY_DOUBLEPRIMER } from '../../modules/local/cutadapt_summary'
-include { CUTADAPT_SUMMARY_MERGE            } from '../../modules/local/cutadapt_summary_merge'
+include { CUTADAPT_SUMMARY_MERGE                            } from '../../modules/local/cutadapt_summary_merge'
 
 workflow CUTADAPT_WORKFLOW {
     take:

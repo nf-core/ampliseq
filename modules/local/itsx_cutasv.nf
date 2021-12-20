@@ -15,7 +15,7 @@ process ITSX_CUTASV {
 
     script:
     """
-    ITSx -i $fasta ${options}.args --cpu ${task.cpus} -o ASV_ITS_seqs
+    ITSx -i $fasta $args --cpu ${task.cpus} -o ASV_ITS_seqs
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

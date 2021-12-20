@@ -2,7 +2,7 @@
  * Check input samplesheet or folder and get read channels
  */
 
-include { CUTADAPT                                          } from '../../modules/nf-core/modules/cutadapt/main'
+include { CUTADAPT as CUTADAPT_BASIC                        } from '../../modules/nf-core/modules/cutadapt/main'
 include { CUTADAPT as CUTADAPT_READTHROUGH                  } from '../../modules/nf-core/modules/cutadapt/main'
 include { CUTADAPT as CUTADAPT_DOUBLEPRIMER                 } from '../../modules/nf-core/modules/cutadapt/main'
 include { CUTADAPT_SUMMARY                                  } from '../../modules/local/cutadapt_summary'
@@ -15,8 +15,8 @@ workflow CUTADAPT_WORKFLOW {
     illumina_pe_its
     double_primer
     main:
-    CUTADAPT ( ch_file ).reads.set { ch_trimmed_reads }
-    CUTADAPT.out.log
+    CUTADAPT_BASIC ( ch_file ).reads.set { ch_trimmed_reads }
+    CUTADAPT_BASIC.out.log
         .map {
             info, log ->
                 def meta = [:]
@@ -66,7 +66,7 @@ workflow CUTADAPT_WORKFLOW {
 
     emit:
     reads   = ch_trimmed_reads_passed
-    logs    = CUTADAPT.out.log
+    logs    = CUTADAPT_BASIC.out.log
     summary = CUTADAPT_SUMMARY_MERGE.out.tsv
-    versions= CUTADAPT.out.versions
+    versions= CUTADAPT_BASIC.out.versions
 }

@@ -69,6 +69,8 @@ if ( !single_end && !params.illumina_pe_its && (params.trunclenf == null || para
     log.warn "No DADA2 cutoffs were specified (`--trunclenf` & --`trunclenr`), therefore reads will be truncated where median quality drops below ${params.trunc_qmin} (defined by `--trunc_qmin`) but at least a fraction of ${params.trunc_rmin} (defined by `--trunc_rmin`) of the reads will be retained.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
 } else { find_truncation_values = false }
 
+metadata_category = params.metadata_category ?: ""
+
 //only run QIIME2 when taxonomy is actually calculated and all required data is available
 if ( !params.enable_conda && !params.skip_taxonomy && !params.skip_qiime ) {
     run_qiime2 = true
@@ -408,7 +410,7 @@ workflow AMPLISEQ {
 
         //Select metadata categories for diversity analysis & ancom
         if (!params.skip_ancom || !params.skip_diversity_indices) {
-            METADATA_ALL ( ch_metadata, params.metadata_category ).set { ch_metacolumn_all }
+            METADATA_ALL ( ch_metadata, metadata_category ).set { ch_metacolumn_all }
             //return empty channel if no appropriate column was found
             ch_metacolumn_all.branch { passed: it != "" }.set { result }
             ch_metacolumn_all = result.passed

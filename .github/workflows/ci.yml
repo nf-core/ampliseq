@@ -51,9 +51,6 @@ jobs:
     # Only run on push if this is the nf-core dev branch (merged PRs)
     if: ${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/ampliseq') }}
     runs-on: ubuntu-latest
-    env:
-      NXF_VER: '21.10.3'
-      NXF_ANSI_LOG: false
     strategy:
       matrix:
         # Run remaining test profiles with minimum nextflow version
@@ -63,11 +60,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install Nextflow
-        env:
-          CAPSULE_LOG: none
         run: |
           wget -qO- get.nextflow.io | bash
           sudo mv nextflow /usr/local/bin/
+
       - name: Run pipeline with ${{ matrix.profile }} test profile
         run: |
           nextflow run ${GITHUB_WORKSPACE} -profile ${{ matrix.profile }},docker

@@ -52,7 +52,7 @@ jobs:
     if: ${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/ampliseq') }}
     runs-on: ubuntu-latest
     env:
-      NXF_VER: '21.04.0'
+      NXF_VER: '21.10.3'
       NXF_ANSI_LOG: false
     strategy:
       matrix:

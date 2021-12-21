@@ -4,7 +4,7 @@ process QIIME2_TRAIN {
     label 'single_cpu'
 
     conda (params.enable_conda ? { exit 1 "QIIME2 has no conda package" } : null)
-    container "quay.io/qiime2/core:2021.11"
+    container "quay.io/qiime2/core:2021.8"
 
     input:
     tuple val(meta), path(qza)

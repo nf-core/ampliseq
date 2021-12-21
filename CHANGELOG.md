@@ -12,7 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+| Tool | Previous version | New version |
+| --- | --- | --- |
+| Cutadapt | 3.2 | 3.4 |
+| MultiQC | 1.10.1 | 1.11 |
+
 ### `Fixed`
+
+* [#362](https://github.com/nf-core/ampliseq/pull/362)- Template update for nf-core/tools version 2.2, now requires nextflow version `>= 21.10.3`
 
 ### `Dependencies`
 

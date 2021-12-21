@@ -1,22 +1,11 @@
-// Import generic module functions
-include { initOptions; saveFiles; getSoftwareName } from './functions'
-
-params.options = [:]
-options    = initOptions(params.options)
-
 process DADA2_QUALITY {
     tag "$meta"
     label 'process_low'
-    publishDir "${params.outdir}",
-        mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
     conda (params.enable_conda ? "bioconductor-dada2=1.20.0" : null)
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.20.0--r41h399db7b_0"
-    } else {
-        container "quay.io/biocontainers/bioconductor-dada2:1.20.0--r41h399db7b_0"
-    }
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.20.0--r41h399db7b_0' :
+        'quay.io/biocontainers/bioconductor-dada2:1.20.0--r41h399db7b_0' }"
 
     input:
     tuple val(meta), path(reads)
@@ -27,8 +16,9 @@ process DADA2_QUALITY {
     path "*.args.txt"                        , emit: args
 
     script:
+    def args = task.ext.args ?: ''
     """
-    dada_quality.r "${meta}_qual_stats" $options.args
-    echo 'plotQualityProfile\t$options.args' > "plotQualityProfile.args.txt"
+    dada_quality.r "${meta}_qual_stats" $args
+    echo 'plotQualityProfile\t$args' > "plotQualityProfile.args.txt"
     """
 }

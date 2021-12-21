@@ -2,8 +2,6 @@
 // Check input samplesheet or folder and get read channels
 //
 
-params.options = [:]
-
 // Function to get list of [ meta, [ fastq_1, fastq_2 ] ]
 def parse_samplesheet(LinkedHashMap row, single_end) {
     //Check if manifest contains column sampleID  & forwardReads

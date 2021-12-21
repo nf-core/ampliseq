@@ -1,22 +1,11 @@
-// Import generic module functions
-include { initOptions; saveFiles; getSoftwareName } from './functions'
-
-params.options = [:]
-options    = initOptions(params.options)
-
 process DADA2_TAXONOMY {
     tag "${fasta},${database}"
     label 'process_high'
-    publishDir "${params.outdir}",
-        mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
     conda (params.enable_conda ? "bioconductor-dada2=1.20.0" : null)
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.20.0--r41h399db7b_0"
-    } else {
-        container "quay.io/biocontainers/bioconductor-dada2:1.20.0--r41h399db7b_0"
-    }
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.20.0--r41h399db7b_0' :
+        'quay.io/biocontainers/bioconductor-dada2:1.20.0--r41h399db7b_0' }"
 
     input:
     path(fasta)
@@ -26,18 +15,18 @@ process DADA2_TAXONOMY {
     output:
     path(outfile), emit: tsv
     path( "ASV_tax.rds" ), emit: rds
-    path "*.version.txt" , emit: version
+    path "versions.yml"  , emit: versions
     path "*.args.txt"    , emit: args
 
     script:
-    def software      = getSoftwareName(task.process)
+    def args = task.ext.args ?: ''
     """
     #!/usr/bin/env Rscript
     suppressPackageStartupMessages(library(dada2))
     set.seed(100) # Initialize random number generator for reproducibility
 
     seq <- getSequences(\"$fasta\", collapse = TRUE, silence = FALSE)
-    taxa <- assignTaxonomy(seq, \"$database\", taxLevels = c("Domain", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"), $options.args, multithread = $task.cpus, verbose=TRUE, outputBootstraps = TRUE)
+    taxa <- assignTaxonomy(seq, \"$database\", taxLevels = c("Domain", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"), $args, multithread = $task.cpus, verbose=TRUE, outputBootstraps = TRUE)
 
     # Make a data frame, add ASV_ID from seq, set confidence to the bootstrap for the most specific taxon and reorder columns before writing to file
     tx <- data.frame(ASV_ID = names(seq), taxa, sequence = row.names(taxa\$tax), row.names = names(seq))
@@ -76,7 +65,7 @@ process DADA2_TAXONOMY {
     taxa_export <- cbind( ASV_ID = tx\$ASV_ID, taxa\$tax, confidence = tx\$confidence)
     saveRDS(taxa_export, "ASV_tax.rds")
 
-    write.table('assignTaxonomy\t$options.args', file = "assignTaxonomy.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
-    write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+    write.table('assignTaxonomy\t$args', file = "assignTaxonomy.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+    writeLines(c("\\"${task.process}\\":", paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
     """
 }

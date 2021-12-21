@@ -2,12 +2,9 @@
  * Training of a classifier with QIIME2
  */
 
-params.preptax_options = [:]
-params.format_options = [:]
-
-include { FORMAT_TAXONOMY_QIIME } from '../../modules/local/format_taxonomy_qiime' addParams( options: params.format_options )
-include { QIIME2_EXTRACT        } from '../../modules/local/qiime2_extract'        addParams( options: params.preptax_options )
-include { QIIME2_TRAIN          } from '../../modules/local/qiime2_train'          addParams( options: params.preptax_options )
+include { FORMAT_TAXONOMY_QIIME } from '../../modules/local/format_taxonomy_qiime'
+include { QIIME2_EXTRACT        } from '../../modules/local/qiime2_extract'
+include { QIIME2_TRAIN          } from '../../modules/local/qiime2_train'
 
 workflow QIIME2_PREPTAX {
     take:
@@ -32,5 +29,5 @@ workflow QIIME2_PREPTAX {
 
     emit:
     classifier      = QIIME2_TRAIN.out.qza
-    version         = QIIME2_TRAIN.out.version
+    versions        = QIIME2_TRAIN.out.versions
 }

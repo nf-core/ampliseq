@@ -2,13 +2,9 @@
  * Diversity indices with QIIME2
  */
 
-params.filterasv_options = [:]
-params.ancom_tax_options = [:]
-params.ancom_asv_options = [:]
-
-include { QIIME2_FILTERASV                 } from '../../modules/local/qiime2_filterasv'  addParams( options: params.filterasv_options )
-include { QIIME2_ANCOM_TAX                 } from '../../modules/local/qiime2_ancom_tax'  addParams( options: params.ancom_tax_options )
-include { QIIME2_ANCOM_ASV                 } from '../../modules/local/qiime2_ancom_asv'  addParams( options: params.ancom_asv_options )
+include { QIIME2_FILTERASV                 } from '../../modules/local/qiime2_filterasv'
+include { QIIME2_ANCOM_TAX                 } from '../../modules/local/qiime2_ancom_tax'
+include { QIIME2_ANCOM_ASV                 } from '../../modules/local/qiime2_ancom_asv'
 
 workflow QIIME2_ANCOM {
     take:

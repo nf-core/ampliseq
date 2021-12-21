@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | Tool | Previous version | New version |
 | --- | --- | --- |
 | Cutadapt | 3.2 | 3.4 |
+| DADA2 | 1.20.0 | 1.22.0 |
+| QIIME2 | 2021.2 | 2021.8 |
+| PICRUSt2 | 2.4.1 | 2.4.2 |
 | MultiQC | 1.10.1 | 1.11 |
 
 ### `Fixed`

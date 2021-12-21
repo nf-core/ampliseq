@@ -2,10 +2,10 @@ process DADA2_TAXONOMY {
     tag "${fasta},${database}"
     label 'process_high'
 
-    conda (params.enable_conda ? "bioconductor-dada2=1.20.0" : null)
+    conda (params.enable_conda ? "bioconductor-dada2=1.22.0" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.20.0--r41h399db7b_0' :
-        'quay.io/biocontainers/bioconductor-dada2:1.20.0--r41h399db7b_0' }"
+        'https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.22.0--r41h399db7b_0' :
+        'quay.io/biocontainers/bioconductor-dada2:1.22.0--r41h399db7b_0' }"
 
     input:
     path(fasta)

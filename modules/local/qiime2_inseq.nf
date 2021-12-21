@@ -3,7 +3,7 @@ process QIIME2_INSEQ {
     label 'process_low'
 
     conda (params.enable_conda ? { exit 1 "QIIME2 has no conda package" } : null)
-    container "quay.io/qiime2/core:2021.2"
+    container "quay.io/qiime2/core:2021.11"
 
     input:
     path(seq)

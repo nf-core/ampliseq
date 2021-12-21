@@ -257,17 +257,6 @@ Furthermore, ADONIS permutation-based statistical test in vegan-R determine whet
 
 </details>
 
-Determine whether groups of samples are significantly different from one another using the ADONIS permutation-based statistical test in vegan-R.
-
-<details markdown="1">
-<summary>Output files</summary>
-
-* `qiime2/diversity/beta_diversity/adonis`
-    * `<method>_distance_matrix/index.html`: Box plots and significance analysis (PERMANOVA).
-        * method: bray_curtis, jaccard, unweighted_unifrac, weighted_unifrac
-
-</details>
-
 #### ANCOM
 
 Analysis of Composition of Microbiomes ([ANCOM](https://www.ncbi.nlm.nih.gov/pubmed/26028277)) is applied to identify features that are differentially abundant across sample groups. A key assumption made by ANCOM is that few taxa (less than about 25%) will be differentially abundant between groups otherwise the method will be inaccurate.

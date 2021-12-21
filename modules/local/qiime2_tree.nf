@@ -2,7 +2,7 @@ process QIIME2_TREE {
     label 'process_medium'
 
     conda (params.enable_conda ? { exit 1 "QIIME2 has no conda package" } : null)
-    container "quay.io/qiime2/core:2021.2"
+    container "quay.io/qiime2/core:2021.8"
 
     input:
     path(repseq)

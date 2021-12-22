@@ -14,7 +14,7 @@ process QIIME2_DIVERSITY_ADONIS {
 
     script:
     def args = task.ext.args ?: ''
-    def formula = params.qiime2_adonis_formula ?: ''
+    def formula = params.qiime_adonis_formula ?: ''
     if ( category.length() > 0 || params.qiime_adonis_formula ) {
         """
         export XDG_CONFIG_HOME="\${PWD}/HOME"
@@ -43,7 +43,7 @@ process QIIME2_DIVERSITY_ADONIS {
     } else {
         """
         mkdir adonis
-        echo "" > "adonis/WARNING No formula was given with --qiime2_adonis_formula and no column in ${metadata.baseName} seemed suitable.txt"
+        echo "" > "adonis/WARNING No formula was given with --qiime_adonis_formula and no column in ${metadata.baseName} seemed suitable.txt"
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":

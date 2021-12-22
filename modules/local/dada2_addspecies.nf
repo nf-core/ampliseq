@@ -30,21 +30,10 @@ process DADA2_ADDSPECIES {
     tx <- addSpecies(taxtable, \"$database\", $args, verbose=TRUE)
 
     # Create a table with specified column order
-    tmp <- data.frame(row.names(tx)) # To separate ASV_ID from sequence
-    taxa <- data.frame(
-        ASV_ID = tx[,"ASV_ID"],
-        Domain = tx[,"Domain"],
-        Kingdom = tx[,"Kingdom"],
-        Phylum = tx[,"Phylum"],
-        Class = tx[,"Class"],
-        Order = tx[,"Order"],
-        Family = tx[,"Family"],
-        Genus = tx[,"Genus"],
-        Species = tx[,"Species"],
-        confidence = tx[,"confidence"],
-        sequence = tmp[,],
-        row.names=row.names(tmp)
-    )
+    taxa <- data.frame(tx[,1:8])
+    taxa\$Species <- tx[,'Species']
+    taxa\$confidence <- tx[,'confidence']
+    taxa\$sequence   <- taxtable\$sequence
 
     write.table(taxa, file = \"$outfile\", sep = "\\t", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '')
 

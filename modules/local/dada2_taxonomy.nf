@@ -51,12 +51,11 @@ process DADA2_TAXONOMY {
     }
     taxa_export\$confidence <- tx\$confidence
     taxa_export\$sequence   <- tx\$sequence  
-    row.names(taxa_export)  <- names(seq)
+    row.names(taxa_export)  <- tx\$sequence
 
     write.table(taxa_export, file = \"$outfile\", sep = "\\t", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '')
 
     # Save a version with rownames for addSpecies
-    taxa_export <- cbind( ASV_ID = tx\$ASV_ID, taxa\$tax, confidence = tx\$confidence)
     saveRDS(taxa_export, "ASV_tax.rds")
 
     write.table('assignTaxonomy\t$args', file = "assignTaxonomy.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')

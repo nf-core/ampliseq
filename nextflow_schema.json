@@ -97,6 +97,11 @@
                     "description": "Comma separated list of metadata column headers for statistics.",
                     "help_text": "Here columns in the metadata sheet can be chosen with groupings that are used for diversity indices and differential abundance analysis. By default, all suitable columns in the metadata sheet will be used if this option is not specified. Suitable are columns which are categorical (not numerical) and have multiple different values which are not all unique. For example:\n\n```bash\n--metadata_category \"treatment1,treatment2\"\n```\n\nPlease note the following requirements:\n\n1. Comma separated list enclosed in quotes\n2. May not contain whitespace characters\n3. Each comma separated term has to match exactly one column name in the metadata sheet"
                 },
+                "qiime_adonis_formula": {
+                    "type": "string",
+                    "description": "Formula for QIIME2 ADONIS metadata feature importance test for beta diversity distances",
+                    "help_text": "Model formula containing only independent terms contained in the sample metadata. These can be continuous variables or factors, and they can have interactions as in a typical R formula. Essentially, columns in the metadata sheet can be chosen that have no empty values, not only unique values, or not only identical values.\nFor example, \"treatment1+treatment2\" tests whether the data partitions based on \"treatment1\" and \"treatment2\" sample metadata. \"treatment1*treatment2\" test both of those effects as well as their interaction.\nMore examples can be found in the R documentation, https://cran.r-project.org/doc/manuals/r-release/R-intro.html#Formulae-for-statistical-models"
+                },
                 "extension": {
                     "type": "string",
                     "default": "/*_R{1,2}_001.fastq.gz",

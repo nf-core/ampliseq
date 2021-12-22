@@ -28,12 +28,12 @@ process DADA2_TAXONOMY {
     seq <- getSequences(\"$fasta\", collapse = TRUE, silence = FALSE)
     ranks = c('${params.dada_ref_databases[params.dada_ref_taxonomy]["ranks"].join("', '")}')
     taxa <- assignTaxonomy(
-        seq, 
-        \"$database\", 
+        seq,
+        \"$database\",
         taxLevels = ranks,
-        $args, 
-        multithread = $task.cpus, 
-        verbose=TRUE, 
+        $args,
+        multithread = $task.cpus,
+        verbose=TRUE,
         outputBootstraps = TRUE
     )
 
@@ -50,7 +50,7 @@ process DADA2_TAXONOMY {
         taxa_export[[r]]    <- tx[[sprintf("tax.%s", r)]]
     }
     taxa_export\$confidence <- tx\$confidence
-    taxa_export\$sequence   <- tx\$sequence  
+    taxa_export\$sequence   <- tx\$sequence 
     row.names(taxa_export)  <- tx\$sequence
 
     write.table(taxa_export, file = \"$outfile\", sep = "\\t", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '')

@@ -50,7 +50,7 @@ process DADA2_TAXONOMY {
         taxa_export[[r]]    <- tx[[sprintf("tax.%s", r)]]
     }
     taxa_export\$confidence <- tx\$confidence
-    taxa_export\$sequence   <- tx\$sequence 
+    taxa_export\$sequence   <- tx\$sequence
     row.names(taxa_export)  <- tx\$sequence
 
     write.table(taxa_export, file = \"$outfile\", sep = "\\t", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '')

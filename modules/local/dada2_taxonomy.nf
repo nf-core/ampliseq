@@ -26,38 +26,32 @@ process DADA2_TAXONOMY {
     set.seed(100) # Initialize random number generator for reproducibility
 
     seq <- getSequences(\"$fasta\", collapse = TRUE, silence = FALSE)
-    taxa <- assignTaxonomy(seq, \"$database\", taxLevels = c("Domain", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"), $args, multithread = $task.cpus, verbose=TRUE, outputBootstraps = TRUE)
+    ranks = c('${params.dada_ref_databases[params.dada_ref_taxonomy]["ranks"].join("', '")}')
+    taxa <- assignTaxonomy(
+        seq, 
+        \"$database\", 
+        taxLevels = ranks,
+        $args, 
+        multithread = $task.cpus, 
+        verbose=TRUE, 
+        outputBootstraps = TRUE
+    )
 
     # Make a data frame, add ASV_ID from seq, set confidence to the bootstrap for the most specific taxon and reorder columns before writing to file
     tx <- data.frame(ASV_ID = names(seq), taxa, sequence = row.names(taxa\$tax), row.names = names(seq))
-    tx\$confidence <- with(tx,
-        ifelse(!is.na(tax.Genus), boot.Genus,
-            ifelse(!is.na(tax.Family), boot.Family,
-                ifelse(!is.na(tax.Order), boot.Order,
-                    ifelse(!is.na(tax.Class), boot.Class,
-                        ifelse(!is.na(tax.Phylum), boot.Phylum,
-                            ifelse(!is.na(tax.Kingdom), boot.Kingdom,
-                                ifelse(!is.na(tax.Domain), boot.Domain, 0)
-                            )
-                        )
-                    )
-                )
-            )
-        )
-    )/100
-    taxa_export <- data.frame(
-        ASV_ID = tx\$ASV_ID,
-        Domain = tx\$tax.Domain,
-        Kingdom = tx\$tax.Kingdom,
-        Phylum = tx\$tax.Phylum,
-        Class = tx\$tax.Class,
-        Order = tx\$tax.Order,
-        Family = tx\$tax.Family,
-        Genus = tx\$tax.Genus,
-        confidence = tx\$confidence,
-        sequence = tx\$sequence,
-        row.names = names(seq)
-    )
+
+    tx\$confidence <- 0
+    for ( r in rev(ranks) ) {
+        tx\$confidence <- ifelse(tx\$confidence == 0 & !is.na(tx[[sprintf("tax.%s", r)]]), tx[[sprintf("boot.%s", r)]]/100, tx\$confidence)
+    }
+
+    taxa_export <- data.frame(ASV_ID = tx\$ASV_ID)
+    for ( r in ranks ) {
+        taxa_export[[r]]    <- tx[[sprintf("tax.%s", r)]]
+    }
+    taxa_export\$confidence <- tx\$confidence
+    taxa_export\$sequence   <- tx\$sequence  
+    row.names(taxa_export)  <- names(seq)
 
     write.table(taxa_export, file = \"$outfile\", sep = "\\t", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '')
 

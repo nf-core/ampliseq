@@ -40,7 +40,9 @@ metadata        <- args[6]
 asvs <- read.delim(asvtable, sep = '\t', stringsAsFactors = FALSE)
 n_samples <- length(colnames(asvs)) - 1
 
-taxonomy <- read.delim(taxtable, sep = '\t', stringsAsFactors = FALSE)
+taxonomy <- read.delim(taxtable, sep = '\t', stringsAsFactors = FALSE) %>%
+    # Pick ranks by number, to circumvent that PR2 has different ranks than the rest
+    rename(Domain = 2, Kingdom = 3, Phylum = 4, Class = 5, Order = 6, Family = 7, Genus = 8, Species = 9)
 
 # Read the metadata table if provided, otherwise create one
 if ( ! is.na(metadata) ) {

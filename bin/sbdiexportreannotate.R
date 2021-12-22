@@ -6,10 +6,9 @@
 # to ready for submission to the Swedish Biodiversity Data Infrastructure
 # (SBDI) as possible.
 #
-# The script expects the following input file to be present in the directory:
-# ASV_tax_species.tsv.
-#
-# It also expects the following argument: dbversion
+# The script expects the following positional arguments:
+#   1. dbversion
+#   2. Input table, e.g. ASV_tax_species.tsv.
 #
 # Author: daniel.lundin@lnu.se
 
@@ -20,9 +19,12 @@ args            <- commandArgs(trailingOnly=TRUE)
 dbversion       <- args[1]
 taxfile         <- args[2]
 
-taxonomy <- read.delim(taxfile, sep = '\t', stringsAsFactors = FALSE)
+taxonomy <- read.delim(taxfile, sep = '\t', stringsAsFactors = FALSE) %>%
+    # Pick ranks by number, to circumvent that PR2 has different ranks than the rest
+    rename(Domain = 2, Kingdom = 3, Phylum = 4, Class = 5, Order = 6, Family = 7, Genus = 8, Species = 9)
 
 taxonomy %>%
+    # I'm keeping this if the ugly renaming above proves unnecessary one day
     rename_with(tolower, Domain:Species) %>%
     rename(
         asv_id_alias = ASV_ID,

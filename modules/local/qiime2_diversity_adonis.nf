@@ -13,6 +13,7 @@ process QIIME2_DIVERSITY_ADONIS {
     path "versions.yml"  , emit: versions
 
     script:
+    def args = task.ext.args ?: ''
     def formula = params.qiime2_adonis_formula ?: ''
     if ( category.length() > 0 || params.qiime_adonis_formula ) {
         """
@@ -24,12 +25,14 @@ process QIIME2_DIVERSITY_ADONIS {
             adonisformula=${formula}
         fi
 
-        qiime diversity adonis \
-            --i-distance-matrix ${core} \
-            --m-metadata-file ${metadata} \
-            --o-visualization ${core.baseName}_adonis.qzv \
+        qiime diversity adonis \\
+            --p-n-jobs $task.cpus \\
+            --i-distance-matrix ${core} \\
+            --m-metadata-file ${metadata} \\
+            --o-visualization ${core.baseName}_adonis.qzv \\
+            $args \\
             --p-formula \$adonisformula
-        qiime tools export --input-path ${core.baseName}_adonis.qzv \
+        qiime tools export --input-path ${core.baseName}_adonis.qzv \\
             --output-path adonis/${core.baseName}
 
         cat <<-END_VERSIONS > versions.yml

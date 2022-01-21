@@ -14,8 +14,13 @@ process ITSX_CUTASV {
     path "versions.yml"          , emit: versions
 
     script:
+    def args = task.ext.args ?: ''
     """
-    ITSx -i $fasta $args --cpu ${task.cpus} -o ASV_ITS_seqs
+    ITSx \\
+        -i $fasta \\
+        $args \\
+        --cpu $task.cpus \\
+        -o ASV_ITS_seqs
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

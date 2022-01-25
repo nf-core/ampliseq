@@ -12,7 +12,7 @@ process FORMAT_TAXRESULTS {
     val(outfile)
 
     output:
-    outfile, emit: tsv
+    path(outfile), emit: tsv
 
     script:
     """

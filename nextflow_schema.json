@@ -62,8 +62,15 @@
                     "description": "If data is single-ended Illumina reads instead of paired-end"
                 },
                 "cut_its": {
-                    "type": "boolean",
-                    "description": "If data is long read ITS sequences, that need to be cut to ITS region only for taxonomy assignment"
+                    "type": "string",
+                    "help_text": "If data is long read ITS sequences, that need to be cut to ITS region (full ITS or only ITS2) for taxonomy assignment.",
+                    "description": "Part of ITS region to use for taxonomy assignment: \"full\" or \"its2\"",
+                    "default": "none",
+                    "enum": [
+                        "none",
+                        "full",
+                        "its2"
+                    ]
                 },
                 "multiple_sequencing_runs": {
                     "type": "boolean",

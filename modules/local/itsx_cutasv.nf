@@ -8,10 +8,11 @@ process ITSX_CUTASV {
 
     input:
     path fasta
+    val outfile
 
     output:
-    path "ASV_ITS_seqs.full.fasta", emit: fasta
-    path "versions.yml"          , emit: versions
+    path outfile         , emit: fasta
+    path "versions.yml"  , emit: versions
 
     script:
     def args = task.ext.args ?: ''

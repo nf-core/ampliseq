@@ -342,7 +342,7 @@
                 },
                 "skip_dada_addspecies": {
                     "type": "boolean",
-                    "description": "Skip species level when using DADA2 for taxonomic classification, that reduces required memory dramatically under certain conditions. Incompatible with `--sbdiexport` and `--cut_its`"
+                    "description": "Skip species level when using DADA2 for taxonomic classification, that reduces required memory dramatically under certain conditions. Incompatible with `--sbdiexport`"
                 },
                 "skip_barplot": {
                     "type": "boolean",

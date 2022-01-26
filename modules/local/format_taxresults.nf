@@ -8,16 +8,14 @@ process FORMAT_TAXRESULTS {
 
     input:
     path(taxtable)
-    path(taxtable_species)
     path(fastafile)
+    val(outfile)
 
     output:
-    path("ASV_tax.tsv")
-    path("ASV_tax_species.tsv"), emit: tsv
+    path(outfile), emit: tsv
 
     script:
     """
-    add_full_sequence_to_taxfile.py $taxtable $fastafile
-    add_full_sequence_to_taxfile.py $taxtable_species $fastafile
+    add_full_sequence_to_taxfile.py $taxtable $fastafile $outfile
     """
 }

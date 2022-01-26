@@ -97,6 +97,7 @@ include { MERGE_STATS                   } from '../modules/local/merge_stats'
 include { DADA2_TAXONOMY                } from '../modules/local/dada2_taxonomy'
 include { DADA2_ADDSPECIES              } from '../modules/local/dada2_addspecies'
 include { FORMAT_TAXRESULTS             } from '../modules/local/format_taxresults'
+include { FORMAT_TAXRESULTS as FORMAT_TAXRESULTS_ADDSP } from '../modules/local/format_taxresults'
 include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'
 include { QIIME2_FILTERTAXA             } from '../modules/local/qiime2_filtertaxa'
 include { QIIME2_INASV                  } from '../modules/local/qiime2_inasv'
@@ -328,9 +329,14 @@ workflow AMPLISEQ {
             ch_versions = ch_versions.mix(ITSX_CUTASV.out.versions.ifEmpty(null))
             ch_cut_fasta = ITSX_CUTASV.out.fasta
             DADA2_TAXONOMY ( ch_cut_fasta, ch_assigntax, 'ASV_ITS_tax.tsv' )
-            DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_ITS_tax_species.tsv' )
-            FORMAT_TAXRESULTS ( DADA2_TAXONOMY.out.tsv, DADA2_ADDSPECIES.out.tsv, ch_fasta )
-            ch_dada2_tax = FORMAT_TAXRESULTS.out.tsv
+            FORMAT_TAXRESULTS ( DADA2_TAXONOMY.out.tsv, ch_fasta, 'ASV_tax.tsv' )
+            if (!params.skip_dada_addspecies) {
+                DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_ITS_tax_species.tsv' )
+                FORMAT_TAXRESULTS_ADDSP ( DADA2_ADDSPECIES.out.tsv, ch_fasta, 'ASV_tax_species.tsv' )
+                ch_dada2_tax = FORMAT_TAXRESULTS_ADDSP.out.tsv
+            } else {
+                ch_dada2_tax = FORMAT_TAXRESULTS.out.tsv
+            }
         }
     }
 

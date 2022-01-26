@@ -16,6 +16,6 @@ process FORMAT_TAXRESULTS {
 
     script:
     """
-    add_full_sequence_to_taxfile.py $taxtable $fastafile
+    add_full_sequence_to_taxfile.py $taxtable $fastafile $outfile
     """
 }

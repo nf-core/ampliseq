@@ -56,7 +56,7 @@ Please note the following additional requirements:
 * The path must be enclosed in quotes
 * `--extension` must have at least one `*` wildcard character
 * When using the pipeline with paired end data, the `--extension` must use `{1,2}` (or similar) notation to specify read pairs
-* To run single-end data you must additionally specify `--single_end`
+* To run single-end data you must additionally specify `--single_end` and `--extension` may not include curly brackets `{}`
 * Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique (also across sequencing runs)
 * If your data is scattered, produce a sample sheet
 

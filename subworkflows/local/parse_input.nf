@@ -14,7 +14,7 @@ def parse_samplesheet(LinkedHashMap row, single_end) {
     }
     //read meta info
     def meta = [:]
-    meta.id           = row.sampleID
+    meta.id           = "${row.sampleID}"[0].isNumber() ? "X${row.sampleID}" : row.sampleID
     meta.single_end   = single_end.toBoolean()
     meta.run          = row.run == null ? "1" : row.run
     //read data info

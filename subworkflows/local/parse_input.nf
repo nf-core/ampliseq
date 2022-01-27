@@ -77,8 +77,9 @@ workflow PARSE_INPUT {
                     .fromPath( input + folders + extension )
                     .ifEmpty { exit 1, "${error_message}" }
                     .map { read ->
+                            sampleID          = read.baseName.toString().indexOf("_") != -1 ? read.baseName.toString().take(read.baseName.toString().indexOf("_")) : read.baseName
                             def meta = [:]
-                            meta.id           = read.baseName.toString().indexOf("_") != -1 ? read.baseName.toString().take(read.baseName.toString().indexOf("_")) : read.baseName
+                            meta.id           = "$sampleID"[0].isNumber() ? "X$sampleID" : sampleID
                             meta.single_end   = single_end.toBoolean()
                             meta.run          = multiple_sequencing_runs ? read.take(read.findLastIndexOf{"/"})[-1] : "1"
                             [ meta, read ] }
@@ -89,8 +90,9 @@ workflow PARSE_INPUT {
                     .fromFilePairs( input + folders + extension, size: 2 )
                     .ifEmpty { exit 1, "${error_message}" }
                     .map { name, reads ->
+                            sampleID          = name.toString().indexOf("_") != -1 ? name.toString().take(name.toString().indexOf("_")) : name
                             def meta = [:]
-                            meta.id           = name.toString().indexOf("_") != -1 ? name.toString().take(name.toString().indexOf("_")) : name
+                            meta.id           = "$sampleID"[0].isNumber() ? "X$sampleID" : sampleID
                             meta.single_end   = single_end.toBoolean()
                             meta.run          = multiple_sequencing_runs ? reads[0].take(reads[0].findLastIndexOf{"/"})[-1] : "1"
                             [ meta, reads ] }

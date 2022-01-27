@@ -14,7 +14,7 @@ def parse_samplesheet(LinkedHashMap row, single_end) {
     }
     //read meta info
     def meta = [:]
-    meta.id           = "${row.sampleID}"[0].isNumber() ? "X${row.sampleID}" : row.sampleID
+    meta.id           = row.sampleID
     meta.single_end   = single_end.toBoolean()
     meta.run          = row.run == null ? "1" : row.run
     //read data info
@@ -77,9 +77,8 @@ workflow PARSE_INPUT {
                     .fromPath( input + folders + extension )
                     .ifEmpty { exit 1, "${error_message}" }
                     .map { read ->
-                            sampleID          = read.baseName.toString().indexOf("_") != -1 ? read.baseName.toString().take(read.baseName.toString().indexOf("_")) : read.baseName
                             def meta = [:]
-                            meta.id           = "$sampleID"[0].isNumber() ? "X$sampleID" : sampleID
+                            meta.id           = read.baseName.toString().indexOf("_") != -1 ? read.baseName.toString().take(read.baseName.toString().indexOf("_")) : read.baseName
                             meta.single_end   = single_end.toBoolean()
                             meta.run          = multiple_sequencing_runs ? read.take(read.findLastIndexOf{"/"})[-1] : "1"
                             [ meta, read ] }
@@ -90,9 +89,8 @@ workflow PARSE_INPUT {
                     .fromFilePairs( input + folders + extension, size: 2 )
                     .ifEmpty { exit 1, "${error_message}" }
                     .map { name, reads ->
-                            sampleID          = name.toString().indexOf("_") != -1 ? name.toString().take(name.toString().indexOf("_")) : name
                             def meta = [:]
-                            meta.id           = "$sampleID"[0].isNumber() ? "X$sampleID" : sampleID
+                            meta.id           = name.toString().indexOf("_") != -1 ? name.toString().take(name.toString().indexOf("_")) : name
                             meta.single_end   = single_end.toBoolean()
                             meta.run          = multiple_sequencing_runs ? reads[0].take(reads[0].findLastIndexOf{"/"})[-1] : "1"
                             [ meta, reads ] }
@@ -130,8 +128,13 @@ workflow PARSE_INPUT {
 
         //Check that no dots "." are in sampleID
         ch_reads
-            .map { meta, reads -> [ meta.id ] }
+            .map { meta, reads -> meta.id }
             .subscribe { if ( "$it".contains(".") ) exit 1, "Please review data input, sampleIDs may not contain dots, but \"$it\" does." }
+
+        //Check that sampleIDs do not start with a number when using metadata (sampleID gets X prepended by R and metadata wont match any more!)
+        ch_reads
+            .map { meta, reads -> meta.id }
+            .subscribe { if ( params.metadata && "$it"[0].isNumber() ) exit 1, "Please review data input, sampleIDs may not start with a number, but \"$it\" does. The pipeline unintentionally modifies such strings and the metadata will not match any more." }
 
         //Filter empty files
         ch_reads

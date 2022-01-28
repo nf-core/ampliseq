@@ -38,6 +38,11 @@ class WorkflowAmpliseq {
             System.exit(1)
         }
 
+        if (params.skip_taxonomy && params.sbdiexport) {
+            log.error "Incompatible parameters: `--sbdiexport` expects taxa annotation and therefore excludes `--skip_taxonomy`."
+            System.exit(1)
+        }
+
     }
 
     //

@@ -295,12 +295,12 @@ PICRUSt2 is preferentially applied to filtered data by QIIME2 but will use DADA2
 
 ### SBDI export
 
-You can use the `--sbdiexport` flag (or `sbdiexport = true` in a nextflow config file) to generate tab separated files in preparation for submission to the [Swedish Biodiversity Infrastructure (SBDI)](https://biodiversitydata.se/).
+You can use the `--sbdiexport` flag (or `sbdiexport: true` in a nextflow parameter file using `-params-file` in yml format) to generate tab separated files in preparation for submission to the [Swedish Biodiversity Infrastructure (SBDI)](https://biodiversitydata.se/).
 
 Tables are generated from the DADA2 denoising and taxonomy assignment steps.
 Each table, except `annotation.tsv`, corresponds to one tab in the [submission template](https://asv-portal.biodiversitydata.se/submit).
 See [`docs/usage.md`](docs/usage.md) for further information.
-Most of the fields in the template will not be populated by the export process, but if you run Ampliseq with a sample metadata table (`--metadata`) any fields corresponding to a field in the template will be used.
+Most of the fields in the template will not be populated by the export process, but if you run nf-core/ampliseq with a sample metadata table (`--metadata`) any fields corresponding to a field in the template will be used.
 
 <details markdown="1">
 <summary>Output files</summary>

@@ -338,7 +338,7 @@
                 },
                 "skip_taxonomy": {
                     "type": "boolean",
-                    "description": "Skip taxonomic classification"
+                    "description": "Skip taxonomic classification. Incompatible with `--sbdiexport`"
                 },
                 "skip_dada_addspecies": {
                     "type": "boolean",

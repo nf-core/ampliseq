@@ -3,25 +3,18 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## nf-core/ampliseq version 2.2.0dev
+## nf-core/ampliseq version 2.2.0 - 2022-01-31
 
 ### `Added`
 
 * [#352](https://github.com/nf-core/ampliseq/pull/352), [#372](https://github.com/nf-core/ampliseq/pull/372) - `--skip_dada_addspecies` allows to skip species level classification to reduce memory requirements, incompatible with `--sbdiexport` that expect species annotation.
-* [#354](https://github.com/nf-core/ampliseq/pull/354) - Input files and files after primer trimming with cutadapt are required to be >1KB (i.e. not empty) and either the pipeline will stop if at least one sample file fails or the failing samples will be ignored when using `--ignore_empty_input_files` or `--ignore_failed_trimming`, respectively.
 * [#364](https://github.com/nf-core/ampliseq/pull/364) - Adonis in QIIME2 for testing feature importance in beta diversity distances, `--qiime_adonis_formula` can be set to provide a custom formula.
 * [#366](https://github.com/nf-core/ampliseq/pull/366) - New version of the SBDI-GTDB taxonomy database: v. 3. (Fixes problem with `Reverse_` added to some domain strings.)
-* [#376](https://github.com/nf-core/ampliseq/pull/376) - Forbid sampleIDs starting with a number when also `--metadata` is used, because such strings are unintentionally modified and the metadata will not match any more.
 
 ### `Changed`
 
-| Tool | Previous version | New version |
-| --- | --- | --- |
-| Cutadapt | 3.2 | 3.4 |
-| DADA2 | 1.20.0 | 1.22.0 |
-| QIIME2 | 2021.2 | 2021.8 |
-| PICRUSt2 | 2.4.1 | 2.4.2 |
-| MultiQC | 1.10.1 | 1.11 |
+* [#354](https://github.com/nf-core/ampliseq/pull/354) - Input files and files after primer trimming with cutadapt are required to be >1KB (i.e. not empty) and either the pipeline will stop if at least one sample file fails or the failing samples will be ignored when using `--ignore_empty_input_files` or `--ignore_failed_trimming`, respectively.
+* [#376](https://github.com/nf-core/ampliseq/pull/376) - Forbid sampleIDs starting with a number when also `--metadata` is used, because such strings are unintentionally modified and the metadata will not match any more.
 
 ### `Fixed`
 
@@ -31,6 +24,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [#374](https://github.com/nf-core/ampliseq/pull/374)- Cutadapt results can be now also viwed in the MultiQC report
 
 ### `Dependencies`
+
+| Tool | Previous version | New version |
+| --- | --- | --- |
+| Cutadapt | 3.2 | 3.4 |
+| DADA2 | 1.20.0 | 1.22.0 |
+| QIIME2 | 2021.2 | 2021.8 |
+| PICRUSt2 | 2.4.1 | 2.4.2 |
+| MultiQC | 1.10.1 | 1.11 |
 
 ### `Removed`
 

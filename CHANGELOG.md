@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
-* [#376](https://github.com/nf-core/ampliseq/pull/376)- An error message will occur when `--sbdiexport` is used with `--skip_taxonomy` or `--skip_dada_addspecies`
+* [#377](https://github.com/nf-core/ampliseq/pull/377)- An error message will occur when `--sbdiexport` is used with `--skip_taxonomy` or `--skip_dada_addspecies`
 * [#375](https://github.com/nf-core/ampliseq/pull/375)- Updated documentation regarding not using curly brackets in `--extension` with `--single_end`
 * [#362](https://github.com/nf-core/ampliseq/pull/362)- Template update for nf-core/tools version 2.2, now requires nextflow version `>= 21.10.3`
 * [#374](https://github.com/nf-core/ampliseq/pull/374)- Cutadapt results can be now also viwed in the MultiQC report

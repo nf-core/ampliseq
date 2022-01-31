@@ -62,6 +62,6 @@ process DADA2_MERGE {
     df\$sequence <- NULL
     write.table(df, file = "ASV_table.tsv", sep="\\t", row.names = FALSE, quote = FALSE, na = '')
 
-    writeLines(c("\\"${task.process}\\":", paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
+    writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
     """
 }

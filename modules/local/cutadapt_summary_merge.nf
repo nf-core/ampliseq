@@ -12,7 +12,8 @@ process CUTADAPT_SUMMARY_MERGE {
     path(files)
 
     output:
-    path("cutadapt_summary.tsv") , emit: tsv
+    path("cutadapt_summary.tsv")      , emit: tsv
+    path "versions.yml", optional:true, emit: versions
 
     script:
     if (action == "merge") {
@@ -31,6 +32,8 @@ process CUTADAPT_SUMMARY_MERGE {
 
         #write
         write.table(df, file = \"cutadapt_summary.tsv\", quote=FALSE, col.names=TRUE, row.names=FALSE, sep="\\t")
+
+        writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")) ), "versions.yml")
         """
     } else {
         """

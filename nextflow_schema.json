@@ -295,10 +295,12 @@
             "properties": {
                 "ignore_empty_input_files": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Ignore input files considered too small (<1KB) for individual samples and continue the pipeline without those samples."
                 },
                 "ignore_failed_trimming": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Ignore files considered too small (<1KB) after trimming and continue the pipeline without those samples."
                 },
                 "exclude_taxa": {
@@ -330,42 +332,52 @@
             "properties": {
                 "skip_fastqc": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Skip FastQC"
                 },
                 "skip_qiime": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Skip all steps that are executed by QIIME2, including QIIME2 software download, taxonomy assignment by QIIME2, barplots, relative abundance tables, diversity analysis, differential abundance testing."
                 },
                 "skip_taxonomy": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Skip taxonomic classification. Incompatible with `--sbdiexport`"
                 },
                 "skip_dada_addspecies": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Skip species level when using DADA2 for taxonomic classification. This reduces the required memory dramatically under certain conditions. Incompatible with `--sbdiexport`"
                 },
                 "skip_barplot": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Skip producing barplot"
                 },
                 "skip_abundance_tables": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Skip producing any relative abundance tables"
                 },
                 "skip_alpha_rarefaction": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Skip alpha rarefaction"
                 },
                 "skip_diversity_indices": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Skip alpha and beta diversity analysis"
                 },
                 "skip_ancom": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Skip differential abundance testing"
                 },
                 "skip_multiqc": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Skip MultiQC reporting"
                 }
             }

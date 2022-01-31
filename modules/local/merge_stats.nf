@@ -12,6 +12,7 @@ process MERGE_STATS {
 
     output:
     path("overall_summary.tsv") , emit: tsv
+    path "versions.yml"         , emit: versions
 
     script:
     """
@@ -24,5 +25,7 @@ process MERGE_STATS {
 
     #write
     write.table(df, file = \"overall_summary.tsv\", quote=FALSE, col.names=TRUE, row.names=FALSE, sep="\t")
+
+    writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")) ), "versions.yml")
     """
 }

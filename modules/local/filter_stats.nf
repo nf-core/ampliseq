@@ -12,9 +12,16 @@ process FILTER_STATS {
 
     output:
     path("count_table_filter_stats.tsv"), emit: tsv
+    path "versions.yml"                 , emit: versions
 
     script:
     """
     filter_stats.py $unfiltered $filtered
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python --version 2>&1 | sed 's/Python //g')
+        pandas: \$(python -c "import pkg_resources; print(pkg_resources.get_distribution('pandas').version)")
+    END_VERSIONS
     """
 }

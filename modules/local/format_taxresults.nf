@@ -12,10 +12,17 @@ process FORMAT_TAXRESULTS {
     val(outfile)
 
     output:
-    path(outfile), emit: tsv
+    path(outfile)      , emit: tsv
+    path "versions.yml", emit: versions
 
     script:
     """
     add_full_sequence_to_taxfile.py $taxtable $fastafile $outfile
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python --version 2>&1 | sed 's/Python //g')
+        pandas: \$(python -c "import pkg_resources; print(pkg_resources.get_distribution('pandas').version)")
+    END_VERSIONS
     """
 }

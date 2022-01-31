@@ -66,6 +66,6 @@ process DADA2_TAXONOMY {
     saveRDS(taxa_export, "ASV_tax.rds")
 
     write.table('assignTaxonomy\t$args', file = "assignTaxonomy.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
-    writeLines(c("\\"${task.process}\\":", paste0("    dada2: ", packageVersion("dada2")), paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")) ), "versions.yml")
+    writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
     """
 }

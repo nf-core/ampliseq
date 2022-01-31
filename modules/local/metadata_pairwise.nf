@@ -11,13 +11,15 @@ process METADATA_PAIRWISE {
     path(metadata)
 
     output:
-    val stdout          , emit: meta
-    path "versions.yml" , emit: versions
+    stdout
 
     script:
     """
     metadata_pairwise.r ${metadata}
 
-    writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")) ), "versions.yml")
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        R: \$(R --version 2>&1 | sed -n 1p | sed 's/R version //' | sed 's/ (.*//')
+    END_VERSIONS
     """
 }

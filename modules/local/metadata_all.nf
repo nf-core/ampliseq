@@ -12,8 +12,7 @@ process METADATA_ALL {
     val(metadata_category)
 
     output:
-    val stdout          , emit: meta
-    path "versions.yml" , optional:true, emit: versions
+    stdout
 
     script:
     if( !metadata_category ) {

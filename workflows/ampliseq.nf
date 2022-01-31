@@ -62,14 +62,14 @@ if (params.pacbio || params.iontorrent) {
     single_end = true
 }
 
-max_len = params.max_len ? params.max_len : "Inf"
-
-trunclenf = params.trunclenf ? params.trunclenf : 0
-trunclenr = params.trunclenr ? params.trunclenr : 0
-if ( !single_end && !params.illumina_pe_its && (params.trunclenf == false || params.trunclenr == false) && !is_fasta_input ) {
+trunclenf = params.trunclenf ?: 0
+trunclenr = params.trunclenr ?: 0
+if ( !single_end && !params.illumina_pe_its && (params.trunclenf == null || params.trunclenr == null) && !is_fasta_input ) {
     find_truncation_values = true
     log.warn "No DADA2 cutoffs were specified (`--trunclenf` & --`trunclenr`), therefore reads will be truncated where median quality drops below ${params.trunc_qmin} (defined by `--trunc_qmin`) but at least a fraction of ${params.trunc_rmin} (defined by `--trunc_rmin`) of the reads will be retained.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
 } else { find_truncation_values = false }
+
+metadata_category = params.metadata_category ?: ""
 
 //only run QIIME2 when taxonomy is actually calculated and all required data is available
 if ( !params.enable_conda && !params.skip_taxonomy && !params.skip_qiime ) {
@@ -82,136 +82,46 @@ if ( !params.enable_conda && !params.skip_taxonomy && !params.skip_qiime ) {
 ========================================================================================
 */
 
-// Don't overwrite global params.modules, create a copy instead and use that within the main script.
-def modules = params.modules.clone()
-
-def dada2_filtntrim_options = modules['dada2_filtntrim']
-dada2_filtntrim_options.args       += single_end ? ", maxEE = $params.max_ee" : ", maxEE = c($params.max_ee, $params.max_ee)"
-if (params.pacbio) {
-    //PacBio data
-    dada2_filtntrim_options.args   +=", trimLeft = 0, minLen = $params.min_len, maxLen = $max_len, rm.phix = FALSE"
-} else if (params.iontorrent) {
-    //Ion-torrent data
-    dada2_filtntrim_options.args   += ", trimLeft = 15, minLen = $params.min_len, maxLen = $max_len, rm.phix = TRUE"
-} else if (params.illumina_pe_its) {
-    //Illumina ITS data or other sequences with high length variability
-    dada2_filtntrim_options.args   += ", trimLeft = 0, minLen = $params.min_len, maxLen = $max_len, rm.phix = TRUE"
-} else {
-    //Illumina 16S data
-    dada2_filtntrim_options.args   += ", trimLeft = 0, minLen = $params.min_len, maxLen = $max_len, rm.phix = TRUE"
-}
-
-def dada2_quality_options = modules['dada2_quality']
-
-def trunclen_options = [:]
-trunclen_options.args       ="$params.trunc_qmin $params.trunc_rmin"
-
-def dada2_err_options = modules['dada2_err']
-dada2_err_options.args   += params.pacbio ? ", errorEstimationFunction = PacBioErrfun" : ", errorEstimationFunction = loessErrfun"
-
-def dada2_denoising_options = modules['dada2_denoising']
-if (params.iontorrent) {
-    //Ion-torrent data
-    dada2_denoising_options.args   += ", BAND_SIZE = 32, HOMOPOLYMER_GAP_PENALTY = -1"
-} else {
-    dada2_denoising_options.args   += ", BAND_SIZE = 16, HOMOPOLYMER_GAP_PENALTY = NULL"
-}
-dada2_denoising_options.args         += params.sample_inference == "pseudo" ? ", pool = \"pseudo\"" : params.sample_inference == "pooled" ? ", pool = TRUE" : ", pool = FALSE"
-dada2_denoising_options.args2        += params.concatenate_reads ? ", justConcatenate = TRUE" : ", justConcatenate = FALSE"
-
-def dada2_rmchimera_options = modules['dada2_rmchimera']
-
-def dada2_taxonomy_options  = modules['dada2_taxonomy']
-dada2_taxonomy_options.args += params.pacbio ? ", tryRC = TRUE" : ""
-dada2_taxonomy_options.args += params.iontorrent ? ", tryRC = TRUE" : ""
-
-def dada2_addspecies_options  = modules['dada2_addspecies']
-dada2_addspecies_options.args += params.pacbio ? ", tryRC = TRUE" : ""
-dada2_addspecies_options.args += params.iontorrent ? ", tryRC = TRUE" : ""
-
-def sbdiexport_options   = modules['sbdiexport']
-sbdiexport_options.args += params.single_end ? ' single ' : ' paired '
-sbdiexport_options.args += " $params.FW_primer "
-sbdiexport_options.args += " $params.RV_primer "
-
-def sbdiexportreannotate_options  = modules['sbdiexportreannotate']
-
 include { RENAME_RAW_DATA_FILES         } from '../modules/local/rename_raw_data_files'
-include { DADA2_FILTNTRIM               } from '../modules/local/dada2_filtntrim'              addParams( options: dada2_filtntrim_options         )
-include { DADA2_QUALITY                 } from '../modules/local/dada2_quality'                addParams( options: dada2_quality_options           )
-include { TRUNCLEN                      } from '../modules/local/trunclen'                     addParams( options: trunclen_options                )
-include { DADA2_ERR                     } from '../modules/local/dada2_err'                    addParams( options: dada2_err_options               )
-include { DADA2_DEREPLICATE             } from '../modules/local/dada2_dereplicate'            addParams( options: modules['dada2_dereplicate']    )
-include { DADA2_DENOISING               } from '../modules/local/dada2_denoising'              addParams( options: dada2_denoising_options         )
-include { DADA2_RMCHIMERA               } from '../modules/local/dada2_rmchimera'              addParams( options: dada2_rmchimera_options         )
-include { DADA2_STATS                   } from '../modules/local/dada2_stats'                  addParams( options: modules['dada2_stats']          )
-include { DADA2_MERGE                   } from '../modules/local/dada2_merge'                  addParams( options: modules['dada2_merge']          )
-include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'              addParams( options: modules['format_taxonomy']      )
-include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'                  addParams( options: modules['itsx_cutasv']          )
-include { MERGE_STATS                   } from '../modules/local/merge_stats'                  addParams( options: modules['merge_stats']          )
-include { DADA2_TAXONOMY                } from '../modules/local/dada2_taxonomy'               addParams( options: dada2_taxonomy_options          )
-include { DADA2_ADDSPECIES              } from '../modules/local/dada2_addspecies'             addParams( options: dada2_addspecies_options        )
+include { DADA2_FILTNTRIM               } from '../modules/local/dada2_filtntrim'
+include { DADA2_QUALITY                 } from '../modules/local/dada2_quality'
+include { TRUNCLEN                      } from '../modules/local/trunclen'
+include { DADA2_ERR                     } from '../modules/local/dada2_err'
+include { DADA2_DENOISING               } from '../modules/local/dada2_denoising'
+include { DADA2_RMCHIMERA               } from '../modules/local/dada2_rmchimera'
+include { DADA2_STATS                   } from '../modules/local/dada2_stats'
+include { DADA2_MERGE                   } from '../modules/local/dada2_merge'
+include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
+include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
+include { MERGE_STATS                   } from '../modules/local/merge_stats'
+include { DADA2_TAXONOMY                } from '../modules/local/dada2_taxonomy'
+include { DADA2_ADDSPECIES              } from '../modules/local/dada2_addspecies'
 include { FORMAT_TAXRESULTS             } from '../modules/local/format_taxresults'
-include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'                 addParams( options: modules['qiime2_inseq']         )
-include { QIIME2_FILTERTAXA             } from '../modules/local/qiime2_filtertaxa'            addParams( options: modules['qiime2_filtertaxa']    )
-include { QIIME2_INASV                  } from '../modules/local/qiime2_inasv'                 addParams( options: modules['qiime2_inasv']         )
-include { FILTER_STATS                  } from '../modules/local/filter_stats'                 addParams( options: modules['filter_stats']         )
-include { MERGE_STATS as MERGE_STATS_FILTERTAXA } from '../modules/local/merge_stats'          addParams( options: modules['merge_stats']          )
-include { QIIME2_BARPLOT                } from '../modules/local/qiime2_barplot'               addParams( options: modules['qiime2_barplot']       )
+include { FORMAT_TAXRESULTS as FORMAT_TAXRESULTS_ADDSP } from '../modules/local/format_taxresults'
+include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'
+include { QIIME2_FILTERTAXA             } from '../modules/local/qiime2_filtertaxa'
+include { QIIME2_INASV                  } from '../modules/local/qiime2_inasv'
+include { FILTER_STATS                  } from '../modules/local/filter_stats'
+include { MERGE_STATS as MERGE_STATS_FILTERTAXA } from '../modules/local/merge_stats'
+include { QIIME2_BARPLOT                } from '../modules/local/qiime2_barplot'
 include { METADATA_ALL                  } from '../modules/local/metadata_all'
 include { METADATA_PAIRWISE             } from '../modules/local/metadata_pairwise'
-include { QIIME2_INTAX                  } from '../modules/local/qiime2_intax'                 addParams( options: modules['qiime2_intax']         )
-include { PICRUST                       } from '../modules/local/picrust'                      addParams( options: modules['picrust']              )
-include { SBDIEXPORT                    } from '../modules/local/sbdiexport'                   addParams( options: sbdiexport_options              )
-include { SBDIEXPORTREANNOTATE          } from '../modules/local/sbdiexportreannotate'         addParams( options: sbdiexportreannotate_options    )
-include { GET_SOFTWARE_VERSIONS         } from '../modules/local/get_software_versions'        addParams( options: [publish_files : ['tsv':'']]    )
+include { QIIME2_INTAX                  } from '../modules/local/qiime2_intax'
+include { PICRUST                       } from '../modules/local/picrust'
+include { SBDIEXPORT                    } from '../modules/local/sbdiexport'
+include { SBDIEXPORTREANNOTATE          } from '../modules/local/sbdiexportreannotate'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 
-//prepare reverse complement primers to remove those in PacBio, IonTorrent and Illumina read-through cutadapt steps
-// Get the complement of a DNA sequence
-// Complement table taken from http://arep.med.harvard.edu/labgc/adnan/projects/Utilities/revcomp.html
-def make_complement(String seq) {
-    def complements = [ A:'T', T:'A', U:'A', G:'C', C:'G', Y:'R', R:'Y', S:'S', W:'W', K:'M', M:'K', B:'V', D:'H', H:'D', V:'B', N:'N' ]
-    comp = seq.toUpperCase().collect { base -> complements[ base ] ?: 'X' }.join()
-    return comp
-}
-FW_primer_RevComp = make_complement ( "${params.FW_primer}".reverse() )
-RV_primer_RevComp = make_complement ( "${params.RV_primer}".reverse() )
-
-if (params.pacbio) {
-    //PacBio data
-    cutadapt_options_args       = " --rc -g ${params.FW_primer}...${RV_primer_RevComp}"
-} else if (params.iontorrent) {
-    //IonTorrent data
-    cutadapt_options_args       = " --rc -g ${params.FW_primer}...${RV_primer_RevComp}"
-} else if (params.single_end) {
-    //Illumina SE
-    cutadapt_options_args       = " -g ${params.FW_primer}"
-} else {
-    //Illumina PE
-    cutadapt_options_args       = " -g ${params.FW_primer} -G ${params.RV_primer}"
-}
-
-def cutadapt_options 			= modules['cutadapt']
-cutadapt_options.args          += cutadapt_options_args
-cutadapt_options.args          += params.retain_untrimmed ? '' : " --discard-untrimmed"
-
-def cutadapt_readthrough_options      = modules['cutadapt_readthrough']
-cutadapt_readthrough_options.args    += " -a ${RV_primer_RevComp} -A ${FW_primer_RevComp}"
-
-def cutadapt_doubleprimer_options        = modules['cutadapt_doubleprimer']
-cutadapt_doubleprimer_options.args      += cutadapt_options_args
-
 include { PARSE_INPUT                   } from '../subworkflows/local/parse_input'
-include { QIIME2_PREPTAX                } from '../subworkflows/local/qiime2_preptax'           addParams( preptax_options: modules['qiime2_preptax'], format_options: modules['format_taxonomy_qiime'] )
-include { QIIME2_TAXONOMY               } from '../subworkflows/local/qiime2_taxonomy'          addParams( options: modules['qiime2_taxonomy']      )
-include { CUTADAPT_WORKFLOW             } from '../subworkflows/local/cutadapt_workflow'        addParams( standard_options: cutadapt_options, readthrough_options: cutadapt_readthrough_options,doubleprimer_options: cutadapt_doubleprimer_options,summary_options: modules['cutadapt_summary'],summary_merge_options: modules['cutadapt_summary_merge'] )
-include { QIIME2_EXPORT                 } from '../subworkflows/local/qiime2_export'            addParams( absolute_options: modules['qiime2_export_absolute'], relasv_options: modules['qiime2_export_relasv'],reltax_options: modules['qiime2_export_reltax'],combine_table_options: modules['combine_table'] )
-include { QIIME2_DIVERSITY              } from '../subworkflows/local/qiime2_diversity'         addParams( tree_options: modules['qiime2_tree'], alphararefaction_options: modules['qiime2_alphararefaction'], diversity_core_options: modules['qiime2_diversity_core'], diversity_alpha_options: modules['qiime2_diversity_alpha'], diversity_beta_options: modules['qiime2_diversity_beta'], diversity_betaord_options: modules['qiime2_diversity_betaord'] )
-include { QIIME2_ANCOM                  } from '../subworkflows/local/qiime2_ancom'             addParams( filterasv_options: modules['qiime2_filterasv'], ancom_tax_options: modules['qiime2_ancom_tax'], ancom_asv_options: modules['qiime2_ancom_asv'] )
+include { QIIME2_PREPTAX                } from '../subworkflows/local/qiime2_preptax'
+include { QIIME2_TAXONOMY               } from '../subworkflows/local/qiime2_taxonomy'
+include { CUTADAPT_WORKFLOW             } from '../subworkflows/local/cutadapt_workflow'
+include { QIIME2_EXPORT                 } from '../subworkflows/local/qiime2_export'
+include { QIIME2_DIVERSITY              } from '../subworkflows/local/qiime2_diversity'
+include { QIIME2_ANCOM                  } from '../subworkflows/local/qiime2_ancom'
 
 /*
 ========================================================================================
@@ -222,17 +132,11 @@ include { QIIME2_ANCOM                  } from '../subworkflows/local/qiime2_anc
 //
 // MODULE: Installed directly from nf-core/modules
 //
-def fastqc_options              = modules['fastqc']
 
-def cutadapt_taxonomy_options   = modules['cutadapt_taxonomy']
-cutadapt_taxonomy_options.args += " -g ${params.FW_primer}...${RV_primer_RevComp}"
-
-def multiqc_options         = modules['multiqc']
-multiqc_options.args       += params.multiqc_title ? Utils.joinModuleArgs(["--title \"$params.multiqc_title\""]) : ''
-
-include { CUTADAPT as CUTADAPT_TAXONOMY     } from '../modules/nf-core/modules/cutadapt/main' addParams( options: cutadapt_taxonomy_options     )
-include { FASTQC                            } from '../modules/nf-core/modules/fastqc/main'   addParams( options: fastqc_options                )
-include { MULTIQC                           } from '../modules/nf-core/modules/multiqc/main'  addParams( options: multiqc_options               )
+include { CUTADAPT as CUTADAPT_TAXONOMY     } from '../modules/nf-core/modules/cutadapt/main'
+include { FASTQC                            } from '../modules/nf-core/modules/fastqc/main'
+include { MULTIQC                           } from '../modules/nf-core/modules/multiqc/main'
+include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
 
 /*
 ========================================================================================
@@ -244,7 +148,8 @@ include { MULTIQC                           } from '../modules/nf-core/modules/m
 def multiqc_report      = []
 
 workflow AMPLISEQ {
-    ch_software_versions = Channel.empty()
+
+    ch_versions = Channel.empty()
 
     //
     // Create a channel for input read files
@@ -257,24 +162,25 @@ workflow AMPLISEQ {
     // MODULE: Rename files
     //
     RENAME_RAW_DATA_FILES ( ch_reads )
+    ch_versions = ch_versions.mix(RENAME_RAW_DATA_FILES.out.versions.first())
 
     //
     // MODULE: Run FastQC
     //
     if (!params.skip_fastqc) {
-        FASTQC ( RENAME_RAW_DATA_FILES.out ).html.set { fastqc_html }
-        ch_software_versions = ch_software_versions.mix(FASTQC.out.version.first().ifEmpty(null))
+        FASTQC ( RENAME_RAW_DATA_FILES.out.fastq )
+        ch_versions = ch_versions.mix(FASTQC.out.versions.first())
     }
 
     //
     // MODULE: Cutadapt
     //
     CUTADAPT_WORKFLOW (
-        RENAME_RAW_DATA_FILES.out,
+        RENAME_RAW_DATA_FILES.out.fastq,
         params.illumina_pe_its,
         params.double_primer
     ).reads.set { ch_trimmed_reads }
-    ch_software_versions = ch_software_versions.mix(CUTADAPT_WORKFLOW.out.version.first().ifEmpty(null))
+    ch_versions = ch_versions.mix(CUTADAPT_WORKFLOW.out.versions.first())
 
     //
     // SUBWORKFLOW / MODULES : ASV generation with DADA2
@@ -306,9 +212,10 @@ workflow AMPLISEQ {
     //find truncation values in case they are not supplied
     if ( find_truncation_values ) {
         TRUNCLEN ( DADA2_QUALITY.out.tsv )
-        TRUNCLEN.out
+        TRUNCLEN.out.trunc
             .toSortedList()
             .set { ch_trunc }
+        ch_versions = ch_versions.mix(TRUNCLEN.out.versions.first())
         //add one more warning or reminder that trunclenf and trunclenr were chosen automatically
         ch_trunc.subscribe {
             if ( "${it[0][1]}".toInteger() + "${it[1][1]}".toInteger() <= 10 ) { log.warn "`--trunclenf` was set to ${it[0][1]} and `--trunclenr` to ${it[1][1]}, this is too low! Please either change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr`." }
@@ -325,7 +232,7 @@ workflow AMPLISEQ {
 
     //filter reads
     DADA2_FILTNTRIM ( ch_trimmed_reads )
-    ch_software_versions = ch_software_versions.mix(DADA2_FILTNTRIM.out.version.first().ifEmpty(null))
+    //ch_versions = ch_versions.mix(DADA2_FILTNTRIM.out.versions.first())
 
     //group by sequencing run
     DADA2_FILTNTRIM.out.reads
@@ -347,13 +254,12 @@ workflow AMPLISEQ {
 
     DADA2_ERR ( ch_filt_reads )
 
-    DADA2_DEREPLICATE ( ch_filt_reads )
-
     //group by meta
-    DADA2_DEREPLICATE.out.dereplicated
+    ch_filt_reads
         .join( DADA2_ERR.out.errormodel )
         .set { ch_derep_errormodel }
-    DADA2_DENOISING ( ch_derep_errormodel  )
+    DADA2_DENOISING ( ch_derep_errormodel.dump(tag: 'into_denoising')  )
+    ch_versions = ch_versions.mix(DADA2_DENOISING.out.versions.first())
 
     DADA2_RMCHIMERA ( DADA2_DENOISING.out.seqtab )
 
@@ -416,17 +322,25 @@ workflow AMPLISEQ {
         }
         if (!params.cut_its) {
             DADA2_TAXONOMY ( ch_fasta, ch_assigntax, 'ASV_tax.tsv' )
-            DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_tax_species.tsv' )
-            ch_dada2_tax = DADA2_ADDSPECIES.out.tsv
+            if (!params.skip_dada_addspecies) {
+                DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_tax_species.tsv' )
+                ch_dada2_tax = DADA2_ADDSPECIES.out.tsv
+            } else { ch_dada2_tax = DADA2_TAXONOMY.out.tsv }
         //Cut out ITS region if long ITS reads
         } else {
             ITSX_CUTASV ( ch_fasta )
-            ch_software_versions = ch_software_versions.mix(ITSX_CUTASV.out.version.ifEmpty(null))
+            ch_versions = ch_versions.mix(ITSX_CUTASV.out.versions.ifEmpty(null))
             ch_cut_fasta = ITSX_CUTASV.out.fasta
             DADA2_TAXONOMY ( ch_cut_fasta, ch_assigntax, 'ASV_ITS_tax.tsv' )
-            DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_ITS_tax_species.tsv' )
-            FORMAT_TAXRESULTS ( DADA2_TAXONOMY.out.tsv, DADA2_ADDSPECIES.out.tsv, ch_fasta )
-            ch_dada2_tax = FORMAT_TAXRESULTS.out.tsv
+            FORMAT_TAXRESULTS ( DADA2_TAXONOMY.out.tsv, ch_fasta, 'ASV_tax.tsv' )
+            ch_versions = ch_versions.mix( FORMAT_TAXRESULTS.out.versions.ifEmpty(null) )
+            if (!params.skip_dada_addspecies) {
+                DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_ITS_tax_species.tsv' )
+                FORMAT_TAXRESULTS_ADDSP ( DADA2_ADDSPECIES.out.tsv, ch_fasta, 'ASV_tax_species.tsv' )
+                ch_dada2_tax = FORMAT_TAXRESULTS_ADDSP.out.tsv
+            } else {
+                ch_dada2_tax = FORMAT_TAXRESULTS.out.tsv
+            }
         }
     }
 
@@ -444,7 +358,7 @@ workflow AMPLISEQ {
             ch_fasta,
             ch_qiime_classifier
         )
-        ch_software_versions = ch_software_versions.mix( QIIME2_TAXONOMY.out.version.ifEmpty(null) ) //usually a .first() is here, dont know why this leads here to a warning
+        ch_versions = ch_versions.mix( QIIME2_TAXONOMY.out.versions.ifEmpty(null) ) //usually a .first() is here, dont know why this leads here to a warning
     }
     //
     // SUBWORKFLOW / MODULES : Downstream analysis with QIIME2
@@ -488,6 +402,7 @@ workflow AMPLISEQ {
                 params.exclude_taxa
             )
             FILTER_STATS ( DADA2_MERGE.out.asv, QIIME2_FILTERTAXA.out.tsv )
+            ch_versions = ch_versions.mix( FILTER_STATS.out.versions.ifEmpty(null) )
             MERGE_STATS_FILTERTAXA (MERGE_STATS.out.tsv, FILTER_STATS.out.tsv)
             ch_asv = QIIME2_FILTERTAXA.out.asv
             ch_seq = QIIME2_FILTERTAXA.out.seq
@@ -506,7 +421,7 @@ workflow AMPLISEQ {
 
         //Select metadata categories for diversity analysis & ancom
         if (!params.skip_ancom || !params.skip_diversity_indices) {
-            METADATA_ALL ( ch_metadata, params.metadata_category ).set { ch_metacolumn_all }
+            METADATA_ALL ( ch_metadata, metadata_category ).set { ch_metacolumn_all }
             //return empty channel if no appropriate column was found
             ch_metacolumn_all.branch { passed: it != "" }.set { result }
             ch_metacolumn_all = result.passed
@@ -553,7 +468,7 @@ workflow AMPLISEQ {
         } else {
             PICRUST ( ch_fasta, DADA2_MERGE.out.asv, "DADA2", "This Picrust2 analysis is based on unfiltered reads from DADA2" )
         }
-        ch_software_versions = ch_software_versions.mix(PICRUST.out.version.ifEmpty(null))
+        ch_versions = ch_versions.mix(PICRUST.out.versions.ifEmpty(null))
     }
 
     //
@@ -561,22 +476,12 @@ workflow AMPLISEQ {
     //
     if ( params.sbdiexport ) {
         SBDIEXPORT ( DADA2_MERGE.out.asv, DADA2_ADDSPECIES.out.tsv, ch_metadata  )
+        ch_versions = ch_versions.mix(SBDIEXPORT.out.versions.first())
         SBDIEXPORTREANNOTATE ( DADA2_ADDSPECIES.out.tsv )
     }
 
-    //
-    // MODULE: Pipeline reporting
-    //
-    ch_software_versions
-        .map { it -> if (it) [ it.baseName, it ] }
-        .groupTuple()
-        .map { it[1][0] }
-        .flatten()
-        .collect()
-        .set { ch_software_versions }
-
-    GET_SOFTWARE_VERSIONS (
-        ch_software_versions.map { it }.collect()
+    CUSTOM_DUMPSOFTWAREVERSIONS (
+        ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
 
     //
@@ -590,18 +495,18 @@ workflow AMPLISEQ {
         ch_multiqc_files = ch_multiqc_files.mix(Channel.from(ch_multiqc_config))
         ch_multiqc_files = ch_multiqc_files.mix(ch_multiqc_custom_config.collect().ifEmpty([]))
         ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-        ch_multiqc_files = ch_multiqc_files.mix(GET_SOFTWARE_VERSIONS.out.yaml.collect())
+        ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
         if (!params.skip_fastqc) {
             ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
         }
+        ch_multiqc_files = ch_multiqc_files.mix(CUTADAPT_WORKFLOW.out.logs.collect{it[1]}.ifEmpty([]))
 
         MULTIQC (
             ch_multiqc_files.collect()
         )
-        multiqc_report       = MULTIQC.out.report.toList()
-        ch_software_versions = ch_software_versions.mix(MULTIQC.out.version.ifEmpty(null))
+        multiqc_report = MULTIQC.out.report.toList()
+        ch_versions    = ch_versions.mix(MULTIQC.out.versions)
     }
-
 }
 
 /*

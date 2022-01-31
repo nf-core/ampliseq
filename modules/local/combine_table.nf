@@ -1,21 +1,10 @@
-// Import generic module functions
-include { initOptions; saveFiles; getSoftwareName } from './functions'
-
-params.options = [:]
-options    = initOptions(params.options)
-
 process COMBINE_TABLE {
     label 'process_low'
-    publishDir "${params.outdir}",
-        mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
     conda (params.enable_conda ? "bioconductor::biostrings=2.58.0" : null)
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/bioconductor-biostrings:2.58.0--r40h037d062_0"
-    } else {
-        container "quay.io/biocontainers/bioconductor-biostrings:2.58.0--r40h037d062_0"
-    }
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/bioconductor-biostrings:2.58.0--r40h037d062_0' :
+        'quay.io/biocontainers/bioconductor-biostrings:2.58.0--r40h037d062_0' }"
 
     input:
     path(table)
@@ -24,11 +13,17 @@ process COMBINE_TABLE {
     val(outfile)
 
     output:
-    path("${outfile}")
+    path("${outfile}")  , emit: tsv
+    path "versions.yml" , emit: versions
 
     script:
     """
     combine_table.r ${table} ${seq} ${tax}
     mv combined_ASV_table.tsv ${outfile}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        R: \$(R --version 2>&1 | sed -n 1p | sed 's/R version //' | sed 's/ (.*//')
+    END_VERSIONS
     """
 }

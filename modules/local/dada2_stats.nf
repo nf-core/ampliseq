@@ -1,32 +1,20 @@
-// Import generic module functions
-include { initOptions; saveFiles; getSoftwareName } from './functions'
-
-params.options = [:]
-options    = initOptions(params.options)
-
 process DADA2_STATS {
     tag "$meta.run"
     label 'process_low'
-    publishDir "${params.outdir}",
-        mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
-    conda (params.enable_conda ? "bioconductor-dada2=1.20.0" : null)
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.20.0--r41h399db7b_0"
-    } else {
-        container "quay.io/biocontainers/bioconductor-dada2:1.20.0--r41h399db7b_0"
-    }
+    conda (params.enable_conda ? "bioconductor-dada2=1.22.0" : null)
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.22.0--r41h399db7b_0' :
+        'quay.io/biocontainers/bioconductor-dada2:1.22.0--r41h399db7b_0' }"
 
     input:
     tuple val(meta), path("filter_and_trim_files/*"), path(denoised), path(mergers), path(seqtab_nochim)
 
     output:
     tuple val(meta), path("*.stats.tsv"), emit: stats
-    path "*.version.txt"                , emit: version
+    path "versions.yml"                 , emit: versions
 
     script:
-    def software      = getSoftwareName(task.process)
     if (!meta.single_end) {
         """
         #!/usr/bin/env Rscript
@@ -62,7 +50,7 @@ process DADA2_STATS {
         track <- cbind(sample = sub(pattern = "(.*?)\\\\..*\$", replacement = "\\\\1", rownames(track)), track)
         write.table( track, file = "${meta.run}.stats.tsv", sep = "\\t", row.names = FALSE, quote = FALSE, na = '')
 
-        write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+        writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
         """
     } else {
         """
@@ -97,7 +85,7 @@ process DADA2_STATS {
         track <- cbind(sample = sub(pattern = "(.*?)\\\\..*\$", replacement = "\\\\1", rownames(track)), track)
         write.table( track, file = "${meta.run}.stats.tsv", sep = "\\t", row.names = FALSE, quote = FALSE, na = '')
 
-        write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+        writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
         """
     }
 }

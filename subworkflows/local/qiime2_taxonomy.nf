@@ -2,10 +2,8 @@
  * Taxonomic classification with QIIME2
  */
 
-params.options = [:]
-
-include { QIIME2_INSEQ                  } from '../../modules/local/qiime2_inseq'    addParams( options: params.options )
-include { QIIME2_CLASSIFY               } from '../../modules/local/qiime2_classify' addParams( options: params.options )
+include { QIIME2_INSEQ                  } from '../../modules/local/qiime2_inseq'
+include { QIIME2_CLASSIFY               } from '../../modules/local/qiime2_classify'
 
 workflow QIIME2_TAXONOMY {
     take:
@@ -19,5 +17,5 @@ workflow QIIME2_TAXONOMY {
     emit:
     qza     = QIIME2_CLASSIFY.out.qza
     tsv     = QIIME2_CLASSIFY.out.tsv
-    version = QIIME2_INSEQ.out.version
+    versions= QIIME2_INSEQ.out.versions
 }

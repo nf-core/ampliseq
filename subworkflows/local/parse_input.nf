@@ -2,8 +2,6 @@
 // Check input samplesheet or folder and get read channels
 //
 
-params.options = [:]
-
 // Function to get list of [ meta, [ fastq_1, fastq_2 ] ]
 def parse_samplesheet(LinkedHashMap row, single_end) {
     //Check if manifest contains column sampleID  & forwardReads
@@ -47,7 +45,7 @@ workflow PARSE_INPUT {
     if ( is_fasta_input ) {
         // Fasta input directely for classification
         ch_fasta = Channel.fromPath(input, checkIfExists: true)
-        ch_reads = Channel.empty()
+        ch_reads_passed = Channel.empty()
     } else {
         ch_fasta = Channel.empty()
 
@@ -130,11 +128,33 @@ workflow PARSE_INPUT {
 
         //Check that no dots "." are in sampleID
         ch_reads
-            .map { meta, reads -> [ meta.id ] }
+            .map { meta, reads -> meta.id }
             .subscribe { if ( "$it".contains(".") ) exit 1, "Please review data input, sampleIDs may not contain dots, but \"$it\" does." }
+
+        //Check that sampleIDs do not start with a number when using metadata (sampleID gets X prepended by R and metadata wont match any more!)
+        ch_reads
+            .map { meta, reads -> meta.id }
+            .subscribe { if ( params.metadata && "$it"[0].isNumber() ) exit 1, "Please review data input, sampleIDs may not start with a number, but \"$it\" does. The pipeline unintentionally modifies such strings and the metadata will not match any more." }
+
+        //Filter empty files
+        ch_reads
+            .branch {
+                failed: it[0].single_end ? it[1][0].size() < 1.KB : it[1][0].size() < 1.KB || it[1][1].size() < 1.KB
+                passed: it[0].single_end ? it[1][0].size() >= 1.KB : it[1][0].size() >= 1.KB && it[1][1].size() >= 1.KB
+            }
+            .set { ch_reads_result }
+        ch_reads_result.passed.set { ch_reads_passed }
+        ch_reads_result.failed
+            .map { meta, reads -> [ meta.id ] }
+            .collect()
+            .subscribe {
+                samples = it.join("\n")
+                log.error "At least one input file for the following sample(s) was too small (<1KB):\n$samples\nEither remove those samples or ignore that issue and samples using `--ignore_empty_input_files`."
+                params.ignore_empty_input_files ? { log.warn "Ignoring failed samples and continue!" } : System.exit(1)
+            }
     }
 
     emit:
-    reads   = ch_reads
+    reads   = ch_reads_passed
     fasta   = ch_fasta
 }

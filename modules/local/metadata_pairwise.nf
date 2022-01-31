@@ -1,19 +1,11 @@
-// Import generic module functions
-include { initOptions; saveFiles; getSoftwareName } from './functions'
-
-params.options = [:]
-options    = initOptions(params.options)
-
 process METADATA_PAIRWISE {
     tag "$metadata"
     label 'process_low'
 
-    conda (params.enable_conda ? "bioconductor-dada2=1.20.0" : null)
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.20.0--r41h399db7b_0"
-    } else {
-        container "quay.io/biocontainers/bioconductor-dada2:1.20.0--r41h399db7b_0"
-    }
+    conda (params.enable_conda ? "bioconductor-dada2=1.22.0" : null)
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.22.0--r41h399db7b_0' :
+        'quay.io/biocontainers/bioconductor-dada2:1.22.0--r41h399db7b_0' }"
 
     input:
     path(metadata)
@@ -24,5 +16,10 @@ process METADATA_PAIRWISE {
     script:
     """
     metadata_pairwise.r ${metadata}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        R: \$(R --version 2>&1 | sed -n 1p | sed 's/R version //' | sed 's/ (.*//')
+    END_VERSIONS
     """
 }

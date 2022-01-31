@@ -1,23 +1,12 @@
-// Import generic module functions
-include { initOptions; saveFiles; getSoftwareName } from './functions'
-
-params.options = [:]
-options    = initOptions(params.options)
-
 process DADA2_ADDSPECIES {
     tag "${taxtable},${database}"
     label 'process_high'
     label 'single_cpu'
-    publishDir "${params.outdir}",
-        mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
-    conda (params.enable_conda ? "bioconductor-dada2=1.20.0" : null)
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.20.0--r41h399db7b_0"
-    } else {
-        container "quay.io/biocontainers/bioconductor-dada2:1.20.0--r41h399db7b_0"
-    }
+    conda (params.enable_conda ? "bioconductor-dada2=1.22.0" : null)
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.22.0--r41h399db7b_0' :
+        'quay.io/biocontainers/bioconductor-dada2:1.22.0--r41h399db7b_0' }"
 
     input:
     path(taxtable)
@@ -26,11 +15,11 @@ process DADA2_ADDSPECIES {
 
     output:
     path(outfile)       , emit: tsv
-    path "*.version.txt", emit: version
+    path "versions.yml" , emit: versions
     path "*.args.txt"   , emit: args
 
     script:
-    def software      = getSoftwareName(task.process)
+    def args = task.ext.args ?: ''
     """
     #!/usr/bin/env Rscript
     suppressPackageStartupMessages(library(dada2))
@@ -38,7 +27,7 @@ process DADA2_ADDSPECIES {
 
     taxtable <- readRDS(\"$taxtable\")
 
-    tx <- addSpecies(taxtable, \"$database\", $options.args, verbose=TRUE)
+    tx <- addSpecies(taxtable, \"$database\", $args, verbose=TRUE)
 
     # Create a table with specified column order
     tmp <- data.frame(row.names(tx)) # To separate ASV_ID from sequence
@@ -59,7 +48,7 @@ process DADA2_ADDSPECIES {
 
     write.table(taxa, file = \"$outfile\", sep = "\\t", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '')
 
-    write.table('addSpecies\toptions.args', file = "addSpecies.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
-    write.table(packageVersion("dada2"), file = "${software}.version.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+    write.table('addSpecies\t$args', file = "addSpecies.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+    writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
     """
 }

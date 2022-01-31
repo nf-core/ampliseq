@@ -1,21 +1,10 @@
-// Import generic module functions
-include { initOptions; saveFiles; getSoftwareName } from './functions'
-
-params.options = [:]
-options    = initOptions(params.options)
-
 process MERGE_STATS {
     label 'process_low'
-    publishDir "${params.outdir}",
-        mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
-    conda (params.enable_conda ? "bioconductor-dada2=1.20.0" : null)
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.20.0--r41h399db7b_0"
-    } else {
-        container "quay.io/biocontainers/bioconductor-dada2:1.20.0--r41h399db7b_0"
-    }
+    conda (params.enable_conda ? "bioconductor-dada2=1.22.0" : null)
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.22.0--r41h399db7b_0' :
+        'quay.io/biocontainers/bioconductor-dada2:1.22.0--r41h399db7b_0' }"
 
     input:
     path('file1.tsv')
@@ -23,6 +12,7 @@ process MERGE_STATS {
 
     output:
     path("overall_summary.tsv") , emit: tsv
+    path "versions.yml"         , emit: versions
 
     script:
     """
@@ -35,5 +25,7 @@ process MERGE_STATS {
 
     #write
     write.table(df, file = \"overall_summary.tsv\", quote=FALSE, col.names=TRUE, row.names=FALSE, sep="\t")
+
+    writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")) ), "versions.yml")
     """
 }

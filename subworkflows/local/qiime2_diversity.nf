@@ -2,19 +2,13 @@
  * Diversity indices with QIIME2
  */
 
-params.tree_options = [:]
-params.alphararefaction_options = [:]
-params.diversity_core_options = [:]
-params.diversity_alpha_options = [:]
-params.diversity_beta_options = [:]
-params.diversity_betaord_options = [:]
-
-include { QIIME2_TREE                 } from '../../modules/local/qiime2_tree'              addParams( options: params.tree_options              )
-include { QIIME2_ALPHARAREFACTION     } from '../../modules/local/qiime2_alphararefaction'  addParams( options: params.alphararefaction_options  )
-include { QIIME2_DIVERSITY_CORE       } from '../../modules/local/qiime2_diversity_core'    addParams( options: params.diversity_core_options    )
-include { QIIME2_DIVERSITY_ALPHA      } from '../../modules/local/qiime2_diversity_alpha'   addParams( options: params.diversity_alpha_options   )
-include { QIIME2_DIVERSITY_BETA       } from '../../modules/local/qiime2_diversity_beta'    addParams( options: params.diversity_beta_options    )
-include { QIIME2_DIVERSITY_BETAORD    } from '../../modules/local/qiime2_diversity_betaord' addParams( options: params.diversity_betaord_options )
+include { QIIME2_TREE                 } from '../../modules/local/qiime2_tree'
+include { QIIME2_ALPHARAREFACTION     } from '../../modules/local/qiime2_alphararefaction'
+include { QIIME2_DIVERSITY_CORE       } from '../../modules/local/qiime2_diversity_core'
+include { QIIME2_DIVERSITY_ALPHA      } from '../../modules/local/qiime2_diversity_alpha'
+include { QIIME2_DIVERSITY_BETA       } from '../../modules/local/qiime2_diversity_beta'
+include { QIIME2_DIVERSITY_ADONIS     } from '../../modules/local/qiime2_diversity_adonis'
+include { QIIME2_DIVERSITY_BETAORD    } from '../../modules/local/qiime2_diversity_betaord'
 
 workflow QIIME2_DIVERSITY {
     take:
@@ -56,6 +50,13 @@ workflow QIIME2_DIVERSITY {
             .combine( ch_metacolumn_pairwise )
             .set{ ch_to_diversity_beta }
         QIIME2_DIVERSITY_BETA ( ch_to_diversity_beta )
+
+        //adonis ( ch_metadata, DIVERSITY_CORE.out.qza, ch_metacolumn_all )
+        ch_metadata
+            .combine( QIIME2_DIVERSITY_CORE.out.distance.flatten() )
+            .combine( ch_metacolumn_pairwise )
+            .set{ ch_to_diversity_beta }
+        QIIME2_DIVERSITY_ADONIS ( ch_to_diversity_beta )
 
         //beta_diversity_ordination ( ch_metadata, DIVERSITY_CORE.out.qza )
         ch_metadata

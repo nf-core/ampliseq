@@ -1,22 +1,11 @@
-// Import generic module functions
-include { initOptions; saveFiles; getSoftwareName } from './functions'
-
-params.options = [:]
-options    = initOptions(params.options)
-
 process PICRUST {
     tag "${seq},${abund}"
     label 'process_medium'
-    publishDir "${params.outdir}",
-        mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
-    conda (params.enable_conda ? "bioconda::picrust2=2.4.1" : null)
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/picrust2:2.4.1--py_0"
-    } else {
-        container "quay.io/biocontainers/picrust2:2.4.1--py_0"
-    }
+    conda (params.enable_conda ? "bioconda::picrust2=2.4.2" : null)
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/picrust2:2.4.2--pyhdfd78af_0' :
+        'quay.io/biocontainers/picrust2:2.4.2--pyhdfd78af_0' }"
 
     input:
     path(seq)
@@ -27,12 +16,12 @@ process PICRUST {
     output:
     path("all_output/*") , emit: outfolder
     path("*_descrip.tsv"), emit: pathways
-    path "*.version.txt" , emit: version
+    path "versions.yml"  , emit: versions
     path "*.args.txt"    , emit: args
     path "${message}.txt"
 
     script:
-    def software      = getSoftwareName(task.process)
+    def args = task.ext.args ?: ''
     """
     #If input is QIIME2 file, than (1) the first line and (2) the first character (#) of the second line need to be removed
     if [ "$source" == 'QIIME2' ]
@@ -41,7 +30,7 @@ process PICRUST {
     fi
 
     picrust2_pipeline.py \\
-        $options.args \\
+        $args \\
         -s $seq \\
         -i $abund \\
         -o all_output \\
@@ -58,7 +47,12 @@ process PICRUST {
                     -o METACYC_path_abun_unstrat_descrip.tsv
 
     echo "$message" > "${message}.txt"
-    echo -e "picrust\t$options.args" > "picrust.args.txt"
-    picrust2_pipeline.py -v | sed -e "s/picrust2_pipeline.py //g" > "${software}.version.txt"
+    echo -e "picrust\t$args" > "picrust.args.txt"
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python --version 2>&1 | sed 's/Python //g')
+        picrust2: \$( picrust2_pipeline.py -v | sed -e "s/picrust2_pipeline.py //g" )
+    END_VERSIONS
     """
 }

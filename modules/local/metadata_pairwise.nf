@@ -11,10 +11,13 @@ process METADATA_PAIRWISE {
     path(metadata)
 
     output:
-    stdout
+    val stdout          , emit: meta
+    path "versions.yml" , emit: versions
 
     script:
     """
     metadata_pairwise.r ${metadata}
+
+    writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")) ), "versions.yml")
     """
 }

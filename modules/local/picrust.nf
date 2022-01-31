@@ -51,6 +51,7 @@ process PICRUST {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
+        python: \$(python --version 2>&1 | sed 's/Python //g')
         picrust2: \$( picrust2_pipeline.py -v | sed -e "s/picrust2_pipeline.py //g" )
     END_VERSIONS
     """

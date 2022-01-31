@@ -295,7 +295,7 @@
             "properties": {
                 "ignore_empty_input_files": {
                     "type": "boolean",
-                    "description": "Too small input files size (<1KB) for individual samples is ignored and the pipeline will continue without those samples."
+                    "description": "Ignore input files considered too small (<1KB) for individual samples and continue the pipeline without those samples."
                 },
                 "ignore_failed_trimming": {
                     "type": "boolean",

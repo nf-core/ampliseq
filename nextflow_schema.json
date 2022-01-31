@@ -295,10 +295,12 @@
             "properties": {
                 "ignore_empty_input_files": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Ignore input files considered too small (<1KB) for individual samples and continue the pipeline without those samples."
                 },
                 "ignore_failed_trimming": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Ignore files considered too small (<1KB) after trimming and continue the pipeline without those samples."
                 },
                 "exclude_taxa": {

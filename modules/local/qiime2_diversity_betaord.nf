@@ -15,6 +15,7 @@ process QIIME2_DIVERSITY_BETAORD {
     script:
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
+    mkdir beta_diversity
 
     qiime emperor plot \
         --i-pcoa ${core} \

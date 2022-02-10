@@ -19,7 +19,7 @@ process RENAME_RAW_DATA_FILES {
     if (meta.single_end) {
         """
         if [ ! -f  ${meta.id}.fastq.gz ]; then
-            ln -s $reads ${meta.id}.fastq.gz
+            cp $reads ${meta.id}.fastq.gz
         else
             touch ${meta.id}.fastq.gz
         fi
@@ -31,8 +31,8 @@ process RENAME_RAW_DATA_FILES {
         """
     } else {
         """
-        [ -f "${meta.id}_1.fastq.gz" ] || ln -s "${reads[0]}" "${meta.id}_1.fastq.gz"
-        [ -f "${meta.id}_2.fastq.gz" ] || ln -s "${reads[1]}" "${meta.id}_2.fastq.gz"
+        [ -f "${meta.id}_1.fastq.gz" ] || cp "${reads[0]}" "${meta.id}_1.fastq.gz"
+        [ -f "${meta.id}_2.fastq.gz" ] || cp "${reads[1]}" "${meta.id}_2.fastq.gz"
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":

@@ -43,6 +43,16 @@ class WorkflowAmpliseq {
             System.exit(1)
         }
 
+        if ( (!params.FW_primer || !params.RV_primer) && params.qiime_ref_taxonomy && !params.skip_qiime && !params.skip_taxonomy ) {
+            log.error "Incompatible parameters: `--FW_primer` and `--RV_primer` are required for cutting the QIIME2 reference database to the amplicon sequences. Please specify primers or do not use `--qiime_ref_taxonomy`."
+            System.exit(1)
+        }
+
+        if ( (!params.FW_primer || !params.RV_primer) && params.cut_dada_ref_taxonomy && !params.skip_taxonomy ) {
+            log.error "Incompatible parameters: `--FW_primer` and `--RV_primer` are required for cutting the DADA2 reference database to the amplicon sequences. Please specify primers or do not use `--cut_dada_ref_taxonomy`."
+            System.exit(1)
+        }
+
     }
 
     //

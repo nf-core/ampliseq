@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+* [#383](https://github.com/nf-core/ampliseq/pull/383) - `--skip_cutadapt` allows to skip primer trimmimg. Consequently, `--FW_primer` and `--RV_primer` are not obligatory any more, however primer sequences are still required with `--qiime_ref_taxonomy` and `--cut_dada_ref_taxonomy` (cuts reference with primer sequences).
+
 ### `Changed`
 
 ### `Fixed`

@@ -142,6 +142,8 @@ nextflow run nf-core/ampliseq \
     --metadata "data/Metadata.tsv"
 ```
 
+It is possible to not provide primer sequences (`--FW_primer` & --`RV_primer`) and skip primer trimming using `--skip_cutadapt`, but this is only for data that indeed does not contain any PCR primers in their sequences.
+
 This will launch the pipeline with the `singularity` configuration profile. See below [`-profile`](#-profile) for more information about profiles.
 
 Note that the pipeline will create the following files in your working directory:

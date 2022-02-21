@@ -11,8 +11,8 @@ process FORMAT_TAXONOMY {
 
     output:
     path( "*assignTaxonomy.fna*" ), emit: assigntax
-    path( "*addSpecies.fna*"), emit: addspecies
-    path( "ref_taxonomy.txt"), emit: ref_tax_info
+    path( "*addSpecies.fna*")     , emit: addspecies
+    path( "ref_taxonomy.txt")     , emit: ref_tax_info
 
     script:
     """

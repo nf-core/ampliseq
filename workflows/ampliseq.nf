@@ -96,6 +96,8 @@ include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
 include { MERGE_STATS                   } from '../modules/local/merge_stats'
 include { DADA2_TAXONOMY                } from '../modules/local/dada2_taxonomy'
 include { DADA2_ADDSPECIES              } from '../modules/local/dada2_addspecies'
+include { ASSIGNSH                      } from '../modules/local/assignsh'
+include { VSEARCH_USEARCH_GLOBAL        } from '../modules/local/vsearch_usearch_global'
 include { FORMAT_TAXRESULTS             } from '../modules/local/format_taxresults'
 include { FORMAT_TAXRESULTS as FORMAT_TAXRESULTS_ADDSP } from '../modules/local/format_taxresults'
 include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'
@@ -325,7 +327,19 @@ workflow AMPLISEQ {
             if (!params.skip_dada_addspecies) {
                 DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_tax_species.tsv' )
                 ch_dada2_tax = DADA2_ADDSPECIES.out.tsv
-            } else { ch_dada2_tax = DADA2_TAXONOMY.out.tsv }
+ 	    	if ( params.addsh ) {
+                    VSEARCH_USEARCH_GLOBAL( ch_fasta, ch_assigntax, 'vsearch_blastout.tsv' )
+                    ASSIGNSH( ch_dada2_tax, VSEARCH_USEARCH_GLOBAL.out.tsv, 'ASV_tax_species_SH.tsv')
+		    ch_dada2_tax = ASSIGNSH.out.tsv
+	    	}	   
+           } else {
+	       ch_dada2_tax = DADA2_TAXONOMY.out.tsv
+ 	       if ( params.addsh ) {
+                   VSEARCH_USEARCH_GLOBAL( ch_fasta, ch_assigntax, 'vsearch_blastout.tsv' )
+                   ASSIGNSH( ch_dada2_tax, VSEARCH_USEARCH_GLOBAL.out.tsv, 'ASV_tax_SH.tsv')
+		   ch_dada2_tax = ASSIGNSH.out.tsv
+	       }	   
+	   }
         //Cut out ITS region if long ITS reads
         } else {
             ITSX_CUTASV ( ch_fasta )
@@ -338,8 +352,18 @@ workflow AMPLISEQ {
                 DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_ITS_tax_species.tsv' )
                 FORMAT_TAXRESULTS_ADDSP ( DADA2_ADDSPECIES.out.tsv, ch_fasta, 'ASV_tax_species.tsv' )
                 ch_dada2_tax = FORMAT_TAXRESULTS_ADDSP.out.tsv
-            } else {
+ 	    	if ( params.addsh ) {
+                    VSEARCH_USEARCH_GLOBAL( ch_cut_fasta, ch_assigntax, 'vsearch_blastout.tsv' )
+                    ASSIGNSH( ch_dada2_tax, VSEARCH_USEARCH_GLOBAL.out.tsv, 'ASV_tax_species_SH.tsv')
+		    ch_dada2_tax = ASSIGNSH.out.tsv
+	    	}	   
+           } else {
                 ch_dada2_tax = FORMAT_TAXRESULTS.out.tsv
+	    	if ( params.addsh ) {
+                    VSEARCH_USEARCH_GLOBAL( ch_cut_fasta, ch_assigntax, 'vsearch_blastout.tsv' )
+                    ASSIGNSH( ch_dada2_tax, VSEARCH_USEARCH_GLOBAL.out.tsv, 'ASV_tax_SH.tsv')
+		    ch_dada2_tax = ASSIGNSH.out.tsv
+	    	}	   
             }
         }
     }

@@ -325,10 +325,10 @@ workflow AMPLISEQ {
         //Cut out ITS region if long ITS reads
         } else {
             if (params.cut_its == "full") {
-                outfile = "ASV_ITS_seqs.full_and_partial.fasta"
+                outfile = params.its_partial ? "ASV_ITS_seqs.full_and_partial.fasta" : "ASV_ITS_seqs.full.fasta"
             }
             else if (params.cut_its == "its2") {
-                outfile = "ASV_ITS_seqs.ITS2.full_and_partial.fasta"
+                outfile =  params.its_partial ? "ASV_ITS_seqs.ITS2.full_and_partial.fasta" : "ASV_ITS_seqs.ITS2.fasta"
             }
             ITSX_CUTASV ( ch_fasta, outfile )
             ch_versions = ch_versions.mix(ITSX_CUTASV.out.versions.ifEmpty(null))

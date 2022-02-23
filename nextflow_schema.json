@@ -72,6 +72,12 @@
                         "its2"
                     ]
                 },
+                "its_partial": {
+                    "type": "integer",
+                    "help_text": "If using cut_its, this option allows partial ITS sequences, longer than the specified cutoff.",
+                    "description": "Cutoff for partial ITS sequences. Only full sequences by default.",
+                    "default": 0,
+                },
                 "multiple_sequencing_runs": {
                     "type": "boolean",
                     "description": "If samples were sequenced in multiple sequencing runs",

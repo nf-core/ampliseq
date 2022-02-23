@@ -12,7 +12,10 @@ process ITSX_CUTASV {
 
     output:
     path outfile         , emit: fasta
+    path "ASV_ITS_seqs.summary.txt", emit: summary
+    path "ASV_ITS_seqs.*fasta", emit: fastas
     path "versions.yml"  , emit: versions
+    path "*.args.txt"    , emit: args
 
     script:
     def args = task.ext.args ?: ''
@@ -23,6 +26,7 @@ process ITSX_CUTASV {
         --cpu $task.cpus \\
         -o ASV_ITS_seqs
 
+    echo -e "ITSx\t$args" > ITSx.args.txt
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         ITSx: \$( ITSx -h 2>&1 > /dev/null | tail -n 2 | head -n 1 | cut -f 2 -d ' ' )

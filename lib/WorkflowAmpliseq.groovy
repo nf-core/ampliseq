@@ -38,10 +38,11 @@ class WorkflowAmpliseq {
             System.exit(1)
         }
 
-        if (params.skip_dada_addspecies && params.cut_its) {
-            log.error "Incompatible parameters: `--cut_its` expects species annotation and therefore excludes `--skip_dada_addspecies`."
+        if (params.skip_taxonomy && params.sbdiexport) {
+            log.error "Incompatible parameters: `--sbdiexport` expects taxa annotation and therefore excludes `--skip_taxonomy`."
             System.exit(1)
         }
+
     }
 
     //

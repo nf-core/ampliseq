@@ -56,7 +56,7 @@ Please note the following additional requirements:
 * The path must be enclosed in quotes
 * `--extension` must have at least one `*` wildcard character
 * When using the pipeline with paired end data, the `--extension` must use `{1,2}` (or similar) notation to specify read pairs
-* To run single-end data you must additionally specify `--single_end`
+* To run single-end data you must additionally specify `--single_end` and `--extension` may not include curly brackets `{}`
 * Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique (also across sequencing runs)
 * If your data is scattered, produce a sample sheet
 
@@ -66,7 +66,7 @@ The sample sheet file is an alternative way to provide input reads, it must be a
 
 | Column | Necessity | Description |
 |-|-|-|
-| sampleID | required | Unique sample identifiers, any unique string (may not contain dots .) |
+| sampleID | required | Unique sample identifiers |
 | forwardReads | required | Paths to (forward) reads zipped FastQ files |
 | reverseReads | optional | Paths to reverse reads zipped FastQ files, required if the data is paired-end |
 | run | optional | If the data was produced by multiple sequencing runs, any string |
@@ -92,6 +92,8 @@ Please note the following requirements:
 * Must contain the header `sampleID` and `forwardReads`
 * May contain the header `reverseReads` and `run`
 * Sample IDs must be unique
+* Sample IDs must not contain a dot `.`
+* Sample IDs starting with a number are not allowed when using metadata (because these strings will be modified)
 * FastQ files must be compressed (`.fastq.gz`, `.fq.gz`)
 * Within one samplesheet, only one type of raw data should be specified (same amplicon & sequencing method)
 

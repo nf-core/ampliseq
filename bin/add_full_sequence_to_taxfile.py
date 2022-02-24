@@ -7,8 +7,8 @@ import pandas as pd
 import sys, os
 
 # Argument check
-if len(sys.argv) != 3:
-    exit("Usage: add_full_sequence_to_taxfile.py <ASV_tax.tsv> <ASV_seqs.fasta>")
+if len(sys.argv) != 4:
+    exit("Usage: add_full_sequence_to_taxfile.py <ASV_tax.tsv> <ASV_seqs.fasta> <outfile.tsv>")
 
 # Read tsv and remove sequence column
 taxfile = sys.argv[1]
@@ -31,10 +31,8 @@ with open(sys.argv[2], 'r') as reader:
 if (seq != "" and name != ""):
     seqs = seqs.append({'id':name, 'sequence': seq}, ignore_index=True)
 
-# Create name of results file
-outfile = taxfile.replace("ASV_ITS_", "ASV_")
-
 # Join taxonomy and full sequence, write to file
 tax = tax.set_index('ASV_ID').join(seqs.set_index('id'), how='outer')
+outfile = sys.argv[3]
 tax.to_csv(outfile, sep='\t',na_rep="", index_label="ASV_ID")
 

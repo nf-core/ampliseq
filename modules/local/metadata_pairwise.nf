@@ -16,5 +16,10 @@ process METADATA_PAIRWISE {
     script:
     """
     metadata_pairwise.r ${metadata}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        R: \$(R --version 2>&1 | sed -n 1p | sed 's/R version //' | sed 's/ (.*//')
+    END_VERSIONS
     """
 }

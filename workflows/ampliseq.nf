@@ -97,6 +97,7 @@ include { MERGE_STATS                   } from '../modules/local/merge_stats'
 include { DADA2_TAXONOMY                } from '../modules/local/dada2_taxonomy'
 include { DADA2_ADDSPECIES              } from '../modules/local/dada2_addspecies'
 include { FORMAT_TAXRESULTS             } from '../modules/local/format_taxresults'
+include { FORMAT_TAXRESULTS as FORMAT_TAXRESULTS_ADDSP } from '../modules/local/format_taxresults'
 include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'
 include { QIIME2_FILTERTAXA             } from '../modules/local/qiime2_filtertaxa'
 include { QIIME2_INASV                  } from '../modules/local/qiime2_inasv'
@@ -161,12 +162,13 @@ workflow AMPLISEQ {
     // MODULE: Rename files
     //
     RENAME_RAW_DATA_FILES ( ch_reads )
+    ch_versions = ch_versions.mix(RENAME_RAW_DATA_FILES.out.versions.first())
 
     //
     // MODULE: Run FastQC
     //
     if (!params.skip_fastqc) {
-        FASTQC ( RENAME_RAW_DATA_FILES.out )
+        FASTQC ( RENAME_RAW_DATA_FILES.out.fastq )
         ch_versions = ch_versions.mix(FASTQC.out.versions.first())
     }
 
@@ -174,7 +176,7 @@ workflow AMPLISEQ {
     // MODULE: Cutadapt
     //
     CUTADAPT_WORKFLOW (
-        RENAME_RAW_DATA_FILES.out,
+        RENAME_RAW_DATA_FILES.out.fastq,
         params.illumina_pe_its,
         params.double_primer
     ).reads.set { ch_trimmed_reads }
@@ -210,9 +212,10 @@ workflow AMPLISEQ {
     //find truncation values in case they are not supplied
     if ( find_truncation_values ) {
         TRUNCLEN ( DADA2_QUALITY.out.tsv )
-        TRUNCLEN.out
+        TRUNCLEN.out.trunc
             .toSortedList()
             .set { ch_trunc }
+        ch_versions = ch_versions.mix(TRUNCLEN.out.versions.first())
         //add one more warning or reminder that trunclenf and trunclenr were chosen automatically
         ch_trunc.subscribe {
             if ( "${it[0][1]}".toInteger() + "${it[1][1]}".toInteger() <= 10 ) { log.warn "`--trunclenf` was set to ${it[0][1]} and `--trunclenr` to ${it[1][1]}, this is too low! Please either change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr`." }
@@ -229,7 +232,7 @@ workflow AMPLISEQ {
 
     //filter reads
     DADA2_FILTNTRIM ( ch_trimmed_reads )
-    ch_versions = ch_versions.mix(DADA2_FILTNTRIM.out.versions.first())
+    //ch_versions = ch_versions.mix(DADA2_FILTNTRIM.out.versions.first())
 
     //group by sequencing run
     DADA2_FILTNTRIM.out.reads
@@ -256,6 +259,7 @@ workflow AMPLISEQ {
         .join( DADA2_ERR.out.errormodel )
         .set { ch_derep_errormodel }
     DADA2_DENOISING ( ch_derep_errormodel.dump(tag: 'into_denoising')  )
+    ch_versions = ch_versions.mix(DADA2_DENOISING.out.versions.first())
 
     DADA2_RMCHIMERA ( DADA2_DENOISING.out.seqtab )
 
@@ -334,9 +338,15 @@ workflow AMPLISEQ {
             ch_versions = ch_versions.mix(ITSX_CUTASV.out.versions.ifEmpty(null))
             ch_cut_fasta = ITSX_CUTASV.out.fasta
             DADA2_TAXONOMY ( ch_cut_fasta, ch_assigntax, 'ASV_ITS_tax.tsv' )
-            DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_ITS_tax_species.tsv' )
-            FORMAT_TAXRESULTS ( DADA2_TAXONOMY.out.tsv, DADA2_ADDSPECIES.out.tsv, ch_fasta )
-            ch_dada2_tax = FORMAT_TAXRESULTS.out.tsv
+            FORMAT_TAXRESULTS ( DADA2_TAXONOMY.out.tsv, ch_fasta, 'ASV_tax.tsv' )
+            ch_versions = ch_versions.mix( FORMAT_TAXRESULTS.out.versions.ifEmpty(null) )
+            if (!params.skip_dada_addspecies) {
+                DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_ITS_tax_species.tsv' )
+                FORMAT_TAXRESULTS_ADDSP ( DADA2_ADDSPECIES.out.tsv, ch_fasta, 'ASV_tax_species.tsv' )
+                ch_dada2_tax = FORMAT_TAXRESULTS_ADDSP.out.tsv
+            } else {
+                ch_dada2_tax = FORMAT_TAXRESULTS.out.tsv
+            }
         }
     }
 
@@ -398,6 +408,7 @@ workflow AMPLISEQ {
                 params.exclude_taxa
             )
             FILTER_STATS ( DADA2_MERGE.out.asv, QIIME2_FILTERTAXA.out.tsv )
+            ch_versions = ch_versions.mix( FILTER_STATS.out.versions.ifEmpty(null) )
             MERGE_STATS_FILTERTAXA (MERGE_STATS.out.tsv, FILTER_STATS.out.tsv)
             ch_asv = QIIME2_FILTERTAXA.out.asv
             ch_seq = QIIME2_FILTERTAXA.out.seq
@@ -471,6 +482,7 @@ workflow AMPLISEQ {
     //
     if ( params.sbdiexport ) {
         SBDIEXPORT ( DADA2_MERGE.out.asv, DADA2_ADDSPECIES.out.tsv, ch_metadata  )
+        ch_versions = ch_versions.mix(SBDIEXPORT.out.versions.first())
         SBDIEXPORTREANNOTATE ( DADA2_ADDSPECIES.out.tsv )
     }
 
@@ -493,6 +505,7 @@ workflow AMPLISEQ {
         if (!params.skip_fastqc) {
             ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
         }
+        ch_multiqc_files = ch_multiqc_files.mix(CUTADAPT_WORKFLOW.out.logs.collect{it[1]}.ifEmpty([]))
 
         MULTIQC (
             ch_multiqc_files.collect()

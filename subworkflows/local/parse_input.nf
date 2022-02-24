@@ -128,8 +128,13 @@ workflow PARSE_INPUT {
 
         //Check that no dots "." are in sampleID
         ch_reads
-            .map { meta, reads -> [ meta.id ] }
+            .map { meta, reads -> meta.id }
             .subscribe { if ( "$it".contains(".") ) exit 1, "Please review data input, sampleIDs may not contain dots, but \"$it\" does." }
+
+        //Check that sampleIDs do not start with a number when using metadata (sampleID gets X prepended by R and metadata wont match any more!)
+        ch_reads
+            .map { meta, reads -> meta.id }
+            .subscribe { if ( params.metadata && "$it"[0].isNumber() ) exit 1, "Please review data input, sampleIDs may not start with a number, but \"$it\" does. The pipeline unintentionally modifies such strings and the metadata will not match any more." }
 
         //Filter empty files
         ch_reads

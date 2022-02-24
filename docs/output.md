@@ -119,7 +119,7 @@ Optionally, the ITS region can be extracted from each ASV sequence using ITSx, a
     * `ASV_ITS_seqs.full_and_partial.fasta`: If using --its_partial; fasta file with full and partial ITS regions from each ASV sequence.
     * `ASV_ITS_seqs.ITS2.full_and_partial.fasta`: If using --cut_its "its2" and --its_partial; fasta file with complete and partial ITS2 regions from each ASV sequence.
     * `ASV_ITS_seqs.summary.txt`: Summary information from ITSx.
-    * `ITSx.args.txt`: File with parameters passed to ITSx 
+    * `ITSx.args.txt`: File with parameters passed to ITSx.
 * `dada2/`
     * `ASV_ITS_tax.tsv`: Taxonomic classification with ITS region of each ASV sequence.
     * `ASV_ITS_tax_species.tsv`: Species classification with ITS region of each ASV sequence.

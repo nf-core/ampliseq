@@ -26,6 +26,11 @@ process ITSX_CUTASV {
         --cpu $task.cpus \\
         -o ASV_ITS_seqs
 
+    if [ ! -s $outfile ]; then
+        echo "ERROR: No ITS regions found by ITSx. You might want to modify --cut_its and/or --its_partial" >&2
+        exit 1
+    fi
+
     echo -e "ITSx\t$args" > ITSx.args.txt
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

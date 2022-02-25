@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+* [#390](https://github.com/nf-core/ampliseq/pull/390)- Add values to option --cut_its, specifying which ITS part to use. Also, add option --its_partial <x> to allow partial ITS sequences longer than given cutoff.
+
 ### `Changed`
 
 ### `Fixed`

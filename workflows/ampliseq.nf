@@ -320,7 +320,7 @@ workflow AMPLISEQ {
                 .map { meta, db -> db }
                 .set { ch_assigntax }
         }
-        if (!params.cut_its) {
+        if (params.cut_its == "none") {
             DADA2_TAXONOMY ( ch_fasta, ch_assigntax, 'ASV_tax.tsv' )
             if (!params.skip_dada_addspecies) {
                 DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_tax_species.tsv' )
@@ -328,7 +328,13 @@ workflow AMPLISEQ {
             } else { ch_dada2_tax = DADA2_TAXONOMY.out.tsv }
         //Cut out ITS region if long ITS reads
         } else {
-            ITSX_CUTASV ( ch_fasta )
+            if (params.cut_its == "full") {
+                outfile = params.its_partial ? "ASV_ITS_seqs.full_and_partial.fasta" : "ASV_ITS_seqs.full.fasta"
+            }
+            else if (params.cut_its == "its2") {
+                outfile =  params.its_partial ? "ASV_ITS_seqs.ITS2.full_and_partial.fasta" : "ASV_ITS_seqs.ITS2.fasta"
+            }
+            ITSX_CUTASV ( ch_fasta, outfile )
             ch_versions = ch_versions.mix(ITSX_CUTASV.out.versions.ifEmpty(null))
             ch_cut_fasta = ITSX_CUTASV.out.fasta
             DADA2_TAXONOMY ( ch_cut_fasta, ch_assigntax, 'ASV_ITS_tax.tsv' )

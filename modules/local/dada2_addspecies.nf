@@ -20,10 +20,11 @@ process DADA2_ADDSPECIES {
 
     script:
     def args = task.ext.args ?: ''
+    def seed = task.ext.seed ?: '100'
     """
     #!/usr/bin/env Rscript
     suppressPackageStartupMessages(library(dada2))
-    set.seed(100) # Initialize random number generator for reproducibility
+    set.seed($seed) # Initialize random number generator for reproducibility
 
     taxtable <- readRDS(\"$taxtable\")
 
@@ -48,7 +49,7 @@ process DADA2_ADDSPECIES {
 
     write.table(taxa, file = \"$outfile\", sep = "\\t", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '')
 
-    write.table('addSpecies\t$args', file = "addSpecies.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+    write.table('addSpecies\t$args\nseed\t$seed', file = "addSpecies.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
     writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
     """
 }

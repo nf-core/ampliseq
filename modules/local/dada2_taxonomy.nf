@@ -20,10 +20,11 @@ process DADA2_TAXONOMY {
 
     script:
     def args = task.ext.args ?: ''
+    def seed = task.ext.seed ?: '100'
     """
     #!/usr/bin/env Rscript
     suppressPackageStartupMessages(library(dada2))
-    set.seed(100) # Initialize random number generator for reproducibility
+    set.seed($seed) # Initialize random number generator for reproducibility
 
     seq <- getSequences(\"$fasta\", collapse = TRUE, silence = FALSE)
     taxa <- assignTaxonomy(seq, \"$database\", taxLevels = c("Domain", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"), $args, multithread = $task.cpus, verbose=TRUE, outputBootstraps = TRUE)
@@ -65,7 +66,7 @@ process DADA2_TAXONOMY {
     taxa_export <- cbind( ASV_ID = tx\$ASV_ID, taxa\$tax, confidence = tx\$confidence)
     saveRDS(taxa_export, "ASV_tax.rds")
 
-    write.table('assignTaxonomy\t$args', file = "assignTaxonomy.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+    write.table('assignTaxonomy\t$args\nseed\t$seed', file = "assignTaxonomy.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
     writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
     """
 }

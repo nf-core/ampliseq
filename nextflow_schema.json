@@ -127,6 +127,11 @@
                     "type": "boolean",
                     "description": "If data should be exported in SBDI (Swedish biodiversity infrastructure) Excel format."
                 },
+                "seed": {
+                    "type": "integer",
+                    "default": 100,
+                    "description": "Specifies the random seed."
+                },
                 "outdir": {
                     "type": "string",
                     "description": "Path to the output directory where the results will be saved.",

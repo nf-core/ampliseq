@@ -16,8 +16,6 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 
 // Check mandatory parameters
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
-if (!params.FW_primer) { exit 1, "Option --FW_primer missing" }
-if (!params.RV_primer) { exit 1, "Option --RV_primer missing" }
 
 /*
 ========================================================================================
@@ -68,6 +66,11 @@ if ( !single_end && !params.illumina_pe_its && (params.trunclenf == null || para
     find_truncation_values = true
     log.warn "No DADA2 cutoffs were specified (`--trunclenf` & --`trunclenr`), therefore reads will be truncated where median quality drops below ${params.trunc_qmin} (defined by `--trunc_qmin`) but at least a fraction of ${params.trunc_rmin} (defined by `--trunc_rmin`) of the reads will be retained.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
 } else { find_truncation_values = false }
+
+if ( !is_fasta_input && (!params.FW_primer || !params.RV_primer) && !params.skip_cutadapt ) {
+    log.error "Incompatible parameters: `--FW_primer` and `--RV_primer` are required for primer trimming. If primer trimming is not needed, use `--skip_cutadapt`."
+    System.exit(1)
+}
 
 metadata_category = params.metadata_category ?: ""
 
@@ -175,12 +178,16 @@ workflow AMPLISEQ {
     //
     // MODULE: Cutadapt
     //
-    CUTADAPT_WORKFLOW (
-        RENAME_RAW_DATA_FILES.out.fastq,
-        params.illumina_pe_its,
-        params.double_primer
-    ).reads.set { ch_trimmed_reads }
-    ch_versions = ch_versions.mix(CUTADAPT_WORKFLOW.out.versions.first())
+    if (!params.skip_cutadapt) {
+        CUTADAPT_WORKFLOW (
+            RENAME_RAW_DATA_FILES.out.fastq,
+            params.illumina_pe_its,
+            params.double_primer
+        ).reads.set { ch_trimmed_reads }
+        ch_versions = ch_versions.mix(CUTADAPT_WORKFLOW.out.versions.first())
+    } else {
+        ch_trimmed_reads = RENAME_RAW_DATA_FILES.out.fastq
+    }
 
     //
     // SUBWORKFLOW / MODULES : ASV generation with DADA2
@@ -231,7 +238,7 @@ workflow AMPLISEQ {
     ch_trimmed_reads.combine(ch_trunc).set { ch_trimmed_reads }
 
     //filter reads
-    DADA2_FILTNTRIM ( ch_trimmed_reads )
+    DADA2_FILTNTRIM ( ch_trimmed_reads.dump(tag: 'into_filtntrim')  )
     //ch_versions = ch_versions.mix(DADA2_FILTNTRIM.out.versions.first())
 
     //group by sequencing run
@@ -291,7 +298,12 @@ workflow AMPLISEQ {
         DADA2_RMCHIMERA.out.rds.map { meta, rds -> rds }.collect() )
 
     //merge cutadapt_summary and dada_stats files
-    MERGE_STATS (CUTADAPT_WORKFLOW.out.summary, DADA2_MERGE.out.dada2stats)
+    if (!params.skip_cutadapt) {
+        MERGE_STATS (CUTADAPT_WORKFLOW.out.summary, DADA2_MERGE.out.dada2stats)
+        ch_stats = MERGE_STATS.out.tsv
+    } else {
+        ch_stats = DADA2_MERGE.out.dada2stats
+    }
 
     //
     // SUBWORKFLOW / MODULES : Taxonomic classification with DADA2 and/or QIIME2
@@ -409,7 +421,7 @@ workflow AMPLISEQ {
             )
             FILTER_STATS ( DADA2_MERGE.out.asv, QIIME2_FILTERTAXA.out.tsv )
             ch_versions = ch_versions.mix( FILTER_STATS.out.versions.ifEmpty(null) )
-            MERGE_STATS_FILTERTAXA (MERGE_STATS.out.tsv, FILTER_STATS.out.tsv)
+            MERGE_STATS_FILTERTAXA (ch_stats, FILTER_STATS.out.tsv)
             ch_asv = QIIME2_FILTERTAXA.out.asv
             ch_seq = QIIME2_FILTERTAXA.out.seq
         } else {
@@ -505,7 +517,9 @@ workflow AMPLISEQ {
         if (!params.skip_fastqc) {
             ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
         }
-        ch_multiqc_files = ch_multiqc_files.mix(CUTADAPT_WORKFLOW.out.logs.collect{it[1]}.ifEmpty([]))
+        if (!params.skip_cutadapt) {
+            ch_multiqc_files = ch_multiqc_files.mix(CUTADAPT_WORKFLOW.out.logs.collect{it[1]}.ifEmpty([]))
+        }
 
         MULTIQC (
             ch_multiqc_files.collect()

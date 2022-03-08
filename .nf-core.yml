@@ -1,0 +1,3 @@
+lint:
+  files_unchanged:
+    - .github/workflows/linting.yml

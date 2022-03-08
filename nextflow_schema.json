@@ -37,9 +37,7 @@
                 }
             },
             "required": [
-                "input",
-                "FW_primer",
-                "RV_primer"
+                "input"
             ],
             "fa_icon": "fas fa-terminal"
         },
@@ -347,6 +345,11 @@
                     "type": "boolean",
                     "default": false,
                     "description": "Skip FastQC"
+                },
+                "skip_cutadapt": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Skip primer trimming with cutadapt. This is not recommended! Use only in case primer sequences were removed before and the data does not contain any primer sequences."
                 },
                 "skip_qiime": {
                     "type": "boolean",

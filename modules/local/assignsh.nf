@@ -9,6 +9,7 @@ process ASSIGNSH {
 
     input:
     path asvtable
+    val sh_info
     path blastfile
     val  outtable
     
@@ -19,7 +20,7 @@ process ASSIGNSH {
     script:
     def args = task.ext.args ?: ''
     """
-    add_sh_to_taxonomy.py ${params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"][0]} ${params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"][1]} $asvtable $blastfile $outtable $args
+    add_sh_to_taxonomy.py ${sh_info.join(' ')} $asvtable $blastfile $outtable $args
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

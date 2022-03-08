@@ -46,11 +46,23 @@ if (params.classifier) {
 
 if (params.dada_ref_taxonomy && !params.skip_taxonomy) {
     ch_dada_ref_taxonomy = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["file"]).map { file(it) }
+    if (params.addsh) {
+        if (params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]) {
+            ch_shinfo = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]).map { file(it) }
+        } else {
+            exit 1, "SH information is not available for current selection of reference database"
+        }
+    }
 } else { ch_dada_ref_taxonomy = Channel.empty() }
 
 if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
     ch_qiime_ref_taxonomy = Channel.fromList(params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"]).map { file(it) }
 } else { ch_qiime_ref_taxonomy = Channel.empty() }
+
+if (params.addsh && params.cut_its == "none") {
+    log.warn "Adding SH assignments is only feasible for ITS sequences. Please use option `--cut_its` to find ITS regions in the ASV sequences, unless the given sequences are already cut to the ITS region.\n"
+}
+
 
 // Set non-params Variables
 
@@ -329,14 +341,14 @@ workflow AMPLISEQ {
                 ch_dada2_tax = DADA2_ADDSPECIES.out.tsv
  	    	if ( params.addsh ) {
                     VSEARCH_USEARCH_GLOBAL( ch_fasta, ch_assigntax, 'vsearch_blastout.tsv' )
-                    ASSIGNSH( ch_dada2_tax, VSEARCH_USEARCH_GLOBAL.out.tsv, 'ASV_tax_species_SH.tsv')
+                    ASSIGNSH( ch_dada2_tax, ch_shinfo.collect(), VSEARCH_USEARCH_GLOBAL.out.tsv, 'ASV_tax_species_SH.tsv')
 		    ch_dada2_tax = ASSIGNSH.out.tsv
 	    	}	   
            } else {
 	       ch_dada2_tax = DADA2_TAXONOMY.out.tsv
  	       if ( params.addsh ) {
                    VSEARCH_USEARCH_GLOBAL( ch_fasta, ch_assigntax, 'vsearch_blastout.tsv' )
-                   ASSIGNSH( ch_dada2_tax, VSEARCH_USEARCH_GLOBAL.out.tsv, 'ASV_tax_SH.tsv')
+                   ASSIGNSH( ch_dada2_tax, ch_shinfo.collect(), VSEARCH_USEARCH_GLOBAL.out.tsv, 'ASV_tax_SH.tsv')
 		   ch_dada2_tax = ASSIGNSH.out.tsv
 	       }	   
 	   }
@@ -360,14 +372,14 @@ workflow AMPLISEQ {
                 ch_dada2_tax = FORMAT_TAXRESULTS_ADDSP.out.tsv
  	    	if ( params.addsh ) {
                     VSEARCH_USEARCH_GLOBAL( ch_cut_fasta, ch_assigntax, 'vsearch_blastout.tsv' )
-                    ASSIGNSH( ch_dada2_tax, VSEARCH_USEARCH_GLOBAL.out.tsv, 'ASV_tax_species_SH.tsv')
+                    ASSIGNSH( ch_dada2_tax, ch_shinfo.collect(), VSEARCH_USEARCH_GLOBAL.out.tsv, 'ASV_tax_species_SH.tsv')
 		    ch_dada2_tax = ASSIGNSH.out.tsv
 	    	}	   
            } else {
                 ch_dada2_tax = FORMAT_TAXRESULTS.out.tsv
 	    	if ( params.addsh ) {
                     VSEARCH_USEARCH_GLOBAL( ch_cut_fasta, ch_assigntax, 'vsearch_blastout.tsv' )
-                    ASSIGNSH( ch_dada2_tax, VSEARCH_USEARCH_GLOBAL.out.tsv, 'ASV_tax_SH.tsv')
+                    ASSIGNSH( ch_dada2_tax, ch_shinfo.collect(), VSEARCH_USEARCH_GLOBAL.out.tsv, 'ASV_tax_SH.tsv')
 		    ch_dada2_tax = ASSIGNSH.out.tsv
 	    	}	   
             }

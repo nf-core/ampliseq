@@ -45,8 +45,8 @@ seq2sh = pd.read_csv(sys.argv[1], sep='\t', header=None, index_col=0, skiprows=N
 # Columns:
 # SH  taxonid  kingdom  phylum  class  order  family  genus  species
 shtax = pd.read_csv(sys.argv[2], sep='\t', header=None, index_col=0, skiprows=None)
-# Replace taxonid with Domain = "Eukarya"
-shtax.loc[:,1] = 'Eukarya'
+# Replace taxonid with Domain = "Eukaryota"
+shtax.loc[:,1] = 'Eukaryota'
 
 # Read taxonomy table
 taxtable = pd.read_csv(sys.argv[3], sep='\t', header=0) #count table

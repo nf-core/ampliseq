@@ -59,6 +59,19 @@
                     "type": "boolean",
                     "description": "If data is single-ended Illumina reads instead of paired-end"
                 },
+                "filter_ssu": {
+                    "type": "string",
+                    "description": "Enable SSU filtering. Comma separated list of kingdoms in Barrnap.",
+                    "enum": [
+                        "bac",
+                        "arc",
+                        "mito",
+                        "euk",
+                        "bac,arc",
+                        "bac,arc,mito",
+                        "bac,arc,mito,euk"
+                    ]
+                },
                 "cut_its": {
                     "type": "string",
                     "help_text": "If data is long read ITS sequences, that need to be cut to ITS region (full ITS or only ITS2) for taxonomy assignment.",

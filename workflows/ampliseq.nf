@@ -94,6 +94,8 @@ include { DADA2_DENOISING               } from '../modules/local/dada2_denoising
 include { DADA2_RMCHIMERA               } from '../modules/local/dada2_rmchimera'
 include { DADA2_STATS                   } from '../modules/local/dada2_stats'
 include { DADA2_MERGE                   } from '../modules/local/dada2_merge'
+include { BARRNAP                       } from '../modules/local/barrnap'
+include { FILTER_SSU                    } from '../modules/local/filter_ssu'
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
 include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
 include { MERGE_STATS                   } from '../modules/local/merge_stats'
@@ -306,11 +308,26 @@ workflow AMPLISEQ {
     }
 
     //
+    // Modules : Filter rRNA
+    // TODO: FILTER_SSU.out.stats needs to be merged still into "overall_summary.tsv"
+    //
+    if (params.filter_ssu) {
+        BARRNAP ( DADA2_MERGE.out.fasta )
+        ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))
+        FILTER_SSU ( DADA2_MERGE.out.fasta, DADA2_MERGE.out.asv, BARRNAP.out.matches )
+        ch_dada2_fasta = FILTER_SSU.out.fasta
+        ch_dada2_asv = FILTER_SSU.out.asv
+    } else {
+        ch_dada2_fasta =  DADA2_MERGE.out.fasta
+        ch_dada2_asv = DADA2_MERGE.out.asv
+    }
+
+    //
     // SUBWORKFLOW / MODULES : Taxonomic classification with DADA2 and/or QIIME2
     //
     //Alternative entry point for fasta that is being classified
     if ( !is_fasta_input ) {
-        ch_fasta = DADA2_MERGE.out.fasta
+        ch_fasta = ch_dada2_fasta
     }
 
     //DADA2
@@ -383,7 +400,7 @@ workflow AMPLISEQ {
     //
     if ( run_qiime2 ) {
         //Import ASV abundance table and sequences into QIIME2
-        QIIME2_INASV ( DADA2_MERGE.out.asv )
+        QIIME2_INASV ( ch_dada2_asv )
         QIIME2_INSEQ ( ch_fasta )
 
         //Import taxonomic classification into QIIME2, if available
@@ -419,7 +436,7 @@ workflow AMPLISEQ {
                 params.min_samples,
                 params.exclude_taxa
             )
-            FILTER_STATS ( DADA2_MERGE.out.asv, QIIME2_FILTERTAXA.out.tsv )
+            FILTER_STATS ( ch_dada2_asv, QIIME2_FILTERTAXA.out.tsv )
             ch_versions = ch_versions.mix( FILTER_STATS.out.versions.ifEmpty(null) )
             MERGE_STATS_FILTERTAXA (ch_stats, FILTER_STATS.out.tsv)
             ch_asv = QIIME2_FILTERTAXA.out.asv
@@ -484,7 +501,7 @@ workflow AMPLISEQ {
         if ( run_qiime2 && !params.skip_abundance_tables && ( params.dada_ref_taxonomy || params.qiime_ref_taxonomy || params.classifier ) && !params.skip_taxonomy ) {
             PICRUST ( QIIME2_EXPORT.out.abs_fasta, QIIME2_EXPORT.out.abs_tsv, "QIIME2", "This Picrust2 analysis is based on filtered reads from QIIME2" )
         } else {
-            PICRUST ( ch_fasta, DADA2_MERGE.out.asv, "DADA2", "This Picrust2 analysis is based on unfiltered reads from DADA2" )
+            PICRUST ( ch_fasta, ch_dada2_asv, "DADA2", "This Picrust2 analysis is based on unfiltered reads from DADA2" )
         }
         ch_versions = ch_versions.mix(PICRUST.out.versions.ifEmpty(null))
     }
@@ -493,7 +510,7 @@ workflow AMPLISEQ {
     // MODULE: Export data in SBDI's (Swedish biodiversity infrastructure) format
     //
     if ( params.sbdiexport ) {
-        SBDIEXPORT ( DADA2_MERGE.out.asv, DADA2_ADDSPECIES.out.tsv, ch_metadata  )
+        SBDIEXPORT ( ch_dada2_asv, DADA2_ADDSPECIES.out.tsv, ch_metadata  )
         ch_versions = ch_versions.mix(SBDIEXPORT.out.versions.first())
         SBDIEXPORTREANNOTATE ( DADA2_ADDSPECIES.out.tsv )
     }

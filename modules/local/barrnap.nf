@@ -1,0 +1,42 @@
+process BARRNAP {
+    tag "${fasta}"
+    label 'process_low'
+
+    conda (params.enable_conda ? "bioconda::barrnap=0.9" : null)
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/barrnap:0.9--hdfd78af_4' :
+        'quay.io/biocontainers/barrnap:0.9--hdfd78af_4' }"
+
+    input:
+    path(fasta)
+
+    output:
+    path( "matches.txt" ) , emit: matches
+    path( "rrna.*.gff" )  , emit: gff
+    path "versions.yml"   , emit: versions
+
+    script:
+    def args = task.ext.args ?: ''
+    def kingdom = params.filter_ssu ?: "bac,arc,mito,euk"
+    """
+    IFS=',' read -r -a kingdom <<< \"$kingdom\"
+
+    for KINGDOM in "\${kingdom[@]}"
+    do
+        barrnap \\
+            --threads $task.cpus \\
+            $args \\
+            --kingdom \$KINGDOM \\
+            --outseq Filtered.\${KINGDOM}.fasta \\
+            < $fasta \\
+            > rrna.\${KINGDOM}.gff
+    done
+
+    grep -h '>' Filtered.*.fasta | sed 's/^>//' | sed 's/:\\+/\\t/g' | awk '{print \$2}' | sort -u > matches.txt
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        barrnap: \$(echo \$(barrnap --version 2>&1) | sed "s/^.*barrnap //g")
+    END_VERSIONS
+    """
+}

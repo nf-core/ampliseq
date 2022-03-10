@@ -11,13 +11,13 @@ process BARRNAP {
     path(fasta)
 
     output:
-    path( "matches.txt" ) , emit: matches
-    path( "rrna.*.gff" )  , emit: gff
-    path "versions.yml"   , emit: versions
+    path( "*.matches.txt" ) , emit: matches
+    path( "rrna.*.gff" )    , emit: gff
+    path "versions.yml"     , emit: versions
 
     script:
     def args = task.ext.args ?: ''
-    def kingdom = params.filter_ssu ?: "bac,arc,mito,euk"
+    def kingdom = task.ext.kingdom ?: "bac,arc,mito,euk"
     """
     IFS=',' read -r -a kingdom <<< \"$kingdom\"
 
@@ -30,9 +30,14 @@ process BARRNAP {
             --outseq Filtered.\${KINGDOM}.fasta \\
             < $fasta \\
             > rrna.\${KINGDOM}.gff
-    done
 
-    grep -h '>' Filtered.*.fasta | sed 's/^>//' | sed 's/:\\+/\\t/g' | awk '{print \$2}' | sort -u > matches.txt
+        #this fails when processing an empty file, so it requires a workaround!
+        if [ -s Filtered.\${KINGDOM}.fasta ]; then
+            grep -h '>' Filtered.\${KINGDOM}.fasta | sed 's/^>//' | sed 's/:\\+/\\t/g' | awk '{print \$2}' | sort -u >\${KINGDOM}.matches.txt
+        else
+            touch \${KINGDOM}.matches.txt
+        fi
+    done
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

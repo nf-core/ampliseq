@@ -311,12 +311,17 @@ workflow AMPLISEQ {
     // Modules : Filter rRNA
     // TODO: FILTER_SSU.out.stats needs to be merged still into "overall_summary.tsv"
     //
-    if (params.filter_ssu) {
+    if (!params.skip_barrnap && params.filter_ssu) {
         BARRNAP ( DADA2_MERGE.out.fasta )
         ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))
         FILTER_SSU ( DADA2_MERGE.out.fasta, DADA2_MERGE.out.asv, BARRNAP.out.matches )
         ch_dada2_fasta = FILTER_SSU.out.fasta
         ch_dada2_asv = FILTER_SSU.out.asv
+    } else if (!params.skip_barrnap && !params.filter_ssu) {
+        BARRNAP ( DADA2_MERGE.out.fasta )
+        ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))
+        ch_dada2_fasta =  DADA2_MERGE.out.fasta
+        ch_dada2_asv = DADA2_MERGE.out.asv
     } else {
         ch_dada2_fasta =  DADA2_MERGE.out.fasta
         ch_dada2_asv = DADA2_MERGE.out.asv

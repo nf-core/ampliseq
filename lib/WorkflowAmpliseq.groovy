@@ -58,6 +58,11 @@ class WorkflowAmpliseq {
             System.exit(1)
         }
 
+        if (params.filter_ssu && params.skip_barrnap) {
+            log.error "Incompatible parameters: `--filter_ssu` cannot be used with `--skip_barrnap` because filtering for SSU's depends on barrnap."
+            System.exit(1)
+        }
+
     }
 
     //

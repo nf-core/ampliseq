@@ -10,7 +10,7 @@ process FILTER_SSU {
     input:
     path(fasta)
     path(table)
-    path(list)
+    path(lists)
 
     output:
     path( "stats.ssu.tsv" )      , emit: stats
@@ -19,14 +19,24 @@ process FILTER_SSU {
     path "versions.yml"          , emit: versions
 
     script:
+    def kingdom = params.filter_ssu ?: "bac,arc,mito,euk"
     """
     #!/usr/bin/env Rscript
 
     #load packages
     suppressPackageStartupMessages(library(Biostrings))
 
-    #read positive ID list
-    list  <- read.table(file = "$list", sep = '\t', comment.char = "", header=FALSE)
+    #copy selected matches into folder
+    dir.create("./selection")
+    kingdom <- as.list(strsplit("$kingdom", ",")[[1]])
+    for (x in kingdom) {
+        file.copy(paste0(x,".matches.txt"), paste0("./selection/",x,".matches.txt"))
+    }
+
+    #read positive ID lists
+    files = list.files(path = "./selection", pattern="*matches.txt", full.names = TRUE)
+    list = do.call(rbind, lapply(files, function(x) read.csv(x, stringsAsFactors = FALSE, header = FALSE)))
+    list = unique(list)
     colnames(list)[1] <- "ID"
 
     #read abundance file, first column is ASV_ID
@@ -38,8 +48,8 @@ process FILTER_SSU {
     seq <- data.frame(ID=names(seq), sequence=paste(seq))
 
     #check if all ids match
-    if(!all(list\$ID %in% seq\$ID))  {stop(paste("$list","and","$fasta","dont share all IDs, exit."), call.=FALSE)}
-    if(!all(list\$ID %in% table\$ASV_ID))  {stop(paste("$list","and","$table","dont share all IDs, exit"), call.=FALSE)}
+    if(!all(list\$ID %in% seq\$ID))  {stop(paste(paste(files,sep=","),"and","$fasta","dont share all IDs, exit."), call.=FALSE)}
+    if(!all(list\$ID %in% table\$ASV_ID))  {stop(paste(paste(files,sep=","),"and","$table","dont share all IDs, exit"), call.=FALSE)}
 
     #merge
     filtered_table <- merge(table, list, by.x="ASV_ID", by.y="ID", all.x=FALSE, all.y=TRUE)

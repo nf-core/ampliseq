@@ -369,6 +369,11 @@
                     "default": false,
                     "description": "Skip primer trimming with cutadapt. This is not recommended! Use only in case primer sequences were removed before and the data does not contain any primer sequences."
                 },
+                "skip_barrnap": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Skip annotating SSU matches."
+                },
                 "skip_qiime": {
                     "type": "boolean",
                     "default": false,

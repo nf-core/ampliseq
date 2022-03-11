@@ -60,7 +60,7 @@ process FILTER_SSU {
     filtered_seq <- merge(seq, list, by.x="ID", by.y="ID", all.x=FALSE, all.y=TRUE)
 
     #write
-    write.table(filtered_table, file = "ASV_table.ssu.tsv", row.names=FALSE, sep="\t")
+    write.table(filtered_table, file = "ASV_table.ssu.tsv", row.names=FALSE, sep="\t", col.names = TRUE, quote = FALSE, na = '')
     write.table(data.frame(s = sprintf(">%s\n%s", filtered_seq\$ID, filtered_seq\$sequence)), 'ASV_seqs.ssu.fasta', col.names = FALSE, row.names = FALSE, quote = FALSE, na = '')
 
     #stats

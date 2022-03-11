@@ -59,19 +59,6 @@
                     "type": "boolean",
                     "description": "If data is single-ended Illumina reads instead of paired-end"
                 },
-                "filter_ssu": {
-                    "type": "string",
-                    "description": "Enable SSU filtering. Comma separated list of kingdoms in Barrnap.",
-                    "enum": [
-                        "bac",
-                        "arc",
-                        "mito",
-                        "euk",
-                        "bac,arc",
-                        "bac,arc,mito",
-                        "bac,arc,mito,euk"
-                    ]
-                },
                 "cut_its": {
                     "type": "string",
                     "help_text": "If data is long read ITS sequences, that need to be cut to ITS region (full ITS or only ITS2) for taxonomy assignment.",
@@ -224,6 +211,27 @@
                     "description": "DADA2 read filtering option",
                     "fa_icon": "fas fa-greater-than-equal",
                     "help_text": "Remove reads with length less than `min_len` after trimming and truncation."
+                },
+                "filter_ssu": {
+                    "type": "string",
+                    "description": "Enable SSU filtering. Comma separated list of kingdoms in Barrnap.",
+                    "enum": [
+                        "bac,arc,mito,euk",
+                        "bac",
+                        "arc",
+                        "mito",
+                        "euk",
+                        "bac,arc",
+                        "bac,mito",
+                        "bac,euk",
+                        "arc,mito",
+                        "arc,euk",
+                        "mito,euk",
+                        "bac,arc,mito",
+                        "bac,mito,euk",
+                        "arc,mito,euk"
+                        
+                    ]
                 },
                 "dada_tax_agglom_min": {
                     "type": "integer",

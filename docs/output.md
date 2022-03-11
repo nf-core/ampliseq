@@ -16,6 +16,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
         * [Cutadapt](#cutadapt) - Primer trimming
         * [MultiQC](#multiqc) - Aggregate report describing results
         * [DADA2](#dada2) - Infer Amplicon Sequence Variants (ASVs) and taxonomic classification
+            * [Barrnap](#barrnap) - Predict ribosomal RNA sequences
             * [ITSx](#itsx) - Optionally, taxonomic classification can be performed on ITS region only
         * [QIIME2](#qiime2) - Secondary analysis
             * [Taxonomic classification](#taxonomic-classification) - Taxonomical classification of ASVs
@@ -103,6 +104,23 @@ Additionally, DADA2 taxonomically classifies the ASVs using a choice of supplied
     * `*.err.convergence.txt`: Convergence values for DADA2's dada command, should reduce over several magnitudes and approaching 0.
     * `*.err.pdf`: Estimated error rates for each possible transition. The black line shows the estimated error rates after convergence of the machine-learning algorithm. The red line shows the error rates expected under the nominal definition of the Q-score. The estimated error rates (black line) should be a good fit to the observed rates (points), and the error rates should drop with increased quality.
     * `*_qual_stats.pdf`: Overall read quality profiles: heat map of the frequency of each quality score at each base position. The mean quality score at each position is shown by the green line, and the quartiles of the quality score distribution by the orange lines. The red line shows the scaled proportion of reads that extend to at least that position.
+
+</details>
+
+#### Barrnap
+
+Barrnap predicts the location of ribosomal RNA genes in genomes, here it can be used to discriminate rRNA sequences from potential contamination. It supports bacteria (5S,23S,16S), archaea (5S,5.8S,23S,16S), metazoan mitochondria (12S,16S) and eukaryotes (5S,5.8S,28S,18S).
+
+Optionally, ASV sequences can be filtered for rRNA sequences identified by Barrnap with `--filter_ssu` that can take a list of abbreviations of the above supported categories (kingdoms), e.g. `bac,arc,mito,euk`. This filtering takes place after DADA2's ASV computation (i.e. after chimera removal) but _before_ taxonomic classification (also applies to above mentioned taxonomic classification with DADA2, i.e. files `ASV_tax.tsv` & `ASV_tax_species.tsv`).
+
+<details markdown="1">
+<summary>Output files</summary>
+
+* `barrnap/`
+    * `ASV_seqs.ssu.fasta`: Fasta file with filtered ASV sequences.
+    * `AASV_table.ssu.tsv`: Counts for each filtered ASV sequence.
+    * `rrna.<kingdom>.gff`: GFF3 output for rRNA matches per kingdom, where kingdom is one of `bac,arc,mito,euk`.
+    * `stats.ssu.tsv`: Tracking read numbers through filtering, for each sample.
 
 </details>
 

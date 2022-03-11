@@ -96,6 +96,7 @@ include { DADA2_STATS                   } from '../modules/local/dada2_stats'
 include { DADA2_MERGE                   } from '../modules/local/dada2_merge'
 include { BARRNAP                       } from '../modules/local/barrnap'
 include { FILTER_SSU                    } from '../modules/local/filter_ssu'
+include { MERGE_STATS as MERGE_STATS_FILTERSSU } from '../modules/local/merge_stats'
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
 include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
 include { MERGE_STATS                   } from '../modules/local/merge_stats'
@@ -315,6 +316,8 @@ workflow AMPLISEQ {
         BARRNAP ( DADA2_MERGE.out.fasta )
         ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))
         FILTER_SSU ( DADA2_MERGE.out.fasta, DADA2_MERGE.out.asv, BARRNAP.out.matches )
+        MERGE_STATS_FILTERSSU ( ch_stats, FILTER_SSU.out.stats )
+        ch_stats = MERGE_STATS_FILTERSSU.out.tsv
         ch_dada2_fasta = FILTER_SSU.out.fasta
         ch_dada2_asv = FILTER_SSU.out.asv
     } else if (!params.skip_barrnap && !params.filter_ssu) {

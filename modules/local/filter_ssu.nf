@@ -26,15 +26,19 @@ process FILTER_SSU {
     #load packages
     suppressPackageStartupMessages(library(Biostrings))
 
-    #copy selected matches into folder
+    #use only selected kingdom
     dir.create("./selection")
     kingdom <- as.list(strsplit("$kingdom", ",")[[1]])
     for (x in kingdom) {
         file.copy(paste0(x,".matches.txt"), paste0("./selection/",x,".matches.txt"))
     }
+    files = list.files(path = "./selection", pattern="*matches.txt", full.names = TRUE)
+
+    #error if (all) file(s) is/are empty
+    if ( all(file.size(files) == 0L) ) stop("Chosen kingdom(s) by --filter_ssu has no matches. Please choose a diffferent kingdom or omit filtering.")
+    files = files[file.size(files) != 0L]
 
     #read positive ID lists
-    files = list.files(path = "./selection", pattern="*matches.txt", full.names = TRUE)
     list = do.call(rbind, lapply(files, function(x) read.csv(x, stringsAsFactors = FALSE, header = FALSE)))
     list = unique(list)
     colnames(list)[1] <- "ID"

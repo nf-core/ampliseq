@@ -212,6 +212,26 @@
                     "fa_icon": "fas fa-greater-than-equal",
                     "help_text": "Remove reads with length less than `min_len` after trimming and truncation."
                 },
+                "filter_ssu": {
+                    "type": "string",
+                    "description": "Enable SSU filtering. Comma separated list of kingdoms in Barrnap.",
+                    "enum": [
+                        "bac,arc,mito,euk",
+                        "bac",
+                        "arc",
+                        "mito",
+                        "euk",
+                        "bac,arc",
+                        "bac,mito",
+                        "bac,euk",
+                        "arc,mito",
+                        "arc,euk",
+                        "mito,euk",
+                        "bac,arc,mito",
+                        "bac,mito,euk",
+                        "arc,mito,euk"
+                    ]
+                },
                 "dada_tax_agglom_min": {
                     "type": "integer",
                     "default": 2,
@@ -355,6 +375,11 @@
                     "type": "boolean",
                     "default": false,
                     "description": "Skip primer trimming with cutadapt. This is not recommended! Use only in case primer sequences were removed before and the data does not contain any primer sequences."
+                },
+                "skip_barrnap": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Skip annotating SSU matches."
                 },
                 "skip_qiime": {
                     "type": "boolean",

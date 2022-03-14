@@ -7,17 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-* [#385](https://github.com/nf-core/ampliseq/pull/385) - `--skip_cutadapt` allows to skip primer trimmimg. Consequently, `--FW_primer` and `--RV_primer` are not obligatory any more, however primer sequences are still required with `--qiime_ref_taxonomy` and `--cut_dada_ref_taxonomy` (cuts reference with primer sequences).
-* [#390](https://github.com/nf-core/ampliseq/pull/390)- Add values to option `--cut_its`, specifying which ITS part to use. Also, add option `--its_partial <x>` to allow partial ITS sequences longer than given cutoff.
-* [#395](https://github.com/nf-core/ampliseq/pull/395)- `--seed` specifies the random seed.
-* [#396](https://github.com/nf-core/ampliseq/pull/396)- Barrnap annotates ASV sequences for SSU's, it can be skipped with `--skip_barrnap`. `--filter_ssu` takes a comma separated list of "bac,arc,mito,euk" and enables SSU filtering depending on Barrnap (default: off).
+* [#385](https://github.com/nf-core/ampliseq/pull/385) - `--skip_cutadapt` allows to skip primer trimmimg.
+* [#390](https://github.com/nf-core/ampliseq/pull/390) - Add values to option `--cut_its`, specifying which ITS part to use. Also, add option `--its_partial <x>` to allow partial ITS sequences longer than given cutoff.
+* [#395](https://github.com/nf-core/ampliseq/pull/395) - `--seed` specifies the random seed.
+* [#396](https://github.com/nf-core/ampliseq/pull/396) - Barrnap annotates ASV sequences for SSU's, it can be skipped with `--skip_barrnap`. `--filter_ssu` takes a comma separated list of "bac,arc,mito,euk" and enables SSU filtering depending on Barrnap (default: off).
+* [#397](https://github.com/nf-core/ampliseq/pull/397) - Complement README.md with links to the nf-core bytesize 25 (nf-core/ampliseq).
 
 ### `Changed`
 
+* [#385](https://github.com/nf-core/ampliseq/pull/385) - `--FW_primer` and `--RV_primer` are not obligatory any more, however primer sequences are still required with cutadapt (i.e. without `--skip_cutadapt`), `--qiime_ref_taxonomy`, and `--cut_dada_ref_taxonomy` (cuts reference with primer sequences).
+
 ### `Fixed`
 
-* [#384](https://github.com/nf-core/ampliseq/pull/384)- For QIIME2 beta diversity, make directory before execution.
-* [#394](https://github.com/nf-core/ampliseq/pull/394)- Prevent simultaneous usage of `--qiime_ref_taxonomy` and `--classifier`.
+* [#384](https://github.com/nf-core/ampliseq/pull/384) - For QIIME2 beta diversity, make directory before execution.
+* [#394](https://github.com/nf-core/ampliseq/pull/394) - Prevent simultaneous usage of `--qiime_ref_taxonomy` and `--classifier`.
 
 ### `Dependencies`
 

@@ -22,7 +22,7 @@
     > Marcel, M. Cutadapt removes adapter sequences from high-throughput sequencing reads. EMBnet. journal 17.1 (2011): pp-10. doi: 10.14806/ej.17.1.200.
 
 * [Barrnap](https://github.com/tseemann/barrnap)
-    >     Seemann T. barrnap 0.9 : rapid ribosomal RNA prediction. https://github.com/tseemann/barrnap.
+    > Seemann T. barrnap 0.9 : rapid ribosomal RNA prediction.
 
 * [DADA2](https://pubmed.ncbi.nlm.nih.gov/27214047/)
     > Callahan BJ, McMurdie PJ, Rosen MJ, Han AW, Johnson AJ, Holmes SP. DADA2: High-resolution sample inference from Illumina amplicon data. Nat Methods. 2016 Jul;13(7):581-3. doi: 10.1038/nmeth.3869. Epub 2016 May 23. PMID: 27214047; PMCID: PMC4927377.

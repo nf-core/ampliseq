@@ -25,6 +25,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Dependencies`
 
+| Tool | Previous version | New version |
+| --- | --- | --- |
+| MultiQC | 1.11 | 1.12 |
+
 ### `Removed`
 
 ## nf-core/ampliseq version 2.2.0 - 2022-01-31

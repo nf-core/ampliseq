@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [#384](https://github.com/nf-core/ampliseq/pull/384) - For QIIME2 beta diversity, make directory before execution.
 * [#394](https://github.com/nf-core/ampliseq/pull/394) - Prevent simultaneous usage of `--qiime_ref_taxonomy` and `--classifier`.
 * [#402](https://github.com/nf-core/ampliseq/pull/402)- Template update for nf-core/tools version 2.3
+* [#404](https://github.com/nf-core/ampliseq/pull/404) - Rephrase error message for empty input files and empty files after trimming with cutadapt.
 
 ### `Dependencies`
 

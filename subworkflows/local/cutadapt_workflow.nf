@@ -60,8 +60,12 @@ workflow CUTADAPT_WORKFLOW {
         .collect()
         .subscribe {
             samples = it.join("\n")
-            log.error "the following samples had too small file size (<1KB) after trimming with cutadapt:\n$samples\nPlease check whether the correct primer sequences for trimming were supplied. Ignore that issue and samples using `--ignore_failed_trimming`."
-            params.ignore_failed_trimming ? { log.warn "Ignoring failed samples and continue!" } : System.exit(1)
+            if (params.ignore_failed_trimming) {
+                log.warn "The following samples had too small file size (<1KB) after trimming with cutadapt:\n$samples\nIgnoring failed samples and continue!\n"
+            } else {
+                log.error "The following samples had too small file size (<1KB) after trimming with cutadapt:\n$samples\nPlease check whether the correct primer sequences for trimming were supplied. Ignore that samples using `--ignore_failed_trimming`."
+                System.exit(1)
+            }
         }
 
     emit:

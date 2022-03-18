@@ -449,9 +449,11 @@ workflow AMPLISEQ {
             MERGE_STATS_FILTERTAXA (ch_stats, FILTER_STATS.out.tsv)
             ch_asv = QIIME2_FILTERTAXA.out.asv
             ch_seq = QIIME2_FILTERTAXA.out.seq
+            ch_tsv = QIIME2_FILTERTAXA.out.tsv
         } else {
             ch_asv = QIIME2_INASV.out.qza
             ch_seq = QIIME2_INSEQ.out.qza
+            ch_tsv = ch_dada2_asv
         }
         //Export various ASV tables
         if (!params.skip_abundance_tables) {
@@ -481,7 +483,7 @@ workflow AMPLISEQ {
                 ch_metadata,
                 ch_asv,
                 ch_seq,
-                QIIME2_FILTERTAXA.out.tsv,
+                ch_tsv,
                 ch_metacolumn_pairwise,
                 ch_metacolumn_all,
                 params.skip_alpha_rarefaction,

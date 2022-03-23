@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 * [#385](https://github.com/nf-core/ampliseq/pull/385) - `--skip_cutadapt` allows to skip primer trimmimg.
-* [#390](https://github.com/nf-core/ampliseq/pull/390) - Add values to option `--cut_its`, specifying which ITS part to use. Also, add option `--its_partial <x>` to allow partial ITS sequences longer than given cutoff.
+* [#390](https://github.com/nf-core/ampliseq/pull/390), [#408](https://github.com/nf-core/ampliseq/pull/408) - Add values to option `--cut_its`, specifying which ITS part to use. Also, add option `--its_partial <x>` to allow partial ITS sequences longer than given cutoff.
 * [#395](https://github.com/nf-core/ampliseq/pull/395) - `--seed` specifies the random seed.
 * [#396](https://github.com/nf-core/ampliseq/pull/396) - Barrnap annotates ASV sequences for SSU's, it can be skipped with `--skip_barrnap`. `--filter_ssu` takes a comma separated list of "bac,arc,mito,euk" and enables SSU filtering depending on Barrnap (default: off).
 * [#397](https://github.com/nf-core/ampliseq/pull/397) - Complement README.md with links to the nf-core bytesize 25 (nf-core/ampliseq).
@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * [#384](https://github.com/nf-core/ampliseq/pull/384) - For QIIME2 beta diversity, make directory before execution.
 * [#394](https://github.com/nf-core/ampliseq/pull/394) - Prevent simultaneous usage of `--qiime_ref_taxonomy` and `--classifier`.
-* [#402](https://github.com/nf-core/ampliseq/pull/402)- Template update for nf-core/tools version 2.3
+* [#402](https://github.com/nf-core/ampliseq/pull/402) - Template update for nf-core/tools version 2.3
 * [#405](https://github.com/nf-core/ampliseq/pull/405) - Fix omitting taxonomic filtering (QIIME2_FILTERTAXA).
 * [#404](https://github.com/nf-core/ampliseq/pull/404) - Rephrase error message for empty input files and empty files after trimming with cutadapt.
 * [#407](https://github.com/nf-core/ampliseq/pull/407) - Fix reformatting script for Unite.

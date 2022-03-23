@@ -133,9 +133,9 @@ Optionally, the ITS region can be extracted from each ASV sequence using ITSx, a
 
 * `itsx/`
     * `ASV_ITS_seqs.full.fasta`: Fasta file with full ITS region from each ASV sequence.
-    * `ASV_ITS_seqs.ITS2.fasta`: If using --cut_its "its2"; fasta file with ITS2 region from each ASV sequence.
+    * `ASV_ITS_seqs.ITS1.fasta` or `ASV_ITS_seqs.ITS2.fasta`: If using --cut_its "its1" or --cut_its "its2"; fasta file with ITS1 or ITS2 region from each ASV sequence.
     * `ASV_ITS_seqs.full_and_partial.fasta`: If using --its_partial; fasta file with full and partial ITS regions from each ASV sequence.
-    * `ASV_ITS_seqs.ITS2.full_and_partial.fasta`: If using --cut_its "its2" and --its_partial; fasta file with complete and partial ITS2 regions from each ASV sequence.
+    * `ASV_ITS_seqs.ITS1.full_and_partial.fasta` or `ASV_ITS_seqs.ITS2.full_and_partial.fasta`: If using --cut_its "its1" or --cut_its "its2" and --its_partial; fasta file with complete and partial ITS1 or ITS2 regions from each ASV sequence.
     * `ASV_ITS_seqs.summary.txt`: Summary information from ITSx.
     * `ITSx.args.txt`: File with parameters passed to ITSx.
 * `dada2/`

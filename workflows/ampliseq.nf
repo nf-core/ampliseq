@@ -368,6 +368,9 @@ workflow AMPLISEQ {
             if (params.cut_its == "full") {
                 outfile = params.its_partial ? "ASV_ITS_seqs.full_and_partial.fasta" : "ASV_ITS_seqs.full.fasta"
             }
+            else if (params.cut_its == "its1") {
+                outfile =  params.its_partial ? "ASV_ITS_seqs.ITS1.full_and_partial.fasta" : "ASV_ITS_seqs.ITS1.fasta"
+            }
             else if (params.cut_its == "its2") {
                 outfile =  params.its_partial ? "ASV_ITS_seqs.ITS2.full_and_partial.fasta" : "ASV_ITS_seqs.ITS2.fasta"
             }

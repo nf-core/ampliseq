@@ -1,4 +1,4 @@
-# ![nf-core/ampliseq](docs/images/nf-core/ampliseq_logo_light.png#gh-light-mode-only) ![nf-core/ampliseq](docs/images/nf-core/ampliseq_logo_dark.png#gh-dark-mode-only)
+# ![nf-core/ampliseq](docs/images/nf-core-ampliseq_logo_light.png#gh-light-mode-only) ![nf-core/ampliseq](docs/images/nf-core-ampliseq_logo_dark.png#gh-dark-mode-only)
 
 [![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.1493841-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.1493841)
 [![Cite Publication](https://img.shields.io/badge/Cite%20Us!-Cite%20Publication-important)](https://doi.org/10.3389/fmicb.2020.550420)

@@ -32,14 +32,14 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 By default, the pipeline currently performs the following:
 
-* Sequencing quality control ([FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-* Trimming of reads ([Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200))
-* Infer Amplicon Sequence Variants (ASVs) ([DADA2](https://doi.org/10.1038/nmeth.3869))
-* Predict whether ASVs are ribosomal RNA sequences ([Barrnap](https://github.com/tseemann/barrnap))
-* Taxonomical classification using DADA2 or [QIIME2](https://www.nature.com/articles/s41587-019-0209-9)
-* Excludes unwanted taxa, produces absolute and relative feature/taxa count tables and plots, plots alpha rarefaction curves, computes alpha and beta diversity indices and plots thereof ([QIIME2](https://www.nature.com/articles/s41587-019-0209-9))
-* Calls differentially abundant taxa ([ANCOM](https://www.ncbi.nlm.nih.gov/pubmed/26028277))
-* Overall pipeline run summaries ([MultiQC](https://multiqc.info/))
+- Sequencing quality control ([FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
+- Trimming of reads ([Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200))
+- Infer Amplicon Sequence Variants (ASVs) ([DADA2](https://doi.org/10.1038/nmeth.3869))
+- Predict whether ASVs are ribosomal RNA sequences ([Barrnap](https://github.com/tseemann/barrnap))
+- Taxonomical classification using DADA2 or [QIIME2](https://www.nature.com/articles/s41587-019-0209-9)
+- Excludes unwanted taxa, produces absolute and relative feature/taxa count tables and plots, plots alpha rarefaction curves, computes alpha and beta diversity indices and plots thereof ([QIIME2](https://www.nature.com/articles/s41587-019-0209-9))
+- Calls differentially abundant taxa ([ANCOM](https://www.ncbi.nlm.nih.gov/pubmed/26028277))
+- Overall pipeline run summaries ([MultiQC](https://multiqc.info/))
 
 ## Quick Start
 
@@ -62,10 +62,10 @@ By default, the pipeline currently performs the following:
 
 4. Start running your own analysis!
 
-    ```console
-    #16S rRNA gene amplicon analysis of Illumina paired-end data
-    nextflow run nf-core/ampliseq -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input "data" --FW_primer "GTGYCAGCMGCCGCGGTAA" --RV_primer "GGACTACNVGGGTWTCTAAT" --metadata "data/Metadata.tsv" --outdir <OUTDIR>
-    ```
+   ```console
+   #16S rRNA gene amplicon analysis of Illumina paired-end data
+   nextflow run nf-core/ampliseq -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input "data" --FW_primer "GTGYCAGCMGCCGCGGTAA" --RV_primer "GGACTACNVGGGTWTCTAAT" --metadata "data/Metadata.tsv" --outdir <OUTDIR>
+   ```
 
 See [usage docs](https://nf-co.re/ampliseq/usage) and [parameter docs](https://nf-co.re/ampliseq/parameters) for all of the available options when running the pipeline.
 
@@ -79,11 +79,11 @@ nf-core/ampliseq was originally written by Daniel Straub ([@d4straub](https://gi
 
 We thank the following people for their extensive assistance in the development of this pipeline (in alphabetical order):
 
-* [Daniel Lundin](https://github.com/erikrikarddaniel)
-* [Diego Brambilla](https://github.com/DiegoBrambilla)
-* [Emelie Nilsson](https://github.com/emnilsson)
-* [Jeanette Tångrot](https://github.com/jtangrot)
-* [Sabrina Krakau](https://github.com/skrakau)
+- [Daniel Lundin](https://github.com/erikrikarddaniel)
+- [Diego Brambilla](https://github.com/DiegoBrambilla)
+- [Emelie Nilsson](https://github.com/emnilsson)
+- [Jeanette Tångrot](https://github.com/jtangrot)
+- [Sabrina Krakau](https://github.com/skrakau)
 
 ## Contributions and Support
 
@@ -94,6 +94,7 @@ For further information or help, don't hesitate to get in touch on the [Slack `#
 ## Citations
 
 If you use `nf-core/ampliseq` for your analysis, please cite the `ampliseq` article as follows:
+
 > Daniel Straub, Nia Blackwell, Adrian Langarica-Fuentes, Alexander Peltzer, Sven Nahnsen, Sara Kleindienst **Interpretations of Environmental Microbial Community Studies Are Biased by the Selected 16S rRNA (Gene) Amplicon Sequencing Pipeline** _Frontiers in Microbiology_ 2020, 11:2652 [doi: 10.3389/fmicb.2020.550420](https://doi.org/10.3389/fmicb.2020.550420).
 
 You can cite the `nf-core/ampliseq` zenodo record for a specific version using the following [doi: 10.5281/zenodo.1493841](https://zenodo.org/badge/latestdoi/150448201)

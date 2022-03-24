@@ -1,5 +1,5 @@
 repository_type: pipeline
 
 lint:
-    files_exist:
-        - conf/igenomes.config
+  files_exist:
+    - conf/igenomes.config

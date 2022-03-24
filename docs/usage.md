@@ -51,25 +51,25 @@ Where `sample1` and `sample2` were sequenced in one sequencing run and `sample3`
 
 Please note the following additional requirements:
 
-* Files names must be unique
-* Valid file extensions: `.fastq.gz`, `.fq.gz` (files must be compressed)
-* The path must be enclosed in quotes
-* `--extension` must have at least one `*` wildcard character
-* When using the pipeline with paired end data, the `--extension` must use `{1,2}` (or similar) notation to specify read pairs
-* To run single-end data you must additionally specify `--single_end` and `--extension` may not include curly brackets `{}`
-* Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique (also across sequencing runs)
-* If your data is scattered, produce a sample sheet
+- Files names must be unique
+- Valid file extensions: `.fastq.gz`, `.fq.gz` (files must be compressed)
+- The path must be enclosed in quotes
+- `--extension` must have at least one `*` wildcard character
+- When using the pipeline with paired end data, the `--extension` must use `{1,2}` (or similar) notation to specify read pairs
+- To run single-end data you must additionally specify `--single_end` and `--extension` may not include curly brackets `{}`
+- Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique (also across sequencing runs)
+- If your data is scattered, produce a sample sheet
 
 ### Samplesheet input
 
 The sample sheet file is an alternative way to provide input reads, it must be a tab-separated file ending with `.tsv` that must have two to four columns with the following headers:
 
-| Column | Necessity | Description |
-|-|-|-|
-| sampleID | required | Unique sample identifiers |
-| forwardReads | required | Paths to (forward) reads zipped FastQ files |
-| reverseReads | optional | Paths to reverse reads zipped FastQ files, required if the data is paired-end |
-| run | optional | If the data was produced by multiple sequencing runs, any string |
+| Column       | Necessity | Description                                                                   |
+| ------------ | --------- | ----------------------------------------------------------------------------- |
+| sampleID     | required  | Unique sample identifiers                                                     |
+| forwardReads | required  | Paths to (forward) reads zipped FastQ files                                   |
+| reverseReads | optional  | Paths to reverse reads zipped FastQ files, required if the data is paired-end |
+| run          | optional  | If the data was produced by multiple sequencing runs, any string              |
 
 ```console
 --input 'path/to/samplesheet.tsv'
@@ -87,15 +87,15 @@ sample4    ./a.fastq.gz    ./b.fastq.gz    B
 
 Please note the following requirements:
 
-* 2 to 4 tab-seperated columns
-* Valid file extension: `.tsv`
-* Must contain the header `sampleID` and `forwardReads`
-* May contain the header `reverseReads` and `run`
-* Sample IDs must be unique
-* Sample IDs must not contain a dot `.`
-* Sample IDs starting with a number are not allowed when using metadata (because these strings will be modified)
-* FastQ files must be compressed (`.fastq.gz`, `.fq.gz`)
-* Within one samplesheet, only one type of raw data should be specified (same amplicon & sequencing method)
+- 2 to 4 tab-seperated columns
+- Valid file extension: `.tsv`
+- Must contain the header `sampleID` and `forwardReads`
+- May contain the header `reverseReads` and `run`
+- Sample IDs must be unique
+- Sample IDs must not contain a dot `.`
+- Sample IDs starting with a number are not allowed when using metadata (because these strings will be modified)
+- FastQ files must be compressed (`.fastq.gz`, `.fq.gz`)
+- Within one samplesheet, only one type of raw data should be specified (same amplicon & sequencing method)
 
 An [example samplesheet](../assets/samplesheet.tsv) has been provided with the pipeline.
 
@@ -109,7 +109,7 @@ When pointing at a file ending with `.fasta`, `.fna` or `.fa`, the containing se
 
 Please note the following requirements:
 
-* Valid file extensions: `.fasta`, `.fna` or `.fa`
+- Valid file extensions: `.fasta`, `.fna` or `.fa`
 
 ### Metadata
 

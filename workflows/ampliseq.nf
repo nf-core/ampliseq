@@ -23,7 +23,7 @@ if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input sample
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-ch_multiqc_config        = file("$projectDir/assets/multiqc_config.yaml", checkIfExists: true)
+ch_multiqc_config        = file("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
 ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config) : Channel.empty()
 
 /*
@@ -369,6 +369,9 @@ workflow AMPLISEQ {
             if (params.cut_its == "full") {
                 outfile = params.its_partial ? "ASV_ITS_seqs.full_and_partial.fasta" : "ASV_ITS_seqs.full.fasta"
             }
+            else if (params.cut_its == "its1") {
+                outfile =  params.its_partial ? "ASV_ITS_seqs.ITS1.full_and_partial.fasta" : "ASV_ITS_seqs.ITS1.fasta"
+            }
             else if (params.cut_its == "its2") {
                 outfile =  params.its_partial ? "ASV_ITS_seqs.ITS2.full_and_partial.fasta" : "ASV_ITS_seqs.ITS2.fasta"
             }
@@ -450,9 +453,11 @@ workflow AMPLISEQ {
             MERGE_STATS_FILTERTAXA (ch_stats, FILTER_STATS.out.tsv)
             ch_asv = QIIME2_FILTERTAXA.out.asv
             ch_seq = QIIME2_FILTERTAXA.out.seq
+            ch_tsv = QIIME2_FILTERTAXA.out.tsv
         } else {
             ch_asv = QIIME2_INASV.out.qza
             ch_seq = QIIME2_INSEQ.out.qza
+            ch_tsv = ch_dada2_asv
         }
         //Export various ASV tables
         if (!params.skip_abundance_tables) {
@@ -482,7 +487,7 @@ workflow AMPLISEQ {
                 ch_metadata,
                 ch_asv,
                 ch_seq,
-                QIIME2_FILTERTAXA.out.tsv,
+                ch_tsv,
                 ch_metacolumn_pairwise,
                 ch_metacolumn_all,
                 params.skip_alpha_rarefaction,

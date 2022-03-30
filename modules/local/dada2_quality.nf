@@ -33,7 +33,7 @@ process DADA2_QUALITY {
     #use only the first x files when read number gets above 2147483647, read numbers above that do not fit into an INT and crash the process!
     if ( sum(readfiles_length) > 2147483647 ) {
         for (i in length(readfiles):1) {
-	        if ( sum(readfiles_length[1:i]) <= 2147483647 ) {
+            if ( sum(readfiles_length[1:i]) <= 2147483647 ) {
                 max_files = i
                 break
             }

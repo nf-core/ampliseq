@@ -29,16 +29,17 @@ process DADA2_QUALITY {
 
     #make list of number of sequences
     readfiles_length <- countLines(readfiles) / 4
+    sum_readfiles_length <- sum(readfiles_length)
 
     #use only the first x files when read number gets above 2147483647, read numbers above that do not fit into an INT and crash the process!
-    if ( sum(readfiles_length) > 2147483647 ) {
+    if ( sum_readfiles_length > 2147483647 ) {
         for (i in length(readfiles):1) {
             if ( sum(readfiles_length[1:i]) <= 2147483647 ) {
                 max_files = i
                 break
             }
         }
-        write.table(max_files, file = paste0("WARNING Only ",max_files," of ",length(readfiles)," files and ",sum(readfiles_length[1:max_files])," of ",sum(readfiles_length)," reads were used for ${meta} plotQualityProfile.txt"), row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+        write.table(max_files, file = paste0("WARNING Only ",max_files," of ",length(readfiles)," files and ",sum(readfiles_length[1:max_files])," of ",sum_readfiles_length," reads were used for ${meta} plotQualityProfile.txt"), row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
         readfiles <- readfiles[1:max_files]
     } else {
         max_files <- length(readfiles)

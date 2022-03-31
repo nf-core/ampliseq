@@ -83,6 +83,7 @@ We thank the following people for their extensive assistance in the development 
 - [Diego Brambilla](https://github.com/DiegoBrambilla)
 - [Emelie Nilsson](https://github.com/emnilsson)
 - [Jeanette Tångrot](https://github.com/jtangrot)
+- [Marissa Dubbelaar](https://github.com/marissaDubbelaar)
 - [Sabrina Krakau](https://github.com/skrakau)
 
 ## Contributions and Support

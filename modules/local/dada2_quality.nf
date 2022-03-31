@@ -13,12 +13,51 @@ process DADA2_QUALITY {
     output:
     path "${meta}_qual_stats.pdf"            , emit: pdf
     tuple val(meta), path("*_qual_stats.tsv"), emit: tsv
+    path "versions.yml"                      , emit: versions
     path "*.args.txt"                        , emit: args
+    path "*plotQualityProfile.txt"           , emit: warning
 
     script:
     def args = task.ext.args ?: ''
     """
-    dada_quality.r "${meta}_qual_stats" $args
-    echo 'plotQualityProfile\t$args' > "plotQualityProfile.args.txt"
+    #!/usr/bin/env Rscript
+
+    suppressPackageStartupMessages(library(dada2))
+    suppressPackageStartupMessages(library(ShortRead))
+
+    readfiles <- sort(list.files(".", pattern = ".fastq.gz", full.names = TRUE))
+
+    #make list of number of sequences
+    readfiles_length <- countLines(readfiles) / 4
+    sum_readfiles_length <- sum(readfiles_length)
+
+    #use only the first x files when read number gets above 2147483647, read numbers above that do not fit into an INT and crash the process!
+    if ( sum_readfiles_length > 2147483647 ) {
+        max_files = length(which(cumsum(readfiles_length) <= 2147483647 ))
+        write.table(max_files, file = paste0("WARNING Only ",max_files," of ",length(readfiles)," files and ",sum(readfiles_length[1:max_files])," of ",sum_readfiles_length," reads were used for ${meta} plotQualityProfile.txt"), row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+        readfiles <- readfiles[1:max_files]
+    } else {
+        max_files <- length(readfiles)
+        write.table(max_files, file = paste0(max_files," files were used for ${meta} plotQualityProfile.txt"), row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+    }
+
+    plot <- plotQualityProfile(readfiles$args)
+    data <- plot\$data
+
+    #aggregate data for each sequencing cycle
+    df <- data.frame(
+        Count = aggregate(data\$Count, list(data\$Cycle), sum),
+        Median = aggregate(rep(data\$Score, data\$Count), list(rep(data\$Cycle, data\$Count)), median)[2]
+    )
+    colnames(df) <- c("Cycle", "Count", "Median")
+
+    #write output
+    write.table( t(df), file = paste0("${meta}_qual_stats",".tsv"), sep = "\t", row.names = TRUE, col.names = FALSE, quote = FALSE)
+    pdf(paste0("${meta}_qual_stats",".pdf"))
+    plot
+    dev.off()
+
+    write.table(paste0('plotQualityProfile\t$args\nmax_files\t',max_files), file = "plotQualityProfile.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+    writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")),paste0("    ShortRead: ", packageVersion("ShortRead")) ), "versions.yml")
     """
 }

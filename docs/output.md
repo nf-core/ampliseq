@@ -260,7 +260,7 @@ Alpha diversity measures the species diversity within samples. Diversity calcula
 
 Beta diversity measures the species community differences between samples. Diversity calculations are based on sub-sampled data rarefied to the minimum read count of all samples. This step calculates beta diversity distances using various methods and performs pairwise comparisons of groups of samples.
 Additionally, principle coordinates analysis (PCoA) plots are produced that can be visualized with [Emperor](https://biocore.github.io/emperor/build/html/index.html) in your default browser without the need for installation. This calculations are based on a phylogenetic tree of all ASV sequences.
-Furthermore, ADONIS permutation-based statistical test in vegan-R determine whether groups of samples are significantly different from one another. By default, all metadata columns that are for suitable pairwise comparisons will be tranformed into a formula, e.g. "treatment1+treatment2". A custom formula can be supplied with `--qiime_adonis_formula`.
+Furthermore, ADONIS permutation-based statistical test in vegan-R determine whether groups of samples are significantly different from one another. This test will only be executed when a custom formula is supplied with `--qiime_adonis_formula`. ADONIS computes an R2 value (effect size) which shows the percentage of variation explained by a condition, as well as a p-value to determine the statistical significance. The sequence of conditions in the formula matters, the variance of factors is removed (statistically controlled for) from beginning to end of the formula. E.g. formula "A+B" determines the effect size of "B" while controlling for "A".
 
 **The following methods are used to calculate community dissimilarities:**
 

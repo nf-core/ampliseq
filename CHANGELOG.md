@@ -3,13 +3,15 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## nf-core/ampliseq version 2.4.0dev
+## nf-core/ampliseq version 2.3.1 - 2022-04-05
 
 ### `Added`
 
 ### `Changed`
 
 ### `Fixed`
+
+- [#415](https://github.com/nf-core/ampliseq/pull/415) - ADONIS test was running by default in version 2.2.0 and 2.3.0 on metadata columns that did not always have the required format, now specifying `--qiime_adonis_formula` is required to run that step.
 
 ### `Dependencies`
 

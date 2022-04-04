@@ -16,10 +16,11 @@ process RENAME_RAW_DATA_FILES {
 
     script:
     // Add soft-links to original FastQs for consistent naming in pipeline
+    def args        = task.ext.args ?: 'ln -s'
     if (meta.single_end) {
         """
         if [ ! -f  ${meta.id}.fastq.gz ]; then
-            ln -s $reads ${meta.id}.fastq.gz
+            $args $reads ${meta.id}.fastq.gz
         else
             touch ${meta.id}.fastq.gz
         fi
@@ -31,8 +32,8 @@ process RENAME_RAW_DATA_FILES {
         """
     } else {
         """
-        [ -f "${meta.id}_1.fastq.gz" ] || ln -s "${reads[0]}" "${meta.id}_1.fastq.gz"
-        [ -f "${meta.id}_2.fastq.gz" ] || ln -s "${reads[1]}" "${meta.id}_2.fastq.gz"
+        [ -f "${meta.id}_1.fastq.gz" ] || $args "${reads[0]}" "${meta.id}_1.fastq.gz"
+        [ -f "${meta.id}_2.fastq.gz" ] || $args "${reads[1]}" "${meta.id}_2.fastq.gz"
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":

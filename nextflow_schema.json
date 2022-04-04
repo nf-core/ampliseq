@@ -36,11 +36,7 @@
                     "fa_icon": "fas fa-file-csv"
                 }
             },
-            "required": [
-                "input",
-                "FW_primer",
-                "RV_primer"
-            ],
+            "required": ["input", "outdir"],
             "fa_icon": "fas fa-terminal"
         },
         "other_input_output_options": {
@@ -62,8 +58,17 @@
                     "description": "If data is single-ended Illumina reads instead of paired-end"
                 },
                 "cut_its": {
-                    "type": "boolean",
-                    "description": "If data is long read ITS sequences, that need to be cut to ITS region only for taxonomy assignment"
+                    "type": "string",
+                    "help_text": "If data is long read ITS sequences, that need to be cut to ITS region (full ITS, only ITS1, or only ITS2) for taxonomy assignment.",
+                    "description": "Part of ITS region to use for taxonomy assignment: \"full\", \"its1\", or \"its2\"",
+                    "default": "none",
+                    "enum": ["none", "full", "its1", "its2"]
+                },
+                "its_partial": {
+                    "type": "integer",
+                    "help_text": "If using cut_its, this option allows partial ITS sequences, longer than the specified cutoff.",
+                    "description": "Cutoff for partial ITS sequences. Only full sequences by default.",
+                    "default": 0
                 },
                 "multiple_sequencing_runs": {
                     "type": "boolean",
@@ -86,11 +91,7 @@
                     "default": "independent",
                     "help_text": "If samples are treated independent (lowest sensitivity and lowest resources), pooled (highest sensitivity and resources) or pseudo-pooled (balance between required resources and sensitivity).",
                     "description": "Mode of sample inference: \"independent\", \"pooled\" or \"pseudo\"",
-                    "enum": [
-                        "independent",
-                        "pooled",
-                        "pseudo"
-                    ]
+                    "enum": ["independent", "pooled", "pseudo"]
                 },
                 "metadata_category": {
                     "type": "string",
@@ -116,10 +117,15 @@
                     "type": "boolean",
                     "description": "If data should be exported in SBDI (Swedish biodiversity infrastructure) Excel format."
                 },
+                "seed": {
+                    "type": "integer",
+                    "default": 100,
+                    "description": "Specifies the random seed."
+                },
                 "outdir": {
                     "type": "string",
-                    "description": "Path to the output directory where the results will be saved.",
-                    "default": "./results",
+                    "format": "directory-path",
+                    "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "email": {
@@ -195,6 +201,26 @@
                     "description": "DADA2 read filtering option",
                     "fa_icon": "fas fa-greater-than-equal",
                     "help_text": "Remove reads with length less than `min_len` after trimming and truncation."
+                },
+                "filter_ssu": {
+                    "type": "string",
+                    "description": "Enable SSU filtering. Comma separated list of kingdoms in Barrnap.",
+                    "enum": [
+                        "bac,arc,mito,euk",
+                        "bac",
+                        "arc",
+                        "mito",
+                        "euk",
+                        "bac,arc",
+                        "bac,mito",
+                        "bac,euk",
+                        "arc,mito",
+                        "arc,euk",
+                        "mito,euk",
+                        "bac,arc,mito",
+                        "bac,mito,euk",
+                        "arc,mito,euk"
+                    ]
                 },
                 "dada_tax_agglom_min": {
                     "type": "integer",
@@ -335,6 +361,16 @@
                     "default": false,
                     "description": "Skip FastQC"
                 },
+                "skip_cutadapt": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Skip primer trimming with cutadapt. This is not recommended! Use only in case primer sequences were removed before and the data does not contain any primer sequences."
+                },
+                "skip_barrnap": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Skip annotating SSU matches."
+                },
                 "skip_qiime": {
                     "type": "boolean",
                     "default": false,
@@ -447,6 +483,15 @@
                     "type": "boolean",
                     "description": "Display help text.",
                     "fa_icon": "fas fa-question-circle",
+                    "hidden": true
+                },
+                "publish_dir_mode": {
+                    "type": "string",
+                    "default": "copy",
+                    "description": "Method used to save pipeline results to output directory.",
+                    "help_text": "The Nextflow `publishDir` option specifies which intermediate files should be saved to the output directory. This option tells the pipeline what method should be used to move these files. See [Nextflow docs](https://www.nextflow.io/docs/latest/process.html#publishdir) for details.",
+                    "fa_icon": "fas fa-copy",
+                    "enum": ["symlink", "rellink", "link", "copy", "copyNoFollow", "move"],
                     "hidden": true
                 },
                 "email_on_fail": {

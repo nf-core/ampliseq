@@ -1,7 +1,7 @@
 /*
-========================================================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     VALIDATE INPUTS
-========================================================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
 def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
@@ -16,16 +16,14 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 
 // Check mandatory parameters
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
-if (!params.FW_primer) { exit 1, "Option --FW_primer missing" }
-if (!params.RV_primer) { exit 1, "Option --RV_primer missing" }
 
 /*
-========================================================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     CONFIG FILES
-========================================================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-ch_multiqc_config        = file("$projectDir/assets/multiqc_config.yaml", checkIfExists: true)
+ch_multiqc_config        = file("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
 ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config) : Channel.empty()
 
 /*
@@ -81,6 +79,11 @@ if ( !single_end && !params.illumina_pe_its && (params.trunclenf == null || para
     log.warn "No DADA2 cutoffs were specified (`--trunclenf` & --`trunclenr`), therefore reads will be truncated where median quality drops below ${params.trunc_qmin} (defined by `--trunc_qmin`) but at least a fraction of ${params.trunc_rmin} (defined by `--trunc_rmin`) of the reads will be retained.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
 } else { find_truncation_values = false }
 
+if ( !is_fasta_input && (!params.FW_primer || !params.RV_primer) && !params.skip_cutadapt ) {
+    log.error "Incompatible parameters: `--FW_primer` and `--RV_primer` are required for primer trimming. If primer trimming is not needed, use `--skip_cutadapt`."
+    System.exit(1)
+}
+
 metadata_category = params.metadata_category ?: ""
 
 //only run QIIME2 when taxonomy is actually calculated and all required data is available
@@ -91,7 +94,7 @@ if ( !params.enable_conda && !params.skip_taxonomy && !params.skip_qiime ) {
 /*
 ========================================================================================
     IMPORT LOCAL MODULES/SUBWORKFLOWS
-========================================================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
 include { RENAME_RAW_DATA_FILES         } from '../modules/local/rename_raw_data_files'
@@ -103,6 +106,9 @@ include { DADA2_DENOISING               } from '../modules/local/dada2_denoising
 include { DADA2_RMCHIMERA               } from '../modules/local/dada2_rmchimera'
 include { DADA2_STATS                   } from '../modules/local/dada2_stats'
 include { DADA2_MERGE                   } from '../modules/local/dada2_merge'
+include { BARRNAP                       } from '../modules/local/barrnap'
+include { FILTER_SSU                    } from '../modules/local/filter_ssu'
+include { MERGE_STATS as MERGE_STATS_FILTERSSU } from '../modules/local/merge_stats'
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
 include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
 include { MERGE_STATS                   } from '../modules/local/merge_stats'
@@ -138,9 +144,9 @@ include { QIIME2_DIVERSITY              } from '../subworkflows/local/qiime2_div
 include { QIIME2_ANCOM                  } from '../subworkflows/local/qiime2_ancom'
 
 /*
-========================================================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
-========================================================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
 //
@@ -153,9 +159,9 @@ include { MULTIQC                           } from '../modules/nf-core/modules/m
 include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
 
 /*
-========================================================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
-========================================================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
 // Info required for completion email and summary
@@ -189,12 +195,16 @@ workflow AMPLISEQ {
     //
     // MODULE: Cutadapt
     //
-    CUTADAPT_WORKFLOW (
-        RENAME_RAW_DATA_FILES.out.fastq,
-        params.illumina_pe_its,
-        params.double_primer
-    ).reads.set { ch_trimmed_reads }
-    ch_versions = ch_versions.mix(CUTADAPT_WORKFLOW.out.versions.first())
+    if (!params.skip_cutadapt) {
+        CUTADAPT_WORKFLOW (
+            RENAME_RAW_DATA_FILES.out.fastq,
+            params.illumina_pe_its,
+            params.double_primer
+        ).reads.set { ch_trimmed_reads }
+        ch_versions = ch_versions.mix(CUTADAPT_WORKFLOW.out.versions.first())
+    } else {
+        ch_trimmed_reads = RENAME_RAW_DATA_FILES.out.fastq
+    }
 
     //
     // SUBWORKFLOW / MODULES : ASV generation with DADA2
@@ -222,6 +232,7 @@ workflow AMPLISEQ {
             .set { ch_all_trimmed_reads }
     }
     DADA2_QUALITY ( ch_all_trimmed_reads )
+    DADA2_QUALITY.out.warning.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","DADA2_QUALITY: ") }
 
     //find truncation values in case they are not supplied
     if ( find_truncation_values ) {
@@ -245,7 +256,7 @@ workflow AMPLISEQ {
     ch_trimmed_reads.combine(ch_trunc).set { ch_trimmed_reads }
 
     //filter reads
-    DADA2_FILTNTRIM ( ch_trimmed_reads )
+    DADA2_FILTNTRIM ( ch_trimmed_reads.dump(tag: 'into_filtntrim')  )
     //ch_versions = ch_versions.mix(DADA2_FILTNTRIM.out.versions.first())
 
     //group by sequencing run
@@ -305,14 +316,41 @@ workflow AMPLISEQ {
         DADA2_RMCHIMERA.out.rds.map { meta, rds -> rds }.collect() )
 
     //merge cutadapt_summary and dada_stats files
-    MERGE_STATS (CUTADAPT_WORKFLOW.out.summary, DADA2_MERGE.out.dada2stats)
+    if (!params.skip_cutadapt) {
+        MERGE_STATS (CUTADAPT_WORKFLOW.out.summary, DADA2_MERGE.out.dada2stats)
+        ch_stats = MERGE_STATS.out.tsv
+    } else {
+        ch_stats = DADA2_MERGE.out.dada2stats
+    }
+
+    //
+    // Modules : Filter rRNA
+    // TODO: FILTER_SSU.out.stats needs to be merged still into "overall_summary.tsv"
+    //
+    if (!params.skip_barrnap && params.filter_ssu) {
+        BARRNAP ( DADA2_MERGE.out.fasta )
+        ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))
+        FILTER_SSU ( DADA2_MERGE.out.fasta, DADA2_MERGE.out.asv, BARRNAP.out.matches )
+        MERGE_STATS_FILTERSSU ( ch_stats, FILTER_SSU.out.stats )
+        ch_stats = MERGE_STATS_FILTERSSU.out.tsv
+        ch_dada2_fasta = FILTER_SSU.out.fasta
+        ch_dada2_asv = FILTER_SSU.out.asv
+    } else if (!params.skip_barrnap && !params.filter_ssu) {
+        BARRNAP ( DADA2_MERGE.out.fasta )
+        ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))
+        ch_dada2_fasta =  DADA2_MERGE.out.fasta
+        ch_dada2_asv = DADA2_MERGE.out.asv
+    } else {
+        ch_dada2_fasta =  DADA2_MERGE.out.fasta
+        ch_dada2_asv = DADA2_MERGE.out.asv
+    }
 
     //
     // SUBWORKFLOW / MODULES : Taxonomic classification with DADA2 and/or QIIME2
     //
     //Alternative entry point for fasta that is being classified
     if ( !is_fasta_input ) {
-        ch_fasta = DADA2_MERGE.out.fasta
+        ch_fasta = ch_dada2_fasta
     }
 
     //DADA2
@@ -360,6 +398,9 @@ workflow AMPLISEQ {
         } else {
             if (params.cut_its == "full") {
                 outfile = params.its_partial ? "ASV_ITS_seqs.full_and_partial.fasta" : "ASV_ITS_seqs.full.fasta"
+            }
+            else if (params.cut_its == "its1") {
+                outfile =  params.its_partial ? "ASV_ITS_seqs.ITS1.full_and_partial.fasta" : "ASV_ITS_seqs.ITS1.fasta"
             }
             else if (params.cut_its == "its2") {
                 outfile =  params.its_partial ? "ASV_ITS_seqs.ITS2.full_and_partial.fasta" : "ASV_ITS_seqs.ITS2.fasta"
@@ -415,7 +456,7 @@ workflow AMPLISEQ {
     //
     if ( run_qiime2 ) {
         //Import ASV abundance table and sequences into QIIME2
-        QIIME2_INASV ( DADA2_MERGE.out.asv )
+        QIIME2_INASV ( ch_dada2_asv )
         QIIME2_INSEQ ( ch_fasta )
 
         //Import taxonomic classification into QIIME2, if available
@@ -451,14 +492,16 @@ workflow AMPLISEQ {
                 params.min_samples,
                 params.exclude_taxa
             )
-            FILTER_STATS ( DADA2_MERGE.out.asv, QIIME2_FILTERTAXA.out.tsv )
+            FILTER_STATS ( ch_dada2_asv, QIIME2_FILTERTAXA.out.tsv )
             ch_versions = ch_versions.mix( FILTER_STATS.out.versions.ifEmpty(null) )
-            MERGE_STATS_FILTERTAXA (MERGE_STATS.out.tsv, FILTER_STATS.out.tsv)
+            MERGE_STATS_FILTERTAXA (ch_stats, FILTER_STATS.out.tsv)
             ch_asv = QIIME2_FILTERTAXA.out.asv
             ch_seq = QIIME2_FILTERTAXA.out.seq
+            ch_tsv = QIIME2_FILTERTAXA.out.tsv
         } else {
             ch_asv = QIIME2_INASV.out.qza
             ch_seq = QIIME2_INSEQ.out.qza
+            ch_tsv = ch_dada2_asv
         }
         //Export various ASV tables
         if (!params.skip_abundance_tables) {
@@ -488,7 +531,7 @@ workflow AMPLISEQ {
                 ch_metadata,
                 ch_asv,
                 ch_seq,
-                QIIME2_FILTERTAXA.out.tsv,
+                ch_tsv,
                 ch_metacolumn_pairwise,
                 ch_metacolumn_all,
                 params.skip_alpha_rarefaction,
@@ -516,7 +559,7 @@ workflow AMPLISEQ {
         if ( run_qiime2 && !params.skip_abundance_tables && ( params.dada_ref_taxonomy || params.qiime_ref_taxonomy || params.classifier ) && !params.skip_taxonomy ) {
             PICRUST ( QIIME2_EXPORT.out.abs_fasta, QIIME2_EXPORT.out.abs_tsv, "QIIME2", "This Picrust2 analysis is based on filtered reads from QIIME2" )
         } else {
-            PICRUST ( ch_fasta, DADA2_MERGE.out.asv, "DADA2", "This Picrust2 analysis is based on unfiltered reads from DADA2" )
+            PICRUST ( ch_fasta, ch_dada2_asv, "DADA2", "This Picrust2 analysis is based on unfiltered reads from DADA2" )
         }
         ch_versions = ch_versions.mix(PICRUST.out.versions.ifEmpty(null))
     }
@@ -525,7 +568,7 @@ workflow AMPLISEQ {
     // MODULE: Export data in SBDI's (Swedish biodiversity infrastructure) format
     //
     if ( params.sbdiexport ) {
-        SBDIEXPORT ( DADA2_MERGE.out.asv, DADA2_ADDSPECIES.out.tsv, ch_metadata  )
+        SBDIEXPORT ( ch_dada2_asv, DADA2_ADDSPECIES.out.tsv, ch_metadata  )
         ch_versions = ch_versions.mix(SBDIEXPORT.out.versions.first())
         SBDIEXPORTREANNOTATE ( DADA2_ADDSPECIES.out.tsv )
     }
@@ -549,7 +592,9 @@ workflow AMPLISEQ {
         if (!params.skip_fastqc) {
             ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
         }
-        ch_multiqc_files = ch_multiqc_files.mix(CUTADAPT_WORKFLOW.out.logs.collect{it[1]}.ifEmpty([]))
+        if (!params.skip_cutadapt) {
+            ch_multiqc_files = ch_multiqc_files.mix(CUTADAPT_WORKFLOW.out.logs.collect{it[1]}.ifEmpty([]))
+        }
 
         MULTIQC (
             ch_multiqc_files.collect()
@@ -560,9 +605,9 @@ workflow AMPLISEQ {
 }
 
 /*
-========================================================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     COMPLETION EMAIL AND SUMMARY
-========================================================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
 workflow.onComplete {
@@ -573,7 +618,7 @@ workflow.onComplete {
 }
 
 /*
-========================================================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     THE END
-========================================================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */

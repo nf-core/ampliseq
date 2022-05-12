@@ -149,6 +149,16 @@
                     "help_text": "When read sequences are trimmed, untrimmed read pairs are discarded routinely. Use this option to retain untrimmed read pairs. This is usually not recommended and is only of advantage for specific protocols that prevent sequencing PCR primers. ",
                     "fa_icon": "far fa-plus-square"
                 },
+                "cutadapt_min_overlap": {
+                    "type": "integer",
+                    "default": 3,
+                    "description": "Sets the minimum overlap for valid matches of primer sequences with reads for cutadapt (-O)."
+                },
+                "cutadapt_max_error_rate": {
+                    "type": "number",
+                    "default": 0.1,
+                    "description": "Sets the maximum error rate for valid matches of primer sequences with reads for cutadapt (-e)."
+                },
                 "double_primer": {
                     "type": "boolean",
                     "description": "Cutadapt will be run twice to ensure removal of potential double primers",

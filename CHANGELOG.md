@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
+- [#428](https://github.com/nf-core/ampliseq/pull/428) - Fixed samplesheet sampleID entries, now allows dashes.
+
 ### `Dependencies`
 
 ### `Removed`

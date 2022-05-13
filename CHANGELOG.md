@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 - [#429](https://github.com/nf-core/ampliseq/pull/429) - `--cutadapt_min_overlap` sets cutadapt's global minimum overlap (`-O`) and `--cutadapt_max_error_rate` sets cutadapt's global maximum error rate (`-e`) for trimming primer sequences.
-- [#431](https://github.com/nf-core/ampliseq/pull/431) - `--skip_dada_quality` allows to skip quality check with DADA2. This is not only allowed when `--trunclenf` and `--trunclenr` are set.
+- [#431](https://github.com/nf-core/ampliseq/pull/431) - `--skip_dada_quality` allows to skip quality check with DADA2. This is only allowed when `--trunclenf` and `--trunclenr` are set.
 
 ### `Changed`
 

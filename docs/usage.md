@@ -77,13 +77,12 @@ The sample sheet file is an alternative way to provide input reads, it must be a
 
 For example, the samplesheet may contain:
 
-```console
-sampleID    forwardReads    reverseReads    run
-sample1    ./data/S1_R1_001.fastq.gz    ./data/S1_R2_001.fastq.gz    A
-sample2    ./data/S2_fw.fastq.gz    ./data/S2_rv.fastq.gz    A
-sample3    ./S4x.fastq.gz    ./S4y.fastq.gz    B
-sample4    ./a.fastq.gz    ./b.fastq.gz    B
-```
+| sampleID | forwardReads              | reverseReads              | run |
+| -------- | ------------------------- | ------------------------- | --- |
+| sample1  | ./data/S1_R1_001.fastq.gz | ./data/S1_R2_001.fastq.gz | A   |
+| sample2  | ./data/S2_fw.fastq.gz     | ./data/S2_rv.fastq.gz     | A   |
+| sample3  | ./S4x.fastq.gz            | ./S4y.fastq.gz            | B   |
+| sample4  | ./a.fastq.gz              | ./b.fastq.gz              | B   |
 
 Please note the following requirements:
 
@@ -113,7 +112,7 @@ Please note the following requirements:
 
 ### Metadata
 
-The metadata file must be tab-separated with a header line, for more details please see the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters).
+Metadata is optional, but for performing downstream analysis such as barplots, diversity indices or differential abundance testing, a metadata file is essential.
 
 ```console
 --metadata "path/to/metadata.tsv"
@@ -121,13 +120,23 @@ The metadata file must be tab-separated with a header line, for more details ple
 
 For example:
 
-```console
-ID    condition
-sample1    control
-sample2    treatment
-sample3    control
-sample4    treatment
-```
+| ID      | condition |
+| ------- | --------- |
+| sample1 | control   |
+| sample2 | treatment |
+| sample3 | control   |
+| sample4 | treatment |
+
+Please note the following requirements:
+
+- The path must be enclosed in quotes
+- The metadata file has to follow the QIIME2 specifications (https://docs.qiime2.org/2021.2/tutorials/metadata/)
+
+The metadata file must be tab-separated with a header line. The first column in the tab-separated metadata file is the sample identifier column (required header: ID) and defines the sample or feature IDs associated with the dataset. Metadata files are not required to have additional metadata columns, i.e. a file containing only an ID column is a valid QIIME 2 metadata file. Additional columns defining metadata associated with each sample or feature ID are optional. NB: without additional columns there might be no groupings for the downstream analyses.
+
+Sample identifiers should be 36 characters long or less, and also contain only ASCII alphanumeric characters (i.e. in the range of [a-z], [A-Z], or [0-9]), or the dash (-) character. For downstream analysis, by default all numeric columns, blanks or NA are removed, and only columns with multiple different values but not all unique are selected.
+
+The columns which are to be assessed can be specified by `--metadata_category`. If `--metadata_category` isn't specified than all columns that fit the specification are automatically chosen.
 
 ## Running the pipeline
 

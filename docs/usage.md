@@ -152,7 +152,7 @@ nextflow run nf-core/ampliseq \
     --outdir "./results"
 ```
 
-It is possible to not provide primer sequences (`--FW_primer` & --`RV_primer`) and skip primer trimming using `--skip_cutadapt`, but this is only for data that indeed does not contain any PCR primers in their sequences.
+It is possible to not provide primer sequences (`--FW_primer` & `--RV_primer`) and skip primer trimming using `--skip_cutadapt`, but this is only for data that indeed does not contain any PCR primers in their sequences.
 
 This will launch the pipeline with the `singularity` configuration profile. See below [`-profile`](#-profile) for more information about profiles.
 

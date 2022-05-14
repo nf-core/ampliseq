@@ -379,7 +379,7 @@
                 "skip_dada_quality": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Skip quality check with DADA2. This is not only allowed when `--trunclenf` and `--trunclenr` are set."
+                    "description": "Skip quality check with DADA2. Can only be skipped when `--trunclenf` and `--trunclenr` are set."
                 },
                 "skip_barrnap": {
                     "type": "boolean",

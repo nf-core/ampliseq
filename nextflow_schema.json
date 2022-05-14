@@ -376,6 +376,11 @@
                     "default": false,
                     "description": "Skip primer trimming with cutadapt. This is not recommended! Use only in case primer sequences were removed before and the data does not contain any primer sequences."
                 },
+                "skip_dada_quality": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Skip quality check with DADA2. Can only be skipped when `--trunclenf` and `--trunclenr` are set."
+                },
                 "skip_barrnap": {
                     "type": "boolean",
                     "default": false,

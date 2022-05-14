@@ -217,8 +217,11 @@ workflow AMPLISEQ {
             .mix ( ch_all_trimmed_rv )
             .set { ch_all_trimmed_reads }
     }
-    DADA2_QUALITY ( ch_all_trimmed_reads )
-    DADA2_QUALITY.out.warning.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","DADA2_QUALITY: ") }
+
+    if ( !params.skip_dada_quality ) {
+        DADA2_QUALITY ( ch_all_trimmed_reads )
+        DADA2_QUALITY.out.warning.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","DADA2_QUALITY: ") }
+    }
 
     //find truncation values in case they are not supplied
     if ( find_truncation_values ) {

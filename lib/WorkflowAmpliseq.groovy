@@ -23,6 +23,11 @@ class WorkflowAmpliseq {
             System.exit(1)
         }
 
+        if ( params.skip_dada_quality && (params.trunclenf == null || params.trunclenr == null) ) {
+            log.error "Incompatible parameters: `--skip_dada_quality` may not be used without setting `--trunclenf` and `--trunclenr`."
+            System.exit(1)
+        }
+
         if (params.dada_tax_agglom_min > params.dada_tax_agglom_max) {
             log.error "Incompatible parameters: `--dada_tax_agglom_min` may not be greater than `--dada_tax_agglom_max`."
             System.exit(1)

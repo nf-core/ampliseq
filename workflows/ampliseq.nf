@@ -76,7 +76,7 @@ trunclenf = params.trunclenf ?: 0
 trunclenr = params.trunclenr ?: 0
 if ( !single_end && !params.illumina_pe_its && (params.trunclenf == null || params.trunclenr == null) && !is_fasta_input ) {
     find_truncation_values = true
-    log.warn "No DADA2 cutoffs were specified (`--trunclenf` & --`trunclenr`), therefore reads will be truncated where median quality drops below ${params.trunc_qmin} (defined by `--trunc_qmin`) but at least a fraction of ${params.trunc_rmin} (defined by `--trunc_rmin`) of the reads will be retained.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
+    log.warn "No DADA2 cutoffs were specified (`--trunclenf` & `--trunclenr`), therefore reads will be truncated where median quality drops below ${params.trunc_qmin} (defined by `--trunc_qmin`) but at least a fraction of ${params.trunc_rmin} (defined by `--trunc_rmin`) of the reads will be retained.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
 } else { find_truncation_values = false }
 
 if ( !is_fasta_input && (!params.FW_primer || !params.RV_primer) && !params.skip_cutadapt ) {
@@ -231,8 +231,11 @@ workflow AMPLISEQ {
             .mix ( ch_all_trimmed_rv )
             .set { ch_all_trimmed_reads }
     }
-    DADA2_QUALITY ( ch_all_trimmed_reads )
-    DADA2_QUALITY.out.warning.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","DADA2_QUALITY: ") }
+
+    if ( !params.skip_dada_quality ) {
+        DADA2_QUALITY ( ch_all_trimmed_reads )
+        DADA2_QUALITY.out.warning.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","DADA2_QUALITY: ") }
+    }
 
     //find truncation values in case they are not supplied
     if ( find_truncation_values ) {

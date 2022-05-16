@@ -153,6 +153,16 @@
                     "help_text": "When read sequences are trimmed, untrimmed read pairs are discarded routinely. Use this option to retain untrimmed read pairs. This is usually not recommended and is only of advantage for specific protocols that prevent sequencing PCR primers. ",
                     "fa_icon": "far fa-plus-square"
                 },
+                "cutadapt_min_overlap": {
+                    "type": "integer",
+                    "default": 3,
+                    "description": "Sets the minimum overlap for valid matches of primer sequences with reads for cutadapt (-O)."
+                },
+                "cutadapt_max_error_rate": {
+                    "type": "number",
+                    "default": 0.1,
+                    "description": "Sets the maximum error rate for valid matches of primer sequences with reads for cutadapt (-e)."
+                },
                 "double_primer": {
                     "type": "boolean",
                     "description": "Cutadapt will be run twice to ensure removal of potential double primers",
@@ -369,6 +379,11 @@
                     "type": "boolean",
                     "default": false,
                     "description": "Skip primer trimming with cutadapt. This is not recommended! Use only in case primer sequences were removed before and the data does not contain any primer sequences."
+                },
+                "skip_dada_quality": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Skip quality check with DADA2. Can only be skipped when `--trunclenf` and `--trunclenr` are set."
                 },
                 "skip_barrnap": {
                     "type": "boolean",

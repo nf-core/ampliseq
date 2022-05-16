@@ -2,9 +2,9 @@
 <svg
    inkscape:export-ydpi="289.40701"
    inkscape:export-xdpi="289.40701"
-   inkscape:export-filename="/home/daniel/Desktop/github-ampliseq/figure/ampliseq_workflow_multiplesequencingruns.png"
+   inkscape:export-filename="/home/daniel/Desktop/github-ampliseq/ampliseq/docs/images/ampliseq_workflow_multiplesequencingruns.png"
    sodipodi:docname="ampliseq_workflow_multiplesequencingruns.svg"
-   inkscape:version="1.1 (ce6663b3b7, 2021-05-25)"
+   inkscape:version="1.1.2 (08b2f3d93c, 2022-04-05)"
    id="svg8"
    version="1.1"
    viewBox="0 0 272.16501 148.21181"
@@ -127,16 +127,16 @@
      fit-margin-top="0"
      inkscape:document-rotation="0"
      showguides="true"
-     inkscape:window-maximized="0"
-     inkscape:window-y="46"
-     inkscape:window-x="117"
-     inkscape:window-height="947"
-     inkscape:window-width="1656"
+     inkscape:window-maximized="1"
+     inkscape:window-y="0"
+     inkscape:window-x="72"
+     inkscape:window-height="1043"
+     inkscape:window-width="1848"
      showgrid="false"
      inkscape:current-layer="layer1"
      inkscape:document-units="mm"
-     inkscape:cy="287.79246"
-     inkscape:cx="367.69553"
+     inkscape:cy="287.79245"
+     inkscape:cx="367.69552"
      inkscape:zoom="1.4142136"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
@@ -159,7 +159,6 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -181,14 +180,14 @@
        inkscape:export-filename="/home/daniel/Desktop/github-ampliseq/figure/ampliseq_workflow_multiplesequencingruns.png" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 69.762096,107.12313 H 119.60963"
+       d="M 69.762096,107.12313 H 110.71207"
        id="path60389"
        inkscape:export-filename="/home/daniel/Desktop/github-ampliseq/figure/ampliseq_workflow_multiplesequencingruns.png"
        inkscape:export-xdpi="305.81"
        inkscape:export-ydpi="305.81" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 69.762096,122.0814 H 119.60963"
+       d="M 69.762096,122.0814 H 110.22652"
        id="path60389-1"
        inkscape:export-filename="/home/daniel/Desktop/github-ampliseq/figure/ampliseq_workflow_multiplesequencingruns.png"
        inkscape:export-xdpi="305.81"
@@ -202,28 +201,28 @@
        inkscape:export-ydpi="305.81" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 118.75046,114.60228 h 40.05795"
+       d="m 107.63789,114.60228 h 40.05795"
        id="path60389-4-8"
        inkscape:export-filename="/home/daniel/Desktop/github-ampliseq/figure/ampliseq_workflow_multiplesequencingruns.png"
        inkscape:export-xdpi="305.81"
        inkscape:export-ydpi="305.81" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 156.05675,125.60823 h 12.27674"
+       d="m 144.94418,125.60823 h 12.27674"
        id="path60389-4-8-6"
        inkscape:export-filename="/home/daniel/Desktop/github-ampliseq/figure/ampliseq_workflow_multiplesequencingruns.png"
        inkscape:export-xdpi="305.81"
        inkscape:export-ydpi="305.81" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 118.75046,137.03965 h 40.05795"
+       d="m 107.63789,137.03965 h 40.05795"
        id="path60389-4-8-2"
        inkscape:export-filename="/home/daniel/Desktop/github-ampliseq/figure/ampliseq_workflow_multiplesequencingruns.png"
        inkscape:export-xdpi="305.81"
        inkscape:export-ydpi="305.81" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 69.762096,129.56053 H 119.60963"
+       d="M 69.762096,129.56053 H 107.7061"
        id="path60389-9"
        inkscape:export-filename="/home/daniel/Desktop/github-ampliseq/figure/ampliseq_workflow_multiplesequencingruns.png"
        inkscape:export-xdpi="305.81"
@@ -237,7 +236,7 @@
        inkscape:export-ydpi="305.81" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 69.762096,144.51877 H 119.60963"
+       d="M 69.762096,144.51877 H 108.60513"
        id="path60389-0"
        inkscape:export-filename="/home/daniel/Desktop/github-ampliseq/figure/ampliseq_workflow_multiplesequencingruns.png"
        inkscape:export-xdpi="305.81"
@@ -275,7 +274,21 @@
          y="77.078712"
          x="36.034767"
          sodipodi:role="line"
-         id="tspan7924">Example: Two sequencing runs with three samples each</tspan></text>
+         id="tspan3095">Example:</tspan></text>
+    <text
+       inkscape:export-ydpi="305.81"
+       inkscape:export-xdpi="305.81"
+       id="text4732-3-9-4-3"
+       y="80.884773"
+       x="36.341381"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:0.25;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       xml:space="preserve"
+       inkscape:export-filename="/home/daniel/Desktop/github-ampliseq/figure/ampliseq_workflow_multiplesequencingruns.png"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
+         y="80.884773"
+         x="36.341381"
+         sodipodi:role="line"
+         id="tspan3095-5">Two sequencing runs with three samples each</tspan></text>
     <g
        id="g32067"
        transform="translate(60.402153,2.2459268)"
@@ -398,67 +411,6 @@
          ry="2.467063"
          rx="2.467063" />
     </g>
-    <g
-       id="g32067-9"
-       transform="translate(84.860579,2.0332568)"
-       inkscape:export-filename="/home/daniel/Desktop/github-ampliseq/figure/ampliseq_workflow_multiplesequencingruns.png"
-       inkscape:export-xdpi="305.81"
-       inkscape:export-ydpi="305.81">
-      <rect
-         style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
-         id="rect4770-6-8-67-3"
-         width="7.2520337"
-         height="4.9341259"
-         x="19.460905"
-         y="102.41009"
-         ry="2.467063"
-         rx="2.467063" />
-      <rect
-         style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
-         id="rect4770-6-8-67-5-19"
-         width="7.2520337"
-         height="4.9341259"
-         x="19.460905"
-         y="124.84746"
-         ry="2.467063"
-         rx="2.467063" />
-      <rect
-         style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
-         id="rect4770-6-8-67-5-9-4"
-         width="7.2520337"
-         height="4.9341259"
-         x="19.460905"
-         y="132.32658"
-         ry="2.467063"
-         rx="2.467063" />
-      <rect
-         style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
-         id="rect4770-6-8-67-5-1-7"
-         width="7.2520337"
-         height="4.9341259"
-         x="19.460905"
-         y="139.80569"
-         ry="2.467063"
-         rx="2.467063" />
-      <rect
-         style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
-         id="rect4770-6-8-67-6-8"
-         width="7.2520337"
-         height="4.9341259"
-         x="19.460905"
-         y="117.36833"
-         ry="2.467063"
-         rx="2.467063" />
-      <rect
-         style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
-         id="rect4770-6-8-67-2-4"
-         width="7.2520337"
-         height="4.9341259"
-         x="19.460905"
-         y="109.88921"
-         ry="2.467063"
-         rx="2.467063" />
-    </g>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
@@ -523,24 +475,9 @@
        inkscape:export-ydpi="305.81"
        transform="rotate(-90)" />
     <text
-       id="text4774-8-5-6"
-       y="143.28156"
-       x="-35.976315"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       xml:space="preserve"
-       transform="rotate(-60)"
-       inkscape:export-filename="/home/daniel/Desktop/github-ampliseq/figure/ampliseq_workflow_multiplesequencingruns.png"
-       inkscape:export-xdpi="305.81"
-       inkscape:export-ydpi="305.81"><tspan
-         style="font-size:3.175px;stroke-width:0.264583"
-         y="143.28156"
-         x="-35.976315"
-         id="tspan4772-5-7-5"
-         sodipodi:role="line">derepFastq</tspan></text>
-    <text
        id="text4774-6-2-9"
-       y="153.8801"
-       x="-29.955746"
+       y="144.25648"
+       x="-35.512001"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        xml:space="preserve"
        inkscape:export-filename="/home/daniel/Desktop/github-ampliseq/figure/ampliseq_workflow_multiplesequencingruns.png"
@@ -548,14 +485,14 @@
        inkscape:export-ydpi="305.81"
        transform="rotate(-60)"><tspan
          style="font-size:3.175px;stroke-width:0.264583"
-         y="153.8801"
-         x="-29.955746"
+         y="144.25648"
+         x="-35.512001"
          id="tspan4772-0-5-3"
          sodipodi:role="line">learnErrors</tspan></text>
     <text
        id="text4774-5-5"
-       y="164.46309"
-       x="-23.747112"
+       y="154.83948"
+       x="-29.303368"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        xml:space="preserve"
        inkscape:export-filename="/home/daniel/Desktop/github-ampliseq/figure/ampliseq_workflow_multiplesequencingruns.png"
@@ -563,15 +500,15 @@
        inkscape:export-ydpi="305.81"
        transform="rotate(-60)"><tspan
          style="font-size:3.175px;stroke-width:0.264583"
-         y="164.46309"
-         x="-23.747112"
+         y="154.83948"
+         x="-29.303368"
          id="tspan4772-1-2"
          sodipodi:role="line">dada</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       x="-17.979919"
-       y="174.61728"
+       x="-23.536175"
+       y="164.99367"
        id="text4774-6-2-0-7"
        transform="rotate(-60)"
        inkscape:export-filename="/home/daniel/Desktop/github-ampliseq/figure/ampliseq_workflow_multiplesequencingruns.png"
@@ -579,14 +516,14 @@
        inkscape:export-ydpi="305.81"><tspan
          sodipodi:role="line"
          id="tspan4772-0-5-9-4"
-         x="-17.979919"
-         y="174.61728"
+         x="-23.536175"
+         y="164.99367"
          style="font-size:3.175px;stroke-width:0.264583">removeBimeraDenovo</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       x="-11.865224"
-       y="185.2081"
+       x="-17.421478"
+       y="175.58449"
        id="text4774-8-5-2-6-4"
        transform="rotate(-60)"
        inkscape:export-filename="/home/daniel/Desktop/github-ampliseq/figure/ampliseq_workflow_multiplesequencingruns.png"
@@ -594,14 +531,14 @@
        inkscape:export-ydpi="305.81"><tspan
          sodipodi:role="line"
          id="tspan4772-5-7-3-8-3"
-         x="-11.865224"
-         y="185.2081"
+         x="-17.421478"
+         y="175.58449"
          style="font-size:3.175px;stroke-width:0.264583">mergeSequenceTables</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       x="-5.4031796"
-       y="196.23543"
+       x="-10.959432"
+       y="186.61182"
        id="text4774-8-5-2-6-4-4"
        transform="rotate(-60)"
        inkscape:export-filename="/home/daniel/Desktop/github-ampliseq/figure/ampliseq_workflow_multiplesequencingruns.png"
@@ -609,8 +546,8 @@
        inkscape:export-ydpi="305.81"><tspan
          sodipodi:role="line"
          id="tspan4772-5-7-3-8-3-9"
-         x="-5.4031796"
-         y="196.23543"
+         x="-10.959432"
+         y="186.61182"
          style="font-size:3.175px;stroke-width:0.264583">downstream analysis</tspan></text>
     <text
        xml:space="preserve"
@@ -751,7 +688,7 @@
          y="101.22984">sequencing run</tspan></text>
     <g
        id="g44676"
-       transform="translate(52.940635,-22.823952)"
+       transform="translate(41.828128,-22.823952)"
        inkscape:export-filename="/home/daniel/Desktop/github-ampliseq/figure/ampliseq_workflow_multiplesequencingruns.png"
        inkscape:export-xdpi="305.81"
        inkscape:export-ydpi="305.81">
@@ -779,7 +716,7 @@
        id="rect4770-6-8-67-20-7-5-0"
        width="7.2520337"
        height="42.330002"
-       x="153.23834"
+       x="142.12599"
        y="104.44323"
        ry="2.467063"
        rx="2.467063"
@@ -791,7 +728,7 @@
        id="rect4770-6-8-67-20-7-5-0-6"
        width="7.2520337"
        height="42.330002"
-       x="165.46753"
+       x="154.35518"
        y="104.44323"
        ry="2.467063"
        rx="2.467063"
@@ -803,7 +740,7 @@
        id="rect4770-6-8-67-20-7-5-0-6-5"
        width="7.2520337"
        height="42.330002"
-       x="167.88487"
+       x="156.77252"
        y="104.44323"
        ry="2.467063"
        rx="2.467063"
@@ -815,7 +752,7 @@
        id="rect4770-6-8-67-20-7-5-0-6-4"
        width="7.2520337"
        height="42.330002"
-       x="170.30222"
+       x="159.18987"
        y="104.44323"
        ry="2.467063"
        rx="2.467063"
@@ -827,7 +764,7 @@
        id="rect4770-6-8-67-20-7-5-0-6-8"
        width="7.2520337"
        height="42.330002"
-       x="172.71956"
+       x="161.60721"
        y="104.44323"
        ry="2.467063"
        rx="2.467063"
@@ -836,7 +773,7 @@
        inkscape:export-ydpi="305.81" />
     <g
        id="g34268"
-       transform="translate(61.456231,2.2459268)"
+       transform="translate(50.343724,2.2459268)"
        inkscape:export-filename="/home/daniel/Desktop/github-ampliseq/figure/ampliseq_workflow_multiplesequencingruns.png"
        inkscape:export-xdpi="305.81"
        inkscape:export-ydpi="305.81">
@@ -861,7 +798,7 @@
     </g>
     <g
        id="g34264"
-       transform="translate(60.265251,2.2459268)"
+       transform="translate(49.152744,2.2459268)"
        inkscape:export-filename="/home/daniel/Desktop/github-ampliseq/figure/ampliseq_workflow_multiplesequencingruns.png"
        inkscape:export-xdpi="305.81"
        inkscape:export-ydpi="305.81">

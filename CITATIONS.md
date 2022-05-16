@@ -99,7 +99,7 @@
 
   > Rognes T, Flouri T, Nichols B, Quince C, Mahé F. VSEARCH: a versatile open source tool for metagenomics. PeerJ. 2016 4:e2584. doi: 10.7717/peerj.2584
 
-- VSEARCH option usearch_global implements the [USEARCH] algorithm(https://doi.org/10.1093/bioinformatics/btq461)
+- VSEARCH option usearch_global implements the [USEARCH](https://doi.org/10.1093/bioinformatics/btq461) algorithm
 
   > R.C. Edgar. Search and clustering orders of magnitude faster than BLAST. Bioinformatics. 2010 26(19) 2460-2461
 

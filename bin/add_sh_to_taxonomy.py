@@ -37,7 +37,7 @@ if with_species:
 else:
     num_ranks = 7
     tax_entries = ['Domain','Kingdom','Phylum','Class','Order','Family','Genus','SH','confidence']
-    
+
 # Read sequence to SH matchings
 seq2sh = pd.read_csv(sys.argv[1], sep='\t', header=None, index_col=0, skiprows=None, compression='bz2')
 
@@ -66,7 +66,7 @@ for row in fh:
     [ASV, match, pid, alen, therest] = row.split(maxsplit=4)
     pid = float(pid)
     alen = float(alen)
-    
+
     if ASV != prev_ASV:
         SH = ""
         tax = ""
@@ -80,7 +80,7 @@ for row in fh:
                 new_SH = ""
             if ( pd.isna( new_SH ) ) :
                 print( "WARNING: no SH reported for " + matchparts[1], file=sys.stderr )
-                new_SH = ""                
+                new_SH = ""
             if SH != "" and new_SH != SH :
                 SH = ""
                 tax = ""
@@ -126,7 +126,7 @@ if match != "*":        # Take care of last row/ASV in match file
             new_SH = ""
         if ( pd.isna( new_SH ) ) :
             print( "WARNING: no SH reported for " + matchparts[1], file=sys.stderr )
-            new_SH = ""                
+            new_SH = ""
         if SH != "" and new_SH != SH :
             SH = ""
             tax = ""
@@ -143,7 +143,6 @@ if match != "*":        # Take care of last row/ASV in match file
         tax_list = tax[0:num_ranks] + [SH] + [conf]
         taxtable.loc[ taxtable['ASV_ID'] == prev_ASV, tax_entries] = tax_list
 
-   
+
 # Write new taxtable, with SH and new taxonomy added if found
 taxtable.to_csv(outfile, sep="\t", na_rep="", float_format="%.2f", index=False)
-

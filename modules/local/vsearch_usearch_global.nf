@@ -1,6 +1,6 @@
 process VSEARCH_USEARCH_GLOBAL {
     label 'process_medium'
-    
+
     conda (params.enable_conda ? "bioconda::vsearch=2.21.1" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/vsearch:2.21.1--h95f258a_0':
@@ -10,7 +10,7 @@ process VSEARCH_USEARCH_GLOBAL {
     path asvfasta
     path dbfasta
     val  outfile
-    
+
     output:
     path outfile         , emit: tsv
     path "versions.yml"  , emit: versions

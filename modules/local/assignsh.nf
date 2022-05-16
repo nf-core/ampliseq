@@ -9,7 +9,7 @@ process ASSIGNSH {
 
     input:
     path asvtable
-    val sh_info
+    path sh_info
     path blastfile
     val  outtable
     

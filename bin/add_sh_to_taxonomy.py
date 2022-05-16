@@ -39,12 +39,12 @@ else:
     tax_entries = ['Domain','Kingdom','Phylum','Class','Order','Family','Genus','SH','confidence']
     
 # Read sequence to SH matchings
-seq2sh = pd.read_csv(sys.argv[1], sep='\t', header=None, index_col=0, skiprows=None)
+seq2sh = pd.read_csv(sys.argv[1], sep='\t', header=None, index_col=0, skiprows=None, compression='bz2')
 
 # Read SH taxonomies
 # Columns:
 # SH  taxonid  kingdom  phylum  class  order  family  genus  species
-shtax = pd.read_csv(sys.argv[2], sep='\t', header=None, index_col=0, skiprows=None)
+shtax = pd.read_csv(sys.argv[2], sep='\t', header=None, index_col=0, skiprows=None, compression='bz2')
 # Replace taxonid with Domain = "Eukaryota"
 shtax.loc[:,1] = 'Eukaryota'
 

@@ -18,6 +18,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
     - [DADA2](#dada2) - Infer Amplicon Sequence Variants (ASVs) and taxonomic classification
       - [Barrnap](#barrnap) - Predict ribosomal RNA sequences
       - [ITSx](#itsx) - Optionally, taxonomic classification can be performed on ITS region only
+      - [assignSH](#assignsh) - Optionally, a species hypothesis (SH) can be added to the taxonomy
     - [QIIME2](#qiime2) - Secondary analysis
       - [Taxonomic classification](#taxonomic-classification) - Taxonomical classification of ASVs
       - [Exclude taxa](#exclude-taxa) - Remove unwanted ASV based on taxonomy
@@ -143,6 +144,19 @@ Optionally, the ITS region can be extracted from each ASV sequence using ITSx, a
   - `ASV_ITS_tax_species.tsv`: Species classification with ITS region of each ASV sequence.
   - `ASV_tax.tsv`: Taxonomic classification of each ASV sequence, based on the ITS region.
   - `ASV_tax_species.tsv`: Species classification of each ASV sequence, based on the ITS region.
+
+</details>
+
+#### assignSH
+
+Optionally, a species hypothesis (SH) can be added to the taxonomy by using VSEARCH to search a UNITE database.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `assignsh/`
+  - `ASV_tax_species_SH.tsv`: Taxonomic classification with SH taxonomy added in case of a match.
+  - `vsearch_blastout.tsv`: Raw vsearch results.
 
 </details>
 

@@ -270,7 +270,7 @@ workflow AMPLISEQ {
         ch_errormodel = DADA2_ERR.out.errormodel
     } else {
         DADA2_ERR ( ch_filt_reads )
-        NOVASEQ_ERR ( DADA2_ERR.out.errormodel )
+        NOVASEQ_ERR ( DADA2_ERR.out.errormodel.dump(tag: 'into_novaerr') )
         ch_errormodel = NOVASEQ_ERR.out.errormodel
     }
 

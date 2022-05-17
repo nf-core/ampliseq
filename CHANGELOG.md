@@ -11,7 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#431](https://github.com/nf-core/ampliseq/pull/431) - `--skip_dada_quality` allows to skip quality check with DADA2. This is only allowed when `--trunclenf` and `--trunclenr` are set.
 - [#434](https://github.com/nf-core/ampliseq/pull/434) - `--addsh` adds UNITE species hypothesis (SH) to the taxonomy. Only available for UNITE databases.
 
-
 ### `Changed`
 
 - [#432](https://github.com/nf-core/ampliseq/pull/432) - The number of records to sample from a fastq file was decreased from 5e+06 to 5e+04 for plotQualityProfile (DADA2_QUALITY), therefore a smaller subset of reads is sampled for determining `--trunlenf` and `--trunclenr`. This should make the process more robust also from larger data sets.

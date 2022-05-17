@@ -371,24 +371,26 @@ workflow AMPLISEQ {
             DADA2_TAXONOMY ( ch_fasta, ch_assigntax, 'ASV_tax.tsv' )
             if (!params.skip_dada_addspecies) {
                 DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_tax_species.tsv' )
-                ch_dada2_tax = DADA2_ADDSPECIES.out.tsv
                 if ( params.addsh ) {
                     VSEARCH_USEARCH_GLOBAL( ch_fasta, ch_assigntax, 'vsearch_blastout.tsv' )
                     ch_versions = ch_versions.mix(VSEARCH_USEARCH_GLOBAL.out.versions.ifEmpty(null))
-                    ASSIGNSH( ch_dada2_tax, ch_shinfo.collect(), VSEARCH_USEARCH_GLOBAL.out.tsv, 'ASV_tax_species_SH.tsv')
+                    ASSIGNSH( DADA2_ADDSPECIES.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCH_GLOBAL.out.tsv, 'ASV_tax_species_SH.tsv')
                     ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
                     ch_dada2_tax = ASSIGNSH.out.tsv
+                } else {
+                    ch_dada2_tax = DADA2_ADDSPECIES.out.tsv
                 }
-           } else {
-               ch_dada2_tax = DADA2_TAXONOMY.out.tsv
-               if ( params.addsh ) {
-                   VSEARCH_USEARCH_GLOBAL( ch_fasta, ch_assigntax, 'vsearch_blastout.tsv' )
-                   ch_versions = ch_versions.mix(VSEARCH_USEARCH_GLOBAL.out.versions.ifEmpty(null))
-                   ASSIGNSH( ch_dada2_tax, ch_shinfo.collect(), VSEARCH_USEARCH_GLOBAL.out.tsv, 'ASV_tax_SH.tsv')
-                   ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
-                   ch_dada2_tax = ASSIGNSH.out.tsv
-               }
-           }
+            } else {
+                if ( params.addsh ) {
+                    VSEARCH_USEARCH_GLOBAL( ch_fasta, ch_assigntax, 'vsearch_blastout.tsv' )
+                    ch_versions = ch_versions.mix(VSEARCH_USEARCH_GLOBAL.out.versions.ifEmpty(null))
+                    ASSIGNSH( DADA2_TAXONOMY.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCH_GLOBAL.out.tsv, 'ASV_tax_SH.tsv')
+                    ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
+                    ch_dada2_tax = ASSIGNSH.out.tsv
+                 } else {
+                     ch_dada2_tax = DADA2_TAXONOMY.out.tsv
+                 }
+            }
         //Cut out ITS region if long ITS reads
         } else {
             if (params.cut_its == "full") {
@@ -409,22 +411,24 @@ workflow AMPLISEQ {
             if (!params.skip_dada_addspecies) {
                 DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_ITS_tax_species.tsv' )
                 FORMAT_TAXRESULTS_ADDSP ( DADA2_ADDSPECIES.out.tsv, ch_fasta, 'ASV_tax_species.tsv' )
-                ch_dada2_tax = FORMAT_TAXRESULTS_ADDSP.out.tsv
                 if ( params.addsh ) {
                     VSEARCH_USEARCH_GLOBAL( ch_cut_fasta, ch_assigntax, 'vsearch_blastout.tsv' )
                     ch_versions = ch_versions.mix(VSEARCH_USEARCH_GLOBAL.out.versions.ifEmpty(null))
-                    ASSIGNSH( ch_dada2_tax, ch_shinfo.collect(), VSEARCH_USEARCH_GLOBAL.out.tsv, 'ASV_tax_species_SH.tsv')
+                    ASSIGNSH( FORMAT_TAXRESULTS_ADDSP.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCH_GLOBAL.out.tsv, 'ASV_tax_species_SH.tsv')
                     ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
                     ch_dada2_tax = ASSIGNSH.out.tsv
+                } else {
+                    ch_dada2_tax = FORMAT_TAXRESULTS_ADDSP.out.tsv
                 }
            } else {
-                ch_dada2_tax = FORMAT_TAXRESULTS.out.tsv
                 if ( params.addsh ) {
                     VSEARCH_USEARCH_GLOBAL( ch_cut_fasta, ch_assigntax, 'vsearch_blastout.tsv' )
                     ch_versions = ch_versions.mix(VSEARCH_USEARCH_GLOBAL.out.versions.ifEmpty(null))
-                    ASSIGNSH( ch_dada2_tax, ch_shinfo.collect(), VSEARCH_USEARCH_GLOBAL.out.tsv, 'ASV_tax_SH.tsv')
+                    ASSIGNSH( FORMAT_TAXRESULTS.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCH_GLOBAL.out.tsv, 'ASV_tax_SH.tsv')
                     ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
                     ch_dada2_tax = ASSIGNSH.out.tsv
+                } else {
+                    ch_dada2_tax = FORMAT_TAXRESULTS.out.tsv
                 }
             }
         }

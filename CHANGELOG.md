@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#428](https://github.com/nf-core/ampliseq/pull/428) - Fixed samplesheet sampleID entries, now allows dashes.
 - [#433](https://github.com/nf-core/ampliseq/pull/433) - Fixed typos and improved documentation layout.
-- [#437](https://github.com/nf-core/ampliseq/pull/437) - Template update for nf-core/tools version 2.3.2
+- [#437](https://github.com/nf-core/ampliseq/pull/437) - Template update for nf-core/tools version 2.4
 
 ### `Dependencies`
 

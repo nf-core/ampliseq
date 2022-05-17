@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #@author Jeanette Tångrot
 
-# Adds SH information to ASV table based on vsearch usearch_global results in blast6 format.
+# Adds UNITE species hypothesis (SH) information to ASV table based on vsearch usearch_global results in blast6 format.
 #
 # Usage: add_sh_to_taxonomy.py <seq2sh.tsv> <SHs.tax> <tax.tsv> <blastout.tab> <outfile> [--species]
 #   Input:

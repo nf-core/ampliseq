@@ -74,7 +74,7 @@ class WorkflowAmpliseq {
         }
 
         if (params.addsh && params.cut_its == "none") {
-            log.warn "Adding SH assignments is only feasible for ITS sequences. Please use option `--cut_its` to find ITS regions in the ASV sequences, unless the given sequences are already cut to the ITS region.\n"
+            log.warn "Adding UNITE species hypothesis (SH) assignments is only feasible for ITS sequences. Please use option `--cut_its` to find ITS regions in the ASV sequences, unless the given sequences are already cut to the ITS region.\n"
         }
     }
 

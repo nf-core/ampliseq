@@ -111,7 +111,7 @@
                 },
                 "addsh": {
                     "type": "boolean",
-                    "description": "If ASVs should be assigned to SHs. Only relevant for ITS data."
+                    "description": "If ASVs should be assigned to UNITE species hypotheses (SHs). Only relevant for ITS data."
                 },
                 "picrust": {
                     "type": "boolean",

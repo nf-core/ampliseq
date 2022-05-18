@@ -12,8 +12,6 @@
 #          <tax.tsv>      : ASV taxonomy table to add SH assignments to
 #          <blastout.tab> : Results from vsearch usearch_global in blast6 format
 #          <outfile>      : Name of results file, i.e. the updated ASV taxonomy table
-#   Options:
-#          --species : Whether or not to include species information. Default: false
 
 import sys
 import pandas as pd
@@ -21,22 +19,9 @@ import pandas as pd
 with_species = False
 
 # Argument check
-if len(sys.argv) != 6 and len(sys.argv) != 7:
-    exit("Usage: add_sh_to_taxonomy.py <seq2sh.tsv> <SHs.tax> <tax.tsv> <blastout.tab> <outfile> [--species]")
-if len(sys.argv) == 7:
-    if sys.argv[6] == '--species':
-        with_species = True
-    else:
-        exit("Usage: add_sh_to_taxonomy.py <seq2sh.tsv> <SHs.tax> <tax.tsv> <blastout.tab> <outfile> [--species]")
+if len(sys.argv) != 6:
+    exit("Usage: add_sh_to_taxonomy.py <seq2sh.tsv> <SHs.tax> <tax.tsv> <blastout.tab> <outfile>")
 outfile = sys.argv[5]
-
-# Set number of ranks - include species if --species flag is used
-if with_species:
-    num_ranks = 8
-    tax_entries = ['Domain','Kingdom','Phylum','Class','Order','Family','Genus','Species','SH','confidence']
-else:
-    num_ranks = 7
-    tax_entries = ['Domain','Kingdom','Phylum','Class','Order','Family','Genus','SH','confidence']
 
 # Read sequence to SH matchings
 seq2sh = pd.read_csv(sys.argv[1], sep='\t', header=None, index_col=0, skiprows=None, compression='bz2')
@@ -49,11 +34,14 @@ shtax = pd.read_csv(sys.argv[2], sep='\t', header=None, index_col=0, skiprows=No
 shtax.loc[:,1] = 'Eukaryota'
 
 # Read taxonomy table
+# Determine number of taxonomy levels from header
 # ASV_ID  Domain  Kingdom Phylum  Class   Order   Family  Genus   confidence      sequence
 taxtable = pd.read_csv(sys.argv[3], sep='\t', header=0)
+num_ranks = len(taxtable.columns) - 3
 # Add SH slot to table:
 # ASV_ID  Domain  Kingdom Phylum  Class   Order   Family  Genus  SH confidence      sequence
 taxtable.insert(num_ranks+1,"SH","", allow_duplicates=False)
+tax_entries = list(taxtable.columns)[1:num_ranks+3]
 
 # Go through vsearch matches and update taxonomy for those entries
 fh = open( sys.argv[4], mode = 'r' )

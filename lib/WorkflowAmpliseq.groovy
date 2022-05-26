@@ -69,7 +69,13 @@ class WorkflowAmpliseq {
         }
 
         if (params.addsh && !params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]) {
-            log.error "UNITE species hypothesis information is not available for the selected reference database. The option `--addsh` can only be used together with UNITE reference databases, please use the option `--dada_ref_taxonomy` to select an appropriate database."
+	    def validDBs = ""
+	    for (db in params.dada_ref_databases.keySet()) {
+                if (params.dada_ref_databases[db]["shfile"]) {
+                    validDBs += " " + db
+                }
+            }
+            log.error "UNITE species hypothesis information is not available for the selected reference database, please use the option `--dada_ref_taxonomy` to select an appropriate database. Currently, the option `--addsh` can only be used together with the following UNITE reference databases:\n" + validDBs + "."
             System.exit(1)
         }
 

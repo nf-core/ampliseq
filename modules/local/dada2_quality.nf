@@ -45,11 +45,16 @@ process DADA2_QUALITY {
     data <- plot\$data
 
     #aggregate data for each sequencing cycle
-    df <- data.frame(
-        Count = aggregate(data\$Count, list(data\$Cycle), sum),
-        Median = aggregate(rep(data\$Score, data\$Count), list(rep(data\$Cycle, data\$Count)), median)[2]
-    )
-    colnames(df) <- c("Cycle", "Count", "Median")
+    df <- data.frame(Cycle=character(), Count=character(), Median=character(), stringsAsFactors=FALSE)
+    cycles <- sort(unique(data\$Cycle))
+    for (cycle in cycles) {
+        subdata <- data[data[, "Cycle"] == cycle, ]
+        score <- list()
+        #convert to list to calculate median
+        for (j in 1:nrow(subdata)) {score <- unlist(c(score, rep(subdata\$Score[j], subdata\$Count[j])))}
+        temp = data.frame(Cycle=cycle, Count=sum(subdata\$Count), Median=median(score), stringsAsFactors=FALSE)
+        df <- rbind(df, temp)
+    }
 
     #write output
     write.table( t(df), file = paste0("${meta}_qual_stats",".tsv"), sep = "\t", row.names = TRUE, col.names = FALSE, quote = FALSE)

@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#445](https://github.com/nf-core/ampliseq/pull/445) - The minimum number of total bases to use for error rate learning by default is 1e8 (DADA2, learnErrors, nbases). Previously, samples were read in the provided order until enough reads were obtained (DADA2, learnErrors, randomize=FALSE). Now, samples are picked at random from those provided (DADA2, learnError, randomize=TRUE) and a seed is set.
+
 ### `Fixed`
 
 ### `Dependencies`

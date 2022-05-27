@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#444](https://github.com/nf-core/ampliseq/pull/444) - Updated parameter documentation.
+
 ### `Fixed`
 
 ### `Dependencies`

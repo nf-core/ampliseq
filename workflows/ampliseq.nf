@@ -83,6 +83,11 @@ if ( !params.enable_conda && !params.skip_taxonomy && !params.skip_qiime ) {
     run_qiime2 = true
 } else { run_qiime2 = false }
 
+// Set cutoff to use for SH assignment
+if ( params.addsh ) {
+    vsearch_cutoff = 0.985
+}
+
 /*
 ========================================================================================
     IMPORT LOCAL MODULES/SUBWORKFLOWS
@@ -107,7 +112,6 @@ include { MERGE_STATS                   } from '../modules/local/merge_stats'
 include { DADA2_TAXONOMY                } from '../modules/local/dada2_taxonomy'
 include { DADA2_ADDSPECIES              } from '../modules/local/dada2_addspecies'
 include { ASSIGNSH                      } from '../modules/local/assignsh'
-include { VSEARCH_USEARCH_GLOBAL        } from '../modules/local/vsearch_usearch_global'
 include { FORMAT_TAXRESULTS             } from '../modules/local/format_taxresults'
 include { FORMAT_TAXRESULTS as FORMAT_TAXRESULTS_ADDSP } from '../modules/local/format_taxresults'
 include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'
@@ -149,6 +153,8 @@ include { CUTADAPT as CUTADAPT_TAXONOMY     } from '../modules/nf-core/modules/c
 include { FASTQC                            } from '../modules/nf-core/modules/fastqc/main'
 include { MULTIQC                           } from '../modules/nf-core/modules/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
+include { VSEARCH_USEARCHGLOBAL             } from '../modules/nf-core/modules/vsearch/usearchglobal/main'
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -372,9 +378,16 @@ workflow AMPLISEQ {
             if (!params.skip_dada_addspecies) {
                 DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_tax_species.tsv' )
                 if ( params.addsh ) {
-                    VSEARCH_USEARCH_GLOBAL( ch_fasta, ch_assigntax, 'vsearch_blastout.tsv' )
-                    ch_versions = ch_versions.mix(VSEARCH_USEARCH_GLOBAL.out.versions.ifEmpty(null))
-                    ASSIGNSH( DADA2_ADDSPECIES.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCH_GLOBAL.out.tsv, 'ASV_tax_species_SH.tsv')
+                    ch_fasta
+                        .map {
+                            fasta ->
+                                def meta = [:]
+                                meta.id = "ASV.vsearch"
+                                [ meta, fasta ] }
+                        .set { ch_fasta_map }
+                    VSEARCH_USEARCHGLOBAL( ch_fasta_map, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
+                    ch_versions = ch_versions.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
+                    ASSIGNSH( DADA2_ADDSPECIES.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, 'ASV_tax_species_SH.tsv')
                     ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
                     ch_dada2_tax = ASSIGNSH.out.tsv
                 } else {
@@ -382,9 +395,16 @@ workflow AMPLISEQ {
                 }
             } else {
                 if ( params.addsh ) {
-                    VSEARCH_USEARCH_GLOBAL( ch_fasta, ch_assigntax, 'vsearch_blastout.tsv' )
-                    ch_versions = ch_versions.mix(VSEARCH_USEARCH_GLOBAL.out.versions.ifEmpty(null))
-                    ASSIGNSH( DADA2_TAXONOMY.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCH_GLOBAL.out.tsv, 'ASV_tax_SH.tsv')
+                    ch_fasta
+                        .map {
+                            fasta ->
+                                def meta = [:]
+                                meta.id = "ASV.vsearch"
+                                [ meta, fasta ] }
+                        .set { ch_fasta_map }
+                    VSEARCH_USEARCHGLOBAL( ch_fasta_map, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
+                    ch_versions = ch_versions.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
+                    ASSIGNSH( DADA2_TAXONOMY.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, 'ASV_tax_SH.tsv')
                     ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
                     ch_dada2_tax = ASSIGNSH.out.tsv
                  } else {
@@ -412,9 +432,16 @@ workflow AMPLISEQ {
                 DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_ITS_tax_species.tsv' )
                 FORMAT_TAXRESULTS_ADDSP ( DADA2_ADDSPECIES.out.tsv, ch_fasta, 'ASV_tax_species.tsv' )
                 if ( params.addsh ) {
-                    VSEARCH_USEARCH_GLOBAL( ch_cut_fasta, ch_assigntax, 'vsearch_blastout.tsv' )
-                    ch_versions = ch_versions.mix(VSEARCH_USEARCH_GLOBAL.out.versions.ifEmpty(null))
-                    ASSIGNSH( FORMAT_TAXRESULTS_ADDSP.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCH_GLOBAL.out.tsv, 'ASV_tax_species_SH.tsv')
+                    ch_cut_fasta
+                        .map {
+                            fasta ->
+                                def meta = [:]
+                                meta.id = "ASV_cut.vsearch"
+                                [ meta, fasta ] }
+                        .set { ch_cut_fasta }
+                    VSEARCH_USEARCHGLOBAL( ch_cut_fasta, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
+                    ch_versions = ch_versions.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
+                    ASSIGNSH( FORMAT_TAXRESULTS_ADDSP.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, 'ASV_tax_species_SH.tsv')
                     ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
                     ch_dada2_tax = ASSIGNSH.out.tsv
                 } else {
@@ -422,9 +449,16 @@ workflow AMPLISEQ {
                 }
            } else {
                 if ( params.addsh ) {
-                    VSEARCH_USEARCH_GLOBAL( ch_cut_fasta, ch_assigntax, 'vsearch_blastout.tsv' )
-                    ch_versions = ch_versions.mix(VSEARCH_USEARCH_GLOBAL.out.versions.ifEmpty(null))
-                    ASSIGNSH( FORMAT_TAXRESULTS.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCH_GLOBAL.out.tsv, 'ASV_tax_SH.tsv')
+                    ch_cut_fasta
+                        .map {
+                            fasta ->
+                                def meta = [:]
+                                meta.id = "ASV_cut.vsearch"
+                                [ meta, fasta ] }
+                        .set { ch_cut_fasta }
+                    VSEARCH_USEARCHGLOBAL( ch_cut_fasta, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
+                    ch_versions = ch_versions.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
+                    ASSIGNSH( FORMAT_TAXRESULTS.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, 'ASV_tax_SH.tsv')
                     ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
                     ch_dada2_tax = ASSIGNSH.out.tsv
                 } else {

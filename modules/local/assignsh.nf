@@ -10,7 +10,7 @@ process ASSIGNSH {
     input:
     path asvtable
     path sh_info
-    path blastfile
+    tuple val(meta), path(blastfile)
     val  outtable
 
     output:

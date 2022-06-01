@@ -69,8 +69,8 @@ class WorkflowAmpliseq {
         }
 
         if (params.addsh && !params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]) {
-	    def validDBs = ""
-	    for (db in params.dada_ref_databases.keySet()) {
+            def validDBs = ""
+            for (db in params.dada_ref_databases.keySet()) {
                 if (params.dada_ref_databases[db]["shfile"]) {
                     validDBs += " " + db
                 }

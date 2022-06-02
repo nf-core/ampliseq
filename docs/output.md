@@ -156,7 +156,7 @@ Optionally, a UNITE species hypothesis (SH) can be added to the taxonomy. In sho
 
 - `assignsh/`
   - `ASV_tax_species_SH.tsv`: Taxonomic classification with SH taxonomy added in case of a match.
-  - `vsearch_blastout.tsv`: Raw vsearch results.
+  - `*.vsearch.txt`: Raw vsearch results.
 
 </details>
 

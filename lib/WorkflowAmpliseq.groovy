@@ -68,6 +68,20 @@ class WorkflowAmpliseq {
             System.exit(1)
         }
 
+        if (params.addsh && !params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]) {
+            def validDBs = ""
+            for (db in params.dada_ref_databases.keySet()) {
+                if (params.dada_ref_databases[db]["shfile"]) {
+                    validDBs += " " + db
+                }
+            }
+            log.error "UNITE species hypothesis information is not available for the selected reference database, please use the option `--dada_ref_taxonomy` to select an appropriate database. Currently, the option `--addsh` can only be used together with the following UNITE reference databases:\n" + validDBs + "."
+            System.exit(1)
+        }
+
+        if (params.addsh && params.cut_its == "none") {
+            log.warn "Adding UNITE species hypothesis (SH) assignments is only feasible for ITS sequences. Please use option `--cut_its` to find ITS regions in the ASV sequences, unless the given sequences are already cut to the ITS region.\n"
+        }
     }
 
     //

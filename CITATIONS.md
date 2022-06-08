@@ -93,7 +93,16 @@
   > Barbera P, Kozlov AM, Czech L, Morel B, Darriba D, Flouri T, Stamatakis A. EPA-ng: Massively Parallel Evolutionary Placement of Genetic Sequences. Syst Biol. 2019 Mar 1;68(2):365-369. doi: 10.1093/sysbio/syy054. PMID: 30165689; PMCID: PMC6368480.
 
 - PICRUSt2 is by default using [MinPath](https://pubmed.ncbi.nlm.nih.gov/19680427/)
+
   > Ye Y, Doak TG. A parsimony approach to biological pathway reconstruction/inference for genomes and metagenomes. PLoS Comput Biol. 2009 Aug;5(8):e1000465. doi: 10.1371/journal.pcbi.1000465. Epub 2009 Aug 14. PMID: 19680427; PMCID: PMC2714467.
+
+- [VSEARCH](https://peerj.com/articles/2584/)
+
+  > Rognes T, Flouri T, Nichols B, Quince C, Mahé F. VSEARCH: a versatile open source tool for metagenomics. PeerJ. 2016 4:e2584. doi: 10.7717/peerj.2584
+
+- VSEARCH option usearch_global implements the [USEARCH](https://doi.org/10.1093/bioinformatics/btq461) algorithm
+
+  > R.C. Edgar. Search and clustering orders of magnitude faster than BLAST. Bioinformatics. 2010 26(19) 2460-2461
 
 ### Summarizing software
 

@@ -3,6 +3,44 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## nf-core/ampliseq version 2.4.0dev
+
+### `Added`
+
+### `Changed`
+
+- [#445](https://github.com/nf-core/ampliseq/pull/445) - The minimum number of total bases to use for error rate learning by default is 1e8 (DADA2, learnErrors, nbases). Previously, samples were read in the provided order until enough reads were obtained (DADA2, learnErrors, randomize=FALSE). Now, samples are picked at random from those provided (DADA2, learnError, randomize=TRUE) and a seed is set.
+- [#444](https://github.com/nf-core/ampliseq/pull/444) - Updated parameter documentation.
+
+### `Fixed`
+
+### `Dependencies`
+
+### `Removed`
+
+## nf-core/ampliseq version 2.3.2 - 2022-05-27
+
+### `Added`
+
+- [#429](https://github.com/nf-core/ampliseq/pull/429) - `--cutadapt_min_overlap` sets cutadapt's global minimum overlap (`-O`) and `--cutadapt_max_error_rate` sets cutadapt's global maximum error rate (`-e`) for trimming primer sequences.
+- [#431](https://github.com/nf-core/ampliseq/pull/431) - `--skip_dada_quality` allows to skip quality check with DADA2. This is only allowed when `--trunclenf` and `--trunclenr` are set.
+- [#434](https://github.com/nf-core/ampliseq/pull/434) - `--addsh` adds UNITE species hypothesis (SH) to the taxonomy. Only available for UNITE databases.
+
+### `Changed`
+
+- [#432](https://github.com/nf-core/ampliseq/pull/432) - The number of records to sample from a fastq file was decreased from 5e+06 to 5e+04 for plotQualityProfile (DADA2_QUALITY), therefore a smaller subset of reads is sampled for determining `--trunlenf` and `--trunclenr`. This should make the process more robust also from larger data sets.
+
+### `Fixed`
+
+- [#428](https://github.com/nf-core/ampliseq/pull/428) - Fixed samplesheet sampleID entries, now allows dashes.
+- [#433](https://github.com/nf-core/ampliseq/pull/433) - Fixed typos and improved documentation layout.
+- [#437](https://github.com/nf-core/ampliseq/pull/437) - Template update for nf-core/tools version 2.4
+- [#439](https://github.com/nf-core/ampliseq/pull/439) - Fixed a bug in DADA2_QUALITY process with large number of nucleotides
+
+### `Dependencies`
+
+### `Removed`
+
 ## nf-core/ampliseq version 2.3.1 - 2022-04-05
 
 ### `Added`

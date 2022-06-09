@@ -3,7 +3,7 @@
 
 # Adds UNITE species hypothesis (SH) information to ASV table based on vsearch usearch_global results in blast6 format.
 #
-# Usage: add_sh_to_taxonomy.py <seq2sh.tsv> <SHs.tax> <tax.tsv> <blastout.tab> <outfile> [--species]
+# Usage: add_sh_to_taxonomy.py <seq2sh.tsv> <SHs.tax> <tax.tsv> <blastout.tab> <outfile>
 #   Input:
 #          <seq2sh.tsv>   : List with sequence to SH matchings, SH level 1.5, for each sequence in
 #                           the database used by vsearch. Each row should contain database sequence
@@ -15,8 +15,6 @@
 
 import sys
 import pandas as pd
-
-with_species = False
 
 # Argument check
 if len(sys.argv) != 6:
@@ -32,6 +30,8 @@ seq2sh = pd.read_csv(sys.argv[1], sep='\t', header=None, index_col=0, skiprows=N
 shtax = pd.read_csv(sys.argv[2], sep='\t', header=None, index_col=0, skiprows=None, compression='bz2')
 # Replace taxonid with Domain = "Eukaryota"
 shtax.loc[:,1] = 'Eukaryota'
+# Remove genus from species name
+shtax.loc[:,8] = shtax.loc[:,8].str.split(" ",1).str[1]
 
 # Read taxonomy table
 # Determine number of taxonomy levels from header

@@ -601,7 +601,7 @@ workflow AMPLISEQ {
     // MODULE: Export data in SBDI's (Swedish biodiversity infrastructure) format
     //
     if ( params.sbdiexport ) {
-        SBDIEXPORT ( ch_dada2_asv, ch_dada2_tax, ch_metadata  )
+        SBDIEXPORT ( ch_dada2_asv, ch_dada2_tax, ch_metadata )
         ch_versions = ch_versions.mix(SBDIEXPORT.out.versions.first())
         SBDIEXPORTREANNOTATE ( ch_dada2_tax )
     }

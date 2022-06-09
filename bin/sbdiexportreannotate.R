@@ -56,7 +56,7 @@ taxonomy %>%
         date_identified = as.character(lubridate::today()),
         reference_db = dbversion,
         annotation_algorithm = case_when(
-            (!(is.na(otu) | otu == '')) ~ 'DADA2:assignTaxonomy:addSpecies,Ampliseq:addsh',
+            (!(is.na(otu) | otu == '')) ~ 'Ampliseq:addsh',
             TRUE                        ~ 'DADA2:assignTaxonomy:addSpecies'
         ),
         identification_references = 'https://docs.biodiversitydata.se/analyse-data/molecular-tools/#taxonomy-annotation',

@@ -9,24 +9,17 @@ process METADATA_ALL {
 
     input:
     path(metadata)
-    val(metadata_category)
 
     output:
     stdout
 
     script:
-    if( !metadata_category ) {
-        """
-        metadata_all.r ${metadata}
+    """
+    metadata_all.r ${metadata}
 
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-            R: \$(R --version 2>&1 | sed -n 1p | sed 's/R version //' | sed 's/ (.*//')
-        END_VERSIONS
-        """
-    } else {
-        """
-        printf ${metadata_category}
-        """
-    }
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        R: \$(R --version 2>&1 | sed -n 1p | sed 's/R version //' | sed 's/ (.*//')
+    END_VERSIONS
+    """
 }

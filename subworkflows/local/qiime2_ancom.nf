@@ -17,12 +17,16 @@ workflow QIIME2_ANCOM {
 
     main:
     //Filter ASV table to get rid of samples that have no metadata values
-    QIIME2_FILTERASV ( ch_metadata, ch_asv, ch_metacolumn_all )
+    ch_metadata
+        .combine( ch_asv )
+        .combine( ch_metacolumn_all )
+        .set{ ch_for_filterasv }
+    QIIME2_FILTERASV ( ch_for_filterasv )
 
     //ANCOM on various taxonomic levels
     ch_taxlevel = Channel.from( tax_agglom_min..tax_agglom_max )
     ch_metadata
-        .combine( QIIME2_FILTERASV.out.qza.flatten() )
+        .combine( QIIME2_FILTERASV.out.qza )
         .combine( ch_tax )
         .combine( ch_taxlevel )
         .set{ ch_for_ancom_tax }

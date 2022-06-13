@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Fixed`
 
 - [#451](https://github.com/nf-core/ampliseq/pull/451) - Pairwise statistics will be now performed on a subset of metadata columns specified with `--metadata_category` instead of ignoring that setting.
+- [#451](https://github.com/nf-core/ampliseq/pull/451) - Replace busybox with Ubuntu base image for GCP support.
 
 ### `Dependencies`
 

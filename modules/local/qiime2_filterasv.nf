@@ -6,44 +6,25 @@ process QIIME2_FILTERASV {
     container "quay.io/qiime2/core:2021.8"
 
     input:
-    path(metadata)
-    path(table)
-    val(category)
+    tuple path(metadata), path(table), val(category)
 
     output:
     path("*.qza")       , emit: qza
     path "versions.yml" , emit: versions
 
     script:
-    if ( category.length() > 0 ) {
-        """
-        export XDG_CONFIG_HOME="\${PWD}/HOME"
+    """
+    export XDG_CONFIG_HOME="\${PWD}/HOME"
 
-        IFS=',' read -r -a metacategory <<< \"$category\"
+    qiime feature-table filter-samples \
+        --i-table ${table} \
+        --m-metadata-file ${metadata} \
+        --p-where \"${category}<>\'\'\" \
+        --o-filtered-table ${category}.qza
 
-        #remove samples that do not have any value
-        for j in \"\${metacategory[@]}\"
-        do
-            qiime feature-table filter-samples \
-                --i-table ${table} \
-                --m-metadata-file ${metadata} \
-                --p-where \"\$j<>\'\'\" \
-                --o-filtered-table \$j.qza
-        done
-
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-            qiime2: \$( qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g" )
-        END_VERSIONS
-        """
-    } else {
-        """
-        mkdir beta_diversity
-        echo "" > "WARNING No column in ${metadata.baseName} seemed suitable.qza"
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-            qiime2: \$( qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g" )
-        END_VERSIONS
-        """
-    }
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        qiime2: \$( qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g" )
+    END_VERSIONS
+    """
 }

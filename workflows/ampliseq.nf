@@ -76,8 +76,6 @@ if ( !is_fasta_input && (!params.FW_primer || !params.RV_primer) && !params.skip
     System.exit(1)
 }
 
-metadata_category = params.metadata_category ?: ""
-
 //only run QIIME2 when taxonomy is actually calculated and all required data is available
 if ( !params.enable_conda && !params.skip_taxonomy && !params.skip_qiime ) {
     run_qiime2 = true
@@ -546,13 +544,19 @@ workflow AMPLISEQ {
         }
 
         //Select metadata categories for diversity analysis & ancom
-        if (!params.skip_ancom || !params.skip_diversity_indices) {
-            METADATA_ALL ( ch_metadata, metadata_category ).set { ch_metacolumn_all }
+        if (params.metadata_category) {
+            ch_metacolumn_all = Channel.from(params.metadata_category.tokenize(','))
+            METADATA_PAIRWISE ( ch_metadata ).set { ch_metacolumn_pairwise }
+            ch_metacolumn_pairwise = ch_metacolumn_pairwise.splitCsv().flatten()
+            ch_metacolumn_pairwise = ch_metacolumn_all.join(ch_metacolumn_pairwise)
+        } else if (!params.skip_ancom || !params.skip_diversity_indices) {
+            METADATA_ALL ( ch_metadata ).set { ch_metacolumn_all }
             //return empty channel if no appropriate column was found
             ch_metacolumn_all.branch { passed: it != "" }.set { result }
             ch_metacolumn_all = result.passed
-
+            ch_metacolumn_all = ch_metacolumn_all.splitCsv().flatten()
             METADATA_PAIRWISE ( ch_metadata ).set { ch_metacolumn_pairwise }
+            ch_metacolumn_pairwise = ch_metacolumn_pairwise.splitCsv().flatten()
         } else {
             ch_metacolumn_all = Channel.empty()
             ch_metacolumn_pairwise = Channel.empty()

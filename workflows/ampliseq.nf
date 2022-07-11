@@ -103,7 +103,9 @@ include { DADA2_STATS                   } from '../modules/local/dada2_stats'
 include { DADA2_MERGE                   } from '../modules/local/dada2_merge'
 include { BARRNAP                       } from '../modules/local/barrnap'
 include { FILTER_SSU                    } from '../modules/local/filter_ssu'
+include { FILTER_LEN_ASV                } from '../modules/local/filter_len_asv'
 include { MERGE_STATS as MERGE_STATS_FILTERSSU } from '../modules/local/merge_stats'
+include { MERGE_STATS as MERGE_STATS_FILTERLENASV } from '../modules/local/merge_stats'
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
 include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
 include { MERGE_STATS                   } from '../modules/local/merge_stats'
@@ -342,6 +344,18 @@ workflow AMPLISEQ {
     } else {
         ch_dada2_fasta =  DADA2_MERGE.out.fasta
         ch_dada2_asv = DADA2_MERGE.out.asv
+    }
+
+    //
+    // Modules : amplicon length filtering
+    //
+    if (params.min_len_asv || params.max_len_asv) {
+        FILTER_LEN_ASV ( ch_dada2_fasta,ch_dada2_asv )
+        ch_versions = ch_versions.mix(FILTER_LEN_ASV.out.versions.ifEmpty(null))
+        MERGE_STATS_FILTERLENASV ( ch_stats, FILTER_LEN_ASV.out.stats )
+        ch_stats = MERGE_STATS_FILTERLENASV.out.tsv
+        ch_dada2_fasta = FILTER_LEN_ASV.out.fasta
+        ch_dada2_asv = FILTER_LEN_ASV.out.asv
     }
 
     //

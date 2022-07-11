@@ -299,6 +299,16 @@
                         "arc,mito,euk"
                     ]
                 },
+                "min_len_asv": {
+                    "type": "integer",
+                    "description": "Minimal ASV length",
+                    "help_text": "Remove ASV that are below the minimum length threshold (default: filter is disabled, otherwise 1). Increasing the threshold might reduce false positive ASVs (e.g. PCR off-targets)."
+                },
+                "max_len_asv": {
+                    "type": "integer",
+                    "description": "Maximum ASV length",
+                    "help_text": "Remove ASV that are above the maximum length threshold (default: filter is disabled, otherwise 1000000). Lowering the threshold might reduce false positive ASVs (e.g. PCR off-targets)."
+                },
                 "exclude_taxa": {
                     "type": "string",
                     "default": "mitochondria,chloroplast",

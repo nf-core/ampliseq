@@ -23,6 +23,11 @@ class WorkflowAmpliseq {
             System.exit(1)
         }
 
+        if ( params.min_len_asv > params.max_len_asv ) {
+            log.error "Incompatible parameters: `--min_len_asv` may not be greater than `--max_len_asv`."
+            System.exit(1)
+        }
+
         if ( params.skip_dada_quality && (params.trunclenf == null || params.trunclenr == null) ) {
             log.error "Incompatible parameters: `--skip_dada_quality` may not be used without setting `--trunclenf` and `--trunclenr`."
             System.exit(1)

@@ -166,6 +166,18 @@ Optionally, a UNITE species hypothesis (SH) can be added to the taxonomy. In sho
 
 ASV sequences, counts, and taxonomic classification as produced before with DADA2 are imported into QIIME2 and further analysed. Optionally, ASVs can be taxonomically classified also with QIIME2 against a database chosen with `--qiime_ref_taxonomy` (but DADA2 taxonomic classification takes precedence). Next, ASVs are filtered (`--exclude_taxa`, `--min_frequency`, `--min_samples`), and abundance tables are exported. Following, diversity indices are calculated and testing for differential abundant features between sample groups is performed.
 
+Intermediate data imported to QIIME2 is saved as QIIME2 fragments, that can be conveniently used for custom QIIME2 analysis.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `qiime2/input/`
+  - `table.qza`: ASV count table.
+  - `rep-seqs.qza`: ASV sequences.
+  - `taxonomy.qza`: ASV taxonomic classification.
+
+</details>
+
 #### Taxonomic classification
 
 Taxonomic classification with QIIME2 is typically similar to DADA2 classifications. However, both options are available. When taxonomic classification with DADA2 and QIIME2 is performed, DADA2 classification takes precedence over QIIME2 classifications for all downstream analysis.
@@ -193,11 +205,13 @@ All following analysis is based on these filtered tables.
   - `rep-seq.fasta`: Fasta file with ASV sequences.
   - `descriptive_stats.tsv`: Length, mean, etc. of ASV sequences.
   - `seven_number_summary.tsv`: Length of ASV sequences in different quantiles.
+  - `filtered-sequences.qza`: QIIME2 fragment.
 - `qiime2/abundance_tables/`
   - `abs-abund-table-*.tsv`: Tab-separated absolute abundance table at taxa level `*`, where `*` ranges by default from 2 to 6 or 7, depending on the used reference taxonomy database.
   - `count_table_filter_stats.tsv`: Tab-separated table with information on how much counts were filtered for each sample.
   - `feature-table.biom`: Abundance table in biom format for importing into downstream analysis tools.
   - `feature-table.tsv`: Tab-separated abundance table for each ASV and each sample.
+  - `filtered-table.qza`: QIIME2 fragment.
 
 </details>
 

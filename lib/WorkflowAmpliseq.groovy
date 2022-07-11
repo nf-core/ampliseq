@@ -23,7 +23,7 @@ class WorkflowAmpliseq {
             System.exit(1)
         }
 
-        if ( params.min_len_asv > params.max_len_asv ) {
+        if ( params.min_len_asv && params.max_len_asv && (params.min_len_asv > params.max_len_asv) ) {
             log.error "Incompatible parameters: `--min_len_asv` may not be greater than `--max_len_asv`."
             System.exit(1)
         }

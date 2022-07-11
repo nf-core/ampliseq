@@ -128,7 +128,7 @@ Optionally, ASV sequences can be filtered for rRNA sequences identified by Barrn
 
 #### Length filter
 
-Optionally, a length filter can be used to reduce potential contamination after ASV computation. For example with 515f and 806r primers the majority of 16S rRNA amplicon sequences should have a length of 253 bp and amplicons vary significantely are likely spurious. 
+Optionally, a length filter can be used to reduce potential contamination after ASV computation. For example with 515f and 806r primers the majority of 16S rRNA amplicon sequences should have a length of 253 bp and amplicons vary significantely are likely spurious.
 
 The minimum ASV length threshold can be set by `--min_len_asv` and the maximum length threshold with `--max_len_asv`. If no threshold is set, the filter (and output) is omitted.
 

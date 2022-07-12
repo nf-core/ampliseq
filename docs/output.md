@@ -20,7 +20,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
       - [Barrnap](#barrnap) - Predict ribosomal RNA sequences and optional filtering
       - [Length filter](#length-filter) - Optionally, ASV can be filtered by length thresholds
       - [ITSx](#itsx) - Optionally, the ITS region can be extracted
-    - [Taxonomic classification with DADA2](#taxonomic-classification-with-DADA2) - 
+    - [Taxonomic classification with DADA2](#taxonomic-classification-with-DADA2) -
       - [assignSH](#assignsh) - Optionally, a UNITE species hypothesis (SH) can be added to the taxonomy
     - [QIIME2](#qiime2) - Secondary analysis
       - [Taxonomic classification](#taxonomic-classification) - Taxonomical classification of ASVs
@@ -164,7 +164,7 @@ Optionally, the ITS region can be extracted from each ASV sequence using ITSx, a
 
 DADA2 taxonomically classifies the ASVs using a choice of supplied databases (specified with `--dada_ref_taxonomy`). The taxonomic classification will be done based on filtered ASV sequences (see above).
 
-Files when *not* using ITSx (default):
+Files when _not_ using ITSx (default):
 
 <details markdown="1">
 <summary>Output files</summary>

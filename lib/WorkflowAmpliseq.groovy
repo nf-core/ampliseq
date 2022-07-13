@@ -10,6 +10,16 @@ class WorkflowAmpliseq {
     public static void initialise(params, log) {
         if (params.enable_conda) { log.warn "Conda is enabled (`--enable_conda`), any steps involving QIIME2 are not available. Use a container engine instead of conda to enable all software." }
 
+        if ( params.pacbio || params.iontorrent || params.single_end ) {
+            if (params.trunclenr) { log.warn "Unused parameter: `--trunclenr` is ignored because the data is single end." }
+        } else if (params.trunclenf && !params.trunclenr) {
+            log.error "Invalid command: `--trunclenf` is set, but `--trunclenr` is not. Either both parameters `--trunclenf` and `--trunclenr` must be set or none."
+            System.exit(1)
+        } else if (!params.trunclenf && params.trunclenr) {
+            log.error "Invalid command: `--trunclenr` is set, but `--trunclenf` is not. Either both parameters `--trunclenf` and `--trunclenr` must be set or none."
+            System.exit(1)
+        }
+
         if (!["pooled", "independent", "pseudo"].contains(params.sample_inference)) {
             log.error "Please set `--sample_inference` to one of the following:\n" +
                 "\t-\"independent\" (lowest sensitivity and lowest resources),\n" +

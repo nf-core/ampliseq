@@ -12,6 +12,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 
 - [nf-core/ampliseq: Output](#nf-coreampliseq-output)
   - [Pipeline overview](#pipeline-overview)
+    - [Input](#input) - Input files
     - [FastQC](#fastqc) - Read quality control
     - [Cutadapt](#cutadapt) - Primer trimming
     - [MultiQC](#multiqc) - Aggregate report describing results
@@ -36,6 +37,20 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
     - [Read count report](#Read-count-report) - Report of read counts during various steps of the pipeline
     - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
   - [Citations](#citations)
+
+### Input
+
+Samplesheet, ASV fasta, and metadata file are copied into the results folder.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `input/`
+  - `*.tsv`: Samplesheet input if specified with `--input`.
+  - `*.tsv`: Metadata input if specified with `--metadata`.
+  - `*.fasta`: ASV sequence input if specified with `--input`.
+
+</details>
 
 ### FastQC
 

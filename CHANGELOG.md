@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 - [#456](https://github.com/nf-core/ampliseq/pull/456) - An optional ASV length filter can be activated using `--min_len_asv <int>` and/or `--max_len_asv <int>`.
+- [#458](https://github.com/nf-core/ampliseq/pull/458) - Samplesheet, ASV fasta file, and/or metadata sheet is now exported into `<results>/input/`
 
 ### `Changed`
 

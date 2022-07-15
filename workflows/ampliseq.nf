@@ -653,6 +653,18 @@ workflow AMPLISEQ {
         multiqc_report = MULTIQC.out.report.toList()
         ch_versions    = ch_versions.mix(MULTIQC.out.versions)
     }
+
+    //Save input in results folder
+    input = file(params.input)
+    if ( is_fasta_input || input.toString().toLowerCase().endsWith("tsv") ) {
+        file("${params.outdir}/input").mkdir()
+        input.copyTo("${params.outdir}/input")
+    }
+    //Save metadata in results folder
+    if ( params.metadata ) { 
+        file("${params.outdir}/input").mkdir()
+        file("${params.metadata}").copyTo("${params.outdir}/input")
+    }
 }
 
 /*

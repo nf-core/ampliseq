@@ -176,8 +176,8 @@
                 }
             }
         },
-        "asmplicon_sequence_variants_asv_calculation": {
-            "title": "Asmplicon Sequence Variants (ASV) calculation",
+        "amplicon_sequence_variants_asv_calculation": {
+            "title": "Amplicon Sequence Variants (ASV) calculation",
             "type": "object",
             "description": "",
             "default": "",
@@ -642,7 +642,7 @@
             "$ref": "#/definitions/read_trimming_and_quality_filtering"
         },
         {
-            "$ref": "#/definitions/asmplicon_sequence_variants_asv_calculation"
+            "$ref": "#/definitions/amplicon_sequence_variants_asv_calculation"
         },
         {
             "$ref": "#/definitions/taxonomic_database"

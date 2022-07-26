@@ -208,7 +208,7 @@
                     "description": "Name of supported database, and optionally also version number",
                     "default": "silva=138",
                     "enum": [
-                        "midori-co1=gb249",
+                        "midori-co1=gb250",
                         "gtdb=05-RS95",
                         "gtdb",
                         "pr2=4.14.0",

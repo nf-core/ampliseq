@@ -13,9 +13,10 @@
             "properties": {
                 "input": {
                     "type": "string",
+                    "mimetype": "text/tsv",
                     "fa_icon": "fas fa-dna",
-                    "description": "Either a tab-seperated sample sheet, a fasta file, or a folder containing zipped FastQ files",
-                    "help_text": "Points to the main pipeline input, one of the following:\n- folder containing compressed fastq files\n- sample sheet ending with `.tsv` that points towards compressed fastq files\n- fasta file ending with `.fasta`, `.fna` or `.fa` that will be taxonomically classified\n\nRelated parameters are:\n- `--pacbio` and `--iontorrent` if the sequencing data is PacBio data or IonTorrent data (default expected: paired-end Illumina data)\n- `--single_end` if the sequencing data is single-ended Illumina data (default expected: paired-end Illumina data)\n- `--multiple_sequencing_runs` (folder input only) if the sequencing data originates from multiple sequencing runs\n- `--extension` (folder input only) if the sequencing file names do not follow the default (`\"/*_R{1,2}_001.fastq.gz\"`)\n- `--dada_ref_taxonomy` and `--qiime_ref_taxonomy` to choose an appropriate reference taxonomy for the type of amplicon (16S/18S/ITS) (default: 16S rRNA sequence database)\n\n##### Folder containing zipped FastQ files\n\nFor example:\n\n```bash\n--input 'path/to/data'\n```\n\nExample for input data organization from one sequencing run with two samples, paired-end data:\n\n```bash\ndata\n  ├─sample1_1_L001_R1_001.fastq.gz\n  ├─sample1_1_L001_R2_001.fastq.gz\n  ├─sample2_1_L001_R1_001.fastq.gz\n  └─sample2_1_L001_R2_001.fastq.gz\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The folder must contain gzip compressed demultiplexed fastq files. If the file names do not follow the default (`\"/*_R{1,2}_001.fastq.gz\"`), please check `--extension`.\n3. Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique\n4. If your data is scattered, produce a sample sheet\n5. All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed. Sequencing data originating from multiple sequencing runs requires additionally the parameter `--multiple_sequencing_runs` and a specific folder structure.\n\n##### Sample sheet\n\nThe sample sheet file is an alternative way to provide input reads, it must be a tab-separated file ending with `.tsv` that must have two to four columns with the following headers: \n- `sampleID` (required): Unique sample identifiers, any unique string (may not contain dots `.`, must not start with a number when using metadata)\n- `forwardReads` (required): Paths to (forward) reads zipped FastQ files\n- `reverseReads` (optional): Paths to reverse reads zipped FastQ files, required if the data is paired-end\n- `run` (optional): If the data was produced by multiple sequencing runs, any string\n\nFor example:\n\n```bash\n--input 'path/to/samplesheet.tsv'\n```\n\n##### Fasta file\n\nWhen pointing at a file ending with `.fasta`, `.fna` or `.fa`, the containing sequences will be taxonomically classified. All other pipeline steps will be skipped.\n\nThis can be used to taxonomically classify previously produced ASV/OTU sequences.\n\nFor example:\n\n```bash\n--input 'path/to/amplicon_sequences.fasta'\n```"
+                    "description": "Either a tab-separated sample sheet, a fasta file, or a folder containing zipped FastQ files",
+                    "help_text": "Points to the main pipeline input, one of the following:\n- folder containing compressed fastq files\n- sample sheet ending with `.tsv` that points towards compressed fastq files\n- fasta file ending with `.fasta`, `.fna` or `.fa` that will be taxonomically classified\n\nRelated parameters are:\n- `--pacbio` and `--iontorrent` if the sequencing data is PacBio data or IonTorrent data (default expected: paired-end Illumina data)\n- `--single_end` if the sequencing data is single-ended Illumina data (default expected: paired-end Illumina data)\n- `--multiple_sequencing_runs` (folder input only) if the sequencing data originates from multiple sequencing runs\n- `--extension` (folder input only) if the sequencing file names do not follow the default (`\"/*_R{1,2}_001.fastq.gz\"`)\n- `--dada_ref_taxonomy` and `--qiime_ref_taxonomy` to choose an appropriate reference taxonomy for the type of amplicon (16S/18S/ITS) (default: 16S rRNA sequence database)\n\n##### Folder containing zipped FastQ files\n\nFor example:\n\n```bash\n--input 'path/to/data'\n```\n\nExample for input data organization from one sequencing run with two samples, paired-end data:\n\n```bash\ndata\n  \u251c\u2500sample1_1_L001_R1_001.fastq.gz\n  \u251c\u2500sample1_1_L001_R2_001.fastq.gz\n  \u251c\u2500sample2_1_L001_R1_001.fastq.gz\n  \u2514\u2500sample2_1_L001_R2_001.fastq.gz\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The folder must contain gzip compressed demultiplexed fastq files. If the file names do not follow the default (`\"/*_R{1,2}_001.fastq.gz\"`), please check `--extension`.\n3. Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique\n4. If your data is scattered, produce a sample sheet\n5. All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed. Sequencing data originating from multiple sequencing runs requires additionally the parameter `--multiple_sequencing_runs` and a specific folder structure.\n\n##### Sample sheet\n\nThe sample sheet file is an alternative way to provide input reads, it must be a tab-separated file ending with `.tsv` that must have two to four columns with the following headers: \n- `sampleID` (required): Unique sample identifiers, any unique string (may not contain dots `.`, must not start with a number when using metadata)\n- `forwardReads` (required): Paths to (forward) reads zipped FastQ files\n- `reverseReads` (optional): Paths to reverse reads zipped FastQ files, required if the data is paired-end\n- `run` (optional): If the data was produced by multiple sequencing runs, any string\n\nFor example:\n\n```bash\n--input 'path/to/samplesheet.tsv'\n```\n\n##### Fasta file\n\nWhen pointing at a file ending with `.fasta`, `.fna` or `.fa`, the containing sequences will be taxonomically classified. All other pipeline steps will be skipped.\n\nThis can be used to taxonomically classify previously produced ASV/OTU sequences.\n\nFor example:\n\n```bash\n--input 'path/to/amplicon_sequences.fasta'\n```"
                 },
                 "FW_primer": {
                     "type": "string",
@@ -34,16 +35,22 @@
                     "description": "Path to metadata sheet, when missing most downstream analysis are skipped (barplots, PCoA plots, ...).",
                     "help_text": "This is optional, but for performing downstream analysis such as barplots, diversity indices or differential abundance testing, a metadata file is essential.\n\nRelated parameter:\n- `--metadata_category` (optional) to choose columns that are used for testing significance\n\nFor example:\n\n```bash\n--metadata \"path/to/metadata.tsv\"\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The metadata file has to follow the QIIME2 specifications (https://docs.qiime2.org/2021.2/tutorials/metadata/)\n\nThe first column in the tab-separated metadata file is the sample identifier column (required header: `ID`) and defines the sample or feature IDs associated with your study. Metadata files are not required to have additional metadata columns, so a file containing only an ID column is a valid QIIME 2 metadata file. Additional columns defining metadata associated with each sample or feature ID are optional.\n**NB**: without additional columns there might be no groupings for the downstream analyses.\n\nSample identifiers should be 36 characters long or less, and also contain only ASCII alphanumeric characters (i.e. in the range of [a-z], [A-Z], or [0-9]), or the dash (-) character. For downstream analysis, by default all numeric columns, blanks or NA are removed, and only columns with multiple different values but not all unique are selected.\n\nThe columns which are to be assessed can be specified by `--metadata_category`. If `--metadata_category` isn't specified than all columns that fit the specification are automatically chosen.",
                     "fa_icon": "fas fa-file-csv"
+                },
+                "outdir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
+                    "fa_icon": "fas fa-folder-open"
                 }
             },
             "required": ["input", "outdir"],
             "fa_icon": "fas fa-terminal"
         },
-        "other_input_output_options": {
-            "title": "Other input/output options",
+        "sequencing_input": {
+            "title": "Sequencing input",
             "type": "object",
-            "fa_icon": "fas fa-terminal",
-            "description": "Define where the pipeline should find input data and save output data.",
+            "description": "",
+            "default": "",
             "properties": {
                 "pacbio": {
                     "type": "boolean",
@@ -57,18 +64,10 @@
                     "type": "boolean",
                     "description": "If data is single-ended Illumina reads instead of paired-end"
                 },
-                "cut_its": {
-                    "type": "string",
-                    "help_text": "If data is long read ITS sequences, that need to be cut to ITS region (full ITS, only ITS1, or only ITS2) for taxonomy assignment.",
-                    "description": "Part of ITS region to use for taxonomy assignment: \"full\", \"its1\", or \"its2\"",
-                    "default": "none",
-                    "enum": ["none", "full", "its1", "its2"]
-                },
-                "its_partial": {
-                    "type": "integer",
-                    "help_text": "If using cut_its, this option allows partial ITS sequences, longer than the specified cutoff.",
-                    "description": "Cutoff for partial ITS sequences. Only full sequences by default.",
-                    "default": 0
+                "illumina_pe_its": {
+                    "type": "boolean",
+                    "description": "If analysing ITS amplicons or any other region with large length variability with Illumina paired end reads",
+                    "help_text": "This will cause the pipeline to\n- not truncate input reads if not `--trunclenf` and `--trunclenr` are overwriting defaults\n- remove reverse complement primers from the end of reads in case the read length exceeds the amplicon length"
                 },
                 "multiple_sequencing_runs": {
                     "type": "boolean",
@@ -76,69 +75,20 @@
                     "help_text": "Expects one sub-folder per sequencing run in the folder specified by `--input` containing sequencing data of the specific run.\nSample identifiers are taken from sequencing files, specifically the string before the first underscore will be the sample ID. Sample IDs across all sequencing runs (all sequencing files) have to be unique. If this is not the case, please use a sample sheet as input instead.\n\nExample for input data organization:\n\n```bash\ndata\n  |-run1\n  |  |-sample1_1_L001_R1_001.fastq.gz\n  |  |-sample1_1_L001_R2_001.fastq.gz\n  |  |-sample2_1_L001_R1_001.fastq.gz\n  |  |-sample2_1_L001_R2_001.fastq.gz\n  |\n  |-run2\n     |-sample3_1_L001_R1_001.fastq.gz\n     |-sample3_1_L001_R2_001.fastq.gz\n     |-sample4_1_L001_R1_001.fastq.gz\n     |-sample4_1_L001_R2_001.fastq.gz\n```\n\nExample command to analyze this data in one pipeline run:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input \"data\" \\\n    --FW_primer \"GTGYCAGCMGCCGCGGTAA\" \\\n    --RV_primer \"GGACTACNVGGGTWTCTAAT\" \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multiple_sequencing_runs\n```",
                     "fa_icon": "fas fa-running"
                 },
-                "illumina_pe_its": {
-                    "type": "boolean",
-                    "description": "If analysing ITS amplicons or any other region with large length variability with Illumina paired end reads",
-                    "help_text": "This will cause the pipeline to\n- not truncate input reads if not `--trunclenf` and `--trunclenr` are overwriting defaults\n- remove reverse complement primers from the end of reads in case the read length exceeds the amplicon length"
-                },
-                "concatenate_reads": {
-                    "type": "boolean",
-                    "description": "Not recommended: When paired end reads are not sufficiently overlapping for merging.",
-                    "help_text": "This parameters specifies that paired-end reads are not merged after denoising but concatenated (separated by 10 N's). This is of advantage when an amplicon was sequenced that is too long for merging (i.e. bad experimental design). This is an alternative to only analyzing the forward or reverse read in case of non-overlapping paired-end sequencing data.\n\n**This parameter is not recommended! Only if all other options fail.**"
-                },
-                "sample_inference": {
-                    "type": "string",
-                    "default": "independent",
-                    "help_text": "If samples are treated independent (lowest sensitivity and lowest resources), pooled (highest sensitivity and resources) or pseudo-pooled (balance between required resources and sensitivity).",
-                    "description": "Mode of sample inference: \"independent\", \"pooled\" or \"pseudo\"",
-                    "enum": ["independent", "pooled", "pseudo"]
-                },
-                "metadata_category": {
-                    "type": "string",
-                    "description": "Comma separated list of metadata column headers for statistics.",
-                    "help_text": "Here columns in the metadata sheet can be chosen with groupings that are used for diversity indices and differential abundance analysis. By default, all suitable columns in the metadata sheet will be used if this option is not specified. Suitable are columns which are categorical (not numerical) and have multiple different values which are not all unique. For example:\n\n```bash\n--metadata_category \"treatment1,treatment2\"\n```\n\nPlease note the following requirements:\n\n1. Comma separated list enclosed in quotes\n2. May not contain whitespace characters\n3. Each comma separated term has to match exactly one column name in the metadata sheet"
-                },
-                "qiime_adonis_formula": {
-                    "type": "string",
-                    "description": "Formula for QIIME2 ADONIS metadata feature importance test for beta diversity distances",
-                    "help_text": "Model formula containing only independent terms contained in the sample metadata. These can be continuous variables or factors, and they can have interactions as in a typical R formula. Essentially, columns in the metadata sheet can be chosen that have no empty values, not only unique values, or not only identical values.\nFor example, \"treatment1+treatment2\" tests whether the data partitions based on \"treatment1\" and \"treatment2\" sample metadata. \"treatment1*treatment2\" test both of those effects as well as their interaction.\nMore examples can be found in the R documentation, https://cran.r-project.org/doc/manuals/r-release/R-intro.html#Formulae-for-statistical-models"
-                },
                 "extension": {
                     "type": "string",
                     "default": "/*_R{1,2}_001.fastq.gz",
                     "description": "Naming of sequencing files",
-                    "help_text": "Indicates the naming of sequencing files (default: `\"/*_R{1,2}_001.fastq.gz\"`).\n\nPlease note:\n\n1. The prepended slash (`/`) is required\n2. The star (`*`) is the required wildcard for sample names\n3. The curly brackets (`{}`) enclose the orientation for paired end reads, seperated by a comma (`,`).\n4. The pattern must be enclosed in quotes\n\nFor example for one sample (name: `1`) with forward (file: `1_a.fastq.gz`) and reverse (file: `1_b.fastq.gz`) reads in folder `data`:\n\n```bash\n--input \"data\" --extension \"/*_{a,b}.fastq.gz\"\n```"
+                    "help_text": "Indicates the naming of sequencing files (default: `\"/*_R{1,2}_001.fastq.gz\"`).\n\nPlease note:\n\n1. The prepended slash (`/`) is required\n2. The star (`*`) is the required wildcard for sample names\n3. The curly brackets (`{}`) enclose the orientation for paired end reads, separated by a comma (`,`).\n4. The pattern must be enclosed in quotes\n\nFor example for one sample (name: `1`) with forward (file: `1_a.fastq.gz`) and reverse (file: `1_b.fastq.gz`) reads in folder `data`:\n\n```bash\n--input \"data\" --extension \"/*_{a,b}.fastq.gz\"\n```"
                 },
-                "picrust": {
+                "ignore_empty_input_files": {
                     "type": "boolean",
-                    "description": "If the functional potential of the bacterial community is predicted."
-                },
-                "sbdiexport": {
-                    "type": "boolean",
-                    "description": "If data should be exported in SBDI (Swedish biodiversity infrastructure) Excel format."
-                },
-                "seed": {
-                    "type": "integer",
-                    "default": 100,
-                    "description": "Specifies the random seed."
-                },
-                "outdir": {
-                    "type": "string",
-                    "format": "directory-path",
-                    "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
-                    "fa_icon": "fas fa-folder-open"
-                },
-                "email": {
-                    "type": "string",
-                    "description": "Email address for completion summary.",
-                    "fa_icon": "fas fa-envelope",
-                    "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
-                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
+                    "description": "Ignore input files considered too small (<1KB) for individual samples and continue the pipeline without those samples."
                 }
             }
         },
-        "cutoffs": {
-            "title": "Cutoffs",
+        "primer_removal": {
+            "title": "Primer removal",
             "type": "object",
             "description": "",
             "default": "",
@@ -165,6 +115,18 @@
                     "help_text": "Cutdapt will be run twice, first to remove reads without primers (default), then a second time to remove reads that erroneously contain a second set of primers, not to be used with `--retain_untrimmed`.",
                     "fa_icon": "fas fa-project-diagram"
                 },
+                "ignore_failed_trimming": {
+                    "type": "boolean",
+                    "description": "Ignore files considered too small (<1KB) after trimming and continue the pipeline without those samples."
+                }
+            }
+        },
+        "read_trimming_and_quality_filtering": {
+            "title": "Read trimming and quality filtering",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
                 "trunclenf": {
                     "type": "integer",
                     "description": "DADA2 read truncation value for forward strand, set this to 0 for no truncation",
@@ -199,12 +161,6 @@
                     "help_text": "After truncation, reads with higher than `max_ee` \"expected errors\" will be discarded. In case of very long reads, you might want to increase this value.  We recommend (to start with) a value corresponding to approximately 1 expected error per 100-200 bp (default: 2)",
                     "fa_icon": "fas fa-equals"
                 },
-                "max_len": {
-                    "type": "integer",
-                    "description": "DADA2 read filtering option",
-                    "fa_icon": "fas fa-less-than-equal",
-                    "help_text": "Remove reads with length greater than `max_len` after trimming and truncation. Must be a positive integer."
-                },
                 "min_len": {
                     "type": "integer",
                     "default": 50,
@@ -212,56 +168,33 @@
                     "fa_icon": "fas fa-greater-than-equal",
                     "help_text": "Remove reads with length less than `min_len` after trimming and truncation."
                 },
-                "filter_ssu": {
-                    "type": "string",
-                    "description": "Enable SSU filtering. Comma separated list of kingdoms in Barrnap.",
-                    "enum": [
-                        "bac,arc,mito,euk",
-                        "bac",
-                        "arc",
-                        "mito",
-                        "euk",
-                        "bac,arc",
-                        "bac,mito",
-                        "bac,euk",
-                        "arc,mito",
-                        "arc,euk",
-                        "mito,euk",
-                        "bac,arc,mito",
-                        "bac,mito,euk",
-                        "arc,mito,euk"
-                    ]
-                },
-                "dada_tax_agglom_min": {
+                "max_len": {
                     "type": "integer",
-                    "default": 2,
-                    "description": "Minimum taxonomy agglomeration level for DADA2 classification",
-                    "fa_icon": "fas fa-greater-than-equal",
-                    "help_text": "Depends on the reference taxonomy database used."
-                },
-                "dada_tax_agglom_max": {
-                    "type": "integer",
-                    "default": 7,
-                    "description": "Maximum taxonomy agglomeration level for DADA2 classification",
-                    "fa_icon": "fas fa-greater-than-equal",
-                    "help_text": "Depends on the reference taxonomy database used. Default databases should have genus level at 7."
-                },
-                "qiime_tax_agglom_min": {
-                    "type": "integer",
-                    "default": 2,
-                    "description": "Minimum taxonomy agglomeration level for QIIME2 classification",
-                    "fa_icon": "fas fa-greater-than-equal",
-                    "help_text": "Depends on the reference taxonomy database used."
-                },
-                "qiime_tax_agglom_max": {
-                    "type": "integer",
-                    "default": 6,
-                    "description": "Maximum taxonomy agglomeration level for QIIME2 classification",
-                    "fa_icon": "fas fa-greater-than-equal",
-                    "help_text": "Depends on the reference taxonomy database used. Default databases should have genus level at 6."
+                    "description": "DADA2 read filtering option",
+                    "fa_icon": "fas fa-less-than-equal",
+                    "help_text": "Remove reads with length greater than `max_len` after trimming and truncation. Must be a positive integer."
                 }
-            },
-            "fa_icon": "fas fa-filter"
+            }
+        },
+        "amplicon_sequence_variants_asv_calculation": {
+            "title": "Amplicon Sequence Variants (ASV) calculation",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "sample_inference": {
+                    "type": "string",
+                    "default": "independent",
+                    "help_text": "If samples are treated independent (lowest sensitivity and lowest resources), pooled (highest sensitivity and resources) or pseudo-pooled (balance between required resources and sensitivity).",
+                    "description": "Mode of sample inference: \"independent\", \"pooled\" or \"pseudo\"",
+                    "enum": ["independent", "pooled", "pseudo"]
+                },
+                "concatenate_reads": {
+                    "type": "boolean",
+                    "description": "Not recommended: When paired end reads are not sufficiently overlapping for merging.",
+                    "help_text": "This parameters specifies that paired-end reads are not merged after denoising but concatenated (separated by 10 N's). This is of advantage when an amplicon was sequenced that is too long for merging (i.e. bad experimental design). This is an alternative to only analyzing the forward or reverse read in case of non-overlapping paired-end sequencing data.\n\n**This parameter is not recommended! Only if all other options fail.**"
+                }
+            }
         },
         "taxonomic_database": {
             "title": "Taxonomic database",
@@ -320,25 +253,62 @@
                     "type": "string",
                     "description": "Path to QIIME2 trained classifier file (typically *-classifier.qza)",
                     "help_text": "If you have trained a compatible classifier before, from sources such as SILVA (https://www.arb-silva.de/), Greengenes (http://greengenes.secondgenome.com/downloads) or RDP (https://rdp.cme.msu.edu/). \n\nFor example:\n\n```bash\n--classifier \"FW_primer-RV_primer-classifier.qza\"\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The classifier is a Naive Bayes classifier produced by `qiime feature-classifier fit-classifier-naive-bayes` (e.g. by this pipeline)\n3. The primer pair for the amplicon PCR and the computing of the classifier are exactly the same (or full-length, potentially lower performance)\n4. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses"
+                },
+                "addsh": {
+                    "type": "boolean",
+                    "description": "If ASVs should be assigned to UNITE species hypotheses (SHs). Only relevant for ITS data."
+                },
+                "cut_its": {
+                    "type": "string",
+                    "help_text": "If data is long read ITS sequences, that need to be cut to ITS region (full ITS, only ITS1, or only ITS2) for taxonomy assignment.",
+                    "description": "Part of ITS region to use for taxonomy assignment: \"full\", \"its1\", or \"its2\"",
+                    "default": "none",
+                    "enum": ["none", "full", "its1", "its2"]
+                },
+                "its_partial": {
+                    "type": "integer",
+                    "help_text": "If using cut_its, this option allows partial ITS sequences, longer than the specified cutoff.",
+                    "description": "Cutoff for partial ITS sequences. Only full sequences by default.",
+                    "default": 0
                 }
             },
             "fa_icon": "fas fa-database"
         },
-        "filtering": {
-            "title": "Filtering",
+        "asv_filtering": {
+            "title": "ASV filtering",
             "type": "object",
             "description": "",
             "default": "",
             "properties": {
-                "ignore_empty_input_files": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Ignore input files considered too small (<1KB) for individual samples and continue the pipeline without those samples."
+                "filter_ssu": {
+                    "type": "string",
+                    "description": "Enable SSU filtering. Comma separated list of kingdoms in Barrnap.",
+                    "enum": [
+                        "bac,arc,mito,euk",
+                        "bac",
+                        "arc",
+                        "mito",
+                        "euk",
+                        "bac,arc",
+                        "bac,mito",
+                        "bac,euk",
+                        "arc,mito",
+                        "arc,euk",
+                        "mito,euk",
+                        "bac,arc,mito",
+                        "bac,mito,euk",
+                        "arc,mito,euk"
+                    ]
                 },
-                "ignore_failed_trimming": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Ignore files considered too small (<1KB) after trimming and continue the pipeline without those samples."
+                "min_len_asv": {
+                    "type": "integer",
+                    "description": "Minimal ASV length",
+                    "help_text": "Remove ASV that are below the minimum length threshold (default: filter is disabled, otherwise 1). Increasing the threshold might reduce false positive ASVs (e.g. PCR off-targets)."
+                },
+                "max_len_asv": {
+                    "type": "integer",
+                    "description": "Maximum ASV length",
+                    "help_text": "Remove ASV that are above the maximum length threshold (default: filter is disabled, otherwise 1000000). Lowering the threshold might reduce false positive ASVs (e.g. PCR off-targets)."
                 },
                 "exclude_taxa": {
                     "type": "string",
@@ -361,6 +331,61 @@
             },
             "fa_icon": "fas fa-filter"
         },
+        "downstream_analysis": {
+            "title": "Downstream analysis",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "fa_icon": "fas fa-filter",
+            "properties": {
+                "metadata_category": {
+                    "type": "string",
+                    "description": "Comma separated list of metadata column headers for statistics.",
+                    "help_text": "Here columns in the metadata sheet can be chosen with groupings that are used for diversity indices and differential abundance analysis. By default, all suitable columns in the metadata sheet will be used if this option is not specified. Suitable are columns which are categorical (not numerical) and have multiple different values which are not all unique. For example:\n\n```bash\n--metadata_category \"treatment1,treatment2\"\n```\n\nPlease note the following requirements:\n\n1. Comma separated list enclosed in quotes\n2. May not contain whitespace characters\n3. Each comma separated term has to match exactly one column name in the metadata sheet"
+                },
+                "qiime_adonis_formula": {
+                    "type": "string",
+                    "description": "Formula for QIIME2 ADONIS metadata feature importance test for beta diversity distances",
+                    "help_text": "Model formula containing only independent terms contained in the sample metadata. These can be continuous variables or factors, and they can have interactions as in a typical R formula. Essentially, columns in the metadata sheet can be chosen that have no empty values, not only unique values, or not only identical values.\nFor example, \"treatment1+treatment2\" tests whether the data partitions based on \"treatment1\" and \"treatment2\" sample metadata. \"treatment1*treatment2\" test both of those effects as well as their interaction.\nMore examples can be found in the R documentation, https://cran.r-project.org/doc/manuals/r-release/R-intro.html#Formulae-for-statistical-models"
+                },
+                "picrust": {
+                    "type": "boolean",
+                    "description": "If the functional potential of the bacterial community is predicted."
+                },
+                "sbdiexport": {
+                    "type": "boolean",
+                    "description": "If data should be exported in SBDI (Swedish biodiversity infrastructure) Excel format."
+                },
+                "dada_tax_agglom_min": {
+                    "type": "integer",
+                    "default": 2,
+                    "description": "Minimum taxonomy agglomeration level for DADA2 classification",
+                    "fa_icon": "fas fa-greater-than-equal",
+                    "help_text": "Depends on the reference taxonomy database used."
+                },
+                "dada_tax_agglom_max": {
+                    "type": "integer",
+                    "default": 7,
+                    "description": "Maximum taxonomy agglomeration level for DADA2 classification",
+                    "fa_icon": "fas fa-greater-than-equal",
+                    "help_text": "Depends on the reference taxonomy database used. Default databases should have genus level at 7."
+                },
+                "qiime_tax_agglom_min": {
+                    "type": "integer",
+                    "default": 2,
+                    "description": "Minimum taxonomy agglomeration level for QIIME2 classification",
+                    "fa_icon": "fas fa-greater-than-equal",
+                    "help_text": "Depends on the reference taxonomy database used."
+                },
+                "qiime_tax_agglom_max": {
+                    "type": "integer",
+                    "default": 6,
+                    "description": "Maximum taxonomy agglomeration level for QIIME2 classification",
+                    "fa_icon": "fas fa-greater-than-equal",
+                    "help_text": "Depends on the reference taxonomy database used. Default databases should have genus level at 6."
+                }
+            }
+        },
         "skipping_specific_steps": {
             "title": "Skipping specific steps",
             "type": "object",
@@ -369,122 +394,55 @@
             "properties": {
                 "skip_fastqc": {
                     "type": "boolean",
-                    "default": false,
                     "description": "Skip FastQC"
                 },
                 "skip_cutadapt": {
                     "type": "boolean",
-                    "default": false,
                     "description": "Skip primer trimming with cutadapt. This is not recommended! Use only in case primer sequences were removed before and the data does not contain any primer sequences."
                 },
                 "skip_dada_quality": {
                     "type": "boolean",
-                    "default": false,
                     "description": "Skip quality check with DADA2. Can only be skipped when `--trunclenf` and `--trunclenr` are set."
                 },
                 "skip_barrnap": {
                     "type": "boolean",
-                    "default": false,
                     "description": "Skip annotating SSU matches."
                 },
                 "skip_qiime": {
                     "type": "boolean",
-                    "default": false,
                     "description": "Skip all steps that are executed by QIIME2, including QIIME2 software download, taxonomy assignment by QIIME2, barplots, relative abundance tables, diversity analysis, differential abundance testing."
                 },
                 "skip_taxonomy": {
                     "type": "boolean",
-                    "default": false,
                     "description": "Skip taxonomic classification. Incompatible with `--sbdiexport`"
                 },
                 "skip_dada_addspecies": {
                     "type": "boolean",
-                    "default": false,
                     "description": "Skip species level when using DADA2 for taxonomic classification. This reduces the required memory dramatically under certain conditions. Incompatible with `--sbdiexport`"
                 },
                 "skip_barplot": {
                     "type": "boolean",
-                    "default": false,
                     "description": "Skip producing barplot"
                 },
                 "skip_abundance_tables": {
                     "type": "boolean",
-                    "default": false,
                     "description": "Skip producing any relative abundance tables"
                 },
                 "skip_alpha_rarefaction": {
                     "type": "boolean",
-                    "default": false,
                     "description": "Skip alpha rarefaction"
                 },
                 "skip_diversity_indices": {
                     "type": "boolean",
-                    "default": false,
                     "description": "Skip alpha and beta diversity analysis"
                 },
                 "skip_ancom": {
                     "type": "boolean",
-                    "default": false,
                     "description": "Skip differential abundance testing"
                 },
                 "skip_multiqc": {
                     "type": "boolean",
-                    "default": false,
                     "description": "Skip MultiQC reporting"
-                }
-            }
-        },
-        "institutional_config_options": {
-            "title": "Institutional config options",
-            "type": "object",
-            "fa_icon": "fas fa-university",
-            "description": "Parameters used to describe centralised config profiles. These should not be edited.",
-            "help_text": "The centralised nf-core configuration profiles use a handful of pipeline parameters to describe themselves. This information is then printed to the Nextflow log when you run a pipeline. You should not need to change these values when you run a pipeline.",
-            "properties": {
-                "custom_config_version": {
-                    "type": "string",
-                    "description": "Git commit id for Institutional configs.",
-                    "default": "master",
-                    "hidden": true,
-                    "fa_icon": "fas fa-users-cog"
-                },
-                "custom_config_base": {
-                    "type": "string",
-                    "description": "Base directory for Institutional configs.",
-                    "default": "https://raw.githubusercontent.com/nf-core/configs/master",
-                    "hidden": true,
-                    "help_text": "If you're running offline, Nextflow will not be able to fetch the institutional config files from the internet. If you don't need them, then this is not a problem. If you do need them, you should download the files from the repo and tell Nextflow where to find them with this parameter.",
-                    "fa_icon": "fas fa-users-cog"
-                },
-                "config_profile_name": {
-                    "type": "string",
-                    "description": "Institutional config name.",
-                    "hidden": true,
-                    "fa_icon": "fas fa-users-cog"
-                },
-                "config_profile_description": {
-                    "type": "string",
-                    "description": "Institutional config description.",
-                    "hidden": true,
-                    "fa_icon": "fas fa-users-cog"
-                },
-                "config_profile_contact": {
-                    "type": "string",
-                    "description": "Institutional config contact information.",
-                    "hidden": true,
-                    "fa_icon": "fas fa-users-cog"
-                },
-                "config_profile_url": {
-                    "type": "string",
-                    "description": "Institutional config URL link.",
-                    "hidden": true,
-                    "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
-                },
-                "multiqc_title": {
-                    "type": "string",
-                    "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
-                    "hidden": true,
-                    "fa_icon": "fas fa-file-signature"
                 }
             }
         },
@@ -495,6 +453,24 @@
             "description": "Less common options for the pipeline, typically set in a config file.",
             "help_text": "These options are common to all nf-core pipelines and allow you to customise some of the core preferences for how the pipeline runs.\n\nTypically these options would be set in a Nextflow config file loaded for all pipeline runs, such as `~/.nextflow/config`.",
             "properties": {
+                "seed": {
+                    "type": "integer",
+                    "default": 100,
+                    "description": "Specifies the random seed."
+                },
+                "email": {
+                    "type": "string",
+                    "description": "Email address for completion summary.",
+                    "fa_icon": "fas fa-envelope",
+                    "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
+                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
+                },
+                "show_hidden_params": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-eye-slash",
+                    "description": "Show all params when using `--help`",
+                    "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
+                },
                 "help": {
                     "type": "boolean",
                     "description": "Display help text.",
@@ -558,18 +534,11 @@
                     "fa_icon": "fas fa-check-square",
                     "hidden": true
                 },
-                "show_hidden_params": {
-                    "type": "boolean",
-                    "fa_icon": "far fa-eye-slash",
-                    "description": "Show all params when using `--help`",
-                    "hidden": true,
-                    "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
-                },
                 "enable_conda": {
                     "type": "boolean",
                     "description": "Run this workflow with Conda. You can also use '-profile conda' instead of providing this parameter.",
-                    "hidden": true,
-                    "fa_icon": "fas fa-bacon"
+                    "fa_icon": "fas fa-bacon",
+                    "hidden": true
                 }
             }
         },
@@ -585,7 +554,6 @@
                     "description": "Maximum number of CPUs that can be requested    for any single job.",
                     "default": 16,
                     "fa_icon": "fas fa-microchip",
-                    "hidden": true,
                     "help_text": "Use to set an upper-limit for the CPU requirement for each process. Should be an integer e.g. `--max_cpus 1`"
                 },
                 "max_memory": {
@@ -594,7 +562,6 @@
                     "default": "128.GB",
                     "fa_icon": "fas fa-memory",
                     "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
-                    "hidden": true,
                     "help_text": "Use to set an upper-limit for the memory requirement for each process. Should be a string in the format integer-unit e.g. `--max_memory '8.GB'`"
                 },
                 "max_time": {
@@ -603,8 +570,61 @@
                     "default": "240.h",
                     "fa_icon": "far fa-clock",
                     "pattern": "^(\\d+\\.?\\s*(s|m|h|day)\\s*)+$",
-                    "hidden": true,
                     "help_text": "Use to set an upper-limit for the time requirement for each process. Should be a string in the format integer-unit e.g. `--max_time '2.h'`"
+                }
+            }
+        },
+        "institutional_config_options": {
+            "title": "Institutional config options",
+            "type": "object",
+            "fa_icon": "fas fa-university",
+            "description": "Parameters used to describe centralised config profiles. These should not be edited.",
+            "help_text": "The centralised nf-core configuration profiles use a handful of pipeline parameters to describe themselves. This information is then printed to the Nextflow log when you run a pipeline. You should not need to change these values when you run a pipeline.",
+            "properties": {
+                "custom_config_version": {
+                    "type": "string",
+                    "description": "Git commit id for Institutional configs.",
+                    "default": "master",
+                    "hidden": true,
+                    "fa_icon": "fas fa-users-cog"
+                },
+                "custom_config_base": {
+                    "type": "string",
+                    "description": "Base directory for Institutional configs.",
+                    "default": "https://raw.githubusercontent.com/nf-core/configs/master",
+                    "hidden": true,
+                    "help_text": "If you're running offline, Nextflow will not be able to fetch the institutional config files from the internet. If you don't need them, then this is not a problem. If you do need them, you should download the files from the repo and tell Nextflow where to find them with this parameter.",
+                    "fa_icon": "fas fa-users-cog"
+                },
+                "config_profile_name": {
+                    "type": "string",
+                    "description": "Institutional config name.",
+                    "hidden": true,
+                    "fa_icon": "fas fa-users-cog"
+                },
+                "config_profile_description": {
+                    "type": "string",
+                    "description": "Institutional config description.",
+                    "hidden": true,
+                    "fa_icon": "fas fa-users-cog"
+                },
+                "config_profile_contact": {
+                    "type": "string",
+                    "description": "Institutional config contact information.",
+                    "hidden": true,
+                    "fa_icon": "fas fa-users-cog"
+                },
+                "config_profile_url": {
+                    "type": "string",
+                    "description": "Institutional config URL link.",
+                    "hidden": true,
+                    "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
+                },
+                "multiqc_title": {
+                    "type": "string",
+                    "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
+                    "hidden": true,
+                    "fa_icon": "fas fa-file-signature"
                 }
             }
         }
@@ -614,16 +634,25 @@
             "$ref": "#/definitions/main_arguments"
         },
         {
-            "$ref": "#/definitions/other_input_output_options"
+            "$ref": "#/definitions/sequencing_input"
         },
         {
-            "$ref": "#/definitions/cutoffs"
+            "$ref": "#/definitions/primer_removal"
+        },
+        {
+            "$ref": "#/definitions/read_trimming_and_quality_filtering"
+        },
+        {
+            "$ref": "#/definitions/amplicon_sequence_variants_asv_calculation"
         },
         {
             "$ref": "#/definitions/taxonomic_database"
         },
         {
-            "$ref": "#/definitions/filtering"
+            "$ref": "#/definitions/asv_filtering"
+        },
+        {
+            "$ref": "#/definitions/downstream_analysis"
         },
         {
             "$ref": "#/definitions/skipping_specific_steps"
@@ -632,10 +661,10 @@
             "$ref": "#/definitions/generic_options"
         },
         {
-            "$ref": "#/definitions/institutional_config_options"
+            "$ref": "#/definitions/max_job_request_options"
         },
         {
-            "$ref": "#/definitions/max_job_request_options"
+            "$ref": "#/definitions/institutional_config_options"
         }
     ]
 }

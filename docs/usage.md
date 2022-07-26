@@ -6,7 +6,7 @@
 
 ## Input specifications
 
-The input data can be passed to nf-core/ampliseq in three possible ways using the `--input` parameter, either a folder containing zipped FastQ files, a tab-seperated samplesheet, or a fasta file to be taxonomically classified.
+The input data can be passed to nf-core/ampliseq in three possible ways using the `--input` parameter, either a folder containing zipped FastQ files, a tab-separated samplesheet, or a fasta file to be taxonomically classified.
 
 Optionally, a metadata sheet can be specified for downstream analysis.
 
@@ -86,7 +86,7 @@ For example, the samplesheet may contain:
 
 Please note the following requirements:
 
-- 2 to 4 tab-seperated columns
+- 2 to 4 tab-separated columns
 - Valid file extension: `.tsv`
 - Must contain the header `sampleID` and `forwardReads`
 - May contain the header `reverseReads` and `run`

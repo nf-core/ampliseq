@@ -115,9 +115,12 @@ emof %>% write_tsv("emof.tsv", na = '')
 # asv-table
 asvtax <- asvs %>%
     inner_join(taxonomy, by = 'ASV_ID') %>%
+    mutate(SH = if("SH" %in% colnames(.)) SH else '') %>%
+    relocate(SH, .after = Species) %>%
     rename_with(tolower, Domain:Species) %>%
     rename(
         specificEpithet = species,
+        otu = SH,
         asv_id_alias = ASV_ID,
         DNA_sequence = sequence
     ) %>%
@@ -125,9 +128,9 @@ asvtax <- asvs %>%
         domain = str_remove(domain, 'Reversed:_'),
         associatedSequences = '',
         infraspecificEpithet = '',
-        otu = '',
         kingdom = ifelse(is.na(kingdom), 'Unassigned', kingdom)
     ) %>%
+    relocate(otu, .after = infraspecificEpithet) %>%
     relocate(DNA_sequence:associatedSequences, .before = domain) %>%
     select(-confidence, -domain) %>%
     write_tsv("asv-table.tsv", na = '')

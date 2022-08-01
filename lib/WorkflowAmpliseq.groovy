@@ -53,6 +53,11 @@ class WorkflowAmpliseq {
             System.exit(1)
         }
 
+        if (params.dada_assign_taxlevels && params.sbdiexport) {
+            log.error "Incompatible parameters: `--sbdiexport` expects specific taxonomics ranks (default) and therefore excludes modifying those using `--dada_assign_taxlevels`."
+            System.exit(1)
+        }
+
         if (params.skip_dada_addspecies && params.sbdiexport) {
             log.error "Incompatible parameters: `--sbdiexport` expects species annotation and therefore excludes `--skip_dada_addspecies`."
             System.exit(1)

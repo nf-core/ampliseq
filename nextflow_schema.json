@@ -229,6 +229,11 @@
                         "unite-alleuk"
                     ]
                 },
+                "dada_assign_taxlevels": {
+                    "type": "string",
+                    "help_text": "If providing a custom DADA2 reference taxonomy database: comma separated list of taxonomic levels.",
+                    "description": "Important: if DADA2's addSpecies is used (default), the last element of the comma separated string must be 'Genus', otherwise no Species rank will be assigned."
+                },
                 "cut_dada_ref_taxonomy": {
                     "type": "boolean",
                     "help_text": "Expected amplified sequences are extracted from the DADA2 reference taxonomy using the primer sequences, that might improve classification. This is not applied to species classification (assignSpecies) but only for lower taxonomic levels (assignTaxonomy).",

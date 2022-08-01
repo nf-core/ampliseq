@@ -20,8 +20,8 @@ process DADA2_TAXONOMY {
 
     script:
     def args = task.ext.args ?: ''
-    def taxlevels = task.ext.taxlevels ? 
-        'c("' + task.ext.taxlevels.split(",").join('","') + '")' : 
+    def taxlevels = task.ext.taxlevels ?
+        'c("' + task.ext.taxlevels.split(",").join('","') + '")' :
         'c("Domain", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")'
     def seed = task.ext.seed ?: '100'
     """
@@ -38,7 +38,7 @@ process DADA2_TAXONOMY {
     tx <- data.frame(ASV_ID = names(seq), taxa, sequence = row.names(taxa\$tax), row.names = names(seq))
     # remove any column with ".Species", because Species taxonomy will be annotated later
     tx <- tx[!grepl(".Species",names(tx))]
-    
+
     # (2) Set confidence to the bootstrap for the most specific taxon
     # extract columns with taxonomic values
     tax <- tx[ , grepl( "tax." , names( tx ) ) ]
@@ -58,7 +58,7 @@ process DADA2_TAXONOMY {
     valid_boot[is.na(valid_boot)] <- 0
     # add bootstrap values to column confidence
     tx\$confidence <- valid_boot
-    
+
     # (3) Reorder columns before writing to file
     nospecies <- taxlevels[taxlevels != "Species"]
     expected_order <- c("ASV_ID",paste0("tax.",nospecies),"confidence","sequence")

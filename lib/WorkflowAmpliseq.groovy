@@ -53,6 +53,16 @@ class WorkflowAmpliseq {
             System.exit(1)
         }
 
+        if (!params.dada_ref_tax_custom && params.dada_ref_tax_custom_sp) {
+            log.error "Incompatible parameters: `--dada_ref_tax_custom_sp` requires `--dada_ref_tax_custom`."
+            System.exit(1)
+        }
+
+        if (params.dada_ref_tax_custom && !params.dada_ref_tax_custom_sp && !params.skip_dada_addspecies) {
+            log.error "Incompatible parameters: Either `--skip_dada_addspecies` or `--dada_ref_tax_custom_sp` is additionally required to `--dada_ref_tax_custom`."
+            System.exit(1)
+        }
+
         if (params.dada_assign_taxlevels && params.sbdiexport) {
             log.error "Incompatible parameters: `--sbdiexport` expects specific taxonomics ranks (default) and therefore excludes modifying those using `--dada_assign_taxlevels`."
             System.exit(1)

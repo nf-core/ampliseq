@@ -229,10 +229,20 @@
                         "unite-alleuk"
                     ]
                 },
+                "dada_ref_tax_custom": {
+                    "type": "string",
+                    "help_text": "Is preferred over `--dada_ref_taxonomy`. Either `--skip_dada_addspecies` (no species annotation) or `--dada_ref_tax_custom_sp` (species annotation) is additionally required. Consider also setting `--dada_assign_taxlevels`.\n\nMust be compatible to DADA2's assignTaxonomy function: 'Can be compressed. This reference fasta file should be formatted so that the id lines correspond to the taxonomy (or classification) of the associated sequence, and each taxonomic level is separated by a semicolon.' See also https://rdrr.io/bioc/dada2/man/assignTaxonomy.html",
+                    "description": "Path to a custom DADA2 reference taxonomy database"
+                },
+                "dada_ref_tax_custom_sp": {
+                    "type": "string",
+                    "help_text": "Requires `--dada_ref_tax_custom`. Must be compatible to DADA2's addSpecies function: 'Can be compressed. This reference fasta file should be formatted so that the id lines correspond to the genus-species binomial of the associated sequence.' See also https://rdrr.io/bioc/dada2/man/addSpecies.html",
+                    "description": "Path to a custom DADA2 reference taxonomy database for species assignment"
+                },
                 "dada_assign_taxlevels": {
                     "type": "string",
-                    "help_text": "If providing a custom DADA2 reference taxonomy database: comma separated list of taxonomic levels.",
-                    "description": "Important: if DADA2's addSpecies is used (default), the last element of the comma separated string must be 'Genus', otherwise no Species rank will be assigned."
+                    "help_text": "Typically useful when providing a custom DADA2 reference taxonomy database with `--dada_ref_tax_custom`. If DADA2's addSpecies is used (default), the last element of the comma separated string must be 'Genus', otherwise no Species rank will be assigned. The element 'Species' is removed in DADA2's assignTaxonomy to leave room for DADA2's addSpecies.",
+                    "description": "Comma separated list of taxonomic levels used in DADA2's assignTaxonomy function"
                 },
                 "cut_dada_ref_taxonomy": {
                     "type": "boolean",

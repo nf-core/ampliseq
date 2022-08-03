@@ -67,7 +67,7 @@ work                # Directory containing the nextflow working files
 
 ### Setting parameters in a file
 
-Pipeline settings can be provided in a yaml or json file via `-params-file <file>` instead of using command line parameters. Do not use `-c <file>` as this will result in errors. The above pipeline run specified with a params file in yaml format:
+Pipeline settings can be provided in a yaml or json file via `-params-file <file>` instead of using command line parameters. Do not use `-c <file>` to specify parameters as this will result in errors. The above pipeline run specified with a params file in yaml format:
 
 ```console
 nextflow run nf-core/ampliseq \

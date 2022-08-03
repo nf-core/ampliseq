@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#456](https://github.com/nf-core/ampliseq/pull/456) - An optional ASV length filter can be activated using `--min_len_asv <int>` and/or `--max_len_asv <int>`.
 - [#458](https://github.com/nf-core/ampliseq/pull/458) - Samplesheet, ASV fasta file, and/or metadata sheet is now exported into `<results>/input/`
+- [#460](https://github.com/nf-core/ampliseq/pull/460) - Taxonomic ranks for DADA2 taxonomic classification can be now adjusted using `--dada_assign_taxlevels <comma separated string>`.
+- [#461](https://github.com/nf-core/ampliseq/pull/461) - A custom DADA2 reference taxonomy database can now be used with `--dada_ref_tax_custom` and `--dada_ref_tax_custom_sp`, typically accompanied by `--dada_assign_taxlevels`.
 
 ### `Changed`
 

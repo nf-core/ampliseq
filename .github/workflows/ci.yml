@@ -54,7 +54,8 @@ jobs:
     strategy:
       matrix:
         # Run remaining test profiles with minimum nextflow version
-        profile: [test_multi, test_pacbio_its, test_doubleprimers, test_iontorrent, test_single, test_fasta]
+        profile:
+          [test_multi, test_pacbio_its, test_doubleprimers, test_iontorrent, test_single, test_fasta, test_reftaxcustom]
     steps:
       - name: Check out pipeline code
         uses: actions/checkout@v2

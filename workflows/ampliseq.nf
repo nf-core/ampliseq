@@ -42,7 +42,15 @@ if (params.classifier) {
     ch_qiime_classifier = Channel.fromPath("${params.classifier}", checkIfExists: true)
 } else { ch_qiime_classifier = Channel.empty() }
 
-if (params.dada_ref_taxonomy && !params.skip_taxonomy) {
+if (params.dada_ref_tax_custom) {
+    //custom ref taxonomy input from params.dada_ref_tax_custom & params.dada_ref_tax_custom_sp
+    ch_assigntax = Channel.fromPath("${params.dada_ref_tax_custom}", checkIfExists: true)
+    if (params.dada_ref_tax_custom_sp) {
+        ch_addspecies = Channel.fromPath("${params.dada_ref_tax_custom_sp}", checkIfExists: true)
+    }
+    ch_dada_ref_taxonomy = Channel.empty()
+} else if (params.dada_ref_taxonomy && !params.skip_taxonomy) {
+    //standard ref taxonomy input from params.dada_ref_taxonomy & conf/ref_databases.config
     ch_dada_ref_taxonomy = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["file"]).map { file(it) }
     if (params.addsh) {
         ch_shinfo = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]).map { file(it) }
@@ -368,9 +376,12 @@ workflow AMPLISEQ {
 
     //DADA2
     if (!params.skip_taxonomy) {
-        FORMAT_TAXONOMY ( ch_dada_ref_taxonomy.collect() )
-        ch_assigntax = FORMAT_TAXONOMY.out.assigntax
-        ch_addspecies = FORMAT_TAXONOMY.out.addspecies
+        if (!params.dada_ref_tax_custom) {
+            //standard ref taxonomy input from conf/ref_databases.config
+            FORMAT_TAXONOMY ( ch_dada_ref_taxonomy.collect() )
+            ch_assigntax = FORMAT_TAXONOMY.out.assigntax
+            ch_addspecies = FORMAT_TAXONOMY.out.addspecies
+        }
         //Cut taxonomy to expected amplicon
         if (params.cut_dada_ref_taxonomy) {
             ch_assigntax

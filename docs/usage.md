@@ -35,6 +35,7 @@ The typical command for running the pipeline is as follows:
 
 ```console
 nextflow run nf-core/ampliseq \
+    -r 2.3.2 \
     -profile singularity \
     --input "data" \
     --FW_primer GTGYCAGCMGCCGCGGTAA \
@@ -43,7 +44,7 @@ nextflow run nf-core/ampliseq \
     --outdir "./results"
 ```
 
-In this example, `--input` is the [Direct FASTQ input](#direct-fastq-input), other options are [Samplesheet input](#direct-fastq-input) and [ASV/OTU fasta input](#asv/otu-fasta-input). For more details on metadata, see [Metadata](#metadata). See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters) for more information about pipeline specific parameters.
+In this example, `--input` is the [Direct FASTQ input](#direct-fastq-input), other options are [Samplesheet input](#direct-fastq-input) and [ASV/OTU fasta input](#asv/otu-fasta-input). For more details on metadata, see [Metadata](#metadata). For [Reproducibility](#reproducibility), specify the version to run using `-r` (= release, here: 2.3.2). See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters) for more information about pipeline specific parameters.
 
 It is possible to not provide primer sequences (`--FW_primer` & `--RV_primer`) and skip primer trimming using `--skip_cutadapt`, but this is only for data that indeed does not contain any PCR primers in their sequences. Also, metadata (`--metadata`) isnt required, but aids downstream analysis.
 
@@ -70,6 +71,7 @@ Pipeline settings can be provided in a yaml or json file via `-params-file <file
 
 ```console
 nextflow run nf-core/ampliseq \
+    -r 2.3.2 \
     -profile singularity \
     -params-file params.yaml
 ```
@@ -265,7 +267,7 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
   - A generic configuration profile to be used with [Charliecloud](https://hpc.github.io/charliecloud/)
 - `conda`
   - A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter or Charliecloud.
-- `test`, `test_multi`, `test_full`, `test_pacbio_its`, `test_iontorrent`, `test_doubleprimers`
+- `test`, `test_multi`, `test_full`, `test_pacbio_its`, `test_iontorrent`, `test_doubleprimers`, `test_reftaxcustom`, `test_single`
   - A profile with a complete configuration for automated testing
   - Includes links to test data so needs no other parameters
 

@@ -48,7 +48,7 @@ Samplesheet, ASV fasta, and metadata file are copied into the results folder.
 - `input/`
   - `*.tsv`: Samplesheet input if specified with `--input`.
   - `*.tsv`: Metadata input if specified with `--metadata`.
-  - `*.fasta`: ASV sequence input if specified with `--input`.
+  - `*.fasta|.fna|.fa`: ASV sequence input if specified with `--input`.
 
 </details>
 

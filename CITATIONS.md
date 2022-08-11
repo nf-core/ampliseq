@@ -56,7 +56,11 @@
   > Cole JR, Wang Q, Fish JA, Chai B, McGarrell DM, Sun Y, Brown CT, Porras-Alfaro A, Kuske CR, Tiedje JM. Ribosomal Database Project: data and tools for high throughput rRNA analysis. Nucleic Acids Res. 2014 Jan;42(Database issue):D633-42. doi: 10.1093/nar/gkt1244. Epub 2013 Nov 27. PMID: 24288368; PMCID: PMC3965039.
 
 - [UNITE - eukaryotic nuclear ribosomal ITS region](https://pubmed.ncbi.nlm.nih.gov/15869663/)
+
   > Kõljalg U, Larsson KH, Abarenkov K, Nilsson RH, Alexander IJ, Eberhardt U, Erland S, Høiland K, Kjøller R, Larsson E, Pennanen T, Sen R, Taylor AF, Tedersoo L, Vrålstad T, Ursing BM. UNITE: a database providing web-based methods for the molecular identification of ectomycorrhizal fungi. New Phytol. 2005 Jun;166(3):1063-8. doi: 10.1111/j.1469-8137.2005.01376.x. PMID: 15869663.
+
+  - [MIDORI2 - a collection of reference databases](https://doi.org/10.1002/edn3.303/)
+    > Leray, M., Knowlton, N., & Machida, R. J. (2022). MIDORI2: A collection of quality controlled, preformatted, and regularly updated reference databases for taxonomic assignment of eukaryotic mitochondrial sequences. Environmental DNA, 4, 894– 907. https://doi.org/10.1002/edn3.303.
 
 ### Downstream analysis
 

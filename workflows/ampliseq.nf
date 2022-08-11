@@ -84,6 +84,12 @@ if ( !is_fasta_input && (!params.FW_primer || !params.RV_primer) && !params.skip
     System.exit(1)
 }
 
+//use custom taxlevels from --dada_assign_taxlevels or database specific taxlevels if specified in conf/ref_databases.config
+if ( params.dada_ref_taxonomy ) {
+    taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" :
+        params.dada_ref_databases[params.dada_ref_taxonomy]["taxlevels"] ?: ""
+} else { taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" : "" }
+
 //only run QIIME2 when taxonomy is actually calculated and all required data is available
 if ( !params.enable_conda && !params.skip_taxonomy && !params.skip_qiime ) {
     run_qiime2 = true
@@ -397,9 +403,9 @@ workflow AMPLISEQ {
                 .set { ch_assigntax }
         }
         if (params.cut_its == "none") {
-            DADA2_TAXONOMY ( ch_fasta, ch_assigntax, 'ASV_tax.tsv' )
+            DADA2_TAXONOMY ( ch_fasta, ch_assigntax, 'ASV_tax.tsv', taxlevels )
             if (!params.skip_dada_addspecies) {
-                DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_tax_species.tsv' )
+                DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_tax_species.tsv', taxlevels )
                 if ( params.addsh ) {
                     ch_fasta
                         .map {
@@ -448,11 +454,11 @@ workflow AMPLISEQ {
             ITSX_CUTASV ( ch_fasta, outfile )
             ch_versions = ch_versions.mix(ITSX_CUTASV.out.versions.ifEmpty(null))
             ch_cut_fasta = ITSX_CUTASV.out.fasta
-            DADA2_TAXONOMY ( ch_cut_fasta, ch_assigntax, 'ASV_ITS_tax.tsv' )
+            DADA2_TAXONOMY ( ch_cut_fasta, ch_assigntax, 'ASV_ITS_tax.tsv', taxlevels )
             FORMAT_TAXRESULTS ( DADA2_TAXONOMY.out.tsv, ch_fasta, 'ASV_tax.tsv' )
             ch_versions = ch_versions.mix( FORMAT_TAXRESULTS.out.versions.ifEmpty(null) )
             if (!params.skip_dada_addspecies) {
-                DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_ITS_tax_species.tsv' )
+                DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_ITS_tax_species.tsv', taxlevels )
                 FORMAT_TAXRESULTS_ADDSP ( DADA2_ADDSPECIES.out.tsv, ch_fasta, 'ASV_tax_species.tsv' )
                 if ( params.addsh ) {
                     ch_cut_fasta

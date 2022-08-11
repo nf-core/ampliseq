@@ -98,6 +98,12 @@ class WorkflowAmpliseq {
             System.exit(1)
         }
 
+        String[] sbdi_incompatible_databases = ["midori2-co1=gb250", "midori2-co1"]
+        if ( params.sbdiexport && Arrays.stream(sbdi_incompatible_databases).anyMatch(entry -> params.dada_ref_taxonomy.toString().equals(entry)) ) {
+            log.error "Incompatible parameters: `--sbdiexport` does not work with the chosen databse of `--dada_ref_taxonomy`, because the expected taxonomic levels do not match."
+            System.exit(1)
+        }
+
         if (params.addsh && !params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]) {
             def validDBs = ""
             for (db in params.dada_ref_databases.keySet()) {

@@ -85,8 +85,10 @@ if ( !is_fasta_input && (!params.FW_primer || !params.RV_primer) && !params.skip
 }
 
 //use custom taxlevels from --dada_assign_taxlevels or database specific taxlevels if specified in conf/ref_databases.config
-taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" :
-    params.dada_ref_databases[params.dada_ref_taxonomy]["taxlevels"] ?: ""
+if ( params.dada_ref_taxonomy ) {
+    taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" :
+        params.dada_ref_databases[params.dada_ref_taxonomy]["taxlevels"] ?: ""
+} else { taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" : "" }
 
 //only run QIIME2 when taxonomy is actually calculated and all required data is available
 if ( !params.enable_conda && !params.skip_taxonomy && !params.skip_qiime ) {

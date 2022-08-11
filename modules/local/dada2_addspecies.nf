@@ -12,6 +12,7 @@ process DADA2_ADDSPECIES {
     path(taxtable)
     path(database)
     val(outfile)
+    val(taxlevels_input)
 
     output:
     path(outfile)       , emit: tsv
@@ -20,8 +21,8 @@ process DADA2_ADDSPECIES {
 
     script:
     def args = task.ext.args ?: ''
-    def taxlevels = task.ext.taxlevels ?
-        'c("' + task.ext.taxlevels.split(",").join('","') + '")' :
+    def taxlevels = taxlevels_input ?
+        'c("' + taxlevels_input.split(",").join('","') + '")' :
         'c("Domain", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")'
     def seed = task.ext.seed ?: '100'
     """

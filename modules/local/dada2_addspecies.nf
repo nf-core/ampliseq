@@ -36,7 +36,11 @@ process DADA2_ADDSPECIES {
 
     taxtable <- readRDS(\"$taxtable\")
 
-    tx <- addSpecies(taxtable, \"$database\", $args, verbose=TRUE)
+    #remove Species annotation from assignTaxonomy
+    taxtable <- data.frame(taxtable)
+    taxa_nospecies <- taxtable[!grepl("Species",names(taxtable))]
+
+    tx <- addSpecies(taxa_nospecies, \"$database\", $args, verbose=TRUE)
 
     # Create a table with specified column order
     tmp <- data.frame(row.names(tx)) # To separate ASV_ID from sequence
@@ -45,7 +49,17 @@ process DADA2_ADDSPECIES {
     taxa\$sequence <- tmp[,1]
     row.names(taxa) <- row.names(tmp)
 
-    write.table(taxa, file = \"$outfile\", sep = "\\t", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '')
+    #rename Species annotation to Species_exact
+    colnames(taxa)[which(names(taxa) == "Species")] <- "Species_exact"
+
+    #add Species annotation from assignTaxonomy again, after "Genus" column
+    if ( "Species" %in% colnames(taxtable) ) { 
+        taxa_export <- data.frame(append(taxa, list(Species=taxtable\$Species), after=match("Genus", names(taxa))))
+    } else {
+        taxa_export <- taxa
+    }
+
+    write.table(taxa_export, file = \"$outfile\", sep = "\\t", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '')
 
     write.table('addSpecies\t$args\ntaxlevels\t$taxlevels\nseed\t$seed', file = "addSpecies.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
     writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")

@@ -243,7 +243,7 @@
                 },
                 "dada_assign_taxlevels": {
                     "type": "string",
-                    "help_text": "Typically useful when providing a custom DADA2 reference taxonomy database with `--dada_ref_tax_custom`. If DADA2's addSpecies is used (default), the last element of the comma separated string must be 'Genus', otherwise no Species rank will be assigned. The element 'Species' is removed in DADA2's assignTaxonomy to leave room for DADA2's addSpecies.",
+                    "help_text": "Typically useful when providing a custom DADA2 reference taxonomy database with `--dada_ref_tax_custom`. If DADA2's addSpecies is used (default), the last element(s) of the comma separated string must be 'Genus' or 'Genus,Species'.",
                     "description": "Comma separated list of taxonomic levels used in DADA2's assignTaxonomy function"
                 },
                 "cut_dada_ref_taxonomy": {

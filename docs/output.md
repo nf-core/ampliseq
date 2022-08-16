@@ -177,7 +177,7 @@ Optionally, the ITS region can be extracted from each ASV sequence using ITSx, a
 
 ### Taxonomic classification with DADA2
 
-DADA2 taxonomically classifies the ASVs using a choice of supplied databases (specified with `--dada_ref_taxonomy`). The taxonomic classification will be done based on filtered ASV sequences (see above). 
+DADA2 taxonomically classifies the ASVs using a choice of supplied databases (specified with `--dada_ref_taxonomy`). The taxonomic classification will be done based on filtered ASV sequences (see above).
 
 Depending on the reference taxonomy database, sequences can be classified down to species. Species classification is either reported in columns "Species" using DADA2's assignTaxonomy function or "Species_exact" using DADA2's addSpecies function, the latter only assigns exact sequence matches. Generally, species assignment without exact matches are much less trustworthy than those with exact matches. With short amplicons, e.g. 16S rRNA gene V4 region, the non-exact species annotation is not recommended to be trusted. The longer the ASVs are, the more acceptable is the non-exact species classification, e.g. PacBio (nearly) full length 16S rRNA gene sequences are thought to be trustworthy.
 

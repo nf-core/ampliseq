@@ -53,6 +53,7 @@ process DADA2_ADDSPECIES {
 
     #add Species annotation from assignTaxonomy again, after "Genus" column
     if ( "Species" %in% colnames(taxtable) ) {
+        taxtable <- data.frame(taxtable)
         taxa_export <- data.frame(append(taxa, list(Species=taxtable\$Species), after=match("Genus", names(taxa))))
     } else {
         taxa_export <- taxa

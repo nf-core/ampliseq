@@ -37,8 +37,7 @@ process DADA2_ADDSPECIES {
     taxtable <- readRDS(\"$taxtable\")
 
     #remove Species annotation from assignTaxonomy
-    taxtable <- data.frame(taxtable)
-    taxa_nospecies <- taxtable[!grepl("Species",names(taxtable))]
+    taxa_nospecies <- taxtable[,!colnames(taxtable) %in% 'Species']
 
     tx <- addSpecies(taxa_nospecies, \"$database\", $args, verbose=TRUE)
 

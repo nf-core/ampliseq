@@ -98,7 +98,7 @@ class WorkflowAmpliseq {
             System.exit(1)
         }
 
-        String[] sbdi_incompatible_databases = ["midori2-co1=gb250", "midori2-co1"]
+        String[] sbdi_incompatible_databases = ["midori2-co1=gb250","midori2-co1","rdp=18","rdp","sbdi-gtdb","sbdi-gtdb=R06-RS202-3","sbdi-gtdb=R06-RS202-1","silva=132","unite-fungi","unite-fungi=8.3","unite-fungi=8.2","unite-alleuk","unite-alleuk=8.3","unite-alleuk=8.2"]
         if ( params.sbdiexport && Arrays.stream(sbdi_incompatible_databases).anyMatch(entry -> params.dada_ref_taxonomy.toString().equals(entry)) ) {
             log.error "Incompatible parameters: `--sbdiexport` does not work with the chosen databse of `--dada_ref_taxonomy`, because the expected taxonomic levels do not match."
             System.exit(1)

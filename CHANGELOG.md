@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#445](https://github.com/nf-core/ampliseq/pull/445) - The minimum number of total bases to use for error rate learning by default is 1e8 (DADA2, learnErrors, nbases). Previously, samples were read in the provided order until enough reads were obtained (DADA2, learnErrors, randomize=FALSE). Now, samples are picked at random from those provided (DADA2, learnError, randomize=TRUE) and a seed is set.
 - [#444](https://github.com/nf-core/ampliseq/pull/444) - Updated parameter documentation.
 - [#453](https://github.com/nf-core/ampliseq/pull/453) - Export a few more basic QIIME2 fragments (zipped files) that can be easily imported into the correct QIIME2 version for custom analysis.
+- [#464](https://github.com/nf-core/ampliseq/pull/464) - Reported taxonomic classifications on species level based on DADA2's assignTaxonomy (approximations) is now listed in column "Species" while exact matches based on DADA2's addSpecies are now reported in column "Species_exact".
 
 ### `Fixed`
 

@@ -179,6 +179,8 @@ Optionally, the ITS region can be extracted from each ASV sequence using ITSx, a
 
 DADA2 taxonomically classifies the ASVs using a choice of supplied databases (specified with `--dada_ref_taxonomy`). The taxonomic classification will be done based on filtered ASV sequences (see above).
 
+Depending on the reference taxonomy database, sequences can be classified down to species rank. Species classification is reported in columns "Species" using DADA2's assignTaxonomy function or "Species_exact" using DADA2's addSpecies function, the latter only assigns exact sequence matches. Generally, species assignment without exact matches are much less trustworthy than those with exact matches. With short amplicons, e.g. 16S rRNA gene V4 region, the non-exact species annotation is not recommended to be trusted. The longer the ASVs are, the more acceptable is the non-exact species classification, e.g. PacBio (nearly) full length 16S rRNA gene sequences are thought to be trustworthy.
+
 Files when _not_ using ITSx (default):
 
 <details markdown="1">
@@ -186,7 +188,7 @@ Files when _not_ using ITSx (default):
 
 - `dada2/`
   - `ASV_tax.tsv`: Taxonomic classification for each ASV sequence.
-  - `ASV_tax_species.tsv`: Species classification for each ASV sequence.
+  - `ASV_tax_species.tsv`: Exact species classification for each ASV sequence.
   - `ref_taxonomy.txt`: Information about the used reference taxonomy, such as title, version, citation.
 
 </details>
@@ -198,9 +200,9 @@ Files when using ITSx:
 
 - `dada2/`
   - `ASV_ITS_tax.tsv`: Taxonomic classification with ITS region of each ASV sequence.
-  - `ASV_ITS_tax_species.tsv`: Species classification with ITS region of each ASV sequence.
+  - `ASV_ITS_tax_species.tsv`: Exact species classification with ITS region of each ASV sequence.
   - `ASV_tax.tsv`: Taxonomic classification of each ASV sequence, based on the ITS region.
-  - `ASV_tax_species.tsv`: Species classification of each ASV sequence, based on the ITS region.
+  - `ASV_tax_species.tsv`: Exact species classification of each ASV sequence, based on the ITS region.
   - `ref_taxonomy.txt`: Information about the used reference taxonomy, such as title, version, citation.
 
 </details>

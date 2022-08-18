@@ -90,6 +90,14 @@ if ( params.dada_ref_taxonomy ) {
         params.dada_ref_databases[params.dada_ref_taxonomy]["taxlevels"] ?: ""
 } else { taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" : "" }
 
+//make sure that taxlevels adheres to requirements when mixed with addSpecies
+if ( params.dada_ref_taxonomy && !params.skip_dada_addspecies && !params.skip_taxonomy && taxlevels ) {
+    if ( !taxlevels.endsWith(",Genus,Species") && !taxlevels.endsWith(",Genus") ) {
+        log.error "Incompatible settings: To use exact species annotations, taxonomic levels must end with `,Genus,Species` or `,Genus,Species` but are currently `${taxlevels}`. Taxonomic levels can be set with `--dada_assign_taxlevels`. Skip exact species annotations with `--skip_dada_addspecies`.\n"
+        System.exit(1)
+    }
+}
+
 //only run QIIME2 when taxonomy is actually calculated and all required data is available
 if ( !params.enable_conda && !params.skip_taxonomy && !params.skip_qiime ) {
     run_qiime2 = true

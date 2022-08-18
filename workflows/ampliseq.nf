@@ -119,6 +119,7 @@ include { DADA2_FILTNTRIM               } from '../modules/local/dada2_filtntrim
 include { DADA2_QUALITY                 } from '../modules/local/dada2_quality'
 include { TRUNCLEN                      } from '../modules/local/trunclen'
 include { DADA2_ERR                     } from '../modules/local/dada2_err'
+include { NOVASEQ_ERR                   } from '../modules/local/novaseq_err'
 include { DADA2_DENOISING               } from '../modules/local/dada2_denoising'
 include { DADA2_RMCHIMERA               } from '../modules/local/dada2_rmchimera'
 include { DADA2_STATS                   } from '../modules/local/dada2_stats'
@@ -300,11 +301,19 @@ workflow AMPLISEQ {
                 [ meta, reads.flatten().sort() ] }
         .set { ch_filt_reads }
 
-    DADA2_ERR ( ch_filt_reads )
+    //run error model
+    if ( !params.illumina_novaseq ) {
+        DADA2_ERR ( ch_filt_reads )
+        ch_errormodel = DADA2_ERR.out.errormodel
+    } else {
+        DADA2_ERR ( ch_filt_reads )
+        NOVASEQ_ERR ( DADA2_ERR.out.errormodel.dump(tag: 'into_novaerr') )
+        ch_errormodel = NOVASEQ_ERR.out.errormodel
+    }
 
     //group by meta
     ch_filt_reads
-        .join( DADA2_ERR.out.errormodel )
+        .join( ch_errormodel )
         .set { ch_derep_errormodel }
     DADA2_DENOISING ( ch_derep_errormodel.dump(tag: 'into_denoising')  )
     ch_versions = ch_versions.mix(DADA2_DENOISING.out.versions.first())

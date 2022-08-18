@@ -267,7 +267,7 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
   - A generic configuration profile to be used with [Charliecloud](https://hpc.github.io/charliecloud/)
 - `conda`
   - A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter or Charliecloud.
-- `test`, `test_multi`, `test_full`, `test_pacbio_its`, `test_iontorrent`, `test_doubleprimers`, `test_reftaxcustom`, `test_single`
+- `test`, `test_multi`, `test_full`, `test_pacbio_its`, `test_iontorrent`, `test_doubleprimers`, `test_reftaxcustom`, `test_single`, `test_novaseq`
   - A profile with a complete configuration for automated testing
   - Includes links to test data so needs no other parameters
 

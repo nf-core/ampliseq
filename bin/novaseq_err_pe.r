@@ -15,7 +15,6 @@ errF = readRDS(fw_model)
 errR = readRDS(rv_model)
 
 #monotone decreasing
-sink(file = paste0(run_id, ".md.err.log"))
 make.monotone.decreasing <- function(v) sapply(seq_along(v), function(i) max(v[i:length(v)]))
 
 errF.md <- t(apply(getErrors(errF), 1, make.monotone.decreasing))
@@ -29,7 +28,6 @@ colnames(errR.md) <- colnames(errR$err_out)
 errR.md.full <- errR
 errR.md.full$err_out <- errR.md
 saveRDS(errR.md.full, paste0(run_id, "_2.md.err.rds"))
-sink(file = NULL)
 
 pdf(paste0(run_id, "_1.md.err.pdf"))
 plotErrors(errF.md.full, nominalQ = TRUE)

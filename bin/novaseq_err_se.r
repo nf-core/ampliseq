@@ -10,13 +10,9 @@ run_id <- args[2]
 
 suppressPackageStartupMessages(library(dada2))
 
-#!/usr/bin/env Rscript
-suppressPackageStartupMessages(library(dada2))
-
 errF = readRDS(model)
 
 #monotone decreasing
-sink(file = paste0(run_id, ".md.err.log"))
 make.monotone.decreasing <- function(v) sapply(seq_along(v), function(i) max(v[i:length(v)]))
 
 errF.md <- t(apply(getErrors(errF), 1, make.monotone.decreasing))
@@ -24,7 +20,6 @@ colnames(errF.md) <- colnames(errF$err_out)
 errF.md.full <- errF
 errF.md.full$err_out <- errF.md
 saveRDS(errF.md.full, paste0(run_id, ".md.err.rds"))
-sink(file = NULL)
 
 pdf(paste0(run_id, ".md.err.pdf"))
 plotErrors(errF.md.full, nominalQ = TRUE)

@@ -76,11 +76,10 @@ The nf-core/ampliseq pipeline comes with documentation about the pipeline [usage
 
 ## Credits
 
-nf-core/ampliseq was originally written by Daniel Straub ([@d4straub](https://github.com/d4straub)) and Alexander Peltzer ([@apeltzer](https://github.com/apeltzer)) for use at the [Quantitative Biology Center (QBiC)](http://www.qbic.life) and [Microbial Ecology, Center for Applied Geosciences](http://www.uni-tuebingen.de/de/104325), part of Eberhard Karls Universität Tübingen (Germany).
+nf-core/ampliseq was originally written by Daniel Straub ([@d4straub](https://github.com/d4straub)) and Alexander Peltzer ([@apeltzer](https://github.com/apeltzer)) for use at the [Quantitative Biology Center (QBiC)](http://www.qbic.life) and [Microbial Ecology, Center for Applied Geosciences](http://www.uni-tuebingen.de/de/104325), part of Eberhard Karls Universität Tübingen (Germany). Daniel Lundin [@erikrikarddaniel](https://github.com/erikrikarddaniel) ([Linnaeus University, Sweden](https://lnu.se/)) joined before pipeline release 2.0.0 and helped to improve the pipeline considerably.
 
 We thank the following people for their extensive assistance in the development of this pipeline (in alphabetical order):
 
-- [Daniel Lundin](https://github.com/erikrikarddaniel)
 - [Diego Brambilla](https://github.com/DiegoBrambilla)
 - [Emelie Nilsson](https://github.com/emnilsson)
 - [Jeanette Tångrot](https://github.com/jtangrot)

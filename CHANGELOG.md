@@ -29,6 +29,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Dependencies`
 
+- [#468](https://github.com/nf-core/ampliseq/pull/468) - Updated software
+
+| Tool     | Previous version | New version |
+| -------- | ---------------- | ----------- |
+| QIIME2   | 2021.8           | 2022.2      |
+| PICRUSt2 | 2.4.2            | 2.5.0       |
+| MultiQC  | 1.12             | 1.13a       |
+
 ### `Removed`
 
 ## nf-core/ampliseq version 2.3.2 - 2022-05-27

@@ -15,6 +15,7 @@ process QIIME2_TREE {
     script:
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
+    export MPLCONFIGDIR="\${PWD}/HOME"
 
     qiime alignment mafft \
         --i-sequences ${repseq} \

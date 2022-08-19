@@ -15,6 +15,7 @@ process QIIME2_DIVERSITY_BETA {
     script:
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
+    export MPLCONFIGDIR="\${PWD}/HOME"
 
     qiime diversity beta-group-significance \
         --i-distance-matrix ${core} \

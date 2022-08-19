@@ -16,6 +16,7 @@ process QIIME2_EXTRACT {
     script:
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
+    export MPLCONFIGDIR="\${PWD}/HOME"
 
     ### Import
     qiime tools import --type \'FeatureData[Sequence]\' \

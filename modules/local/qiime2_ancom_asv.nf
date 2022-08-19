@@ -18,6 +18,7 @@ process QIIME2_ANCOM_ASV {
     script:
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
+    export MPLCONFIGDIR="\${PWD}/HOME"
 
     qiime composition add-pseudocount \
         --i-table ${table} \

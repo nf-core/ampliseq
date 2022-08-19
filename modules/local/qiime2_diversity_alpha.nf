@@ -15,6 +15,7 @@ process QIIME2_DIVERSITY_ALPHA {
     script:
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
+    export MPLCONFIGDIR="\${PWD}/HOME"
 
     qiime diversity alpha-group-significance \
         --i-alpha-diversity ${core} \

@@ -20,6 +20,7 @@ process QIIME2_DIVERSITY_CORE {
     script:
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
+    export MPLCONFIGDIR="\${PWD}/HOME"
 
     mindepth=\$(count_table_minmax_reads.py $stats minimum 2>&1)
     if [ \"\$mindepth\" -gt \"10000\" ]; then echo \$mindepth >\"Use the sampling depth of \$mindepth for rarefaction.txt\" ; fi

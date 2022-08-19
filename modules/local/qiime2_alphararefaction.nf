@@ -17,6 +17,7 @@ process QIIME2_ALPHARAREFACTION {
     script:
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
+    export MPLCONFIGDIR="\${PWD}/HOME"
 
     maxdepth=\$(count_table_minmax_reads.py $stats maximum 2>&1)
 

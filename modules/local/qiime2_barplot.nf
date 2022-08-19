@@ -16,6 +16,7 @@ process QIIME2_BARPLOT {
     script:
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
+    export MPLCONFIGDIR="\${PWD}/HOME"
 
     qiime taxa barplot  \
         --i-table ${table}  \

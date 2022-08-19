@@ -16,6 +16,7 @@ process QIIME2_ANCOM_TAX {
     script:
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
+    export MPLCONFIGDIR="\${PWD}/HOME"
     mkdir ancom
 
     # Sum data at the specified level

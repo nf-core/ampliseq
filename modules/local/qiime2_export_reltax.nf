@@ -17,6 +17,7 @@ process QIIME2_EXPORT_RELTAX {
     script:
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
+    export MPLCONFIGDIR="\${PWD}/HOME"
 
     ##on several taxa level
     array=(\$(seq ${tax_agglom_min} 1 ${tax_agglom_max}))

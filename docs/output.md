@@ -121,6 +121,17 @@ DADA2 reduces sequence errors and dereplicates sequences by quality filtering, d
 
 </details>
 
+For binned quality scores in NovaSeq data, monotonicity in the fitted error model is enforced when using `--illumina_novaseq`. Consequently, additional QC data is generated.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `dada2/QC/`
+  - `*.md.err.convergence.txt`: Convergence values for DADA2's dada command on monotone decreasing (corrected) quality scores, should reduce over several magnitudes and approaching 0.
+  - `*.md.err.pdf`: Estimated error rates for each possible transition on monotone decreasing (corrected) quality scores. The black line shows the estimated error rates after convergence of the machine-learning algorithm. The red line shows the error rates expected under the nominal definition of the Q-score. The estimated error rates (black line) should be a good fit to the observed rates (points), and the error rates should drop with increased quality.
+
+</details>
+
 ### Optional ASV filtering
 
 #### Barrnap

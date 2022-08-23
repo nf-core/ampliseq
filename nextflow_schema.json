@@ -52,6 +52,10 @@
             "description": "",
             "default": "",
             "properties": {
+                "illumina_novaseq": {
+                    "type": "boolean",
+                    "description": "If data has binned quality scores such as Illumina NovaSeq"
+                },
                 "pacbio": {
                     "type": "boolean",
                     "description": "If data is single-ended PacBio reads instead of Illumina"

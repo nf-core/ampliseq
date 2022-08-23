@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#459](https://github.com/nf-core/ampliseq/pull/459) - MIDORI2 CO1 database with keys `midori2-co1=gb250` and `midori2-co1` for `--dada_ref_taxonomy`
 - [#460](https://github.com/nf-core/ampliseq/pull/460) - Taxonomic ranks for DADA2 taxonomic classification can be now adjusted using `--dada_assign_taxlevels <comma separated string>`.
 - [#461](https://github.com/nf-core/ampliseq/pull/461) - A custom DADA2 reference taxonomy database can now be used with `--dada_ref_tax_custom` and `--dada_ref_tax_custom_sp`, typically accompanied by `--dada_assign_taxlevels`.
+- [#446](https://github.com/nf-core/ampliseq/pull/446),[#467](https://github.com/nf-core/ampliseq/pull/467) - Binned quality scores from Illumina NovaSeq data can be now corrected with `--illumina_novaseq`.
 
 ### `Changed`
 

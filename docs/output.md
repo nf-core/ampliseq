@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This document describes the output produced by the pipeline. Most of the plots are taken from the MultiQC report, which summarises results at the end of the pipeline.
+This document describes the output produced by the pipeline.
 
 The directories listed below will be created in the results directory after the pipeline has finished. All paths are relative to the top-level results directory.
 
@@ -10,33 +10,31 @@ The directories listed below will be created in the results directory after the 
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
-- [nf-core/ampliseq: Output](#nf-coreampliseq-output)
-  - [Pipeline overview](#pipeline-overview)
-    - [Input](#input) - Input files
-    - [FastQC](#fastqc) - Read quality control
-    - [Cutadapt](#cutadapt) - Primer trimming
-    - [MultiQC](#multiqc) - Aggregate report describing results
-    - [ASV inferrence with DADA2](#asv-inferrence-with-dada2) - Infer Amplicon Sequence Variants (ASVs)
-    - [Optional ASV filtering](#optional-asv-filtering) - Filter ASVs to optimize downstream analysis
-      - [Barrnap](#barrnap) - Predict ribosomal RNA sequences and optional filtering
-      - [Length filter](#length-filter) - Optionally, ASV can be filtered by length thresholds
-      - [ITSx](#itsx) - Optionally, the ITS region can be extracted
-    - [Taxonomic classification with DADA2](#taxonomic-classification-with-DADA2) - Taxonomic classification of (filtered) ASVs
-      - [assignSH](#assignsh) - Optionally, a UNITE species hypothesis (SH) can be added to the taxonomy
-    - [QIIME2](#qiime2) - Secondary analysis
-      - [Taxonomic classification](#taxonomic-classification) - Taxonomical classification of ASVs
-      - [Exclude taxa](#exclude-taxa) - Remove unwanted ASV based on taxonomy
-      - [Relative abundance tables](#relative-abundance-tables) - Exported relative abundance tables
-      - [Barplot](#barplot) - Interactive barplot
-      - [Alpha diversity rarefaction curves](#alpha-diversity-rarefaction-curves) - Rarefaction curves for quality control
-      - [Diversity analysis](#diversity-analysis) - High level overview with different diversity indices
-        - [Alpha diversity indices](#alpha-diversity-indices) - Diversity within samples
-        - [Beta diversity indices](#beta-diversity-indices) - Diversity between samples (e.g. PCoA plots)
-      - [ANCOM](#ancom) - Differential abundance analysis
-    - [PICRUSt2](#picrust2) - Predict the functional potential of a bacterial community
-    - [Read count report](#Read-count-report) - Report of read counts during various steps of the pipeline
-    - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
-  - [Citations](#citations)
+- [Input](#input) - Input files
+- [Preprocessing](preprocessing)
+  - [FastQC](#fastqc) - Read quality control
+  - [Cutadapt](#cutadapt) - Primer trimming
+  - [MultiQC](#multiqc) - Aggregate report describing results
+- [ASV inferrence with DADA2](#asv-inferrence-with-dada2) - Infer Amplicon Sequence Variants (ASVs)
+- [Optional ASV filtering](#optional-asv-filtering) - Filter ASVs to optimize downstream analysis
+  - [Barrnap](#barrnap) - Predict ribosomal RNA sequences and optional filtering
+  - [Length filter](#length-filter) - Optionally, ASV can be filtered by length thresholds
+  - [ITSx](#itsx) - Optionally, the ITS region can be extracted
+- [Taxonomic classification with DADA2](#taxonomic-classification-with-DADA2) - Taxonomic classification of (filtered) ASVs
+  - [assignSH](#assignsh) - Optionally, a UNITE species hypothesis (SH) can be added to the taxonomy
+- [QIIME2](#qiime2) - Secondary analysis
+  - [Taxonomic classification](#taxonomic-classification) - Taxonomical classification of ASVs
+  - [Exclude taxa](#exclude-taxa) - Remove unwanted ASV based on taxonomy
+  - [Relative abundance tables](#relative-abundance-tables) - Exported relative abundance tables
+  - [Barplot](#barplot) - Interactive barplot
+  - [Alpha diversity rarefaction curves](#alpha-diversity-rarefaction-curves) - Rarefaction curves for quality control
+  - [Diversity analysis](#diversity-analysis) - High level overview with different diversity indices
+  - [Alpha diversity indices](#alpha-diversity-indices) - Diversity within samples
+  - [Beta diversity indices](#beta-diversity-indices) - Diversity between samples (e.g. PCoA plots)
+  - [ANCOM](#ancom) - Differential abundance analysis
+- [PICRUSt2](#picrust2) - Predict the functional potential of a bacterial community
+- [Read count report](#read-count-report) - Report of read counts during various steps of the pipeline
+- [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
 ### Input
 
@@ -52,7 +50,9 @@ Samplesheet, ASV fasta, and metadata file are copied into the results folder.
 
 </details>
 
-### FastQC
+### Preprocessing
+
+#### FastQC
 
 [FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) gives general quality metrics about your sequenced reads. It provides information about the quality score distribution across your reads, per base sequence content (%A/T/G/C), adapter contamination and overrepresented sequences. For further reading and documentation see the [FastQC help pages](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/).
 
@@ -64,7 +64,7 @@ Samplesheet, ASV fasta, and metadata file are copied into the results folder.
 
 </details>
 
-### Cutadapt
+#### Cutadapt
 
 [Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200) is trimming primer sequences from sequencing reads. Primer sequences are non-biological sequences that often introduce point mutations that do not reflect sample sequences. This is especially true for degenerated PCR primer. If primer trimming would be omitted, artifactual amplicon sequence variants might be computed by the denoising tool or sequences might be lost due to become labelled as PCR chimera.
 
@@ -77,7 +77,7 @@ Samplesheet, ASV fasta, and metadata file are copied into the results folder.
 
 </details>
 
-### MultiQC
+#### MultiQC
 
 [MultiQC](http://multiqc.info) is a visualization tool that generates a single HTML report summarising all samples in your project. Most of the pipeline QC results are visualised in the report and further statistics are available in the report data directory.
 
@@ -288,7 +288,7 @@ All following analysis is based on these filtered tables.
 
 #### Relative abundance tables
 
-Absolute abundance tables produced by the previous steps contain count data, but the compositional nature of 16S rRNA amplicon sequencing requires sequencing depth normalisation. This step computes relative abundance tables for various taxonomic levels and detailed tables for all ASVs with taxonomic classification, sequence and relative abundance for each sample. Typically used for in depth investigation of taxa abundances. If not specified, the tables are based on the computed taxonomic classification (DADA2 classification takes precedence over QIIME2 classifications).
+Absolute abundance tables produced by the previous steps contain count data, but the compositional nature of 16S rRNA amplicon sequencing requires sequencing depth normalisation. This step computes relative abundance tables using TSS (Total Sum Scaling normalisation) for various taxonomic levels and detailed tables for all ASVs with taxonomic classification, sequence and relative abundance for each sample. Typically used for in depth investigation of taxa abundances. If not specified, the tables are based on the computed taxonomic classification (DADA2 classification takes precedence over QIIME2 classifications).
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -459,7 +459,3 @@ This report includes information on how many reads per sample passed each pipeli
   - Reports generated by the pipeline: `pipeline_report.html`, `pipeline_report.txt` and `software_versions.yml`. The `pipeline_report*` files will only be present if the `--email` / `--email_on_fail` parameter's are used when running the pipeline.
 
 </details>
-
-## Citations
-
-An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.

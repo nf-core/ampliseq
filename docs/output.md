@@ -24,7 +24,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [assignSH](#assignsh) - Optionally, a UNITE species hypothesis (SH) can be added to the taxonomy
 - [QIIME2](#qiime2) - Secondary analysis
   - [Taxonomic classification](#taxonomic-classification) - Taxonomical classification of ASVs
-  - [Abundance tables](#abundance-tables) - Exported relative abundance tables
+  - [Abundance tables](#abundance-tables) - Exported abundance tables
   - [Relative abundance tables](#relative-abundance-tables) - Exported relative abundance tables
   - [Barplot](#barplot) - Interactive barplot
   - [Alpha diversity rarefaction curves](#alpha-diversity-rarefaction-curves) - Rarefaction curves for quality control

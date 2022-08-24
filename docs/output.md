@@ -11,7 +11,7 @@ The directories listed below will be created in the results directory after the 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
 - [Input](#input) - Input files
-- [Preprocessing](preprocessing)
+- [Preprocessing](#preprocessing)
   - [FastQC](#fastqc) - Read quality control
   - [Cutadapt](#cutadapt) - Primer trimming
   - [MultiQC](#multiqc) - Aggregate report describing results
@@ -24,7 +24,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [assignSH](#assignsh) - Optionally, a UNITE species hypothesis (SH) can be added to the taxonomy
 - [QIIME2](#qiime2) - Secondary analysis
   - [Taxonomic classification](#taxonomic-classification) - Taxonomical classification of ASVs
-  - [Exclude taxa](#exclude-taxa) - Remove unwanted ASV based on taxonomy
+  - [Abundance tables](#abundance-tables) - Exported abundance tables
   - [Relative abundance tables](#relative-abundance-tables) - Exported relative abundance tables
   - [Barplot](#barplot) - Interactive barplot
   - [Alpha diversity rarefaction curves](#alpha-diversity-rarefaction-curves) - Rarefaction curves for quality control
@@ -263,9 +263,9 @@ Taxonomic classification with QIIME2 is typically similar to DADA2 classificatio
 
 </details>
 
-#### Exclude taxa
+#### Abundance tables
 
-Removes unwanted taxa in DADA2 output sequences and abundance tables by taxonomic classification. Unwanted taxa are often off-targets generated in PCR with primers that are not perfectly specific for the target DNA. For example, PCR with commonly used primers also amplifyies mitrochindrial or chloroplast rRNA genes and therefore leads to non-bacteria products. These mitrochondria or chloroplast amplicons are removed in this step by default (`--exclude_taxa`). The tables are based on the computed taxonomic classification (DADA2 classification takes precedence over QIIME2 classifications).
+The abundance tables are the final data for further downstream analysis and visualisations. The tables are based on the computed ASVs and taxonomic classification (DADA2 classification takes precedence over QIIME2 classifications), but after removal of unwanted taxa. Unwanted taxa are often off-targets generated in PCR with primers that are not perfectly specific for the target DNA (can be specified by `--exclude_taxa`), by default mitrochondria and chloroplast sequences are removed because these are frequent unwanted non-bacteria PCR products.
 
 All following analysis is based on these filtered tables.
 

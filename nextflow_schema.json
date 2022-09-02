@@ -222,6 +222,7 @@
                         "rdp=18",
                         "rdp",
                         "sbdi-gtdb",
+                        "sbdi-gtdb=R07-RS207-1",
                         "sbdi-gtdb=R06-RS202-3",
                         "sbdi-gtdb=R06-RS202-1",
                         "silva=132",

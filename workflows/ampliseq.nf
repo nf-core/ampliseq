@@ -115,9 +115,6 @@ if ( params.addsh ) {
 */
 
 include { RENAME_RAW_DATA_FILES         } from '../modules/local/rename_raw_data_files'
-include { DADA2_FILTNTRIM               } from '../modules/local/dada2_filtntrim'
-include { DADA2_QUALITY                 } from '../modules/local/dada2_quality'
-include { TRUNCLEN                      } from '../modules/local/trunclen'
 include { DADA2_ERR                     } from '../modules/local/dada2_err'
 include { NOVASEQ_ERR                   } from '../modules/local/novaseq_err'
 include { DADA2_DENOISING               } from '../modules/local/dada2_denoising'
@@ -155,6 +152,7 @@ include { SBDIEXPORTREANNOTATE          } from '../modules/local/sbdiexportreann
 //
 
 include { PARSE_INPUT                   } from '../subworkflows/local/parse_input'
+include { DADA2_PREPROCESSING           } from '../subworkflows/local/dada2_preprocessing'
 include { QIIME2_PREPTAX                } from '../subworkflows/local/qiime2_preptax'
 include { QIIME2_TAXONOMY               } from '../subworkflows/local/qiime2_taxonomy'
 include { CUTADAPT_WORKFLOW             } from '../subworkflows/local/cutadapt_workflow'
@@ -228,78 +226,20 @@ workflow AMPLISEQ {
     }
 
     //
-    // SUBWORKFLOW / MODULES : ASV generation with DADA2
+    // SUBWORKFLOW: Read preprocessing & QC plotting with DADA2
     //
-    //plot aggregated quality profile for forward and reverse reads separately
-    if (single_end) {
-        ch_trimmed_reads
-            .map { meta, reads -> [ reads ] }
-            .collect()
-            .map { reads -> [ "single_end", reads ] }
-            .set { ch_all_trimmed_reads }
-    } else {
-        ch_trimmed_reads
-            .map { meta, reads -> [ reads[0] ] }
-            .collect()
-            .map { reads -> [ "FW", reads ] }
-            .set { ch_all_trimmed_fw }
-        ch_trimmed_reads
-            .map { meta, reads -> [ reads[1] ] }
-            .collect()
-            .map { reads -> [ "RV", reads ] }
-            .set { ch_all_trimmed_rv }
-        ch_all_trimmed_fw
-            .mix ( ch_all_trimmed_rv )
-            .set { ch_all_trimmed_reads }
-    }
+    DADA2_PREPROCESSING ( 
+        ch_trimmed_reads,
+        single_end,
+        find_truncation_values,
+        trunclenf,
+        trunclenr
+    ).reads.set { ch_filt_reads }
+    ch_versions = ch_versions.mix(DADA2_PREPROCESSING.out.versions)
 
-    if ( !params.skip_dada_quality ) {
-        DADA2_QUALITY ( ch_all_trimmed_reads )
-        DADA2_QUALITY.out.warning.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","DADA2_QUALITY: ") }
-    }
-
-    //find truncation values in case they are not supplied
-    if ( find_truncation_values ) {
-        TRUNCLEN ( DADA2_QUALITY.out.tsv )
-        TRUNCLEN.out.trunc
-            .toSortedList()
-            .set { ch_trunc }
-        ch_versions = ch_versions.mix(TRUNCLEN.out.versions.first())
-        //add one more warning or reminder that trunclenf and trunclenr were chosen automatically
-        ch_trunc.subscribe {
-            if ( "${it[0][1]}".toInteger() + "${it[1][1]}".toInteger() <= 10 ) { log.warn "`--trunclenf` was set to ${it[0][1]} and `--trunclenr` to ${it[1][1]}, this is too low! Please either change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr`." }
-            else if ( "${it[0][1]}".toInteger() <= 10 ) { log.warn "`--trunclenf` was set to ${it[0][1]}, this is too low! Please either change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr`." }
-            else if ( "${it[1][1]}".toInteger() <= 10 ) { log.warn "`--trunclenr` was set to ${it[1][1]}, this is too low! Please either change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr`." }
-            else log.warn "Probably everything is fine, but this is a reminder that `--trunclenf` was set automatically to ${it[0][1]} and `--trunclenr` to ${it[1][1]}. If this doesnt seem reasonable, then please change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr` directly."
-        }
-    } else {
-        Channel.from( [['FW', trunclenf], ['RV', trunclenr]] )
-            .toSortedList()
-            .set { ch_trunc }
-    }
-    ch_trimmed_reads.combine(ch_trunc).set { ch_trimmed_reads }
-
-    //filter reads
-    DADA2_FILTNTRIM ( ch_trimmed_reads.dump(tag: 'into_filtntrim')  )
-    //ch_versions = ch_versions.mix(DADA2_FILTNTRIM.out.versions.first())
-
-    //group by sequencing run
-    DADA2_FILTNTRIM.out.reads
-        .map {
-            info, reads ->
-                def meta = [:]
-                meta.run = info.run
-                meta.single_end = info.single_end
-                [ meta, reads, info.id ] }
-        .groupTuple(by: 0 )
-        .map {
-            info, reads, ids ->
-                def meta = [:]
-                meta.run = info.run
-                meta.single_end = info.single_end
-                meta.id = ids.flatten().sort()
-                [ meta, reads.flatten().sort() ] }
-        .set { ch_filt_reads }
+    //
+    // MODULES: ASV generation with DADA2
+    //
 
     //run error model
     if ( !params.illumina_novaseq ) {
@@ -321,7 +261,7 @@ workflow AMPLISEQ {
     DADA2_RMCHIMERA ( DADA2_DENOISING.out.seqtab )
 
     //group by sequencing run & group by meta
-    DADA2_FILTNTRIM.out.log
+    DADA2_PREPROCESSING.out.logs
         .map {
             info, reads ->
                 def meta = [:]
@@ -421,6 +361,7 @@ workflow AMPLISEQ {
         }
         if (params.cut_its == "none") {
             DADA2_TAXONOMY ( ch_fasta, ch_assigntax, 'ASV_tax.tsv', taxlevels )
+            ch_versions = ch_versions.mix(DADA2_TAXONOMY.out.versions.first())
             if (!params.skip_dada_addspecies) {
                 DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_tax_species.tsv', taxlevels )
                 if ( params.addsh ) {
@@ -472,6 +413,7 @@ workflow AMPLISEQ {
             ch_versions = ch_versions.mix(ITSX_CUTASV.out.versions.ifEmpty(null))
             ch_cut_fasta = ITSX_CUTASV.out.fasta
             DADA2_TAXONOMY ( ch_cut_fasta, ch_assigntax, 'ASV_ITS_tax.tsv', taxlevels )
+            ch_versions = ch_versions.mix(DADA2_TAXONOMY.out.versions.first())
             FORMAT_TAXRESULTS ( DADA2_TAXONOMY.out.tsv, ch_fasta, 'ASV_tax.tsv' )
             ch_versions = ch_versions.mix( FORMAT_TAXRESULTS.out.versions.ifEmpty(null) )
             if (!params.skip_dada_addspecies) {

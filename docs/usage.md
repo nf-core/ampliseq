@@ -33,7 +33,7 @@
 
 The typical command for running the pipeline is as follows:
 
-```console
+```bash
 nextflow run nf-core/ampliseq \
     -r 2.3.2 \
     -profile singularity \
@@ -52,9 +52,9 @@ This will launch the pipeline with the `singularity` configuration profile. See 
 
 Note that the pipeline will create the following files in your working directory:
 
-```console
+```bash
 work                # Directory containing the nextflow working files
-<OUTIDR>            # Finished results in specified location (defined with --outdir)
+<OUTDIR>            # Finished results in specified location (defined with --outdir)
 .nextflow_log       # Log file from Nextflow
 # Other nextflow hidden files, eg. history of pipeline runs and old logs.
 ```
@@ -69,7 +69,7 @@ work                # Directory containing the nextflow working files
 
 Pipeline settings can be provided in a yaml or json file via `-params-file <file>` instead of using command line parameters. Do not use `-c <file>` to specify parameters as this will result in errors. The above pipeline run specified with a params file in yaml format:
 
-```console
+```bash
 nextflow run nf-core/ampliseq \
     -r 2.3.2 \
     -profile singularity \
@@ -96,7 +96,7 @@ Optionally, a metadata sheet can be specified for downstream analysis.
 
 The easiest way is to specify directly the path to the folder that contains your input FASTQ files. For example:
 
-```console
+```bash
 --input 'path/to/data/'
 ```
 
@@ -153,7 +153,7 @@ The sample sheet file is an alternative way to provide input reads, it must be a
 | reverseReads | optional  | Paths to reverse reads zipped FastQ files, required if the data is paired-end |
 | run          | optional  | If the data was produced by multiple sequencing runs, any string              |
 
-```console
+```bash
 --input 'path/to/samplesheet.tsv'
 ```
 
@@ -184,7 +184,7 @@ An [example samplesheet](../assets/samplesheet.tsv) has been provided with the p
 
 When pointing at a file ending with `.fasta`, `.fna` or `.fa`, the containing ASV/OTU sequences will be taxonomically classified. All other pipeline steps will be skipped.
 
-```console
+```bash
 --input 'path/to/amplicon_sequences.fasta'
 ```
 
@@ -196,7 +196,7 @@ Please note the following requirements:
 
 Metadata is optional, but for performing downstream analysis such as barplots, diversity indices or differential abundance testing, a metadata file is essential.
 
-```console
+```bash
 --metadata "path/to/metadata.tsv"
 ```
 
@@ -224,7 +224,7 @@ The columns which are to be assessed can be specified by `--metadata_category`. 
 
 When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
 
-```console
+```bash
 nextflow pull nf-core/ampliseq
 ```
 
@@ -400,6 +400,6 @@ Some HPC setups also allow you to run nextflow within a cluster job submitted yo
 In some cases, the Nextflow Java virtual machines can start to request a large amount of memory.
 We recommend adding the following line to your environment to limit this (typically in `~/.bashrc` or `~./bash_profile`):
 
-```console
+```bash
 NXF_OPTS='-Xms1g -Xmx4g'
 ```

@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#460](https://github.com/nf-core/ampliseq/pull/460) - Taxonomic ranks for DADA2 taxonomic classification can be now adjusted using `--dada_assign_taxlevels <comma separated string>`.
 - [#461](https://github.com/nf-core/ampliseq/pull/461) - A custom DADA2 reference taxonomy database can now be used with `--dada_ref_tax_custom` and `--dada_ref_tax_custom_sp`, typically accompanied by `--dada_assign_taxlevels`.
 - [#446](https://github.com/nf-core/ampliseq/pull/446),[#467](https://github.com/nf-core/ampliseq/pull/467) - Binned quality scores from Illumina NovaSeq data can be now corrected with `--illumina_novaseq`.
+- [#477](https://github.com/nf-core/ampliseq/pull/477) - QC plots of DADA2's plotQualityProfile are now also produced after preprocessing.
 
 ### `Changed`
 
@@ -27,6 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#451](https://github.com/nf-core/ampliseq/pull/451) - Pairwise statistics will be now performed on a subset of metadata columns specified with `--metadata_category` instead of ignoring that setting.
 - [#451](https://github.com/nf-core/ampliseq/pull/451) - Replace busybox with Ubuntu base image for GCP support.
 - [#455](https://github.com/nf-core/ampliseq/pull/455) - Stop with descriptive error when only one of `--trunclenf` and `--trunclenr` is given, earlier it was silently ignored.
+- [#474](https://github.com/nf-core/ampliseq/pull/474) - Template update for nf-core/tools version 2.5.1
+- [#475](https://github.com/nf-core/ampliseq/pull/475) - Report software versions for DADA2_TAXONOMY
 
 ### `Dependencies`
 

@@ -214,9 +214,9 @@
                     "enum": [
                         "midori2-co1=gb250",
                         "midori2-co1",
-                        "gtdb=05-RS95",
-                        "gtdb=06-RS202",
-                        "gtdb=07-RS207",
+                        "gtdb=R05-RS95",
+                        "gtdb=R06-RS202",
+                        "gtdb=R07-RS207",
                         "gtdb",
                         "pr2=4.14.0",
                         "pr2=4.13.0",

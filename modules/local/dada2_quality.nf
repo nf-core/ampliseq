@@ -11,7 +11,7 @@ process DADA2_QUALITY {
     tuple val(meta), path(reads)
 
     output:
-    path "${meta}_qual_stats.pdf"            , emit: pdf
+    path "*_qual_stats.pdf"            , emit: pdf
     tuple val(meta), path("*_qual_stats.tsv"), emit: tsv
     path "versions.yml"                      , emit: versions
     path "*.args.txt"                        , emit: args
@@ -19,6 +19,7 @@ process DADA2_QUALITY {
 
     script:
     def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta}"
     """
     #!/usr/bin/env Rscript
 
@@ -38,7 +39,7 @@ process DADA2_QUALITY {
         readfiles <- readfiles[1:max_files]
     } else {
         max_files <- length(readfiles)
-        write.table(max_files, file = paste0(max_files," files were used for ${meta} plotQualityProfile.txt"), row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+        write.table(max_files, file = paste0(max_files," files were used for ${prefix} plotQualityProfile.txt"), row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
     }
 
     plot <- plotQualityProfile(readfiles$args)
@@ -57,12 +58,12 @@ process DADA2_QUALITY {
     }
 
     #write output
-    write.table( t(df), file = paste0("${meta}_qual_stats",".tsv"), sep = "\t", row.names = TRUE, col.names = FALSE, quote = FALSE)
-    pdf(paste0("${meta}_qual_stats",".pdf"))
+    write.table( t(df), file = paste0("${prefix}_qual_stats",".tsv"), sep = "\t", row.names = TRUE, col.names = FALSE, quote = FALSE)
+    pdf(paste0("${prefix}_qual_stats",".pdf"))
     plot
     dev.off()
 
-    write.table(paste0('plotQualityProfile\t$args\nmax_files\t',max_files), file = "plotQualityProfile.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+    write.table(paste0('plotQualityProfile\t$args\nmax_files\t',max_files), file = "${prefix}_plotQualityProfile.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
     writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")),paste0("    ShortRead: ", packageVersion("ShortRead")) ), "versions.yml")
     """
 }

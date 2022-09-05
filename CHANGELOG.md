@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#451](https://github.com/nf-core/ampliseq/pull/451) - Replace busybox with Ubuntu base image for GCP support.
 - [#455](https://github.com/nf-core/ampliseq/pull/455) - Stop with descriptive error when only one of `--trunclenf` and `--trunclenr` is given, earlier it was silently ignored.
 - [#474](https://github.com/nf-core/ampliseq/pull/474) - Template update for nf-core/tools version 2.5.1
+- [#475](https://github.com/nf-core/ampliseq/pull/475) - Report software versions for DADA2_TAXONOMY
 
 ### `Dependencies`
 

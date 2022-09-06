@@ -43,7 +43,7 @@ workflow DADA2_PREPROCESSING {
 
     if ( !params.skip_dada_quality ) {
         DADA2_QUALITY ( ch_all_trimmed_reads.dump(tag: 'into_dada2_quality') )
-        ch_versions_dada2_preprocessing = ch_versions_dada2_preprocessing.mix(DADA2_QUALITY.out.versions.first())
+        ch_versions_dada2_preprocessing = ch_versions_dada2_preprocessing.mix(DADA2_QUALITY.out.versions)
         DADA2_QUALITY.out.warning.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","DADA2_QUALITY: ") }
     }
 

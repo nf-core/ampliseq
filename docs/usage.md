@@ -4,17 +4,99 @@
 
 > _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
 
-## Input specifications
+## Table of Contents
 
-The input data can be passed to nf-core/ampliseq in three possible ways using the `--input` parameter, either a folder containing zipped FastQ files, a tab-seperated samplesheet, or a fasta file to be taxonomically classified.
+- [Running the pipeline](#running-the-pipeline)
+  - [Quick start](#quick-start)
+  - [Setting parameters in a file](#setting-parameters-in-a-file)
+  - [Input specifications](#input-specifications)
+    - [Direct FASTQ input](#direct-fastq-input)
+    - [Samplesheet input](#samplesheet-input)
+    - [ASV/OTU fasta input](#asvotu-fasta-input)
+  - [Metadata](#metadata)
+  - [Updating the pipeline](#updating-the-pipeline)
+  - [Reproducibility](#reproducibility)
+- [Core Nextflow arguments](#core-nextflow-arguments)
+  - [-profile](#-profile)
+  - [-resume](#-resume)
+  - [-c](#-c)
+- [Custom configuration](#custom-configuration)
+  - [Resource requests](#resource-requests)
+  - [Updating containers](#updating-containers)
+  - [nf-core/configs](#nf-coreconfigs)
+- [Running in the background](#running-in-the-background)
+- [Nextflow memory requirements](#nextflow-memory-requirements)
+
+## Running the pipeline
+
+### Quick start
+
+The typical command for running the pipeline is as follows:
+
+```bash
+nextflow run nf-core/ampliseq \
+    -r 2.3.2 \
+    -profile singularity \
+    --input "data" \
+    --FW_primer GTGYCAGCMGCCGCGGTAA \
+    --RV_primer GGACTACNVGGGTWTCTAAT \
+    --metadata "data/Metadata.tsv"
+    --outdir "./results"
+```
+
+In this example, `--input` is the [Direct FASTQ input](#direct-fastq-input), other options are [Samplesheet input](#direct-fastq-input) and [ASV/OTU fasta input](#asv/otu-fasta-input). For more details on metadata, see [Metadata](#metadata). For [Reproducibility](#reproducibility), specify the version to run using `-r` (= release, here: 2.3.2). See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters) for more information about pipeline specific parameters.
+
+It is possible to not provide primer sequences (`--FW_primer` & `--RV_primer`) and skip primer trimming using `--skip_cutadapt`, but this is only for data that indeed does not contain any PCR primers in their sequences. Also, metadata (`--metadata`) isnt required, but aids downstream analysis.
+
+This will launch the pipeline with the `singularity` configuration profile. See below [`-profile`](#-profile) for more information about profiles.
+
+Note that the pipeline will create the following files in your working directory:
+
+```bash
+work                # Directory containing the nextflow working files
+<OUTDIR>            # Finished results in specified location (defined with --outdir)
+.nextflow_log       # Log file from Nextflow
+# Other nextflow hidden files, eg. history of pipeline runs and old logs.
+```
+
+> **NB:** If the data originates from multiple sequencing runs, the error profile of each of those sequencing runs needs to be considered separately. Using the `run` column in the samplesheet input or adding `--multiple_sequencing_runs` for Direct FASTQ input will separate certain processes by the sequencing run. Please see the following example:
+
+<p align="center">
+    <img src="images/ampliseq_workflow_multiplesequencingruns.png" alt="nf-core/ampliseq workflow overview with --multiple_sequencing_runs" width="40%">
+</p>
+
+### Setting parameters in a file
+
+Pipeline settings can be provided in a yaml or json file via `-params-file <file>` instead of using command line parameters. Do not use `-c <file>` to specify parameters as this will result in errors. The above pipeline run specified with a params file in yaml format:
+
+```bash
+nextflow run nf-core/ampliseq \
+    -r 2.3.2 \
+    -profile singularity \
+    -params-file params.yaml
+```
+
+with `params.yaml` containing:
+
+```console
+input: 'data'
+FW_primer: 'GTGYCAGCMGCCGCGGTAA'
+RV_primer: 'GGACTACNVGGGTWTCTAAT'
+metadata: 'data/Metadata.tsv'
+outdir: './results'
+```
+
+### Input specifications
+
+The input data can be passed to nf-core/ampliseq in three possible ways using the `--input` parameter, either a folder containing zipped FastQ files, a tab-separated samplesheet, or a fasta file to be taxonomically classified.
 
 Optionally, a metadata sheet can be specified for downstream analysis.
 
-### Direct FASTQ input
+#### Direct FASTQ input
 
 The easiest way is to specify directly the path to the folder that contains your input FASTQ files. For example:
 
-```console
+```bash
 --input 'path/to/data/'
 ```
 
@@ -60,7 +142,7 @@ Please note the following additional requirements:
 - Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique (also across sequencing runs)
 - If your data is scattered, produce a sample sheet
 
-### Samplesheet input
+#### Samplesheet input
 
 The sample sheet file is an alternative way to provide input reads, it must be a tab-separated file ending with `.tsv` that must have two to four columns with the following headers:
 
@@ -71,7 +153,7 @@ The sample sheet file is an alternative way to provide input reads, it must be a
 | reverseReads | optional  | Paths to reverse reads zipped FastQ files, required if the data is paired-end |
 | run          | optional  | If the data was produced by multiple sequencing runs, any string              |
 
-```console
+```bash
 --input 'path/to/samplesheet.tsv'
 ```
 
@@ -86,7 +168,7 @@ For example, the samplesheet may contain:
 
 Please note the following requirements:
 
-- 2 to 4 tab-seperated columns
+- 2 to 4 tab-separated columns
 - Valid file extension: `.tsv`
 - Must contain the header `sampleID` and `forwardReads`
 - May contain the header `reverseReads` and `run`
@@ -98,11 +180,11 @@ Please note the following requirements:
 
 An [example samplesheet](../assets/samplesheet.tsv) has been provided with the pipeline.
 
-### Fasta file input, to taxonomically classify previously produced ASV/OTU sequences
+#### ASV/OTU fasta input
 
-When pointing at a file ending with `.fasta`, `.fna` or `.fa`, the containing sequences will be taxonomically classified. All other pipeline steps will be skipped.
+When pointing at a file ending with `.fasta`, `.fna` or `.fa`, the containing ASV/OTU sequences will be taxonomically classified. All other pipeline steps will be skipped.
 
-```console
+```bash
 --input 'path/to/amplicon_sequences.fasta'
 ```
 
@@ -114,7 +196,7 @@ Please note the following requirements:
 
 Metadata is optional, but for performing downstream analysis such as barplots, diversity indices or differential abundance testing, a metadata file is essential.
 
-```console
+```bash
 --metadata "path/to/metadata.tsv"
 ```
 
@@ -138,46 +220,11 @@ Sample identifiers should be 36 characters long or less, and also contain only A
 
 The columns which are to be assessed can be specified by `--metadata_category`. If `--metadata_category` isn't specified than all columns that fit the specification are automatically chosen.
 
-## Running the pipeline
-
-The typical command for running the pipeline is as follows:
-
-```console
-nextflow run nf-core/ampliseq \
-    -profile singularity \
-    --input "data" \
-    --FW_primer GTGYCAGCMGCCGCGGTAA \
-    --RV_primer GGACTACNVGGGTWTCTAAT \
-    --metadata "data/Metadata.tsv"
-    --outdir "./results"
-```
-
-It is possible to not provide primer sequences (`--FW_primer` & `--RV_primer`) and skip primer trimming using `--skip_cutadapt`, but this is only for data that indeed does not contain any PCR primers in their sequences.
-
-This will launch the pipeline with the `singularity` configuration profile. See below [`-profile`](#-profile) for more information about profiles.
-
-Note that the pipeline will create the following files in your working directory:
-
-```console
-work                # Directory containing the nextflow working files
-<OUTIDR>            # Finished results in specified location (defined with --outdir)
-.nextflow_log       # Log file from Nextflow
-# Other nextflow hidden files, eg. history of pipeline runs and old logs.
-```
-
-> **NB:** If the data originates from multiple sequencing runs, the error profile of each of those sequencing runs needs to be considered separately. Using the `run` column in the samplesheet input or adding `--multiple_sequencing_runs` for Direct FASTQ input will separate certain processes by the sequencing run. Please see the following example:
-
-<p align="center">
-    <img src="images/ampliseq_workflow_multiplesequencingruns.png" alt="nf-core/ampliseq workflow overview with --multiple_sequencing_runs" width="40%">
-</p>
-
-See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters) for more information about pipeline specific parameters.
-
 ### Updating the pipeline
 
 When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
 
-```console
+```bash
 nextflow pull nf-core/ampliseq
 ```
 
@@ -220,7 +267,7 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
   - A generic configuration profile to be used with [Charliecloud](https://hpc.github.io/charliecloud/)
 - `conda`
   - A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter or Charliecloud.
-- `test`, `test_multi`, `test_full`, `test_pacbio_its`, `test_iontorrent`, `test_doubleprimers`
+- `test`, `test_multi`, `test_full`, `test_pacbio_its`, `test_iontorrent`, `test_doubleprimers`, `test_reftaxcustom`, `test_single`, `test_novaseq`
   - A profile with a complete configuration for automated testing
   - Includes links to test data so needs no other parameters
 
@@ -353,6 +400,6 @@ Some HPC setups also allow you to run nextflow within a cluster job submitted yo
 In some cases, the Nextflow Java virtual machines can start to request a large amount of memory.
 We recommend adding the following line to your environment to limit this (typically in `~/.bashrc` or `~./bash_profile`):
 
-```console
+```bash
 NXF_OPTS='-Xms1g -Xmx4g'
 ```

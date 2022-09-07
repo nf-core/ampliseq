@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This document describes the output produced by the pipeline. Most of the plots are taken from the MultiQC report, which summarises results at the end of the pipeline.
+This document describes the output produced by the pipeline.
 
 The directories listed below will be created in the results directory after the pipeline has finished. All paths are relative to the top-level results directory.
 
@@ -10,30 +10,49 @@ The directories listed below will be created in the results directory after the 
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
-- [nf-core/ampliseq: Output](#nf-coreampliseq-output)
-  - [Pipeline overview](#pipeline-overview)
-    - [FastQC](#fastqc) - Read quality control
-    - [Cutadapt](#cutadapt) - Primer trimming
-    - [MultiQC](#multiqc) - Aggregate report describing results
-    - [DADA2](#dada2) - Infer Amplicon Sequence Variants (ASVs) and taxonomic classification
-      - [Barrnap](#barrnap) - Predict ribosomal RNA sequences
-      - [ITSx](#itsx) - Optionally, taxonomic classification can be performed on ITS region only
-    - [QIIME2](#qiime2) - Secondary analysis
-      - [Taxonomic classification](#taxonomic-classification) - Taxonomical classification of ASVs
-      - [Exclude taxa](#exclude-taxa) - Remove unwanted ASV based on taxonomy
-      - [Relative abundance tables](#relative-abundance-tables) - Exported relative abundance tables
-      - [Barplot](#barplot) - Interactive barplot
-      - [Alpha diversity rarefaction curves](#alpha-diversity-rarefaction-curves) - Rarefaction curves for quality control
-      - [Diversity analysis](#diversity-analysis) - High level overview with different diversity indices
-        - [Alpha diversity indices](#alpha-diversity-indices) - Diversity within samples
-        - [Beta diversity indices](#beta-diversity-indices) - Diversity between samples (e.g. PCoA plots)
-      - [ANCOM](#ancom) - Differential abundance analysis
-    - [PICRUSt2](#picrust2) - Predict the functional potential of a bacterial community
-    - [Read count report](#Read-count-report) - Report of read counts during various steps of the pipeline
-    - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
-  - [Citations](#citations)
+- [Input](#input) - Input files
+- [Preprocessing](#preprocessing)
+  - [FastQC](#fastqc) - Read quality control
+  - [Cutadapt](#cutadapt) - Primer trimming
+  - [MultiQC](#multiqc) - Aggregate report describing results
+- [ASV inferrence with DADA2](#asv-inferrence-with-dada2) - Infer Amplicon Sequence Variants (ASVs)
+- [Optional ASV filtering](#optional-asv-filtering) - Filter ASVs to optimize downstream analysis
+  - [Barrnap](#barrnap) - Predict ribosomal RNA sequences and optional filtering
+  - [Length filter](#length-filter) - Optionally, ASV can be filtered by length thresholds
+  - [ITSx](#itsx) - Optionally, the ITS region can be extracted
+- [Taxonomic classification with DADA2](#taxonomic-classification-with-DADA2) - Taxonomic classification of (filtered) ASVs
+  - [assignSH](#assignsh) - Optionally, a UNITE species hypothesis (SH) can be added to the taxonomy
+- [QIIME2](#qiime2) - Secondary analysis
+  - [Taxonomic classification](#taxonomic-classification) - Taxonomical classification of ASVs
+  - [Abundance tables](#abundance-tables) - Exported abundance tables
+  - [Relative abundance tables](#relative-abundance-tables) - Exported relative abundance tables
+  - [Barplot](#barplot) - Interactive barplot
+  - [Alpha diversity rarefaction curves](#alpha-diversity-rarefaction-curves) - Rarefaction curves for quality control
+  - [Diversity analysis](#diversity-analysis) - High level overview with different diversity indices
+  - [Alpha diversity indices](#alpha-diversity-indices) - Diversity within samples
+  - [Beta diversity indices](#beta-diversity-indices) - Diversity between samples (e.g. PCoA plots)
+  - [ANCOM](#ancom) - Differential abundance analysis
+- [PICRUSt2](#picrust2) - Predict the functional potential of a bacterial community
+- [Read count report](#read-count-report) - Report of read counts during various steps of the pipeline
+- [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
-### FastQC
+### Input
+
+Samplesheet, ASV fasta, and metadata file are copied into the results folder.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `input/`
+  - `*.tsv`: Samplesheet input if specified with `--input`.
+  - `*.tsv`: Metadata input if specified with `--metadata`.
+  - `*.fasta|.fna|.fa`: ASV sequence input if specified with `--input`.
+
+</details>
+
+### Preprocessing
+
+#### FastQC
 
 [FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) gives general quality metrics about your sequenced reads. It provides information about the quality score distribution across your reads, per base sequence content (%A/T/G/C), adapter contamination and overrepresented sequences. For further reading and documentation see the [FastQC help pages](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/).
 
@@ -45,7 +64,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 
 </details>
 
-### Cutadapt
+#### Cutadapt
 
 [Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200) is trimming primer sequences from sequencing reads. Primer sequences are non-biological sequences that often introduce point mutations that do not reflect sample sequences. This is especially true for degenerated PCR primer. If primer trimming would be omitted, artifactual amplicon sequence variants might be computed by the denoising tool or sequences might be lost due to become labelled as PCR chimera.
 
@@ -58,7 +77,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 
 </details>
 
-### MultiQC
+#### MultiQC
 
 [MultiQC](http://multiqc.info) is a visualization tool that generates a single HTML report summarising all samples in your project. Most of the pipeline QC results are visualised in the report and further statistics are available in the report data directory.
 
@@ -76,7 +95,7 @@ Results generated by MultiQC collate pipeline QC from supported tools e.g. FastQ
 
 > **NB:** The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They may contain adapter sequence and potentially regions with low quality.
 
-### DADA2
+### ASV inferrence with DADA2
 
 [DADA2](https://www.nature.com/articles/nmeth.3869) performs fast and accurate sample inference from amplicon data with single-nucleotide resolution. It infers exact amplicon sequence variants (ASVs) from amplicon data with fewer false positives than many other methods while maintaining high sensitivity.
 
@@ -84,17 +103,12 @@ DADA2 computes an error model on the sequencing reads (forward and reverse indep
 
 DADA2 reduces sequence errors and dereplicates sequences by quality filtering, denoising, read pair merging (for paired end Illumina reads only) and PCR chimera removal.
 
-Additionally, DADA2 taxonomically classifies the ASVs using a choice of supplied databases (specified with `--dada_ref_taxonomy`).
-
 <details markdown="1">
 <summary>Output files</summary>
 
 - `dada2/`
   - `ASV_seqs.fasta`: Fasta file with ASV sequences.
   - `ASV_table.tsv`: Counts for each ASV sequence.
-  - `ASV_tax.tsv`: Taxonomic classification for each ASV sequence.
-  - `ASV_tax_species.tsv`: Species classification for each ASV sequence.
-  - `ref_taxonomy.txt`: Information about the used reference taxonomy, such as title, version, citation.
   - `DADA2_stats.tsv`: Tracking read numbers through DADA2 processing steps, for each sample.
   - `DADA2_table.rds`: DADA2 ASV table as R object.
   - `DADA2_tables.tsv`: DADA2 ASV table.
@@ -104,8 +118,22 @@ Additionally, DADA2 taxonomically classifies the ASVs using a choice of supplied
   - `*.err.convergence.txt`: Convergence values for DADA2's dada command, should reduce over several magnitudes and approaching 0.
   - `*.err.pdf`: Estimated error rates for each possible transition. The black line shows the estimated error rates after convergence of the machine-learning algorithm. The red line shows the error rates expected under the nominal definition of the Q-score. The estimated error rates (black line) should be a good fit to the observed rates (points), and the error rates should drop with increased quality.
   - `*_qual_stats.pdf`: Overall read quality profiles: heat map of the frequency of each quality score at each base position. The mean quality score at each position is shown by the green line, and the quartiles of the quality score distribution by the orange lines. The red line shows the scaled proportion of reads that extend to at least that position.
+  - `*_preprocessed_qual_stats.pdf`: Same as above, but after preprocessing.
 
 </details>
+
+For binned quality scores in NovaSeq data, monotonicity in the fitted error model is enforced when using `--illumina_novaseq`. Consequently, additional QC data is generated.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `dada2/QC/`
+  - `*.md.err.convergence.txt`: Convergence values for DADA2's dada command on monotone decreasing (corrected) quality scores, should reduce over several magnitudes and approaching 0.
+  - `*.md.err.pdf`: Estimated error rates for each possible transition on monotone decreasing (corrected) quality scores. The black line shows the estimated error rates after convergence of the machine-learning algorithm. The red line shows the error rates expected under the nominal definition of the Q-score. The estimated error rates (black line) should be a good fit to the observed rates (points), and the error rates should drop with increased quality.
+
+</details>
+
+### Optional ASV filtering
 
 #### Barrnap
 
@@ -124,6 +152,24 @@ Optionally, ASV sequences can be filtered for rRNA sequences identified by Barrn
 
 </details>
 
+#### Length filter
+
+Optionally, a length filter can be used to reduce potential contamination after ASV computation. For example with 515f and 806r primers the majority of 16S rRNA amplicon sequences should have a length of 253 bp and amplicons vary significantely are likely spurious.
+
+The minimum ASV length threshold can be set by `--min_len_asv` and the maximum length threshold with `--max_len_asv`. If no threshold is set, the filter (and output) is omitted.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `asv_length_filter/`
+  - `ASV_seqs.len.fasta`: Fasta file with filtered ASV sequences.
+  - `AASV_table.len.tsv`: Counts for each filtered ASV sequence.
+  - `ASV_len_orig.tsv`: ASV length distribution before filtering.
+  - `ASV_len_filt.tsv`: ASV length distribution after filtering.
+  - `stats.len.tsv`: Tracking read numbers through filtering, for each sample.
+
+</details>
+
 #### ITSx
 
 Optionally, the ITS region can be extracted from each ASV sequence using ITSx, and taxonomic classification is performed based on the ITS sequence.
@@ -138,11 +184,51 @@ Optionally, the ITS region can be extracted from each ASV sequence using ITSx, a
   - `ASV_ITS_seqs.ITS1.full_and_partial.fasta` or `ASV_ITS_seqs.ITS2.full_and_partial.fasta`: If using --cut_its "its1" or --cut_its "its2" and --its_partial; fasta file with complete and partial ITS1 or ITS2 regions from each ASV sequence.
   - `ASV_ITS_seqs.summary.txt`: Summary information from ITSx.
   - `ITSx.args.txt`: File with parameters passed to ITSx.
+
+</details>
+
+### Taxonomic classification with DADA2
+
+DADA2 taxonomically classifies the ASVs using a choice of supplied databases (specified with `--dada_ref_taxonomy`). The taxonomic classification will be done based on filtered ASV sequences (see above).
+
+Depending on the reference taxonomy database, sequences can be classified down to species rank. Species classification is reported in columns "Species" using DADA2's assignTaxonomy function or "Species_exact" using DADA2's addSpecies function, the latter only assigns exact sequence matches. Generally, species assignment without exact matches are much less trustworthy than those with exact matches. With short amplicons, e.g. 16S rRNA gene V4 region, the non-exact species annotation is not recommended to be trusted. The longer the ASVs are, the more acceptable is the non-exact species classification, e.g. PacBio (nearly) full length 16S rRNA gene sequences are thought to be trustworthy.
+
+Files when _not_ using ITSx (default):
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `dada2/`
+  - `ASV_tax.tsv`: Taxonomic classification for each ASV sequence.
+  - `ASV_tax_species.tsv`: Exact species classification for each ASV sequence.
+  - `ref_taxonomy.txt`: Information about the used reference taxonomy, such as title, version, citation.
+
+</details>
+
+Files when using ITSx:
+
+<details markdown="1">
+<summary>Output files</summary>
+
 - `dada2/`
   - `ASV_ITS_tax.tsv`: Taxonomic classification with ITS region of each ASV sequence.
-  - `ASV_ITS_tax_species.tsv`: Species classification with ITS region of each ASV sequence.
+  - `ASV_ITS_tax_species.tsv`: Exact species classification with ITS region of each ASV sequence.
   - `ASV_tax.tsv`: Taxonomic classification of each ASV sequence, based on the ITS region.
-  - `ASV_tax_species.tsv`: Species classification of each ASV sequence, based on the ITS region.
+  - `ASV_tax_species.tsv`: Exact species classification of each ASV sequence, based on the ITS region.
+  - `ref_taxonomy.txt`: Information about the used reference taxonomy, such as title, version, citation.
+
+</details>
+
+#### assignSH
+
+Optionally, a UNITE species hypothesis (SH) can be added to the taxonomy. In short, the sequences are matched to the selected UNITE database with VSEARCH, using the sequence identity cutoff 98.5%. If a good enough and unique match is found, the sequence is assigned the SH of the matching sequence, and the taxonomy assignment for the sequence is changed to that of the SH. If no match is found, the taxonomy generated by assignTaxonomy and/or assignSpecies is kept.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `assignsh/`
+  - `ASV_tax_species_SH.tsv`: Taxonomic classification with SH taxonomy added in case of a match.
+  - `*.vsearch.txt`: Raw vsearch results.
 
 </details>
 
@@ -151,6 +237,18 @@ Optionally, the ITS region can be extracted from each ASV sequence using ITSx, a
 **Quantitative Insights Into Microbial Ecology 2** ([QIIME2](https://qiime2.org/)) is a next-generation microbiome bioinformatics platform and the successor of the widely used [QIIME1](https://www.nature.com/articles/nmeth.f.303).
 
 ASV sequences, counts, and taxonomic classification as produced before with DADA2 are imported into QIIME2 and further analysed. Optionally, ASVs can be taxonomically classified also with QIIME2 against a database chosen with `--qiime_ref_taxonomy` (but DADA2 taxonomic classification takes precedence). Next, ASVs are filtered (`--exclude_taxa`, `--min_frequency`, `--min_samples`), and abundance tables are exported. Following, diversity indices are calculated and testing for differential abundant features between sample groups is performed.
+
+Intermediate data imported to QIIME2 is saved as QIIME2 fragments, that can be conveniently used for custom QIIME2 analysis.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `qiime2/input/`
+  - `table.qza`: ASV count table.
+  - `rep-seqs.qza`: ASV sequences.
+  - `taxonomy.qza`: ASV taxonomic classification.
+
+</details>
 
 #### Taxonomic classification
 
@@ -166,9 +264,9 @@ Taxonomic classification with QIIME2 is typically similar to DADA2 classificatio
 
 </details>
 
-#### Exclude taxa
+#### Abundance tables
 
-Removes unwanted taxa in DADA2 output sequences and abundance tables by taxonomic classification. Unwanted taxa are often off-targets generated in PCR with primers that are not perfectly specific for the target DNA. For example, PCR with commonly used primers also amplifyies mitrochindrial or chloroplast rRNA genes and therefore leads to non-bacteria products. These mitrochondria or chloroplast amplicons are removed in this step by default (`--exclude_taxa`). The tables are based on the computed taxonomic classification (DADA2 classification takes precedence over QIIME2 classifications).
+The abundance tables are the final data for further downstream analysis and visualisations. The tables are based on the computed ASVs and taxonomic classification (DADA2 classification takes precedence over QIIME2 classifications), but after removal of unwanted taxa. Unwanted taxa are often off-targets generated in PCR with primers that are not perfectly specific for the target DNA (can be specified by `--exclude_taxa`), by default mitrochondria and chloroplast sequences are removed because these are frequent unwanted non-bacteria PCR products.
 
 All following analysis is based on these filtered tables.
 
@@ -179,17 +277,19 @@ All following analysis is based on these filtered tables.
   - `rep-seq.fasta`: Fasta file with ASV sequences.
   - `descriptive_stats.tsv`: Length, mean, etc. of ASV sequences.
   - `seven_number_summary.tsv`: Length of ASV sequences in different quantiles.
+  - `filtered-sequences.qza`: QIIME2 fragment.
 - `qiime2/abundance_tables/`
   - `abs-abund-table-*.tsv`: Tab-separated absolute abundance table at taxa level `*`, where `*` ranges by default from 2 to 6 or 7, depending on the used reference taxonomy database.
   - `count_table_filter_stats.tsv`: Tab-separated table with information on how much counts were filtered for each sample.
   - `feature-table.biom`: Abundance table in biom format for importing into downstream analysis tools.
   - `feature-table.tsv`: Tab-separated abundance table for each ASV and each sample.
+  - `filtered-table.qza`: QIIME2 fragment.
 
 </details>
 
 #### Relative abundance tables
 
-Absolute abundance tables produced by the previous steps contain count data, but the compositional nature of 16S rRNA amplicon sequencing requires sequencing depth normalisation. This step computes relative abundance tables for various taxonomic levels and detailed tables for all ASVs with taxonomic classification, sequence and relative abundance for each sample. Typically used for in depth investigation of taxa abundances. If not specified, the tables are based on the computed taxonomic classification (DADA2 classification takes precedence over QIIME2 classifications).
+Absolute abundance tables produced by the previous steps contain count data, but the compositional nature of 16S rRNA amplicon sequencing requires sequencing depth normalisation. This step computes relative abundance tables using TSS (Total Sum Scaling normalisation) for various taxonomic levels and detailed tables for all ASVs with taxonomic classification, sequence and relative abundance for each sample. Typically used for in depth investigation of taxa abundances. If not specified, the tables are based on the computed taxonomic classification (DADA2 classification takes precedence over QIIME2 classifications).
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -360,7 +460,3 @@ This report includes information on how many reads per sample passed each pipeli
   - Reports generated by the pipeline: `pipeline_report.html`, `pipeline_report.txt` and `software_versions.yml`. The `pipeline_report*` files will only be present if the `--email` / `--email_on_fail` parameter's are used when running the pipeline.
 
 </details>
-
-## Citations
-
-An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.

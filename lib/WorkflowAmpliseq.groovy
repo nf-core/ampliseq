@@ -10,6 +10,16 @@ class WorkflowAmpliseq {
     public static void initialise(params, log) {
         if (params.enable_conda) { log.warn "Conda is enabled (`--enable_conda`), any steps involving QIIME2 are not available. Use a container engine instead of conda to enable all software." }
 
+        if ( params.pacbio || params.iontorrent || params.single_end ) {
+            if (params.trunclenr) { log.warn "Unused parameter: `--trunclenr` is ignored because the data is single end." }
+        } else if (params.trunclenf && !params.trunclenr) {
+            log.error "Invalid command: `--trunclenf` is set, but `--trunclenr` is not. Either both parameters `--trunclenf` and `--trunclenr` must be set or none."
+            System.exit(1)
+        } else if (!params.trunclenf && params.trunclenr) {
+            log.error "Invalid command: `--trunclenr` is set, but `--trunclenf` is not. Either both parameters `--trunclenf` and `--trunclenr` must be set or none."
+            System.exit(1)
+        }
+
         if (!["pooled", "independent", "pseudo"].contains(params.sample_inference)) {
             log.error "Please set `--sample_inference` to one of the following:\n" +
                 "\t-\"independent\" (lowest sensitivity and lowest resources),\n" +
@@ -20,6 +30,11 @@ class WorkflowAmpliseq {
 
         if (params.double_primer && params.retain_untrimmed) {
             log.error "Incompatible parameters `--double_primer` and `--retain_untrimmed` cannot be set at the same time."
+            System.exit(1)
+        }
+
+        if ( params.min_len_asv && params.max_len_asv && (params.min_len_asv > params.max_len_asv) ) {
+            log.error "Incompatible parameters: `--min_len_asv` may not be greater than `--max_len_asv`."
             System.exit(1)
         }
 
@@ -35,6 +50,21 @@ class WorkflowAmpliseq {
 
         if (params.qiime_tax_agglom_min > params.qiime_tax_agglom_max) {
             log.error "Incompatible parameters: `--qiime_tax_agglom_min` may not be greater than `--qiime_tax_agglom_max`."
+            System.exit(1)
+        }
+
+        if (!params.dada_ref_tax_custom && params.dada_ref_tax_custom_sp) {
+            log.error "Incompatible parameters: `--dada_ref_tax_custom_sp` requires `--dada_ref_tax_custom`."
+            System.exit(1)
+        }
+
+        if (params.dada_ref_tax_custom && !params.dada_ref_tax_custom_sp && !params.skip_dada_addspecies) {
+            log.error "Incompatible parameters: Either `--skip_dada_addspecies` or `--dada_ref_tax_custom_sp` is additionally required to `--dada_ref_tax_custom`."
+            System.exit(1)
+        }
+
+        if (params.dada_assign_taxlevels && params.sbdiexport) {
+            log.error "Incompatible parameters: `--sbdiexport` expects specific taxonomics ranks (default) and therefore excludes modifying those using `--dada_assign_taxlevels`."
             System.exit(1)
         }
 
@@ -68,6 +98,26 @@ class WorkflowAmpliseq {
             System.exit(1)
         }
 
+        String[] sbdi_incompatible_databases = ["midori2-co1=gb250","midori2-co1","rdp=18","rdp","sbdi-gtdb","sbdi-gtdb=R06-RS202-3","sbdi-gtdb=R06-RS202-1","silva=132","unite-fungi","unite-fungi=8.3","unite-fungi=8.2","unite-alleuk","unite-alleuk=8.3","unite-alleuk=8.2"]
+        if ( params.sbdiexport && Arrays.stream(sbdi_incompatible_databases).anyMatch(entry -> params.dada_ref_taxonomy.toString().equals(entry)) ) {
+            log.error "Incompatible parameters: `--sbdiexport` does not work with the chosen databse of `--dada_ref_taxonomy`, because the expected taxonomic levels do not match."
+            System.exit(1)
+        }
+
+        if (params.addsh && !params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]) {
+            def validDBs = ""
+            for (db in params.dada_ref_databases.keySet()) {
+                if (params.dada_ref_databases[db]["shfile"]) {
+                    validDBs += " " + db
+                }
+            }
+            log.error "UNITE species hypothesis information is not available for the selected reference database, please use the option `--dada_ref_taxonomy` to select an appropriate database. Currently, the option `--addsh` can only be used together with the following UNITE reference databases:\n" + validDBs + "."
+            System.exit(1)
+        }
+
+        if (params.addsh && params.cut_its == "none") {
+            log.warn "Adding UNITE species hypothesis (SH) assignments is only feasible for ITS sequences. Please use option `--cut_its` to find ITS regions in the ASV sequences, unless the given sequences are already cut to the ITS region.\n"
+        }
     }
 
     //

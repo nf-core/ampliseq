@@ -56,7 +56,11 @@
   > Cole JR, Wang Q, Fish JA, Chai B, McGarrell DM, Sun Y, Brown CT, Porras-Alfaro A, Kuske CR, Tiedje JM. Ribosomal Database Project: data and tools for high throughput rRNA analysis. Nucleic Acids Res. 2014 Jan;42(Database issue):D633-42. doi: 10.1093/nar/gkt1244. Epub 2013 Nov 27. PMID: 24288368; PMCID: PMC3965039.
 
 - [UNITE - eukaryotic nuclear ribosomal ITS region](https://pubmed.ncbi.nlm.nih.gov/15869663/)
+
   > Kõljalg U, Larsson KH, Abarenkov K, Nilsson RH, Alexander IJ, Eberhardt U, Erland S, Høiland K, Kjøller R, Larsson E, Pennanen T, Sen R, Taylor AF, Tedersoo L, Vrålstad T, Ursing BM. UNITE: a database providing web-based methods for the molecular identification of ectomycorrhizal fungi. New Phytol. 2005 Jun;166(3):1063-8. doi: 10.1111/j.1469-8137.2005.01376.x. PMID: 15869663.
+
+  - [MIDORI2 - a collection of reference databases](https://doi.org/10.1002/edn3.303/)
+    > Leray, M., Knowlton, N., & Machida, R. J. (2022). MIDORI2: A collection of quality controlled, preformatted, and regularly updated reference databases for taxonomic assignment of eukaryotic mitochondrial sequences. Environmental DNA, 4, 894– 907. https://doi.org/10.1002/edn3.303.
 
 ### Downstream analysis
 
@@ -93,7 +97,16 @@
   > Barbera P, Kozlov AM, Czech L, Morel B, Darriba D, Flouri T, Stamatakis A. EPA-ng: Massively Parallel Evolutionary Placement of Genetic Sequences. Syst Biol. 2019 Mar 1;68(2):365-369. doi: 10.1093/sysbio/syy054. PMID: 30165689; PMCID: PMC6368480.
 
 - PICRUSt2 is by default using [MinPath](https://pubmed.ncbi.nlm.nih.gov/19680427/)
+
   > Ye Y, Doak TG. A parsimony approach to biological pathway reconstruction/inference for genomes and metagenomes. PLoS Comput Biol. 2009 Aug;5(8):e1000465. doi: 10.1371/journal.pcbi.1000465. Epub 2009 Aug 14. PMID: 19680427; PMCID: PMC2714467.
+
+- [VSEARCH](https://peerj.com/articles/2584/)
+
+  > Rognes T, Flouri T, Nichols B, Quince C, Mahé F. VSEARCH: a versatile open source tool for metagenomics. PeerJ. 2016 4:e2584. doi: 10.7717/peerj.2584
+
+- VSEARCH option usearch_global implements the [USEARCH](https://doi.org/10.1093/bioinformatics/btq461) algorithm
+
+  > R.C. Edgar. Search and clustering orders of magnitude faster than BLAST. Bioinformatics. 2010 26(19) 2460-2461
 
 ### Summarizing software
 

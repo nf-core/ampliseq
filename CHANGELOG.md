@@ -3,12 +3,53 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## nf-core/ampliseq version 2.3.2 - 2022-05-30
+## nf-core/ampliseq version 2.4.0 - 2022-09-07
+
+### `Added`
+
+- [#456](https://github.com/nf-core/ampliseq/pull/456) - An optional ASV length filter can be activated using `--min_len_asv <int>` and/or `--max_len_asv <int>`.
+- [#458](https://github.com/nf-core/ampliseq/pull/458) - Samplesheet, ASV fasta file, and/or metadata sheet is now exported into `<results>/input/`
+- [#459](https://github.com/nf-core/ampliseq/pull/459) - MIDORI2 CO1 database with keys `midori2-co1=gb250` and `midori2-co1` for `--dada_ref_taxonomy`
+- [#460](https://github.com/nf-core/ampliseq/pull/460) - Taxonomic ranks for DADA2 taxonomic classification can be now adjusted using `--dada_assign_taxlevels <comma separated string>`.
+- [#461](https://github.com/nf-core/ampliseq/pull/461) - A custom DADA2 reference taxonomy database can now be used with `--dada_ref_tax_custom` and `--dada_ref_tax_custom_sp`, typically accompanied by `--dada_assign_taxlevels`.
+- [#446](https://github.com/nf-core/ampliseq/pull/446),[#467](https://github.com/nf-core/ampliseq/pull/467) - Binned quality scores from Illumina NovaSeq data can be now corrected with `--illumina_novaseq`.
+- [#477](https://github.com/nf-core/ampliseq/pull/477) - QC plots of DADA2's plotQualityProfile are now also produced after preprocessing.
+- [#478](https://github.com/nf-core/ampliseq/pull/478) - Added GTDB R07-RS207 DADA2 taxonomy reference databases
+
+### `Changed`
+
+- [#444](https://github.com/nf-core/ampliseq/pull/444),[#457](https://github.com/nf-core/ampliseq/pull/457),[#463](https://github.com/nf-core/ampliseq/pull/463),[#465](https://github.com/nf-core/ampliseq/pull/465),[#466](https://github.com/nf-core/ampliseq/pull/466),[#469](https://github.com/nf-core/ampliseq/pull/469) - Updated the documentation.
+- [#445](https://github.com/nf-core/ampliseq/pull/445) - The minimum number of total bases to use for error rate learning by default is 1e8 (DADA2, learnErrors, nbases). Previously, samples were read in the provided order until enough reads were obtained (DADA2, learnErrors, randomize=FALSE). Now, samples are picked at random from those provided (DADA2, learnError, randomize=TRUE) and a seed is set.
+- [#453](https://github.com/nf-core/ampliseq/pull/453) - Export a few more basic QIIME2 fragments (zipped files) that can be easily imported into the correct QIIME2 version for custom analysis.
+- [#464](https://github.com/nf-core/ampliseq/pull/464) - Reported taxonomic classifications on species level based on DADA2's assignTaxonomy (approximations) is now listed in column "Species" while exact matches based on DADA2's addSpecies are now reported in column "Species_exact".
+
+### `Fixed`
+
+- [#448](https://github.com/nf-core/ampliseq/pull/448) - Updated SBDI export scripts to include Unite species hypothesis information if available.
+- [#451](https://github.com/nf-core/ampliseq/pull/451) - Pairwise statistics will be now performed on a subset of metadata columns specified with `--metadata_category` instead of ignoring that setting.
+- [#451](https://github.com/nf-core/ampliseq/pull/451) - Replace busybox with Ubuntu base image for GCP support.
+- [#455](https://github.com/nf-core/ampliseq/pull/455) - Stop with descriptive error when only one of `--trunclenf` and `--trunclenr` is given, earlier it was silently ignored.
+- [#474](https://github.com/nf-core/ampliseq/pull/474) - Template update for nf-core/tools version 2.5.1
+- [#475](https://github.com/nf-core/ampliseq/pull/475) - Report software versions for DADA2_TAXONOMY
+
+### `Dependencies`
+
+- [#479](https://github.com/nf-core/ampliseq/pull/479) - Updated software
+
+| Tool     | Previous version | New version |
+| -------- | ---------------- | ----------- |
+| PICRUSt2 | 2.4.2            | 2.5.0       |
+| MultiQC  | 1.12             | 1.13a       |
+
+### `Removed`
+
+## nf-core/ampliseq version 2.3.2 - 2022-05-27
 
 ### `Added`
 
 - [#429](https://github.com/nf-core/ampliseq/pull/429) - `--cutadapt_min_overlap` sets cutadapt's global minimum overlap (`-O`) and `--cutadapt_max_error_rate` sets cutadapt's global maximum error rate (`-e`) for trimming primer sequences.
 - [#431](https://github.com/nf-core/ampliseq/pull/431) - `--skip_dada_quality` allows to skip quality check with DADA2. This is only allowed when `--trunclenf` and `--trunclenr` are set.
+- [#434](https://github.com/nf-core/ampliseq/pull/434) - `--addsh` adds UNITE species hypothesis (SH) to the taxonomy. Only available for UNITE databases.
 
 ### `Changed`
 

@@ -23,7 +23,10 @@ if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input sample
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-ch_multiqc_config        = file("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
+ch_multiqc_config        = [
+                           file("$projectDir/assets/multiqc_config.yml", checkIfExists: true),
+                           file("$projectDir/assets/nf-core-ampliseq_logo_light.png", checkIfExists: true)
+                           ]
 ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config) : Channel.empty()
 
 /*
@@ -42,13 +45,25 @@ if (params.classifier) {
     ch_qiime_classifier = Channel.fromPath("${params.classifier}", checkIfExists: true)
 } else { ch_qiime_classifier = Channel.empty() }
 
-if (params.dada_ref_taxonomy && !params.skip_taxonomy) {
+if (params.dada_ref_tax_custom) {
+    //custom ref taxonomy input from params.dada_ref_tax_custom & params.dada_ref_tax_custom_sp
+    ch_assigntax = Channel.fromPath("${params.dada_ref_tax_custom}", checkIfExists: true)
+    if (params.dada_ref_tax_custom_sp) {
+        ch_addspecies = Channel.fromPath("${params.dada_ref_tax_custom_sp}", checkIfExists: true)
+    }
+    ch_dada_ref_taxonomy = Channel.empty()
+} else if (params.dada_ref_taxonomy && !params.skip_taxonomy) {
+    //standard ref taxonomy input from params.dada_ref_taxonomy & conf/ref_databases.config
     ch_dada_ref_taxonomy = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["file"]).map { file(it) }
+    if (params.addsh) {
+        ch_shinfo = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]).map { file(it) }
+    }
 } else { ch_dada_ref_taxonomy = Channel.empty() }
 
 if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
     ch_qiime_ref_taxonomy = Channel.fromList(params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"]).map { file(it) }
 } else { ch_qiime_ref_taxonomy = Channel.empty() }
+
 
 // Set non-params Variables
 
@@ -72,12 +87,29 @@ if ( !is_fasta_input && (!params.FW_primer || !params.RV_primer) && !params.skip
     System.exit(1)
 }
 
-metadata_category = params.metadata_category ?: ""
+//use custom taxlevels from --dada_assign_taxlevels or database specific taxlevels if specified in conf/ref_databases.config
+if ( params.dada_ref_taxonomy ) {
+    taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" :
+        params.dada_ref_databases[params.dada_ref_taxonomy]["taxlevels"] ?: ""
+} else { taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" : "" }
+
+//make sure that taxlevels adheres to requirements when mixed with addSpecies
+if ( params.dada_ref_taxonomy && !params.skip_dada_addspecies && !params.skip_taxonomy && taxlevels ) {
+    if ( !taxlevels.endsWith(",Genus,Species") && !taxlevels.endsWith(",Genus") ) {
+        log.error "Incompatible settings: To use exact species annotations, taxonomic levels must end with `,Genus,Species` or `,Genus,Species` but are currently `${taxlevels}`. Taxonomic levels can be set with `--dada_assign_taxlevels`. Skip exact species annotations with `--skip_dada_addspecies`.\n"
+        System.exit(1)
+    }
+}
 
 //only run QIIME2 when taxonomy is actually calculated and all required data is available
 if ( !params.enable_conda && !params.skip_taxonomy && !params.skip_qiime ) {
     run_qiime2 = true
 } else { run_qiime2 = false }
+
+// Set cutoff to use for SH assignment
+if ( params.addsh ) {
+    vsearch_cutoff = 0.985
+}
 
 /*
 ========================================================================================
@@ -86,22 +118,23 @@ if ( !params.enable_conda && !params.skip_taxonomy && !params.skip_qiime ) {
 */
 
 include { RENAME_RAW_DATA_FILES         } from '../modules/local/rename_raw_data_files'
-include { DADA2_FILTNTRIM               } from '../modules/local/dada2_filtntrim'
-include { DADA2_QUALITY                 } from '../modules/local/dada2_quality'
-include { TRUNCLEN                      } from '../modules/local/trunclen'
 include { DADA2_ERR                     } from '../modules/local/dada2_err'
+include { NOVASEQ_ERR                   } from '../modules/local/novaseq_err'
 include { DADA2_DENOISING               } from '../modules/local/dada2_denoising'
 include { DADA2_RMCHIMERA               } from '../modules/local/dada2_rmchimera'
 include { DADA2_STATS                   } from '../modules/local/dada2_stats'
 include { DADA2_MERGE                   } from '../modules/local/dada2_merge'
 include { BARRNAP                       } from '../modules/local/barrnap'
 include { FILTER_SSU                    } from '../modules/local/filter_ssu'
+include { FILTER_LEN_ASV                } from '../modules/local/filter_len_asv'
 include { MERGE_STATS as MERGE_STATS_FILTERSSU } from '../modules/local/merge_stats'
+include { MERGE_STATS as MERGE_STATS_FILTERLENASV } from '../modules/local/merge_stats'
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
 include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
 include { MERGE_STATS                   } from '../modules/local/merge_stats'
 include { DADA2_TAXONOMY                } from '../modules/local/dada2_taxonomy'
 include { DADA2_ADDSPECIES              } from '../modules/local/dada2_addspecies'
+include { ASSIGNSH                      } from '../modules/local/assignsh'
 include { FORMAT_TAXRESULTS             } from '../modules/local/format_taxresults'
 include { FORMAT_TAXRESULTS as FORMAT_TAXRESULTS_ADDSP } from '../modules/local/format_taxresults'
 include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'
@@ -122,6 +155,7 @@ include { SBDIEXPORTREANNOTATE          } from '../modules/local/sbdiexportreann
 //
 
 include { PARSE_INPUT                   } from '../subworkflows/local/parse_input'
+include { DADA2_PREPROCESSING           } from '../subworkflows/local/dada2_preprocessing'
 include { QIIME2_PREPTAX                } from '../subworkflows/local/qiime2_preptax'
 include { QIIME2_TAXONOMY               } from '../subworkflows/local/qiime2_taxonomy'
 include { CUTADAPT_WORKFLOW             } from '../subworkflows/local/cutadapt_workflow'
@@ -143,6 +177,8 @@ include { CUTADAPT as CUTADAPT_TAXONOMY     } from '../modules/nf-core/modules/c
 include { FASTQC                            } from '../modules/nf-core/modules/fastqc/main'
 include { MULTIQC                           } from '../modules/nf-core/modules/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
+include { VSEARCH_USEARCHGLOBAL             } from '../modules/nf-core/modules/vsearch/usearchglobal/main'
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -193,84 +229,34 @@ workflow AMPLISEQ {
     }
 
     //
-    // SUBWORKFLOW / MODULES : ASV generation with DADA2
+    // SUBWORKFLOW: Read preprocessing & QC plotting with DADA2
     //
-    //plot aggregated quality profile for forward and reverse reads separately
-    if (single_end) {
-        ch_trimmed_reads
-            .map { meta, reads -> [ reads ] }
-            .collect()
-            .map { reads -> [ "single_end", reads ] }
-            .set { ch_all_trimmed_reads }
+    DADA2_PREPROCESSING ( 
+        ch_trimmed_reads,
+        single_end,
+        find_truncation_values,
+        trunclenf,
+        trunclenr
+    ).reads.set { ch_filt_reads }
+    ch_versions = ch_versions.mix(DADA2_PREPROCESSING.out.versions)
+
+    //
+    // MODULES: ASV generation with DADA2
+    //
+
+    //run error model
+    if ( !params.illumina_novaseq ) {
+        DADA2_ERR ( ch_filt_reads )
+        ch_errormodel = DADA2_ERR.out.errormodel
     } else {
-        ch_trimmed_reads
-            .map { meta, reads -> [ reads[0] ] }
-            .collect()
-            .map { reads -> [ "FW", reads ] }
-            .set { ch_all_trimmed_fw }
-        ch_trimmed_reads
-            .map { meta, reads -> [ reads[1] ] }
-            .collect()
-            .map { reads -> [ "RV", reads ] }
-            .set { ch_all_trimmed_rv }
-        ch_all_trimmed_fw
-            .mix ( ch_all_trimmed_rv )
-            .set { ch_all_trimmed_reads }
+        DADA2_ERR ( ch_filt_reads )
+        NOVASEQ_ERR ( DADA2_ERR.out.errormodel )
+        ch_errormodel = NOVASEQ_ERR.out.errormodel
     }
-
-    if ( !params.skip_dada_quality ) {
-        DADA2_QUALITY ( ch_all_trimmed_reads )
-        DADA2_QUALITY.out.warning.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","DADA2_QUALITY: ") }
-    }
-
-    //find truncation values in case they are not supplied
-    if ( find_truncation_values ) {
-        TRUNCLEN ( DADA2_QUALITY.out.tsv )
-        TRUNCLEN.out.trunc
-            .toSortedList()
-            .set { ch_trunc }
-        ch_versions = ch_versions.mix(TRUNCLEN.out.versions.first())
-        //add one more warning or reminder that trunclenf and trunclenr were chosen automatically
-        ch_trunc.subscribe {
-            if ( "${it[0][1]}".toInteger() + "${it[1][1]}".toInteger() <= 10 ) { log.warn "`--trunclenf` was set to ${it[0][1]} and `--trunclenr` to ${it[1][1]}, this is too low! Please either change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr`." }
-            else if ( "${it[0][1]}".toInteger() <= 10 ) { log.warn "`--trunclenf` was set to ${it[0][1]}, this is too low! Please either change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr`." }
-            else if ( "${it[1][1]}".toInteger() <= 10 ) { log.warn "`--trunclenr` was set to ${it[1][1]}, this is too low! Please either change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr`." }
-            else log.warn "Probably everything is fine, but this is a reminder that `--trunclenf` was set automatically to ${it[0][1]} and `--trunclenr` to ${it[1][1]}. If this doesnt seem reasonable, then please change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr` directly."
-        }
-    } else {
-        Channel.from( [['FW', trunclenf], ['RV', trunclenr]] )
-            .toSortedList()
-            .set { ch_trunc }
-    }
-    ch_trimmed_reads.combine(ch_trunc).set { ch_trimmed_reads }
-
-    //filter reads
-    DADA2_FILTNTRIM ( ch_trimmed_reads.dump(tag: 'into_filtntrim')  )
-    //ch_versions = ch_versions.mix(DADA2_FILTNTRIM.out.versions.first())
-
-    //group by sequencing run
-    DADA2_FILTNTRIM.out.reads
-        .map {
-            info, reads ->
-                def meta = [:]
-                meta.run = info.run
-                meta.single_end = info.single_end
-                [ meta, reads, info.id ] }
-        .groupTuple(by: 0 )
-        .map {
-            info, reads, ids ->
-                def meta = [:]
-                meta.run = info.run
-                meta.single_end = info.single_end
-                meta.id = ids.flatten().sort()
-                [ meta, reads.flatten().sort() ] }
-        .set { ch_filt_reads }
-
-    DADA2_ERR ( ch_filt_reads )
 
     //group by meta
     ch_filt_reads
-        .join( DADA2_ERR.out.errormodel )
+        .join( ch_errormodel )
         .set { ch_derep_errormodel }
     DADA2_DENOISING ( ch_derep_errormodel.dump(tag: 'into_denoising')  )
     ch_versions = ch_versions.mix(DADA2_DENOISING.out.versions.first())
@@ -278,7 +264,7 @@ workflow AMPLISEQ {
     DADA2_RMCHIMERA ( DADA2_DENOISING.out.seqtab )
 
     //group by sequencing run & group by meta
-    DADA2_FILTNTRIM.out.log
+    DADA2_PREPROCESSING.out.logs
         .map {
             info, reads ->
                 def meta = [:]
@@ -335,6 +321,18 @@ workflow AMPLISEQ {
     }
 
     //
+    // Modules : amplicon length filtering
+    //
+    if (params.min_len_asv || params.max_len_asv) {
+        FILTER_LEN_ASV ( ch_dada2_fasta,ch_dada2_asv )
+        ch_versions = ch_versions.mix(FILTER_LEN_ASV.out.versions.ifEmpty(null))
+        MERGE_STATS_FILTERLENASV ( ch_stats, FILTER_LEN_ASV.out.stats )
+        ch_stats = MERGE_STATS_FILTERLENASV.out.tsv
+        ch_dada2_fasta = FILTER_LEN_ASV.out.fasta
+        ch_dada2_asv = FILTER_LEN_ASV.out.asv
+    }
+
+    //
     // SUBWORKFLOW / MODULES : Taxonomic classification with DADA2 and/or QIIME2
     //
     //Alternative entry point for fasta that is being classified
@@ -344,9 +342,12 @@ workflow AMPLISEQ {
 
     //DADA2
     if (!params.skip_taxonomy) {
-        FORMAT_TAXONOMY ( ch_dada_ref_taxonomy.collect() )
-        ch_assigntax = FORMAT_TAXONOMY.out.assigntax
-        ch_addspecies = FORMAT_TAXONOMY.out.addspecies
+        if (!params.dada_ref_tax_custom) {
+            //standard ref taxonomy input from conf/ref_databases.config
+            FORMAT_TAXONOMY ( ch_dada_ref_taxonomy.collect() )
+            ch_assigntax = FORMAT_TAXONOMY.out.assigntax
+            ch_addspecies = FORMAT_TAXONOMY.out.addspecies
+        }
         //Cut taxonomy to expected amplicon
         if (params.cut_dada_ref_taxonomy) {
             ch_assigntax
@@ -362,11 +363,44 @@ workflow AMPLISEQ {
                 .set { ch_assigntax }
         }
         if (params.cut_its == "none") {
-            DADA2_TAXONOMY ( ch_fasta, ch_assigntax, 'ASV_tax.tsv' )
+            DADA2_TAXONOMY ( ch_fasta, ch_assigntax, 'ASV_tax.tsv', taxlevels )
+            ch_versions = ch_versions.mix(DADA2_TAXONOMY.out.versions)
             if (!params.skip_dada_addspecies) {
-                DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_tax_species.tsv' )
-                ch_dada2_tax = DADA2_ADDSPECIES.out.tsv
-            } else { ch_dada2_tax = DADA2_TAXONOMY.out.tsv }
+                DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_tax_species.tsv', taxlevels )
+                if ( params.addsh ) {
+                    ch_fasta
+                        .map {
+                            fasta ->
+                                def meta = [:]
+                                meta.id = "ASV.vsearch"
+                                [ meta, fasta ] }
+                        .set { ch_fasta_map }
+                    VSEARCH_USEARCHGLOBAL( ch_fasta_map, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
+                    ch_versions = ch_versions.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
+                    ASSIGNSH( DADA2_ADDSPECIES.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, 'ASV_tax_species_SH.tsv')
+                    ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
+                    ch_dada2_tax = ASSIGNSH.out.tsv
+                } else {
+                    ch_dada2_tax = DADA2_ADDSPECIES.out.tsv
+                }
+            } else {
+                if ( params.addsh ) {
+                    ch_fasta
+                        .map {
+                            fasta ->
+                                def meta = [:]
+                                meta.id = "ASV.vsearch"
+                                [ meta, fasta ] }
+                        .set { ch_fasta_map }
+                    VSEARCH_USEARCHGLOBAL( ch_fasta_map, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
+                    ch_versions = ch_versions.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
+                    ASSIGNSH( DADA2_TAXONOMY.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, 'ASV_tax_SH.tsv')
+                    ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
+                    ch_dada2_tax = ASSIGNSH.out.tsv
+                 } else {
+                     ch_dada2_tax = DADA2_TAXONOMY.out.tsv
+                 }
+            }
         //Cut out ITS region if long ITS reads
         } else {
             if (params.cut_its == "full") {
@@ -381,15 +415,46 @@ workflow AMPLISEQ {
             ITSX_CUTASV ( ch_fasta, outfile )
             ch_versions = ch_versions.mix(ITSX_CUTASV.out.versions.ifEmpty(null))
             ch_cut_fasta = ITSX_CUTASV.out.fasta
-            DADA2_TAXONOMY ( ch_cut_fasta, ch_assigntax, 'ASV_ITS_tax.tsv' )
+            DADA2_TAXONOMY ( ch_cut_fasta, ch_assigntax, 'ASV_ITS_tax.tsv', taxlevels )
+            ch_versions = ch_versions.mix(DADA2_TAXONOMY.out.versions)
             FORMAT_TAXRESULTS ( DADA2_TAXONOMY.out.tsv, ch_fasta, 'ASV_tax.tsv' )
             ch_versions = ch_versions.mix( FORMAT_TAXRESULTS.out.versions.ifEmpty(null) )
             if (!params.skip_dada_addspecies) {
-                DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_ITS_tax_species.tsv' )
+                DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_ITS_tax_species.tsv', taxlevels )
                 FORMAT_TAXRESULTS_ADDSP ( DADA2_ADDSPECIES.out.tsv, ch_fasta, 'ASV_tax_species.tsv' )
-                ch_dada2_tax = FORMAT_TAXRESULTS_ADDSP.out.tsv
-            } else {
-                ch_dada2_tax = FORMAT_TAXRESULTS.out.tsv
+                if ( params.addsh ) {
+                    ch_cut_fasta
+                        .map {
+                            fasta ->
+                                def meta = [:]
+                                meta.id = "ASV_cut.vsearch"
+                                [ meta, fasta ] }
+                        .set { ch_cut_fasta }
+                    VSEARCH_USEARCHGLOBAL( ch_cut_fasta, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
+                    ch_versions = ch_versions.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
+                    ASSIGNSH( FORMAT_TAXRESULTS_ADDSP.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, 'ASV_tax_species_SH.tsv')
+                    ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
+                    ch_dada2_tax = ASSIGNSH.out.tsv
+                } else {
+                    ch_dada2_tax = FORMAT_TAXRESULTS_ADDSP.out.tsv
+                }
+           } else {
+                if ( params.addsh ) {
+                    ch_cut_fasta
+                        .map {
+                            fasta ->
+                                def meta = [:]
+                                meta.id = "ASV_cut.vsearch"
+                                [ meta, fasta ] }
+                        .set { ch_cut_fasta }
+                    VSEARCH_USEARCHGLOBAL( ch_cut_fasta, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
+                    ch_versions = ch_versions.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
+                    ASSIGNSH( FORMAT_TAXRESULTS.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, 'ASV_tax_SH.tsv')
+                    ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
+                    ch_dada2_tax = ASSIGNSH.out.tsv
+                } else {
+                    ch_dada2_tax = FORMAT_TAXRESULTS.out.tsv
+                }
             }
         }
     }
@@ -472,13 +537,19 @@ workflow AMPLISEQ {
         }
 
         //Select metadata categories for diversity analysis & ancom
-        if (!params.skip_ancom || !params.skip_diversity_indices) {
-            METADATA_ALL ( ch_metadata, metadata_category ).set { ch_metacolumn_all }
+        if (params.metadata_category) {
+            ch_metacolumn_all = Channel.from(params.metadata_category.tokenize(','))
+            METADATA_PAIRWISE ( ch_metadata ).set { ch_metacolumn_pairwise }
+            ch_metacolumn_pairwise = ch_metacolumn_pairwise.splitCsv().flatten()
+            ch_metacolumn_pairwise = ch_metacolumn_all.join(ch_metacolumn_pairwise)
+        } else if (!params.skip_ancom || !params.skip_diversity_indices) {
+            METADATA_ALL ( ch_metadata ).set { ch_metacolumn_all }
             //return empty channel if no appropriate column was found
             ch_metacolumn_all.branch { passed: it != "" }.set { result }
             ch_metacolumn_all = result.passed
-
+            ch_metacolumn_all = ch_metacolumn_all.splitCsv().flatten()
             METADATA_PAIRWISE ( ch_metadata ).set { ch_metacolumn_pairwise }
+            ch_metacolumn_pairwise = ch_metacolumn_pairwise.splitCsv().flatten()
         } else {
             ch_metacolumn_all = Channel.empty()
             ch_metacolumn_pairwise = Channel.empty()
@@ -527,9 +598,9 @@ workflow AMPLISEQ {
     // MODULE: Export data in SBDI's (Swedish biodiversity infrastructure) format
     //
     if ( params.sbdiexport ) {
-        SBDIEXPORT ( ch_dada2_asv, DADA2_ADDSPECIES.out.tsv, ch_metadata  )
+        SBDIEXPORT ( ch_dada2_asv, ch_dada2_tax, ch_metadata )
         ch_versions = ch_versions.mix(SBDIEXPORT.out.versions.first())
-        SBDIEXPORTREANNOTATE ( DADA2_ADDSPECIES.out.tsv )
+        SBDIEXPORTREANNOTATE ( ch_dada2_tax )
     }
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
@@ -555,11 +626,26 @@ workflow AMPLISEQ {
             ch_multiqc_files = ch_multiqc_files.mix(CUTADAPT_WORKFLOW.out.logs.collect{it[1]}.ifEmpty([]))
         }
 
+        ch_multiqc_configs = Channel.from(ch_multiqc_config).mix(ch_multiqc_custom_config).ifEmpty([])
+
         MULTIQC (
-            ch_multiqc_files.collect()
+            ch_multiqc_files.collect(),
+            ch_multiqc_configs.collect()
         )
         multiqc_report = MULTIQC.out.report.toList()
         ch_versions    = ch_versions.mix(MULTIQC.out.versions)
+    }
+
+    //Save input in results folder
+    input = file(params.input)
+    if ( is_fasta_input || input.toString().toLowerCase().endsWith("tsv") ) {
+        file("${params.outdir}/input").mkdir()
+        input.copyTo("${params.outdir}/input")
+    }
+    //Save metadata in results folder
+    if ( params.metadata ) { 
+        file("${params.outdir}/input").mkdir()
+        file("${params.metadata}").copyTo("${params.outdir}/input")
     }
 }
 

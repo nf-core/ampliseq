@@ -2,9 +2,9 @@
 <svg
    inkscape:export-ydpi="289.40701"
    inkscape:export-xdpi="289.40701"
-   inkscape:export-filename="/home/daniel/Desktop/github-ampliseq/ampliseq/docs/images/ampliseq_workflow.png"
+   inkscape:export-filename="../4bf6e8bd/ampliseq_workflow.png"
    sodipodi:docname="ampliseq_workflow.svg"
-   inkscape:version="1.1.2 (76b9e6a115, 2022-02-25)"
+   inkscape:version="1.2 (56b05e47e7, 2022-06-09, custom)"
    id="svg8"
    version="1.1"
    viewBox="0 0 272.16501 148.21181"
@@ -226,7 +226,7 @@
      inkscape:current-layer="layer1"
      inkscape:document-units="mm"
      inkscape:cy="201"
-     inkscape:cx="525"
+     inkscape:cx="458.5"
      inkscape:zoom="1"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
@@ -235,7 +235,9 @@
      pagecolor="#ffffff"
      id="base"
      inkscape:pagecheckerboard="0"
-     inkscape:guide-bbox="true">
+     inkscape:guide-bbox="true"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1">
     <inkscape:grid
        originy="49.314234"
        originx="7.559111"
@@ -1837,32 +1839,8 @@
        y="149.07695"
        style="stroke-width:8.51516" />
     <g
-       id="g87725"
-       transform="translate(-34.925004,-12.170835)">
-      <rect
-         style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
-         id="rect4770-6-1-8-6-6-3-5"
-         width="34.438263"
-         height="4.9158392"
-         x="77.416435"
-         y="108.51759"
-         ry="2.4579196"
-         rx="2.4579196" />
-      <text
-         id="text4774-8-5"
-         y="111.79639"
-         x="86.639931"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
-         xml:space="preserve"><tspan
-           style="font-size:3.175px;stroke-width:0.264583"
-           y="111.79639"
-           x="86.639931"
-           id="tspan4772-5-7"
-           sodipodi:role="line">derepFastq</tspan></text>
-    </g>
-    <g
        id="g87720"
-       transform="translate(-34.925004,-14.555914)">
+       transform="translate(-34.925004,-20.376751)">
       <rect
          style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-8-6-6-3-4"
@@ -1889,7 +1867,7 @@
     </g>
     <g
        id="g87730"
-       transform="translate(-34.925004,8.1945652)">
+       transform="translate(-34.925004,2.3737315)">
       <rect
          style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-8-6-6-3-0"
@@ -1916,7 +1894,7 @@
     </g>
     <g
        id="g87715"
-       transform="translate(-34.925004,-17.209347)">
+       transform="translate(-34.925004,-23.030184)">
       <rect
          style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-8-6-6-3-8"
@@ -1940,9 +1918,9 @@
     </g>
     <g
        id="g17790"
-       transform="translate(0,-1.5875)">
+       transform="translate(0,-7.4083337)">
       <rect
-         style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-8-6-6-3-8-2"
          width="34.438263"
          height="4.9158392"
@@ -1961,6 +1939,30 @@
            x="53.933769"
            y="146.506"
            style="font-size:3.175px;stroke-width:0.264583">Barrnap</tspan></text>
+    </g>
+    <g
+       id="g17790-3"
+       transform="translate(0,-1.3229206)">
+      <rect
+         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         id="rect4770-6-1-8-6-6-3-8-2-6"
+         width="34.438263"
+         height="4.9158392"
+         x="42.425919"
+         y="142.91327"
+         ry="2.4579196"
+         rx="2.4579196" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         x="49.756504"
+         y="146.506"
+         id="text4774-6-2-0-7-7"><tspan
+           sodipodi:role="line"
+           id="tspan4772-0-5-9-0-5"
+           x="49.756504"
+           y="146.506"
+           style="font-size:3.175px;stroke-width:0.264583">length filtering</tspan></text>
     </g>
     <rect
        inkscape:export-ydpi="305.81"
@@ -2069,7 +2071,7 @@
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20.7634px;line-height:1.25;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro';fill:#000000;stroke-width:1.00309px" /></flowRoot>
     <g
        id="g10951"
-       transform="translate(-34.925004,-15.875004)">
+       transform="translate(-34.925004,-21.695841)">
       <rect
          style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-8-6-6-3"
@@ -2093,7 +2095,7 @@
     </g>
     <g
        id="g11997"
-       transform="translate(-34.925004,-9.4662344)">
+       transform="translate(-34.925004,-15.287071)">
       <rect
          style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-8-6-6-3-1"
@@ -2216,13 +2218,13 @@
        inkscape:export-ydpi="305.81"
        inkscape:export-xdpi="305.81"
        id="text4732-3-3"
-       y="129.92659"
+       y="124.10577"
        x="41.088692"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:0.25;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        xml:space="preserve"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png"><tspan
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
-         y="129.92659"
+         y="124.10577"
          x="41.088692"
          id="tspan4730-1-1"
          sodipodi:role="line">Extract ITS region</tspan></text>
@@ -2230,16 +2232,16 @@
        inkscape:export-ydpi="305.81"
        inkscape:export-xdpi="305.81"
        id="text4732-3-3-2"
-       y="140.31789"
+       y="134.49713"
        x="41.395306"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:0.25;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        xml:space="preserve"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png"><tspan
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
-         y="140.31789"
+         y="134.49713"
          x="41.395306"
          id="tspan4730-1-1-9"
-         sodipodi:role="line">Annotate rRNA</tspan></text>
+         sodipodi:role="line">Filter ASVs</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.97656px;line-height:125%;font-family:'Abyssinica SIL';-inkscape-font-specification:'Abyssinica SIL, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -2270,7 +2272,7 @@
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-7.5591109,37.685768)"
        id="text69165"
-       style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:'Abyssinica SIL';font-style:normal;font-weight:normal;font-size:11.25px;line-height:125%;letter-spacing:0px;word-spacing:0px;text-align:start;writing-mode:lr;-inkscape-font-specification:'Abyssinica SIL, Normal';font-stretch:normal;font-variant:normal;white-space:pre;shape-inside:url(#rect69167)" />
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11.25px;line-height:125%;font-family:'Abyssinica SIL';-inkscape-font-specification:'Abyssinica SIL, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;white-space:pre;shape-inside:url(#rect69167);display:inline;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:125%;font-family:'Abyssinica SIL';-inkscape-font-specification:'Abyssinica SIL, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"

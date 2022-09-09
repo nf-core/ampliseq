@@ -89,7 +89,7 @@ class WorkflowAmpliseq {
         }
 
         if (params.qiime_ref_taxonomy && params.classifier) {
-            log.error "Incompatible parameters: `--qiime_ref_taxonomy` will produce a classifier but `--skip_classifier` points to a precomputed classifier, therefore, only use one of those."
+            log.error "Incompatible parameters: `--qiime_ref_taxonomy` will produce a classifier but `--classifier` points to a precomputed classifier, therefore, only use one of those."
             System.exit(1)
         }
 

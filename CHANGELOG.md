@@ -3,6 +3,20 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## nf-core/ampliseq version 2.5.0dev
+
+### `Added`
+
+### `Changed`
+
+### `Fixed`
+
+- [#486](https://github.com/nf-core/ampliseq/pull/486) - Fixed typo in error message stating `--skip_classifer` instead of `--classifier`.
+
+### `Dependencies`
+
+### `Removed`
+
 ## nf-core/ampliseq version 2.4.0 - 2022-09-07
 
 ### `Added`

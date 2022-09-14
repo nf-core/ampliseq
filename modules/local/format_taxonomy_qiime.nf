@@ -11,9 +11,10 @@ process FORMAT_TAXONOMY_QIIME {
     path(database)
 
     output:
-    path( "*.tax" ), emit: tax
-    path( "*.fna" ), emit: fasta
+    path( "*.tax" )          , emit: tax
+    path( "*.fna" )          , emit: fasta
     path( "ref_taxonomy.txt"), emit: ref_tax_info
+    path "versions.yml"      , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -27,5 +28,10 @@ process FORMAT_TAXONOMY_QIIME {
     echo -e "Title: ${params.qiime_ref_databases[params.qiime_ref_taxonomy]["title"]}\n" >>ref_taxonomy.txt
     echo -e "Citation: ${params.qiime_ref_databases[params.qiime_ref_taxonomy]["citation"]}\n" >>ref_taxonomy.txt
     echo "All entries: ${params.qiime_ref_databases[params.qiime_ref_taxonomy]}" >>ref_taxonomy.txt
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        bash: \$(bash --version | sed -n 1p | sed 's/GNU bash, version //g')
+    END_VERSIONS
     """
 }

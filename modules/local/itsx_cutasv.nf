@@ -17,6 +17,9 @@ process ITSX_CUTASV {
     path "versions.yml"  , emit: versions
     path "*.args.txt"    , emit: args
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     def args = task.ext.args ?: ''
     """

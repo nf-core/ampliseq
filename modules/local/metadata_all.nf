@@ -13,6 +13,9 @@ process METADATA_ALL {
     output:
     stdout
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     """
     metadata_all.r ${metadata}

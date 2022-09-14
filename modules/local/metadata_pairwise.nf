@@ -13,6 +13,9 @@ process METADATA_PAIRWISE {
     output:
     stdout
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     """
     metadata_pairwise.r ${metadata}

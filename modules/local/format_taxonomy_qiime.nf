@@ -15,6 +15,9 @@ process FORMAT_TAXONOMY_QIIME {
     path( "*.fna" ), emit: fasta
     path( "ref_taxonomy.txt"), emit: ref_tax_info
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     """
     ${params.qiime_ref_databases[params.qiime_ref_taxonomy]["fmtscript"]}

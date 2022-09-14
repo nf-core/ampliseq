@@ -14,6 +14,9 @@ process QIIME2_ALPHARAREFACTION {
     path("alpha-rarefaction/*"), emit: rarefaction
     path "versions.yml"        , emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"

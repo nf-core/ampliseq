@@ -14,6 +14,9 @@ process FORMAT_TAXONOMY {
     path( "*addSpecies.fna*")     , emit: addspecies
     path( "ref_taxonomy.txt")     , emit: ref_tax_info
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     """
     ${params.dada_ref_databases[params.dada_ref_taxonomy]["fmtscript"]}

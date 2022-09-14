@@ -18,6 +18,9 @@ process DADA2_MERGE {
     path( "DADA2_table.rds" ), emit: rds
     path "versions.yml"      , emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     """
     #!/usr/bin/env Rscript

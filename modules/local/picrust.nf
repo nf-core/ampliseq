@@ -20,6 +20,9 @@ process PICRUST {
     path "*.args.txt"    , emit: args
     path "${message}.txt"
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     def args = task.ext.args ?: ''
     """

@@ -18,7 +18,7 @@ process PICRUST {
     path("*_descrip.tsv"), emit: pathways
     path "versions.yml"  , emit: versions
     path "*.args.txt"    , emit: args
-    path "${message}.txt"
+    path "${message}.txt", emit: message
 
     when:
     task.ext.when == null || task.ext.when

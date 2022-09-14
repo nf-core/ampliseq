@@ -539,16 +539,16 @@ workflow AMPLISEQ {
         //Select metadata categories for diversity analysis & ancom
         if (params.metadata_category) {
             ch_metacolumn_all = Channel.from(params.metadata_category.tokenize(','))
-            METADATA_PAIRWISE ( ch_metadata ).set { ch_metacolumn_pairwise }
+            METADATA_PAIRWISE ( ch_metadata ).category.set { ch_metacolumn_pairwise }
             ch_metacolumn_pairwise = ch_metacolumn_pairwise.splitCsv().flatten()
             ch_metacolumn_pairwise = ch_metacolumn_all.join(ch_metacolumn_pairwise)
         } else if (!params.skip_ancom || !params.skip_diversity_indices) {
-            METADATA_ALL ( ch_metadata ).set { ch_metacolumn_all }
+            METADATA_ALL ( ch_metadata ).category.set { ch_metacolumn_all }
             //return empty channel if no appropriate column was found
             ch_metacolumn_all.branch { passed: it != "" }.set { result }
             ch_metacolumn_all = result.passed
             ch_metacolumn_all = ch_metacolumn_all.splitCsv().flatten()
-            METADATA_PAIRWISE ( ch_metadata ).set { ch_metacolumn_pairwise }
+            METADATA_PAIRWISE ( ch_metadata ).category.set { ch_metacolumn_pairwise }
             ch_metacolumn_pairwise = ch_metacolumn_pairwise.splitCsv().flatten()
         } else {
             ch_metacolumn_all = Channel.empty()

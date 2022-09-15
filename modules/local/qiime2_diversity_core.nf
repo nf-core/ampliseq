@@ -17,6 +17,9 @@ process QIIME2_DIVERSITY_CORE {
     path "versions.yml"                         , emit: versions
     path("*rarefaction.txt")                    , emit: depth
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"

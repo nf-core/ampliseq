@@ -12,6 +12,9 @@ process QIIME2_INASV {
     path("table.qza")    , emit: qza
     path "versions.yml"  , emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     """
     echo -n "#OTU Table" | cat - "$asv" > biom-table.txt

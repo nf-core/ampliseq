@@ -12,6 +12,9 @@ process QIIME2_DIVERSITY_BETA {
     path("beta_diversity/*"), emit: beta
     path "versions.yml"     , emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"

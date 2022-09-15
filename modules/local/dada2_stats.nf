@@ -14,6 +14,9 @@ process DADA2_STATS {
     tuple val(meta), path("*.stats.tsv"), emit: stats
     path "versions.yml"                 , emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     if (!meta.single_end) {
         """

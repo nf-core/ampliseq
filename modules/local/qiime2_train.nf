@@ -13,6 +13,9 @@ process QIIME2_TRAIN {
     path("*-classifier.qza"), emit: qza
     path "versions.yml"    , emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"

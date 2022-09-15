@@ -8,12 +8,12 @@ include { QIIME2_TRAIN          } from '../../modules/local/qiime2_train'
 
 workflow QIIME2_PREPTAX {
     take:
-    ch_dada_ref_taxonomy //channel, list of files
+    ch_qiime_ref_taxonomy //channel, list of files
     FW_primer //val
     RV_primer //val
 
     main:
-    FORMAT_TAXONOMY_QIIME ( ch_dada_ref_taxonomy )
+    FORMAT_TAXONOMY_QIIME ( ch_qiime_ref_taxonomy )
 
     ch_ref_database = FORMAT_TAXONOMY_QIIME.out.fasta.combine(FORMAT_TAXONOMY_QIIME.out.tax)
     ch_ref_database

@@ -3,7 +3,7 @@ process QIIME2_DIVERSITY_ALPHA {
     label 'process_low'
 
     conda (params.enable_conda ? { exit 1 "QIIME2 has no conda package" } : null)
-    container "quay.io/qiime2/core:2021.8"
+    container "quay.io/qiime2/core:2022.8"
 
     input:
     tuple path(metadata), path(core)

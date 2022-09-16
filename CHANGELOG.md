@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Dependencies`
 
+| Tool     | Previous version | New version |
+| -------- | ---------------- | ----------- |
+| QIIME2   | 2021.8           | 2022.8      |
+
 ### `Removed`
 
 ## nf-core/ampliseq version 2.4.0 - 2022-09-07

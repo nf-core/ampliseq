@@ -17,9 +17,9 @@
   - [Updating the pipeline](#updating-the-pipeline)
   - [Reproducibility](#reproducibility)
 - [Core Nextflow arguments](#core-nextflow-arguments)
-  - [-profile](#-profile)
-  - [-resume](#-resume)
-  - [-c](#-c)
+  - [-profile](#profile)
+  - [-resume](#resume)
+  - [-c](#c)
 - [Custom configuration](#custom-configuration)
   - [Resource requests](#resource-requests)
   - [Updating containers](#updating-containers)
@@ -44,11 +44,11 @@ nextflow run nf-core/ampliseq \
     --outdir "./results"
 ```
 
-In this example, `--input` is the [Direct FASTQ input](#direct-fastq-input), other options are [Samplesheet input](#direct-fastq-input) and [ASV/OTU fasta input](#asv/otu-fasta-input). For more details on metadata, see [Metadata](#metadata). For [Reproducibility](#reproducibility), specify the version to run using `-r` (= release, here: 2.3.2). See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters) for more information about pipeline specific parameters.
+In this example, `--input` is the [Direct FASTQ input](#direct-fastq-input), other options are [Samplesheet input](#samplesheet-input) and [ASV/OTU fasta input](#asvotu-fasta-input). For more details on metadata, see [Metadata](#metadata). For [Reproducibility](#reproducibility), specify the version to run using `-r` (= release, here: 2.3.2). See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters) for more information about pipeline specific parameters.
 
 It is possible to not provide primer sequences (`--FW_primer` & `--RV_primer`) and skip primer trimming using `--skip_cutadapt`, but this is only for data that indeed does not contain any PCR primers in their sequences. Also, metadata (`--metadata`) isnt required, but aids downstream analysis.
 
-This will launch the pipeline with the `singularity` configuration profile. See below [`-profile`](#-profile) for more information about profiles.
+This will launch the pipeline with the `singularity` configuration profile. See below [`-profile`](#profile) for more information about profiles.
 
 Note that the pipeline will create the following files in your working directory:
 

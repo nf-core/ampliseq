@@ -14,6 +14,9 @@ process FILTER_STATS {
     path("count_table_filter_stats.tsv"), emit: tsv
     path "versions.yml"                 , emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     """
     filter_stats.py $unfiltered $filtered

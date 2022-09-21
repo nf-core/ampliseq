@@ -12,6 +12,9 @@ process QIIME2_INTAX {
     path("taxonomy.qza") , emit: qza
     path "versions.yml"  , emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     """
     parse_dada2_taxonomy.r $tax

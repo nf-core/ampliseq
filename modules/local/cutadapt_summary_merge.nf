@@ -15,6 +15,9 @@ process CUTADAPT_SUMMARY_MERGE {
     path("cutadapt_summary.tsv")      , emit: tsv
     path "versions.yml", optional:true, emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     if (action == "merge") {
         """

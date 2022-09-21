@@ -12,6 +12,9 @@ process QIIME2_INSEQ {
     path("rep-seqs.qza"), emit: qza
     path "versions.yml", emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     """
     qiime tools import \

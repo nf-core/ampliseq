@@ -16,6 +16,9 @@ process DADA2_FILTNTRIM {
     path "versions.yml"                        , emit: versions
     path "*.args.txt"                          , emit: args
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     def args        = task.ext.args ?: ''
     def in_and_out  = meta.single_end ? "\"${reads}\", \"${meta.id}.filt.fastq.gz\"" : "\"${reads[0]}\", \"${meta.id}_1.filt.fastq.gz\", \"${reads[1]}\", \"${meta.id}_2.filt.fastq.gz\""

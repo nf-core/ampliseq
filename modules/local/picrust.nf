@@ -2,10 +2,10 @@ process PICRUST {
     tag "${seq},${abund}"
     label 'process_medium'
 
-    conda (params.enable_conda ? "bioconda::picrust2=2.4.2" : null)
+    conda (params.enable_conda ? "bioconda::picrust2=2.5.0" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/picrust2:2.4.2--pyhdfd78af_0' :
-        'quay.io/biocontainers/picrust2:2.4.2--pyhdfd78af_0' }"
+        'https://depot.galaxyproject.org/singularity/picrust2:2.5.0--pyhdfd78af_0' :
+        'quay.io/biocontainers/picrust2:2.5.0--pyhdfd78af_0' }"
 
     input:
     path(seq)
@@ -18,7 +18,10 @@ process PICRUST {
     path("*_descrip.tsv"), emit: pathways
     path "versions.yml"  , emit: versions
     path "*.args.txt"    , emit: args
-    path "${message}.txt"
+    path "${message}.txt", emit: message
+
+    when:
+    task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''

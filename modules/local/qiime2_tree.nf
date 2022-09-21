@@ -12,6 +12,9 @@ process QIIME2_TREE {
     path("tree.nwk")       , emit: nwk
     path "versions.yml"    , emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"

@@ -3,7 +3,23 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## nf-core/ampliseq version 2.4.0dev
+## nf-core/ampliseq version 2.5.0dev
+
+### `Added`
+
+### `Changed`
+
+### `Fixed`
+
+- [#486](https://github.com/nf-core/ampliseq/pull/486) - Fixed typo in error message stating `--skip_classifer` instead of `--classifier`.
+- [#487](https://github.com/nf-core/ampliseq/pull/487),[#488](https://github.com/nf-core/ampliseq/pull/488) - Update stale links in usage documentation.
+- [#489](https://github.com/nf-core/ampliseq/pull/489) - Reduce linting warnings for nf-core tools version 2.5.1.
+
+### `Dependencies`
+
+### `Removed`
+
+## nf-core/ampliseq version 2.4.0 - 2022-09-07
 
 ### `Added`
 
@@ -14,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#461](https://github.com/nf-core/ampliseq/pull/461) - A custom DADA2 reference taxonomy database can now be used with `--dada_ref_tax_custom` and `--dada_ref_tax_custom_sp`, typically accompanied by `--dada_assign_taxlevels`.
 - [#446](https://github.com/nf-core/ampliseq/pull/446),[#467](https://github.com/nf-core/ampliseq/pull/467) - Binned quality scores from Illumina NovaSeq data can be now corrected with `--illumina_novaseq`.
 - [#477](https://github.com/nf-core/ampliseq/pull/477) - QC plots of DADA2's plotQualityProfile are now also produced after preprocessing.
+- [#478](https://github.com/nf-core/ampliseq/pull/478) - Added GTDB R07-RS207 DADA2 taxonomy reference databases
 
 ### `Changed`
 
@@ -32,6 +49,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#475](https://github.com/nf-core/ampliseq/pull/475) - Report software versions for DADA2_TAXONOMY
 
 ### `Dependencies`
+
+- [#479](https://github.com/nf-core/ampliseq/pull/479) - Updated software
+
+| Tool     | Previous version | New version |
+| -------- | ---------------- | ----------- |
+| PICRUSt2 | 2.4.2            | 2.5.0       |
+| MultiQC  | 1.12             | 1.13a       |
 
 ### `Removed`
 

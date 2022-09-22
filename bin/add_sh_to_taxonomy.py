@@ -29,7 +29,7 @@ seq2sh = pd.read_csv(sys.argv[1], sep="\t", header=None, index_col=0, skiprows=N
 # SH  taxonid  kingdom  phylum  class  order  family  genus  species
 shtax = pd.read_csv(sys.argv[2], sep="\t", header=None, index_col=0, skiprows=None, compression="bz2")
 # Change spaces to '_', to match UNITE databases
-shtax.replace(' ','_', regex = True, inplace = True )
+shtax.replace(" ", "_", regex=True, inplace=True)
 # Replace taxonid with Domain = "Eukaryota"
 shtax.loc[:, 1] = "Eukaryota"
 # Remove genus from species name

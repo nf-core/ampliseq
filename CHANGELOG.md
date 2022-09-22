@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#486](https://github.com/nf-core/ampliseq/pull/486) - Fixed typo in error message stating `--skip_classifer` instead of `--classifier`.
 - [#487](https://github.com/nf-core/ampliseq/pull/487),[#488](https://github.com/nf-core/ampliseq/pull/488) - Update stale links in usage documentation.
 - [#489](https://github.com/nf-core/ampliseq/pull/489) - Reduce linting warnings for nf-core tools version 2.5.1.
+- [#491](https://github.com/nf-core/ampliseq/pull/491) - Make output from --addSH match UNITE format by replacing spaces with underscores.
 
 ### `Dependencies`
 

@@ -1,12 +1,12 @@
 process QIIME2_DIVERSITY_ADONIS {
-    tag "${core.baseName} - ${params.qiime_adonis_formula}"
+    tag "${core.baseName} - ${formula}"
     label 'process_low'
 
     conda (params.enable_conda ? { exit 1 "QIIME2 has no conda package" } : null)
     container "quay.io/qiime2/core:2022.8"
 
     input:
-    tuple path(metadata), path(core)
+    tuple path(metadata), path(core), val(formula)
 
     output:
     path("adonis/*")     , emit: html
@@ -17,7 +17,6 @@ process QIIME2_DIVERSITY_ADONIS {
 
     script:
     def args = task.ext.args ?: ''
-    def formula = params.qiime_adonis_formula
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
 
@@ -29,7 +28,7 @@ process QIIME2_DIVERSITY_ADONIS {
         $args \\
         --p-formula "${formula}"
     qiime tools export --input-path ${core.baseName}_adonis.qzv \\
-        --output-path adonis/${core.baseName}
+        --output-path adonis/${core.baseName}-${formula}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

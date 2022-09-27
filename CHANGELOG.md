@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#492](https://github.com/nf-core/ampliseq/pull/492) - `--qiime_adonis_formula` accepts a comma separated list of formulas.
+
 ### `Fixed`
 
 - [#486](https://github.com/nf-core/ampliseq/pull/486) - Fixed typo in error message stating `--skip_classifer` instead of `--classifier`.

@@ -304,13 +304,15 @@ Absolute abundance tables produced by the previous steps contain count data, but
 
 #### Barplot
 
-Produces an interactive abundance plot count tables that aids exploratory browsing the discovered taxa and their abundance in samples and allows sorting for associated meta data, DADA2 classification takes precedence over QIIME2 classifications.
+Produces an interactive abundance plot count tables that aids exploratory browsing the discovered taxa and their abundance in samples and allows sorting for associated meta data, DADA2 classification takes precedence over QIIME2 classifications. Optionally, barplots with average relative abundance values are produced for each metadata column chosen by `--metadata_category_barplot`.
 
 <details markdown="1">
 <summary>Output files</summary>
 
 - `qiime2/barplot/`
   - `index.html`: Interactive barplot for taxa abundance per sample that can be viewed in your web browser.
+- `qiime2/barplot_average/barplot_<category>`
+  - `index.html`: Interactive barplot for averaged relative taxa abundance per group that can be viewed in your web browser.
 
 </details>
 

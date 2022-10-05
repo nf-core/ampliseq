@@ -17,7 +17,10 @@ process QIIME2_INASV {
 
     script:
     """
-    echo -n "#OTU Table" | cat - "$asv" > biom-table.txt
+    # remove first line if needed
+    sed '/^# Constructed from biom file/d' "$asv" > biom-table.txt
+
+    # load into QIIME2
     biom convert -i biom-table.txt -o table.biom --table-type="OTU table" --to-hdf5
     qiime tools import \
         --input-path table.biom \

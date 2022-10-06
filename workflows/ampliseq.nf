@@ -160,6 +160,7 @@ include { QIIME2_PREPTAX                } from '../subworkflows/local/qiime2_pre
 include { QIIME2_TAXONOMY               } from '../subworkflows/local/qiime2_taxonomy'
 include { CUTADAPT_WORKFLOW             } from '../subworkflows/local/cutadapt_workflow'
 include { QIIME2_EXPORT                 } from '../subworkflows/local/qiime2_export'
+include { QIIME2_BARPLOTAVG             } from '../subworkflows/local/qiime2_barplotavg'
 include { QIIME2_DIVERSITY              } from '../subworkflows/local/qiime2_diversity'
 include { QIIME2_ANCOM                  } from '../subworkflows/local/qiime2_ancom'
 
@@ -533,7 +534,11 @@ workflow AMPLISEQ {
         }
 
         if (!params.skip_barplot) {
-            QIIME2_BARPLOT ( ch_metadata, ch_asv, ch_tax )
+            QIIME2_BARPLOT ( ch_metadata, ch_asv, ch_tax, '' )
+        }
+
+        if (params.metadata_category_barplot) {
+            QIIME2_BARPLOTAVG ( ch_metadata, QIIME2_EXPORT.out.rel_tsv, ch_tax, params.metadata_category_barplot )
         }
 
         //Select metadata categories for diversity analysis & ancom

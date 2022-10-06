@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#494](https://github.com/nf-core/ampliseq/pull/494) - `--metadata_category_barplot` accepts a comma separated list of metadata categories and plots for each barplots with average relative abundance.
+
 ### `Changed`
 
 - [#492](https://github.com/nf-core/ampliseq/pull/492) - `--qiime_adonis_formula` accepts a comma separated list of formulas.

@@ -2,28 +2,29 @@
     "name": "nf-core/ampliseq",
     "homePage": "https://github.com/nf-core/ampliseq",
     "repos": {
-        "nf-core/modules": {
-            "git_url": "https://github.com/nf-core/modules.git",
+        "https://github.com/nf-core/modules.git": {
             "modules": {
-                "custom/dumpsoftwareversions": {
-                    "branch": "master",
-                    "git_sha": "e5b44499efcf6f7fb24874886bac60591c5d94dd"
-                },
-                "cutadapt": {
-                    "branch": "master",
-                    "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
-                },
-                "fastqc": {
-                    "branch": "master",
-                    "git_sha": "49b18b1639f4f7104187058866a8fab33332bdfe"
-                },
-                "multiqc": {
-                    "branch": "master",
-                    "git_sha": "5138acca0985ca01c38a1c4fba917d83772b1106"
-                },
-                "vsearch/usearchglobal": {
-                    "branch": "master",
-                    "git_sha": "5f0d75bb3745ddcb6306982e1afba71efa76c81e"
+                "nf-core": {
+                    "custom/dumpsoftwareversions": {
+                        "branch": "master",
+                        "git_sha": "8022c68e7403eecbd8ba9c49496f69f8c49d50f0"
+                    },
+                    "cutadapt": {
+                        "branch": "master",
+                        "git_sha": "5e34754d42cd2d5d248ca8673c0a53cdf5624905"
+                    },
+                    "fastqc": {
+                        "branch": "master",
+                        "git_sha": "5e34754d42cd2d5d248ca8673c0a53cdf5624905"
+                    },
+                    "multiqc": {
+                        "branch": "master",
+                        "git_sha": "5e34754d42cd2d5d248ca8673c0a53cdf5624905"
+                    },
+                    "vsearch/usearchglobal": {
+                        "branch": "master",
+                        "git_sha": "5e34754d42cd2d5d248ca8673c0a53cdf5624905"
+                    }
                 }
             }
         }

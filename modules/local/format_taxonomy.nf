@@ -1,10 +1,10 @@
 process FORMAT_TAXONOMY {
     label 'process_low'
 
-    conda (params.enable_conda ? "conda-forge::sed=4.7" : null)
+    conda (params.enable_conda ? "bioconda::p7zip=15.09" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/ubuntu:20.04' :
-        'ubuntu:20.04' }"
+        'https://depot.galaxyproject.org/singularity/p7zip:15.09--h2d50403_4' :
+        'quay.io/biocontainers/p7zip:15.09--h2d50403_4' }"
 
     input:
     path(database)
@@ -30,7 +30,7 @@ process FORMAT_TAXONOMY {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        bash: \$(bash --version | sed -n 1p | sed 's/GNU bash, version //g')
+        7za: \$(echo \$(7za --help) | sed 's/.*p7zip Version //; s/(.*//')
     END_VERSIONS
     """
 }

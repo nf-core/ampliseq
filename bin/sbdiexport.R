@@ -3,7 +3,7 @@
 # sbdiexport.R
 #
 # A script that collates data from Ampliseq to produce four tsv files as close
-# as possible to ready for submission to the Swedish Biodiversity Data
+# to ready for submission to the Swedish Biodiversity Data
 # Infrastructure (SBDI) as possible.
 #
 # The script expects the following arguments: paired|single fwdprimer revprimer asvtable taxonomytable [metadata]
@@ -13,10 +13,11 @@
 suppressPackageStartupMessages(library(tidyverse))
 
 EVENT_COLS <- c(
-    'materialSampleID', 'eventDate', 'samplingProtocol', 'locationID', 'decimalLatitude',
-    'decimalLongitude', 'geodeticDatum', 'coordinateUncertaintyInMeters', 'recordedBy', 'country',
-    'municipality', 'verbatimLocality', 'minimumElevationInMeters', 'maximumElevationInMeters',
-    'minimumDepthInMeters', 'maximumDepthInMeters'
+    'datasetID', 'institutionCode', 'institutionID', 'collectionCode', 'materialSampleID',
+    'associatedSequences', 'fieldNumber', 'catalogNumber', 'references', 'eventDate', 'samplingProtocol',
+    'locationID', 'decimalLatitude', 'decimalLongitude', 'geodeticDatum', 'coordinateUncertaintyInMeters',
+    'recordedBy', 'country', 'municipality', 'verbatimLocality', 'minimumElevationInMeters',
+    'maximumElevationInMeters', 'minimumDepthInMeters', 'maximumDepthInMeters'
 )
 MIXS_COLS  <- c(
     'sop', 'target_gene', 'target_subfragment', 'pcr_primer_name_forward',
@@ -51,17 +52,17 @@ if ( ! is.na(metadata) ) {
 
 # Make sure it's congruent with the asv table
 meta <- data.frame(
-    'event_id_alias' = colnames(asvs)[2:(n_samples+1)]
+    'eventID' = colnames(asvs)[2:(n_samples+1)]
 ) %>%
-    left_join(meta, by = c('event_id_alias' = 'ID')) %>%
-    distinct(event_id_alias, .keep_all = TRUE) %>%
-    arrange(event_id_alias)
+    left_join(meta, by = c('eventID' = 'ID')) %>%
+    distinct(eventID, .keep_all = TRUE) %>%
+    arrange(eventID)
 
 # Write the event tab
 event <- data.frame(
-    'event_id_alias' = colnames(asvs)[2:(n_samples+1)]
+    'eventID' = colnames(asvs)[2:(n_samples+1)]
 ) %>%
-    arrange(event_id_alias)
+    arrange(eventID)
 for ( c in EVENT_COLS ) {
     if ( c %in% colnames(meta) ) {
         event[[c]] <- meta[[c]]
@@ -69,24 +70,30 @@ for ( c in EVENT_COLS ) {
         event[[c]] <- character(n_samples)
     }
 }
+
+# Add links to ENA
+event$'materialSampleID' <- sub("^ERS", "https://www.ebi.ac.uk/ena/browser/view/ERS", event$'materialSampleID')
+event$'materialSampleID' <- sub("^SAMEA", "https://www.ebi.ac.uk/ena/browser/view/SAMEA", event$'materialSampleID')
+event$'associatedSequences' <- sub("^ERR", "https://www.ebi.ac.uk/ena/browser/view/ERR", event$'associatedSequences')
+
 event %>%
     inner_join(
-        asvs %>% pivot_longer(2:ncol(.), names_to = 'event_id_alias', values_to = 'count') %>%
-        group_by(event_id_alias) %>% summarise(sampleSizeValue = sum(count), .groups = 'drop'),
-        by = 'event_id_alias'
+        asvs %>% pivot_longer(2:ncol(.), names_to = 'eventID', values_to = 'count') %>%
+        group_by(eventID) %>% summarise(sampleSizeValue = sum(count), .groups = 'drop'),
+        by = 'eventID'
     ) %>%
     select(1:4, sampleSizeValue, 5:ncol(.)) %>%
     write_tsv("event.tsv", na = '')
 
 # mixs
 mixs <- data.frame(
-    'event_id_alias' = colnames(asvs)[2:(n_samples+1)],
+    'eventID' = colnames(asvs)[2:(n_samples+1)],
     'lib_layout' = rep(lib_layout, n_samples),
     'pcr_primer_forward' = rep(fwd_primer_seq, n_samples),
     'pcr_primer_reverse' = rep(rev_primer_seq, n_samples)
 ) %>%
-    arrange(event_id_alias)
-for ( c in MIXS_COLS ) {
+    arrange(eventID)
+for( c in MIXS_COLS ) {
     if ( c %in% colnames(meta) ) {
         mixs[[c]] <- meta[[c]]
     } else {
@@ -100,9 +107,9 @@ mixs %>%
 
 # emof
 emof <- data.frame(
-    'event_id_alias' = colnames(asvs)[2:(n_samples+1)]
+    'eventID' = colnames(asvs)[2:(n_samples+1)]
 ) %>%
-    arrange(event_id_alias)
+    arrange(eventID)
 for ( c in EMOF_COLS ) {
     if ( c %in% colnames(meta) ) {
         emof[[c]] <- meta[[c]]
@@ -126,11 +133,11 @@ asvtax <- asvs %>%
     ) %>%
     mutate(
         domain = str_remove(domain, 'Reversed:_'),
-        associatedSequences = '',
+        associatedSequences2 = '',
         infraspecificEpithet = '',
         kingdom = ifelse(is.na(kingdom), 'Unassigned', kingdom)
     ) %>%
     relocate(otu, .after = infraspecificEpithet) %>%
-    relocate(DNA_sequence:associatedSequences, .before = domain) %>%
+    relocate(DNA_sequence:associatedSequences2, .before = domain) %>%
     select(-confidence, -domain) %>%
     write_tsv("asv-table.tsv", na = '')

@@ -133,11 +133,11 @@ asvtax <- asvs %>%
     ) %>%
     mutate(
         domain = str_remove(domain, 'Reversed:_'),
-        associatedSequences2 = '',
+        associatedSequences = '',
         infraspecificEpithet = '',
         kingdom = ifelse(is.na(kingdom), 'Unassigned', kingdom)
     ) %>%
     relocate(otu, .after = infraspecificEpithet) %>%
-    relocate(DNA_sequence:associatedSequences2, .before = domain) %>%
+    relocate(DNA_sequence:associatedSequences, .before = domain) %>%
     select(-confidence, -domain) %>%
     write_tsv("asv-table.tsv", na = '')

@@ -21,8 +21,8 @@ taxonomy <- read.delim(taxfile, sep = '\t', stringsAsFactors = FALSE)
 
 taxonomy %>%
     mutate(SH = if("SH" %in% colnames(.)) SH else '') %>%
-    relocate(SH, .after = Species) %>%
-    rename_with(tolower, Domain:Species) %>%
+    relocate(SH, .after = Species_exact) %>%
+    rename_with(tolower, Domain:Species_exact) %>%
     rename(
         asv_id_alias = ASV_ID,
         asv_sequence = sequence,
@@ -30,10 +30,13 @@ taxonomy %>%
         otu = SH,
         annotation_confidence = confidence
     ) %>%
+    #mutate(specificEpithet = if( is.na(species_exact) specificEpithet else species_exact ) ) %>%
     mutate(
-        infraspecificEpithet = '',
-        domain = str_remove(domain, 'Reversed:_'),
-        scientificName = case_when(
+       specificEpithet = case_when(
+            !(is.na(species_exact) | species_exact == '')          ~ sprintf("%s", species_exact),
+            TRUE                             ~ sprintf("%s", specificEpithet)
+       ),
+       scientificName = case_when(
             !(is.na(specificEpithet) | specificEpithet == '') ~ sprintf("%s %s", genus, specificEpithet),
             !(is.na(genus)   | genus == '')                   ~ sprintf("%s", genus),
             !(is.na(family)  | family == '')                  ~ sprintf("%s", family),
@@ -53,6 +56,8 @@ taxonomy %>%
             !(is.na(kingdom) | kingdom == '')                 ~ 'kingdom',
             TRUE                                              ~ 'kingdom'
         ),
+        domain = str_remove(domain, 'Reversed:_'),
+        infraspecificEpithet = '',
         date_identified = as.character(lubridate::today()),
         reference_db = dbversion,
         annotation_algorithm = case_when(
@@ -64,7 +69,9 @@ taxonomy %>%
         kingdom = ifelse(is.na(kingdom), 'Unassigned', kingdom)
     ) %>%
     relocate(asv_sequence, .after = asv_id_alias) %>%
+    relocate(scientificName:taxonRank, .after = asv_sequence) %>%
     relocate(infraspecificEpithet:identification_references, .after = specificEpithet) %>%
-    relocate(otu, .after = infraspecificEpithet) %>%
-    select(-domain) %>%
+    relocate(otu:annotation_confidence, .after = infraspecificEpithet) %>%
+#    select(-domain) %>%
+    select(-species_exact) %>%
     write_tsv("annotation.tsv", na = '')

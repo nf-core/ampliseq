@@ -31,16 +31,10 @@ taxonomy %>%
         annotation_confidence = confidence
     ) %>%
     mutate(
-       specificEpithet = case_when(
-            !(is.na(species_exact) | species_exact == '')          ~ sprintf("%s", species_exact),
-            TRUE                             ~ sprintf("%s", specificEpithet)
-       ),
-       annotation_confidence = case_when(
-            (is.na(annotation_confidence) | annotation_confidence == '') ~ 0,
-            TRUE                                                         ~ annotation_confidence
-      ),
+       specificEpithet = ifelse(!(is.na(species_exact) | species_exact == ''), species_exact, specificEpithet),
+       annotation_confidence =  ifelse((is.na(annotation_confidence) | annotation_confidence == ''), 0, annotation_confidence),
        scientificName = case_when(
-            !(is.na(SH) | SH == '')                           ~ sprintf("%s", SH),
+            !(is.na(otu) | otu == '')                           ~ sprintf("%s", otu),
             !(is.na(specificEpithet) | specificEpithet == '') ~ sprintf("%s %s", genus, specificEpithet),
             !(is.na(genus)   | genus == '')                   ~ sprintf("%s", genus),
             !(is.na(family)  | family == '')                  ~ sprintf("%s", family),
@@ -51,7 +45,7 @@ taxonomy %>%
             TRUE                                              ~ 'Unassigned'
         ),
         taxonRank = case_when(
-            !(is.na(SH) | SH == '')                           ~ 'unranked',
+            !(is.na(otu) | otu == '')                           ~ 'unranked',
             !(is.na(specificEpithet) | specificEpithet == '') ~ 'species',
             !(is.na(genus)   | genus == '')                   ~ 'genus',
             !(is.na(family)  | family == '')                  ~ 'family',

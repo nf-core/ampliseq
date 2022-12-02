@@ -19,7 +19,7 @@ process SBDIEXPORTREANNOTATE {
 
     script:
     """
-    sbdiexportreannotate.R ${params.dada_ref_databases[params.dada_ref_taxonomy]["dbversion"]} $taxonomytable
+    sbdiexportreannotate.R \"${params.dada_ref_databases[params.dada_ref_taxonomy]["dbversion"]}\" $taxonomytable
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

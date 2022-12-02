@@ -2,10 +2,10 @@
 process FORMAT_TAXONOMY_QIIME {
     label 'process_low'
 
-    conda (params.enable_conda ? "bioconda::p7zip=15.09" : null)
+    conda (params.enable_conda ? "conda-forge::sed=4.7" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/p7zip:15.09--h2d50403_4' :
-        'quay.io/biocontainers/p7zip:15.09--h2d50403_4' }"
+        'https://containers.biocontainers.pro/s3/SingImgsRepo/biocontainers/v1.2.0_cv1/biocontainers_v1.2.0_cv1.img' :
+        'biocontainers/biocontainers:v1.2.0_cv1' }"
 
     input:
     path(database)
@@ -31,7 +31,7 @@ process FORMAT_TAXONOMY_QIIME {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        7za: \$(echo \$(7za --help) | sed 's/.*p7zip Version //; s/(.*//')
+        bash: \$(bash --version | sed -n 1p | sed 's/GNU bash, version //g')
     END_VERSIONS
     """
 }

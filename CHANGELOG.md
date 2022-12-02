@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#491](https://github.com/nf-core/ampliseq/pull/491) - Make output from --addSH match UNITE format by replacing spaces with underscores.
 - [#495](https://github.com/nf-core/ampliseq/pull/495) - Template update for nf-core/tools version 2.6
 - [#501](https://github.com/nf-core/ampliseq/pull/501) - Check for empty fields in samplesheet column "run" and raise an appropriate error.
-- [#503](https://github.com/nf-core/ampliseq/pull/503) - Changed environment for formatting SILVA database with QIIME2.
+- [#503](https://github.com/nf-core/ampliseq/pull/503) - Changed environment for formatting databases.
 
 ### `Dependencies`
 

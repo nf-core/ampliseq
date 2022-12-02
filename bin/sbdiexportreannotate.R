@@ -32,6 +32,7 @@ taxonomy %>%
     ) %>%
     mutate(
        specificEpithet = ifelse(!(is.na(species_exact) | species_exact == ''), species_exact, specificEpithet),
+       specificEpithet = ifelse( (specificEpithet == 'sp.' | specificEpithet == 'sp'), '', specificEpithet),
        annotation_confidence =  ifelse((is.na(annotation_confidence) | annotation_confidence == ''), 0, annotation_confidence),
        scientificName = case_when(
             !(is.na(otu) | otu == '')                           ~ sprintf("%s", otu),

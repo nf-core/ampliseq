@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#495](https://github.com/nf-core/ampliseq/pull/495) - Template update for nf-core/tools version 2.6
 - [#501](https://github.com/nf-core/ampliseq/pull/501) - Check for empty fields in samplesheet column "run" and raise an appropriate error.
 - [#503](https://github.com/nf-core/ampliseq/pull/503) - Changed environment for formatting databases.
+- [#504](https://github.com/nf-core/ampliseq/pull/504) - Fixed warnings with nextflow 22.10 (and later) about processes that are defined more than once.
 
 ### `Dependencies`
 

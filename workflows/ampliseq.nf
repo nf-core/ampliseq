@@ -130,7 +130,7 @@ include { MERGE_STATS as MERGE_STATS_FILTERSSU } from '../modules/local/merge_st
 include { MERGE_STATS as MERGE_STATS_FILTERLENASV } from '../modules/local/merge_stats'
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
 include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
-include { MERGE_STATS                   } from '../modules/local/merge_stats'
+include { MERGE_STATS as MERGE_STATS_STD} from '../modules/local/merge_stats'
 include { DADA2_TAXONOMY                } from '../modules/local/dada2_taxonomy'
 include { DADA2_ADDSPECIES              } from '../modules/local/dada2_addspecies'
 include { ASSIGNSH                      } from '../modules/local/assignsh'
@@ -292,8 +292,8 @@ workflow AMPLISEQ {
 
     //merge cutadapt_summary and dada_stats files
     if (!params.skip_cutadapt) {
-        MERGE_STATS (CUTADAPT_WORKFLOW.out.summary, DADA2_MERGE.out.dada2stats)
-        ch_stats = MERGE_STATS.out.tsv
+        MERGE_STATS_STD (CUTADAPT_WORKFLOW.out.summary, DADA2_MERGE.out.dada2stats)
+        ch_stats = MERGE_STATS_STD.out.tsv
     } else {
         ch_stats = DADA2_MERGE.out.dada2stats
     }

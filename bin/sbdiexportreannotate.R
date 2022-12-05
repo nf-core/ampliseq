@@ -16,6 +16,7 @@ suppressPackageStartupMessages(library(tidyverse))
 args            <- commandArgs(trailingOnly=TRUE)
 dbversion       <- args[1]
 taxfile         <- args[2]
+wfversion       <- args[3]
 
 taxonomy <- read.delim(taxfile, sep = '\t', stringsAsFactors = FALSE)
 
@@ -61,8 +62,8 @@ taxonomy %>%
         date_identified = as.character(lubridate::today()),
         reference_db = dbversion,
         annotation_algorithm = case_when(
-            (!(is.na(otu) | otu == '')) ~ 'Ampliseq:addsh',
-            TRUE                        ~ 'DADA2:assignTaxonomy:addSpecies'
+           (!(is.na(otu) | otu == '')) ~ paste('Ampliseq',wfversion,'(https://nf-co.re/ampliseq) addsh', sep=" "),
+           TRUE                        ~ paste('Ampliseq',wfversion,'(https://nf-co.re/ampliseq) DADA2:assignTaxonomy:addSpecies', sep=" ")
         ),
         identification_references = 'https://docs.biodiversitydata.se/analyse-data/molecular-tools/#taxonomy-annotation',
         taxon_remarks = '',

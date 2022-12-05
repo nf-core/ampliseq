@@ -19,7 +19,14 @@ process SBDIEXPORTREANNOTATE {
 
     script:
     """
-    sbdiexportreannotate.R \"${params.dada_ref_databases[params.dada_ref_taxonomy]["dbversion"]}\" $taxonomytable
+    if [[ $workflow.manifest.version == *dev ]]; then
+        ampliseq_version="v$workflow.manifest.version, revision ${workflow.scriptId.substring(0,10)}"
+    else
+        ampliseq_version="v$workflow.manifest.version"
+    fi
+    echo "This is ampliseq version: \$ampliseq_version" > testar_jt.txt
+
+    sbdiexportreannotate.R \"${params.dada_ref_databases[params.dada_ref_taxonomy]["dbversion"]}\" $taxonomytable \"\$ampliseq_version\"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

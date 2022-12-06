@@ -5,7 +5,7 @@
 include { CUTADAPT as CUTADAPT_BASIC                        } from '../../modules/nf-core/cutadapt/main'
 include { CUTADAPT as CUTADAPT_READTHROUGH                  } from '../../modules/nf-core/cutadapt/main'
 include { CUTADAPT as CUTADAPT_DOUBLEPRIMER                 } from '../../modules/nf-core/cutadapt/main'
-include { CUTADAPT_SUMMARY                                  } from '../../modules/local/cutadapt_summary'
+include { CUTADAPT_SUMMARY as CUTADAPT_SUMMARY_STD          } from '../../modules/local/cutadapt_summary'
 include { CUTADAPT_SUMMARY as CUTADAPT_SUMMARY_DOUBLEPRIMER } from '../../modules/local/cutadapt_summary'
 include { CUTADAPT_SUMMARY_MERGE                            } from '../../modules/local/cutadapt_summary_merge'
 
@@ -24,7 +24,7 @@ workflow CUTADAPT_WORKFLOW {
                 [ meta, log ] }
         .groupTuple(by: 0 )
         .set { ch_cutadapt_logs }
-    CUTADAPT_SUMMARY ( "cutadapt_standard", ch_cutadapt_logs )
+    CUTADAPT_SUMMARY_STD ( "cutadapt_standard", ch_cutadapt_logs )
 
     if (illumina_pe_its) {
         CUTADAPT_READTHROUGH ( ch_trimmed_reads ).reads.set { ch_trimmed_reads }
@@ -41,10 +41,10 @@ workflow CUTADAPT_WORKFLOW {
             .groupTuple(by: 0 )
             .set { ch_cutadapt_doubleprimer_logs }
         CUTADAPT_SUMMARY_DOUBLEPRIMER ( "cutadapt_doubleprimer", ch_cutadapt_doubleprimer_logs )
-        ch_summaries = CUTADAPT_SUMMARY.out.tsv.combine( CUTADAPT_SUMMARY_DOUBLEPRIMER.out.tsv )
+        ch_summaries = CUTADAPT_SUMMARY_STD.out.tsv.combine( CUTADAPT_SUMMARY_DOUBLEPRIMER.out.tsv )
         CUTADAPT_SUMMARY_MERGE ( "merge", ch_summaries )
     } else {
-        CUTADAPT_SUMMARY_MERGE ( "copy", CUTADAPT_SUMMARY.out.tsv )
+        CUTADAPT_SUMMARY_MERGE ( "copy", CUTADAPT_SUMMARY_STD.out.tsv )
     }
 
     //Filter empty files

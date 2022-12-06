@@ -66,13 +66,13 @@ taxonomy %>%
            TRUE                        ~ paste('Ampliseq',wfversion,'(https://nf-co.re/ampliseq) DADA2:assignTaxonomy:addSpecies', sep=" ")
         ),
         identification_references = 'https://docs.biodiversitydata.se/analyse-data/molecular-tools/#taxonomy-annotation',
-        taxon_remarks = '',
+        taxon_remarks = ifelse(!is.na(domain), paste('Domain = \'',domain,'\'',sep=''),''),
         kingdom = ifelse(is.na(kingdom), 'Unassigned', kingdom)
     ) %>%
     relocate(asv_sequence, .after = asv_id_alias) %>%
     relocate(scientificName:taxonRank, .after = asv_sequence) %>%
     relocate(infraspecificEpithet:identification_references, .after = specificEpithet) %>%
     relocate(otu:annotation_confidence, .after = infraspecificEpithet) %>%
-#    select(-domain) %>%
+    select(-domain) %>%
     select(-species_exact) %>%
     write_tsv("annotation.tsv", na = '')

@@ -542,7 +542,7 @@ workflow AMPLISEQ {
 
         //Select metadata categories for diversity analysis & ancom
         if (params.metadata_category) {
-            ch_metacolumn_all = Channel.from(params.metadata_category.tokenize(','))
+            ch_metacolumn_all = Channel.of(params.metadata_category.tokenize(','))
             METADATA_PAIRWISE ( ch_metadata ).category.set { ch_metacolumn_pairwise }
             ch_metacolumn_pairwise = ch_metacolumn_pairwise.splitCsv().flatten()
             ch_metacolumn_pairwise = ch_metacolumn_all.join(ch_metacolumn_pairwise)
@@ -632,7 +632,7 @@ workflow AMPLISEQ {
             ch_multiqc_files = ch_multiqc_files.mix(CUTADAPT_WORKFLOW.out.logs.collect{it[1]}.ifEmpty([]))
         }
 
-        ch_multiqc_configs = Channel.from(ch_multiqc_config).mix(ch_multiqc_custom_config).ifEmpty([])
+        ch_multiqc_configs = Channel.of(ch_multiqc_config).mix(ch_multiqc_custom_config).ifEmpty([])
 
         MULTIQC (
             ch_multiqc_files.collect(),

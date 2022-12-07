@@ -19,10 +19,10 @@ process QIIME2_FILTERASV {
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
 
-    qiime feature-table filter-samples \
-        --i-table ${table} \
-        --m-metadata-file ${metadata} \
-        --p-where \"${category}<>\'\'\" \
+    qiime feature-table filter-samples \\
+        --i-table ${table} \\
+        --m-metadata-file ${metadata} \\
+        --p-where \"${category}<>\'\'\" \\
         --o-filtered-table ${category}.qza
 
     cat <<-END_VERSIONS > versions.yml

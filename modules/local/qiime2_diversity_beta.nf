@@ -19,13 +19,14 @@ process QIIME2_DIVERSITY_BETA {
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
 
-    qiime diversity beta-group-significance \
-        --i-distance-matrix ${core} \
-        --m-metadata-file ${metadata} \
-        --m-metadata-column \"${category}\" \
-        --o-visualization ${core.baseName}-${category}.qzv \
+    qiime diversity beta-group-significance \\
+        --i-distance-matrix ${core} \\
+        --m-metadata-file ${metadata} \\
+        --m-metadata-column \"${category}\" \\
+        --o-visualization ${core.baseName}-${category}.qzv \\
         --p-pairwise
-    qiime tools export --input-path ${core.baseName}-${category}.qzv \
+    qiime tools export \\
+        --input-path ${core.baseName}-${category}.qzv \\
         --output-path beta_diversity/${core.baseName}-${category}
 
     cat <<-END_VERSIONS > versions.yml

@@ -27,21 +27,22 @@ process QIIME2_EXPORT_RELTAX {
     for i in \${array[@]}
     do
         #collapse taxa
-        qiime taxa collapse \
-            --i-table ${table} \
-            --i-taxonomy ${taxonomy} \
-            --p-level \$i \
+        qiime taxa collapse \\
+            --i-table ${table} \\
+            --i-taxonomy ${taxonomy} \\
+            --p-level \$i \\
             --o-collapsed-table table-\$i.qza
         #convert to relative abundances
-        qiime feature-table relative-frequency \
-            --i-table table-\$i.qza \
+        qiime feature-table relative-frequency \\
+            --i-table table-\$i.qza \\
             --o-relative-frequency-table relative-table-\$i.qza
         #export to biom
-        qiime tools export --input-path relative-table-\$i.qza \
+        qiime tools export \\
+            --input-path relative-table-\$i.qza \\
             --output-path relative-table-\$i
         #convert to tab separated text file
-        biom convert \
-            -i relative-table-\$i/feature-table.biom \
+        biom convert \\
+            -i relative-table-\$i/feature-table.biom \\
             -o rel-table-\$i.tsv --to-tsv
     done
 

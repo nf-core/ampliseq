@@ -26,15 +26,15 @@ process QIIME2_ALPHARAREFACTION {
     #check values
     if [ \"\$maxdepth\" -gt \"75000\" ]; then maxdepth=\"75000\"; fi
     if [ \"\$maxdepth\" -gt \"5000\" ]; then maxsteps=\"250\"; else maxsteps=\$((maxdepth/20)); fi
-    qiime diversity alpha-rarefaction  \
-        --i-table ${table}  \
-        --i-phylogeny ${tree}  \
-        --p-max-depth \$maxdepth  \
-        --m-metadata-file ${metadata}  \
-        --p-steps \$maxsteps  \
-        --p-iterations 10  \
+    qiime diversity alpha-rarefaction  \\
+        --i-table ${table}  \\
+        --i-phylogeny ${tree}  \\
+        --p-max-depth \$maxdepth  \\
+        --m-metadata-file ${metadata}  \\
+        --p-steps \$maxsteps  \\
+        --p-iterations 10  \\
         --o-visualization alpha-rarefaction.qzv
-    qiime tools export --input-path alpha-rarefaction.qzv  \
+    qiime tools export --input-path alpha-rarefaction.qzv  \\
         --output-path alpha-rarefaction
 
     cat <<-END_VERSIONS > versions.yml

@@ -542,7 +542,7 @@ workflow AMPLISEQ {
 
         //Select metadata categories for diversity analysis & ancom
         if (params.metadata_category) {
-            ch_metacolumn_all = Channel.from(params.metadata_category.tokenize(','))
+            ch_metacolumn_all = Channel.fromList(params.metadata_category.tokenize(','))
             METADATA_PAIRWISE ( ch_metadata ).category.set { ch_metacolumn_pairwise }
             ch_metacolumn_pairwise = ch_metacolumn_pairwise.splitCsv().flatten()
             ch_metacolumn_pairwise = ch_metacolumn_all.join(ch_metacolumn_pairwise)

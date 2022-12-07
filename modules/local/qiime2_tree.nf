@@ -19,21 +19,22 @@ process QIIME2_TREE {
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
 
-    qiime alignment mafft \
-        --i-sequences ${repseq} \
-        --o-alignment aligned-rep-seqs.qza \
+    qiime alignment mafft \\
+        --i-sequences ${repseq} \\
+        --o-alignment aligned-rep-seqs.qza \\
         --p-n-threads ${task.cpus}
-    qiime alignment mask \
-        --i-alignment aligned-rep-seqs.qza \
+    qiime alignment mask \\
+        --i-alignment aligned-rep-seqs.qza \\
         --o-masked-alignment masked-aligned-rep-seqs.qza
-    qiime phylogeny fasttree \
-        --i-alignment masked-aligned-rep-seqs.qza \
-        --p-n-threads ${task.cpus} \
+    qiime phylogeny fasttree \\
+        --i-alignment masked-aligned-rep-seqs.qza \\
+        --p-n-threads ${task.cpus} \\
         --o-tree unrooted-tree.qza
-    qiime phylogeny midpoint-root \
-        --i-tree unrooted-tree.qza \
+    qiime phylogeny midpoint-root \\
+        --i-tree unrooted-tree.qza \\
         --o-rooted-tree rooted-tree.qza
-    qiime tools export --input-path rooted-tree.qza  \
+    qiime tools export \\
+        --input-path rooted-tree.qza  \\
         --output-path phylogenetic_tree
     cp phylogenetic_tree/tree.nwk .
 

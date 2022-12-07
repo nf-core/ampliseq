@@ -20,11 +20,12 @@ process QIIME2_DIVERSITY_BETAORD {
     export XDG_CONFIG_HOME="\${PWD}/HOME"
     mkdir beta_diversity
 
-    qiime emperor plot \
-        --i-pcoa ${core} \
-        --m-metadata-file ${metadata} \
+    qiime emperor plot \\
+        --i-pcoa ${core} \\
+        --m-metadata-file ${metadata} \\
         --o-visualization ${core.baseName}-vis.qzv
-    qiime tools export --input-path ${core.baseName}-vis.qzv \
+    qiime tools export \\
+        --input-path ${core.baseName}-vis.qzv \
         --output-path beta_diversity/${core.baseName}-PCoA
 
     cat <<-END_VERSIONS > versions.yml

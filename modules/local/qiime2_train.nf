@@ -11,7 +11,7 @@ process QIIME2_TRAIN {
 
     output:
     path("*-classifier.qza"), emit: qza
-    path "versions.yml"    , emit: versions
+    path "versions.yml"     , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -21,10 +21,10 @@ process QIIME2_TRAIN {
     export XDG_CONFIG_HOME="\${PWD}/HOME"
 
     #Train classifier
-    qiime feature-classifier fit-classifier-naive-bayes \
-        --i-reference-reads ${meta.FW_primer}-${meta.RV_primer}-ref-seq.qza \
-        --i-reference-taxonomy ref-taxonomy.qza \
-        --o-classifier ${meta.FW_primer}-${meta.RV_primer}-classifier.qza \
+    qiime feature-classifier fit-classifier-naive-bayes \\
+        --i-reference-reads ${meta.FW_primer}-${meta.RV_primer}-ref-seq.qza \\
+        --i-reference-taxonomy ref-taxonomy.qza \\
+        --o-classifier ${meta.FW_primer}-${meta.RV_primer}-classifier.qza \\
         --quiet
 
     cat <<-END_VERSIONS > versions.yml

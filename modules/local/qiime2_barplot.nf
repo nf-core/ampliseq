@@ -23,13 +23,14 @@ process QIIME2_BARPLOT {
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
 
-    qiime taxa barplot  \
-        --i-table ${table}  \
-        --i-taxonomy ${taxonomy}  \
-        ${metadata_cmd}  \
-        --o-visualization taxa-bar-plots.qzv  \
+    qiime taxa barplot  \\
+        --i-table ${table}  \\
+        --i-taxonomy ${taxonomy}  \\
+        ${metadata_cmd}  \\
+        --o-visualization taxa-bar-plots.qzv  \\
         --verbose
-    qiime tools export --input-path taxa-bar-plots.qzv  \
+    qiime tools export \\
+        --input-path taxa-bar-plots.qzv  \\
         --output-path barplot${suffix}
 
     cat <<-END_VERSIONS > versions.yml

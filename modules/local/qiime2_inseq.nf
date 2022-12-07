@@ -17,9 +17,9 @@ process QIIME2_INSEQ {
 
     script:
     """
-    qiime tools import \
-        --input-path "$seq" \
-        --type 'FeatureData[Sequence]' \
+    qiime tools import \\
+        --input-path "$seq" \\
+        --type 'FeatureData[Sequence]' \\
         --output-path rep-seqs.qza
 
     cat <<-END_VERSIONS > versions.yml

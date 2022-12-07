@@ -21,19 +21,21 @@ process QIIME2_EXTRACT {
     export XDG_CONFIG_HOME="\${PWD}/HOME"
 
     ### Import
-    qiime tools import --type \'FeatureData[Sequence]\' \
-        --input-path ${database[0]} \
+    qiime tools import \\
+        --type \'FeatureData[Sequence]\' \\
+        --input-path ${database[0]} \\
         --output-path ref-seq.qza
-    qiime tools import --type \'FeatureData[Taxonomy]\' \
-        --input-format HeaderlessTSVTaxonomyFormat \
-        --input-path ${database[1]} \
+    qiime tools import \\
+        --type \'FeatureData[Taxonomy]\' \\
+        --input-format HeaderlessTSVTaxonomyFormat \\
+        --input-path ${database[1]} \\
         --output-path ref-taxonomy.qza
     #Extract sequences based on primers
-    qiime feature-classifier extract-reads \
-        --i-sequences ref-seq.qza \
-        --p-f-primer ${meta.FW_primer} \
-        --p-r-primer ${meta.RV_primer} \
-        --o-reads ${meta.FW_primer}-${meta.RV_primer}-ref-seq.qza \
+    qiime feature-classifier extract-reads \\
+        --i-sequences ref-seq.qza \\
+        --p-f-primer ${meta.FW_primer} \\
+        --p-r-primer ${meta.RV_primer} \\
+        --o-reads ${meta.FW_primer}-${meta.RV_primer}-ref-seq.qza \\
         --quiet
 
     cat <<-END_VERSIONS > versions.yml

@@ -27,7 +27,8 @@ process QIIME2_DIVERSITY_ADONIS {
         --o-visualization ${core.baseName}_adonis.qzv \\
         $args \\
         --p-formula "${formula}"
-    qiime tools export --input-path ${core.baseName}_adonis.qzv \\
+    qiime tools export \\
+        --input-path ${core.baseName}_adonis.qzv \\
         --output-path adonis/${core.baseName}-${formula}
 
     cat <<-END_VERSIONS > versions.yml

@@ -19,11 +19,12 @@ process QIIME2_DIVERSITY_ALPHA {
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
 
-    qiime diversity alpha-group-significance \
-        --i-alpha-diversity ${core} \
-        --m-metadata-file ${metadata} \
+    qiime diversity alpha-group-significance \\
+        --i-alpha-diversity ${core} \\
+        --m-metadata-file ${metadata} \\
         --o-visualization ${core.baseName}-vis.qzv
-    qiime tools export --input-path ${core.baseName}-vis.qzv \
+    qiime tools export \\
+        --input-path ${core.baseName}-vis.qzv \\
         --output-path "alpha_diversity/${core.baseName}"
 
     cat <<-END_VERSIONS > versions.yml

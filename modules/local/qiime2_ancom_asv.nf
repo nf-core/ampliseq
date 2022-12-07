@@ -22,15 +22,15 @@ process QIIME2_ANCOM_ASV {
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
 
-    qiime composition add-pseudocount \
-        --i-table ${table} \
+    qiime composition add-pseudocount \\
+        --i-table ${table} \\
         --o-composition-table comp-${table}
-    qiime composition ancom \
-        --i-table comp-${table} \
-        --m-metadata-file ${metadata} \
-        --m-metadata-column ${table.baseName} \
+    qiime composition ancom \\
+        --i-table comp-${table} \\
+        --m-metadata-file ${metadata} \\
+        --m-metadata-column ${table.baseName} \\
         --o-visualization comp-${table.baseName}.qzv
-    qiime tools export --input-path comp-${table.baseName}.qzv \
+    qiime tools export --input-path comp-${table.baseName}.qzv \\
         --output-path ancom/Category-${table.baseName}-ASV
 
     cat <<-END_VERSIONS > versions.yml

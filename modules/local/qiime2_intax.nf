@@ -19,10 +19,10 @@ process QIIME2_INTAX {
     """
     parse_dada2_taxonomy.r $tax
 
-    qiime tools import \
-        --type 'FeatureData[Taxonomy]' \
-        --input-format HeaderlessTSVTaxonomyFormat \
-        --input-path tax.tsv \
+    qiime tools import \\
+        --type 'FeatureData[Taxonomy]' \\
+        --input-format HeaderlessTSVTaxonomyFormat \\
+        --input-path tax.tsv \\
         --output-path taxonomy.qza
 
     cat <<-END_VERSIONS > versions.yml

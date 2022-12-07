@@ -23,11 +23,10 @@ if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input sample
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-ch_multiqc_config        = [
-                           file("$projectDir/assets/multiqc_config.yml", checkIfExists: true),
-                           file("$projectDir/assets/nf-core-ampliseq_logo_light.png", checkIfExists: true)
-                           ]
-ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config) : Channel.empty()
+ch_multiqc_config          = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
+ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.multiqc_config, checkIfExists: true ) : Channel.empty()
+ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
+ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
 
 /*
 ========================================================================================
@@ -131,11 +130,11 @@ include { MERGE_STATS as MERGE_STATS_FILTERSSU } from '../modules/local/merge_st
 include { MERGE_STATS as MERGE_STATS_FILTERLENASV } from '../modules/local/merge_stats'
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
 include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
-include { MERGE_STATS                   } from '../modules/local/merge_stats'
+include { MERGE_STATS as MERGE_STATS_STD} from '../modules/local/merge_stats'
 include { DADA2_TAXONOMY                } from '../modules/local/dada2_taxonomy'
 include { DADA2_ADDSPECIES              } from '../modules/local/dada2_addspecies'
 include { ASSIGNSH                      } from '../modules/local/assignsh'
-include { FORMAT_TAXRESULTS             } from '../modules/local/format_taxresults'
+include { FORMAT_TAXRESULTS as FORMAT_TAXRESULTS_STD   } from '../modules/local/format_taxresults'
 include { FORMAT_TAXRESULTS as FORMAT_TAXRESULTS_ADDSP } from '../modules/local/format_taxresults'
 include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'
 include { QIIME2_FILTERTAXA             } from '../modules/local/qiime2_filtertaxa'
@@ -160,6 +159,7 @@ include { QIIME2_PREPTAX                } from '../subworkflows/local/qiime2_pre
 include { QIIME2_TAXONOMY               } from '../subworkflows/local/qiime2_taxonomy'
 include { CUTADAPT_WORKFLOW             } from '../subworkflows/local/cutadapt_workflow'
 include { QIIME2_EXPORT                 } from '../subworkflows/local/qiime2_export'
+include { QIIME2_BARPLOTAVG             } from '../subworkflows/local/qiime2_barplotavg'
 include { QIIME2_DIVERSITY              } from '../subworkflows/local/qiime2_diversity'
 include { QIIME2_ANCOM                  } from '../subworkflows/local/qiime2_ancom'
 
@@ -173,11 +173,11 @@ include { QIIME2_ANCOM                  } from '../subworkflows/local/qiime2_anc
 // MODULE: Installed directly from nf-core/modules
 //
 
-include { CUTADAPT as CUTADAPT_TAXONOMY     } from '../modules/nf-core/modules/cutadapt/main'
-include { FASTQC                            } from '../modules/nf-core/modules/fastqc/main'
-include { MULTIQC                           } from '../modules/nf-core/modules/multiqc/main'
-include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
-include { VSEARCH_USEARCHGLOBAL             } from '../modules/nf-core/modules/vsearch/usearchglobal/main'
+include { CUTADAPT as CUTADAPT_TAXONOMY     } from '../modules/nf-core/cutadapt/main'
+include { FASTQC                            } from '../modules/nf-core/fastqc/main'
+include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
+include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/custom/dumpsoftwareversions/main'
+include { VSEARCH_USEARCHGLOBAL             } from '../modules/nf-core/vsearch/usearchglobal/main'
 
 
 /*
@@ -292,8 +292,8 @@ workflow AMPLISEQ {
 
     //merge cutadapt_summary and dada_stats files
     if (!params.skip_cutadapt) {
-        MERGE_STATS (CUTADAPT_WORKFLOW.out.summary, DADA2_MERGE.out.dada2stats)
-        ch_stats = MERGE_STATS.out.tsv
+        MERGE_STATS_STD (CUTADAPT_WORKFLOW.out.summary, DADA2_MERGE.out.dada2stats)
+        ch_stats = MERGE_STATS_STD.out.tsv
     } else {
         ch_stats = DADA2_MERGE.out.dada2stats
     }
@@ -417,8 +417,8 @@ workflow AMPLISEQ {
             ch_cut_fasta = ITSX_CUTASV.out.fasta
             DADA2_TAXONOMY ( ch_cut_fasta, ch_assigntax, 'ASV_ITS_tax.tsv', taxlevels )
             ch_versions = ch_versions.mix(DADA2_TAXONOMY.out.versions)
-            FORMAT_TAXRESULTS ( DADA2_TAXONOMY.out.tsv, ch_fasta, 'ASV_tax.tsv' )
-            ch_versions = ch_versions.mix( FORMAT_TAXRESULTS.out.versions.ifEmpty(null) )
+            FORMAT_TAXRESULTS_STD ( DADA2_TAXONOMY.out.tsv, ch_fasta, 'ASV_tax.tsv' )
+            ch_versions = ch_versions.mix( FORMAT_TAXRESULTS_STD.out.versions.ifEmpty(null) )
             if (!params.skip_dada_addspecies) {
                 DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_ITS_tax_species.tsv', taxlevels )
                 FORMAT_TAXRESULTS_ADDSP ( DADA2_ADDSPECIES.out.tsv, ch_fasta, 'ASV_tax_species.tsv' )
@@ -449,11 +449,11 @@ workflow AMPLISEQ {
                         .set { ch_cut_fasta }
                     VSEARCH_USEARCHGLOBAL( ch_cut_fasta, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
                     ch_versions = ch_versions.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
-                    ASSIGNSH( FORMAT_TAXRESULTS.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, 'ASV_tax_SH.tsv')
+                    ASSIGNSH( FORMAT_TAXRESULTS_STD.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, 'ASV_tax_SH.tsv')
                     ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
                     ch_dada2_tax = ASSIGNSH.out.tsv
                 } else {
-                    ch_dada2_tax = FORMAT_TAXRESULTS.out.tsv
+                    ch_dada2_tax = FORMAT_TAXRESULTS_STD.out.tsv
                 }
             }
         }
@@ -533,22 +533,26 @@ workflow AMPLISEQ {
         }
 
         if (!params.skip_barplot) {
-            QIIME2_BARPLOT ( ch_metadata, ch_asv, ch_tax )
+            QIIME2_BARPLOT ( ch_metadata, ch_asv, ch_tax, '' )
+        }
+
+        if (params.metadata_category_barplot) {
+            QIIME2_BARPLOTAVG ( ch_metadata, QIIME2_EXPORT.out.rel_tsv, ch_tax, params.metadata_category_barplot )
         }
 
         //Select metadata categories for diversity analysis & ancom
         if (params.metadata_category) {
-            ch_metacolumn_all = Channel.from(params.metadata_category.tokenize(','))
-            METADATA_PAIRWISE ( ch_metadata ).set { ch_metacolumn_pairwise }
+            ch_metacolumn_all = Channel.fromList(params.metadata_category.tokenize(','))
+            METADATA_PAIRWISE ( ch_metadata ).category.set { ch_metacolumn_pairwise }
             ch_metacolumn_pairwise = ch_metacolumn_pairwise.splitCsv().flatten()
             ch_metacolumn_pairwise = ch_metacolumn_all.join(ch_metacolumn_pairwise)
         } else if (!params.skip_ancom || !params.skip_diversity_indices) {
-            METADATA_ALL ( ch_metadata ).set { ch_metacolumn_all }
+            METADATA_ALL ( ch_metadata ).category.set { ch_metacolumn_all }
             //return empty channel if no appropriate column was found
             ch_metacolumn_all.branch { passed: it != "" }.set { result }
             ch_metacolumn_all = result.passed
             ch_metacolumn_all = ch_metacolumn_all.splitCsv().flatten()
-            METADATA_PAIRWISE ( ch_metadata ).set { ch_metacolumn_pairwise }
+            METADATA_PAIRWISE ( ch_metadata ).category.set { ch_metacolumn_pairwise }
             ch_metacolumn_pairwise = ch_metacolumn_pairwise.splitCsv().flatten()
         } else {
             ch_metacolumn_all = Channel.empty()
@@ -614,10 +618,12 @@ workflow AMPLISEQ {
         workflow_summary    = WorkflowAmpliseq.paramsSummaryMultiqc(workflow, summary_params)
         ch_workflow_summary = Channel.value(workflow_summary)
 
+        methods_description    = WorkflowAmpliseq.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description)
+        ch_methods_description = Channel.value(methods_description)
+
         ch_multiqc_files = Channel.empty()
-        ch_multiqc_files = ch_multiqc_files.mix(Channel.from(ch_multiqc_config))
-        ch_multiqc_files = ch_multiqc_files.mix(ch_multiqc_custom_config.collect().ifEmpty([]))
         ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+        ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
         ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
         if (!params.skip_fastqc) {
             ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
@@ -630,7 +636,9 @@ workflow AMPLISEQ {
 
         MULTIQC (
             ch_multiqc_files.collect(),
-            ch_multiqc_configs.collect()
+            ch_multiqc_config.collect().ifEmpty([]),
+            ch_multiqc_custom_config.collect().ifEmpty([]),
+            ch_multiqc_logo.collect().ifEmpty([])
         )
         multiqc_report = MULTIQC.out.report.toList()
         ch_versions    = ch_versions.mix(MULTIQC.out.versions)
@@ -660,6 +668,9 @@ workflow.onComplete {
         NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
     }
     NfcoreTemplate.summary(workflow, params, log)
+    if (params.hook_url) {
+        NfcoreTemplate.adaptivecard(workflow, params, summary_params, projectDir, log)
+    }
 }
 
 /*

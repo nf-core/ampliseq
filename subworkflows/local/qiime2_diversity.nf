@@ -52,8 +52,10 @@ workflow QIIME2_DIVERSITY {
 
         //adonis ( ch_metadata, DIVERSITY_CORE.out.qza )
         if (params.qiime_adonis_formula) {
+            ch_qiime_adonis_formula = Channel.fromList(params.qiime_adonis_formula.tokenize(','))
             ch_metadata
                 .combine( QIIME2_DIVERSITY_CORE.out.distance.flatten() )
+                .combine( ch_qiime_adonis_formula )
                 .set{ ch_to_diversity_beta }
             QIIME2_DIVERSITY_ADONIS ( ch_to_diversity_beta )
         }

@@ -19,6 +19,9 @@ process DADA2_DENOISING {
     path "versions.yml"                   , emit: versions
     path "*.args.txt"                     , emit: args
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     def args = task.ext.args ?: ''
     def args2 = task.ext.args2 ?: ''

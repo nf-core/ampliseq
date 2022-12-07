@@ -24,7 +24,7 @@ workflow QIIME2_ANCOM {
     QIIME2_FILTERASV ( ch_for_filterasv )
 
     //ANCOM on various taxonomic levels
-    ch_taxlevel = Channel.from( tax_agglom_min..tax_agglom_max )
+    ch_taxlevel = Channel.of( tax_agglom_min..tax_agglom_max )
     ch_metadata
         .combine( QIIME2_FILTERASV.out.qza )
         .combine( ch_tax )

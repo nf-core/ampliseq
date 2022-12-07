@@ -4,13 +4,17 @@
 
 // Function to get list of [ meta, [ fastq_1, fastq_2 ] ]
 def parse_samplesheet(LinkedHashMap row, single_end) {
-    //Check if manifest contains column sampleID  & forwardReads
+    //Check if samplesheet contains column sampleID  & forwardReads
     if (row.sampleID == null || row.forwardReads == null) {
         exit 1, "ERROR: Please check input samplesheet -> Column 'sampleID' and 'forwardReads' are required but not detected."
     }
-    //Check if manifest contains a column for reverse reads
+    //Check if samplesheet contains a column for reverse reads
     if (row.reverseReads == null && !single_end) {
         exit 1, "ERROR: Please check input samplesheet -> Column 'reverseReads' is missing. In case you do have only single ended reads, please specify '--single_end', '--pacbio', or '--iontorrent'."
+    }
+    //Check if samplesheet contains a column run and empty fields
+    if (row.run != null && row.run == "") {
+        exit 1, "ERROR: Please check input samplesheet -> Column 'run' contains an empty field. Either remove column 'run' or fill each field with a value."
     }
     //read meta info
     def meta = [:]

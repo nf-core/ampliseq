@@ -28,10 +28,12 @@ seq2sh = pd.read_csv(sys.argv[1], sep="\t", header=None, index_col=0, skiprows=N
 # Columns:
 # SH  taxonid  kingdom  phylum  class  order  family  genus  species
 shtax = pd.read_csv(sys.argv[2], sep="\t", header=None, index_col=0, skiprows=None, compression="bz2")
+# Change spaces to '_', to match UNITE databases
+shtax.replace(" ", "_", regex=True, inplace=True)
 # Replace taxonid with Domain = "Eukaryota"
 shtax.loc[:, 1] = "Eukaryota"
 # Remove genus from species name
-shtax.loc[:, 8] = shtax.loc[:, 8].str.split(" ", 1).str[1]
+shtax.loc[:, 8] = shtax.loc[:, 8].str.split("_", 1).str[1]
 
 # Read taxonomy table
 # Determine number of taxonomy levels from header

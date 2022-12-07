@@ -366,10 +366,15 @@
                     "description": "Comma separated list of metadata column headers for statistics.",
                     "help_text": "Here columns in the metadata sheet can be chosen with groupings that are used for diversity indices and differential abundance analysis. By default, all suitable columns in the metadata sheet will be used if this option is not specified. Suitable are columns which are categorical (not numerical) and have multiple different values which are not all unique. For example:\n\n```bash\n--metadata_category \"treatment1,treatment2\"\n```\n\nPlease note the following requirements:\n\n1. Comma separated list enclosed in quotes\n2. May not contain whitespace characters\n3. Each comma separated term has to match exactly one column name in the metadata sheet"
                 },
+                "metadata_category_barplot": {
+                    "type": "string",
+                    "description": "Comma separated list of metadata column headers for plotting average relative abundance barplots.",
+                    "help_text": "Here columns in the metadata sheet can be chosen with groupings that are used for average relative abundance barplots. Samples that have empty fields for that column are discarded. For example:\n\n```bash\n--metadata_category_barplot \"treatment1,treatment2\"\n```\n\nPlease note the following requirements:\n\n1. Comma separated list enclosed in quotes\n2. May not contain whitespace characters\n3. Each comma separated term has to match exactly one column name in the metadata sheet"
+                },
                 "qiime_adonis_formula": {
                     "type": "string",
                     "description": "Formula for QIIME2 ADONIS metadata feature importance test for beta diversity distances",
-                    "help_text": "Model formula containing only independent terms contained in the sample metadata. These can be continuous variables or factors, and they can have interactions as in a typical R formula. Essentially, columns in the metadata sheet can be chosen that have no empty values, not only unique values, or not only identical values.\nFor example, \"treatment1+treatment2\" tests whether the data partitions based on \"treatment1\" and \"treatment2\" sample metadata. \"treatment1*treatment2\" test both of those effects as well as their interaction.\nMore examples can be found in the R documentation, https://cran.r-project.org/doc/manuals/r-release/R-intro.html#Formulae-for-statistical-models"
+                    "help_text": "Comma separated list of model formula(s), e.g. \"treatment1,treatment2\". Model formula should contain only independent terms in the sample metadata. These can be continuous variables or factors, and they can have interactions as in a typical R formula. Essentially, columns in the metadata sheet can be chosen that have no empty values, not only unique values, or not only identical values.\nFor example, \"treatment1+treatment2\" tests whether the data partitions based on \"treatment1\" and \"treatment2\" sample metadata. \"treatment1*treatment2\" test both of those effects as well as their interaction.\nMore examples can be found in the R documentation, https://cran.r-project.org/doc/manuals/r-release/R-intro.html#Formulae-for-statistical-models"
                 },
                 "picrust": {
                     "type": "boolean",
@@ -537,11 +542,29 @@
                     "fa_icon": "fas fa-palette",
                     "hidden": true
                 },
+                "hook_url": {
+                    "type": "string",
+                    "description": "Incoming hook URL for messaging service",
+                    "fa_icon": "fas fa-people-group",
+                    "help_text": "Incoming hook URL for messaging service. Currently, only MS Teams is supported.",
+                    "hidden": true
+                },
                 "multiqc_config": {
                     "type": "string",
                     "description": "Custom config file to supply to MultiQC.",
                     "fa_icon": "fas fa-cog",
                     "hidden": true
+                },
+                "multiqc_logo": {
+                    "type": "string",
+                    "description": "Custom logo file to supply to MultiQC. File name must also be set in the MultiQC config file",
+                    "fa_icon": "fas fa-image",
+                    "hidden": true
+                },
+                "multiqc_methods_description": {
+                    "type": "string",
+                    "description": "Custom MultiQC yaml file containing HTML including a methods description.",
+                    "fa_icon": "fas fa-cog"
                 },
                 "tracedir": {
                     "type": "string",

@@ -17,9 +17,9 @@
   - [Updating the pipeline](#updating-the-pipeline)
   - [Reproducibility](#reproducibility)
 - [Core Nextflow arguments](#core-nextflow-arguments)
-  - [-profile](#-profile)
-  - [-resume](#-resume)
-  - [-c](#-c)
+  - [-profile](#profile)
+  - [-resume](#resume)
+  - [-c](#c)
 - [Custom configuration](#custom-configuration)
   - [Resource requests](#resource-requests)
   - [Updating containers](#updating-containers)
@@ -44,11 +44,11 @@ nextflow run nf-core/ampliseq \
     --outdir "./results"
 ```
 
-In this example, `--input` is the [Direct FASTQ input](#direct-fastq-input), other options are [Samplesheet input](#direct-fastq-input) and [ASV/OTU fasta input](#asv/otu-fasta-input). For more details on metadata, see [Metadata](#metadata). For [Reproducibility](#reproducibility), specify the version to run using `-r` (= release, here: 2.3.2). See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters) for more information about pipeline specific parameters.
+In this example, `--input` is the [Direct FASTQ input](#direct-fastq-input), other options are [Samplesheet input](#samplesheet-input) and [ASV/OTU fasta input](#asvotu-fasta-input). For more details on metadata, see [Metadata](#metadata). For [Reproducibility](#reproducibility), specify the version to run using `-r` (= release, here: 2.3.2). See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters) for more information about pipeline specific parameters.
 
 It is possible to not provide primer sequences (`--FW_primer` & `--RV_primer`) and skip primer trimming using `--skip_cutadapt`, but this is only for data that indeed does not contain any PCR primers in their sequences. Also, metadata (`--metadata`) isnt required, but aids downstream analysis.
 
-This will launch the pipeline with the `singularity` configuration profile. See below [`-profile`](#-profile) for more information about profiles.
+This will launch the pipeline with the `singularity` configuration profile. See below [`-profile`](#profile) for more information about profiles.
 
 Note that the pipeline will create the following files in your working directory:
 
@@ -385,6 +385,14 @@ In most cases, you will only need to create a custom config as a one-off but if 
 See the main [Nextflow documentation](https://www.nextflow.io/docs/latest/config.html) for more information about creating your own configuration files.
 
 If you have any questions or issues please send us a message on [Slack](https://nf-co.re/join/slack) on the [`#configs` channel](https://nfcore.slack.com/channels/configs).
+
+## Azure Resource Requests
+
+To be used with the `azurebatch` profile by specifying the `-profile azurebatch`.
+We recommend providing a compute `params.vm_type` of `Standard_D16_v3` VMs by default but these options can be changed if required.
+
+Note that the choice of VM size depends on your quota and the overall workload during the analysis.
+For a thorough list, please refer the [Azure Sizes for virtual machines in Azure](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes).
 
 ## Running in the background
 

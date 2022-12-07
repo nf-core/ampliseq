@@ -2,6 +2,8 @@
 // This file holds several functions specific to the workflow/ampliseq.nf in the nf-core/ampliseq pipeline
 //
 
+import groovy.text.SimpleTemplateEngine
+
 class WorkflowAmpliseq {
 
     //
@@ -89,7 +91,7 @@ class WorkflowAmpliseq {
         }
 
         if (params.qiime_ref_taxonomy && params.classifier) {
-            log.error "Incompatible parameters: `--qiime_ref_taxonomy` will produce a classifier but `--skip_classifier` points to a precomputed classifier, therefore, only use one of those."
+            log.error "Incompatible parameters: `--qiime_ref_taxonomy` will produce a classifier but `--classifier` points to a precomputed classifier, therefore, only use one of those."
             System.exit(1)
         }
 
@@ -152,5 +154,22 @@ class WorkflowAmpliseq {
         yaml_file_text        += "data: |\n"
         yaml_file_text        += "${summary_section}"
         return yaml_file_text
+    }
+
+    public static String methodsDescriptionText(run_workflow, mqc_methods_yaml) {
+        // Convert  to a named map so can be used as with familar NXF ${workflow} variable syntax in the MultiQC YML file
+        def meta = [:]
+        meta.workflow = run_workflow.toMap()
+        meta["manifest_map"] = run_workflow.manifest.toMap()
+
+        meta["doi_text"] = meta.manifest_map.doi ? "(doi: <a href=\'https://doi.org/${meta.manifest_map.doi}\'>${meta.manifest_map.doi}</a>)" : ""
+        meta["nodoi_text"] = meta.manifest_map.doi ? "": "<li>If available, make sure to update the text to include the Zenodo DOI of version of the pipeline used. </li>"
+
+        def methods_text = mqc_methods_yaml.text
+
+        def engine =  new SimpleTemplateEngine()
+        def description_html = engine.createTemplate(methods_text).make(meta)
+
+        return description_html
     }
 }

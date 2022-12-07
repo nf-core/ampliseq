@@ -3,6 +3,35 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## nf-core/ampliseq version 2.4.1 - 2022-12-07
+
+### `Added`
+
+- [#494](https://github.com/nf-core/ampliseq/pull/494) - `--metadata_category_barplot` accepts a comma separated list of metadata categories and plots for each barplots with average relative abundance.
+
+### `Changed`
+
+- [#492](https://github.com/nf-core/ampliseq/pull/492) - `--qiime_adonis_formula` accepts a comma separated list of formulas.
+
+### `Fixed`
+
+- [#486](https://github.com/nf-core/ampliseq/pull/486) - Fixed typo in error message stating `--skip_classifer` instead of `--classifier`.
+- [#487](https://github.com/nf-core/ampliseq/pull/487),[#488](https://github.com/nf-core/ampliseq/pull/488) - Update stale links in usage documentation.
+- [#489](https://github.com/nf-core/ampliseq/pull/489) - Reduce linting warnings for nf-core tools version 2.5.1.
+- [#491](https://github.com/nf-core/ampliseq/pull/491) - Make output from --addSH match UNITE format by replacing spaces with underscores.
+- [#495](https://github.com/nf-core/ampliseq/pull/495) - Template update for nf-core/tools version 2.6
+- [#501](https://github.com/nf-core/ampliseq/pull/501) - Check for empty fields in samplesheet column "run" and raise an appropriate error.
+- [#503](https://github.com/nf-core/ampliseq/pull/503) - Changed environment for formatting databases.
+- [#504](https://github.com/nf-core/ampliseq/pull/504) - Fixed warnings with nextflow 22.10 (and later) about processes that are defined more than once.
+
+### `Dependencies`
+
+| Tool   | Previous version | New version |
+| ------ | ---------------- | ----------- |
+| QIIME2 | 2021.8           | 2022.8      |
+
+### `Removed`
+
 ## nf-core/ampliseq version 2.4.0 - 2022-09-07
 
 ### `Added`

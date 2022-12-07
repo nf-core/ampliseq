@@ -17,6 +17,9 @@ process ASSIGNSH {
     path outtable        , emit: tsv
     path "versions.yml"  , emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     def args = task.ext.args ?: ''
     """

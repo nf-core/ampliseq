@@ -14,7 +14,7 @@ workflow QIIME2_BARPLOTAVG {
     metadata_category_barplot
 
     main:
-    ch_metadata_category_barplot = Channel.of(metadata_category_barplot.tokenize(','))
+    ch_metadata_category_barplot = Channel.fromList(metadata_category_barplot.tokenize(','))
 
     //Import raltive ASV table
     QIIME2_INASV_BPAVG ( ch_rel_tsv )

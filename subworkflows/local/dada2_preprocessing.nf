@@ -62,7 +62,7 @@ workflow DADA2_PREPROCESSING {
             else log.warn "Probably everything is fine, but this is a reminder that `--trunclenf` was set automatically to ${it[0][1]} and `--trunclenr` to ${it[1][1]}. If this doesnt seem reasonable, then please change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr` directly."
         }
     } else {
-        Channel.of( [['FW', trunclenf], ['RV', trunclenr]] )
+        Channel.fromList( [['FW', trunclenf], ['RV', trunclenr]] )
             .toSortedList()
             .set { ch_trunc }
     }

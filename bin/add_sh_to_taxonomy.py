@@ -34,6 +34,8 @@ shtax.replace(" ", "_", regex=True, inplace=True)
 shtax.loc[:, 1] = "Eukaryota"
 # Remove genus from species name
 shtax.loc[:, 8] = shtax.loc[:, 8].str.split("_", 1).str[1]
+# Add empty species_exact column to match format for ASV_tax_species.tsv
+shtax.loc[:, 9] = ""
 
 # Read taxonomy table
 # Determine number of taxonomy levels from header

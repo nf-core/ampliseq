@@ -32,10 +32,10 @@ taxonomy %>%
         annotation_confidence = confidence
     ) %>%
     mutate(
-       specificEpithet = ifelse(!(is.na(species_exact) | species_exact == ''), species_exact, specificEpithet),
-       specificEpithet = ifelse( str_detect(specificEpithet, '.*_?sp.?'), '', specificEpithet),
-       annotation_confidence =  ifelse((is.na(annotation_confidence) | annotation_confidence == ''), 0, annotation_confidence),
-       scientificName = case_when(
+        specificEpithet = ifelse(!(is.na(species_exact) | species_exact == ''), species_exact, specificEpithet),
+        specificEpithet = ifelse( str_detect(specificEpithet, '.*_?sp.?'), '', specificEpithet),
+        annotation_confidence =  ifelse((is.na(annotation_confidence) | annotation_confidence == ''), 0, annotation_confidence),
+        scientificName = case_when(
             !(is.na(otu) | otu == '')                         ~ sprintf("%s", otu),
             !(is.na(specificEpithet) | specificEpithet == '') ~ sprintf("%s %s", genus, specificEpithet),
             !(is.na(genus)   | genus == '')                   ~ sprintf("%s", genus),
@@ -62,8 +62,8 @@ taxonomy %>%
         date_identified = as.character(lubridate::today()),
         reference_db = dbversion,
         annotation_algorithm = case_when(
-           (!(is.na(otu) | otu == '')) ~ paste('Ampliseq',wfversion,'(https://nf-co.re/ampliseq) addsh', sep=" "),
-           TRUE                        ~ paste('Ampliseq',wfversion,'(https://nf-co.re/ampliseq) DADA2:assignTaxonomy:addSpecies', sep=' ')
+            (!(is.na(otu) | otu == '')) ~ paste('Ampliseq',wfversion,'(https://nf-co.re/ampliseq) addsh', sep=" "),
+            TRUE                        ~ paste('Ampliseq',wfversion,'(https://nf-co.re/ampliseq) DADA2:assignTaxonomy:addSpecies', sep=' ')
         ),
         identification_references = 'https://docs.biodiversitydata.se/analyse-data/molecular-tools/#taxonomy-annotation',
         taxon_remarks = ifelse(!(is.na(domain) | domain == ''), paste('Domain = \'',domain,'\'',sep=''),''),

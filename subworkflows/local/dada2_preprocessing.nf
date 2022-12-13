@@ -2,7 +2,7 @@
  * Preprocessing with DADA2
  */
 
-include { DADA2_QUALITY                   } from '../../modules/local/dada2_quality'
+include { DADA2_QUALITY as DADA2_QUALITY1 } from '../../modules/local/dada2_quality'
 include { TRUNCLEN                        } from '../../modules/local/trunclen'
 include { DADA2_FILTNTRIM                 } from '../../modules/local/dada2_filtntrim'
 include { DADA2_QUALITY as DADA2_QUALITY2 } from '../../modules/local/dada2_quality'
@@ -42,14 +42,14 @@ workflow DADA2_PREPROCESSING {
     }
 
     if ( !params.skip_dada_quality ) {
-        DADA2_QUALITY ( ch_all_trimmed_reads.dump(tag: 'into_dada2_quality') )
-        ch_versions_dada2_preprocessing = ch_versions_dada2_preprocessing.mix(DADA2_QUALITY.out.versions)
-        DADA2_QUALITY.out.warning.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","DADA2_QUALITY: ") }
+        DADA2_QUALITY1 ( ch_all_trimmed_reads.dump(tag: 'into_dada2_quality') )
+        ch_versions_dada2_preprocessing = ch_versions_dada2_preprocessing.mix(DADA2_QUALITY1.out.versions)
+        DADA2_QUALITY1.out.warning.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","DADA2_QUALITY1: ") }
     }
 
     //find truncation values in case they are not supplied
     if ( find_truncation_values ) {
-        TRUNCLEN ( DADA2_QUALITY.out.tsv )
+        TRUNCLEN ( DADA2_QUALITY1.out.tsv )
         TRUNCLEN.out.trunc
             .toSortedList()
             .set { ch_trunc }
@@ -62,7 +62,7 @@ workflow DADA2_PREPROCESSING {
             else log.warn "Probably everything is fine, but this is a reminder that `--trunclenf` was set automatically to ${it[0][1]} and `--trunclenr` to ${it[1][1]}. If this doesnt seem reasonable, then please change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr` directly."
         }
     } else {
-        Channel.from( [['FW', trunclenf], ['RV', trunclenr]] )
+        Channel.fromList( [['FW', trunclenf], ['RV', trunclenr]] )
             .toSortedList()
             .set { ch_trunc }
     }

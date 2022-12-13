@@ -19,15 +19,15 @@ process QIIME2_INTAX {
     """
     parse_dada2_taxonomy.r $tax
 
-    qiime tools import \
-        --type 'FeatureData[Taxonomy]' \
-        --input-format HeaderlessTSVTaxonomyFormat \
-        --input-path tax.tsv \
+    qiime tools import \\
+        --type 'FeatureData[Taxonomy]' \\
+        --input-format HeaderlessTSVTaxonomyFormat \\
+        --input-path tax.tsv \\
         --output-path taxonomy.qza
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        qiime2: \$( qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g" )
+        qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
 }

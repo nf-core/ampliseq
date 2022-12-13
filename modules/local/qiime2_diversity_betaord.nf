@@ -20,16 +20,17 @@ process QIIME2_DIVERSITY_BETAORD {
     export XDG_CONFIG_HOME="\${PWD}/HOME"
     mkdir beta_diversity
 
-    qiime emperor plot \
-        --i-pcoa ${core} \
-        --m-metadata-file ${metadata} \
+    qiime emperor plot \\
+        --i-pcoa ${core} \\
+        --m-metadata-file ${metadata} \\
         --o-visualization ${core.baseName}-vis.qzv
-    qiime tools export --input-path ${core.baseName}-vis.qzv \
+    qiime tools export \\
+        --input-path ${core.baseName}-vis.qzv \
         --output-path beta_diversity/${core.baseName}-PCoA
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        qiime2: \$( qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g" )
+        qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
 }

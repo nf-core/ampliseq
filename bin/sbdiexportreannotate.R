@@ -33,10 +33,10 @@ taxonomy %>%
     ) %>%
     mutate(
        specificEpithet = ifelse(!(is.na(species_exact) | species_exact == ''), species_exact, specificEpithet),
-       specificEpithet = ifelse( (specificEpithet == 'sp.' | specificEpithet == 'sp'), '', specificEpithet),
+       specificEpithet = ifelse( str_detect(specificEpithet, '.*_?sp.?'), '', specificEpithet),
        annotation_confidence =  ifelse((is.na(annotation_confidence) | annotation_confidence == ''), 0, annotation_confidence),
        scientificName = case_when(
-            !(is.na(otu) | otu == '')                           ~ sprintf("%s", otu),
+            !(is.na(otu) | otu == '')                         ~ sprintf("%s", otu),
             !(is.na(specificEpithet) | specificEpithet == '') ~ sprintf("%s %s", genus, specificEpithet),
             !(is.na(genus)   | genus == '')                   ~ sprintf("%s", genus),
             !(is.na(family)  | family == '')                  ~ sprintf("%s", family),
@@ -47,7 +47,7 @@ taxonomy %>%
             TRUE                                              ~ 'Unassigned'
         ),
         taxonRank = case_when(
-            !(is.na(otu) | otu == '')                           ~ 'unranked',
+            !(is.na(otu) | otu == '')                         ~ 'unranked',
             !(is.na(specificEpithet) | specificEpithet == '') ~ 'species',
             !(is.na(genus)   | genus == '')                   ~ 'genus',
             !(is.na(family)  | family == '')                  ~ 'family',
@@ -63,10 +63,10 @@ taxonomy %>%
         reference_db = dbversion,
         annotation_algorithm = case_when(
            (!(is.na(otu) | otu == '')) ~ paste('Ampliseq',wfversion,'(https://nf-co.re/ampliseq) addsh', sep=" "),
-           TRUE                        ~ paste('Ampliseq',wfversion,'(https://nf-co.re/ampliseq) DADA2:assignTaxonomy:addSpecies', sep=" ")
+           TRUE                        ~ paste('Ampliseq',wfversion,'(https://nf-co.re/ampliseq) DADA2:assignTaxonomy:addSpecies', sep=' ')
         ),
         identification_references = 'https://docs.biodiversitydata.se/analyse-data/molecular-tools/#taxonomy-annotation',
-        taxon_remarks = ifelse(!is.na(domain), paste('Domain = \'',domain,'\'',sep=''),''),
+        taxon_remarks = ifelse(!(is.na(domain) | domain == ''), paste('Domain = \'',domain,'\'',sep=''),''),
         kingdom = ifelse(is.na(kingdom), 'Unassigned', kingdom)
     ) %>%
     relocate(asv_sequence, .after = asv_id_alias) %>%
@@ -75,4 +75,5 @@ taxonomy %>%
     relocate(otu:annotation_confidence, .after = infraspecificEpithet) %>%
     select(-domain) %>%
     select(-species_exact) %>%
+    mutate(across(.fns = ~str_replace_all(.,"_",' '))) %>%
     write_tsv("annotation.tsv", na = '')

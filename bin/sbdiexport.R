@@ -125,6 +125,7 @@ asvtax <- asvs %>%
     mutate(SH = if("SH" %in% colnames(.)) SH else '') %>%
     relocate(SH, .after = Species) %>%
     rename_with(tolower, Domain:Species) %>%
+    mutate(across(domain:species, ~str_replace_all(.,"_",' '))) %>%
     rename(
         specificEpithet = species,
         otu = SH,
@@ -135,7 +136,8 @@ asvtax <- asvs %>%
         domain = str_remove(domain, 'Reversed:_'),
         associatedSequences = '',
         infraspecificEpithet = '',
-        kingdom = ifelse(is.na(kingdom), 'Unassigned', kingdom)
+        kingdom = ifelse(is.na(kingdom), 'Unassigned', kingdom),
+        specificEpithet = ifelse( str_detect(specificEpithet, '.*_?sp.?'), '', specificEpithet)
     ) %>%
     relocate(otu, .after = infraspecificEpithet) %>%
     relocate(DNA_sequence:associatedSequences, .before = domain) %>%

@@ -33,7 +33,8 @@ taxonomy %>%
     ) %>%
     mutate(
         specificEpithet = ifelse(!(is.na(species_exact) | species_exact == ''), species_exact, specificEpithet),
-        specificEpithet = ifelse( str_detect(specificEpithet, '.*_?sp.?'), '', specificEpithet),
+        specificEpithet = ifelse( (!(is.na(genus) | genus == '')), str_replace(specificEpithet, paste('^',genus, '[_[:space:]]' ,sep=''), ''), specificEpithet),
+        specificEpithet = ifelse( str_detect(specificEpithet, '^[sS]p.?$'), '', specificEpithet),
         annotation_confidence =  ifelse((is.na(annotation_confidence) | annotation_confidence == ''), 0, annotation_confidence),
         scientificName = case_when(
             !(is.na(otu) | otu == '')                         ~ sprintf("%s", otu),
@@ -62,8 +63,9 @@ taxonomy %>%
         date_identified = as.character(lubridate::today()),
         reference_db = dbversion,
         annotation_algorithm = case_when(
-            (!(is.na(otu) | otu == '')) ~ paste('Ampliseq',wfversion,'(https://nf-co.re/ampliseq) addsh', sep=" "),
-            TRUE                        ~ paste('Ampliseq',wfversion,'(https://nf-co.re/ampliseq) DADA2:assignTaxonomy:addSpecies', sep=' ')
+            (!(is.na(otu) | otu == ''))                     ~ paste('Ampliseq',wfversion,'(https://nf-co.re/ampliseq) addsh', sep=' '),
+            (!(is.na(species_exact) | species_exact == '')) ~ paste('Ampliseq',wfversion,'(https://nf-co.re/ampliseq) DADA2:assignTaxonomy:addSpecies', sep=' '),
+            TRUE                                            ~ paste('Ampliseq',wfversion,'(https://nf-co.re/ampliseq) DADA2:assignTaxonomy', sep=' ')
         ),
         identification_references = 'https://docs.biodiversitydata.se/analyse-data/molecular-tools/#taxonomy-annotation',
         taxon_remarks = ifelse(!(is.na(domain) | domain == ''), paste('Domain = \'',domain,'\'',sep=''),''),

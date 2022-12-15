@@ -77,12 +77,12 @@ event$'materialSampleID' <- sub("^SAMEA", "https://www.ebi.ac.uk/ena/browser/vie
 event$'associatedSequences' <- sub("^ERR", "https://www.ebi.ac.uk/ena/browser/view/ERR", event$'associatedSequences')
 
 event %>%
-    inner_join(
-        asvs %>% pivot_longer(2:ncol(.), names_to = 'eventID', values_to = 'count') %>%
-        group_by(eventID) %>% summarise(sampleSizeValue = sum(count), .groups = 'drop'),
-        by = 'eventID'
-    ) %>%
-    select(1:4, sampleSizeValue, 5:ncol(.)) %>%
+#    inner_join(
+#        asvs %>% pivot_longer(2:ncol(.), names_to = 'eventID', values_to = 'count') %>%
+#        group_by(eventID) %>% summarise(sampleSizeValue = sum(count), .groups = 'drop'),
+#        by = 'eventID'
+#    ) %>%
+#    select(1:4, sampleSizeValue, 5:ncol(.)) %>%
     write_tsv("event.tsv", na = '')
 
 # mixs
@@ -137,9 +137,11 @@ asvtax <- asvs %>%
         associatedSequences = '',
         infraspecificEpithet = '',
         kingdom = ifelse(is.na(kingdom), 'Unassigned', kingdom),
-        specificEpithet = ifelse( str_detect(specificEpithet, '.*_?sp.?'), '', specificEpithet)
+        specificEpithet = ifelse(!(is.na(Species_exact) | Species_exact == ''), Species_exact, specificEpithet),
+        specificEpithet = ifelse( (!(is.na(genus) | genus == '')), str_replace(specificEpithet, paste('^',genus, '[_[:space:]]' ,sep=''), ''), specificEpithet),
+        specificEpithet = ifelse( str_detect(specificEpithet, '^[sS]p.?$'), '', specificEpithet),
     ) %>%
     relocate(otu, .after = infraspecificEpithet) %>%
     relocate(DNA_sequence:associatedSequences, .before = domain) %>%
-    select(-confidence, -domain) %>%
+    select(-confidence, -domain, -Species_exact) %>%
     write_tsv("asv-table.tsv", na = '')

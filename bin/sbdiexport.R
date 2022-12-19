@@ -41,7 +41,29 @@ metadata        <- args[6]
 asvs <- read.delim(asvtable, sep = '\t', stringsAsFactors = FALSE)
 n_samples <- length(colnames(asvs)) - 1
 
-taxonomy <- read.delim(taxtable, sep = '\t', stringsAsFactors = FALSE)
+# Read taxonomy table and make sure all expected columns are there
+taxonomy <- read.delim(taxtable, sep = '\t', stringsAsFactors = FALSE) %>%
+    mutate(Domain = if("Domain" %in% colnames(.)) Domain else '') %>%
+    mutate(Kingdom = if("Kingdom" %in% colnames(.)) Kingdom else '') %>%
+    mutate(Phylum = if("Phylum" %in% colnames(.)) Phylum else '') %>%
+    mutate(Class = if("Class" %in% colnames(.)) Class else '') %>%
+    mutate(Order = if("Order" %in% colnames(.)) Order else '') %>%
+    mutate(Family = if("Family" %in% colnames(.)) Family else '') %>%
+    mutate(Genus = if("Genus" %in% colnames(.)) Genus else '') %>%
+    mutate(Species = if("Species" %in% colnames(.)) Species else '') %>%
+    mutate(Species_exact = if("Species_exact" %in% colnames(.)) Species_exact else '') %>%
+    mutate(SH = if("SH" %in% colnames(.)) SH else '') %>%
+    relocate(Domain, .after = sequence) %>%
+    relocate(Kingdom, .after = Domain) %>%
+    relocate(Phylum, .after = Kingdom) %>%
+    relocate(Class, .after = Phylum) %>%
+    relocate(Order, .after = Class) %>%
+    relocate(Family, .after = Order) %>%
+    relocate(Genus, .after = Family) %>%
+    relocate(Species, .after = Genus) %>%
+    relocate(Species_exact, .after = Species) %>%
+    relocate(SH, .after = Species_exact)
+
 
 # Read the metadata table if provided, otherwise create one
 if ( ! is.na(metadata) ) {
@@ -77,12 +99,6 @@ event$'materialSampleID' <- sub("^SAMEA", "https://www.ebi.ac.uk/ena/browser/vie
 event$'associatedSequences' <- sub("^ERR", "https://www.ebi.ac.uk/ena/browser/view/ERR", event$'associatedSequences')
 
 event %>%
-#    inner_join(
-#        asvs %>% pivot_longer(2:ncol(.), names_to = 'eventID', values_to = 'count') %>%
-#        group_by(eventID) %>% summarise(sampleSizeValue = sum(count), .groups = 'drop'),
-#        by = 'eventID'
-#    ) %>%
-#    select(1:4, sampleSizeValue, 5:ncol(.)) %>%
     write_tsv("event.tsv", na = '')
 
 # mixs
@@ -122,8 +138,6 @@ emof %>% write_tsv("emof.tsv", na = '')
 # asv-table
 asvtax <- asvs %>%
     inner_join(taxonomy, by = 'ASV_ID') %>%
-    mutate(SH = if("SH" %in% colnames(.)) SH else '') %>%
-    relocate(SH, .after = Species) %>%
     rename_with(tolower, Domain:Species) %>%
     mutate(across(domain:species, ~str_replace_all(.,"_",' '))) %>%
     rename(
@@ -142,6 +156,6 @@ asvtax <- asvs %>%
         specificEpithet = ifelse( str_detect(specificEpithet, '^[sS]p.?$'), '', specificEpithet),
     ) %>%
     relocate(otu, .after = infraspecificEpithet) %>%
-    relocate(DNA_sequence:associatedSequences, .before = domain) %>%
+    relocate(associatedSequences, .before = domain) %>%
     select(-confidence, -domain, -Species_exact) %>%
     write_tsv("asv-table.tsv", na = '')

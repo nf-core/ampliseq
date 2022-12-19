@@ -21,7 +21,25 @@ wfversion       <- args[3]
 taxonomy <- read.delim(taxfile, sep = '\t', stringsAsFactors = FALSE)
 
 taxonomy %>%
+    mutate(Domain = if("Domain" %in% colnames(.)) Domain else '') %>%
+    mutate(Kingdom = if("Kingdom" %in% colnames(.)) Kingdom else '') %>%
+    mutate(Phylum = if("Phylum" %in% colnames(.)) Phylum else '') %>%
+    mutate(Class = if("Class" %in% colnames(.)) Class else '') %>%
+    mutate(Order = if("Order" %in% colnames(.)) Order else '') %>%
+    mutate(Family = if("Family" %in% colnames(.)) Family else '') %>%
+    mutate(Genus = if("Genus" %in% colnames(.)) Genus else '') %>%
+    mutate(Species = if("Species" %in% colnames(.)) Species else '') %>%
+    mutate(Species_exact = if("Species_exact" %in% colnames(.)) Species_exact else '') %>%
     mutate(SH = if("SH" %in% colnames(.)) SH else '') %>%
+    relocate(Domain, .after = sequence) %>%
+    relocate(Kingdom, .after = Domain) %>%
+    relocate(Phylum, .after = Kingdom) %>%
+    relocate(Class, .after = Phylum) %>%
+    relocate(Order, .after = Class) %>%
+    relocate(Family, .after = Order) %>%
+    relocate(Genus, .after = Family) %>%
+    relocate(Species, .after = Genus) %>%
+    relocate(Species_exact, .after = Species) %>%
     relocate(SH, .after = Species_exact) %>%
     rename_with(tolower, Domain:Species_exact) %>%
     rename(
@@ -73,8 +91,8 @@ taxonomy %>%
     ) %>%
     relocate(asv_sequence, .after = asv_id_alias) %>%
     relocate(scientificName:taxonRank, .after = asv_sequence) %>%
-    relocate(infraspecificEpithet:identification_references, .after = specificEpithet) %>%
-    relocate(otu:annotation_confidence, .after = infraspecificEpithet) %>%
+    relocate(infraspecificEpithet, .after = specificEpithet) %>%
+    relocate(annotation_confidence, .after = otu) %>%
     select(-domain) %>%
     select(-species_exact) %>%
     mutate(across(.fns = ~str_replace_all(.,"_",' '))) %>%

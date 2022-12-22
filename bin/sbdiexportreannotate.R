@@ -6,7 +6,7 @@
 # annotation tsv file as close to ready for submission to the Swedish
 # Biodiversity Data Infrastructure (SBDI) as possible.
 #
-# The script expects the following arguments: dbversion, ASV_tax_species.tsv
+# The script expects the following arguments: dbversion, ASV_tax_species.tsv, wfversion, predfile
 #
 # Author: daniel.lundin@lnu.se
 
@@ -17,10 +17,29 @@ args            <- commandArgs(trailingOnly=TRUE)
 dbversion       <- args[1]
 taxfile         <- args[2]
 wfversion       <- args[3]
+predfile        <- args[4]
 
+# Read taxonomy table
 taxonomy <- read.delim(taxfile, sep = '\t', stringsAsFactors = FALSE)
 
-taxonomy %>%
+# Read the predictions table if provided, otherwise create one
+if ( ! is.na(predfile) ) {
+    predictions <- read.delim(predfile, sep = '\t', stringsAsFactors = FALSE)
+} else {
+    predictions <- data.frame(ASV_ID = taxonomy$ASV_ID)
+}
+
+# Make sure it's congruent with the taxonomy table
+predictions <- data.frame(
+    'ASV_ID' = taxonomy$ASV_ID
+) %>%
+    left_join(predictions, by = 'ASV_ID' ) %>%
+    distinct(ASV_ID, .keep_all = TRUE) %>%
+    arrange(ASV_ID)
+
+# Join tables and create missing columns
+taxtable  <- taxonomy %>%
+    inner_join(predictions, by = 'ASV_ID') %>%
     mutate(Domain = if("Domain" %in% colnames(.)) Domain else '') %>%
     mutate(Kingdom = if("Kingdom" %in% colnames(.)) Kingdom else '') %>%
     mutate(Phylum = if("Phylum" %in% colnames(.)) Phylum else '') %>%
@@ -93,6 +112,7 @@ taxonomy %>%
     relocate(scientificName:taxonRank, .after = asv_sequence) %>%
     relocate(infraspecificEpithet, .after = specificEpithet) %>%
     relocate(annotation_confidence, .after = otu) %>%
+    relocate(date_identified:taxon_remarks, .after = annotation_confidence) %>%
     select(-domain) %>%
     select(-species_exact) %>%
     mutate(across(.fns = ~str_replace_all(.,"_",' '))) %>%

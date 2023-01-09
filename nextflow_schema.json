@@ -585,12 +585,6 @@
                     "default": true,
                     "fa_icon": "fas fa-check-square",
                     "hidden": true
-                },
-                "enable_conda": {
-                    "type": "boolean",
-                    "description": "Run this workflow with Conda. You can also use '-profile conda' instead of providing this parameter.",
-                    "fa_icon": "fas fa-bacon",
-                    "hidden": true
                 }
             }
         },

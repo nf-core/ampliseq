@@ -96,7 +96,9 @@ taxtable  <- taxonomy %>%
             TRUE                                              ~ 'kingdom'
         ),
         domain = str_remove(domain, 'Reversed:_'),
-        infraspecificEpithet = '',
+        infraspecificEpithet = ifelse( str_detect(specificEpithet, '[_[:space:]]'), specificEpithet, ''),
+        infraspecificEpithet = str_replace(infraspecificEpithet, '^[^_[:space:]]*[_[:space:]]', ''),
+        specificEpithet = str_replace(specificEpithet, paste('[_[:space:]]', infraspecificEpithet ,sep=''), ''),
         date_identified = as.character(lubridate::today()),
         reference_db = dbversion,
         annotation_algorithm = case_when(

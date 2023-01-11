@@ -149,11 +149,13 @@ asvtax <- asvs %>%
     mutate(
         domain = str_remove(domain, 'Reversed:_'),
         associatedSequences = '',
-        infraspecificEpithet = '',
         kingdom = ifelse(is.na(kingdom), 'Unassigned', kingdom),
         specificEpithet = ifelse(!(is.na(Species_exact) | Species_exact == ''), Species_exact, specificEpithet),
         specificEpithet = ifelse( (!(is.na(genus) | genus == '')), str_replace(specificEpithet, paste('^',genus, '[_[:space:]]' ,sep=''), ''), specificEpithet),
         specificEpithet = ifelse( str_detect(specificEpithet, '^[sS]p.?$'), '', specificEpithet),
+        infraspecificEpithet = ifelse( str_detect(specificEpithet, '[_[:space:]]'), specificEpithet, ''),
+        infraspecificEpithet = str_replace(infraspecificEpithet, '^[^_[:space:]]*[_[:space:]]', ''),
+        specificEpithet = str_replace(specificEpithet, paste('[_[:space:]]', infraspecificEpithet ,sep=''), ''),
     ) %>%
     relocate(otu, .after = infraspecificEpithet) %>%
     relocate(associatedSequences, .before = domain) %>%

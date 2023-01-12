@@ -27,12 +27,13 @@ process QIIME2_DIVERSITY_ADONIS {
         --o-visualization ${core.baseName}_adonis.qzv \\
         $args \\
         --p-formula "${formula}"
-    qiime tools export --input-path ${core.baseName}_adonis.qzv \\
+    qiime tools export \\
+        --input-path ${core.baseName}_adonis.qzv \\
         --output-path adonis/${core.baseName}-${formula}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        qiime2: \$( qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g" )
+        qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
 }

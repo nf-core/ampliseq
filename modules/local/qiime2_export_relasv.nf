@@ -19,20 +19,23 @@ process QIIME2_EXPORT_RELASV {
     export XDG_CONFIG_HOME="\${PWD}/HOME"
 
     #convert to relative abundances
-    qiime feature-table relative-frequency \
-        --i-table ${table} \
+    qiime feature-table relative-frequency \\
+        --i-table ${table} \\
         --o-relative-frequency-table relative-table-ASV.qza
 
     #export to biom
-    qiime tools export --input-path relative-table-ASV.qza --output-path relative-table-ASV
+    qiime tools export \\
+        --input-path relative-table-ASV.qza \\
+        --output-path relative-table-ASV
 
     #convert to tab separated text file "rel-table-ASV.tsv"
-    biom convert -i relative-table-ASV/feature-table.biom \
+    biom convert \\
+        -i relative-table-ASV/feature-table.biom \\
         -o rel-table-ASV.tsv --to-tsv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        qiime2: \$( qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g" )
+        qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
 }

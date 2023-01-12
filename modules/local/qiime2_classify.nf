@@ -21,26 +21,28 @@ process QIIME2_CLASSIFY {
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
 
-    qiime feature-classifier classify-sklearn  \
-        --i-classifier ${trained_classifier}  \
-        --p-n-jobs ${task.cpus}  \
-        --i-reads ${repseq}  \
-        --o-classification taxonomy.qza  \
+    qiime feature-classifier classify-sklearn  \\
+        --i-classifier ${trained_classifier}  \\
+        --p-n-jobs ${task.cpus}  \\
+        --i-reads ${repseq}  \\
+        --o-classification taxonomy.qza  \\
         --verbose
-    qiime metadata tabulate  \
-        --m-input-file taxonomy.qza  \
-        --o-visualization taxonomy.qzv  \
+    qiime metadata tabulate  \\
+        --m-input-file taxonomy.qza  \\
+        --o-visualization taxonomy.qzv  \\
         --verbose
     #produce "taxonomy/taxonomy.tsv"
-    qiime tools export --input-path taxonomy.qza  \
+    qiime tools export \\
+        --input-path taxonomy.qza  \\
         --output-path taxonomy
-    qiime tools export --input-path taxonomy.qzv  \
+    qiime tools export \\
+        --input-path taxonomy.qzv  \\
         --output-path taxonomy
     cp taxonomy/taxonomy.tsv .
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        qiime2: \$( qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g" )
+        qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
 }

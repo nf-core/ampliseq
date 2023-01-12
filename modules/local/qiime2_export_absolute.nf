@@ -28,20 +28,23 @@ process QIIME2_EXPORT_ABSOLUTE {
     export XDG_CONFIG_HOME="\${PWD}/HOME"
 
     #produce raw count table in biom format "table/feature-table.biom"
-    qiime tools export --input-path ${table}  \
+    qiime tools export \\
+        --input-path ${table} \\
         --output-path table
     cp table/feature-table.biom .
 
     #produce raw count table "table/feature-table.tsv"
-    biom convert -i table/feature-table.biom \
-        -o feature-table.tsv  \
+    biom convert \\
+        -i table/feature-table.biom \\
+        -o feature-table.tsv \\
         --to-tsv
 
     #produce representative sequence fasta file "sequences.fasta"
-    qiime feature-table tabulate-seqs  \
-        --i-data ${repseq}  \
+    qiime feature-table tabulate-seqs \\
+        --i-data ${repseq} \\
         --o-visualization rep-seqs.qzv
-    qiime tools export --input-path rep-seqs.qzv  \
+    qiime tools export \\
+        --input-path rep-seqs.qzv \\
         --output-path representative_sequences
     cp representative_sequences/sequences.fasta rep-seq.fasta
     cp representative_sequences/*.tsv .
@@ -51,23 +54,24 @@ process QIIME2_EXPORT_ABSOLUTE {
     for i in \${array[@]}
     do
         #collapse taxa
-        qiime taxa collapse \
-            --i-table ${table} \
-            --i-taxonomy ${taxonomy} \
-            --p-level \$i \
+        qiime taxa collapse \\
+            --i-table ${table} \\
+            --i-taxonomy ${taxonomy} \\
+            --p-level \$i \\
             --o-collapsed-table table-\$i.qza
         #export to biom
-        qiime tools export --input-path table-\$i.qza \
+        qiime tools export \\
+            --input-path table-\$i.qza \\
             --output-path table-\$i
         #convert to tab separated text file
-        biom convert \
-            -i table-\$i/feature-table.biom \
+        biom convert \\
+            -i table-\$i/feature-table.biom \\
             -o abs-abund-table-\$i.tsv --to-tsv
     done
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        qiime2: \$( qiime --version | sed -e "s/q2cli version //g" | tr -d '`' | sed -e "s/Run qiime info for more version details.//g" )
+        qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
 }

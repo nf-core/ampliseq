@@ -53,7 +53,7 @@ jobs:
             test_fasta,
             test_reftaxcustom,
             test_novaseq,
-            test_coidb
+            test_coidb,
           ]
     steps:
       - name: Check out pipeline code

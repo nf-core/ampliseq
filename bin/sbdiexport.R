@@ -139,7 +139,7 @@ emof %>% write_tsv("emof.tsv", na = '')
 asvtax <- asvs %>%
     inner_join(taxonomy, by = 'ASV_ID') %>%
     rename_with(tolower, Domain:Species) %>%
-    mutate(across(domain:species, ~str_replace_all(.,"_",' '))) %>%
+    mutate(across(domain:species, ~str_replace_all(.,' ','_'))) %>%
     rename(
         specificEpithet = species,
         otu = SH,

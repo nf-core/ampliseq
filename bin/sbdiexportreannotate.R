@@ -117,5 +117,5 @@ taxtable  <- taxonomy %>%
     relocate(date_identified:taxon_remarks, .after = annotation_confidence) %>%
     select(-domain) %>%
     select(-species_exact) %>%
-    mutate(across(.fns = ~str_replace_all(.,"_",' '))) %>%
+    mutate(across(.fns = ~str_replace_all(.,' ','_'))) %>%
     write_tsv("annotation.tsv", na = '')

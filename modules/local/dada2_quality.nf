@@ -11,7 +11,8 @@ process DADA2_QUALITY {
     tuple val(meta), path(reads)
 
     output:
-    path "*_qual_stats.pdf"            , emit: pdf
+    path "*_qual_stats.pdf"                  , emit: pdf
+    path "*_qual_stats.svg"                  , emit: svg
     tuple val(meta), path("*_qual_stats.tsv"), emit: tsv
     path "versions.yml"                      , emit: versions
     path "*.args.txt"                        , emit: args
@@ -63,6 +64,9 @@ process DADA2_QUALITY {
     #write output
     write.table( t(df), file = paste0("${prefix}_qual_stats",".tsv"), sep = "\t", row.names = TRUE, col.names = FALSE, quote = FALSE)
     pdf(paste0("${prefix}_qual_stats",".pdf"))
+    plot
+    dev.off()
+    svg(paste0("${prefix}_qual_stats",".svg"))
     plot
     dev.off()
 

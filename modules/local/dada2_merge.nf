@@ -1,7 +1,7 @@
 process DADA2_MERGE {
     label 'process_low'
 
-    conda "bioconductor-dada2=1.22.0"
+    conda "bioconductor-dada2=1.22.0 r-digest=0.6.30"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.22.0--r41h399db7b_0' :
         'quay.io/biocontainers/bioconductor-dada2:1.22.0--r41h399db7b_0' }"

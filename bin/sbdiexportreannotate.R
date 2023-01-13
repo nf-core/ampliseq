@@ -71,7 +71,7 @@ taxtable  <- taxonomy %>%
     mutate(
         specificEpithet = ifelse(!(is.na(species_exact) | species_exact == ''), species_exact, specificEpithet),
         specificEpithet = ifelse( (!(is.na(genus) | genus == '')), str_replace(specificEpithet, paste('^',genus, '[_[:space:]]' ,sep=''), ''), specificEpithet),
-        specificEpithet = ifelse( str_detect(specificEpithet, '^[sS]p.?$'), '', specificEpithet),
+        specificEpithet = ifelse( str_detect(specificEpithet, '^[sS]p{1,2}.?$'), '', specificEpithet),
         annotation_confidence =  ifelse((is.na(annotation_confidence) | annotation_confidence == ''), 0, annotation_confidence),
         scientificName = case_when(
             !(is.na(otu) | otu == '')                         ~ sprintf("%s", otu),

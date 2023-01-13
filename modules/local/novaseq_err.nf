@@ -2,7 +2,7 @@ process NOVASEQ_ERR {
     tag "$meta.run"
     label 'process_medium'
 
-    conda (params.enable_conda ? "bioconductor-dada2=1.22.0" : null)
+    conda "bioconductor-dada2=1.22.0"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.22.0--r41h399db7b_0' :
         'quay.io/biocontainers/bioconductor-dada2:1.22.0--r41h399db7b_0' }"

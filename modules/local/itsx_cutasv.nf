@@ -1,7 +1,7 @@
 process ITSX_CUTASV {
     label 'process_medium'
 
-    conda (params.enable_conda ? "bioconda::itsx=1.1.3" : null)
+    conda "bioconda::itsx=1.1.3"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/itsx:1.1.3--hdfd78af_1' :
         'quay.io/biocontainers/itsx:1.1.3--hdfd78af_1' }"

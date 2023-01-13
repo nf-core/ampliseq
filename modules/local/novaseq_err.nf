@@ -12,6 +12,7 @@ process NOVASEQ_ERR {
     output:
     tuple val(meta), path("*.md.err.rds"), emit: errormodel
     tuple val(meta), path("*.md.err.pdf"), emit: pdf
+    tuple val(meta), path("*.md.err.svg"), emit: svg
     tuple val(meta), path("*.md.err.convergence.txt"), emit: convergence
     path "versions.yml"                  , emit: versions
 

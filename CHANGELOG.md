@@ -11,11 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
-- [#513](https://github.com/nf-core/ampliseq/pull/513) - Template update for nf-core/tools version 2.7.1
+- [#513](https://github.com/nf-core/ampliseq/pull/513) - Template update for nf-core/tools version 2.7.2
 
 ### `Dependencies`
 
 ### `Removed`
+
+- [#513](https://github.com/nf-core/ampliseq/pull/513) - Removed parameter `--enable_conda`.
 
 ## nf-core/ampliseq version 2.4.1 - 2022-12-07
 

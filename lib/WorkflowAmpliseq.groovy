@@ -10,8 +10,6 @@ class WorkflowAmpliseq {
     // Check and validate parameters
     //
     public static void initialise(params, log) {
-        if (params.enable_conda) { log.warn "Conda is enabled (`--enable_conda`), any steps involving QIIME2 are not available. Use a container engine instead of conda to enable all software." }
-
         if ( params.pacbio || params.iontorrent || params.single_end ) {
             if (params.trunclenr) { log.warn "Unused parameter: `--trunclenr` is ignored because the data is single end." }
         } else if (params.trunclenf && !params.trunclenr) {

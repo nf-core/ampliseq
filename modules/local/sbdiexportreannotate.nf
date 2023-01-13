@@ -2,7 +2,7 @@ process SBDIEXPORTREANNOTATE {
     tag "${taxonomytable}"
     label 'process_low'
 
-    conda (params.enable_conda ? "bioconda::r-tidyverse=1.2.1" : null)
+    conda "bioconda::r-tidyverse=1.2.1"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/r-tidyverse:1.2.1' :
         'quay.io/biocontainers/r-tidyverse:1.2.1' }"

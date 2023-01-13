@@ -220,6 +220,7 @@
                         "gtdb",
                         "coidb",
                         "coidb=221216",
+                        "coidb=test",
                         "pr2=4.14.0",
                         "pr2=4.13.0",
                         "pr2",

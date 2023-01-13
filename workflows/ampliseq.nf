@@ -103,7 +103,10 @@ if ( params.dada_ref_taxonomy && !params.skip_dada_addspecies && !params.skip_ta
 //only run QIIME2 when taxonomy is actually calculated and all required data is available
 if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) && !params.skip_taxonomy && !params.skip_qiime ) {
     run_qiime2 = true
-} else { run_qiime2 = false }
+} else {
+    run_qiime2 = false
+    if ( workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1 ) { log.warn "Conda or mamba is enabled, any steps involving QIIME2 are not available. Use a container engine instead of conda to enable all software." }
+}
 
 // Set cutoff to use for SH assignment
 if ( params.addsh ) {

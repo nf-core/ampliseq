@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#518](https://github.com/nf-core/ampliseq/pull/518) - Add COIDB DADA2 reference taxonomy database
+
 ### `Changed`
 
 ### `Fixed`

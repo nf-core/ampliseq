@@ -68,6 +68,7 @@ taxtable  <- taxonomy %>%
         otu = SH,
         annotation_confidence = confidence
     ) %>%
+    mutate(across(.fns = ~str_replace_all(.,' ','_'))) %>%
     mutate(
         specificEpithet = ifelse(!(is.na(species_exact) | species_exact == ''), species_exact, specificEpithet),
         specificEpithet = ifelse( (!(is.na(genus) | genus == '')), str_replace(specificEpithet, paste('^',genus, '[_[:space:]]' ,sep=''), ''), specificEpithet),
@@ -117,5 +118,4 @@ taxtable  <- taxonomy %>%
     relocate(date_identified:taxon_remarks, .after = annotation_confidence) %>%
     select(-domain) %>%
     select(-species_exact) %>%
-    mutate(across(.fns = ~str_replace_all(.,' ','_'))) %>%
     write_tsv("annotation.tsv", na = '')

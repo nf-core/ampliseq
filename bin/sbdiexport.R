@@ -19,7 +19,7 @@ EVENT_COLS <- c(
     'recordedBy', 'country', 'municipality', 'verbatimLocality', 'minimumElevationInMeters',
     'maximumElevationInMeters', 'minimumDepthInMeters', 'maximumDepthInMeters'
 )
-MIXS_COLS  <- c(
+DNA_COLS  <- c(
     'sop', 'target_gene', 'target_subfragment', 'pcr_primer_name_forward',
     'pcr_primer_name_reverse', 'env_broad_scale', 'env_local_scale', 'env_medium'
 )
@@ -101,25 +101,27 @@ event$'associatedSequences' <- sub("^ERR", "https://www.ebi.ac.uk/ena/browser/vi
 event %>%
     write_tsv("event.tsv", na = '')
 
-# mixs
-mixs <- data.frame(
+# dna (previously mixs)
+dna <- data.frame(
     'eventID' = colnames(asvs)[2:(n_samples+1)],
     'lib_layout' = rep(lib_layout, n_samples),
     'pcr_primer_forward' = rep(fwd_primer_seq, n_samples),
     'pcr_primer_reverse' = rep(rev_primer_seq, n_samples)
 ) %>%
     arrange(eventID)
-for( c in MIXS_COLS ) {
+for( c in DNA_COLS ) {
     if ( c %in% colnames(meta) ) {
-        mixs[[c]] <- meta[[c]]
+        dna[[c]] <- meta[[c]]
+    } else if ( c %in% c("sop") ) {
+        dna[[c]] <- rep('https://nf-co.re/ampliseq',n_samples)
     } else {
-        mixs[[c]] <- character(n_samples)
+        dna[[c]] <- character(n_samples)
     }
 }
-mixs %>%
+dna %>%
     relocate(lib_layout, .after = target_subfragment) %>%
     relocate(pcr_primer_forward, pcr_primer_reverse, .after = pcr_primer_name_reverse) %>%
-    write_tsv("mixs.tsv", na = '')
+    write_tsv("dna.tsv", na = '')
 
 # emof
 emof <- data.frame(

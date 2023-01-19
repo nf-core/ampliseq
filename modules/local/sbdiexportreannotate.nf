@@ -21,7 +21,7 @@ process SBDIEXPORTREANNOTATE {
     script:
     """
     if [[ $workflow.manifest.version == *dev ]]; then
-        ampliseq_version="v$workflow.manifest.version, revision ${workflow.scriptId.substring(0,10)}"
+        ampliseq_version="v$workflow.manifest.version, revision: ${workflow.scriptId.substring(0,10)}"
     else
         ampliseq_version="v$workflow.manifest.version"
     fi

@@ -20,6 +20,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Dependencies`
 
+- [#528](https://github.com/nf-core/ampliseq/pull/528) - Updated QIIME2
+
+| Tool   | Previous version | New version |
+| ------ | ---------------- | ----------- |
+| QIIME2 | 2022.8           | 2022.11     |
+
 ### `Removed`
 
 - [#513](https://github.com/nf-core/ampliseq/pull/513) - Removed parameter `--enable_conda`.

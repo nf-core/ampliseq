@@ -2,7 +2,7 @@ process QIIME2_DIVERSITY_BETAORD {
     tag "${core.baseName}"
     label 'process_low'
 
-    container "quay.io/qiime2/core:2022.8"
+    container "quay.io/qiime2/core:2022.11"
 
     // Exit if running this module with -profile conda / -profile mamba
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {

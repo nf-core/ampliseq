@@ -3,7 +3,7 @@ process QIIME2_EXTRACT {
     label 'process_low'
     label 'single_cpu'
 
-    container "quay.io/qiime2/core:2022.8"
+    container "quay.io/qiime2/core:2022.11"
 
     // Exit if running this module with -profile conda / -profile mamba
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {

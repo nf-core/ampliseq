@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#513](https://github.com/nf-core/ampliseq/pull/513) - Template update for nf-core/tools version 2.7.2
 - [#519](https://github.com/nf-core/ampliseq/pull/519) - Adding the pipeline reference to the MultiQC report
-- [#520](https://github.com/nf-core/ampliseq/pull/520) - Add conda package digest to dada2
+- [#520](https://github.com/nf-core/ampliseq/pull/520),[#530](https://github.com/nf-core/ampliseq/pull/530) - Fix conda packages
 
 ### `Dependencies`
 

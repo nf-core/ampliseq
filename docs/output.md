@@ -29,8 +29,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [Barplot](#barplot) - Interactive barplot
   - [Alpha diversity rarefaction curves](#alpha-diversity-rarefaction-curves) - Rarefaction curves for quality control
   - [Diversity analysis](#diversity-analysis) - High level overview with different diversity indices
-  - [Alpha diversity indices](#alpha-diversity-indices) - Diversity within samples
-  - [Beta diversity indices](#beta-diversity-indices) - Diversity between samples (e.g. PCoA plots)
   - [ANCOM](#ancom) - Differential abundance analysis
 - [PICRUSt2](#picrust2) - Predict the functional potential of a bacterial community
 - [Read count report](#read-count-report) - Report of read counts during various steps of the pipeline

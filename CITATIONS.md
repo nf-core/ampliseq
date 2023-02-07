@@ -62,6 +62,9 @@
   - [MIDORI2 - a collection of reference databases](https://doi.org/10.1002/edn3.303/)
     > Leray, M., Knowlton, N., & Machida, R. J. (2022). MIDORI2: A collection of quality controlled, preformatted, and regularly updated reference databases for taxonomic assignment of eukaryotic mitochondrial sequences. Environmental DNA, 4, 894– 907. https://doi.org/10.1002/edn3.303.
 
+  - [COIDB - CO1 Taxonomy Database](https://doi.org/10.17044/scilifelab.20514192.v2)
+    > Sundh J, Manoharan L, Iwaszkiewicz-Eggebrecht E, Miraldo A, Andersson A, Ronquist F. COI reference sequences from BOLD DB. doi: https://doi.org/10.17044/scilifelab.20514192.v2.
+
 ### Downstream analysis
 
 - [QIIME2](https://pubmed.ncbi.nlm.nih.gov/31341288/)

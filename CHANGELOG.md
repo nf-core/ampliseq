@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-- [#518](https://github.com/nf-core/ampliseq/pull/518) - Add COIDB DADA2 reference taxonomy database
+- [#518](https://github.com/nf-core/ampliseq/pull/518),[#534](https://github.com/nf-core/ampliseq/pull/534) - Add COIDB DADA2 reference taxonomy database
 - [#521](https://github.com/nf-core/ampliseq/pull/521) - Export svg in addition to pdf files for quality plots from DADA2
 
 ### `Changed`

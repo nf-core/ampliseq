@@ -201,7 +201,6 @@ workflow AMPLISEQ {
     //
     PARSE_INPUT ( params.input, is_fasta_input, single_end, params.multiple_sequencing_runs, params.extension )
     ch_reads = PARSE_INPUT.out.reads
-    ch_fasta = PARSE_INPUT.out.fasta
 
     //
     // MODULE: Rename files
@@ -305,8 +304,14 @@ workflow AMPLISEQ {
     // Modules : Filter rRNA
     // TODO: FILTER_SSU.out.stats needs to be merged still into "overall_summary.tsv"
     //
+    if ( is_fasta_input ) {
+        ch_unfiltered_fasta = PARSE_INPUT.out.fasta
+    } else {
+        ch_unfiltered_fasta = DADA2_MERGE.out.fasta
+    }
+
     if (!params.skip_barrnap && params.filter_ssu) {
-        BARRNAP ( DADA2_MERGE.out.fasta )
+        BARRNAP ( ch_unfiltered_fasta )
         ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))
         FILTER_SSU ( DADA2_MERGE.out.fasta, DADA2_MERGE.out.asv, BARRNAP.out.matches )
         MERGE_STATS_FILTERSSU ( ch_stats, FILTER_SSU.out.stats )
@@ -314,12 +319,12 @@ workflow AMPLISEQ {
         ch_dada2_fasta = FILTER_SSU.out.fasta
         ch_dada2_asv = FILTER_SSU.out.asv
     } else if (!params.skip_barrnap && !params.filter_ssu) {
-        BARRNAP ( DADA2_MERGE.out.fasta )
+        BARRNAP ( ch_unfiltered_fasta )
         ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))
-        ch_dada2_fasta =  DADA2_MERGE.out.fasta
+        ch_dada2_fasta = ch_unfiltered_fasta
         ch_dada2_asv = DADA2_MERGE.out.asv
     } else {
-        ch_dada2_fasta =  DADA2_MERGE.out.fasta
+        ch_dada2_fasta = ch_unfiltered_fasta
         ch_dada2_asv = DADA2_MERGE.out.asv
     }
 
@@ -338,10 +343,7 @@ workflow AMPLISEQ {
     //
     // SUBWORKFLOW / MODULES : Taxonomic classification with DADA2 and/or QIIME2
     //
-    //Alternative entry point for fasta that is being classified
-    if ( !is_fasta_input ) {
-        ch_fasta = ch_dada2_fasta
-    }
+    ch_fasta = ch_dada2_fasta
 
     //DADA2
     if (!params.skip_taxonomy) {

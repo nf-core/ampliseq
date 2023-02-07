@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#519](https://github.com/nf-core/ampliseq/pull/519) - Adding the pipeline reference to the MultiQC report
 - [#520](https://github.com/nf-core/ampliseq/pull/520),[#530](https://github.com/nf-core/ampliseq/pull/530) - Fix conda packages
 - [#531](https://github.com/nf-core/ampliseq/pull/531) - Update documentation
+- [#535](https://github.com/nf-core/ampliseq/pull/535) - Make sure barrnap runs with fasta input
 
 ### `Dependencies`
 

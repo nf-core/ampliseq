@@ -51,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#501](https://github.com/nf-core/ampliseq/pull/501) - Check for empty fields in samplesheet column "run" and raise an appropriate error.
 - [#503](https://github.com/nf-core/ampliseq/pull/503) - Changed environment for formatting databases.
 - [#504](https://github.com/nf-core/ampliseq/pull/504) - Fixed warnings with nextflow 22.10 (and later) about processes that are defined more than once.
+- [#536](https://github.com/nf-core/ampliseq/pull/536) - Update output generated with option sbdi-export
 
 ### `Dependencies`
 

@@ -25,6 +25,8 @@ process FILTER_LEN_ASV {
     script:
     def min_len_asv = params.min_len_asv ?: '1'
     def max_len_asv = params.max_len_asv ?: '1000000'
+
+    def read_table  = table ? "table <- read.table(file = '$table', sep = '\t', comment.char = '', header=TRUE)" : "table <- data.frame(matrix(ncol = 1, nrow = 0))"
     """
     #!/usr/bin/env Rscript
 
@@ -32,7 +34,7 @@ process FILTER_LEN_ASV {
     suppressPackageStartupMessages(library(Biostrings))
 
     #read abundance file, first column is ASV_ID
-    table <- read.table(file = "$table", sep = '\t', comment.char = "", header=TRUE)
+    $read_table
     colnames(table)[1] <- "ASV_ID"
 
     #read fasta file of ASV sequences

@@ -332,7 +332,7 @@ workflow AMPLISEQ {
     // Modules : amplicon length filtering
     //
     if (params.min_len_asv || params.max_len_asv) {
-        FILTER_LEN_ASV ( ch_dada2_fasta,ch_dada2_asv )
+        FILTER_LEN_ASV ( ch_dada2_fasta, ch_dada2_asv.ifEmpty( [] ) )
         ch_versions = ch_versions.mix(FILTER_LEN_ASV.out.versions.ifEmpty(null))
         MERGE_STATS_FILTERLENASV ( ch_stats, FILTER_LEN_ASV.out.stats )
         ch_stats = MERGE_STATS_FILTERLENASV.out.tsv

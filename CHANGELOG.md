@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#518](https://github.com/nf-core/ampliseq/pull/518),[#534](https://github.com/nf-core/ampliseq/pull/534) - Add COIDB DADA2 reference taxonomy database
 - [#521](https://github.com/nf-core/ampliseq/pull/521) - Export svg in addition to pdf files for quality plots from DADA2
 
 ### `Changed`
@@ -15,9 +16,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#513](https://github.com/nf-core/ampliseq/pull/513) - Template update for nf-core/tools version 2.7.2
 - [#519](https://github.com/nf-core/ampliseq/pull/519) - Adding the pipeline reference to the MultiQC report
-- [#520](https://github.com/nf-core/ampliseq/pull/520) - Add conda package digest to dada2
+- [#520](https://github.com/nf-core/ampliseq/pull/520),[#530](https://github.com/nf-core/ampliseq/pull/530) - Fix conda packages
+- [#531](https://github.com/nf-core/ampliseq/pull/531) - Update documentation
 
 ### `Dependencies`
+
+- [#528](https://github.com/nf-core/ampliseq/pull/528) - Updated QIIME2
+
+| Tool   | Previous version | New version |
+| ------ | ---------------- | ----------- |
+| QIIME2 | 2022.8           | 2022.11     |
 
 ### `Removed`
 

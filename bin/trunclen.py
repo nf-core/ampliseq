@@ -23,6 +23,7 @@ reads = data.iloc[0][1:].values.tolist()
 # extract maximum read count
 fraction_reads = int(max(reads) * rmin)
 
+
 # iterate through values and find first value that falls below threshold
 def function(values, cutoff):
     trunc = len(values)

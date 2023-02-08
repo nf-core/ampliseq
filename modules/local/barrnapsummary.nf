@@ -17,7 +17,7 @@ process BARRNAPSUMMARY {
 
     script:
     def args = task.ext.args ?: ''
-    
+
     """
     summarize_barrnap.py $predictions
 

@@ -182,7 +182,8 @@ An [example samplesheet](../assets/samplesheet.tsv) has been provided with the p
 
 #### ASV/OTU fasta input
 
-When pointing at a file ending with `.fasta`, `.fna` or `.fa`, the containing ASV/OTU sequences will be taxonomically classified. All other pipeline steps will be skipped.
+When pointing at a file ending with `.fasta`, `.fna` or `.fa`, the containing ASV/OTU sequences will be taxonomically classified.
+Most of the steps of the pipeline will be skipped, but ITSx & Barrnap & length filtering can be applied before taxonomic classification.
 
 ```bash
 --input 'path/to/amplicon_sequences.fasta'

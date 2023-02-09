@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-- [#518](https://github.com/nf-core/ampliseq/pull/518) - Add COIDB DADA2 reference taxonomy database
+- [#518](https://github.com/nf-core/ampliseq/pull/518),[#534](https://github.com/nf-core/ampliseq/pull/534) - Add COIDB DADA2 reference taxonomy database
 - [#521](https://github.com/nf-core/ampliseq/pull/521) - Export svg in addition to pdf files for quality plots from DADA2
 - [#538](https://github.com/nf-core/ampliseq/pull/538) - Parameter `--diversity_rarefaction_depth` controls the minimum rarefaction depth for diversity analysis, this allows increasing the rarefaction depth at the cost of excluding low count samples. Parameter `--ancom_sample_min_count` sets the minimum sample counts to retain a sample for ANCOM analysis.
 
@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#519](https://github.com/nf-core/ampliseq/pull/519) - Adding the pipeline reference to the MultiQC report
 - [#520](https://github.com/nf-core/ampliseq/pull/520),[#530](https://github.com/nf-core/ampliseq/pull/530) - Fix conda packages
 - [#531](https://github.com/nf-core/ampliseq/pull/531) - Update documentation
+- [#535](https://github.com/nf-core/ampliseq/pull/535) - Make sure barrnap runs with fasta input
 
 ### `Dependencies`
 

@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
-- [#537](https://github.com/nf-core/ampliseq/pull/536) - Update output generated with option sbdi-export
+- [#537](https://github.com/nf-core/ampliseq/pull/537) - Update output generated with option sbdi-export
 
 ### `Fixed`
 

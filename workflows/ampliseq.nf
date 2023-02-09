@@ -234,7 +234,7 @@ workflow AMPLISEQ {
     //
     // SUBWORKFLOW: Read preprocessing & QC plotting with DADA2
     //
-    DADA2_PREPROCESSING ( 
+    DADA2_PREPROCESSING (
         ch_trimmed_reads,
         single_end,
         find_truncation_values,
@@ -509,7 +509,7 @@ workflow AMPLISEQ {
             tax_agglom_max = 2
         }
 
-        //Filtering by taxonomy & prevalence & counts
+        //Filtering ASVs by taxonomy & prevalence & counts
         if (params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1) {
             QIIME2_FILTERTAXA (
                 QIIME2_INASV.out.qza,
@@ -572,7 +572,8 @@ workflow AMPLISEQ {
                 ch_metacolumn_pairwise,
                 ch_metacolumn_all,
                 params.skip_alpha_rarefaction,
-                params.skip_diversity_indices
+                params.skip_diversity_indices,
+                params.diversity_rarefaction_depth
             )
         }
 
@@ -653,7 +654,7 @@ workflow AMPLISEQ {
         input.copyTo("${params.outdir}/input")
     }
     //Save metadata in results folder
-    if ( params.metadata ) { 
+    if ( params.metadata ) {
         file("${params.outdir}/input").mkdir()
         file("${params.metadata}").copyTo("${params.outdir}/input")
     }

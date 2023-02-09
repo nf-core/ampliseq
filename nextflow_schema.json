@@ -386,6 +386,18 @@
                     "type": "boolean",
                     "description": "If data should be exported in SBDI (Swedish biodiversity infrastructure) Excel format."
                 },
+                "diversity_rarefaction_depth": {
+                    "type": "integer",
+                    "default": 500,
+                    "description": "Minimum rarefaction depth for diversity analysis. Any sample below that threshold will be removed.",
+                    "fa_icon": "fas fa-greater-than-equal"
+                },
+                "ancom_sample_min_count": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Minimum sample counts to retain a sample for ANCOM analysis. Any sample below that threshold will be removed.",
+                    "fa_icon": "fas fa-greater-than-equal"
+                },
                 "dada_tax_agglom_min": {
                     "type": "integer",
                     "default": 2,

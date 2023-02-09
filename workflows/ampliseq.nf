@@ -324,7 +324,6 @@ workflow AMPLISEQ {
     } else {
         ch_dada2_fasta =  DADA2_MERGE.out.fasta
         ch_dada2_asv = DADA2_MERGE.out.asv
-	ch_barrnap_gff = BARRNAP.out.gff
     }
 
     //

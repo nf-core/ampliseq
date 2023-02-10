@@ -328,7 +328,7 @@ Produces rarefaction plots for several alpha diversity indices, and is primarily
 
 #### Diversity analysis
 
-Diversity measures summarize important sample features (alpha diversity) or differences between samples (beta diversity). To do so, sample data is first rarefied to the minimum number of counts per sample. Also, a phylogenetic tree of all ASVs is computed to provide phylogenetic information.
+Diversity measures summarize important sample features (alpha diversity) or differences between samples (beta diversity). To do so, sample data is first rarefied to the minimum number of counts per sample. Parameter `--diversity_rarefaction_depth` can increase the rarefaction depth at the cost of excluding low count samples. Also, a phylogenetic tree of all ASVs is computed to provide phylogenetic information.
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -385,7 +385,7 @@ Furthermore, ADONIS permutation-based statistical test in vegan-R determine whet
 
 #### ANCOM
 
-Analysis of Composition of Microbiomes ([ANCOM](https://www.ncbi.nlm.nih.gov/pubmed/26028277)) is applied to identify features that are differentially abundant across sample groups. A key assumption made by ANCOM is that few taxa (less than about 25%) will be differentially abundant between groups otherwise the method will be inaccurate.
+Analysis of Composition of Microbiomes ([ANCOM](https://www.ncbi.nlm.nih.gov/pubmed/26028277)) is applied to identify features that are differentially abundant across sample groups. A key assumption made by ANCOM is that few taxa (less than about 25%) will be differentially abundant between groups otherwise the method will be inaccurate. Parameter `--ancom_sample_min_count` sets the minimum sample counts to retain a sample for ANCOM analysis.
 
 ANCOM is applied to each suitable or specified metadata column for 5 taxonomic levels (2-6).
 

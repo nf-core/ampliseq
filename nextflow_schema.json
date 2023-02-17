@@ -407,10 +407,10 @@
                 },
                 "dada_tax_agglom_max": {
                     "type": "integer",
-                    "default": 7,
+                    "default": 6,
                     "description": "Maximum taxonomy agglomeration level for DADA2 classification",
                     "fa_icon": "fas fa-greater-than-equal",
-                    "help_text": "Depends on the reference taxonomy database used. Default databases should have genus level at 7."
+                    "help_text": "Depends on the reference taxonomy database used. Most default databases have genus level at 6."
                 },
                 "qiime_tax_agglom_min": {
                     "type": "integer",

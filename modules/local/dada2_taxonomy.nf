@@ -36,7 +36,6 @@ process DADA2_TAXONOMY {
     taxlevels <- $taxlevels
 
     seq <- getSequences(\"$fasta\", collapse = TRUE, silence = FALSE)
-    names(seq) <- gsub("[ \t].*\$", "", names(seq))
     taxa <- assignTaxonomy(seq, \"$database\", taxLevels = taxlevels, $args, multithread = $task.cpus, verbose=TRUE, outputBootstraps = TRUE)
 
     # (1) Make a data frame, add ASV_ID from seq

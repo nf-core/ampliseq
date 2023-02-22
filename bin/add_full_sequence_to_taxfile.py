@@ -4,7 +4,6 @@
 # adds sequence to taxonomy based on ASV_ID
 
 import pandas as pd
-import re
 import sys, os
 
 # Argument check
@@ -26,8 +25,7 @@ with open(sys.argv[2], "r") as reader:
             if seq != "" and name != "":
                 seqs = seqs.append({"id": name, "sequence": seq}, ignore_index=True)
                 seq = ""
-            name = line.lstrip(">")
-            name = re.sub(r"\s+.*\n","",name)
+            name = line.lstrip(">").rstrip("\s+*\n")
         else:
             seq = seq + line.rstrip("\n")
 if seq != "" and name != "":

@@ -184,6 +184,7 @@ An [example samplesheet](../assets/samplesheet.tsv) has been provided with the p
 
 When pointing at a file ending with `.fasta`, `.fna` or `.fa`, the containing ASV/OTU sequences will be taxonomically classified.
 Most of the steps of the pipeline will be skipped, but ITSx & Barrnap & length filtering can be applied before taxonomic classification.
+The sequence header line may contain a description, that will be kept as part of the sequence name. However, tabs will be changed into spaces.
 
 ```bash
 --input 'path/to/amplicon_sequences.fasta'

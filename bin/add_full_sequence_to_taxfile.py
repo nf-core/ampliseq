@@ -25,7 +25,7 @@ with open(sys.argv[2], "r") as reader:
             if seq != "" and name != "":
                 seqs = seqs.append({"id": name, "sequence": seq}, ignore_index=True)
                 seq = ""
-            name = line.lstrip(">").rstrip("\s+*\n")
+            name = line.lstrip(">").rstrip()
         else:
             seq = seq + line.rstrip("\n")
 if seq != "" and name != "":

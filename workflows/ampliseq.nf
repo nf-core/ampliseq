@@ -132,6 +132,7 @@ include { FILTER_SSU                    } from '../modules/local/filter_ssu'
 include { FILTER_LEN_ASV                } from '../modules/local/filter_len_asv'
 include { MERGE_STATS as MERGE_STATS_FILTERSSU } from '../modules/local/merge_stats'
 include { MERGE_STATS as MERGE_STATS_FILTERLENASV } from '../modules/local/merge_stats'
+include { FORMAT_FASTAINPUT             } from '../modules/local/format_fastainput'
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
 include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
 include { MERGE_STATS as MERGE_STATS_STD} from '../modules/local/merge_stats'
@@ -306,7 +307,8 @@ workflow AMPLISEQ {
     // TODO: FILTER_SSU.out.stats needs to be merged still into "overall_summary.tsv"
     //
     if ( is_fasta_input ) {
-        ch_unfiltered_fasta = PARSE_INPUT.out.fasta
+        FORMAT_FASTAINPUT( PARSE_INPUT.out.fasta )
+        ch_unfiltered_fasta = FORMAT_FASTAINPUT.out.fasta
     } else {
         ch_unfiltered_fasta = DADA2_MERGE.out.fasta
     }
@@ -646,8 +648,6 @@ workflow AMPLISEQ {
         if (!params.skip_cutadapt) {
             ch_multiqc_files = ch_multiqc_files.mix(CUTADAPT_WORKFLOW.out.logs.collect{it[1]}.ifEmpty([]))
         }
-
-        ch_multiqc_configs = Channel.from(ch_multiqc_config).mix(ch_multiqc_custom_config).ifEmpty([])
 
         MULTIQC (
             ch_multiqc_files.collect(),

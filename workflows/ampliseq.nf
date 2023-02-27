@@ -649,7 +649,7 @@ workflow AMPLISEQ {
             ch_multiqc_files = ch_multiqc_files.mix(CUTADAPT_WORKFLOW.out.logs.collect{it[1]}.ifEmpty([]))
         }
 
-        ch_multiqc_configs = Channel.from(ch_multiqc_config).mix(ch_multiqc_custom_config).ifEmpty([])
+        ch_multiqc_config = ch_multiqc_config.mix(ch_multiqc_custom_config).ifEmpty([])
 
         MULTIQC (
             ch_multiqc_files.collect(),

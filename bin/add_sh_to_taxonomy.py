@@ -84,7 +84,7 @@ for row in fh:
                     tax = [""] * num_ranks
                 conf = m[1] / 100.0
         if SH != "":
-            tax_list = tax[1:num_ranks+1] + [SH] + [conf]
+            tax_list = tax[1 : num_ranks + 1] + [SH] + [conf]
             taxtable.loc[taxtable["ASV_ID"] == prev_ASV, tax_entries] = tax_list
         prev_ASV = ASV
         maxid = -1
@@ -130,7 +130,7 @@ if match != "*":  # Take care of last row/ASV in match file
                 tax = [""] * num_ranks
             conf = m[1] / 100.0
     if SH != "":
-        tax_list = tax[1:num_ranks+1] + [SH] + [conf]
+        tax_list = tax[1 : num_ranks + 1] + [SH] + [conf]
         taxtable.loc[taxtable["ASV_ID"] == prev_ASV, tax_entries] = tax_list
 
 

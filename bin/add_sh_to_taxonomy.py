@@ -30,8 +30,6 @@ seq2sh = pd.read_csv(sys.argv[1], sep="\t", header=None, index_col=0, skiprows=N
 shtax = pd.read_csv(sys.argv[2], sep="\t", header=None, index_col=0, skiprows=None, compression="bz2")
 # Change spaces to '_', to match UNITE databases
 shtax.replace(" ", "_", regex=True, inplace=True)
-# Replace taxonid with Domain = "Eukaryota"
-shtax.loc[:, 1] = "Eukaryota"
 # Remove genus from species name
 shtax.loc[:, 8] = shtax.loc[:, 8].str.split("_", 1).str[1]
 # Add empty species_exact column to match format for ASV_tax_species.tsv
@@ -86,7 +84,7 @@ for row in fh:
                     tax = [""] * num_ranks
                 conf = m[1] / 100.0
         if SH != "":
-            tax_list = tax[0:num_ranks] + [SH] + [conf]
+            tax_list = tax[1 : num_ranks + 1] + [SH] + [conf]
             taxtable.loc[taxtable["ASV_ID"] == prev_ASV, tax_entries] = tax_list
         prev_ASV = ASV
         maxid = -1
@@ -132,7 +130,7 @@ if match != "*":  # Take care of last row/ASV in match file
                 tax = [""] * num_ranks
             conf = m[1] / 100.0
     if SH != "":
-        tax_list = tax[0:num_ranks] + [SH] + [conf]
+        tax_list = tax[1 : num_ranks + 1] + [SH] + [conf]
         taxtable.loc[taxtable["ASV_ID"] == prev_ASV, tax_entries] = tax_list
 
 

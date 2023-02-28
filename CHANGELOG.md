@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#537](https://github.com/nf-core/ampliseq/pull/537) - Update output generated with option sbdi-export
 - [#541](https://github.com/nf-core/ampliseq/pull/541) - Remove adjustments of taxonomic levels for RDP & SILVA & GTDB & UNITE database for DADA2 taxonomic classification, reduced default of `--dada_tax_agglom_max` from 7 to 6
+- [#547](https://github.com/nf-core/ampliseq/pull/547) - `--filter_ssu` accepted any barrnap hit to a kingdom (any occurence in resulting gff) to choose an ASV, now only ASVs with the kingdom that has the lowest evalue are accepted.
 
 ### `Fixed`
 

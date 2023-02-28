@@ -307,7 +307,7 @@
             "properties": {
                 "filter_ssu": {
                     "type": "string",
-                    "description": "Enable SSU filtering. Comma separated list of kingdoms in Barrnap.",
+                    "description": "Enable SSU filtering. Comma separated list of kingdoms in Barrnap. ASVs that have their lowest evalue in that kingdoms are chosen.",
                     "enum": [
                         "bac,arc,mito,euk",
                         "bac",

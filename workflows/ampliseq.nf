@@ -304,7 +304,6 @@ workflow AMPLISEQ {
 
     //
     // Modules : Filter rRNA
-    // TODO: FILTER_SSU.out.stats needs to be merged still into "overall_summary.tsv"
     //
     if ( is_fasta_input ) {
         FORMAT_FASTAINPUT( PARSE_INPUT.out.fasta )
@@ -315,20 +314,23 @@ workflow AMPLISEQ {
 
     if (!params.skip_barrnap && params.filter_ssu) {
         BARRNAP ( ch_unfiltered_fasta )
+        BARRNAPSUMMARY ( BARRNAP.out.gff.collect() )
+        ch_barrnapsummary = BARRNAPSUMMARY.out.summary
         ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))
         FILTER_SSU ( DADA2_MERGE.out.fasta, DADA2_MERGE.out.asv, BARRNAP.out.matches )
         MERGE_STATS_FILTERSSU ( ch_stats, FILTER_SSU.out.stats )
         ch_stats = MERGE_STATS_FILTERSSU.out.tsv
         ch_dada2_fasta = FILTER_SSU.out.fasta
         ch_dada2_asv = FILTER_SSU.out.asv
-	ch_barrnap_gff = BARRNAP.out.gff
     } else if (!params.skip_barrnap && !params.filter_ssu) {
         BARRNAP ( ch_unfiltered_fasta )
+        BARRNAPSUMMARY ( BARRNAP.out.gff.collect() )
+        ch_barrnapsummary = BARRNAPSUMMARY.out.summary
         ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))
         ch_dada2_fasta = ch_unfiltered_fasta
         ch_dada2_asv = DADA2_MERGE.out.asv
-	ch_barrnap_gff = BARRNAP.out.gff
     } else {
+        ch_barrnapsummary = Channel.empty()
         ch_dada2_fasta = ch_unfiltered_fasta
         ch_dada2_asv = DADA2_MERGE.out.asv
     }
@@ -407,9 +409,9 @@ workflow AMPLISEQ {
                     ASSIGNSH( DADA2_TAXONOMY.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, 'ASV_tax_SH.tsv')
                     ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
                     ch_dada2_tax = ASSIGNSH.out.tsv
-                 } else {
-                     ch_dada2_tax = DADA2_TAXONOMY.out.tsv
-                 }
+                    } else {
+                        ch_dada2_tax = DADA2_TAXONOMY.out.tsv
+                    }
             }
         //Cut out ITS region if long ITS reads
         } else {
@@ -615,13 +617,7 @@ workflow AMPLISEQ {
     if ( params.sbdiexport ) {
         SBDIEXPORT ( ch_dada2_asv, ch_dada2_tax, ch_metadata )
         ch_versions = ch_versions.mix(SBDIEXPORT.out.versions.first())
-        if (!params.skip_barrnap) {
-	    BARRNAPSUMMARY(ch_barrnap_gff.collect())
-	    ch_barrnapsummary = BARRNAPSUMMARY.out.summary
-	} else {
-            ch_barrnapsummary =  Channel.empty()
-        }
-	SBDIEXPORTREANNOTATE ( ch_dada2_tax, ch_barrnapsummary )
+	    SBDIEXPORTREANNOTATE ( ch_dada2_tax, ch_barrnapsummary )
     }
 
     CUSTOM_DUMPSOFTWAREVERSIONS (

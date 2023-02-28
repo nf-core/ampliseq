@@ -317,7 +317,7 @@ workflow AMPLISEQ {
         BARRNAPSUMMARY ( BARRNAP.out.gff.collect() )
         ch_barrnapsummary = BARRNAPSUMMARY.out.summary
         ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))
-        FILTER_SSU ( DADA2_MERGE.out.fasta, DADA2_MERGE.out.asv, BARRNAP.out.matches )
+        FILTER_SSU ( DADA2_MERGE.out.fasta, DADA2_MERGE.out.asv, BARRNAPSUMMARY.out.summary )
         MERGE_STATS_FILTERSSU ( ch_stats, FILTER_SSU.out.stats )
         ch_stats = MERGE_STATS_FILTERSSU.out.tsv
         ch_dada2_fasta = FILTER_SSU.out.fasta

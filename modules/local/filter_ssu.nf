@@ -10,7 +10,7 @@ process FILTER_SSU {
     input:
     path(fasta)
     path(table)
-    path(lists)
+    path(barrnap_summary)
 
     output:
     path( "stats.ssu.tsv" )      , emit: stats
@@ -29,22 +29,23 @@ process FILTER_SSU {
     #load packages
     suppressPackageStartupMessages(library(Biostrings))
 
-    #use only selected kingdom
-    dir.create("./selection")
     kingdom <- as.list(strsplit("$kingdom", ",")[[1]])
-    for (x in kingdom) {
-        file.copy(paste0(x,".matches.txt"), paste0("./selection/",x,".matches.txt"))
-    }
-    files = list.files(path = "./selection", pattern="*matches.txt", full.names = TRUE)
 
-    #error if (all) file(s) is/are empty
-    if ( all(file.size(files) == 0L) ) stop("Chosen kingdom(s) by --filter_ssu has no matches. Please choose a diffferent kingdom or omit filtering.")
-    files = files[file.size(files) != 0L]
+    df = read.table("$barrnap_summary", header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+    # keep only ASV_ID & eval columns & sort
+    df <- subset(df, select = c(ASV_ID,mito_eval,euk_eval,arc_eval,bac_eval))
 
-    #read positive ID lists
-    list = do.call(rbind, lapply(files, function(x) read.csv(x, stringsAsFactors = FALSE, header = FALSE)))
-    list = unique(list)
-    colnames(list)[1] <- "ID"
+    # choose kingdom (column) with lowest evalue
+    df[is.na(df)] <- 1
+    df\$result = colnames(df[,2:5])[apply(df[,2:5],1,which.min)]
+    df\$result = gsub("_eval", "", df\$result)
+
+    # filter ASVs
+    df_filtered = subset(df, df\$result %in% kingdom)
+    id_filtered = subset(df_filtered, select = c(ASV_ID))
+
+    #error if all ASVs are removed
+    if ( nrow(df_filtered) == 0 ) stop("Chosen kingdom(s) by --filter_ssu has no matches. Please choose a different kingdom (domain) or omit filtering.")
 
     #read abundance file, first column is ASV_ID
     table <- read.table(file = "$table", sep = '\t', comment.char = "", header=TRUE)
@@ -55,12 +56,12 @@ process FILTER_SSU {
     seq <- data.frame(ID=names(seq), sequence=paste(seq))
 
     #check if all ids match
-    if(!all(list\$ID %in% seq\$ID))  {stop(paste(paste(files,sep=","),"and","$fasta","dont share all IDs, exit."), call.=FALSE)}
-    if(!all(list\$ID %in% table\$ASV_ID))  {stop(paste(paste(files,sep=","),"and","$table","dont share all IDs, exit"), call.=FALSE)}
+    if(!all(id_filtered\$ID %in% seq\$ID))  {stop(paste(paste(files,sep=","),"and","$fasta","dont share all IDs, exit."), call.=FALSE)}
+    if(!all(id_filtered\$ID %in% table\$ASV_ID))  {stop(paste(paste(files,sep=","),"and","$table","dont share all IDs, exit"), call.=FALSE)}
 
     #merge
-    filtered_table <- merge(table, list, by.x="ASV_ID", by.y="ID", all.x=FALSE, all.y=TRUE)
-    filtered_seq <- merge(seq, list, by.x="ID", by.y="ID", all.x=FALSE, all.y=TRUE)
+    filtered_table <- merge(table, id_filtered, by.x="ASV_ID", by.y="ASV_ID", all.x=FALSE, all.y=TRUE)
+    filtered_seq <- merge(seq, id_filtered, by.x="ID", by.y="ASV_ID", all.x=FALSE, all.y=TRUE)
 
     #write
     write.table(filtered_table, file = "ASV_table.ssu.tsv", row.names=FALSE, sep="\t", col.names = TRUE, quote = FALSE, na = '')

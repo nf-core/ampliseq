@@ -45,7 +45,7 @@ process FILTER_SSU {
     id_filtered = subset(df_filtered, select = c(ASV_ID))
 
     #error if all ASVs are removed
-    if ( nrow(df_filtered) == 0 ) stop("Chosen kingdom(s) by --filter_ssu has no matches. Please choose a diffferent kingdom or omit filtering.")
+    if ( nrow(df_filtered) == 0 ) stop("Chosen kingdom(s) by --filter_ssu has no matches. Please choose a different kingdom (domain) or omit filtering.")
 
     #read abundance file, first column is ASV_ID
     table <- read.table(file = "$table", sep = '\t', comment.char = "", header=TRUE)

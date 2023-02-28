@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## nf-core/ampliseq version 2.5.0dev
+## nf-core/ampliseq version 2.4.2 - 2023-03-01
 
 ### `Added`
 
@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#513](https://github.com/nf-core/ampliseq/pull/513) - Template update for nf-core/tools version 2.7.2
 - [#519](https://github.com/nf-core/ampliseq/pull/519) - Adding the pipeline reference to the MultiQC report
 - [#520](https://github.com/nf-core/ampliseq/pull/520),[#530](https://github.com/nf-core/ampliseq/pull/530) - Fix conda packages
-- [#531](https://github.com/nf-core/ampliseq/pull/531) - Update documentation
+- [#531](https://github.com/nf-core/ampliseq/pull/531),[#546](https://github.com/nf-core/ampliseq/pull/546) - Update documentation
 - [#535](https://github.com/nf-core/ampliseq/pull/535) - Make sure barrnap runs with fasta input
 - [#544](https://github.com/nf-core/ampliseq/pull/544) - Adding module to fix header in fasta input if needed
 

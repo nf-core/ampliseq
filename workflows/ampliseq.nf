@@ -101,9 +101,12 @@ if ( params.dada_ref_taxonomy && !params.skip_dada_addspecies && !params.skip_ta
 }
 
 //only run QIIME2 when taxonomy is actually calculated and all required data is available
-if ( !params.enable_conda && !params.skip_taxonomy && !params.skip_qiime ) {
+if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) && !params.skip_taxonomy && !params.skip_qiime ) {
     run_qiime2 = true
-} else { run_qiime2 = false }
+} else {
+    run_qiime2 = false
+    if ( workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1 ) { log.warn "Conda or mamba is enabled, any steps involving QIIME2 are not available. Use a container engine instead of conda to enable all software." }
+}
 
 // Set cutoff to use for SH assignment
 if ( params.addsh ) {
@@ -124,10 +127,12 @@ include { DADA2_RMCHIMERA               } from '../modules/local/dada2_rmchimera
 include { DADA2_STATS                   } from '../modules/local/dada2_stats'
 include { DADA2_MERGE                   } from '../modules/local/dada2_merge'
 include { BARRNAP                       } from '../modules/local/barrnap'
+include { BARRNAPSUMMARY                } from '../modules/local/barrnapsummary'
 include { FILTER_SSU                    } from '../modules/local/filter_ssu'
 include { FILTER_LEN_ASV                } from '../modules/local/filter_len_asv'
 include { MERGE_STATS as MERGE_STATS_FILTERSSU } from '../modules/local/merge_stats'
 include { MERGE_STATS as MERGE_STATS_FILTERLENASV } from '../modules/local/merge_stats'
+include { FORMAT_FASTAINPUT             } from '../modules/local/format_fastainput'
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
 include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
 include { MERGE_STATS as MERGE_STATS_STD} from '../modules/local/merge_stats'
@@ -198,7 +203,6 @@ workflow AMPLISEQ {
     //
     PARSE_INPUT ( params.input, is_fasta_input, single_end, params.multiple_sequencing_runs, params.extension )
     ch_reads = PARSE_INPUT.out.reads
-    ch_fasta = PARSE_INPUT.out.fasta
 
     //
     // MODULE: Rename files
@@ -231,7 +235,7 @@ workflow AMPLISEQ {
     //
     // SUBWORKFLOW: Read preprocessing & QC plotting with DADA2
     //
-    DADA2_PREPROCESSING ( 
+    DADA2_PREPROCESSING (
         ch_trimmed_reads,
         single_end,
         find_truncation_values,
@@ -300,23 +304,34 @@ workflow AMPLISEQ {
 
     //
     // Modules : Filter rRNA
-    // TODO: FILTER_SSU.out.stats needs to be merged still into "overall_summary.tsv"
     //
+    if ( is_fasta_input ) {
+        FORMAT_FASTAINPUT( PARSE_INPUT.out.fasta )
+        ch_unfiltered_fasta = FORMAT_FASTAINPUT.out.fasta
+    } else {
+        ch_unfiltered_fasta = DADA2_MERGE.out.fasta
+    }
+
     if (!params.skip_barrnap && params.filter_ssu) {
-        BARRNAP ( DADA2_MERGE.out.fasta )
+        BARRNAP ( ch_unfiltered_fasta )
+        BARRNAPSUMMARY ( BARRNAP.out.gff.collect() )
+        ch_barrnapsummary = BARRNAPSUMMARY.out.summary
         ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))
-        FILTER_SSU ( DADA2_MERGE.out.fasta, DADA2_MERGE.out.asv, BARRNAP.out.matches )
+        FILTER_SSU ( DADA2_MERGE.out.fasta, DADA2_MERGE.out.asv, BARRNAPSUMMARY.out.summary )
         MERGE_STATS_FILTERSSU ( ch_stats, FILTER_SSU.out.stats )
         ch_stats = MERGE_STATS_FILTERSSU.out.tsv
         ch_dada2_fasta = FILTER_SSU.out.fasta
         ch_dada2_asv = FILTER_SSU.out.asv
     } else if (!params.skip_barrnap && !params.filter_ssu) {
-        BARRNAP ( DADA2_MERGE.out.fasta )
+        BARRNAP ( ch_unfiltered_fasta )
+        BARRNAPSUMMARY ( BARRNAP.out.gff.collect() )
+        ch_barrnapsummary = BARRNAPSUMMARY.out.summary
         ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))
-        ch_dada2_fasta =  DADA2_MERGE.out.fasta
+        ch_dada2_fasta = ch_unfiltered_fasta
         ch_dada2_asv = DADA2_MERGE.out.asv
     } else {
-        ch_dada2_fasta =  DADA2_MERGE.out.fasta
+        ch_barrnapsummary = Channel.empty()
+        ch_dada2_fasta = ch_unfiltered_fasta
         ch_dada2_asv = DADA2_MERGE.out.asv
     }
 
@@ -324,7 +339,7 @@ workflow AMPLISEQ {
     // Modules : amplicon length filtering
     //
     if (params.min_len_asv || params.max_len_asv) {
-        FILTER_LEN_ASV ( ch_dada2_fasta,ch_dada2_asv )
+        FILTER_LEN_ASV ( ch_dada2_fasta, ch_dada2_asv.ifEmpty( [] ) )
         ch_versions = ch_versions.mix(FILTER_LEN_ASV.out.versions.ifEmpty(null))
         MERGE_STATS_FILTERLENASV ( ch_stats, FILTER_LEN_ASV.out.stats )
         ch_stats = MERGE_STATS_FILTERLENASV.out.tsv
@@ -335,10 +350,7 @@ workflow AMPLISEQ {
     //
     // SUBWORKFLOW / MODULES : Taxonomic classification with DADA2 and/or QIIME2
     //
-    //Alternative entry point for fasta that is being classified
-    if ( !is_fasta_input ) {
-        ch_fasta = ch_dada2_fasta
-    }
+    ch_fasta = ch_dada2_fasta
 
     //DADA2
     if (!params.skip_taxonomy) {
@@ -397,9 +409,9 @@ workflow AMPLISEQ {
                     ASSIGNSH( DADA2_TAXONOMY.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, 'ASV_tax_SH.tsv')
                     ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
                     ch_dada2_tax = ASSIGNSH.out.tsv
-                 } else {
-                     ch_dada2_tax = DADA2_TAXONOMY.out.tsv
-                 }
+                    } else {
+                        ch_dada2_tax = DADA2_TAXONOMY.out.tsv
+                    }
             }
         //Cut out ITS region if long ITS reads
         } else {
@@ -506,7 +518,7 @@ workflow AMPLISEQ {
             tax_agglom_max = 2
         }
 
-        //Filtering by taxonomy & prevalence & counts
+        //Filtering ASVs by taxonomy & prevalence & counts
         if (params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1) {
             QIIME2_FILTERTAXA (
                 QIIME2_INASV.out.qza,
@@ -569,7 +581,8 @@ workflow AMPLISEQ {
                 ch_metacolumn_pairwise,
                 ch_metacolumn_all,
                 params.skip_alpha_rarefaction,
-                params.skip_diversity_indices
+                params.skip_diversity_indices,
+                params.diversity_rarefaction_depth
             )
         }
 
@@ -604,7 +617,7 @@ workflow AMPLISEQ {
     if ( params.sbdiexport ) {
         SBDIEXPORT ( ch_dada2_asv, ch_dada2_tax, ch_metadata )
         ch_versions = ch_versions.mix(SBDIEXPORT.out.versions.first())
-        SBDIEXPORTREANNOTATE ( ch_dada2_tax )
+        SBDIEXPORTREANNOTATE ( ch_dada2_tax, ch_barrnapsummary )
     }
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
@@ -632,16 +645,13 @@ workflow AMPLISEQ {
             ch_multiqc_files = ch_multiqc_files.mix(CUTADAPT_WORKFLOW.out.logs.collect{it[1]}.ifEmpty([]))
         }
 
-        ch_multiqc_configs = Channel.from(ch_multiqc_config).mix(ch_multiqc_custom_config).ifEmpty([])
-
         MULTIQC (
             ch_multiqc_files.collect(),
-            ch_multiqc_config.collect().ifEmpty([]),
-            ch_multiqc_custom_config.collect().ifEmpty([]),
-            ch_multiqc_logo.collect().ifEmpty([])
+            ch_multiqc_config.toList(),
+            ch_multiqc_custom_config.toList(),
+            ch_multiqc_logo.toList()
         )
         multiqc_report = MULTIQC.out.report.toList()
-        ch_versions    = ch_versions.mix(MULTIQC.out.versions)
     }
 
     //Save input in results folder
@@ -651,7 +661,7 @@ workflow AMPLISEQ {
         input.copyTo("${params.outdir}/input")
     }
     //Save metadata in results folder
-    if ( params.metadata ) { 
+    if ( params.metadata ) {
         file("${params.outdir}/input").mkdir()
         file("${params.metadata}").copyTo("${params.outdir}/input")
     }
@@ -669,7 +679,7 @@ workflow.onComplete {
     }
     NfcoreTemplate.summary(workflow, params, log)
     if (params.hook_url) {
-        NfcoreTemplate.adaptivecard(workflow, params, summary_params, projectDir, log)
+        NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
     }
 }
 

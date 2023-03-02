@@ -10,7 +10,7 @@ for f in *.tar.gz; do
 done
 
 # Write the assignTaxonomy() fasta file: assignTaxonomy.fna
-cat ar122*.fna bac120*.fna | sed '/^>/s/>[^ ]\+ \([^[]\+\) \[.*/>\1/' | sed '/^>/s/ \[.*//' | sed 's/[a-z]__//g' | sed '/^>/s/\(Archaea\)\|\(Bacteria\)/&;&/' > assignTaxonomy.fna
+cat ar122*.fna bac120*.fna | sed '/^>/s/>[^ ]\+ \([^[]\+\) \[.*/>\1/' | sed '/^>/s/ \[.*//' | sed 's/[a-z]__//g' > assignTaxonomy.fna
 
 # Write the addSpecies() fasta file: addSpecies.fna
 cat ar122*.fna bac120*.fna | sed '/^>/s/>\([^ ]\+\) .*;s__\([^[]\+\) \[.*/>\1 \2/' > addSpecies.fna

@@ -2,8 +2,12 @@ process QIIME2_INSEQ {
     tag "${seq}"
     label 'process_low'
 
-    conda (params.enable_conda ? { exit 1 "QIIME2 has no conda package" } : null)
-    container "quay.io/qiime2/core:2022.8"
+    container "quay.io/qiime2/core:2022.11"
+
+    // Exit if running this module with -profile conda / -profile mamba
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
+        exit 1, "QIIME2 does not support Conda. Please use Docker / Singularity / Podman instead."
+    }
 
     input:
     path(seq)

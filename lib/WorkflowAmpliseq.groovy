@@ -10,8 +10,6 @@ class WorkflowAmpliseq {
     // Check and validate parameters
     //
     public static void initialise(params, log) {
-        if (params.enable_conda) { log.warn "Conda is enabled (`--enable_conda`), any steps involving QIIME2 are not available. Use a container engine instead of conda to enable all software." }
-
         if ( params.pacbio || params.iontorrent || params.single_end ) {
             if (params.trunclenr) { log.warn "Unused parameter: `--trunclenr` is ignored because the data is single end." }
         } else if (params.trunclenf && !params.trunclenr) {
@@ -100,9 +98,9 @@ class WorkflowAmpliseq {
             System.exit(1)
         }
 
-        String[] sbdi_incompatible_databases = ["midori2-co1=gb250","midori2-co1","rdp=18","rdp","sbdi-gtdb","sbdi-gtdb=R06-RS202-3","sbdi-gtdb=R06-RS202-1","silva=132","unite-fungi","unite-fungi=8.3","unite-fungi=8.2","unite-alleuk","unite-alleuk=8.3","unite-alleuk=8.2"]
-        if ( params.sbdiexport && Arrays.stream(sbdi_incompatible_databases).anyMatch(entry -> params.dada_ref_taxonomy.toString().equals(entry)) ) {
-            log.error "Incompatible parameters: `--sbdiexport` does not work with the chosen databse of `--dada_ref_taxonomy`, because the expected taxonomic levels do not match."
+        String[] sbdi_compatible_databases = ["coidb","coidb=221216","gtdb","gtdb=R07-RS207","gtdb=R06-RS202","gtdb=R05-RS95","midori2-co1","midori2-co1=gb250","pr2","pr2=4.14.0","pr2=4.13.0","rdp","rdp=18","sbdi-gtdb","sbdi-gtdb=R07-RS207-1","silva","silva=138","silva=132","unite-fungi","unite-fungi=8.3","unite-fungi=8.2","unite-alleuk","unite-alleuk=8.3","unite-alleuk=8.2"]
+        if ( params.sbdiexport && !Arrays.stream(sbdi_compatible_databases).anyMatch(entry -> params.dada_ref_taxonomy.toString().equals(entry)) ) {
+            log.error "Incompatible parameters: `--sbdiexport` does not work with the chosen database of `--dada_ref_taxonomy`, because the expected taxonomic levels do not match."
             System.exit(1)
         }
 

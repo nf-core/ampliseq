@@ -2,7 +2,7 @@ process DADA2_ERR {
     tag "$meta.run"
     label 'process_medium'
 
-    conda (params.enable_conda ? "bioconductor-dada2=1.22.0" : null)
+    conda "bioconda::bioconductor-dada2=1.22.0 conda-forge::r-digest=0.6.30"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.22.0--r41h399db7b_0' :
         'quay.io/biocontainers/bioconductor-dada2:1.22.0--r41h399db7b_0' }"
@@ -13,6 +13,7 @@ process DADA2_ERR {
     output:
     tuple val(meta), path("*.err.rds"), emit: errormodel
     tuple val(meta), path("*.err.pdf"), emit: pdf
+    tuple val(meta), path("*.err.svg"), emit: svg
     tuple val(meta), path("*.err.log"), emit: log
     tuple val(meta), path("*.err.convergence.txt"), emit: convergence
     path "versions.yml"               , emit: versions
@@ -43,8 +44,14 @@ process DADA2_ERR {
         pdf("${meta.run}_1.err.pdf")
         plotErrors(errF, nominalQ = TRUE)
         dev.off()
+        svg("${meta.run}_1.err.svg")
+        plotErrors(errF, nominalQ = TRUE)
+        dev.off()
 
         pdf("${meta.run}_2.err.pdf")
+        plotErrors(errR, nominalQ = TRUE)
+        dev.off()
+        svg("${meta.run}_2.err.svg")
         plotErrors(errR, nominalQ = TRUE)
         dev.off()
 
@@ -73,6 +80,9 @@ process DADA2_ERR {
         sink(file = NULL)
 
         pdf("${meta.run}.err.pdf")
+        plotErrors(errF, nominalQ = TRUE)
+        dev.off()
+        svg("${meta.run}.err.svg")
         plotErrors(errF, nominalQ = TRUE)
         dev.off()
 

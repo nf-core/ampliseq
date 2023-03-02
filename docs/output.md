@@ -20,7 +20,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [Barrnap](#barrnap) - Predict ribosomal RNA sequences and optional filtering
   - [Length filter](#length-filter) - Optionally, ASV can be filtered by length thresholds
   - [ITSx](#itsx) - Optionally, the ITS region can be extracted
-- [Taxonomic classification with DADA2](#taxonomic-classification-with-DADA2) - Taxonomic classification of (filtered) ASVs
+- [Taxonomic classification with DADA2](#taxonomic-classification-with-dada2) - Taxonomic classification of (filtered) ASVs
   - [assignSH](#assignsh) - Optionally, a UNITE species hypothesis (SH) can be added to the taxonomy
 - [QIIME2](#qiime2) - Secondary analysis
   - [Taxonomic classification](#taxonomic-classification) - Taxonomical classification of ASVs
@@ -29,8 +29,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [Barplot](#barplot) - Interactive barplot
   - [Alpha diversity rarefaction curves](#alpha-diversity-rarefaction-curves) - Rarefaction curves for quality control
   - [Diversity analysis](#diversity-analysis) - High level overview with different diversity indices
-  - [Alpha diversity indices](#alpha-diversity-indices) - Diversity within samples
-  - [Beta diversity indices](#beta-diversity-indices) - Diversity between samples (e.g. PCoA plots)
   - [ANCOM](#ancom) - Differential abundance analysis
 - [PICRUSt2](#picrust2) - Predict the functional potential of a bacterial community
 - [Read count report](#read-count-report) - Report of read counts during various steps of the pipeline
@@ -145,10 +143,11 @@ Optionally, ASV sequences can be filtered for rRNA sequences identified by Barrn
 <summary>Output files</summary>
 
 - `barrnap/`
-  - `ASV_seqs.ssu.fasta`: Fasta file with filtered ASV sequences.
-  - `AASV_table.ssu.tsv`: Counts for each filtered ASV sequence.
   - `rrna.<kingdom>.gff`: GFF3 output for rRNA matches per kingdom, where kingdom is one of `bac,arc,mito,euk`.
-  - `stats.ssu.tsv`: Tracking read numbers through filtering, for each sample.
+  - `summary.tsv`: Summary of evalues for each ASV and kingdom
+  - `ASV_seqs.ssu.fasta`: Fasta file with filtered ASV sequences, only if `--filter_ssu` is set.
+  - `ASV_table.ssu.tsv`: Counts for each filtered ASV sequence, only if `--filter_ssu` is set.
+  - `stats.ssu.tsv`: Tracking read numbers through filtering, for each sample, only if `--filter_ssu` is set.
 
 </details>
 
@@ -163,7 +162,7 @@ The minimum ASV length threshold can be set by `--min_len_asv` and the maximum l
 
 - `asv_length_filter/`
   - `ASV_seqs.len.fasta`: Fasta file with filtered ASV sequences.
-  - `AASV_table.len.tsv`: Counts for each filtered ASV sequence.
+  - `ASV_table.len.tsv`: Counts for each filtered ASV sequence.
   - `ASV_len_orig.tsv`: ASV length distribution before filtering.
   - `ASV_len_filt.tsv`: ASV length distribution after filtering.
   - `stats.len.tsv`: Tracking read numbers through filtering, for each sample.
@@ -330,7 +329,7 @@ Produces rarefaction plots for several alpha diversity indices, and is primarily
 
 #### Diversity analysis
 
-Diversity measures summarize important sample features (alpha diversity) or differences between samples (beta diversity). To do so, sample data is first rarefied to the minimum number of counts per sample. Also, a phylogenetic tree of all ASVs is computed to provide phylogenetic information.
+Diversity measures summarize important sample features (alpha diversity) or differences between samples (beta diversity). To do so, sample data is first rarefied to the minimum number of counts per sample. Parameter `--diversity_rarefaction_depth` can increase the rarefaction depth at the cost of excluding low count samples. Also, a phylogenetic tree of all ASVs is computed to provide phylogenetic information.
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -387,7 +386,7 @@ Furthermore, ADONIS permutation-based statistical test in vegan-R determine whet
 
 #### ANCOM
 
-Analysis of Composition of Microbiomes ([ANCOM](https://www.ncbi.nlm.nih.gov/pubmed/26028277)) is applied to identify features that are differentially abundant across sample groups. A key assumption made by ANCOM is that few taxa (less than about 25%) will be differentially abundant between groups otherwise the method will be inaccurate.
+Analysis of Composition of Microbiomes ([ANCOM](https://www.ncbi.nlm.nih.gov/pubmed/26028277)) is applied to identify features that are differentially abundant across sample groups. A key assumption made by ANCOM is that few taxa (less than about 25%) will be differentially abundant between groups otherwise the method will be inaccurate. Parameter `--ancom_sample_min_count` sets the minimum sample counts to retain a sample for ANCOM analysis.
 
 ANCOM is applied to each suitable or specified metadata column for 5 taxonomic levels (2-6).
 

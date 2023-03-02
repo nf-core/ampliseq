@@ -1,5 +1,5 @@
-process QIIME2_INTAX {
-    tag "${tax}"
+process QIIME2_FILTERSAMPLES {
+    tag "${filter}"
     label 'process_low'
 
     container "quay.io/qiime2/core:2022.11"
@@ -10,24 +10,26 @@ process QIIME2_INTAX {
     }
 
     input:
-    path(tax) //ASV_tax_species.tsv
+    tuple path(metadata), path(table), val(filter)
 
     output:
-    path("taxonomy.qza") , emit: qza
-    path "versions.yml"  , emit: versions
+    path("*.qza")       , emit: qza
+    path "versions.yml" , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
+    def args = task.ext.args ?: "--p-where \'${filter}<>\"\"\'"
+    def prefix = task.ext.prefix ?: "${filter}"
     """
-    parse_dada2_taxonomy.r $tax
+    export XDG_CONFIG_HOME="\${PWD}/HOME"
 
-    qiime tools import \\
-        --type 'FeatureData[Taxonomy]' \\
-        --input-format HeaderlessTSVTaxonomyFormat \\
-        --input-path tax.tsv \\
-        --output-path taxonomy.qza
+    qiime feature-table filter-samples \\
+        --i-table ${table} \\
+        --m-metadata-file ${metadata} \\
+        $args \\
+        --o-filtered-table ${prefix}.qza
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

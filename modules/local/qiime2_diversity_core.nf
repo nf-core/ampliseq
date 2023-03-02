@@ -1,14 +1,19 @@
 process QIIME2_DIVERSITY_CORE {
     label 'process_low'
 
-    conda (params.enable_conda ? { exit 1 "QIIME2 has no conda package" } : null)
-    container "quay.io/qiime2/core:2022.8"
+    container "quay.io/qiime2/core:2022.11"
+
+    // Exit if running this module with -profile conda / -profile mamba
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
+        exit 1, "QIIME2 does not support Conda. Please use Docker / Singularity / Podman instead."
+    }
 
     input:
     path(metadata)
     path(table)
     path(tree)
     path(stats)
+    val(mindepth)
 
     output:
     path("diversity_core/*_pcoa_results.qza")   , emit: pcoa
@@ -25,6 +30,7 @@ process QIIME2_DIVERSITY_CORE {
     export XDG_CONFIG_HOME="\${PWD}/HOME"
 
     mindepth=\$(count_table_minmax_reads.py $stats minimum 2>&1)
+    if [ \"\$mindepth\" -lt \"$mindepth\" ]; then mindepth=$mindepth; fi
     if [ \"\$mindepth\" -gt \"10000\" ]; then echo \$mindepth >\"Use the sampling depth of \$mindepth for rarefaction.txt\" ; fi
     if [ \"\$mindepth\" -lt \"10000\" -a \"\$mindepth\" -gt \"5000\" ]; then echo \$mindepth >\"WARNING The sampling depth of \$mindepth is quite small for rarefaction.txt\" ; fi
     if [ \"\$mindepth\" -lt \"5000\" -a \"\$mindepth\" -gt \"1000\" ]; then echo \$mindepth >\"WARNING The sampling depth of \$mindepth is very small for rarefaction.txt\" ; fi

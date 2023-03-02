@@ -2,7 +2,7 @@ process FILTER_LEN_ASV {
     tag "${fasta}"
     label 'process_low'
 
-    conda (params.enable_conda ? "bioconductor::biostrings=2.58.0" : null)
+    conda "bioconda::bioconductor-biostrings=2.58.0"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/bioconductor-biostrings:2.58.0--r40h037d062_0' :
         'quay.io/biocontainers/bioconductor-biostrings:2.58.0--r40h037d062_0' }"
@@ -25,6 +25,8 @@ process FILTER_LEN_ASV {
     script:
     def min_len_asv = params.min_len_asv ?: '1'
     def max_len_asv = params.max_len_asv ?: '1000000'
+
+    def read_table  = table ? "table <- read.table(file = '$table', sep = '\t', comment.char = '', header=TRUE)" : "table <- data.frame(matrix(ncol = 1, nrow = 0))"
     """
     #!/usr/bin/env Rscript
 
@@ -32,7 +34,7 @@ process FILTER_LEN_ASV {
     suppressPackageStartupMessages(library(Biostrings))
 
     #read abundance file, first column is ASV_ID
-    table <- read.table(file = "$table", sep = '\t', comment.char = "", header=TRUE)
+    $read_table
     colnames(table)[1] <- "ASV_ID"
 
     #read fasta file of ASV sequences

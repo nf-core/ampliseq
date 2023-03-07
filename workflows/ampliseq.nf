@@ -182,6 +182,7 @@ include { CUTADAPT as CUTADAPT_TAXONOMY     } from '../modules/nf-core/cutadapt/
 include { FASTQC                            } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/custom/dumpsoftwareversions/main'
+include { VSEARCH_SINTAX                    } from '../modules/nf-core/vsearch/sintax/main'
 include { VSEARCH_USEARCHGLOBAL             } from '../modules/nf-core/vsearch/usearchglobal/main'
 
 

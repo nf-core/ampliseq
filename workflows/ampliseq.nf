@@ -63,6 +63,10 @@ if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
     ch_qiime_ref_taxonomy = Channel.fromList(params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"]).map { file(it) }
 } else { ch_qiime_ref_taxonomy = Channel.empty() }
 
+if (params.sintax_ref_taxonomy && !params.skip_taxonomy) {
+    ch_sintax_ref_taxonomy = Channel.fromList(params.sintax_ref_databases[params.sintax_ref_taxonomy]["file"]).map { file(it) }
+} else { ch_sintax_ref_taxonomy = Channel.empty() }
+
 
 // Set non-params Variables
 
@@ -134,6 +138,7 @@ include { MERGE_STATS as MERGE_STATS_FILTERSSU } from '../modules/local/merge_st
 include { MERGE_STATS as MERGE_STATS_FILTERLENASV } from '../modules/local/merge_stats'
 include { FORMAT_FASTAINPUT             } from '../modules/local/format_fastainput'
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
+include { FORMAT_TAXONOMY_SINTAX        } from '../modules/local/format_taxonomy_sintax'
 include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
 include { MERGE_STATS as MERGE_STATS_STD} from '../modules/local/merge_stats'
 include { DADA2_TAXONOMY                } from '../modules/local/dada2_taxonomy'
@@ -410,9 +415,9 @@ workflow AMPLISEQ {
                     ASSIGNSH( DADA2_TAXONOMY.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, 'ASV_tax_SH.tsv')
                     ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
                     ch_dada2_tax = ASSIGNSH.out.tsv
-                    } else {
-                        ch_dada2_tax = DADA2_TAXONOMY.out.tsv
-                    }
+                } else {
+                    ch_dada2_tax = DADA2_TAXONOMY.out.tsv
+                }
             }
         //Cut out ITS region if long ITS reads
         } else {
@@ -471,6 +476,22 @@ workflow AMPLISEQ {
             }
         }
     }
+
+    // Sintax
+    if (params.sintax) {
+        FORMAT_TAXONOMY_SINTAX ( ch_sintax_ref_taxonomy.collect() )
+        ch_sintaxdb = FORMAT_TAXONOMY_SINTAX.out.db
+        ch_fasta
+            .map {
+                fasta ->
+                    def meta = [:]
+                    meta.id = "ASV_tax_sintax"
+                    [ meta, fasta ] }
+            .set { ch_fasta_sintax }
+        VSEARCH_SINTAX( ch_fasta_sintax, ch_sintaxdb )
+        ch_versions = ch_versions.mix(VSEARCH_SINTAX.out.versions)
+    }
+
 
     //QIIME2
     if ( run_qiime2 ) {

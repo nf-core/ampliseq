@@ -279,6 +279,22 @@
                     "description": "Path to QIIME2 trained classifier file (typically *-classifier.qza)",
                     "help_text": "If you have trained a compatible classifier before, from sources such as SILVA (https://www.arb-silva.de/), Greengenes (http://greengenes.secondgenome.com/downloads) or RDP (https://rdp.cme.msu.edu/). \n\nFor example:\n\n```bash\n--classifier \"FW_primer-RV_primer-classifier.qza\"\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The classifier is a Naive Bayes classifier produced by `qiime feature-classifier fit-classifier-naive-bayes` (e.g. by this pipeline)\n3. The primer pair for the amplicon PCR and the computing of the classifier are exactly the same (or full-length, potentially lower performance)\n4. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses"
                 },
+                "sintax_ref_taxonomy": {
+                    "type": "string",
+                    "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `coidb=221216`) . This will download the desired database and if needed format it to produce a file that is compatible with USEARCH sintax.\n\nThe following databases are supported:\n- UNITE - eukaryotic nuclear ribosomal ITS region - ITS\n- COIDB - eukaryotic Cytochrome Oxidase I (COI) from The Barcode of Life Data System (BOLD) - COI\n\nGenerally, using `coidb`, `unite-fungi`, or `unite-alleuk` will select the most recent supported version. For details on what values are valid, please either use an invalid value such as `x` (causing the pipeline to send an error message with a list of all valid values) or see `conf/ref_databases.config`.",
+                    "description": "Name of supported database, and optionally also version number",
+                    "default": "null",
+                    "enum": [
+                        "coidb",
+                        "coidb=221216",
+                        "unite-fungi=8.3",
+                        "unite-fungi=8.2",
+                        "unite-fungi",
+                        "unite-alleuk=8.3",
+                        "unite-alleuk=8.2",
+                        "unite-alleuk"
+                    ]
+                },
                 "sintax": {
                     "type": "boolean",
                     "description": "If VSEARCH sintax should be used for taxonomic assingment of ASVs."

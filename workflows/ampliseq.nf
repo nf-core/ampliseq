@@ -617,7 +617,7 @@ workflow AMPLISEQ {
     if ( params.sbdiexport ) {
         SBDIEXPORT ( ch_dada2_asv, ch_dada2_tax, ch_metadata )
         ch_versions = ch_versions.mix(SBDIEXPORT.out.versions.first())
-        SBDIEXPORTREANNOTATE ( ch_dada2_tax, ch_barrnapsummary )
+        SBDIEXPORTREANNOTATE ( ch_dada2_tax, ch_barrnapsummary.ifEmpty([]) )
     }
 
     CUSTOM_DUMPSOFTWAREVERSIONS (

@@ -25,6 +25,11 @@ taxonomy <- read.delim(taxfile, sep = '\t', stringsAsFactors = FALSE)
 # Read the predictions table if provided, otherwise create one
 if ( ! is.na(predfile) ) {
     predictions <- read.delim(predfile, sep = '\t', stringsAsFactors = FALSE)
+    if ( nrow(predictions) < 1 ) {
+        colnames <- names(predictions)
+        predictions <- data.frame(ASV_ID = taxonomy$ASV_ID)
+        predictions[,colnames[colnames != "ASV_ID"]] <- NA
+    }
 } else {
     predictions <- data.frame(ASV_ID = taxonomy$ASV_ID)
 }

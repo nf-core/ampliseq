@@ -11,6 +11,7 @@ process BARRNAPSUMMARY {
 
     output:
     path "summary.tsv" , emit: summary
+    path "*warning.txt" , emit: warning
 
     when:
     task.ext.when == null || task.ext.when
@@ -20,6 +21,12 @@ process BARRNAPSUMMARY {
 
     """
     summarize_barrnap.py $predictions
+
+    if [[ \$(wc -l < summary.tsv ) -le 1 ]]; then
+        touch WARNING_no_rRNA_found_warning.txt
+    else
+        touch no_warning.txt
+    fi
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

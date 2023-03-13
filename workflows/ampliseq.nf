@@ -316,9 +316,10 @@ workflow AMPLISEQ {
         BARRNAP ( ch_unfiltered_fasta )
         BARRNAPSUMMARY ( BARRNAP.out.gff.collect() )
         BARRNAPSUMMARY.out.warning.subscribe {
-            if ( it.baseName.toString().startsWith("WARNING") )
+            if ( it.baseName.toString().startsWith("WARNING") ) {
                 log.error "Barrnap could not identify any rRNA in the ASV sequences! This will result in all sequences being removed with SSU filtering."
                 System.exit(1)
+            }
         }
         ch_barrnapsummary = BARRNAPSUMMARY.out.summary
         ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))

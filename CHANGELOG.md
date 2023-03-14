@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
+- [#551](https://github.com/nf-core/ampliseq/pull/551) - Handle empty barrnap results files
+
 ### `Dependencies`
 
 ### `Removed`

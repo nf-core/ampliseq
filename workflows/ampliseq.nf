@@ -331,7 +331,7 @@ workflow AMPLISEQ {
     } else if (!params.skip_barrnap && !params.filter_ssu) {
         BARRNAP ( ch_unfiltered_fasta )
         BARRNAPSUMMARY ( BARRNAP.out.gff.collect() )
-        BARRNAPSUMMARY.out.warning.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn "Barrnap could not identify any rRNA in the ASV sequences, which seem to be non-ribosomal. We recommended to use the --skip_barrnap option for these sequences." }
+        BARRNAPSUMMARY.out.warning.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn "Barrnap could not identify any rRNA in the ASV sequences. We recommended to use the --skip_barrnap option for these sequences." }
         ch_barrnapsummary = BARRNAPSUMMARY.out.summary
         ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))
         ch_dada2_fasta = ch_unfiltered_fasta

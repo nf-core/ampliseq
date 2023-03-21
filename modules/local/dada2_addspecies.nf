@@ -26,7 +26,7 @@ process DADA2_ADDSPECIES {
     def args = task.ext.args ?: ''
     def taxlevels = taxlevels_input ?
         'c("' + taxlevels_input.split(",").join('","') + '")' :
-        'c("Domain", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")'
+        'c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")'
     def seed = task.ext.seed ?: '100'
     """
     #!/usr/bin/env Rscript

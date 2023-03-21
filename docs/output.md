@@ -143,10 +143,11 @@ Optionally, ASV sequences can be filtered for rRNA sequences identified by Barrn
 <summary>Output files</summary>
 
 - `barrnap/`
-  - `ASV_seqs.ssu.fasta`: Fasta file with filtered ASV sequences.
-  - `AASV_table.ssu.tsv`: Counts for each filtered ASV sequence.
   - `rrna.<kingdom>.gff`: GFF3 output for rRNA matches per kingdom, where kingdom is one of `bac,arc,mito,euk`.
-  - `stats.ssu.tsv`: Tracking read numbers through filtering, for each sample.
+  - `summary.tsv`: Summary of evalues for each ASV and kingdom
+  - `ASV_seqs.ssu.fasta`: Fasta file with filtered ASV sequences, only if `--filter_ssu` is set.
+  - `ASV_table.ssu.tsv`: Counts for each filtered ASV sequence, only if `--filter_ssu` is set.
+  - `stats.ssu.tsv`: Tracking read numbers through filtering, for each sample, only if `--filter_ssu` is set.
 
 </details>
 
@@ -161,7 +162,7 @@ The minimum ASV length threshold can be set by `--min_len_asv` and the maximum l
 
 - `asv_length_filter/`
   - `ASV_seqs.len.fasta`: Fasta file with filtered ASV sequences.
-  - `AASV_table.len.tsv`: Counts for each filtered ASV sequence.
+  - `ASV_table.len.tsv`: Counts for each filtered ASV sequence.
   - `ASV_len_orig.tsv`: ASV length distribution before filtering.
   - `ASV_len_filt.tsv`: ASV length distribution after filtering.
   - `stats.len.tsv`: Tracking read numbers through filtering, for each sample.

@@ -174,16 +174,19 @@ Please note the following requirements:
 - May contain the header `reverseReads` and `run`
 - Sample IDs must be unique
 - Sample IDs must not contain a dot `.`
-- Sample IDs starting with a number are not allowed when using metadata (because these strings will be modified)
+- Sample IDs may not start with a number
 - FastQ files must be compressed (`.fastq.gz`, `.fq.gz`)
 - Within one samplesheet, only one type of raw data should be specified (same amplicon & sequencing method)
 
 An [example samplesheet](../assets/samplesheet.tsv) has been provided with the pipeline.
 
+> **Please note:** All characters other than letters, numbers and underline in Sample IDs will be converted to dots `.`. Avoid those conversions, because they might make summary files not merging correctly and will fail to match to metadata (which can be adjusted though).
+
 #### ASV/OTU fasta input
 
 When pointing at a file ending with `.fasta`, `.fna` or `.fa`, the containing ASV/OTU sequences will be taxonomically classified.
 Most of the steps of the pipeline will be skipped, but ITSx & Barrnap & length filtering can be applied before taxonomic classification.
+The sequence header line may contain a description, that will be kept as part of the sequence name. However, tabs will be changed into spaces.
 
 ```bash
 --input 'path/to/amplicon_sequences.fasta'

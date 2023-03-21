@@ -153,6 +153,7 @@ include { QIIME2_INTAX                  } from '../modules/local/qiime2_intax'
 include { PICRUST                       } from '../modules/local/picrust'
 include { SBDIEXPORT                    } from '../modules/local/sbdiexport'
 include { SBDIEXPORTREANNOTATE          } from '../modules/local/sbdiexportreannotate'
+include { SUMMARY_REPORT                } from '../modules/local/summary_report'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
@@ -653,6 +654,23 @@ workflow AMPLISEQ {
         )
         multiqc_report = MULTIQC.out.report.toList()
     }
+
+    //
+    // MODULE: Summary Report
+    //
+
+    SUMMARY_REPORT (
+        Channel.fromPath("${baseDir}/assets/report_template.Rmd"),
+        Channel.fromPath("${baseDir}/assets/report_styles.css"),
+        MULTIQC.out.plots, //.collect().flatten().collectFile(name: "mqc_fastqc_per_sequence_quality_scores_plot_1.svg")
+        CUTADAPT_WORKFLOW.out.summary.collect(),
+        DADA2_PREPROCESSING.out.args.first(),
+        DADA2_PREPROCESSING.out.qc_svg.collectFile(name: "FW_qual_stats.svg"),
+        DADA2_PREPROCESSING.out.qc_svg.collectFile(name: "RV_qual_stats.svg")
+    )
+    //qc_svg_preprocessed
+    // TODO Versionen in Report
+    //ch_versions    = ch_versions.mix(SUMMARY_REPORT.out.versions)
 
     //Save input in results folder
     input = file(params.input)

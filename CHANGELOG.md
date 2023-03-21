@@ -3,21 +3,36 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## nf-core/ampliseq version 2.5.0dev
+## nf-core/ampliseq version 2.5.0 - 2023-03-02
 
 ### `Added`
 
+- [#518](https://github.com/nf-core/ampliseq/pull/518),[#534](https://github.com/nf-core/ampliseq/pull/534) - Add COIDB DADA2 reference taxonomy database
 - [#521](https://github.com/nf-core/ampliseq/pull/521) - Export svg in addition to pdf files for quality plots from DADA2
+- [#538](https://github.com/nf-core/ampliseq/pull/538) - Parameter `--diversity_rarefaction_depth` controls the minimum rarefaction depth for diversity analysis, this allows increasing the rarefaction depth at the cost of excluding low count samples. Parameter `--ancom_sample_min_count` sets the minimum sample counts to retain a sample for ANCOM analysis.
 
 ### `Changed`
+
+- [#537](https://github.com/nf-core/ampliseq/pull/537) - Update output generated with option sbdi-export
+- [#541](https://github.com/nf-core/ampliseq/pull/541) - Remove adjustments of taxonomic levels for RDP & SILVA & GTDB & UNITE database for DADA2 taxonomic classification, reduced default of `--dada_tax_agglom_max` from 7 to 6
+- [#548](https://github.com/nf-core/ampliseq/pull/548) - `--filter_ssu` accepted any barrnap hit to a kingdom (domain) (any occurence in resulting gff) to choose an ASV, now only ASVs with the kingdom (domain) that has the lowest evalue are accepted.
 
 ### `Fixed`
 
 - [#513](https://github.com/nf-core/ampliseq/pull/513) - Template update for nf-core/tools version 2.7.2
 - [#519](https://github.com/nf-core/ampliseq/pull/519) - Adding the pipeline reference to the MultiQC report
-- [#520](https://github.com/nf-core/ampliseq/pull/520) - Add conda package digest to dada2
+- [#520](https://github.com/nf-core/ampliseq/pull/520),[#530](https://github.com/nf-core/ampliseq/pull/530) - Fix conda packages
+- [#531](https://github.com/nf-core/ampliseq/pull/531),[#546](https://github.com/nf-core/ampliseq/pull/546) - Update documentation
+- [#535](https://github.com/nf-core/ampliseq/pull/535) - Make sure barrnap runs with fasta input
+- [#544](https://github.com/nf-core/ampliseq/pull/544) - Adding module to fix header in fasta input if needed
 
 ### `Dependencies`
+
+- [#528](https://github.com/nf-core/ampliseq/pull/528) - Updated QIIME2
+
+| Tool   | Previous version | New version |
+| ------ | ---------------- | ----------- |
+| QIIME2 | 2022.8           | 2022.11     |
 
 ### `Removed`
 

@@ -1,8 +1,8 @@
-process QIIME2_FILTERASV {
-    tag "${category}"
+process QIIME2_FILTERSAMPLES {
+    tag "${filter}"
     label 'process_low'
 
-    container "quay.io/qiime2/core:2022.8"
+    container "quay.io/qiime2/core:2022.11"
 
     // Exit if running this module with -profile conda / -profile mamba
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
@@ -10,7 +10,7 @@ process QIIME2_FILTERASV {
     }
 
     input:
-    tuple path(metadata), path(table), val(category)
+    tuple path(metadata), path(table), val(filter)
 
     output:
     path("*.qza")       , emit: qza
@@ -20,14 +20,16 @@ process QIIME2_FILTERASV {
     task.ext.when == null || task.ext.when
 
     script:
+    def args = task.ext.args ?: "--p-where \'${filter}<>\"\"\'"
+    def prefix = task.ext.prefix ?: "${filter}"
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
 
     qiime feature-table filter-samples \\
         --i-table ${table} \\
         --m-metadata-file ${metadata} \\
-        --p-where \"${category}<>\'\'\" \\
-        --o-filtered-table ${category}.qza
+        $args \\
+        --o-filtered-table ${prefix}.qza
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

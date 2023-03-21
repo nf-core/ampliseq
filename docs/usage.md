@@ -174,15 +174,19 @@ Please note the following requirements:
 - May contain the header `reverseReads` and `run`
 - Sample IDs must be unique
 - Sample IDs must not contain a dot `.`
-- Sample IDs starting with a number are not allowed when using metadata (because these strings will be modified)
+- Sample IDs may not start with a number
 - FastQ files must be compressed (`.fastq.gz`, `.fq.gz`)
 - Within one samplesheet, only one type of raw data should be specified (same amplicon & sequencing method)
 
 An [example samplesheet](../assets/samplesheet.tsv) has been provided with the pipeline.
 
+> **Please note:** All characters other than letters, numbers and underline in Sample IDs will be converted to dots `.`. Avoid those conversions, because they might make summary files not merging correctly and will fail to match to metadata (which can be adjusted though).
+
 #### ASV/OTU fasta input
 
-When pointing at a file ending with `.fasta`, `.fna` or `.fa`, the containing ASV/OTU sequences will be taxonomically classified. All other pipeline steps will be skipped.
+When pointing at a file ending with `.fasta`, `.fna` or `.fa`, the containing ASV/OTU sequences will be taxonomically classified.
+Most of the steps of the pipeline will be skipped, but ITSx & Barrnap & length filtering can be applied before taxonomic classification.
+The sequence header line may contain a description, that will be kept as part of the sequence name. However, tabs will be changed into spaces.
 
 ```bash
 --input 'path/to/amplicon_sequences.fasta'
@@ -214,7 +218,7 @@ Please note the following requirements:
 - The path must be enclosed in quotes
 - The metadata file has to follow the QIIME2 specifications (https://docs.qiime2.org/2021.2/tutorials/metadata/)
 
-The metadata file must be tab-separated with a header line. The first column in the tab-separated metadata file is the sample identifier column (required header: ID) and defines the sample or feature IDs associated with the dataset. Metadata files are not required to have additional metadata columns, i.e. a file containing only an ID column is a valid QIIME 2 metadata file. Additional columns defining metadata associated with each sample or feature ID are optional. NB: without additional columns there might be no groupings for the downstream analyses.
+The metadata file must be tab-separated with a header line. The first column in the tab-separated metadata file is the sample identifier column (required header: ID) and defines the sample or feature IDs associated with the dataset. In addition to the sample identifier column, metadata files are required to have additional metadata columns.
 
 Sample identifiers should be 36 characters long or less, and also contain only ASCII alphanumeric characters (i.e. in the range of [a-z], [A-Z], or [0-9]), or the dash (-) character. For downstream analysis, by default all numeric columns, blanks or NA are removed, and only columns with multiple different values but not all unique are selected.
 

@@ -2,7 +2,7 @@ process QIIME2_FILTERTAXA {
     tag "taxa:${exclude_taxa};min-freq:${min_frequency};min-samples:${min_samples}"
     label 'process_low'
 
-    container "quay.io/qiime2/core:2022.8"
+    container "quay.io/qiime2/core:2022.11"
 
     // Exit if running this module with -profile conda / -profile mamba
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {

@@ -153,10 +153,7 @@ cat("Error correction was performed using DADA2 as well and the original ",
         "plots can be found [here](../dada2/QC/).", sep = "")
 ```
 
-```{r, eval = !params$flag_skip_dada_quality, results = 'asis', out.width="49%", fig.show='hold',fig.align='center'}
-# TODO Error profiles per run (Name may change default 1)
-# TODO paried end produces *_2* otherwise only _1
-
+```{r, results = 'asis', out.width="49%", fig.show='hold',fig.align='center'}
 knitr::include_graphics(c(params$dada_1_err_path, params$dada_2_err_path))
 ```
 

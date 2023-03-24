@@ -34,13 +34,13 @@ process SUMMARY_REPORT  {
     def dada_quality = params.skip_dada_quality ? "--skip_dada_quality" : "--dada_qc_f_path $dada_fw_qual_stats --dada_qc_r_path $dada_rv_qual_stats --dada_pp_qc_f_path $dada_pp_fw_qual_stats --dada_pp_qc_r_path $dada_pp_rv_qual_stats"
     def skip_barrnap = params.skip_barrnap ? "--skip_barrnap" : ""
     def retain_untrimmed = params.retain_untrimmed ? "--retain_untrimmed" : ""
+    def dada_err = meta.single_end ? "--dada_1_err_path $dada_err_svgs" : "--dada_1_err_path ${dada_err_svgs[0]} --dada_2_err_path ${dada_err_svgs[1]}"
     """
     generate_report.R   --report $report_template \\
                         --output "Summary_Report.html" \\
                         --mqc_plot "${mqc_plots}/svg/mqc_fastqc_per_sequence_quality_scores_plot_1.svg" \\
                         --dada_filtntrim_args $dada_filtntrim_args \\
-                        --dada_1_err_path ./1_1.err.svg \\
-                        --dada_2_err_path ./1_2.err.svg \\
+                        $dada_err \\
                         $skip_fastqc \\
                         $cutadapt \\
                         $dada_quality \\

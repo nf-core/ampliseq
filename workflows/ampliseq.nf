@@ -478,20 +478,19 @@ workflow AMPLISEQ {
     }
 
     // Sintax
-    if (params.sintax) {
-        FORMAT_TAXONOMY_SINTAX ( ch_sintax_ref_taxonomy.collect() )
-        ch_sintaxdb = FORMAT_TAXONOMY_SINTAX.out.db
-        ch_fasta
-            .map {
-                fasta ->
-                    def meta = [:]
-                    meta.id = "ASV_tax_sintax"
-                    [ meta, fasta ] }
-            .set { ch_fasta_sintax }
-        VSEARCH_SINTAX( ch_fasta_sintax, ch_sintaxdb )
-        ch_versions = ch_versions.mix(VSEARCH_SINTAX.out.versions)
-    }
-
+    // This will only run if --sintax_ref_taxonomy is defined, i.e. the channel
+    // ch_sintax_ref_taxonomy is not empty
+    FORMAT_TAXONOMY_SINTAX ( ch_sintax_ref_taxonomy.collect() )
+    ch_sintaxdb = FORMAT_TAXONOMY_SINTAX.out.db
+    ch_fasta
+        .map {
+            fasta ->
+                def meta = [:]
+                meta.id = "ASV_tax_sintax"
+                [ meta, fasta ] }
+        .set { ch_fasta_sintax }
+    VSEARCH_SINTAX( ch_fasta_sintax, ch_sintaxdb )
+    ch_versions = ch_versions.mix(VSEARCH_SINTAX.out.versions)
 
     //QIIME2
     if ( run_qiime2 ) {

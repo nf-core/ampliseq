@@ -1,0 +1,311 @@
+---
+title: Summary of nf-core/ampliseq results
+output:
+    html_document:
+        toc: true # table of contents
+        toc_float: true # float the table of contents to the left of the main document content
+        toc_depth: 3 # header levels 1,2,3
+        theme: default
+        number_sections: true # add section numbering to headers
+        df_print: paged # tables are printed as an html table with support for pagination over rows and columns
+        css: ./report_styles.css
+        highlight: pygments
+    pdf_document: true
+#bibliography: ./references.bibtex
+params:
+    flag_skip_fastqc: FALSE
+    flag_skip_cutadapt: FALSE
+    flag_skip_dada2: FALSE
+    flag_skip_dada2_: TRUE
+    flag_skip_barrnap: FALSE
+    flag_retain_untrimmed: TRUE
+    flag_trunclenf: ""
+    flag_trunclenr: ""
+    flag_trunc_qmin: ""
+
+    mqc_plot: ""
+    ca_sum_path: ""
+    dada_filtntrim_args: ""
+    dada_qc_f_path: ""
+    dada_qc_r_path: ""
+    dada_pp_qc_f_path: ""
+    dada_pp_qc_r_path: ""
+    dada_1_err_path: ""
+    dada_2_err_path: ""
+    asv_table_path: ""
+    path_asv_fa: ""
+    path_dada2_tab: ""
+    dada_stats_path: ""
+    path_rrna_arc: ""
+    path_rrna_bac: ""
+    path_rrna_euk: ""
+    path_rrna_mito: ""
+    ref_tax_path: ""
+    asv_tax_path: ""
+---
+
+```{r setup, include=FALSE}
+library("dplyr")
+library("ggplot2")
+library("knitr")
+library("DT")
+library("formattable")
+library("purrr")
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Preprocessing
+
+```{r, eval = !params$flag_skip_fastqc, results='asis'}
+mqc_rep_path <- paste0("../multiqc/multiqc_report.html")
+
+cat("## FastQC\n")
+cat("The sequence quality was checked using FastQC and resulting data was ",
+        "aggregated using the FastQC module of MultiQC. For more quality ",
+        "controls and per sample quality checks you can check the full ",
+        "MultiQC report, which is found [here](", mqc_rep_path, ").", sep = "")
+```
+
+```{r, eval = !params$flag_skip_fastqc, out.width='100%', dpi=1200, fig.align='center'}
+knitr::include_graphics(params$mqc_plot)
+```
+
+```{r, eval = !params$flag_skip_cutadapt, results='asis'}
+# import tsv
+cutadapt_summary <- read.table(file = params$ca_sum_path, header = TRUE, sep = "\t")
+
+passed_col <- as.numeric(substr(
+        cutadapt_summary$cutadapt_passing_filters_percent, 1, 4))
+
+max_disc <- 100 - min(passed_col)
+avg_passed <- mean(passed_col)
+
+cutadapt_text_unch <- paste0("## Cutadapt\n",
+        "Remaining primers were trimmed using cutadapt")
+cutadapt_text_ch <- paste0("and all untrimmed sequences were discarded. <",
+        max_disc, "% of the sequences were discarded per sample and a mean of ",
+        avg_passed, "% of the sequences per sample passed the filtering.")
+
+if (!params$flag_retain_untrimmed) cutadapt_text <- paste0(
+    cutadapt_text_unch, cutadapt_text_ch
+    ) else cutadapt_text <- paste0(cutadapt_text_unch, ".")
+
+cat(cutadapt_text)
+
+datatable(cutadapt_summary, options = list(
+        scrollX = TRUE,
+        scrollY = "300px",
+        paging = FALSE))
+
+cutadapt_summary$passed_num <- passed_col
+
+ggplot(cutadapt_summary,
+        aes(x = sample, y = passed_col)) +
+        geom_bar(stat = "identity", fill = rgb(0.1, 0.4, 0.75), width = 0.5) +
+        ylab("% passing filters of cutadapt") +
+        xlab("Samples") +
+        coord_flip() +
+        theme_bw()
+```
+
+```{r, eval = !params$flag_skip_dada2, results='asis'}
+dada2_dir <- paste0("../dada2/QC/")
+cat("## QC using DADA2\n")
+cat("Further quality checks were performed using the DADA2 package and ",
+        "forward and reverse quality stats are displayed as well as the ",
+        "respective preprocessed quality stats. The original plots can be",
+        "found [here](", dada2_dir, ").", sep = "")
+```
+
+```{r, eval = !params$flag_skip_dada2, results='asis'}
+if (params$flag_trunc_qmin != -1) {
+        f_and_tr_args <- readLines(params$dada_filtntrim_args)
+        trunc_len <- strsplit(gsub(".*truncLen = c\\((.+)\\),maxN.*", "\\1",
+                                f_and_tr_args), ", ")
+        tr_len_f <- trunc_len[[1]][1]
+        tr_len_r <- trunc_len[[1]][2]
+        no_trunclen <- cat("Reads were trimmed before median quality drops ",
+                "below ", params$flag_trunc_qmin, " resulting in a trim of ",
+                "forward reads at ", tr_len_f, " bp and reverse ",
+                "reads at ", tr_len_r, " bp.", sep = "")
+} else {
+        trunclen <- cat("Forward reads were trimmed at ", params$flag_trunclenf,
+                " bp and reverse reads were trimmed at ", params$flag_trunclenr,
+                " bp.", sep = "")
+}
+```
+
+```{r, eval = !params$flag_skip_dada2, results='asis', out.width="49%", fig.show='hold',fig.align='center'}
+# TODO FW or RV may not exist
+# TODO svg seems to have an error
+knitr::include_graphics(c(params$dada_qc_f_path,params$dada_qc_r_path))
+```
+
+```{r, eval = !params$flag_skip_dada2, results='asis', out.width="49%", fig.show='hold',fig.align='center'}
+# TODO FW or RV may not exist
+# TODO same issue, also error in svg
+knitr::include_graphics(c(params$dada_pp_qc_f_path, params$dada_pp_qc_r_path))
+```
+
+```{r, eval = !params$flag_skip_dada2, results='asis'}
+cat("## Error correction using DADA2\n")
+cat("Error correction was performed using DADA2 as well and the original ",
+        "plots can be found [here](../dada2/QC/).", sep = "")
+```
+
+```{r, eval = !params$flag_skip_dada2, results = 'asis', out.width="49%", fig.show='hold',fig.align='center'}
+# TODO Error profiles per run (Name may change default 1)
+# TODO paried end produces *_2* otherwise only _1
+
+knitr::include_graphics(c(params$dada_1_err_path, params$dada_2_err_path))
+```
+
+```{r, eval = !params$flag_skip_dada2_, results='asis'}
+# Header
+cat("## ASV inference using DADA2\n")
+
+# import asv tsv
+asv_table_path <- paste0(params$path_pl_results, "/dada2/ASV_table.tsv")
+asv_table <- read.table(file = asv_table_path, header = TRUE, sep = "\t")
+n_asv <- length(asv_table$ASV_ID)
+
+# Define additional table paths
+path_asv_fa <- paste0(params$path_pl_results, "/dada2/ASV_seqs.fasta")
+path_dada2_tab <- paste0(params$path_pl_results, "/dada2/DADA2_table.tsv")
+
+# Output text
+cat(n_asv,
+        "amplicon sequence variants (ASVs) were obtained across all samples. ")
+cat("The ASVs can be found [here](", path_asv_fa, "). And the corresponding",
+        " quantification of the ASVs across samples can be found ",
+        "[here](", path_asv_path, "). An extensive table containing both can ",
+        "be found [here](", path_dada2_tab, ").", sep = "")
+```
+
+```{r, eval = !params$flag_skip_dada2_, results='asis'}
+# import stats tsv
+dada_stats_path <- paste0(params$path_pl_results, "/dada2/DADA2_stats.tsv")
+dada_stats <- read.table(file = dada_stats_path, header = TRUE, sep = "\t")
+
+# Display table
+datatable(dada_stats, options = list(
+        scrollX = TRUE,
+        scrollY = "300px",
+        paging = FALSE))
+
+# Stacked barchart to num of reads
+
+# Calc exluded asvs and transform all cols to percent
+dada_stats_ex <- data.frame(sample = dada_stats$sample,
+                        DADA2_input = dada_stats$DADA2_input,
+                        filtered = dada_stats$DADA2_input-dada_stats$filtered,
+                        denoisedF = dada_stats$filtered-dada_stats$denoisedF,
+                        denoisedR = dada_stats$denoisedF-dada_stats$denoisedR,
+                        merged = dada_stats$denoisedR-dada_stats$merged,
+                        nonchim = dada_stats$merged-dada_stats$nonchim,
+                        analysis = dada_stats$nonchim)
+
+dada_stats_p <- data.frame(sample = dada_stats_ex$sample, round(dada_stats_ex[2:8]/dada_stats_ex$DADA2_input, 2))
+
+# Stack columns for both stacked barcharts
+n_samples <- length(dada_stats_p$sample)
+samples_t <- c(rep(dada_stats_p$sample, 6))
+steps_t <- c(rep("excluded by filtering", n_samples), rep("excluded by denoisedF", n_samples),
+                rep("excluded by denoisedR", n_samples), rep("excluded by merged", n_samples),
+                rep("excluded by nonchim", n_samples), rep("ready for analysis", n_samples))
+
+# stack the column for absolute number of asvs
+asvs_abs_t <- as.array(flatten_dbl(dada_stats_ex[3:8]))
+dada_stats_ex_t <- data.frame(samples_t, steps_t, asvs_abs_t)
+
+# Plot
+dada_stats_ex_t$steps_t <- factor(dada_stats_ex_t$steps_t, levels=unique(dada_stats_ex_t$steps_t))
+ggplot(dada_stats_ex_t, aes(fill = steps_t, y = asvs_abs_t, x = samples_t)) +
+        geom_bar(position = "stack", stat = "identity") +
+        xlab("Samples") +
+        ylab("Absolute number ASVs") +
+        coord_flip() +
+        scale_fill_brewer("Filtering Steps", palette = "Spectral")
+
+# stack the column for percentage of asvs
+asvs_p_t <- as.array(flatten_dbl(dada_stats_p[3:8]))
+dada_stats_p_t <- data.frame(samples_t, steps_t, asvs_p_t)
+
+# Plot
+dada_stats_p_t$steps_t <- factor(dada_stats_p_t$steps_t, levels=unique(dada_stats_p_t$steps_t))
+ggplot(dada_stats_p_t, aes(fill = steps_t, y = asvs_p_t, x = samples_t)) +
+        geom_bar(position = "fill", stat = "identity") +
+        xlab("Samples") +
+        ylab("% of total ASVs") +
+        coord_flip() +
+        scale_fill_brewer("Filtering Steps", palette = "Spectral")
+```
+
+
+# Filtering of ASVs
+
+
+
+# Taxonomic Classification
+
+```{r, eval = !params$flag_skip_dada2_, results='asis'}
+# Header
+cat("## Taxonomic Classification using DADA2\n")
+
+ref_tax_path <- paste0(params$path_pl_results, "/dada2/ref_taxonomy.txt")
+ref_tax <- readLines(ref_tax_path)
+
+db <- "Unknown DB"
+for (line in ref_tax){
+        if (grepl("Title:", line)) {
+                db <- sub(".*Title: ", "", line)
+        }
+}
+
+# Output text db
+cat("The taxonomic classification was performed by DADA2 using the database: ",
+        "\"", db, "\".\n\n", sep = "")
+
+asv_tax_path <- paste0(params$path_pl_results, "/dada2/ASV_tax_species.tsv")
+asv_tax <- read.table(asv_tax_path, header = TRUE, sep = "\t")
+
+# Calculate the classified numbers/percent of asv
+level <- c("Domain", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus")
+n_asv_unclassified <- c(count(asv_tax, Domain)$n[1],
+                        count(asv_tax, Kingdom)$n[1],
+                        count(asv_tax, Phylum)$n[1],
+                        count(asv_tax, Class)$n[1],
+                        count(asv_tax, Order)$n[1],
+                        count(asv_tax, Family)$n[1],
+                        count(asv_tax, Genus)$n[1])
+n_asv_classified <- n_asv - n_asv_unclassified
+p_asv_classified <- round(n_asv_classified / n_asv * 100, 2)
+
+asv_classi_df <- data.frame(level, n_asv_classified, p_asv_classified)
+
+# Build output string
+outputstr <- "DADA2 classified "
+
+for (row in seq_len(nrow(asv_classi_df))) {
+        outputstr <- paste0(outputstr, asv_classi_df[row, ]$p_asv_classified,
+                         " % ASVs at ", asv_classi_df[row, ]$level, " level")
+        switch(as.character(row),
+                "6" = outputstr <- paste0(outputstr, " and "),
+                "7" = outputstr <- paste0(outputstr, ".\n\n"),
+                outputstr <- paste0(outputstr, ", "))
+}
+
+# Output Text Classifications
+cat(outputstr)
+
+# Barplot
+# Plot
+asv_classi_df$level <- factor(asv_classi_df$level, levels = asv_classi_df$level)
+ggplot(asv_classi_df,
+        aes(x = reorder(level, desc(level)), y = p_asv_classified)) +
+        geom_bar(stat = "identity", fill = rgb(0.1, 0.4, 0.75), width = 0.5) +
+        ylab("% Classification") +
+        xlab("Levels") +
+        coord_flip() +
+        theme_bw()
+```

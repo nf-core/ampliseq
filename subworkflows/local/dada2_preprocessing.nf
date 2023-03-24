@@ -118,7 +118,10 @@ workflow DADA2_PREPROCESSING {
         .set { ch_filt_reads }
 
     emit:
-    reads    = ch_filt_reads
-    logs      = DADA2_FILTNTRIM.out.log
-    versions = ch_versions_dada2_preprocessing
+    reads               = ch_filt_reads
+    logs                = DADA2_FILTNTRIM.out.log
+    args                = DADA2_FILTNTRIM.out.args
+    qc_svg              = DADA2_QUALITY1.out.svg
+    qc_svg_preprocessed = DADA2_QUALITY2.out.svg
+    versions            = ch_versions_dada2_preprocessing
 }

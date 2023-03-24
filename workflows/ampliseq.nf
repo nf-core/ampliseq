@@ -670,12 +670,12 @@ workflow AMPLISEQ {
         Channel.fromPath("${baseDir}/assets/report_template.Rmd"),
         Channel.fromPath("${baseDir}/assets/report_styles.css"),
         MULTIQC.out.plots, //.collect().flatten().collectFile(name: "mqc_fastqc_per_sequence_quality_scores_plot_1.svg")
-        CUTADAPT_WORKFLOW.out.summary.collect(),
+        !params.skip_cutadapt ? CUTADAPT_WORKFLOW.out.summary.collect() : [],
         DADA2_PREPROCESSING.out.args.first(),
-        DADA2_PREPROCESSING.out.qc_svg.collectFile(name: "FW_qual_stats.svg"),
-        DADA2_PREPROCESSING.out.qc_svg.collectFile(name: "RV_qual_stats.svg"),
-        DADA2_PREPROCESSING.out.qc_svg.collectFile(name: "FW_preprocessed_qual_stats.svg"),
-        DADA2_PREPROCESSING.out.qc_svg.collectFile(name: "RV_preprocessed_qual_stats.svg"),
+        !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg.collectFile(name: "FW_qual_stats.svg") : [],
+        !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg.collectFile(name: "RV_qual_stats.svg") : [],
+        !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg.collectFile(name: "FW_preprocessed_qual_stats.svg") : [],
+        !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg.collectFile(name: "RV_preprocessed_qual_stats.svg") : [],
         DADA2_ERR.out.svg
     )
 

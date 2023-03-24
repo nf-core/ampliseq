@@ -15,8 +15,8 @@ output:
 params:
     flag_skip_fastqc: FALSE
     flag_skip_cutadapt: FALSE
-    flag_skip_dada2: FALSE
-    flag_skip_dada2_: TRUE
+    flag_skip_dada_quality: FALSE
+    flag_skip_dada_quality_: TRUE
     flag_skip_barrnap: FALSE
     flag_retain_untrimmed: TRUE
     flag_trunclenf: ""
@@ -108,7 +108,7 @@ ggplot(cutadapt_summary,
         theme_bw()
 ```
 
-```{r, eval = !params$flag_skip_dada2, results='asis'}
+```{r, eval = !params$flag_skip_dada_quality, results='asis'}
 dada2_dir <- paste0("../dada2/QC/")
 cat("## QC using DADA2\n")
 cat("Further quality checks were performed using the DADA2 package and ",
@@ -117,7 +117,7 @@ cat("Further quality checks were performed using the DADA2 package and ",
         "found [here](", dada2_dir, ").", sep = "")
 ```
 
-```{r, eval = !params$flag_skip_dada2, results='asis'}
+```{r, eval = !params$flag_skip_dada_quality, results='asis'}
 if (params$flag_trunc_qmin != -1) {
         f_and_tr_args <- readLines(params$dada_filtntrim_args)
         trunc_len <- strsplit(gsub(".*truncLen = c\\((.+)\\),maxN.*", "\\1",
@@ -135,32 +135,32 @@ if (params$flag_trunc_qmin != -1) {
 }
 ```
 
-```{r, eval = !params$flag_skip_dada2, results='asis', out.width="49%", fig.show='hold',fig.align='center'}
+```{r, eval = !params$flag_skip_dada_quality, results='asis', out.width="49%", fig.show='hold',fig.align='center'}
 # TODO FW or RV may not exist
 # TODO svg seems to have an error
 knitr::include_graphics(c(params$dada_qc_f_path,params$dada_qc_r_path))
 ```
 
-```{r, eval = !params$flag_skip_dada2, results='asis', out.width="49%", fig.show='hold',fig.align='center'}
+```{r, eval = !params$flag_skip_dada_quality, results='asis', out.width="49%", fig.show='hold',fig.align='center'}
 # TODO FW or RV may not exist
 # TODO same issue, also error in svg
 knitr::include_graphics(c(params$dada_pp_qc_f_path, params$dada_pp_qc_r_path))
 ```
 
-```{r, eval = !params$flag_skip_dada2, results='asis'}
+```{r, eval = !params$flag_skip_dada_quality, results='asis'}
 cat("## Error correction using DADA2\n")
 cat("Error correction was performed using DADA2 as well and the original ",
         "plots can be found [here](../dada2/QC/).", sep = "")
 ```
 
-```{r, eval = !params$flag_skip_dada2, results = 'asis', out.width="49%", fig.show='hold',fig.align='center'}
+```{r, eval = !params$flag_skip_dada_quality, results = 'asis', out.width="49%", fig.show='hold',fig.align='center'}
 # TODO Error profiles per run (Name may change default 1)
 # TODO paried end produces *_2* otherwise only _1
 
 knitr::include_graphics(c(params$dada_1_err_path, params$dada_2_err_path))
 ```
 
-```{r, eval = !params$flag_skip_dada2_, results='asis'}
+```{r, eval = !params$flag_skip_dada_quality_, results='asis'}
 # Header
 cat("## ASV inference using DADA2\n")
 
@@ -182,7 +182,7 @@ cat("The ASVs can be found [here](", path_asv_fa, "). And the corresponding",
         "be found [here](", path_dada2_tab, ").", sep = "")
 ```
 
-```{r, eval = !params$flag_skip_dada2_, results='asis'}
+```{r, eval = !params$flag_skip_dada_quality_, results='asis'}
 # import stats tsv
 dada_stats_path <- paste0(params$path_pl_results, "/dada2/DADA2_stats.tsv")
 dada_stats <- read.table(file = dada_stats_path, header = TRUE, sep = "\t")
@@ -248,7 +248,7 @@ ggplot(dada_stats_p_t, aes(fill = steps_t, y = asvs_p_t, x = samples_t)) +
 
 # Taxonomic Classification
 
-```{r, eval = !params$flag_skip_dada2_, results='asis'}
+```{r, eval = !params$flag_skip_dada_quality_, results='asis'}
 # Header
 cat("## Taxonomic Classification using DADA2\n")
 

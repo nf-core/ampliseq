@@ -30,25 +30,20 @@ process SUMMARY_REPORT  {
 
     script:
     def skip_fastqc = params.skip_fastqc ? "--skip_fastqc" : ""
-    def skip_cutadapt = params.skip_cutadapt ? "--skip_cutadapt" : ""
-    def skip_dada2 = params.skip_dada_quality ? "--skip_dada2" : ""
+    def cutadapt = params.skip_cutadapt ? "--skip_cutadapt" : "--ca_sum_path $ca_summary"
+    def dada_quality = params.skip_dada_quality ? "--skip_dada_quality" : "--dada_qc_f_path $dada_fw_qual_stats --dada_qc_r_path $dada_rv_qual_stats --dada_pp_qc_f_path $dada_pp_fw_qual_stats --dada_pp_qc_r_path $dada_pp_rv_qual_stats"
     def skip_barrnap = params.skip_barrnap ? "--skip_barrnap" : ""
     def retain_untrimmed = params.retain_untrimmed ? "--retain_untrimmed" : ""
     """
     generate_report.R   --report $report_template \\
                         --output "Summary_Report.html" \\
                         --mqc_plot "${mqc_plots}/svg/mqc_fastqc_per_sequence_quality_scores_plot_1.svg" \\
-                        --ca_sum_path $ca_summary \\
                         --dada_filtntrim_args $dada_filtntrim_args \\
-                        --dada_qc_f_path $dada_fw_qual_stats \\
-                        --dada_qc_r_path $dada_rv_qual_stats \\
-                        --dada_pp_qc_f_path $dada_pp_fw_qual_stats \\
-                        --dada_pp_qc_r_path $dada_pp_rv_qual_stats \\
                         --dada_1_err_path ./1_1.err.svg \\
                         --dada_2_err_path ./1_2.err.svg \\
                         $skip_fastqc \\
-                        $skip_cutadapt \\
-                        $skip_dada2 \\
+                        $cutadapt \\
+                        $dada_quality \\
                         $skip_barrnap \\
                         $retain_untrimmed \\
                         --trunclenf $params.trunclenf \\

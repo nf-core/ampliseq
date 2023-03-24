@@ -41,10 +41,12 @@ workflow DADA2_PREPROCESSING {
             .set { ch_all_trimmed_reads }
     }
 
+    ch_DADA2_QUALITY1_SVG = Channel.empty()
     if ( !params.skip_dada_quality ) {
         DADA2_QUALITY1 ( ch_all_trimmed_reads.dump(tag: 'into_dada2_quality') )
         ch_versions_dada2_preprocessing = ch_versions_dada2_preprocessing.mix(DADA2_QUALITY1.out.versions)
         DADA2_QUALITY1.out.warning.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","DADA2_QUALITY1: ") }
+        ch_DADA2_QUALITY1_SVG = DADA2_QUALITY1.out.svg
     }
 
     //find truncation values in case they are not supplied
@@ -94,9 +96,12 @@ workflow DADA2_PREPROCESSING {
             .mix ( ch_all_preprocessed_rv )
             .set { ch_all_preprocessed_reads }
     }
+
+    ch_DADA2_QUALITY2_SVG = Channel.empty()
     if ( !params.skip_dada_quality ) {
         DADA2_QUALITY2 ( ch_all_preprocessed_reads.dump(tag: 'into_dada2_quality2') )
         DADA2_QUALITY2.out.warning.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","DADA2_QUALITY2: ") }
+        ch_DADA2_QUALITY2_SVG = DADA2_QUALITY2.out.svg
     }
 
     //group by sequencing run
@@ -121,7 +126,7 @@ workflow DADA2_PREPROCESSING {
     reads               = ch_filt_reads
     logs                = DADA2_FILTNTRIM.out.log
     args                = DADA2_FILTNTRIM.out.args
-    qc_svg              = DADA2_QUALITY1.out.svg
-    qc_svg_preprocessed = DADA2_QUALITY2.out.svg
+    qc_svg              = ch_DADA2_QUALITY1_SVG
+    qc_svg_preprocessed = ch_DADA2_QUALITY2_SVG
     versions            = ch_versions_dada2_preprocessing
 }

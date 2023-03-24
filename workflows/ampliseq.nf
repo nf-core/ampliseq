@@ -316,6 +316,12 @@ workflow AMPLISEQ {
     if (!params.skip_barrnap && params.filter_ssu) {
         BARRNAP ( ch_unfiltered_fasta )
         BARRNAPSUMMARY ( BARRNAP.out.gff.collect() )
+        BARRNAPSUMMARY.out.warning.subscribe {
+            if ( it.baseName.toString().startsWith("WARNING") ) {
+                log.error "Barrnap could not identify any rRNA in the ASV sequences! This will result in all sequences being removed with SSU filtering."
+                System.exit(1)
+            }
+        }
         ch_barrnapsummary = BARRNAPSUMMARY.out.summary
         ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))
         FILTER_SSU ( DADA2_MERGE.out.fasta, DADA2_MERGE.out.asv, BARRNAPSUMMARY.out.summary )
@@ -326,6 +332,7 @@ workflow AMPLISEQ {
     } else if (!params.skip_barrnap && !params.filter_ssu) {
         BARRNAP ( ch_unfiltered_fasta )
         BARRNAPSUMMARY ( BARRNAP.out.gff.collect() )
+        BARRNAPSUMMARY.out.warning.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn "Barrnap could not identify any rRNA in the ASV sequences. We recommended to use the --skip_barrnap option for these sequences." }
         ch_barrnapsummary = BARRNAPSUMMARY.out.summary
         ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))
         ch_dada2_fasta = ch_unfiltered_fasta
@@ -618,7 +625,7 @@ workflow AMPLISEQ {
     if ( params.sbdiexport ) {
         SBDIEXPORT ( ch_dada2_asv, ch_dada2_tax, ch_metadata )
         ch_versions = ch_versions.mix(SBDIEXPORT.out.versions.first())
-        SBDIEXPORTREANNOTATE ( ch_dada2_tax, ch_barrnapsummary )
+        SBDIEXPORTREANNOTATE ( ch_dada2_tax, ch_barrnapsummary.ifEmpty([]) )
     }
 
     CUSTOM_DUMPSOFTWAREVERSIONS (

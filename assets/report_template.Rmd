@@ -135,46 +135,29 @@ if (params$flag_trunc_qmin != -1) {
 }
 ```
 
+```{r, eval = !params$flag_skip_dada2, results='asis', out.width="49%", fig.show='hold',fig.align='center'}
+# TODO FW or RV may not exist
+# TODO svg seems to have an error
+knitr::include_graphics(c(params$dada_qc_f_path,params$dada_qc_r_path))
+```
+
+```{r, eval = !params$flag_skip_dada2, results='asis', out.width="49%", fig.show='hold',fig.align='center'}
+# TODO FW or RV may not exist
+# TODO same issue, also error in svg
+knitr::include_graphics(c(params$dada_pp_qc_f_path, params$dada_pp_qc_r_path))
+```
+
 ```{r, eval = !params$flag_skip_dada2, results='asis'}
-# FW or RV may not exist
-print(params$dada_qc_f_path)
-knitr::include_graphics(params$dada_qc_f_path)
-#knitr::include_graphics(params$dada_qc_r_path)
-```
-
-```{r, eval = !params$flag_skip_dada2_, results='asis'}
-# FW or RV may not exist
-
-dada_pp_qc_f_path <- paste0(params$path_pl_results,
-                                "/dada2/QC/FW_preprocessed_qual_stats.pdf")
-dada_pp_qc_r_path <- paste0(params$path_pl_results,
-                                "/dada2/QC/RV_preprocessed_qual_stats.pdf")
-cat('<iframe width="49%" height="385" src=\"',
-                dada_pp_qc_f_path, '\"/>', sep = "")
-cat('<iframe width="49%" height="385" src=\"',
-                dada_pp_qc_r_path, '\"/>', sep = "")
-#knitr::include_graphics(c(dada_pp_qc_f_path, dada_pp_qc_r_path))
-```
-
-```{r, eval = !params$flag_skip_dada2_, results='asis'}
-dada2_dir <- paste0(params$path_pl_results, "/dada2/QC/")
 cat("## Error correction using DADA2\n")
 cat("Error correction was performed using DADA2 as well and the original ",
-        "plots can be found [here](", dada2_dir, ").", sep = "")
+        "plots can be found [here](../dada2/QC/).", sep = "")
 ```
 
-```{r, eval = !params$flag_skip_dada2_, results = 'asis'}
-# Error profiles per run (Name may change default 1)
-# paried end produces *_2* otherwise only _1
+```{r, eval = !params$flag_skip_dada2, results = 'asis', out.width="49%", fig.show='hold',fig.align='center'}
+# TODO Error profiles per run (Name may change default 1)
+# TODO paried end produces *_2* otherwise only _1
 
-#r, eval = !params$flag_skip_dada2, dpi=1200, out.width='49%', out.height=475
-dada_1_err_path <- paste0(params$path_pl_results, "/dada2/QC/1_1.err.pdf")
-dada_2_err_path <- paste0(params$path_pl_results, "/dada2/QC/1_2.err.pdf")
-cat('<iframe width="49%" height="385" src=\"',
-                        dada_1_err_path, '\"/>', sep = "")
-cat('<iframe width="49%" height="385" src=\"',
-                        dada_2_err_path, '\"/>', sep = "")
-#knitr::include_graphics(c(dada_1_err_path, dada_2_err_path))
+knitr::include_graphics(c(params$dada_1_err_path, params$dada_2_err_path))
 ```
 
 ```{r, eval = !params$flag_skip_dada2_, results='asis'}

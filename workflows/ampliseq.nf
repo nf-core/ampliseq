@@ -666,10 +666,14 @@ workflow AMPLISEQ {
         CUTADAPT_WORKFLOW.out.summary.collect(),
         DADA2_PREPROCESSING.out.args.first(),
         DADA2_PREPROCESSING.out.qc_svg.collectFile(name: "FW_qual_stats.svg"),
-        DADA2_PREPROCESSING.out.qc_svg.collectFile(name: "RV_qual_stats.svg")
+        DADA2_PREPROCESSING.out.qc_svg.collectFile(name: "RV_qual_stats.svg"),
+        DADA2_PREPROCESSING.out.qc_svg.collectFile(name: "FW_preprocessed_qual_stats.svg"),
+        DADA2_PREPROCESSING.out.qc_svg.collectFile(name: "RV_preprocessed_qual_stats.svg"),
+        DADA2_ERR.out.svg
     )
-    //qc_svg_preprocessed
-    // TODO Versionen in Report
+
+
+    // TODO Versions in Report
     //ch_versions    = ch_versions.mix(SUMMARY_REPORT.out.versions)
 
     //Save input in results folder

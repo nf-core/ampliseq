@@ -16,6 +16,10 @@ process SUMMARY_REPORT  {
     path(dada_filtntrim_args)
     path(dada_fw_qual_stats)
     path(dada_rv_qual_stats)
+    path(dada_pp_fw_qual_stats)
+    path(dada_pp_rv_qual_stats)
+    tuple val(meta), path(dada_err_svgs)
+
 
     output:
     path "Summary_Report.html"      ,   emit: report
@@ -38,6 +42,10 @@ process SUMMARY_REPORT  {
                         --dada_filtntrim_args $dada_filtntrim_args \\
                         --dada_qc_f_path $dada_fw_qual_stats \\
                         --dada_qc_r_path $dada_rv_qual_stats \\
+                        --dada_pp_qc_f_path $dada_pp_fw_qual_stats \\
+                        --dada_pp_qc_r_path $dada_pp_rv_qual_stats \\
+                        --dada_1_err_path ./1_1.err.svg \\
+                        --dada_2_err_path ./1_2.err.svg \\
                         $skip_fastqc \\
                         $skip_cutadapt \\
                         $skip_dada2 \\

@@ -31,7 +31,9 @@ process SUMMARY_REPORT  {
     script:
     def skip_fastqc = params.skip_fastqc ? "--skip_fastqc" : ""
     def cutadapt = params.skip_cutadapt ? "--skip_cutadapt" : "--ca_sum_path $ca_summary"
-    def dada_quality = params.skip_dada_quality ? "--skip_dada_quality" : "--dada_qc_f_path $dada_fw_qual_stats --dada_qc_r_path $dada_rv_qual_stats --dada_pp_qc_f_path $dada_pp_fw_qual_stats --dada_pp_qc_r_path $dada_pp_rv_qual_stats"
+    def dada_quality = params.skip_dada_quality ? "--skip_dada_quality" :
+        meta.single_end ? "--dada_qc_f_path $dada_fw_qual_stats --dada_pp_qc_f_path $dada_pp_fw_qual_stats" :
+        "--dada_qc_f_path $dada_fw_qual_stats --dada_qc_r_path $dada_rv_qual_stats --dada_pp_qc_f_path $dada_pp_fw_qual_stats --dada_pp_qc_r_path $dada_pp_rv_qual_stats"
     def skip_barrnap = params.skip_barrnap ? "--skip_barrnap" : ""
     def retain_untrimmed = params.retain_untrimmed ? "--retain_untrimmed" : ""
     def dada_err = meta.single_end ? "--dada_1_err_path $dada_err_svgs" : "--dada_1_err_path ${dada_err_svgs[0]} --dada_2_err_path ${dada_err_svgs[1]}"

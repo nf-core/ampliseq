@@ -113,7 +113,7 @@ dada2_dir <- paste0("../dada2/QC/")
 cat("## QC using DADA2\n")
 cat("Further quality checks were performed using the DADA2 package and ",
         "forward and reverse quality stats are displayed as well as the ",
-        "respective preprocessed quality stats. The original plots can be",
+        "respective preprocessed quality stats. The original plots can be ",
         "found [here](", dada2_dir, ").", sep = "")
 ```
 
@@ -136,18 +136,16 @@ if (params$flag_trunc_qmin != -1) {
 ```
 
 ```{r, eval = !params$flag_skip_dada_quality, results='asis', out.width="49%", fig.show='hold',fig.align='center'}
-# TODO FW or RV may not exist
 # TODO svg seems to have an error
 knitr::include_graphics(c(params$dada_qc_f_path,params$dada_qc_r_path))
 ```
 
 ```{r, eval = !params$flag_skip_dada_quality, results='asis', out.width="49%", fig.show='hold',fig.align='center'}
-# TODO FW or RV may not exist
 # TODO same issue, also error in svg
 knitr::include_graphics(c(params$dada_pp_qc_f_path, params$dada_pp_qc_r_path))
 ```
 
-```{r, eval = !params$flag_skip_dada_quality, results='asis'}
+```{r, results='asis'}
 cat("## Error correction using DADA2\n")
 cat("Error correction was performed using DADA2 as well and the original ",
         "plots can be found [here](../dada2/QC/).", sep = "")

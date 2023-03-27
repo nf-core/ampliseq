@@ -51,6 +51,7 @@ if (params.dada_ref_tax_custom) {
         ch_addspecies = Channel.fromPath("${params.dada_ref_tax_custom_sp}", checkIfExists: true)
     }
     ch_dada_ref_taxonomy = Channel.empty()
+    val_dada_ref_taxonomy = "user"
 } else if (params.dada_ref_taxonomy && !params.skip_taxonomy) {
     //standard ref taxonomy input from params.dada_ref_taxonomy & conf/ref_databases.config
     ch_dada_ref_taxonomy = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["file"]).map { file(it) }

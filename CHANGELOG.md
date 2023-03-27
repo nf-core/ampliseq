@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#563](https://github.com/nf-core/ampliseq/pull/563) - Renamed DADA2 taxonomic classification files to include the chosen reference taxonomy abbreviation.
+
 ### `Fixed`
 
 - [#553](https://github.com/nf-core/ampliseq/pull/553) - Handle empty barrnap results files

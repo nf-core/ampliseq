@@ -58,7 +58,10 @@ if (params.dada_ref_tax_custom) {
     if (params.addsh) {
         ch_shinfo = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]).map { file(it) }
     }
-} else { ch_dada_ref_taxonomy = Channel.empty() }
+} else {
+    ch_dada_ref_taxonomy = Channel.empty()
+    val_dada_ref_taxonomy = "none"
+}
 
 if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
     ch_qiime_ref_taxonomy = Channel.fromList(params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"]).map { file(it) }

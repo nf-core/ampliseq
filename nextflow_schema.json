@@ -276,10 +276,7 @@
                     "type": "string",
                     "description": "Method used for alignment, \"hmmer\" or \"mafft\"",
                     "default": "hmmer",
-                    "enum": [
-                        "hmmer",
-                        "mafft"
-                    ]
+                    "enum": ["hmmer", "mafft"]
                 },
                 "pplace_taxonomy": {
                     "type": "string",

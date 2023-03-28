@@ -479,7 +479,7 @@ workflow AMPLISEQ {
         }
     }
 
-    //Phylo placement
+    // Phylo placement
     if ( params.pplace_tree ) {
         ch_pp_data = ch_fasta.map { it ->
             [ meta: [ id: params.pplace_name ?: 'user_tree' ],

@@ -199,9 +199,9 @@ Files when _not_ using ITSx (default):
 <summary>Output files</summary>
 
 - `dada2/`
-  - `ASV_tax.tsv`: Taxonomic classification for each ASV sequence.
-  - `ASV_tax_species.tsv`: Exact species classification for each ASV sequence.
-  - `ref_taxonomy.txt`: Information about the used reference taxonomy, such as title, version, citation.
+  - `ASV_tax.*.tsv`: Taxonomic classification for each ASV sequence.
+  - `ASV_tax_species.*.tsv`: Exact species classification for each ASV sequence.
+  - `ref_taxonomy.*.txt`: Information about the used reference taxonomy, such as title, version, citation.
 
 </details>
 
@@ -211,11 +211,11 @@ Files when using ITSx:
 <summary>Output files</summary>
 
 - `dada2/`
-  - `ASV_ITS_tax.tsv`: Taxonomic classification with ITS region of each ASV sequence.
-  - `ASV_ITS_tax_species.tsv`: Exact species classification with ITS region of each ASV sequence.
-  - `ASV_tax.tsv`: Taxonomic classification of each ASV sequence, based on the ITS region.
-  - `ASV_tax_species.tsv`: Exact species classification of each ASV sequence, based on the ITS region.
-  - `ref_taxonomy.txt`: Information about the used reference taxonomy, such as title, version, citation.
+  - `ASV_ITS_tax.*.tsv`: Taxonomic classification with ITS region of each ASV sequence.
+  - `ASV_ITS_tax_species.*.tsv`: Exact species classification with ITS region of each ASV sequence.
+  - `ASV_tax.*.tsv`: Taxonomic classification of each ASV sequence, based on the ITS region.
+  - `ASV_tax_species.*.tsv`: Exact species classification of each ASV sequence, based on the ITS region.
+  - `ref_taxonomy.*.txt`: Information about the used reference taxonomy, such as title, version, citation.
 
 </details>
 

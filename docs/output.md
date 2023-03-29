@@ -242,6 +242,7 @@ Phylogenetic placement grafts sequences onto a phylogenetic reference tree and o
 - `pplace/`
   - `*.graft.*.epa_result.newick`: Full phylogeny with query sequences grafted on to the reference phylogeny, in newick format.
   - `*.taxonomy.per_query.tsv`: Tab separated file with taxonomy information per query from classification by `gappa examine examinassign`
+  - `*.per_query_unique.tsv`: Tab separated file with taxonomy information as aboe, but one row per query, by filtering for lowest LWR (likelihood weight ratio)
   - `*.heattree.tree.svg`: Heattree in SVG format from calling `gappa examine heattree`, see [Gappa documentation](https://github.com/Pbdas/epa-ng/blob/master/README.md) for details.
   - `pplace/hmmer/`: Contains intermediatary files if HMMER is used
   - `pplace/mafft/`: Contains intermediatary files if MAFFT is used

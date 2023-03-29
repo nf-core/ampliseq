@@ -149,6 +149,8 @@ include { FORMAT_TAXRESULTS as FORMAT_TAXRESULTS_ADDSP } from '../modules/local/
 include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'
 include { QIIME2_FILTERTAXA             } from '../modules/local/qiime2_filtertaxa'
 include { QIIME2_INASV                  } from '../modules/local/qiime2_inasv'
+include { QIIME2_INTREE                 } from '../modules/local/qiime2_intree'
+include { FORMAT_PPLACETAX              } from '../modules/local/format_pplacetax'
 include { FILTER_STATS                  } from '../modules/local/filter_stats'
 include { MERGE_STATS as MERGE_STATS_FILTERTAXA } from '../modules/local/merge_stats'
 include { QIIME2_BARPLOT                } from '../modules/local/qiime2_barplot'
@@ -500,12 +502,8 @@ workflow AMPLISEQ {
         }
         FASTA_NEWICK_EPANG_GAPPA ( ch_pp_data )
         ch_versions = ch_versions.mix( FASTA_NEWICK_EPANG_GAPPA.out.versions )
-        //TODO: if params.pplace_taxonomy is given, use taxonomy over DADA2 taxonomy for downstream analysis --> FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query --> test_pplace.taxonomy.per_query.tsv
-            //Use for each ASV the annotation with lowest LWR (likelihood-weight-ration) -> conversion script
-                //if tie -> use annotation with less entries (i.e. conservative choice)
-                    //if same number of entries -> remove last entry
-                        //if those truncated annotations arent identical, remove one more entry; repeat until identical
-        //TODO: use newick tree in downstream analysis --> FASTA_NEWICK_EPANG_GAPPA.out.grafted_phylogeny --> test_pplace.graft.test_pplace.epa_result.newick
+
+        ch_pplace_tax = FORMAT_PPLACETAX ( FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query ).tsv
     }
 
     //QIIME2
@@ -528,16 +526,26 @@ workflow AMPLISEQ {
     // SUBWORKFLOW / MODULES : Downstream analysis with QIIME2
     //
     if ( run_qiime2 ) {
-        //Import ASV abundance table and sequences into QIIME2
+        // Import ASV abundance table and sequences into QIIME2
         QIIME2_INASV ( ch_dada2_asv )
         QIIME2_INSEQ ( ch_fasta )
 
-        //Import taxonomic classification into QIIME2, if available
+        // Import phylogenetic tree into QIIME2
+        if ( params.pplace_tree ) {
+            ch_tree = QIIME2_INTREE ( FASTA_NEWICK_EPANG_GAPPA.out.grafted_phylogeny ).qza
+        } else { ch_tree = Channel.empty() }
+
+        // Import taxonomic classification into QIIME2, if available
         if ( params.skip_taxonomy ) {
             log.info "Skip taxonomy classification"
             ch_tax = Channel.empty()
             tax_agglom_min = 1
             tax_agglom_max = 2
+        } else if ( params.pplace_tree && params.pplace_taxonomy) {
+            log.info "Use EPA-NG / GAPPA taxonomy classification"
+            ch_tax = QIIME2_INTAX ( ch_pplace_tax ).qza
+            tax_agglom_min = params.dada_tax_agglom_min
+            tax_agglom_max = params.dada_tax_agglom_max
         } else if ( params.dada_ref_taxonomy ) {
             log.info "Use DADA2 taxonomy classification"
             ch_tax = QIIME2_INTAX ( ch_dada2_tax ).qza
@@ -555,7 +563,7 @@ workflow AMPLISEQ {
             tax_agglom_max = 2
         }
 
-        //Filtering ASVs by taxonomy & prevalence & counts
+        // Filtering ASVs by taxonomy & prevalence & counts
         if (params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1) {
             QIIME2_FILTERTAXA (
                 QIIME2_INASV.out.qza,
@@ -614,6 +622,7 @@ workflow AMPLISEQ {
                 ch_metadata,
                 ch_asv,
                 ch_seq,
+                ch_tree,
                 ch_tsv,
                 ch_metacolumn_pairwise,
                 ch_metacolumn_all,

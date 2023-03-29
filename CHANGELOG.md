@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-- [#564](https://github.com/nf-core/ampliseq/pull/564) - Added phylogenetic placement
+- [#564](https://github.com/nf-core/ampliseq/pull/564),[#565](https://github.com/nf-core/ampliseq/pull/565) - Added phylogenetic placement
 
 ### `Changed`
 

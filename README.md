@@ -19,7 +19,7 @@
 
 ## Introduction
 
-**nfcore/ampliseq** is a bioinformatics analysis pipeline used for amplicon sequencing, supporting denoising of any amplicon and, currently, taxonomic assignment of 16S, ITS, CO1 and 18S amplicons. Supported is paired-end Illumina or single-end Illumina, PacBio and IonTorrent data. Default is the analysis of 16S rRNA gene amplicons sequenced paired-end with Illumina.
+**nfcore/ampliseq** is a bioinformatics analysis pipeline used for amplicon sequencing, supporting denoising of any amplicon and, currently, taxonomic assignment of 16S, ITS, CO1 and 18S amplicons. Phylogenetic placement is also possible. Supported is paired-end Illumina or single-end Illumina, PacBio and IonTorrent data. Default is the analysis of 16S rRNA gene amplicons sequenced paired-end with Illumina.
 
 <p align="center">
     <img src="docs/images/ampliseq_workflow.png" alt="nf-core/ampliseq workflow overview" width="60%">
@@ -37,6 +37,7 @@ By default, the pipeline currently performs the following:
 - Trimming of reads ([Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200))
 - Infer Amplicon Sequence Variants (ASVs) ([DADA2](https://doi.org/10.1038/nmeth.3869))
 - Predict whether ASVs are ribosomal RNA sequences ([Barrnap](https://github.com/tseemann/barrnap))
+- Phylogenetic placement ([EPA-NG](https://github.com/Pbdas/epa-ng))
 - Taxonomical classification using DADA2 or [QIIME2](https://www.nature.com/articles/s41587-019-0209-9)
 - Excludes unwanted taxa, produces absolute and relative feature/taxa count tables and plots, plots alpha rarefaction curves, computes alpha and beta diversity indices and plots thereof ([QIIME2](https://www.nature.com/articles/s41587-019-0209-9))
 - Calls differentially abundant taxa ([ANCOM](https://www.ncbi.nlm.nih.gov/pubmed/26028277))

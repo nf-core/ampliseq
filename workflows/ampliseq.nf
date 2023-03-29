@@ -188,6 +188,7 @@ include { FASTQC                            } from '../modules/nf-core/fastqc/ma
 include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { VSEARCH_USEARCHGLOBAL             } from '../modules/nf-core/vsearch/usearchglobal/main'
+include { FASTA_NEWICK_EPANG_GAPPA          } from '../subworkflows/nf-core/fasta_newick_epang_gappa/main'
 
 
 /*
@@ -481,6 +482,30 @@ workflow AMPLISEQ {
                 }
             }
         }
+    }
+
+    // Phylo placement
+    if ( params.pplace_tree ) {
+        ch_pp_data = ch_fasta.map { it ->
+            [ meta: [ id: params.pplace_name ?: 'user_tree' ],
+            data: [
+                alignmethod:  params.pplace_alnmethod ?: 'hmmer',
+                queryseqfile: it,
+                refseqfile:   file( params.pplace_aln, checkIfExists: true ),
+                hmmfile:      [],
+                refphylogeny: file( params.pplace_tree, checkIfExists: true ),
+                model:        params.pplace_model,
+                taxonomy:     params.pplace_taxonomy ? file( params.pplace_taxonomy, checkIfExists: true ) : []
+            ] ]
+        }
+        FASTA_NEWICK_EPANG_GAPPA ( ch_pp_data )
+        ch_versions = ch_versions.mix( FASTA_NEWICK_EPANG_GAPPA.out.versions )
+        //TODO: if params.pplace_taxonomy is given, use taxonomy over DADA2 taxonomy for downstream analysis --> FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query --> test_pplace.taxonomy.per_query.tsv
+            //Use for each ASV the annotation with lowest LWR (likelihood-weight-ration) -> conversion script
+                //if tie -> use annotation with less entries (i.e. conservative choice)
+                    //if same number of entries -> remove last entry
+                        //if those truncated annotations arent identical, remove one more entry; repeat until identical
+        //TODO: use newick tree in downstream analysis --> FASTA_NEWICK_EPANG_GAPPA.out.grafted_phylogeny --> test_pplace.graft.test_pplace.epa_result.newick
     }
 
     //QIIME2

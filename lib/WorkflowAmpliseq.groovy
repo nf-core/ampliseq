@@ -63,6 +63,17 @@ class WorkflowAmpliseq {
             System.exit(1)
         }
 
+        if (params.pplace_tree) {
+            if (!params.pplace_aln) {
+                log.error "Missing parameter: Phylogenetic placement requires in addition to `--pplace_tree` also `--pplace_aln`."
+                System.exit(1)
+            }
+            if (!params.pplace_model) {
+                log.error "Missing parameter: Phylogenetic placement requires in addition to `--pplace_tree` also `--pplace_model`."
+                System.exit(1)
+            }
+        }
+
         if (params.dada_assign_taxlevels && params.sbdiexport) {
             log.error "Incompatible parameters: `--sbdiexport` expects specific taxonomics ranks (default) and therefore excludes modifying those using `--dada_assign_taxlevels`."
             System.exit(1)

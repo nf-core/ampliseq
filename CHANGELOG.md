@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#564](https://github.com/nf-core/ampliseq/pull/564) - Added phylogenetic placement
+
 ### `Changed`
 
 - [#563](https://github.com/nf-core/ampliseq/pull/563) - Renamed DADA2 taxonomic classification files to include the chosen reference taxonomy abbreviation.

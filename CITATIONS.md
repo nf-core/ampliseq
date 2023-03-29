@@ -67,6 +67,26 @@
 
     > Sundh J, Manoharan L, Iwaszkiewicz-Eggebrecht E, Miraldo A, Andersson A, Ronquist F. COI reference sequences from BOLD DB. doi: https://doi.org/10.17044/scilifelab.20514192.v2.
 
+### Phylogenetic placement
+
+- nf-core/phyloplace (https://github.com/nf-core/phyloplace, https://nf-co.re/phyloplace) was originally written by Daniel Lundin.
+
+- [HMMER](https://pubmed.ncbi.nlm.nih.gov/22039361/)
+
+  > Eddy, Sean R. “Accelerated Profile HMM Searches.” PLoS Comput Biol 7, no. 10 (October 20, 2011): e1002195. https://doi.org/10.1371/journal.pcbi.1002195.
+
+- [MAFFT](https://pubmed.ncbi.nlm.nih.gov/12136088/)
+
+  > Katoh, Kazutaka, Kazuharu Misawa, Kei‐ichi Kuma, and Takashi Miyata. “MAFFT: A Novel Method for Rapid Multiple Sequence Alignment Based on Fast Fourier Transform.” Nucleic Acids Research 30, no. 14 (July 15, 2002): 3059–66. https://doi.org/10.1093/nar/gkf436.
+
+- [EPA-NG](https://pubmed.ncbi.nlm.nih.gov/30165689/)
+
+  > Barbera, Pierre, Alexey M Kozlov, Lucas Czech, Benoit Morel, Diego Darriba, Tomáš Flouri, and Alexandros Stamatakis. “EPA-Ng: Massively Parallel Evolutionary Placement of Genetic Sequences.” Systematic Biology 68, no. 2 (March 1, 2019): 365–69. https://doi.org/10.1093/sysbio/syy054.
+
+- [Gappa](https://pubmed.ncbi.nlm.nih.gov/32016344/)
+
+  > Czech, Lucas, Pierre Barbera, and Alexandros Stamatakis. “Genesis and Gappa: Processing, Analyzing and Visualizing Phylogenetic (Placement) Data.” Bioinformatics 36, no. 10 (May 1, 2020): 3263–65. https://doi.org/10.1093/bioinformatics/btaa070.
+
 ### Downstream analysis
 
 - [QIIME2](https://pubmed.ncbi.nlm.nih.gov/31341288/)

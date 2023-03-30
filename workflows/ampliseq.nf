@@ -504,7 +504,7 @@ workflow AMPLISEQ {
         ch_versions = ch_versions.mix( FASTA_NEWICK_EPANG_GAPPA.out.versions )
 
         ch_pplace_tax = FORMAT_PPLACETAX ( FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query ).tsv
-    }
+    } else { ch_pplace_tax = Channel.empty() }
 
     //QIIME2
     if ( run_qiime2 ) {
@@ -586,7 +586,7 @@ workflow AMPLISEQ {
         }
         //Export various ASV tables
         if (!params.skip_abundance_tables) {
-            QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, QIIME2_TAXONOMY.out.tsv, ch_dada2_tax, tax_agglom_min, tax_agglom_max )
+            QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, QIIME2_TAXONOMY.out.tsv, ch_dada2_tax, ch_pplace_tax, tax_agglom_min, tax_agglom_max )
         }
 
         if (!params.skip_barplot) {

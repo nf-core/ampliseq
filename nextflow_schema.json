@@ -280,7 +280,7 @@
                 },
                 "pplace_taxonomy": {
                     "type": "string",
-                    "help_text": "Headerless, tab-separated, first column with tree leaves, second column with taxonomy ranks separated by semicolon `;`.",
+                    "help_text": "Headerless, tab-separated, first column with tree leaves, second column with taxonomy ranks separated by semicolon `;`. The results take precedence over DADA2 and QIIME2 classifications.",
                     "description": "Tab-separated file with taxonomy assignments of reference sequences."
                 },
                 "pplace_name": {

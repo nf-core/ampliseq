@@ -63,9 +63,6 @@ process FORMAT_PPLACETAX {
                 df_taxonpath <- as.data.frame(do.call(rbind, list_taxonpath))
                 for (i in ncol(df_taxonpath):0) {
                     # choose first column and change taxon to reduced overlap
-                    print(paste("i:",i))
-                    print(df_taxonpath[,1:i])
-                    print(paste("len:",length(unique(df_taxonpath[,i]))))
                     if ( length(unique(df_taxonpath[,i])) == 1 ) {
                         if (i>1) {
                             temp\$taxopath <- apply(df_taxonpath[1,1:i], 1, paste, collapse=";")[[1]]

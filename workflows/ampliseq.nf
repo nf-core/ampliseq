@@ -132,7 +132,7 @@ include { FILTER_SSU                    } from '../modules/local/filter_ssu'
 include { FILTER_LEN_ASV                } from '../modules/local/filter_len_asv'
 include { MERGE_STATS as MERGE_STATS_FILTERSSU } from '../modules/local/merge_stats'
 include { MERGE_STATS as MERGE_STATS_FILTERLENASV } from '../modules/local/merge_stats'
-include { FILTER_COI_ASV } from '../modules/local/filter_coi_asv'
+include { FILTER_COI_ASV                } from '../modules/local/filter_coi_asv'
 include { FORMAT_FASTAINPUT             } from '../modules/local/format_fastainput'
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
 include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
@@ -302,6 +302,8 @@ workflow AMPLISEQ {
     } else {
         ch_stats = DADA2_MERGE.out.dada2stats
     }
+
+
 
     //
     // Modules : Filter rRNA

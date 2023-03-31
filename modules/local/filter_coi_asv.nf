@@ -14,7 +14,7 @@ process FILTER_COI_ASV {
     path( "ASV_filtered.table.tsv" )  , emit: asv
     path( "ASV_filtered.fna" ) , emit: fasta
     path( "ASV_filtered.list" ) , emit: list
-    path( "stats.filt.tsv" ), emit: stas
+    path( "stats.filt.tsv" ), emit: stats
     path "versions.yml"          , emit: versions
 
     when:

@@ -9,7 +9,7 @@ if(length(args) < 2){
 dada2_stats <- args[1]
 coi_filt <- args[2]
 
- <- read.table(dada2_stats, header = T, check.names = F, row.names = 1)
+old_stats <- read.table(dada2_stats, header = T, check.names = F, row.names = 1)
 
 filt_table <- read.table(coi_filt, header = T, check.names = F, row.names = 1)
 

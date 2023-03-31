@@ -70,7 +70,7 @@ if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
 
 if (params.sintax_ref_taxonomy && !params.skip_taxonomy) {
     ch_sintax_ref_taxonomy = Channel.fromList(params.sintax_ref_databases[params.sintax_ref_taxonomy]["file"]).map { file(it) }
-    val_sintax_ref_taxonomy = params.sintax_ref_taxonomy.replace('=','_').replace('.','_')"
+    val_sintax_ref_taxonomy = params.sintax_ref_taxonomy.replace('=','_').replace('.','_')
 } else {
     ch_sintax_ref_taxonomy = Channel.empty()
     val_sintax_ref_taxonomy = "none"

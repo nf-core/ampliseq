@@ -134,12 +134,13 @@ include { BARRNAP                       } from '../modules/local/barrnap'
 include { BARRNAPSUMMARY                } from '../modules/local/barrnapsummary'
 include { FILTER_SSU                    } from '../modules/local/filter_ssu'
 include { FILTER_LEN_ASV                } from '../modules/local/filter_len_asv'
-include { MERGE_STATS as MERGE_STATS_FILTERSSU } from '../modules/local/merge_stats'
+include { MERGE_STATS as MERGE_STATS_FILTERSSU    } from '../modules/local/merge_stats'
 include { MERGE_STATS as MERGE_STATS_FILTERLENASV } from '../modules/local/merge_stats'
 include { FORMAT_FASTAINPUT             } from '../modules/local/format_fastainput'
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
 include { FORMAT_TAXONOMY_SINTAX        } from '../modules/local/format_taxonomy_sintax'
-include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
+include { ITSX_CUTASV as ITSX_CUTASV_DADA2  } from '../modules/local/itsx_cutasv'
+include { ITSX_CUTASV as ITSX_CUTASV_SINTAX } from '../modules/local/itsx_cutasv'
 include { MERGE_STATS as MERGE_STATS_STD} from '../modules/local/merge_stats'
 include { DADA2_TAXONOMY                } from '../modules/local/dada2_taxonomy'
 include { DADA2_ADDSPECIES              } from '../modules/local/dada2_addspecies'
@@ -431,9 +432,9 @@ workflow AMPLISEQ {
             else if (params.cut_its == "its2") {
                 outfile =  params.its_partial ? "ASV_ITS_seqs.ITS2.full_and_partial.fasta" : "ASV_ITS_seqs.ITS2.fasta"
             }
-            ITSX_CUTASV ( ch_fasta, outfile )
-            ch_versions = ch_versions.mix(ITSX_CUTASV.out.versions.ifEmpty(null))
-            ch_cut_fasta = ITSX_CUTASV.out.fasta
+            ITSX_CUTASV_DADA2 ( ch_fasta, outfile )
+            ch_versions = ch_versions.mix(ITSX_CUTASV_DADA2.out.versions.ifEmpty(null))
+            ch_cut_fasta = ITSX_CUTASV_DADA2.out.fasta
             DADA2_TAXONOMY ( ch_cut_fasta, ch_assigntax, 'ASV_ITS_tax.tsv', taxlevels )
             ch_versions = ch_versions.mix(DADA2_TAXONOMY.out.versions)
             FORMAT_TAXRESULTS_STD ( DADA2_TAXONOMY.out.tsv, ch_fasta, 'ASV_tax.tsv' )
@@ -484,17 +485,40 @@ workflow AMPLISEQ {
     if (!params.skip_taxonomy) {
         FORMAT_TAXONOMY_SINTAX ( ch_sintax_ref_taxonomy.collect() )
         ch_sintaxdb = FORMAT_TAXONOMY_SINTAX.out.db
-        ch_fasta
-            .map {
-                fasta ->
-                    def meta = [:]
-                    meta.id = "ASV_tax_sintax.raw"
-                    [ meta, fasta ] }
-            .set { ch_fasta_sintax }
+        if (params.cut_its == "none") {
+            ASV_tax_name = "ASV_tax_sintax"
+            ch_fasta
+                .map {
+                    fasta ->
+                        def meta = [:]
+                        meta.id = ASV_tax_name + ".raw"
+                        [ meta, fasta ] }
+                .set { ch_fasta_sintax }
+        } else {
+            ASV_tax_name = "ASV_ITS_tax_sintax"
+            if (params.cut_its == "full") {
+                outfile = params.its_partial ? "ASV_ITS_seqs.full_and_partial.fasta" : "ASV_ITS_seqs.full.fasta"
+            }
+            else if (params.cut_its == "its1") {
+                outfile =  params.its_partial ? "ASV_ITS_seqs.ITS1.full_and_partial.fasta" : "ASV_ITS_seqs.ITS1.fasta"
+            }
+            else if (params.cut_its == "its2") {
+                outfile =  params.its_partial ? "ASV_ITS_seqs.ITS2.full_and_partial.fasta" : "ASV_ITS_seqs.ITS2.fasta"
+            }
+            ITSX_CUTASV_SINTAX ( ch_fasta, outfile )
+            ch_versions = ch_versions.mix(ITSX_CUTASV_SINTAX.out.versions.ifEmpty(null))
+            ch_cut_fasta = ITSX_CUTASV_SINTAX.out.fasta
+            ch_cut_fasta
+                .map {
+                    fasta ->
+                        def meta = [:]
+                        meta.id = ASV_tax_name + ".raw"
+                        [ meta, fasta ] }
+                .set { ch_fasta_sintax }
+        }
         VSEARCH_SINTAX( ch_fasta_sintax, ch_sintaxdb )
         ch_versions = ch_versions.mix(VSEARCH_SINTAX.out.versions)
-        FORMAT_TAXRESULTS_SINTAX( VSEARCH_SINTAX.out.tsv, 'ASV_tax_sintax.tsv', taxlevels )
-        //FORMAT_TAXRESULTS_SINTAX( VSEARCH_SINTAX.out.tsv, 'ASV_tax_sintax.tsv', 'Kingdom,Genus' )
+        FORMAT_TAXRESULTS_SINTAX( VSEARCH_SINTAX.out.tsv, ch_fasta, ASV_tax_name + '.tsv', taxlevels )
         ch_sintax_tax = FORMAT_TAXRESULTS_SINTAX.out.tsv
     }
 

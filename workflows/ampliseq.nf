@@ -452,7 +452,7 @@ workflow AMPLISEQ {
             ITSX_CUTASV_DADA2 ( ch_fasta, outfile )
             ch_versions = ch_versions.mix(ITSX_CUTASV_DADA2.out.versions.ifEmpty(null))
             ch_cut_fasta = ITSX_CUTASV_DADA2.out.fasta
-            DADA2_TAXONOMY ( ch_cut_fasta, ch_assigntax, 'ASV_ITS_tax.${val_dada_ref_taxonomy}.tsv', taxlevels )
+            DADA2_TAXONOMY ( ch_cut_fasta, ch_assigntax, "ASV_ITS_tax.${val_dada_ref_taxonomy}.tsv", taxlevels )
             ch_versions = ch_versions.mix(DADA2_TAXONOMY.out.versions)
             FORMAT_TAXRESULTS_STD ( DADA2_TAXONOMY.out.tsv, ch_fasta, 'ASV_tax.tsv' )
             ch_versions = ch_versions.mix( FORMAT_TAXRESULTS_STD.out.versions.ifEmpty(null) )
@@ -497,7 +497,7 @@ workflow AMPLISEQ {
     }
 
     // Sintax
-    // This will only run if --sintax_ref_taxonomy is defined, 
+    // This will only run if --sintax_ref_taxonomy is defined,
     // i.e. if the channel ch_sintax_ref_taxonomy is not empty
     if (!params.skip_taxonomy) {
         FORMAT_TAXONOMY_SINTAX ( ch_sintax_ref_taxonomy.collect() )

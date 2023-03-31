@@ -22,6 +22,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [ITSx](#itsx) - Optionally, the ITS region can be extracted
 - [Taxonomic classification with DADA2](#taxonomic-classification-with-dada2) - Taxonomic classification of (filtered) ASVs
   - [assignSH](#assignsh) - Optionally, a UNITE species hypothesis (SH) can be added to the taxonomy
+- [Phlogenetic placement and taxonomic classification](#phylogenetic-placement-and-taxonomic-classification) - Placing ASVs into a phyloenetic tree
 - [QIIME2](#qiime2) - Secondary analysis
   - [Taxonomic classification](#taxonomic-classification) - Taxonomical classification of ASVs
   - [Abundance tables](#abundance-tables) - Exported abundance tables
@@ -198,9 +199,9 @@ Files when _not_ using ITSx (default):
 <summary>Output files</summary>
 
 - `dada2/`
-  - `ASV_tax.tsv`: Taxonomic classification for each ASV sequence.
-  - `ASV_tax_species.tsv`: Exact species classification for each ASV sequence.
-  - `ref_taxonomy.txt`: Information about the used reference taxonomy, such as title, version, citation.
+  - `ASV_tax.*.tsv`: Taxonomic classification for each ASV sequence.
+  - `ASV_tax_species.*.tsv`: Exact species classification for each ASV sequence.
+  - `ref_taxonomy.*.txt`: Information about the used reference taxonomy, such as title, version, citation.
 
 </details>
 
@@ -210,11 +211,11 @@ Files when using ITSx:
 <summary>Output files</summary>
 
 - `dada2/`
-  - `ASV_ITS_tax.tsv`: Taxonomic classification with ITS region of each ASV sequence.
-  - `ASV_ITS_tax_species.tsv`: Exact species classification with ITS region of each ASV sequence.
-  - `ASV_tax.tsv`: Taxonomic classification of each ASV sequence, based on the ITS region.
-  - `ASV_tax_species.tsv`: Exact species classification of each ASV sequence, based on the ITS region.
-  - `ref_taxonomy.txt`: Information about the used reference taxonomy, such as title, version, citation.
+  - `ASV_ITS_tax.*.tsv`: Taxonomic classification with ITS region of each ASV sequence.
+  - `ASV_ITS_tax_species.*.tsv`: Exact species classification with ITS region of each ASV sequence.
+  - `ASV_tax.*.tsv`: Taxonomic classification of each ASV sequence, based on the ITS region.
+  - `ASV_tax_species.*.tsv`: Exact species classification of each ASV sequence, based on the ITS region.
+  - `ref_taxonomy.*.txt`: Information about the used reference taxonomy, such as title, version, citation.
 
 </details>
 
@@ -228,6 +229,24 @@ Optionally, a UNITE species hypothesis (SH) can be added to the taxonomy. In sho
 - `assignsh/`
   - `ASV_tax_species_SH.tsv`: Taxonomic classification with SH taxonomy added in case of a match.
   - `*.vsearch.txt`: Raw vsearch results.
+
+</details>
+
+### Phlogenetic placement and taxonomic classification
+
+Phylogenetic placement grafts sequences onto a phylogenetic reference tree and optionally outputs taxonomic annotations. The reference tree is ideally made from full-length high-quality sequences containing better evolutionary signal than short amplicons. It is hence superior to estimating de-novo phylogenetic trees from short amplicon sequences. On providing required reference files, ASV sequences are aligned to the reference alignment with either [HMMER](http://hmmer.org/) (default) or [MAFFT](https://mafft.cbrc.jp/alignment/software/). Subsequently, phylogenetic placement of query sequences is performed with [EPA-NG](https://github.com/Pbdas/epa-ng), and finally a number of summary operations are performed with [Gappa](https://github.com/lczech/gappa). This uses code from [nf-core/phyloplace](https://nf-co.re/phyloplace) in the form of its main [subworkflow](https://github.com/nf-core/modules/tree/master/subworkflows/nf-core/fasta_newick_epang_gappa), therefore its detailed documentation also applies here.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `pplace/`
+  - `*.graft.*.epa_result.newick`: Full phylogeny with query sequences grafted on to the reference phylogeny, in newick format.
+  - `*.taxonomy.per_query.tsv`: Tab separated file with taxonomy information per query from classification by `gappa examine examinassign`
+  - `*.heattree.tree.svg`: Heattree in SVG format from calling `gappa examine heattree`, see [Gappa documentation](https://github.com/Pbdas/epa-ng/blob/master/README.md) for details.
+  - `pplace/hmmer/`: Contains intermediatary files if HMMER is used
+  - `pplace/mafft/`: Contains intermediatary files if MAFFT is used
+  - `pplace/epang/`: Output files from EPA-NG.
+  - `pplace/gappa/`: Gappa output described in the [Gappa documentation](https://github.com/Pbdas/epa-ng/blob/master/README.md).
 
 </details>
 

@@ -51,13 +51,18 @@ if (params.dada_ref_tax_custom) {
         ch_addspecies = Channel.fromPath("${params.dada_ref_tax_custom_sp}", checkIfExists: true)
     }
     ch_dada_ref_taxonomy = Channel.empty()
+    val_dada_ref_taxonomy = "user"
 } else if (params.dada_ref_taxonomy && !params.skip_taxonomy) {
     //standard ref taxonomy input from params.dada_ref_taxonomy & conf/ref_databases.config
     ch_dada_ref_taxonomy = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["file"]).map { file(it) }
+    val_dada_ref_taxonomy = params.dada_ref_taxonomy.replace('=','_').replace('.','_')
     if (params.addsh) {
         ch_shinfo = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]).map { file(it) }
     }
-} else { ch_dada_ref_taxonomy = Channel.empty() }
+} else {
+    ch_dada_ref_taxonomy = Channel.empty()
+    val_dada_ref_taxonomy = "none"
+}
 
 if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
     ch_qiime_ref_taxonomy = Channel.fromList(params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"]).map { file(it) }
@@ -65,7 +70,11 @@ if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
 
 if (params.sintax_ref_taxonomy && !params.skip_taxonomy) {
     ch_sintax_ref_taxonomy = Channel.fromList(params.sintax_ref_databases[params.sintax_ref_taxonomy]["file"]).map { file(it) }
-} else { ch_sintax_ref_taxonomy = Channel.empty() }
+    val_sintax_ref_taxonomy = params.sintax_ref_taxonomy.replace('=','_').replace('.','_')"
+} else {
+    ch_sintax_ref_taxonomy = Channel.empty()
+    val_sintax_ref_taxonomy = "none"
+}
 
 
 // Set non-params Variables
@@ -191,6 +200,7 @@ include { MULTIQC                           } from '../modules/nf-core/multiqc/m
 include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { VSEARCH_SINTAX                    } from '../modules/nf-core/vsearch/sintax/main'
 include { VSEARCH_USEARCHGLOBAL             } from '../modules/nf-core/vsearch/usearchglobal/main'
+include { FASTA_NEWICK_EPANG_GAPPA          } from '../subworkflows/nf-core/fasta_newick_epang_gappa/main'
 
 
 /*
@@ -323,6 +333,12 @@ workflow AMPLISEQ {
     if (!params.skip_barrnap && params.filter_ssu) {
         BARRNAP ( ch_unfiltered_fasta )
         BARRNAPSUMMARY ( BARRNAP.out.gff.collect() )
+        BARRNAPSUMMARY.out.warning.subscribe {
+            if ( it.baseName.toString().startsWith("WARNING") ) {
+                log.error "Barrnap could not identify any rRNA in the ASV sequences! This will result in all sequences being removed with SSU filtering."
+                System.exit(1)
+            }
+        }
         ch_barrnapsummary = BARRNAPSUMMARY.out.summary
         ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))
         FILTER_SSU ( DADA2_MERGE.out.fasta, DADA2_MERGE.out.asv, BARRNAPSUMMARY.out.summary )
@@ -333,6 +349,7 @@ workflow AMPLISEQ {
     } else if (!params.skip_barrnap && !params.filter_ssu) {
         BARRNAP ( ch_unfiltered_fasta )
         BARRNAPSUMMARY ( BARRNAP.out.gff.collect() )
+        BARRNAPSUMMARY.out.warning.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn "Barrnap could not identify any rRNA in the ASV sequences. We recommended to use the --skip_barrnap option for these sequences." }
         ch_barrnapsummary = BARRNAPSUMMARY.out.summary
         ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))
         ch_dada2_fasta = ch_unfiltered_fasta
@@ -364,7 +381,7 @@ workflow AMPLISEQ {
     if (!params.skip_taxonomy) {
         if (!params.dada_ref_tax_custom) {
             //standard ref taxonomy input from conf/ref_databases.config
-            FORMAT_TAXONOMY ( ch_dada_ref_taxonomy.collect() )
+            FORMAT_TAXONOMY ( ch_dada_ref_taxonomy.collect(), val_dada_ref_taxonomy )
             ch_assigntax = FORMAT_TAXONOMY.out.assigntax
             ch_addspecies = FORMAT_TAXONOMY.out.addspecies
         }
@@ -383,10 +400,10 @@ workflow AMPLISEQ {
                 .set { ch_assigntax }
         }
         if (params.cut_its == "none") {
-            DADA2_TAXONOMY ( ch_fasta, ch_assigntax, 'ASV_tax.tsv', taxlevels )
+            DADA2_TAXONOMY ( ch_fasta, ch_assigntax, "ASV_tax.${val_dada_ref_taxonomy}.tsv", taxlevels )
             ch_versions = ch_versions.mix(DADA2_TAXONOMY.out.versions)
             if (!params.skip_dada_addspecies) {
-                DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_tax_species.tsv', taxlevels )
+                DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, "ASV_tax_species.${val_dada_ref_taxonomy}.tsv", taxlevels )
                 if ( params.addsh ) {
                     ch_fasta
                         .map {
@@ -397,7 +414,7 @@ workflow AMPLISEQ {
                         .set { ch_fasta_map }
                     VSEARCH_USEARCHGLOBAL( ch_fasta_map, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
                     ch_versions = ch_versions.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
-                    ASSIGNSH( DADA2_ADDSPECIES.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, 'ASV_tax_species_SH.tsv')
+                    ASSIGNSH( DADA2_ADDSPECIES.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, "ASV_tax_species_SH.${val_dada_ref_taxonomy}.tsv")
                     ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
                     ch_dada2_tax = ASSIGNSH.out.tsv
                 } else {
@@ -414,7 +431,7 @@ workflow AMPLISEQ {
                         .set { ch_fasta_map }
                     VSEARCH_USEARCHGLOBAL( ch_fasta_map, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
                     ch_versions = ch_versions.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
-                    ASSIGNSH( DADA2_TAXONOMY.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, 'ASV_tax_SH.tsv')
+                    ASSIGNSH( DADA2_TAXONOMY.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, "ASV_tax_SH.${val_dada_ref_taxonomy}.tsv")
                     ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
                     ch_dada2_tax = ASSIGNSH.out.tsv
                 } else {
@@ -435,13 +452,13 @@ workflow AMPLISEQ {
             ITSX_CUTASV_DADA2 ( ch_fasta, outfile )
             ch_versions = ch_versions.mix(ITSX_CUTASV_DADA2.out.versions.ifEmpty(null))
             ch_cut_fasta = ITSX_CUTASV_DADA2.out.fasta
-            DADA2_TAXONOMY ( ch_cut_fasta, ch_assigntax, 'ASV_ITS_tax.tsv', taxlevels )
+            DADA2_TAXONOMY ( ch_cut_fasta, ch_assigntax, 'ASV_ITS_tax.${val_dada_ref_taxonomy}.tsv', taxlevels )
             ch_versions = ch_versions.mix(DADA2_TAXONOMY.out.versions)
             FORMAT_TAXRESULTS_STD ( DADA2_TAXONOMY.out.tsv, ch_fasta, 'ASV_tax.tsv' )
             ch_versions = ch_versions.mix( FORMAT_TAXRESULTS_STD.out.versions.ifEmpty(null) )
             if (!params.skip_dada_addspecies) {
-                DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_ITS_tax_species.tsv', taxlevels )
-                FORMAT_TAXRESULTS_ADDSP ( DADA2_ADDSPECIES.out.tsv, ch_fasta, 'ASV_tax_species.tsv' )
+                DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, "ASV_ITS_tax_species.${val_dada_ref_taxonomy}.tsv", taxlevels )
+                FORMAT_TAXRESULTS_ADDSP ( DADA2_ADDSPECIES.out.tsv, ch_fasta, "ASV_tax_species.${val_dada_ref_taxonomy}.tsv" )
                 if ( params.addsh ) {
                     ch_cut_fasta
                         .map {
@@ -452,13 +469,13 @@ workflow AMPLISEQ {
                         .set { ch_cut_fasta }
                     VSEARCH_USEARCHGLOBAL( ch_cut_fasta, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
                     ch_versions = ch_versions.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
-                    ASSIGNSH( FORMAT_TAXRESULTS_ADDSP.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, 'ASV_tax_species_SH.tsv')
+                    ASSIGNSH( FORMAT_TAXRESULTS_ADDSP.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, "ASV_tax_species_SH.${val_dada_ref_taxonomy}.tsv")
                     ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
                     ch_dada2_tax = ASSIGNSH.out.tsv
                 } else {
                     ch_dada2_tax = FORMAT_TAXRESULTS_ADDSP.out.tsv
                 }
-           } else {
+            } else {
                 if ( params.addsh ) {
                     ch_cut_fasta
                         .map {
@@ -469,7 +486,7 @@ workflow AMPLISEQ {
                         .set { ch_cut_fasta }
                     VSEARCH_USEARCHGLOBAL( ch_cut_fasta, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
                     ch_versions = ch_versions.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
-                    ASSIGNSH( FORMAT_TAXRESULTS_STD.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, 'ASV_tax_SH.tsv')
+                    ASSIGNSH( FORMAT_TAXRESULTS_STD.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, "ASV_tax_SH.${val_dada_ref_taxonomy}.tsv")
                     ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
                     ch_dada2_tax = ASSIGNSH.out.tsv
                 } else {
@@ -486,7 +503,7 @@ workflow AMPLISEQ {
         FORMAT_TAXONOMY_SINTAX ( ch_sintax_ref_taxonomy.collect() )
         ch_sintaxdb = FORMAT_TAXONOMY_SINTAX.out.db
         if (params.cut_its == "none") {
-            ASV_tax_name = "ASV_tax_sintax"
+            ASV_tax_name = "ASV_tax_sintax.${val_sintax_ref_taxonomy}"
             ch_fasta
                 .map {
                     fasta ->
@@ -495,7 +512,7 @@ workflow AMPLISEQ {
                         [ meta, fasta ] }
                 .set { ch_fasta_sintax }
         } else {
-            ASV_tax_name = "ASV_ITS_tax_sintax"
+            ASV_tax_name = "ASV_ITS_tax_sintax.${val_sintax_ref_taxonomy}"
             if (params.cut_its == "full") {
                 outfile = params.its_partial ? "ASV_ITS_seqs.full_and_partial.fasta" : "ASV_ITS_seqs.full.fasta"
             }
@@ -520,6 +537,30 @@ workflow AMPLISEQ {
         ch_versions = ch_versions.mix(VSEARCH_SINTAX.out.versions)
         FORMAT_TAXRESULTS_SINTAX( VSEARCH_SINTAX.out.tsv, ch_fasta, ASV_tax_name + '.tsv', taxlevels )
         ch_sintax_tax = FORMAT_TAXRESULTS_SINTAX.out.tsv
+    }
+
+    // Phylo placement
+    if ( params.pplace_tree ) {
+        ch_pp_data = ch_fasta.map { it ->
+            [ meta: [ id: params.pplace_name ?: 'user_tree' ],
+            data: [
+                alignmethod:  params.pplace_alnmethod ?: 'hmmer',
+                queryseqfile: it,
+                refseqfile:   file( params.pplace_aln, checkIfExists: true ),
+                hmmfile:      [],
+                refphylogeny: file( params.pplace_tree, checkIfExists: true ),
+                model:        params.pplace_model,
+                taxonomy:     params.pplace_taxonomy ? file( params.pplace_taxonomy, checkIfExists: true ) : []
+            ] ]
+        }
+        FASTA_NEWICK_EPANG_GAPPA ( ch_pp_data )
+        ch_versions = ch_versions.mix( FASTA_NEWICK_EPANG_GAPPA.out.versions )
+        //TODO: if params.pplace_taxonomy is given, use taxonomy over DADA2 taxonomy for downstream analysis --> FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query --> test_pplace.taxonomy.per_query.tsv
+            //Use for each ASV the annotation with lowest LWR (likelihood-weight-ration) -> conversion script
+                //if tie -> use annotation with less entries (i.e. conservative choice)
+                    //if same number of entries -> remove last entry
+                        //if those truncated annotations arent identical, remove one more entry; repeat until identical
+        //TODO: use newick tree in downstream analysis --> FASTA_NEWICK_EPANG_GAPPA.out.grafted_phylogeny --> test_pplace.graft.test_pplace.epa_result.newick
     }
 
     //QIIME2
@@ -673,7 +714,7 @@ workflow AMPLISEQ {
     if ( params.sbdiexport ) {
         SBDIEXPORT ( ch_dada2_asv, ch_dada2_tax, ch_metadata )
         ch_versions = ch_versions.mix(SBDIEXPORT.out.versions.first())
-        SBDIEXPORTREANNOTATE ( ch_dada2_tax, ch_barrnapsummary )
+        SBDIEXPORTREANNOTATE ( ch_dada2_tax, ch_barrnapsummary.ifEmpty([]) )
     }
 
     CUSTOM_DUMPSOFTWAREVERSIONS (

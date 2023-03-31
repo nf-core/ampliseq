@@ -260,6 +260,34 @@
                     "help_text": "Expected amplified sequences are extracted from the DADA2 reference taxonomy using the primer sequences, that might improve classification. This is not applied to species classification (assignSpecies) but only for lower taxonomic levels (assignTaxonomy).",
                     "description": "If the expected amplified sequences are extracted from the DADA2 reference taxonomy database"
                 },
+                "pplace_tree": {
+                    "type": "string",
+                    "description": "Newick file with reference phylogenetic tree. Requires also `--pplace_aln` and `--pplace_model`."
+                },
+                "pplace_aln": {
+                    "type": "string",
+                    "description": "File with reference sequences. Requires also `--pplace_tree` and `--pplace_model`."
+                },
+                "pplace_model": {
+                    "type": "string",
+                    "description": "Phylogenetic model to use in placement, e.g. 'LG+F' or 'GTR+I+F'. Requires also `--pplace_tree` and `--pplace_aln`."
+                },
+                "pplace_alnmethod": {
+                    "type": "string",
+                    "description": "Method used for alignment, \"hmmer\" or \"mafft\"",
+                    "default": "hmmer",
+                    "enum": ["hmmer", "mafft"]
+                },
+                "pplace_taxonomy": {
+                    "type": "string",
+                    "help_text": "Headerless, tab-separated, first column with tree leaves, second column with taxonomy ranks separated by semicolon `;`.",
+                    "description": "Tab-separated file with taxonomy assignments of reference sequences."
+                },
+                "pplace_name": {
+                    "type": "string",
+                    "description": "A name for the run",
+                    "hidden": true
+                },
                 "qiime_ref_taxonomy": {
                     "type": "string",
                     "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `silva=138`) . This will download the desired database and initiate taxonomic classification with QIIME2 and the chosen database.\n\nIf both, `--dada_ref_taxonomy` and `--qiime_ref_taxonomy` are used, DADA2 classification will be used for downstream analysis.\n\nThe following databases are supported:\n- SILVA ribosomal RNA gene database project - 16S rRNA\n- UNITE - eukaryotic nuclear ribosomal ITS region - ITS\n- Greengenes (only testing!)\n\nGenerally, using `silva`, `unite-fungi`, or `unite-alleuk` will select the most recent supported version. For testing purposes, the tiny database `greengenes85` (dereplicated at 85% sequence similarity) is available. For details on what values are valid, please either use an invalid value such as `x` (causing the pipeline to send an error message with all valid values) or see `conf/ref_databases.config`.",
@@ -354,7 +382,7 @@
                     "type": "string",
                     "default": "mitochondria,chloroplast",
                     "description": "Comma separated list of unwanted taxa, to skip taxa filtering use \"none\"",
-                    "help_text": "Depending on the primers used, PCR might amplify unwanted or off-target DNA. By default sequences originating from mitochondria or chloroplasts are removed. The taxa specified are excluded from further analysis.\nFor example to exclude any taxa that contain mitochondria, chloroplast, or archaea:\n\n```bash\n--exclude_taxa \"mitochondria,chloroplast,archaea\"\n```\n\nIf you prefer not filtering the data, specify:\n\n```bash\n--exclude_taxa \"none\"\n```\n\nPlease note the following requirements:\n\n1. Comma separated list enclosed in quotes\n2. May not contain whitespace characters\n3. Features that contain one or several of these terms in their taxonomical classification are excluded from further analysis\n4. The taxonomy level is not taken into consideration"
+                    "help_text": "Depending on the primers used, PCR might amplify unwanted or off-target DNA. By default sequences originating from mitochondria or chloroplasts are removed. The taxa specified are excluded from further analysis.\nFor example to exclude any taxa that contain mitochondria, chloroplast, or archaea:\n\n```bash\n--exclude_taxa \"mitochondria,chloroplast,archaea\"\n```\n\nIf you prefer not filtering the data, specify:\n\n```bash\n--exclude_taxa \"none\"\n```\n\nPlease note the following requirements:\n\n1. Comma separated list enclosed in quotes\n2. May not contain whitespace characters\n3. Features that contain one or several of these terms in their taxonomical classification are excluded from further analysis\n4. The taxonomy level is not taken into consideration\n5. Taxa names should be as in Taxonomic database (Default: Silva138), example: 'Bacteria', 'Armatimonadia', 'unidentified', 'p__'\n6. Taxon names are case-insensitive and partial match is possible."
                 },
                 "min_frequency": {
                     "type": "integer",

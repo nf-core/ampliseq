@@ -11,7 +11,7 @@ tax_file <- args[1]
 OUT="tax.tsv"
 
 # read required files
-tax = read.table(tax_file, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+tax = read.table(tax_file, header = TRUE, sep = "\t", stringsAsFactors = FALSE, comment.char = '', quote = '')
 
 # Join columns 2:ncol(.) - 1, the taxonomy ranks (sequence is the last)
 r <- colnames(tax)[!colnames(tax) %in% c('ASV_ID', 'sequence')]

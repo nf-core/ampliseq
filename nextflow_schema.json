@@ -427,6 +427,20 @@
                     "fa_icon": "fas fa-greater-than-equal",
                     "help_text": "Depends on the reference taxonomy database used. Most default databases have genus level at 6."
                 },
+                "sintax_tax_agglom_min": {
+                    "type": "integer",
+                    "default": 2,
+                    "description": "Minimum taxonomy agglomeration level for SINTAX classification",
+                    "fa_icon": "fas fa-greater-than-equal",
+                    "help_text": "Depends on the reference taxonomy database used."
+                },
+                "sintax_tax_agglom_max": {
+                    "type": "integer",
+                    "default": 6,
+                    "description": "Maximum taxonomy agglomeration level for SINTAX classification",
+                    "fa_icon": "fas fa-greater-than-equal",
+                    "help_text": "Depends on the reference taxonomy database used. Most databases have genus level at 6."
+                },
                 "qiime_tax_agglom_min": {
                     "type": "integer",
                     "default": 2,

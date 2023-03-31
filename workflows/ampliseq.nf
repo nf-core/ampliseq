@@ -146,6 +146,7 @@ include { DADA2_ADDSPECIES              } from '../modules/local/dada2_addspecie
 include { ASSIGNSH                      } from '../modules/local/assignsh'
 include { FORMAT_TAXRESULTS as FORMAT_TAXRESULTS_STD   } from '../modules/local/format_taxresults'
 include { FORMAT_TAXRESULTS as FORMAT_TAXRESULTS_ADDSP } from '../modules/local/format_taxresults'
+include { FORMAT_TAXRESULTS_SINTAX      } from '../modules/local/format_taxresults_sintax'
 include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'
 include { QIIME2_FILTERTAXA             } from '../modules/local/qiime2_filtertaxa'
 include { QIIME2_INASV                  } from '../modules/local/qiime2_inasv'
@@ -354,7 +355,7 @@ workflow AMPLISEQ {
     }
 
     //
-    // SUBWORKFLOW / MODULES : Taxonomic classification with DADA2 and/or QIIME2
+    // SUBWORKFLOW / MODULES : Taxonomic classification with DADA2, SINTAX and/or QIIME2
     //
     ch_fasta = ch_dada2_fasta
 
@@ -478,19 +479,24 @@ workflow AMPLISEQ {
     }
 
     // Sintax
-    // This will only run if --sintax_ref_taxonomy is defined, i.e. the channel
-    // ch_sintax_ref_taxonomy is not empty
-    FORMAT_TAXONOMY_SINTAX ( ch_sintax_ref_taxonomy.collect() )
-    ch_sintaxdb = FORMAT_TAXONOMY_SINTAX.out.db
-    ch_fasta
-        .map {
-            fasta ->
-                def meta = [:]
-                meta.id = "ASV_tax_sintax"
-                [ meta, fasta ] }
-        .set { ch_fasta_sintax }
-    VSEARCH_SINTAX( ch_fasta_sintax, ch_sintaxdb )
-    ch_versions = ch_versions.mix(VSEARCH_SINTAX.out.versions)
+    // This will only run if --sintax_ref_taxonomy is defined, 
+    // i.e. if the channel ch_sintax_ref_taxonomy is not empty
+    if (!params.skip_taxonomy) {
+        FORMAT_TAXONOMY_SINTAX ( ch_sintax_ref_taxonomy.collect() )
+        ch_sintaxdb = FORMAT_TAXONOMY_SINTAX.out.db
+        ch_fasta
+            .map {
+                fasta ->
+                    def meta = [:]
+                    meta.id = "ASV_tax_sintax.raw"
+                    [ meta, fasta ] }
+            .set { ch_fasta_sintax }
+        VSEARCH_SINTAX( ch_fasta_sintax, ch_sintaxdb )
+        ch_versions = ch_versions.mix(VSEARCH_SINTAX.out.versions)
+        FORMAT_TAXRESULTS_SINTAX( VSEARCH_SINTAX.out.tsv, 'ASV_tax_sintax.tsv', taxlevels )
+        //FORMAT_TAXRESULTS_SINTAX( VSEARCH_SINTAX.out.tsv, 'ASV_tax_sintax.tsv', 'Kingdom,Genus' )
+        ch_sintax_tax = FORMAT_TAXRESULTS_SINTAX.out.tsv
+    }
 
     //QIIME2
     if ( run_qiime2 ) {
@@ -522,6 +528,11 @@ workflow AMPLISEQ {
             ch_tax = Channel.empty()
             tax_agglom_min = 1
             tax_agglom_max = 2
+        } else if ( params.sintax_ref_taxonomy ) {
+            log.info "Use SINTAX taxonomy classification"
+            ch_tax = QIIME2_INTAX ( ch_sintax_tax ).qza
+            tax_agglom_min = params.sintax_tax_agglom_min
+            tax_agglom_max = params.sintax_tax_agglom_max
         } else if ( params.dada_ref_taxonomy ) {
             log.info "Use DADA2 taxonomy classification"
             ch_tax = QIIME2_INTAX ( ch_dada2_tax ).qza

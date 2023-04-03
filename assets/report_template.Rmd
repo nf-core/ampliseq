@@ -21,6 +21,7 @@ params:
     flag_skip_taxonomy: FALSE
     flag_retain_untrimmed: TRUE
     flag_ref_tax_user: FALSE
+    flag_single_end: FALSE
     trunclenf: ""
     trunclenr: ""
     trunc_qmin: ""
@@ -173,6 +174,10 @@ cat("The ASVs can be found [here](", params$path_asv_fa, "). And the correspondi
         "be found [here](", params$path_dada2_tab, ").", sep = "")
 ```
 
+```{r}
+print(params$flag_single_end)
+```
+
 ```{r, eval = !params$flag_skip_dada_quality, results='asis'}
 # import stats tsv
 dada_stats <- read.table(file = params$dada_stats_path, header = TRUE, sep = "\t")
@@ -186,27 +191,51 @@ datatable(dada_stats, options = list(
 # Stacked barchart to num of reads
 
 # Calc exluded asvs and transform all cols to percent
-dada_stats_ex <- data.frame(sample = dada_stats$sample,
-                        DADA2_input = dada_stats$DADA2_input,
-                        filtered = dada_stats$DADA2_input-dada_stats$filtered,
-                        denoisedF = dada_stats$filtered-dada_stats$denoisedF,
-                        denoisedR = dada_stats$denoisedF-dada_stats$denoisedR,
-                        merged = dada_stats$denoisedR-dada_stats$merged,
-                        nonchim = dada_stats$merged-dada_stats$nonchim,
-                        analysis = dada_stats$nonchim)
 
-dada_stats_p <- data.frame(sample = dada_stats_ex$sample, round(dada_stats_ex[2:8]/dada_stats_ex$DADA2_input, 2))
-
-# Stack columns for both stacked barcharts
-n_samples <- length(dada_stats_p$sample)
-samples_t <- c(rep(dada_stats_p$sample, 6))
-steps_t <- c(rep("excluded by filtering", n_samples), rep("excluded by denoisedF", n_samples),
+if ( params$flag_single_end ) {
+    # single end
+    dada_stats_ex <- data.frame(sample = dada_stats$sample,
+                            input = dada_stats$input,
+                            filtered = dada_stats$input-dada_stats$filtered,
+                            denoised = dada_stats$filtered-dada_stats$denoised,
+                            nonchim = dada_stats$denoised-dada_stats$nonchim,
+                            analysis = dada_stats$nonchim)
+    dada_stats_p <- data.frame(sample = dada_stats_ex$sample, round(dada_stats_ex[2:6]/dada_stats_ex$input, 2))
+    n_samples <- length(dada_stats_p$sample)
+    # Stack columns for both stacked barcharts
+    samples_t <- c(rep(dada_stats_p$sample, 4))
+    steps_t <- c(rep("excluded by filtering", n_samples), rep("excluded by denoised", n_samples),
+                rep("excluded by nonchim", n_samples), rep("ready for analysis", n_samples))
+    # stack the column for absolute number of asvs
+    asvs_abs_t <- as.array(flatten_dbl(dada_stats_ex[3:6]))
+    dada_stats_ex_t <- data.frame(samples_t, steps_t, asvs_abs_t)
+    # stack the column for percentage of asvs
+    asvs_p_t <- as.array(flatten_dbl(dada_stats_p[3:6]))
+    dada_stats_p_t <- data.frame(samples_t, steps_t, asvs_p_t)
+} else {
+    # paired end
+    dada_stats_ex <- data.frame(sample = dada_stats$sample,
+                            DADA2_input = dada_stats$DADA2_input,
+                            filtered = dada_stats$DADA2_input-dada_stats$filtered,
+                            denoisedF = dada_stats$filtered-dada_stats$denoisedF,
+                            denoisedR = dada_stats$denoisedF-dada_stats$denoisedR,
+                            merged = dada_stats$denoisedR-dada_stats$merged,
+                            nonchim = dada_stats$merged-dada_stats$nonchim,
+                            analysis = dada_stats$nonchim)
+    dada_stats_p <- data.frame(sample = dada_stats_ex$sample, round(dada_stats_ex[2:8]/dada_stats_ex$DADA2_input, 2))
+    # Stack columns for both stacked barcharts
+    n_samples <- length(dada_stats_p$sample)
+    samples_t <- c(rep(dada_stats_p$sample, 6))
+    steps_t <- c(rep("excluded by filtering", n_samples), rep("excluded by denoisedF", n_samples),
                 rep("excluded by denoisedR", n_samples), rep("excluded by merged", n_samples),
                 rep("excluded by nonchim", n_samples), rep("ready for analysis", n_samples))
-
-# stack the column for absolute number of asvs
-asvs_abs_t <- as.array(flatten_dbl(dada_stats_ex[3:8]))
-dada_stats_ex_t <- data.frame(samples_t, steps_t, asvs_abs_t)
+    # stack the column for absolute number of asvs
+    asvs_abs_t <- as.array(flatten_dbl(dada_stats_ex[3:8]))
+    dada_stats_ex_t <- data.frame(samples_t, steps_t, asvs_abs_t)
+    # stack the column for percentage of asvs
+    asvs_p_t <- as.array(flatten_dbl(dada_stats_p[3:8]))
+    dada_stats_p_t <- data.frame(samples_t, steps_t, asvs_p_t)
+}
 
 # Plot
 dada_stats_ex_t$steps_t <- factor(dada_stats_ex_t$steps_t, levels=unique(dada_stats_ex_t$steps_t))
@@ -216,10 +245,6 @@ ggplot(dada_stats_ex_t, aes(fill = steps_t, y = asvs_abs_t, x = samples_t)) +
         ylab("Absolute number ASVs") +
         coord_flip() +
         scale_fill_brewer("Filtering Steps", palette = "Spectral")
-
-# stack the column for percentage of asvs
-asvs_p_t <- as.array(flatten_dbl(dada_stats_p[3:8]))
-dada_stats_p_t <- data.frame(samples_t, steps_t, asvs_p_t)
 
 # Plot
 dada_stats_p_t$steps_t <- factor(dada_stats_p_t$steps_t, levels=unique(dada_stats_p_t$steps_t))

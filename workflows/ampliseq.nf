@@ -682,7 +682,8 @@ workflow AMPLISEQ {
         DADA2_MERGE.out.dada2asv,
         DADA2_MERGE.out.dada2stats,
         !params.skip_barrnap ? BARRNAP.out.gff.collect(sort: true) : [],
-        !params.skip_taxonomy ? FORMAT_TAXONOMY.out.ref_tax_info : [],
+        // TODO custom ref db
+        !params.skip_taxonomy ? !params.dada_ref_tax_custom ? FORMAT_TAXONOMY.out.ref_tax_info : [] : [],
         !params.skip_taxonomy ? !params.skip_dada_addspecies ? DADA2_ADDSPECIES.out.tsv : DADA2_TAXONOMY.out.tsv : []
     )
 

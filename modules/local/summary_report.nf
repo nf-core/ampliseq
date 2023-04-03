@@ -45,7 +45,8 @@ process SUMMARY_REPORT  {
     def retain_untrimmed = params.retain_untrimmed ? "--retain_untrimmed" : ""
     def dada_err = meta.single_end ? "--dada_1_err_path $dada_err_svgs" : "--dada_1_err_path ${dada_err_svgs[0]} --dada_2_err_path ${dada_err_svgs[1]}"
     def barrnap = params.skip_barrnap ? "--skip_barrnap" : "--path_rrna_arc ${barrnap_gff[0]} --path_rrna_bac ${barrnap_gff[1]} --path_rrna_euk ${barrnap_gff[2]} --path_rrna_mito ${barrnap_gff[3]}"
-    def taxonomy = params.skip_taxonomy ? "--skip_taxonomy" : "--ref_tax_path $tax_reference --asv_tax_path $asv_tax"
+    def taxonomy = params.skip_taxonomy ? "--skip_taxonomy" :
+        params.dada_ref_tax_custom ? "--ref_tax_user --asv_tax_path $asv_tax" : "--ref_tax_path $tax_reference --asv_tax_path $asv_tax"
     """
     generate_report.R   --report $report_template \\
                         --output "Summary_Report.html" \\

@@ -20,6 +20,7 @@ params:
     flag_skip_barrnap: FALSE
     flag_skip_taxonomy: FALSE
     flag_retain_untrimmed: TRUE
+    flag_ref_tax_user: FALSE
     trunclenf: ""
     trunclenr: ""
     trunc_qmin: ""
@@ -288,18 +289,24 @@ ggplot(barrnap_df,
 # Header
 cat("## Taxonomic Classification using DADA2\n")
 
-ref_tax <- readLines(params$ref_tax_path)
+if (!params$flag_ref_tax_user) {
+    ref_tax <- readLines(params$ref_tax_path)
 
-db <- "Unknown DB"
-for (line in ref_tax){
-        if (grepl("Title:", line)) {
-                db <- sub(".*Title: ", "", line)
-        }
+    db <- "Unknown DB"
+    for (line in ref_tax){
+            if (grepl("Title:", line)) {
+                    db <- sub(".*Title: ", "", line)
+            }
+    }
+
+    # Output text db
+    cat("The taxonomic classification was performed by DADA2 using the database: ",
+            "\"", db, "\".\n\n", sep = "")
+} else {
+    # Output text db
+    cat("The taxonomic classification was performed by DADA2 using a custom database ",
+            "provided by the user.\n\n", sep = "")
 }
-
-# Output text db
-cat("The taxonomic classification was performed by DADA2 using the database: ",
-        "\"", db, "\".\n\n", sep = "")
 
 asv_tax <- read.table(params$asv_tax_path, header = TRUE, sep = "\t")
 

@@ -39,7 +39,7 @@ process SUMMARY_REPORT  {
     def fastqc = params.skip_fastqc ? "--skip_fastqc" : "--mqc_plot ${mqc_plots}/svg/mqc_fastqc_per_sequence_quality_scores_plot_1.svg"
     def cutadapt = params.skip_cutadapt ? "--skip_cutadapt" : "--ca_sum_path $ca_summary"
     def dada_quality = params.skip_dada_quality ? "--skip_dada_quality" :
-        meta.single_end ? "--dada_qc_f_path $dada_fw_qual_stats --dada_pp_qc_f_path $dada_pp_fw_qual_stats" :
+        meta.single_end ? "--dada_qc_f_path $dada_fw_qual_stats --dada_pp_qc_f_path $dada_pp_fw_qual_stats --asv_table_path $dada_asv_table --path_asv_fa $dada_asv_fa --path_dada2_tab $dada_tab --dada_stats_path $dada_stats" :
         "--dada_qc_f_path $dada_fw_qual_stats --dada_qc_r_path $dada_rv_qual_stats --dada_pp_qc_f_path $dada_pp_fw_qual_stats --dada_pp_qc_r_path $dada_pp_rv_qual_stats --asv_table_path $dada_asv_table --path_asv_fa $dada_asv_fa --path_dada2_tab $dada_tab --dada_stats_path $dada_stats"
     def skip_barrnap = params.skip_barrnap ? "--skip_barrnap" : ""
     def retain_untrimmed = params.retain_untrimmed ? "--retain_untrimmed" : ""

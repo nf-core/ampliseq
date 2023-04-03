@@ -19,6 +19,13 @@ process SUMMARY_REPORT  {
     path(dada_pp_fw_qual_stats)
     path(dada_pp_rv_qual_stats)
     tuple val(meta), path(dada_err_svgs)
+    path(dada_asv_table)
+    path(dada_asv_fa)
+    path(dada_tab)
+    path(dada_stats)
+    path(barrnap_gff)
+    path(tax_reference)
+    path(asv_tax)
 
 
     output:
@@ -29,24 +36,26 @@ process SUMMARY_REPORT  {
     task.ext.when == null || task.ext.when
 
     script:
-    def skip_fastqc = params.skip_fastqc ? "--skip_fastqc" : ""
+    def fastqc = params.skip_fastqc ? "--skip_fastqc" : "--mqc_plot ${mqc_plots}/svg/mqc_fastqc_per_sequence_quality_scores_plot_1.svg"
     def cutadapt = params.skip_cutadapt ? "--skip_cutadapt" : "--ca_sum_path $ca_summary"
     def dada_quality = params.skip_dada_quality ? "--skip_dada_quality" :
         meta.single_end ? "--dada_qc_f_path $dada_fw_qual_stats --dada_pp_qc_f_path $dada_pp_fw_qual_stats" :
-        "--dada_qc_f_path $dada_fw_qual_stats --dada_qc_r_path $dada_rv_qual_stats --dada_pp_qc_f_path $dada_pp_fw_qual_stats --dada_pp_qc_r_path $dada_pp_rv_qual_stats"
+        "--dada_qc_f_path $dada_fw_qual_stats --dada_qc_r_path $dada_rv_qual_stats --dada_pp_qc_f_path $dada_pp_fw_qual_stats --dada_pp_qc_r_path $dada_pp_rv_qual_stats --asv_table_path $dada_asv_table --path_asv_fa $dada_asv_fa --path_dada2_tab $dada_tab --dada_stats_path $dada_stats"
     def skip_barrnap = params.skip_barrnap ? "--skip_barrnap" : ""
     def retain_untrimmed = params.retain_untrimmed ? "--retain_untrimmed" : ""
     def dada_err = meta.single_end ? "--dada_1_err_path $dada_err_svgs" : "--dada_1_err_path ${dada_err_svgs[0]} --dada_2_err_path ${dada_err_svgs[1]}"
+    def barrnap = params.skip_barrnap ? "--skip_barrnap" : "--path_rrna_arc ${barrnap_gff[0]} --path_rrna_bac ${barrnap_gff[1]} --path_rrna_euk ${barrnap_gff[2]} --path_rrna_mito ${barrnap_gff[3]}"
+    def taxonomy = params.skip_taxonomy ? "--skip_taxonomy" : "--ref_tax_path $tax_reference --asv_tax_path $asv_tax"
     """
     generate_report.R   --report $report_template \\
                         --output "Summary_Report.html" \\
-                        --mqc_plot "${mqc_plots}/svg/mqc_fastqc_per_sequence_quality_scores_plot_1.svg" \\
-                        --dada_filtntrim_args $dada_filtntrim_args \\
-                        $dada_err \\
-                        $skip_fastqc \\
+                        $fastqc \\
                         $cutadapt \\
                         $dada_quality \\
-                        $skip_barrnap \\
+                        --dada_filtntrim_args $dada_filtntrim_args \\
+                        $dada_err \\
+                        $barrnap \\
+                        $taxonomy \\
                         $retain_untrimmed \\
                         --trunclenf $params.trunclenf \\
                         --trunclenr $params.trunclenr \\

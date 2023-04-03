@@ -666,6 +666,8 @@ workflow AMPLISEQ {
     // MODULE: Summary Report
     //
 
+    ch_dada_taxonomy = !params.skip_dada_addspecies ? DADA2_ADDSPECIES.out.tsv : DADA2_TAXONOMY.out.tsv
+
     SUMMARY_REPORT (
         Channel.fromPath("${baseDir}/assets/report_template.Rmd"),
         Channel.fromPath("${baseDir}/assets/report_styles.css"),
@@ -676,7 +678,14 @@ workflow AMPLISEQ {
         !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg.collectFile(name: "RV_qual_stats.svg") : [],
         !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg.collectFile(name: "FW_preprocessed_qual_stats.svg") : [],
         !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg.collectFile(name: "RV_preprocessed_qual_stats.svg") : [],
-        DADA2_ERR.out.svg
+        DADA2_ERR.out.svg,
+        DADA2_MERGE.out.asv,
+        DADA2_MERGE.out.fasta,
+        DADA2_MERGE.out.dada2asv,
+        DADA2_MERGE.out.dada2stats,
+        !params.skip_barrnap ? BARRNAP.out.gff.collect(sort: true) : [],
+        !params.skip_taxonomy ? FORMAT_TAXONOMY.out.ref_tax_info : [],
+        !params.skip_taxonomy ? ch_dada_taxonomy : []
     )
 
 

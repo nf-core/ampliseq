@@ -20,6 +20,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [Barrnap](#barrnap) - Predict ribosomal RNA sequences and optional filtering
   - [Length filter](#length-filter) - Optionally, ASV can be filtered by length thresholds
   - [ITSx](#itsx) - Optionally, the ITS region can be extracted
+  - [COI](#coi) - Optionally the COI ASVs can be filtered.
 - [Taxonomic classification with DADA2](#taxonomic-classification-with-dada2) - Taxonomic classification of (filtered) ASVs
   - [assignSH](#assignsh) - Optionally, a UNITE species hypothesis (SH) can be added to the taxonomy
 - [QIIME2](#qiime2) - Secondary analysis
@@ -183,6 +184,32 @@ Optionally, the ITS region can be extracted from each ASV sequence using ITSx, a
   - `ASV_ITS_seqs.ITS1.full_and_partial.fasta` or `ASV_ITS_seqs.ITS2.full_and_partial.fasta`: If using --cut_its "its1" or --cut_its "its2" and --its_partial; fasta file with complete and partial ITS1 or ITS2 regions from each ASV sequence.
   - `ASV_ITS_seqs.summary.txt`: Summary information from ITSx.
   - `ITSx.args.txt`: File with parameters passed to ITSx.
+
+</details>
+
+#### COI
+
+Optionally, the COI ASVs can be filtered based on their length and also their codons. The filtering is based on length of ASVs (418 ± nx3 and between 403 and 418), possibly does not contain any stop codon in the right reading frame. This applied to the samples that use any of the combination of following primers: 
+
+    forward:
+        - "CCHGAYATRGCHTTYCCHCG"
+        - "ACCHGAYATRGCHTTYCCHCG"
+        - "GACCHGAYATRGCHTTYCCHCG"
+        - "TGACCHGAYATRGCHTTYCCHCG"
+    reverse:
+        - "CDGGRTGNCCRAARAAYCA"
+        - "TCDGGRTGNCCRAARAAYCA"
+        - "ATCDGGRTGNCCRAARAAYCA"
+        - "GATCDGGRTGNCCRAARAAYCA"
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `COI_filtered/`
+  - `ASV_filtered.fna`: Fasta file of ASV sequences that passes the filter thresholds explained above.
+  - `ASV_filtered.table.tsv`: The count table of ASVs that successfully passed through the filter thresholds.
+  - `ASV_filtered.list`: List of ASV IDs that pass through the filter thresholds.
+  - `stats.filt.tsv`: The statistics from this filtering step is appeneded to the `DADA2_stats.tsv` 
 
 </details>
 

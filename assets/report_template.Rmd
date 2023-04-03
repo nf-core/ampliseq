@@ -137,23 +137,21 @@ if (params$trunc_qmin != -1) {
 }
 ```
 
-```{r, eval = !params$flag_skip_dada_quality, results='asis', out.width="49%", fig.show='hold',fig.align='center'}
+```{r, eval = !params$flag_skip_dada_quality, results='asis', out.width="49%", fig.show='hold', fig.align='center'}
 # TODO svg seems to have an error
 knitr::include_graphics(c(params$dada_qc_f_path,params$dada_qc_r_path))
 ```
 
-```{r, eval = !params$flag_skip_dada_quality, results='asis', out.width="49%", fig.show='hold',fig.align='center'}
+```{r, eval = !params$flag_skip_dada_quality, results='asis', out.width="49%", fig.show='hold', fig.align='center'}
 # TODO same issue, also error in svg
 knitr::include_graphics(c(params$dada_pp_qc_f_path, params$dada_pp_qc_r_path))
 ```
 
-```{r, results='asis'}
-cat("## Error correction using DADA2\n")
-cat("Error correction was performed using DADA2 as well and the original ",
-        "plots can be found [here](../dada2/QC/).", sep = "")
-```
+## Error correction using DADA2
 
-```{r, results = 'asis', out.width="49%", fig.show='hold',fig.align='center'}
+Error correction was performed using DADA2 as well and the originalplots can be found [here](../dada2/QC/).
+
+```{r, results = 'asis', out.width="49%", fig.show='hold', fig.align='center'}
 knitr::include_graphics(c(params$dada_1_err_path, params$dada_2_err_path))
 ```
 

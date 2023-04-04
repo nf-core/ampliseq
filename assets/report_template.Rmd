@@ -44,6 +44,7 @@ params:
     path_rrna_bac: ""
     path_rrna_euk: ""
     path_rrna_mito: ""
+    path_barrnap_sum: ""
     ref_tax_path: ""
     asv_tax_path: ""
 ---
@@ -272,9 +273,9 @@ n_rrna <- c()
 for (path_rrna in l_paths_rrna) {
         n_rrna <- append(n_rrna, length(readLines(path_rrna)) - 1)
 }
-
+barrnap_sum <- read.table(params$path_barrnap_sum)
 label <- c("Archea", "Bacteria", "Eukaryotes", "Mitochondria")
-p_rrna <- round(n_rrna / n_asv * 100, 2)
+p_rrna <- round(n_rrna / nrow(barrnap_sum) * 100, 2)
 barrnap_df <- data.frame(label, n_rrna, p_rrna)
 
 # Build outputtext

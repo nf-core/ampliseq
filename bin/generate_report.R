@@ -35,6 +35,7 @@ option_list = list(
     make_option(c("--path_rrna_bac"), type="character", default=NULL, help="MultiQC plots", metavar="character"),
     make_option(c("--path_rrna_euk"), type="character", default=NULL, help="MultiQC plots", metavar="character"),
     make_option(c("--path_rrna_mito"), type="character", default=NULL, help="MultiQC plots", metavar="character"),
+    make_option(c("--path_barrnap_sum"), type="character", default=NULL, help="MultiQC plots", metavar="character"),
     make_option(c("--ref_tax_path"), type="character", default=NULL, help="MultiQC plots", metavar="character"),
     make_option(c("--asv_tax_path"), type="character", default=NULL, help="MultiQC plots", metavar="character")
 )
@@ -72,5 +73,6 @@ rmarkdown::render(opt$report, output_file = opt$output,
                         path_rrna_bac = opt$path_rrna_bac,
                         path_rrna_euk = opt$path_rrna_euk,
                         path_rrna_mito = opt$path_rrna_mito,
+                        path_barrnap_sum = opt$path_barrnap_sum,
                         ref_tax_path = opt$ref_tax_path,
                         asv_tax_path = opt$asv_tax_path))

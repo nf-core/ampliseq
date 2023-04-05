@@ -153,7 +153,7 @@ knitr::include_graphics(c(params$dada_pp_qc_f_path, params$dada_pp_qc_r_path))
 
 Error correction was performed using DADA2 as well and the originalplots can be found [here](../dada2/QC/).
 
-```{r, out.width="49%", fig.show='hold', fig.align='center'}
+```{r, out.width="49%", fig.show='hold', fig.align='default'}
 knitr::include_graphics(c(params$dada_1_err_path, params$dada_2_err_path))
 ```
 

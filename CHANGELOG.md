@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#553](https://github.com/nf-core/ampliseq/pull/553) - Handle empty barrnap results files
 - [#554](https://github.com/nf-core/ampliseq/pull/554) - Accept taxonomy strings that contain `#`,`'`
+- [#569](https://github.com/nf-core/ampliseq/pull/569) - Make header of overall_summary.tsv consistent between input data types
 
 ### `Dependencies`
 

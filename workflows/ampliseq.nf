@@ -91,6 +91,10 @@ if ( !is_fasta_input && (!params.FW_primer || !params.RV_primer) && !params.skip
     System.exit(1)
 }
 
+// save params to values to be able to overwrite it
+tax_agglom_min = params.tax_agglom_min
+tax_agglom_max = params.tax_agglom_max
+
 //use custom taxlevels from --dada_assign_taxlevels or database specific taxlevels if specified in conf/ref_databases.config
 if ( params.dada_ref_taxonomy ) {
     taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" :
@@ -544,18 +548,12 @@ workflow AMPLISEQ {
         } else if ( params.pplace_tree && params.pplace_taxonomy) {
             log.info "Use EPA-NG / GAPPA taxonomy classification"
             ch_tax = QIIME2_INTAX ( ch_pplace_tax ).qza
-            tax_agglom_min = params.tax_agglom_min
-            tax_agglom_max = params.tax_agglom_max
         } else if ( params.dada_ref_taxonomy ) {
             log.info "Use DADA2 taxonomy classification"
             ch_tax = QIIME2_INTAX ( ch_dada2_tax ).qza
-            tax_agglom_min = params.tax_agglom_min
-            tax_agglom_max = params.tax_agglom_max
         } else if ( params.qiime_ref_taxonomy || params.classifier ) {
             log.info "Use QIIME2 taxonomy classification"
             ch_tax = QIIME2_TAXONOMY.out.qza
-            tax_agglom_min = params.tax_agglom_min
-            tax_agglom_max = params.tax_agglom_max
         } else {
             log.info "Use no taxonomy classification"
             ch_tax = Channel.empty()

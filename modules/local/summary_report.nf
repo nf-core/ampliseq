@@ -14,10 +14,8 @@ process SUMMARY_REPORT  {
     path(mqc_plots)
     path(ca_summary)
     path(dada_filtntrim_args)
-    path(dada_fw_qual_stats)
-    path(dada_rv_qual_stats)
-    path(dada_pp_fw_qual_stats)
-    path(dada_pp_rv_qual_stats)
+    path(dada_qual_stats)
+    path(dada_pp_qual_stats)
     tuple val(meta), path(dada_err_svgs)
     path(dada_asv_table)
     path(dada_asv_fa)
@@ -40,8 +38,8 @@ process SUMMARY_REPORT  {
     def fastqc = params.skip_fastqc ? "--skip_fastqc" : "--mqc_plot ${mqc_plots}/svg/mqc_fastqc_per_sequence_quality_scores_plot_1.svg"
     def cutadapt = params.skip_cutadapt ? "--skip_cutadapt" : "--ca_sum_path $ca_summary"
     def dada_quality = params.skip_dada_quality ? "--skip_dada_quality" :
-        meta.single_end ? "--dada_qc_f_path $dada_fw_qual_stats --dada_pp_qc_f_path $dada_pp_fw_qual_stats" :
-        "--dada_qc_f_path $dada_fw_qual_stats --dada_qc_r_path $dada_rv_qual_stats --dada_pp_qc_f_path $dada_pp_fw_qual_stats --dada_pp_qc_r_path $dada_pp_rv_qual_stats"
+        meta.single_end ? "--dada_qc_f_path $dada_qual_stats --dada_pp_qc_f_path $dada_pp_qual_stats" :
+        "--dada_qc_f_path ${dada_qual_stats[0]} --dada_qc_r_path ${dada_qual_stats[1]} --dada_pp_qc_f_path ${dada_pp_qual_stats[0]} --dada_pp_qc_r_path ${dada_pp_qual_stats[1]}"
     def retain_untrimmed = params.retain_untrimmed ? "--retain_untrimmed" : ""
     def single_end = meta.single_end ? "--single_end" : ""
     def dada_err = meta.single_end ? "--dada_1_err_path $dada_err_svgs" : "--dada_1_err_path ${dada_err_svgs[0]} --dada_2_err_path ${dada_err_svgs[1]}"

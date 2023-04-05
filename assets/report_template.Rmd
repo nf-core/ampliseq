@@ -141,13 +141,11 @@ if (params$trunc_qmin != -1) {
 }
 ```
 
-```{r, eval = !params$flag_skip_dada_quality, out.width="49%", fig.show='hold', fig.align='center'}
-# TODO svg seems to have an error
-knitr::include_graphics(c(params$dada_qc_f_path,params$dada_qc_r_path))
+```{r, eval = !params$flag_skip_dada_quality, out.width="49%", fig.show='hold', fig.align='default'}
+knitr::include_graphics(c(params$dada_qc_f_path, params$dada_qc_r_path))
 ```
 
-```{r, eval = !params$flag_skip_dada_quality, out.width="49%", fig.show='hold', fig.align='center'}
-# TODO same issue, also error in svg
+```{r, eval = !params$flag_skip_dada_quality, out.width="49%", fig.show='hold', fig.align='default'}
 knitr::include_graphics(c(params$dada_pp_qc_f_path, params$dada_pp_qc_r_path))
 ```
 

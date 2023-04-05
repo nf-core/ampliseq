@@ -709,10 +709,8 @@ workflow AMPLISEQ {
         MULTIQC.out.plots, //.collect().flatten().collectFile(name: "mqc_fastqc_per_sequence_quality_scores_plot_1.svg")
         !params.skip_cutadapt ? CUTADAPT_WORKFLOW.out.summary.collect() : [],
         DADA2_PREPROCESSING.out.args.first(),
-        !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg.collectFile(name: "FW_qual_stats.svg") : [],
-        !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg.collectFile(name: "RV_qual_stats.svg") : [],
-        !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg.collectFile(name: "FW_preprocessed_qual_stats.svg") : [],
-        !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg.collectFile(name: "RV_preprocessed_qual_stats.svg") : [],
+        !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg : [],
+        !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg_preprocessed : [],
         DADA2_ERR.out.svg,
         DADA2_MERGE.out.asv,
         DADA2_MERGE.out.fasta,

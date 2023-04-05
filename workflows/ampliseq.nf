@@ -51,13 +51,18 @@ if (params.dada_ref_tax_custom) {
         ch_addspecies = Channel.fromPath("${params.dada_ref_tax_custom_sp}", checkIfExists: true)
     }
     ch_dada_ref_taxonomy = Channel.empty()
+    val_dada_ref_taxonomy = "user"
 } else if (params.dada_ref_taxonomy && !params.skip_taxonomy) {
     //standard ref taxonomy input from params.dada_ref_taxonomy & conf/ref_databases.config
     ch_dada_ref_taxonomy = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["file"]).map { file(it) }
+    val_dada_ref_taxonomy = params.dada_ref_taxonomy.replace('=','_').replace('.','_')
     if (params.addsh) {
         ch_shinfo = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]).map { file(it) }
     }
-} else { ch_dada_ref_taxonomy = Channel.empty() }
+} else {
+    ch_dada_ref_taxonomy = Channel.empty()
+    val_dada_ref_taxonomy = "none"
+}
 
 if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
     ch_qiime_ref_taxonomy = Channel.fromList(params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"]).map { file(it) }
@@ -85,6 +90,10 @@ if ( !is_fasta_input && (!params.FW_primer || !params.RV_primer) && !params.skip
     log.error "Incompatible parameters: `--FW_primer` and `--RV_primer` are required for primer trimming. If primer trimming is not needed, use `--skip_cutadapt`."
     System.exit(1)
 }
+
+// save params to values to be able to overwrite it
+tax_agglom_min = params.tax_agglom_min
+tax_agglom_max = params.tax_agglom_max
 
 //use custom taxlevels from --dada_assign_taxlevels or database specific taxlevels if specified in conf/ref_databases.config
 if ( params.dada_ref_taxonomy ) {
@@ -144,6 +153,8 @@ include { FORMAT_TAXRESULTS as FORMAT_TAXRESULTS_ADDSP } from '../modules/local/
 include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'
 include { QIIME2_FILTERTAXA             } from '../modules/local/qiime2_filtertaxa'
 include { QIIME2_INASV                  } from '../modules/local/qiime2_inasv'
+include { QIIME2_INTREE                 } from '../modules/local/qiime2_intree'
+include { FORMAT_PPLACETAX              } from '../modules/local/format_pplacetax'
 include { FILTER_STATS                  } from '../modules/local/filter_stats'
 include { MERGE_STATS as MERGE_STATS_FILTERTAXA } from '../modules/local/merge_stats'
 include { QIIME2_BARPLOT                } from '../modules/local/qiime2_barplot'
@@ -184,6 +195,7 @@ include { FASTQC                            } from '../modules/nf-core/fastqc/ma
 include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { VSEARCH_USEARCHGLOBAL             } from '../modules/nf-core/vsearch/usearchglobal/main'
+include { FASTA_NEWICK_EPANG_GAPPA          } from '../subworkflows/nf-core/fasta_newick_epang_gappa/main'
 
 
 /*
@@ -364,7 +376,7 @@ workflow AMPLISEQ {
     if (!params.skip_taxonomy) {
         if (!params.dada_ref_tax_custom) {
             //standard ref taxonomy input from conf/ref_databases.config
-            FORMAT_TAXONOMY ( ch_dada_ref_taxonomy.collect() )
+            FORMAT_TAXONOMY ( ch_dada_ref_taxonomy.collect(), val_dada_ref_taxonomy )
             ch_assigntax = FORMAT_TAXONOMY.out.assigntax
             ch_addspecies = FORMAT_TAXONOMY.out.addspecies
         }
@@ -383,10 +395,10 @@ workflow AMPLISEQ {
                 .set { ch_assigntax }
         }
         if (params.cut_its == "none") {
-            DADA2_TAXONOMY ( ch_fasta, ch_assigntax, 'ASV_tax.tsv', taxlevels )
+            DADA2_TAXONOMY ( ch_fasta, ch_assigntax, "ASV_tax.${val_dada_ref_taxonomy}.tsv", taxlevels )
             ch_versions = ch_versions.mix(DADA2_TAXONOMY.out.versions)
             if (!params.skip_dada_addspecies) {
-                DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_tax_species.tsv', taxlevels )
+                DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, "ASV_tax_species.${val_dada_ref_taxonomy}.tsv", taxlevels )
                 if ( params.addsh ) {
                     ch_fasta
                         .map {
@@ -397,7 +409,7 @@ workflow AMPLISEQ {
                         .set { ch_fasta_map }
                     VSEARCH_USEARCHGLOBAL( ch_fasta_map, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
                     ch_versions = ch_versions.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
-                    ASSIGNSH( DADA2_ADDSPECIES.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, 'ASV_tax_species_SH.tsv')
+                    ASSIGNSH( DADA2_ADDSPECIES.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, "ASV_tax_species_SH.${val_dada_ref_taxonomy}.tsv")
                     ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
                     ch_dada2_tax = ASSIGNSH.out.tsv
                 } else {
@@ -414,7 +426,7 @@ workflow AMPLISEQ {
                         .set { ch_fasta_map }
                     VSEARCH_USEARCHGLOBAL( ch_fasta_map, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
                     ch_versions = ch_versions.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
-                    ASSIGNSH( DADA2_TAXONOMY.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, 'ASV_tax_SH.tsv')
+                    ASSIGNSH( DADA2_TAXONOMY.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, "ASV_tax_SH.${val_dada_ref_taxonomy}.tsv")
                     ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
                     ch_dada2_tax = ASSIGNSH.out.tsv
                     } else {
@@ -435,13 +447,13 @@ workflow AMPLISEQ {
             ITSX_CUTASV ( ch_fasta, outfile )
             ch_versions = ch_versions.mix(ITSX_CUTASV.out.versions.ifEmpty(null))
             ch_cut_fasta = ITSX_CUTASV.out.fasta
-            DADA2_TAXONOMY ( ch_cut_fasta, ch_assigntax, 'ASV_ITS_tax.tsv', taxlevels )
+            DADA2_TAXONOMY ( ch_cut_fasta, ch_assigntax, "ASV_ITS_tax.${val_dada_ref_taxonomy}.tsv", taxlevels )
             ch_versions = ch_versions.mix(DADA2_TAXONOMY.out.versions)
             FORMAT_TAXRESULTS_STD ( DADA2_TAXONOMY.out.tsv, ch_fasta, 'ASV_tax.tsv' )
             ch_versions = ch_versions.mix( FORMAT_TAXRESULTS_STD.out.versions.ifEmpty(null) )
             if (!params.skip_dada_addspecies) {
-                DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, 'ASV_ITS_tax_species.tsv', taxlevels )
-                FORMAT_TAXRESULTS_ADDSP ( DADA2_ADDSPECIES.out.tsv, ch_fasta, 'ASV_tax_species.tsv' )
+                DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, "ASV_ITS_tax_species.${val_dada_ref_taxonomy}.tsv", taxlevels )
+                FORMAT_TAXRESULTS_ADDSP ( DADA2_ADDSPECIES.out.tsv, ch_fasta, "ASV_tax_species.${val_dada_ref_taxonomy}.tsv" )
                 if ( params.addsh ) {
                     ch_cut_fasta
                         .map {
@@ -452,13 +464,13 @@ workflow AMPLISEQ {
                         .set { ch_cut_fasta }
                     VSEARCH_USEARCHGLOBAL( ch_cut_fasta, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
                     ch_versions = ch_versions.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
-                    ASSIGNSH( FORMAT_TAXRESULTS_ADDSP.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, 'ASV_tax_species_SH.tsv')
+                    ASSIGNSH( FORMAT_TAXRESULTS_ADDSP.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, "ASV_tax_species_SH.${val_dada_ref_taxonomy}.tsv")
                     ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
                     ch_dada2_tax = ASSIGNSH.out.tsv
                 } else {
                     ch_dada2_tax = FORMAT_TAXRESULTS_ADDSP.out.tsv
                 }
-           } else {
+            } else {
                 if ( params.addsh ) {
                     ch_cut_fasta
                         .map {
@@ -469,7 +481,7 @@ workflow AMPLISEQ {
                         .set { ch_cut_fasta }
                     VSEARCH_USEARCHGLOBAL( ch_cut_fasta, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
                     ch_versions = ch_versions.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
-                    ASSIGNSH( FORMAT_TAXRESULTS_STD.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, 'ASV_tax_SH.tsv')
+                    ASSIGNSH( FORMAT_TAXRESULTS_STD.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, "ASV_tax_SH.${val_dada_ref_taxonomy}.tsv")
                     ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
                     ch_dada2_tax = ASSIGNSH.out.tsv
                 } else {
@@ -478,6 +490,26 @@ workflow AMPLISEQ {
             }
         }
     }
+
+    // Phylo placement
+    if ( params.pplace_tree ) {
+        ch_pp_data = ch_fasta.map { it ->
+            [ meta: [ id: params.pplace_name ?: 'user_tree' ],
+            data: [
+                alignmethod:  params.pplace_alnmethod ?: 'hmmer',
+                queryseqfile: it,
+                refseqfile:   file( params.pplace_aln, checkIfExists: true ),
+                hmmfile:      [],
+                refphylogeny: file( params.pplace_tree, checkIfExists: true ),
+                model:        params.pplace_model,
+                taxonomy:     params.pplace_taxonomy ? file( params.pplace_taxonomy, checkIfExists: true ) : []
+            ] ]
+        }
+        FASTA_NEWICK_EPANG_GAPPA ( ch_pp_data )
+        ch_versions = ch_versions.mix( FASTA_NEWICK_EPANG_GAPPA.out.versions )
+
+        ch_pplace_tax = FORMAT_PPLACETAX ( FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query ).tsv
+    } else { ch_pplace_tax = Channel.empty() }
 
     //QIIME2
     if ( run_qiime2 ) {
@@ -499,26 +531,30 @@ workflow AMPLISEQ {
     // SUBWORKFLOW / MODULES : Downstream analysis with QIIME2
     //
     if ( run_qiime2 ) {
-        //Import ASV abundance table and sequences into QIIME2
+        // Import ASV abundance table and sequences into QIIME2
         QIIME2_INASV ( ch_dada2_asv )
         QIIME2_INSEQ ( ch_fasta )
 
-        //Import taxonomic classification into QIIME2, if available
+        // Import phylogenetic tree into QIIME2
+        if ( params.pplace_tree ) {
+            ch_tree = QIIME2_INTREE ( FASTA_NEWICK_EPANG_GAPPA.out.grafted_phylogeny ).qza
+        } else { ch_tree = Channel.empty() }
+
+        // Import taxonomic classification into QIIME2, if available
         if ( params.skip_taxonomy ) {
             log.info "Skip taxonomy classification"
             ch_tax = Channel.empty()
             tax_agglom_min = 1
             tax_agglom_max = 2
+        } else if ( params.pplace_tree && params.pplace_taxonomy) {
+            log.info "Use EPA-NG / GAPPA taxonomy classification"
+            ch_tax = QIIME2_INTAX ( ch_pplace_tax ).qza
         } else if ( params.dada_ref_taxonomy ) {
             log.info "Use DADA2 taxonomy classification"
             ch_tax = QIIME2_INTAX ( ch_dada2_tax ).qza
-            tax_agglom_min = params.dada_tax_agglom_min
-            tax_agglom_max = params.dada_tax_agglom_max
         } else if ( params.qiime_ref_taxonomy || params.classifier ) {
             log.info "Use QIIME2 taxonomy classification"
             ch_tax = QIIME2_TAXONOMY.out.qza
-            tax_agglom_min = params.qiime_tax_agglom_min
-            tax_agglom_max = params.qiime_tax_agglom_max
         } else {
             log.info "Use no taxonomy classification"
             ch_tax = Channel.empty()
@@ -526,7 +562,7 @@ workflow AMPLISEQ {
             tax_agglom_max = 2
         }
 
-        //Filtering ASVs by taxonomy & prevalence & counts
+        // Filtering ASVs by taxonomy & prevalence & counts
         if (params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1) {
             QIIME2_FILTERTAXA (
                 QIIME2_INASV.out.qza,
@@ -549,7 +585,7 @@ workflow AMPLISEQ {
         }
         //Export various ASV tables
         if (!params.skip_abundance_tables) {
-            QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, QIIME2_TAXONOMY.out.tsv, ch_dada2_tax, tax_agglom_min, tax_agglom_max )
+            QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, QIIME2_TAXONOMY.out.tsv, ch_dada2_tax, ch_pplace_tax, tax_agglom_min, tax_agglom_max )
         }
 
         if (!params.skip_barplot) {
@@ -585,6 +621,7 @@ workflow AMPLISEQ {
                 ch_metadata,
                 ch_asv,
                 ch_seq,
+                ch_tree,
                 ch_tsv,
                 ch_metacolumn_pairwise,
                 ch_metacolumn_all,

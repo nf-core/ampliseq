@@ -43,13 +43,8 @@ class WorkflowAmpliseq {
             System.exit(1)
         }
 
-        if (params.dada_tax_agglom_min > params.dada_tax_agglom_max) {
-            log.error "Incompatible parameters: `--dada_tax_agglom_min` may not be greater than `--dada_tax_agglom_max`."
-            System.exit(1)
-        }
-
-        if (params.qiime_tax_agglom_min > params.qiime_tax_agglom_max) {
-            log.error "Incompatible parameters: `--qiime_tax_agglom_min` may not be greater than `--qiime_tax_agglom_max`."
+        if (params.tax_agglom_min > params.tax_agglom_max) {
+            log.error "Incompatible parameters: `--tax_agglom_min` may not be greater than `--tax_agglom_max`."
             System.exit(1)
         }
 
@@ -61,6 +56,17 @@ class WorkflowAmpliseq {
         if (params.dada_ref_tax_custom && !params.dada_ref_tax_custom_sp && !params.skip_dada_addspecies) {
             log.error "Incompatible parameters: Either `--skip_dada_addspecies` or `--dada_ref_tax_custom_sp` is additionally required to `--dada_ref_tax_custom`."
             System.exit(1)
+        }
+
+        if (params.pplace_tree) {
+            if (!params.pplace_aln) {
+                log.error "Missing parameter: Phylogenetic placement requires in addition to `--pplace_tree` also `--pplace_aln`."
+                System.exit(1)
+            }
+            if (!params.pplace_model) {
+                log.error "Missing parameter: Phylogenetic placement requires in addition to `--pplace_tree` also `--pplace_model`."
+                System.exit(1)
+            }
         }
 
         if (params.dada_assign_taxlevels && params.sbdiexport) {

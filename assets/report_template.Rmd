@@ -191,8 +191,8 @@ datatable(dada_stats, options = list(
 if ( params$flag_single_end ) {
     # single end
     dada_stats_ex <- data.frame(sample = dada_stats$sample,
-                            input = dada_stats$input,
-                            filtered = dada_stats$input-dada_stats$filtered,
+                            input = dada_stats$DADA2_input,
+                            filtered = dada_stats$DADA2_input-dada_stats$filtered,
                             denoised = dada_stats$filtered-dada_stats$denoised,
                             nonchim = dada_stats$denoised-dada_stats$nonchim,
                             analysis = dada_stats$nonchim)

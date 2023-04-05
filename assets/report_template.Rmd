@@ -122,7 +122,9 @@ cat("Further quality checks were performed using the DADA2 package and ",
         "found [here](", dada2_dir, ").", sep = "")
 ```
 
+
 ```{r, eval = !params$flag_skip_dada_quality, results='asis'}
+# TODO is this really skippable by skip_dada_quality?
 if (params$trunc_qmin != -1) {
         f_and_tr_args <- readLines(params$dada_filtntrim_args)
         trunc_len <- strsplit(gsub(".*truncLen = c\\((.+)\\),maxN.*", "\\1",
@@ -158,7 +160,7 @@ Error correction was performed using DADA2 as well and the originalplots can be 
 knitr::include_graphics(c(params$dada_1_err_path, params$dada_2_err_path))
 ```
 
-```{r, eval = !params$flag_skip_dada_quality, results='asis'}
+```{r, results='asis'}
 # Header
 cat("## ASV inference using DADA2\n")
 
@@ -175,11 +177,7 @@ cat("The ASVs can be found [here](", params$path_asv_fa, "). And the correspondi
         "be found [here](", params$path_dada2_tab, ").", sep = "")
 ```
 
-```{r}
-print(params$flag_single_end)
-```
-
-```{r, eval = !params$flag_skip_dada_quality, results='asis'}
+```{r, results='asis'}
 # import stats tsv
 dada_stats <- read.table(file = params$dada_stats_path, header = TRUE, sep = "\t")
 

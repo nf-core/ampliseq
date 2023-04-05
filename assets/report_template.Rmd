@@ -252,7 +252,7 @@ ggplot(dada_stats_p_t, aes(fill = steps_t, y = asvs_p_t, x = samples_t)) +
 
 ```{r, eval = !params$flag_skip_barrnap, results='asis'}
 # Header
-cat("# Filtering of ASVs")
+cat("# Filtering of ASVs\n")
 cat("## ASV filtering using Barrnap\n")
 cat("Barrnap classifies the ASVs into the origin domain (including ",
         "mitochondiral origin). Using this classification the ASVs can ",
@@ -302,7 +302,7 @@ ggplot(barrnap_df,
 
 ```{r, eval = !params$flag_skip_taxonomy, results='asis'}
 # Header
-cat("# Taxonomic Classification")
+cat("# Taxonomic Classification\n")
 cat("## Taxonomic Classification using DADA2\n")
 
 if (!params$flag_ref_tax_user) {

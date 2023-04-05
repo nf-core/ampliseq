@@ -84,9 +84,9 @@ if seq != "" and name != "" and name not in seqs:
 
 # Print header to outfile
 if args.taxlevels != "":
-    header = ["ASV"] + args.taxlevels.split(",") + ["sequence"]
+    header = ["ASV_ID"] + args.taxlevels.split(",") + ["sequence"]
 else:
-    header = ["ASV", "sequence"]
+    header = ["ASV_ID", "sequence"]
 num_taxa = len(header) - 2
 print("\t".join(header), file=args.outfile)
 

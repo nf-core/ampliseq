@@ -57,7 +57,7 @@ process SUMMARY_REPORT  {
                         --asv_table_path $dada_asv_table \\
                         --path_asv_fa $dada_asv_fa \\
                         --path_dada2_tab $dada_tab \\
-                        --dada_stats_path $dada_stats
+                        --dada_stats_path $dada_stats \\
                         --dada_filtntrim_args $dada_filtntrim_args \\
                         $dada_err \\
                         $barrnap \\

@@ -122,7 +122,6 @@ cat("Further quality checks were performed using the DADA2 package and ",
         "found [here](", dada2_dir, ").", sep = "")
 ```
 
-
 ```{r, eval = !params$flag_skip_dada_quality, results='asis'}
 # TODO is this really skippable by skip_dada_quality?
 if (params$trunc_qmin != -1) {
@@ -142,12 +141,12 @@ if (params$trunc_qmin != -1) {
 }
 ```
 
-```{r, eval = !params$flag_skip_dada_quality, results='asis', out.width="49%", fig.show='hold', fig.align='center'}
+```{r, eval = !params$flag_skip_dada_quality, out.width="49%", fig.show='hold', fig.align='center'}
 # TODO svg seems to have an error
 knitr::include_graphics(c(params$dada_qc_f_path,params$dada_qc_r_path))
 ```
 
-```{r, eval = !params$flag_skip_dada_quality, results='asis', out.width="49%", fig.show='hold', fig.align='center'}
+```{r, eval = !params$flag_skip_dada_quality, out.width="49%", fig.show='hold', fig.align='center'}
 # TODO same issue, also error in svg
 knitr::include_graphics(c(params$dada_pp_qc_f_path, params$dada_pp_qc_r_path))
 ```
@@ -156,7 +155,7 @@ knitr::include_graphics(c(params$dada_pp_qc_f_path, params$dada_pp_qc_r_path))
 
 Error correction was performed using DADA2 as well and the originalplots can be found [here](../dada2/QC/).
 
-```{r, results = 'asis', out.width="49%", fig.show='hold', fig.align='center'}
+```{r, out.width="49%", fig.show='hold', fig.align='center'}
 knitr::include_graphics(c(params$dada_1_err_path, params$dada_2_err_path))
 ```
 
@@ -175,9 +174,7 @@ cat("The ASVs can be found [here](", params$path_asv_fa, "). And the correspondi
         " quantification of the ASVs across samples can be found ",
         "[here](", params$path_asv_path, "). An extensive table containing both can ",
         "be found [here](", params$path_dada2_tab, ").", sep = "")
-```
 
-```{r, results='asis'}
 # import stats tsv
 dada_stats <- read.table(file = params$dada_stats_path, header = TRUE, sep = "\t")
 

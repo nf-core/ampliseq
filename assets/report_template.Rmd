@@ -168,10 +168,10 @@ n_asv <- length(asv_table$ASV_ID)
 # Output text
 cat(n_asv,
         "amplicon sequence variants (ASVs) were obtained across all samples. ")
-cat("The ASVs can be found [here](", params$path_asv_fa, "). And the corresponding",
-        " quantification of the ASVs across samples can be found ",
-        "[here](", params$path_asv_path, "). An extensive table containing both can ",
-        "be found [here](", params$path_dada2_tab, ").", sep = "")
+cat("The ASVs can be found in ['ASV_seqs.fasta'](../dada2/). And the corresponding",
+        " quantification of the ASVs across samples can be found in",
+        "['ASV_table.tsv'](../dada2/). An extensive table containing both can ",
+        "be found ['DADA2_table.tsv'](../dada2/)")
 
 # import stats tsv
 dada_stats <- read.table(file = params$dada_stats_path, header = TRUE, sep = "\t")

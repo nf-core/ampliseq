@@ -335,6 +335,11 @@
                     "description": "Maximum ASV length",
                     "help_text": "Remove ASV that are above the maximum length threshold (default: filter is disabled, otherwise 1000000). Lowering the threshold might reduce false positive ASVs (e.g. PCR off-targets)."
                 },
+                "filter_coi_asv": {
+                    "type": "boolean",
+                    "description": "Filter COI ASVs",
+                    "help_text": "This setting is to be used only when any of the combination of following primers have been used \n\nforward:\n    - \"CCHGAYATRGCHTTYCCHCG\"\n    - \"ACCHGAYATRGCHTTYCCHCG\"\n    - \"GACCHGAYATRGCHTTYCCHCG\"\n    - \"TGACCHGAYATRGCHTTYCCHCG\"\n\nreverse:\n    - \"CDGGRTGNCCRAARAAYCA\"\n    - \"TCDGGRTGNCCRAARAAYCA\"\n    - \"ATCDGGRTGNCCRAARAAYCA\"\n    - \"GATCDGGRTGNCCRAARAAYCA\"\nASVs that do not follow the length category: 418 ± nx3 and between 403 and 418 and the ones that contain stop codon are filtered."
+                },
                 "exclude_taxa": {
                     "type": "string",
                     "default": "mitochondria,chloroplast",

@@ -202,6 +202,8 @@ Optionally, the COI ASVs can be filtered based on their length and also their co
         - "ATCDGGRTGNCCRAARAAYCA"
         - "GATCDGGRTGNCCRAARAAYCA"
 
+This particular COI filtering can be set by using the option `filter_coi_asv`.
+
 <details markdown="1">
 <summary>Output files</summary>
 

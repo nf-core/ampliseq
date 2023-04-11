@@ -116,7 +116,6 @@ ggplot(cutadapt_summary,
 ```
 
 ```{r, results='asis'}
-#TODO: params.max_ee should be also reported, see https://nf-co.re/ampliseq/2.5.0/parameters#max_ee
 cat("## QC using DADA2\n")
 if (params$trunc_qmin != -1) {
     f_and_tr_args <- readLines(params$dada_filtntrim_args)

@@ -41,9 +41,10 @@ process SUMMARY_REPORT  {
     def cutadapt = params.skip_cutadapt ? "--skip_cutadapt" :
         params.retain_untrimmed ? "--retain_untrimmed --ca_sum_path $ca_summary" :
         "--ca_sum_path $ca_summary"
+    // Even when in "dada2_preprocessing.nf" is stated "qc_svg = ch_DADA2_QUALITY1_SVG.collect(sort:true)" the whole path, not only the file name, is used to sort. So FW cannot be guaranteed to be before RV!
     def dada_quality = params.skip_dada_quality ? "--skip_dada_quality" :
         meta.single_end ? "--dada_qc_f_path $dada_qual_stats --dada_pp_qc_f_path $dada_pp_qual_stats" :
-        "--dada_qc_f_path ${dada_qual_stats[0]} --dada_qc_r_path ${dada_qual_stats[1]} --dada_pp_qc_f_path ${dada_pp_qual_stats[0]} --dada_pp_qc_r_path ${dada_pp_qual_stats[1]}"
+        "--dada_qc_f_path 'FW_qual_stats.svg' --dada_qc_r_path 'RV_qual_stats.svg' --dada_pp_qc_f_path 'FW_preprocessed_qual_stats.svg' --dada_pp_qc_r_path 'RV_preprocessed_qual_stats.svg'"
     def find_truncation = find_truncation_values ? "--trunc_qmin $params.trunc_qmin" : ""
     def dada_err = meta.single_end ? "--dada_1_err_path $dada_err_svgs" : "--dada_1_err_path ${dada_err_svgs[0]} --dada_2_err_path ${dada_err_svgs[1]}"
     def barrnap = params.skip_barrnap ? "--skip_barrnap" : "--path_rrna_arc ${barrnap_gff[0]} --path_rrna_bac ${barrnap_gff[1]} --path_rrna_euk ${barrnap_gff[2]} --path_rrna_mito ${barrnap_gff[3]} --path_barrnap_sum $barrnap_summary"

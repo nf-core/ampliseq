@@ -126,7 +126,7 @@ workflow DADA2_PREPROCESSING {
     reads               = ch_filt_reads
     logs                = DADA2_FILTNTRIM.out.log
     args                = DADA2_FILTNTRIM.out.args
-    qc_svg              = ch_DADA2_QUALITY1_SVG.collect(sort:true)
-    qc_svg_preprocessed = ch_DADA2_QUALITY2_SVG.collect(sort:true)
+    qc_svg              = ch_DADA2_QUALITY1_SVG.collect()
+    qc_svg_preprocessed = ch_DADA2_QUALITY2_SVG.collect()
     versions            = ch_versions_dada2_preprocessing
 }

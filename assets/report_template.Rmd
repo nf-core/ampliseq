@@ -153,7 +153,6 @@ knitr::include_graphics(c(params$dada_qc_f_path, params$dada_qc_r_path))
 ```
 
 ```{r, eval = !params$flag_skip_dada_quality, results='asis'}
-#TODO: for "-profile test" the foward reads seem to be on the right side!! easy to see when looking at the length. Even when in "dada2_preprocessing.nf" is stated: qc_svg = ch_DADA2_QUALITY1_SVG.collect(sort:true)
 if (params$flag_single_end) {
     cat("Read quality stats for preprocessed data:")
 } else {

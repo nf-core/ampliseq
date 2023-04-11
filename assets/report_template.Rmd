@@ -24,7 +24,9 @@ params:
     flag_single_end: FALSE
     trunclenf: ""
     trunclenr: ""
+    max_ee: ""
     trunc_qmin: ""
+    trunc_rmin: ""
 
     # file paths
     mqc_plot: ""
@@ -123,24 +125,25 @@ if (params$trunc_qmin != -1) {
     tr_len_f <- trunc_len[[1]][1]
     tr_len_r <- trunc_len[[1]][2]
     cat("Reads were trimmed before median quality drops ",
-        "below ", params$trunc_qmin, " resulting in a trim of ",
+        "below ", params$trunc_qmin, " and at least ",params$trunc_rmin*100,
+        "% of reads are retained, resulting in a trim of ",
         "forward reads at ", tr_len_f, " bp and reverse ",
-        "reads at ", tr_len_r, " bp.", sep = "")
+        "reads at ", tr_len_r, " bp. ", sep = "")
 } else if (params$trunclenf == "null" && params$trunclenr == "null") {
     cat("Reads were not trimmed.")
 } else if (params$trunclenf != 0 && params$trunclenr != 0) {
     cat("Forward reads were trimmed at ", params$trunclenf,
             " bp and reverse reads were trimmed at ", params$trunclenr,
-            " bp.", sep = "")
+            " bp. ", sep = "")
 } else if (params$trunclenf != 0) {
-    cat("Forward reads were trimmed at ", params$trunclenf," bp.", sep = "")
+    cat("Forward reads were trimmed at ", params$trunclenf," bp. ", sep = "")
 } else if (params$trunclenr != 0) {
-    cat("Reverse reads were trimmed at ", params$trunclenr," bp.", sep = "")
+    cat("Reverse reads were trimmed at ", params$trunclenr," bp. ", sep = "")
 }
+cat("Reads with more than", params$max_ee,"expected errors were discarded.", sep = " ")
 ```
 
 ```{r, eval = !params$flag_skip_dada_quality, results='asis'}
-#TODO: are forward reads indeed always left?
 if (params$flag_single_end) {
     cat("Read quality stats for incoming data:")
 } else {

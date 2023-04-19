@@ -9,7 +9,7 @@
 #
 # List of subroutines:
 #
-# Usage: convert_sintax_output.py -i <sintax_results.tsv> -f <fastafile> -o <output_filename> -t <taxlevels>
+# Usage: convert_sintax_output.py -i <sintax_results.tsv> -f <fastafile> -o <output_filename> -t <taxlevels> -d <db_version>
 ##################################
 
 import re
@@ -58,12 +58,26 @@ parser.add_argument(
     default="",
 )
 
+parser.add_argument(
+    "-d",
+    "--dbversion",
+    dest="db",
+    metavar="DBVERSION",
+    help="Taxonomy database name",
+    default="",
+)
+
 args = parser.parse_args()
 
 
 def complete_list(some_list, target_len):
     return some_list[:target_len] + ["NA"] * (target_len - len(some_list))
 
+
+# Find out if taxonomies contain SH groups
+dbtype = "default"
+if "UNITE" in args.db:
+    dbtype = "UNITE"
 
 # Read fasta file and store as dictionary
 # If multiple sequences have the same name only the first will be stored
@@ -84,10 +98,16 @@ if seq != "" and name != "" and name not in seqs:
 
 # Print header to outfile
 if args.taxlevels != "":
-    header = ["ASV_ID"] + args.taxlevels.split(",") + ["sequence"]
+    if dbtype == "UNITE":
+        header = ["ASV_ID"] + args.taxlevels.split(",") + ["SH", "confidence", "sequence"]
+    else:
+        header = ["ASV_ID"] + args.taxlevels.split(",") + ["confidence", "sequence"]
 else:
-    header = ["ASV_ID", "sequence"]
-num_taxa = len(header) - 2
+    header = ["ASV_ID", "confidence", "sequence"]
+num_taxa = len(header) - 3
+num_cols = num_taxa
+if dbtype == "UNITE":
+    num_taxa = num_taxa - 1
 print("\t".join(header), file=args.outfile)
 
 # Read sintax file, parse results, and write taxonomies together with sequence to outfile
@@ -97,14 +117,22 @@ for line in args.infile:
     sequence = seqs[tmp_list[0]] if tmp_list[0] in seqs else ""
     if tmp_list[3] != "":
         annot = re.sub(".\:", "", tmp_list[3])
-        tmp_list1 = annot.split(",")
-        if len(tmp_list1) != num_taxa:
-            tmp_list1 = complete_list(tmp_list1, num_taxa)
-            print(tmp_list[0], "\t".join(tmp_list1), sequence, sep="\t", file=args.outfile)
+        annot_list = annot.split(",")
+        raw_annot = re.sub(".\:", "", tmp_list[1])
+        raw_annot_list = raw_annot.split(",")
+        confidence = raw_annot_list[len(annot_list) - 1].split("(")[1]
+        confidence = confidence[:-1]
+        if len(annot_list) != num_taxa:
+            annot_list = complete_list(annot_list, num_cols)
+            print(tmp_list[0], "\t".join(annot_list), confidence, sequence, sep="\t", file=args.outfile)
         else:
-            print(tmp_list[0], "\t".join(tmp_list1), sequence, sep="\t", file=args.outfile)
+            if dbtype == "UNITE":
+                (species, sh) = annot_list[num_taxa - 1].rsplit("_", 1)
+                annot_list[num_taxa - 1] = species
+                annot_list.append(sh)
+            print(tmp_list[0], "\t".join(annot_list), confidence, sequence, sep="\t", file=args.outfile)
     else:
-        print(tmp_list[0], "\t".join(["NA"] * num_taxa), sequence, sep="\t", file=args.outfile)
+        print(tmp_list[0], "\t".join(["NA"] * num_cols), "", sequence, sep="\t", file=args.outfile)
 
 
 args.outfile.close()

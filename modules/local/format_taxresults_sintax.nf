@@ -22,7 +22,7 @@ process FORMAT_TAXRESULTS_SINTAX {
     script:
     def taxlevels = taxlevels_input ? taxlevels_input : "Kingdom,Phylum,Class,Order,Family,Genus,Species"
     """
-    convert_sintax_output.py -i $taxtable -f $fastafile -o $outfile -t $taxlevels
+    convert_sintax_output.py -i $taxtable -f $fastafile -o $outfile -t $taxlevels -d \"${params.sintax_ref_databases[params.sintax_ref_taxonomy]["dbversion"]}\"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

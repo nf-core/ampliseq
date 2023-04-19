@@ -16,8 +16,9 @@ suppressPackageStartupMessages(library(tidyverse))
 args            <- commandArgs(trailingOnly=TRUE)
 dbversion       <- args[1]
 taxfile         <- args[2]
-wfversion       <- args[3]
-predfile        <- args[4]
+taxmethod       <- args[3]
+wfversion       <- args[4]
+predfile        <- args[5]
 
 # Read taxonomy table
 taxonomy <- read.delim(taxfile, sep = '\t', stringsAsFactors = FALSE)
@@ -54,7 +55,7 @@ taxtable  <- taxonomy %>%
     mutate(Genus = if("Genus" %in% colnames(.)) Genus else '') %>%
     mutate(Species = if("Species" %in% colnames(.)) Species else '') %>%
     mutate(Species_exact = if("Species_exact" %in% colnames(.)) Species_exact else '') %>%
-    mutate(SH = if("SH" %in% colnames(.)) SH else '') %>%
+    mutate(otu = if("SH" %in% colnames(.)) SH else if ("BOLD_bin" %in% colnames(.)) BOLD_bin else '') %>%
     relocate(Domain, .after = sequence) %>%
     relocate(Kingdom, .after = Domain) %>%
     relocate(Phylum, .after = Kingdom) %>%
@@ -64,13 +65,12 @@ taxtable  <- taxonomy %>%
     relocate(Genus, .after = Family) %>%
     relocate(Species, .after = Genus) %>%
     relocate(Species_exact, .after = Species) %>%
-    relocate(SH, .after = Species_exact) %>%
+    relocate(otu, .after = Species_exact) %>%
     rename_with(tolower, Domain:Species_exact) %>%
     rename(
         asv_id_alias = ASV_ID,
         asv_sequence = sequence,
         specificEpithet = species,
-        otu = SH,
         annotation_confidence = confidence
     ) %>%
     mutate(across(.fns = ~str_replace_all(.,' ','_'))) %>%
@@ -108,6 +108,7 @@ taxtable  <- taxonomy %>%
         date_identified = as.character(lubridate::today()),
         reference_db = dbversion,
         annotation_algorithm = case_when(
+            (taxmethod == 'sintax')                         ~ paste('Ampliseq',wfversion,'(https://nf-co.re/ampliseq) VSEARCH:sintax', sep=' '),
             (!(is.na(otu) | otu == ''))                     ~ paste('Ampliseq',wfversion,'(https://nf-co.re/ampliseq) addsh', sep=' '),
             (!(is.na(species_exact) | species_exact == '')) ~ paste('Ampliseq',wfversion,'(https://nf-co.re/ampliseq) DADA2:assignTaxonomy:addSpecies', sep=' '),
             TRUE                                            ~ paste('Ampliseq',wfversion,'(https://nf-co.re/ampliseq) DADA2:assignTaxonomy', sep=' ')
@@ -121,6 +122,5 @@ taxtable  <- taxonomy %>%
     relocate(infraspecificEpithet, .after = specificEpithet) %>%
     relocate(annotation_confidence, .after = otu) %>%
     relocate(date_identified:taxon_remarks, .after = annotation_confidence) %>%
-    select(-domain) %>%
-    select(-species_exact) %>%
+    select_if(!names(.) %in% c('domain', 'species_exact', 'SH', 'BOLD_bin')) %>%
     write_tsv("annotation.tsv", na = '')

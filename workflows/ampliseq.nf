@@ -104,11 +104,14 @@ if ( params.dada_ref_taxonomy ) {
     taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" :
         params.dada_ref_databases[params.dada_ref_taxonomy]["taxlevels"] ?: ""
 } else { taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" : "" }
+if ( params.sintax_ref_taxonomy ) {
+    sintax_taxlevels = params.sintax_ref_databases[params.sintax_ref_taxonomy]["taxlevels"] ?: ""
+}
 
 //make sure that taxlevels adheres to requirements when mixed with addSpecies
 if ( params.dada_ref_taxonomy && !params.skip_dada_addspecies && !params.skip_taxonomy && taxlevels ) {
     if ( !taxlevels.endsWith(",Genus,Species") && !taxlevels.endsWith(",Genus") ) {
-        log.error "Incompatible settings: To use exact species annotations, taxonomic levels must end with `,Genus,Species` or `,Genus,Species` but are currently `${taxlevels}`. Taxonomic levels can be set with `--dada_assign_taxlevels`. Skip exact species annotations with `--skip_dada_addspecies`.\n"
+        log.error "Incompatible settings: To use exact species annotations, taxonomic levels must end with `,Genus,Species` or `,Genus` but are currently `${taxlevels}`. Taxonomic levels can be set with `--dada_assign_taxlevels`. Skip exact species annotations with `--skip_dada_addspecies`.\n"
         System.exit(1)
     }
 }
@@ -535,7 +538,7 @@ workflow AMPLISEQ {
         }
         VSEARCH_SINTAX( ch_fasta_sintax, ch_sintaxdb )
         ch_versions = ch_versions.mix(VSEARCH_SINTAX.out.versions)
-        FORMAT_TAXRESULTS_SINTAX( VSEARCH_SINTAX.out.tsv, ch_fasta, ASV_tax_name + '.tsv', taxlevels )
+        FORMAT_TAXRESULTS_SINTAX( VSEARCH_SINTAX.out.tsv, ch_fasta, ASV_tax_name + '.tsv', sintax_taxlevels )
         ch_sintax_tax = FORMAT_TAXRESULTS_SINTAX.out.tsv
     }
 
@@ -712,9 +715,14 @@ workflow AMPLISEQ {
     // MODULE: Export data in SBDI's (Swedish biodiversity infrastructure) format
     //
     if ( params.sbdiexport ) {
-        SBDIEXPORT ( ch_dada2_asv, ch_dada2_tax, ch_metadata )
+        if ( params.sintax_ref_taxonomy ) {
+            SBDIEXPORT ( ch_dada2_asv, ch_sintax_tax, ch_metadata )
+            SBDIEXPORTREANNOTATE ( ch_sintax_tax, "sintax", ch_barrnapsummary.ifEmpty([]) )
+        } else {
+            SBDIEXPORT ( ch_dada2_asv, ch_dada2_tax, ch_metadata )
+            SBDIEXPORTREANNOTATE ( ch_dada2_tax, "dada2", ch_barrnapsummary.ifEmpty([]) )
+        }
         ch_versions = ch_versions.mix(SBDIEXPORT.out.versions.first())
-        SBDIEXPORTREANNOTATE ( ch_dada2_tax, ch_barrnapsummary.ifEmpty([]) )
     }
 
     CUSTOM_DUMPSOFTWAREVERSIONS (

@@ -497,6 +497,8 @@ workflow AMPLISEQ {
                 }
             }
         }
+    } else {
+        ch_dada2_tax = Channel.empty()
     }
 
     // Sintax
@@ -540,6 +542,8 @@ workflow AMPLISEQ {
         ch_versions = ch_versions.mix(VSEARCH_SINTAX.out.versions)
         FORMAT_TAXRESULTS_SINTAX( VSEARCH_SINTAX.out.tsv, ch_fasta, ASV_tax_name + '.tsv', sintax_taxlevels )
         ch_sintax_tax = FORMAT_TAXRESULTS_SINTAX.out.tsv
+    } else {
+        ch_sintax_tax = Channel.empty()
     }
 
     // Phylo placement
@@ -641,7 +645,7 @@ workflow AMPLISEQ {
         }
         //Export various ASV tables
         if (!params.skip_abundance_tables) {
-            QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, QIIME2_TAXONOMY.out.tsv, ch_dada2_tax, tax_agglom_min, tax_agglom_max )
+            QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, QIIME2_TAXONOMY.out.tsv, ch_dada2_tax, ch_sintax_tax, tax_agglom_min, tax_agglom_max )
         }
 
         if (!params.skip_barplot) {

@@ -27,7 +27,7 @@ def parse_samplesheet(LinkedHashMap row, single_end) {
         exit 1, "ERROR: Please check input samplesheet -> Forward read FastQ file does not exist!\n${row.forwardReads}"
     }
     if (meta.single_end) {
-        array = [ meta, [ file(row.forwardReads) ] ]
+        array = [ meta, file(row.forwardReads) ]
     } else {
         if (!file(row.reverseReads).exists()) {
             exit 1, "ERROR: Please check input samplesheet -> Reverse read FastQ file does not exist!\n${row.reverseReads}"
@@ -141,7 +141,7 @@ workflow PARSE_INPUT {
             .subscribe { if ( params.metadata && "$it"[0].isNumber() ) exit 1, "Please review data input, sampleIDs may not start with a number, but \"$it\" does. The pipeline unintentionally modifies such strings and the metadata will not match any more." }
 
         //Filter empty files
-        ch_reads
+        ch_reads.dump(tag:'parse_input.nf: ch_reads')
             .branch {
                 failed: it[0].single_end ? it[1].size() < 1.KB : it[1][0].size() < 1.KB || it[1][1].size() < 1.KB
                 passed: it[0].single_end ? it[1].size() >= 1.KB : it[1][0].size() >= 1.KB && it[1][1].size() >= 1.KB

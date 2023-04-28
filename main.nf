@@ -4,7 +4,6 @@
     nf-core/ampliseq
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Github : https://github.com/nf-core/ampliseq
-
     Website: https://nf-co.re/ampliseq
     Slack  : https://nfcore.slack.com/channels/ampliseq
 ----------------------------------------------------------------------------------------

@@ -151,8 +151,7 @@ include { MERGE_STATS as MERGE_STATS_FILTERLENASV } from '../modules/local/merge
 include { FORMAT_FASTAINPUT             } from '../modules/local/format_fastainput'
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
 include { FORMAT_TAXONOMY_SINTAX        } from '../modules/local/format_taxonomy_sintax'
-include { ITSX_CUTASV as ITSX_CUTASV_DADA2  } from '../modules/local/itsx_cutasv'
-include { ITSX_CUTASV as ITSX_CUTASV_SINTAX } from '../modules/local/itsx_cutasv'
+include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
 include { MERGE_STATS as MERGE_STATS_STD} from '../modules/local/merge_stats'
 include { DADA2_TAXONOMY                } from '../modules/local/dada2_taxonomy'
 include { DADA2_ADDSPECIES              } from '../modules/local/dada2_addspecies'
@@ -376,9 +375,29 @@ workflow AMPLISEQ {
     }
 
     //
+    // Modules : ITSx - cut out ITS region if long ITS reads
+    //
+    ch_full_fasta = ch_dada2_fasta
+    if (params.cut_its == "none") {
+        ch_fasta = ch_dada2_fasta
+    } else {
+        if (params.cut_its == "full") {
+            outfile = params.its_partial ? "ASV_ITS_seqs.full_and_partial.fasta" : "ASV_ITS_seqs.full.fasta"
+        }
+        else if (params.cut_its == "its1") {
+            outfile =  params.its_partial ? "ASV_ITS_seqs.ITS1.full_and_partial.fasta" : "ASV_ITS_seqs.ITS1.fasta"
+        }
+        else if (params.cut_its == "its2") {
+            outfile =  params.its_partial ? "ASV_ITS_seqs.ITS2.full_and_partial.fasta" : "ASV_ITS_seqs.ITS2.fasta"
+        }
+        ITSX_CUTASV ( ch_full_fasta, outfile )
+        ch_versions = ch_versions.mix(ITSX_CUTASV.out.versions.ifEmpty(null))
+        ch_fasta = ITSX_CUTASV.out.fasta
+    }
+
+    //
     // SUBWORKFLOW / MODULES : Taxonomic classification with DADA2, SINTAX and/or QIIME2
     //
-    ch_fasta = ch_dada2_fasta
 
     //DADA2
     if (!params.skip_taxonomy && !params.skip_dada_taxonomy) {
@@ -403,98 +422,61 @@ workflow AMPLISEQ {
                 .set { ch_assigntax }
         }
         if (params.cut_its == "none") {
-            DADA2_TAXONOMY ( ch_fasta, ch_assigntax, "ASV_tax.${val_dada_ref_taxonomy}.tsv", taxlevels )
-            ch_versions = ch_versions.mix(DADA2_TAXONOMY.out.versions)
-            if (!params.skip_dada_addspecies) {
-                DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, "ASV_tax_species.${val_dada_ref_taxonomy}.tsv", taxlevels )
-                if ( params.addsh ) {
-                    ch_fasta
-                        .map {
-                            fasta ->
-                                def meta = [:]
-                                meta.id = "ASV.vsearch"
-                                [ meta, fasta ] }
-                        .set { ch_fasta_map }
-                    VSEARCH_USEARCHGLOBAL( ch_fasta_map, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
-                    ch_versions = ch_versions.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
-                    ASSIGNSH( DADA2_ADDSPECIES.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, "ASV_tax_species_SH.${val_dada_ref_taxonomy}.tsv")
-                    ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
-                    ch_dada2_tax = ASSIGNSH.out.tsv
-                } else {
-                    ch_dada2_tax = DADA2_ADDSPECIES.out.tsv
-                }
-            } else {
-                if ( params.addsh ) {
-                    ch_fasta
-                        .map {
-                            fasta ->
-                                def meta = [:]
-                                meta.id = "ASV.vsearch"
-                                [ meta, fasta ] }
-                        .set { ch_fasta_map }
-                    VSEARCH_USEARCHGLOBAL( ch_fasta_map, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
-                    ch_versions = ch_versions.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
-                    ASSIGNSH( DADA2_TAXONOMY.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, "ASV_tax_SH.${val_dada_ref_taxonomy}.tsv")
-                    ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
-                    ch_dada2_tax = ASSIGNSH.out.tsv
-                } else {
-                    ch_dada2_tax = DADA2_TAXONOMY.out.tsv
-                }
-            }
-        //Cut out ITS region if long ITS reads
+            ASV_tax_name = "ASV_tax"
         } else {
-            if (params.cut_its == "full") {
-                outfile = params.its_partial ? "ASV_ITS_seqs.full_and_partial.fasta" : "ASV_ITS_seqs.full.fasta"
-            }
-            else if (params.cut_its == "its1") {
-                outfile =  params.its_partial ? "ASV_ITS_seqs.ITS1.full_and_partial.fasta" : "ASV_ITS_seqs.ITS1.fasta"
-            }
-            else if (params.cut_its == "its2") {
-                outfile =  params.its_partial ? "ASV_ITS_seqs.ITS2.full_and_partial.fasta" : "ASV_ITS_seqs.ITS2.fasta"
-            }
-            ITSX_CUTASV_DADA2 ( ch_fasta, outfile )
-            ch_versions = ch_versions.mix(ITSX_CUTASV_DADA2.out.versions.ifEmpty(null))
-            ch_cut_fasta = ITSX_CUTASV_DADA2.out.fasta
-            DADA2_TAXONOMY ( ch_cut_fasta, ch_assigntax, "ASV_ITS_tax.${val_dada_ref_taxonomy}.tsv", taxlevels )
-            ch_versions = ch_versions.mix(DADA2_TAXONOMY.out.versions)
-            FORMAT_TAXRESULTS_STD ( DADA2_TAXONOMY.out.tsv, ch_fasta, 'ASV_tax.tsv' )
+            ASV_tax_name = "ASV_ITS_tax"
+	}
+        DADA2_TAXONOMY ( ch_fasta, ch_assigntax, ASV_tax_name + ".${val_dada_ref_taxonomy}.tsv", taxlevels )
+        ch_versions = ch_versions.mix(DADA2_TAXONOMY.out.versions)
+        if (params.cut_its != "none") {
+            FORMAT_TAXRESULTS_STD ( DADA2_TAXONOMY.out.tsv, ch_full_fasta, "ASV_tax.${val_dada_ref_taxonomy}.tsv" )
             ch_versions = ch_versions.mix( FORMAT_TAXRESULTS_STD.out.versions.ifEmpty(null) )
-            if (!params.skip_dada_addspecies) {
-                DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, "ASV_ITS_tax_species.${val_dada_ref_taxonomy}.tsv", taxlevels )
-                FORMAT_TAXRESULTS_ADDSP ( DADA2_ADDSPECIES.out.tsv, ch_fasta, "ASV_tax_species.${val_dada_ref_taxonomy}.tsv" )
-                if ( params.addsh ) {
-                    ch_cut_fasta
-                        .map {
-                            fasta ->
-                                def meta = [:]
-                                meta.id = "ASV_cut.vsearch"
-                                [ meta, fasta ] }
-                        .set { ch_cut_fasta }
-                    VSEARCH_USEARCHGLOBAL( ch_cut_fasta, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
-                    ch_versions = ch_versions.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
-                    ASSIGNSH( FORMAT_TAXRESULTS_ADDSP.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, "ASV_tax_species_SH.${val_dada_ref_taxonomy}.tsv")
-                    ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
-                    ch_dada2_tax = ASSIGNSH.out.tsv
-                } else {
-                    ch_dada2_tax = FORMAT_TAXRESULTS_ADDSP.out.tsv
-                }
+        }
+        if (!params.skip_dada_addspecies) {
+            DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, ASV_tax_name + "_species.${val_dada_ref_taxonomy}.tsv", taxlevels )
+            if (params.cut_its == "none") {
+		ch_dada2_addsp = DADA2_ADDSPECIES.out.tsv
             } else {
-                if ( params.addsh ) {
-                    ch_cut_fasta
-                        .map {
-                            fasta ->
-                                def meta = [:]
-                                meta.id = "ASV_cut.vsearch"
-                                [ meta, fasta ] }
-                        .set { ch_cut_fasta }
-                    VSEARCH_USEARCHGLOBAL( ch_cut_fasta, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
-                    ch_versions = ch_versions.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
-                    ASSIGNSH( FORMAT_TAXRESULTS_STD.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, "ASV_tax_SH.${val_dada_ref_taxonomy}.tsv")
-                    ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
-                    ch_dada2_tax = ASSIGNSH.out.tsv
-                } else {
-                    ch_dada2_tax = FORMAT_TAXRESULTS_STD.out.tsv
-                }
+                FORMAT_TAXRESULTS_ADDSP ( DADA2_ADDSPECIES.out.tsv, ch_fasta, "ASV_tax_species.${val_dada_ref_taxonomy}.tsv" )
+		ch_dada2_addsp = FORMAT_TAXRESULTS_ADDSP.out.tsv
+            }
+            if ( params.addsh ) {
+                ch_fasta
+                    .map {
+                        fasta ->
+                            def meta = [:]
+                            meta.id = ASV_tax_name + ".vsearch"
+                            [ meta, fasta ] }
+                    .set { ch_fasta_map }
+                VSEARCH_USEARCHGLOBAL( ch_fasta_map, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
+                ch_versions = ch_versions.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
+                ASSIGNSH( ch_dada2_addsp, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, "ASV_tax_species_SH.${val_dada_ref_taxonomy}.tsv")
+                ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
+                ch_dada2_tax = ASSIGNSH.out.tsv
+            } else {
+                ch_dada2_tax = ch_dada2_addsp
+            }
+        } else {
+            if (params.cut_its == "none") {
+		ch_dada2_tax1 = DADA2_TAXONOMY.out.tsv
+            } else {
+		ch_dada2_tax1 = FORMAT_TAXRESULTS_STD.out.tsv
+            }
+            if ( params.addsh ) {
+                ch_fasta
+                    .map {
+                        fasta ->
+                            def meta = [:]
+                            meta.id = ASV_tax_name + ".vsearch"
+                            [ meta, fasta ] }
+                    .set { ch_fasta_map }
+                VSEARCH_USEARCHGLOBAL( ch_fasta_map, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
+                ch_versions = ch_versions.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
+                ASSIGNSH( ch_dada2_tax1.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, "ASV_tax_SH.${val_dada_ref_taxonomy}.tsv")
+                ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
+                ch_dada2_tax = ASSIGNSH.out.tsv
+            } else {
+                ch_dada2_tax = ch_dada2_tax1
             }
         }
     } else {
@@ -509,38 +491,21 @@ workflow AMPLISEQ {
         ch_sintaxdb = FORMAT_TAXONOMY_SINTAX.out.db
         if (params.cut_its == "none") {
             ASV_tax_name = "ASV_tax_sintax.${val_sintax_ref_taxonomy}"
-            ch_fasta
-                .map {
-                    fasta ->
-                        def meta = [:]
-                        meta.id = ASV_tax_name + ".raw"
-                        [ meta, fasta ] }
-                .set { ch_fasta_sintax }
+            ASV_tax_name2 = "ASV_tax_sintax.${val_sintax_ref_taxonomy}"
         } else {
             ASV_tax_name = "ASV_ITS_tax_sintax.${val_sintax_ref_taxonomy}"
-            if (params.cut_its == "full") {
-                outfile = params.its_partial ? "ASV_ITS_seqs.full_and_partial.fasta" : "ASV_ITS_seqs.full.fasta"
-            }
-            else if (params.cut_its == "its1") {
-                outfile =  params.its_partial ? "ASV_ITS_seqs.ITS1.full_and_partial.fasta" : "ASV_ITS_seqs.ITS1.fasta"
-            }
-            else if (params.cut_its == "its2") {
-                outfile =  params.its_partial ? "ASV_ITS_seqs.ITS2.full_and_partial.fasta" : "ASV_ITS_seqs.ITS2.fasta"
-            }
-            ITSX_CUTASV_SINTAX ( ch_fasta, outfile )
-            ch_versions = ch_versions.mix(ITSX_CUTASV_SINTAX.out.versions.ifEmpty(null))
-            ch_cut_fasta = ITSX_CUTASV_SINTAX.out.fasta
-            ch_cut_fasta
-                .map {
-                    fasta ->
-                        def meta = [:]
-                        meta.id = ASV_tax_name + ".raw"
-                        [ meta, fasta ] }
-                .set { ch_fasta_sintax }
+            ASV_tax_name2 = "ASV_tax_sintax.${val_sintax_ref_taxonomy}"
         }
+        ch_fasta
+            .map {
+                fasta ->
+                    def meta = [:]
+                    meta.id = ASV_tax_name + ".raw"
+                    [ meta, fasta ] }
+            .set { ch_fasta_sintax }
         VSEARCH_SINTAX( ch_fasta_sintax, ch_sintaxdb )
         ch_versions = ch_versions.mix(VSEARCH_SINTAX.out.versions)
-        FORMAT_TAXRESULTS_SINTAX( VSEARCH_SINTAX.out.tsv, ch_fasta, ASV_tax_name + '.tsv', sintax_taxlevels )
+        FORMAT_TAXRESULTS_SINTAX( VSEARCH_SINTAX.out.tsv, ch_full_fasta, ASV_tax_name2 + '.tsv', sintax_taxlevels )
         ch_sintax_tax = FORMAT_TAXRESULTS_SINTAX.out.tsv
     } else {
         ch_sintax_tax = Channel.empty()

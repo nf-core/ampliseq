@@ -2,11 +2,10 @@ nextflow_pipeline {
 
     name "Test Workflow main.nf"
     script "main.nf"
-    tag "nf-core/ampliseq"
+    options "-profile test_fasta,docker"
+    tag "pipeline"
 
-    test("Minimal Fasta Input") {
-
-        options "-profile test_fasta,docker"
+    test("Fasta Input") {
 
         when {
             params {
@@ -29,7 +28,5 @@ nextflow_pipeline {
                 { assert snapshot(path("$outputDir/input/ASV_seqs.fasta")).match("input") }           
             )
         }
-
     }
-
 }

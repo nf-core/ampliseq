@@ -2,11 +2,10 @@ nextflow_pipeline {
 
     name "Test Workflow main.nf"
     script "main.nf"
-    tag "nf-core/ampliseq"
+    options "-profile test,docker"
+    tag "pipeline"
 
-    test("Minimal PE") {
-
-        options "-profile test,docker"
+    test("Paired-End") {
 
         when {
             params {
@@ -116,7 +115,5 @@ nextflow_pipeline {
                 { assert new File("$outputDir/SBDI/asv-table.tsv").exists() }                                                                 
             )
         }
-
     }
-
 }

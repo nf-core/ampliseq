@@ -2,11 +2,10 @@ nextflow_pipeline {
 
     name "Test Workflow main.nf"
     script "main.nf"
-    tag "nf-core/ampliseq"
+    options "-profile test_novaseq,docker"
+    tag "pipeline"
 
-    test("Minimal PE Novaseq") {
-
-        options "-profile test_novaseq,docker"
+    test("Paired-End Novaseq") {
 
         when {
             params {
@@ -32,7 +31,5 @@ nextflow_pipeline {
                                   path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt")).match("multiqc") }                                                            
             )
         }
-
     }
-
 }

@@ -2,11 +2,10 @@ nextflow_pipeline {
 
     name "Test Workflow main.nf"
     script "main.nf"
-    tag "nf-core/ampliseq"
+    options "-profile test_pacbio_its,docker"
+    tag "pipeline"
 
-    test("Minimal Pacbio ITS") {
-
-        options "-profile test_pacbio_its,docker"
+    test("Pacbio ITS") {
 
         when {
             params {
@@ -58,7 +57,5 @@ nextflow_pipeline {
                 { assert new File("$outputDir/SBDI/asv-table.tsv").exists() }                                   
             )
         }
-
     }
-
 }

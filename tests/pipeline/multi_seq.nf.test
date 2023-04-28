@@ -2,11 +2,10 @@ nextflow_pipeline {
 
     name "Test Workflow main.nf"
     script "main.nf"
-    tag "nf-core/ampliseq"
+    options "-profile test_multi,docker"
+    tag "pipeline"
 
-    test("Minimal Multiple Sequencing Runs") {
-
-        options "-profile test_multi,docker"
+    test("Multiple Sequencing Runs") {
 
         when {
             params {
@@ -62,12 +61,10 @@ nextflow_pipeline {
                 { assert new File("$outputDir/qiime2/rel_abundance_tables/rel-table-ASV.tsv").exists() },  
                 { assert new File("$outputDir/qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-tax.tsv").exists() },
                 { assert new File("$outputDir/qiime2/representative_sequences/filtered-sequences.qza").exists() },
+                { assert new File("$outputDir/qiime2/representative_sequences/rep-seq.fasta").exists() },
                 { assert snapshot(path("$outputDir/qiime2/representative_sequences/descriptive_stats.tsv"),
-                                  path("$outputDir/qiime2/representative_sequences/rep-seq.fasta"),
                                   path("$outputDir/qiime2/representative_sequences/seven_number_summary.tsv")).match("qiime2") }                         
             )
         }
-
     }
-
 }

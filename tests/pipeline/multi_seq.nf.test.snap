@@ -3,27 +3,26 @@
         "content": [
             "Samplesheet_multi.tsv:md5,25b97db179c42b568e28f00a1c475f78"
         ],
-        "timestamp": "2023-04-16T21:28:25+0000"
+        "timestamp": "2023-04-27T18:23:36+0000"
     },
     "software_versions": {
         "content": [
-            "software_versions.yml:md5,9110e79f6231a1a4927207ed01ead37a"
+            "software_versions.yml:md5,8efd811e6cf6c01edc58c729ced3fdca"
         ],
-        "timestamp": "2023-04-16T21:28:25+0000"
+        "timestamp": "2023-04-27T18:23:36+0000"
     },
     "qiime2": {
         "content": [
             "descriptive_stats.tsv:md5,f6c6527f32005a005fef4d1830874a3e",
-            "rep-seq.fasta:md5,5697db277a1c6c63d96f1e249444da68",
             "seven_number_summary.tsv:md5,4b177ed9a865e3320953b69860a435ef"
         ],
-        "timestamp": "2023-04-16T21:28:25+0000"
+        "timestamp": "2023-04-27T18:23:36+0000"
     },
     "overall_summary_tsv": {
         "content": [
             "overall_summary.tsv:md5,cc01727705136cc5d096d373237e1e06"
         ],
-        "timestamp": "2023-04-16T21:28:25+0000"
+        "timestamp": "2023-04-27T18:23:36+0000"
     },
     "dada2": {
         "content": [
@@ -34,7 +33,7 @@
             "DADA2_table.rds:md5,e55f6c929176c853ac4d91123532df9c",
             "DADA2_table.tsv:md5,e9d7e7dfabdd1f9d3bbaa45eba545367"
         ],
-        "timestamp": "2023-04-16T21:28:25+0000"
+        "timestamp": "2023-04-27T18:23:36+0000"
     },
     "barrnap": {
         "content": [
@@ -43,13 +42,13 @@
             "rrna.euk.gff:md5,12cd46457b8fcf5853a6cfba39dd7c63",
             "rrna.mito.gff:md5,737567148a9252d93deb529a06f3239c"
         ],
-        "timestamp": "2023-04-16T21:28:25+0000"
+        "timestamp": "2023-04-27T18:23:36+0000"
     },
     "multiqc": {
         "content": [
             "multiqc_general_stats.txt:md5,5692ee73c6933866807706d29b15c880",
             "multiqc_fastqc.txt:md5,3a4417c7d95a9bbe17751dc974157cd3"
         ],
-        "timestamp": "2023-04-16T21:28:25+0000"
+        "timestamp": "2023-04-27T18:23:36+0000"
     }
 }

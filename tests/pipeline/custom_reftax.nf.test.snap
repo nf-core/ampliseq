@@ -3,25 +3,25 @@
         "content": [
             "Samplesheet.tsv:md5,dbf8d1a2b7933dab9e5a139f33c2b1f4"
         ],
-        "timestamp": "2023-04-15T19:21:43+0000"
+        "timestamp": "2023-04-27T18:08:22+0000"
     },
     "software_versions": {
         "content": [
-            "software_versions.yml:md5,56f82a7a71e1d1d43da150008e05047f"
+            "software_versions.yml:md5,1dd46874a3d6a44fd9ef4717e2d53ac9"
         ],
-        "timestamp": "2023-04-15T19:21:43+0000"
+        "timestamp": "2023-04-27T18:08:22+0000"
     },
     "cutadapt": {
         "content": [
             "cutadapt_summary.tsv:md5,5d02749984a811479e7d534fda75163f"
         ],
-        "timestamp": "2023-04-15T19:21:43+0000"
+        "timestamp": "2023-04-27T18:08:22+0000"
     },
     "overall_summary_tsv": {
         "content": [
             "overall_summary.tsv:md5,3231d6ee72b9a1e7742e5605caaff05a"
         ],
-        "timestamp": "2023-04-15T19:21:43+0000"
+        "timestamp": "2023-04-27T18:08:22+0000"
     },
     "dada2": {
         "content": [
@@ -31,7 +31,7 @@
             "DADA2_table.rds:md5,d095501019ce7ebccfa0eb801db1ed29",
             "DADA2_table.tsv:md5,5c9fb0bfd70da165f0ce6a361bfe0b43"
         ],
-        "timestamp": "2023-04-15T19:21:43+0000"
+        "timestamp": "2023-04-27T18:08:22+0000"
     },
     "barrnap": {
         "content": [
@@ -40,7 +40,7 @@
             "rrna.euk.gff:md5,c9bc1d9d8fb77dc19c95dee2d53840eb",
             "rrna.mito.gff:md5,df19e1b84ba6f691d20c72b397c88abf"
         ],
-        "timestamp": "2023-04-15T19:21:43+0000"
+        "timestamp": "2023-04-27T18:08:22+0000"
     },
     "multiqc": {
         "content": [
@@ -48,6 +48,6 @@
             "multiqc_general_stats.txt:md5,88c2b9e6d02b83afe4f9551e6c9a91a7",
             "multiqc_cutadapt.txt:md5,330a7b72dc671ca99fcb3fb84b6776c1"
         ],
-        "timestamp": "2023-04-15T19:21:43+0000"
+        "timestamp": "2023-04-27T18:08:22+0000"
     }
 }

@@ -3,19 +3,19 @@
         "content": [
             "ASV_seqs.fasta:md5,39b0d4ad96b37fa68d4ee5c21b667fed"
         ],
-        "timestamp": "2023-04-15T21:02:11+0000"
+        "timestamp": "2023-04-27T18:25:06+0000"
     },
     "software_versions": {
         "content": [
-            "software_versions.yml:md5,fa3e1f3ed59ef3771ec4744ae3762e8a"
+            "software_versions.yml:md5,deb619b1495d7a8ff2d83e7b1f1b3698"
         ],
-        "timestamp": "2023-04-15T21:02:11+0000"
+        "timestamp": "2023-04-27T18:25:06+0000"
     },
     "dada2": {
         "content": [
             "ref_taxonomy.txt:md5,815c4fce9f3d1de019fb995a43fb66ed"
         ],
-        "timestamp": "2023-04-15T21:02:11+0000"
+        "timestamp": "2023-04-27T18:25:06+0000"
     },
     "barrnap": {
         "content": [
@@ -24,6 +24,6 @@
             "rrna.euk.gff:md5,c9bc1d9d8fb77dc19c95dee2d53840eb",
             "rrna.mito.gff:md5,df19e1b84ba6f691d20c72b397c88abf"
         ],
-        "timestamp": "2023-04-15T21:02:11+0000"
+        "timestamp": "2023-04-27T18:25:06+0000"
     }
 }

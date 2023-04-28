@@ -2,11 +2,10 @@ nextflow_pipeline {
 
     name "Test Workflow main.nf"
     script "main.nf"
-    tag "nf-core/ampliseq"
+    options "-profile test_doubleprimers,docker"
+    tag "pipeline"
 
-    test("Minimal DoublePrimers") {
-
-        options "-profile test_doubleprimers,docker"
+    test("DoublePrimers") {
 
         when {
             params {
@@ -37,7 +36,5 @@ nextflow_pipeline {
                                   path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt")).match("multiqc") }                      
             )
         }
-
     }
-
 }

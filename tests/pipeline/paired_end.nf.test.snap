@@ -4,7 +4,7 @@
             "Samplesheet.tsv:md5,dbf8d1a2b7933dab9e5a139f33c2b1f4",
             "Metadata.tsv:md5,060b56528bb566eed71f6dfdb52cc395"
         ],
-        "timestamp": "2023-04-15T16:58:09+0000"
+        "timestamp": "2023-04-27T18:48:59+0000"
     },
     "SBDI": {
         "content": [
@@ -12,25 +12,25 @@
             "emof.tsv:md5,52ff7d226c79b1f78d5f4895d748f915",
             "event.tsv:md5,d275c5c0d7dbf7a5b2c61082fbce486d"
         ],
-        "timestamp": "2023-04-15T16:58:09+0000"
+        "timestamp": "2023-04-27T18:48:59+0000"
     },
     "software_versions": {
         "content": [
-            "software_versions.yml:md5,d987f89f5965fc0844e4b3e872cc8c87"
+            "software_versions.yml:md5,ae6b7f27baa60d8dcff36c45b9c63f8f"
         ],
-        "timestamp": "2023-04-15T16:58:09+0000"
+        "timestamp": "2023-04-27T18:48:59+0000"
     },
     "cutadapt": {
         "content": [
             "cutadapt_summary.tsv:md5,5d02749984a811479e7d534fda75163f"
         ],
-        "timestamp": "2023-04-15T16:58:09+0000"
+        "timestamp": "2023-04-27T18:48:59+0000"
     },
     "overall_summary_tsv": {
         "content": [
             "overall_summary.tsv:md5,42879bf840cad10ef96b1da77e0768b7"
         ],
-        "timestamp": "2023-04-15T16:58:09+0000"
+        "timestamp": "2023-04-27T18:48:59+0000"
     },
     "dada2": {
         "content": [
@@ -41,7 +41,7 @@
             "DADA2_table.rds:md5,d095501019ce7ebccfa0eb801db1ed29",
             "DADA2_table.tsv:md5,5c9fb0bfd70da165f0ce6a361bfe0b43"
         ],
-        "timestamp": "2023-04-15T16:58:09+0000"
+        "timestamp": "2023-04-27T18:48:59+0000"
     },
     "barrnap": {
         "content": [
@@ -53,7 +53,7 @@
             "stats.ssu.tsv:md5,dbb23448395135334093edbb3efb1cd0",
             "rrna.mito.gff:md5,df19e1b84ba6f691d20c72b397c88abf"
         ],
-        "timestamp": "2023-04-15T16:58:09+0000"
+        "timestamp": "2023-04-27T18:48:59+0000"
     },
     "multiqc": {
         "content": [
@@ -61,7 +61,7 @@
             "multiqc_general_stats.txt:md5,88c2b9e6d02b83afe4f9551e6c9a91a7",
             "multiqc_cutadapt.txt:md5,330a7b72dc671ca99fcb3fb84b6776c1"
         ],
-        "timestamp": "2023-04-15T16:58:09+0000"
+        "timestamp": "2023-04-27T18:48:59+0000"
     },
     "asv_length_filter": {
         "content": [
@@ -71,6 +71,6 @@
             "ASV_table.len.tsv:md5,8a68fdf1da3bbb0e24bfe4f90af0fbfd",
             "stats.len.tsv:md5,9b13b65cf9cc5fd59f6d8717d26202ed"
         ],
-        "timestamp": "2023-04-15T16:58:09+0000"
+        "timestamp": "2023-04-27T18:48:59+0000"
     }
 }

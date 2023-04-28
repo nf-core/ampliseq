@@ -69,7 +69,9 @@
 
 ### Phylogenetic placement
 
-- nf-core/phyloplace (https://github.com/nf-core/phyloplace, https://nf-co.re/phyloplace) was originally written by Daniel Lundin.
+- [nf-core/phyloplace](https://nf-co.re/phyloplace)
+
+  > Daniel Lundin. (2023). nf-core/phyloplace: First release (1.0.0). Zenodo. https://doi.org/10.5281/zenodo.7643948
 
 - [HMMER](https://pubmed.ncbi.nlm.nih.gov/22039361/)
 

@@ -280,7 +280,7 @@
                 },
                 "pplace_taxonomy": {
                     "type": "string",
-                    "help_text": "Headerless, tab-separated, first column with tree leaves, second column with taxonomy ranks separated by semicolon `;`.",
+                    "help_text": "Headerless, tab-separated, first column with tree leaves, second column with taxonomy ranks separated by semicolon `;`. The results take precedence over DADA2 and QIIME2 classifications.",
                     "description": "Tab-separated file with taxonomy assignments of reference sequences."
                 },
                 "pplace_name": {
@@ -441,47 +441,19 @@
                     "description": "Minimum sample counts to retain a sample for ANCOM analysis. Any sample below that threshold will be removed.",
                     "fa_icon": "fas fa-greater-than-equal"
                 },
-                "dada_tax_agglom_min": {
+                "tax_agglom_min": {
                     "type": "integer",
                     "default": 2,
-                    "description": "Minimum taxonomy agglomeration level for DADA2 classification",
+                    "description": "Minimum taxonomy agglomeration level for taxonomic classifications",
                     "fa_icon": "fas fa-greater-than-equal",
                     "help_text": "Depends on the reference taxonomy database used."
                 },
-                "dada_tax_agglom_max": {
+                "tax_agglom_max": {
                     "type": "integer",
                     "default": 6,
-                    "description": "Maximum taxonomy agglomeration level for DADA2 classification",
+                    "description": "Maximum taxonomy agglomeration level for taxonomic classifications",
                     "fa_icon": "fas fa-greater-than-equal",
                     "help_text": "Depends on the reference taxonomy database used. Most default databases have genus level at 6."
-                },
-                "sintax_tax_agglom_min": {
-                    "type": "integer",
-                    "default": 2,
-                    "description": "Minimum taxonomy agglomeration level for SINTAX classification",
-                    "fa_icon": "fas fa-greater-than-equal",
-                    "help_text": "Depends on the reference taxonomy database used."
-                },
-                "sintax_tax_agglom_max": {
-                    "type": "integer",
-                    "default": 6,
-                    "description": "Maximum taxonomy agglomeration level for SINTAX classification",
-                    "fa_icon": "fas fa-greater-than-equal",
-                    "help_text": "Depends on the reference taxonomy database used. Most databases have genus level at 6."
-                },
-                "qiime_tax_agglom_min": {
-                    "type": "integer",
-                    "default": 2,
-                    "description": "Minimum taxonomy agglomeration level for QIIME2 classification",
-                    "fa_icon": "fas fa-greater-than-equal",
-                    "help_text": "Depends on the reference taxonomy database used."
-                },
-                "qiime_tax_agglom_max": {
-                    "type": "integer",
-                    "default": 6,
-                    "description": "Maximum taxonomy agglomeration level for QIIME2 classification",
-                    "fa_icon": "fas fa-greater-than-equal",
-                    "help_text": "Depends on the reference taxonomy database used. Default databases should have genus level at 6."
                 }
             }
         },

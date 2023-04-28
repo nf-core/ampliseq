@@ -242,6 +242,7 @@ Phylogenetic placement grafts sequences onto a phylogenetic reference tree and o
 - `pplace/`
   - `*.graft.*.epa_result.newick`: Full phylogeny with query sequences grafted on to the reference phylogeny, in newick format.
   - `*.taxonomy.per_query.tsv`: Tab separated file with taxonomy information per query from classification by `gappa examine examinassign`
+  - `*.per_query_unique.tsv`: Tab separated file with taxonomy information as above, but one row per query, by filtering for lowest LWR (likelihood weight ratio)
   - `*.heattree.tree.svg`: Heattree in SVG format from calling `gappa examine heattree`, see [Gappa documentation](https://github.com/Pbdas/epa-ng/blob/master/README.md) for details.
   - `pplace/hmmer/`: Contains intermediatary files if HMMER is used
   - `pplace/mafft/`: Contains intermediatary files if MAFFT is used
@@ -270,7 +271,7 @@ Intermediate data imported to QIIME2 is saved as QIIME2 fragments, that can be c
 
 #### Taxonomic classification
 
-Taxonomic classification with QIIME2 is typically similar to DADA2 classifications. However, both options are available. When taxonomic classification with DADA2 and QIIME2 is performed, DADA2 classification takes precedence over QIIME2 classifications for all downstream analysis.
+Taxonomic classification with QIIME2 is typically similar to DADA2 classifications. However, both options are available. When taxonomic classification with DADA2 and QIIME2 is performed, DADA2 classification takes precedence over QIIME2 classifications for all downstream analysis. Taxonomic classification by phylogenetic placement superseeds DADA2 and QIIME2 classification.
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -284,7 +285,7 @@ Taxonomic classification with QIIME2 is typically similar to DADA2 classificatio
 
 #### Abundance tables
 
-The abundance tables are the final data for further downstream analysis and visualisations. The tables are based on the computed ASVs and taxonomic classification (DADA2 classification takes precedence over QIIME2 classifications), but after removal of unwanted taxa. Unwanted taxa are often off-targets generated in PCR with primers that are not perfectly specific for the target DNA (can be specified by `--exclude_taxa`), by default mitrochondria and chloroplast sequences are removed because these are frequent unwanted non-bacteria PCR products.
+The abundance tables are the final data for further downstream analysis and visualisations. The tables are based on the computed ASVs and taxonomic classification (in the following priotity: phylogenetic placement [EPA-NG, Gappa], DADA2, QIIME2), but after removal of unwanted taxa. Unwanted taxa are often off-targets generated in PCR with primers that are not perfectly specific for the target DNA (can be specified by `--exclude_taxa`), by default mitrochondria and chloroplast sequences are removed because these are frequent unwanted non-bacteria PCR products.
 
 All following analysis is based on these filtered tables.
 
@@ -317,6 +318,7 @@ Absolute abundance tables produced by the previous steps contain count data, but
   - `rel-table-ASV.tsv`: Tab-separated relative abundance table for all ASVs.
   - `rel-table-ASV_with-DADA2-tax.tsv`: Tab-separated table for all ASVs with DADA2 taxonomic classification, sequence and relative abundance.
   - `rel-table-ASV_with-QIIME2-tax.tsv`: Tab-separated table for all ASVs with QIIME2 taxonomic classification, sequence and relative abundance.
+  - `rel-table-ASV_with-PPLACE-tax.tsv`: Tab-separated table for all ASVs with EPA-NG - Gappa taxonomic classification, sequence and relative abundance.
 
 </details>
 

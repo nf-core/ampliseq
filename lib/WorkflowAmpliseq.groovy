@@ -43,13 +43,8 @@ class WorkflowAmpliseq {
             System.exit(1)
         }
 
-        if (params.dada_tax_agglom_min > params.dada_tax_agglom_max) {
-            log.error "Incompatible parameters: `--dada_tax_agglom_min` may not be greater than `--dada_tax_agglom_max`."
-            System.exit(1)
-        }
-
-        if (params.qiime_tax_agglom_min > params.qiime_tax_agglom_max) {
-            log.error "Incompatible parameters: `--qiime_tax_agglom_min` may not be greater than `--qiime_tax_agglom_max`."
+        if (params.tax_agglom_min > params.tax_agglom_max) {
+            log.error "Incompatible parameters: `--tax_agglom_min` may not be greater than `--tax_agglom_max`."
             System.exit(1)
         }
 

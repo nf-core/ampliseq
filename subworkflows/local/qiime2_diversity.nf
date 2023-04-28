@@ -15,6 +15,7 @@ workflow QIIME2_DIVERSITY {
     ch_metadata
     ch_asv
     ch_seq
+    ch_tree
     ch_stats //QIIME2_FILTERTAXA.out.tsv
     ch_metacolumn_pairwise //METADATA_PAIRWISE.out
     ch_metacolumn_all //METADATA_ALL.out
@@ -24,17 +25,20 @@ workflow QIIME2_DIVERSITY {
 
     main:
     //Phylogenetic tree for beta & alpha diversities
-    QIIME2_TREE ( ch_seq )
+    if (!ch_tree) {
+        QIIME2_TREE ( ch_seq )
+        ch_tree = QIIME2_TREE.out.qza
+    }
 
     //Alpha-rarefaction
     if (!skip_alpha_rarefaction) {
-        QIIME2_ALPHARAREFACTION ( ch_metadata, ch_asv, QIIME2_TREE.out.qza, ch_stats )
+        QIIME2_ALPHARAREFACTION ( ch_metadata, ch_asv, ch_tree, ch_stats )
     }
 
     //Calculate diversity indices
     if (!skip_diversity_indices) {
 
-        QIIME2_DIVERSITY_CORE ( ch_metadata, ch_asv, QIIME2_TREE.out.qza, ch_stats, diversity_rarefaction_depth )
+        QIIME2_DIVERSITY_CORE ( ch_metadata, ch_asv, ch_tree, ch_stats, diversity_rarefaction_depth )
         //Print warning if rarefaction depth is <10000
         QIIME2_DIVERSITY_CORE.out.depth.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","QIIME2_DIVERSITY_CORE: ") }
 

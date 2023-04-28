@@ -237,7 +237,7 @@ Optionally, a UNITE species hypothesis (SH) can be added to the DADA2 taxonomy. 
 #### SINTAX
 
 Alternatively, ASVs can be taxonomically classified using the SINTAX algorithm as implemented in VSEARCH. Depending on the reference taxonomy database (specified with `sintax_ref_taxonomy`), sequences can be classified down to species rank.
- 
+
 Files when _not_ using ITSx (default):
 
 <details markdown="1">

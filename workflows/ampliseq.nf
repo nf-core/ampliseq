@@ -132,7 +132,7 @@ include { FILTER_SSU                    } from '../modules/local/filter_ssu'
 include { FILTER_LEN_ASV                } from '../modules/local/filter_len_asv'
 include { MERGE_STATS as MERGE_STATS_FILTERSSU } from '../modules/local/merge_stats'
 include { MERGE_STATS as MERGE_STATS_FILTERLENASV } from '../modules/local/merge_stats'
-include { FILTER_COI_ASV                } from '../modules/local/filter_coi_asv'
+include { FILTER_CODONS                } from '../modules/local/filter_codons'
 include { FORMAT_FASTAINPUT             } from '../modules/local/format_fastainput'
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
 include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
@@ -351,14 +351,14 @@ workflow AMPLISEQ {
     }
 
     //
-    // Modules : COI ASV Filtering
+    // Modules : Filtering based on codons in an open reading frame
     //
-    if (params.filter_coi_asv) {
-        FILTER_COI_ASV ( ch_dada2_fasta, ch_dada2_asv, ch_stats )
-        ch_versions = ch_versions.mix(FILTER_COI_ASV.out.versions.ifEmpty(null))
-        ch_stats = FILTER_COI_ASV.out.stats
-        ch_dada2_fasta = FILTER_COI_ASV.out.fasta
-        ch_dada2_asv = FILTER_COI_ASV.out.asv
+    if (params.orf_start || params.orf_end) {
+        FILTER_CODONS ( ch_dada2_fasta, ch_dada2_asv, ch_stats )
+        ch_versions = ch_versions.mix(FILTER_CODONS.out.versions.ifEmpty(null))
+        ch_stats = FILTER_CODONS.out.stats
+        ch_dada2_fasta = FILTER_CODONS.out.fasta
+        ch_dada2_asv = FILTER_CODONS.out.asv
     }
 
     //

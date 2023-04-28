@@ -20,7 +20,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [Barrnap](#barrnap) - Predict ribosomal RNA sequences and optional filtering
   - [Length filter](#length-filter) - Optionally, ASV can be filtered by length thresholds
   - [ITSx](#itsx) - Optionally, the ITS region can be extracted
-  - [COI](#coi) - Optionally the COI ASVs can be filtered.
+  - [Codons](#codons) - Optionally the ASVs can be filtered by presence of stop codons.
 - [Taxonomic classification with DADA2](#taxonomic-classification-with-dada2) - Taxonomic classification of (filtered) ASVs
   - [assignSH](#assignsh) - Optionally, a UNITE species hypothesis (SH) can be added to the taxonomy
 - [QIIME2](#qiime2) - Secondary analysis
@@ -187,31 +187,23 @@ Optionally, the ITS region can be extracted from each ASV sequence using ITSx, a
 
 </details>
 
-#### COI
+#### Codons
 
-Optionally, the COI ASVs can be filtered based on their length and also their codons. The filtering is based on length of ASVs (418 ± nx3 and between 403 and 418), possibly does not contain any stop codon in the right reading frame. This applied to the samples that use any of the combination of following primers: 
+Optionally, the ASVs can be filtered if they contain stop codons (`"TAA,TAG"`) in the specified open reading frame of the ASV. The filtering step also filters ASVs in the specifed checking range, if they are not multiple of 3.
 
-    forward:
-        - "CCHGAYATRGCHTTYCCHCG"
-        - "ACCHGAYATRGCHTTYCCHCG"
-        - "GACCHGAYATRGCHTTYCCHCG"
-        - "TGACCHGAYATRGCHTTYCCHCG"
-    reverse:
-        - "CDGGRTGNCCRAARAAYCA"
-        - "TCDGGRTGNCCRAARAAYCA"
-        - "ATCDGGRTGNCCRAARAAYCA"
-        - "GATCDGGRTGNCCRAARAAYCA"
+This filtering can be done by the setting the `--orf_start` option to starting position on the ASV where you would like to start checking of codon usage! For example, setting this parameter to `1`, would start checking the ASV for codons from the beginning of the ASV or if it is set to `22`, the check starts the open reading frame from position 22 on each ASV. By default, the filtering applies from the `--orf_start` to the end of the ASV. But, this can be changed by setting the `--orf_end` to specify the end of the open reading frame where you want to look for stop codons 
 
-This particular COI filtering can be set by using the option `filter_coi_asv`.
+> **NB:** just make sure that when you set `--orf_end`, the length between `--orf_start` and `--orf_end` is a multiple of 3, otherwise all ASVs would be filtered. 
+
 
 <details markdown="1">
 <summary>Output files</summary>
 
-- `COI_filtered/`
-  - `ASV_filtered.fna`: Fasta file of ASV sequences that passes the filter thresholds explained above.
-  - `ASV_filtered.table.tsv`: The count table of ASVs that successfully passed through the filter thresholds.
-  - `ASV_filtered.list`: List of ASV IDs that pass through the filter thresholds.
-  - `stats.filt.tsv`: The statistics from this filtering step is appeneded to the `DADA2_stats.tsv` 
+- `Codons_filtered/`
+  - `ASV_codon_filtered.fna`: Fasta file of ASV sequences that passes the filter thresholds explained above.
+  - `ASV_codon_filtered.table.tsv`: The count table of ASVs that successfully passed through the filter thresholds.
+  - `ASV_codon_filtered.list`: List of ASV IDs that pass through the filter thresholds.
+  - `codon.filtered.stats.tsv`: Tracking read numbers through filtering, for each sample.
 
 </details>
 

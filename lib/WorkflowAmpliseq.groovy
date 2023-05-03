@@ -2,6 +2,7 @@
 // This file holds several functions specific to the workflow/ampliseq.nf in the nf-core/ampliseq pipeline
 //
 
+import nextflow.Nextflow
 import groovy.text.SimpleTemplateEngine
 
 class WorkflowAmpliseq {

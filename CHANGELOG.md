@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 - [#564](https://github.com/nf-core/ampliseq/pull/564),[#567](https://github.com/nf-core/ampliseq/pull/567) - Added phylogenetic placement
+- [#577](https://github.com/nf-core/ampliseq/pull/577),[#577](https://github.com/nf-core/ampliseq/pull/567) - Added SINTAX for taxonomic classification
 
 ### `Changed`
 

@@ -81,11 +81,11 @@ nextflow run nf-core/ampliseq -profile docker -params-file params.yaml
 with `params.yaml` containing:
 
 ```yaml
-input: 'data'
-FW_primer: 'GTGYCAGCMGCCGCGGTAA'
-RV_primer: 'GGACTACNVGGGTWTCTAAT'
-metadata: 'data/Metadata.tsv'
-outdir: './results'
+input: "data"
+FW_primer: "GTGYCAGCMGCCGCGGTAA"
+RV_primer: "GGACTACNVGGGTWTCTAAT"
+metadata: "data/Metadata.tsv"
+outdir: "./results"
 ```
 
 You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-co.re/launch).

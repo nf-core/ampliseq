@@ -156,8 +156,7 @@ workflow PARSE_INPUT {
                 if (params.ignore_empty_input_files) {
                     log.warn "At least one input file for the following sample(s) was too small (<1KB):\n$samples\nIgnoring failed samples and continue!\n"
                 } else {
-                    log.error "At least one input file for the following sample(s) was too small (<1KB):\n$samples\nEither remove those samples or ignore that samples using `--ignore_empty_input_files`."
-                    System.exit(1)
+                    error("At least one input file for the following sample(s) was too small (<1KB):\n$samples\nEither remove those samples or ignore that samples using `--ignore_empty_input_files`.")
                 }
             }
     }

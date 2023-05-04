@@ -96,12 +96,12 @@ class WorkflowMain {
     //
     private static void dadareftaxonomyExistsError(params, log) {
         if (params.dada_ref_databases && params.dada_ref_taxonomy && !params.dada_ref_databases.containsKey(params.dada_ref_taxonomy)) {
-            log.error "=============================================================================\n" +
+            def error_string = "=============================================================================\n" +
                 "  DADA2 reference database '${params.dada_ref_taxonomy}' not found in any config files provided to the pipeline.\n" +
                 "  Currently, the available reference taxonomy keys for `--dada_ref_taxonomy` are:\n" +
                 "  ${params.dada_ref_databases.keySet().join(", ")}\n" +
                 "==================================================================================="
-            System.exit(1)
+            Nextflow.error(error_string)
         }
     }
     //
@@ -109,12 +109,12 @@ class WorkflowMain {
     //
     private static void qiimereftaxonomyExistsError(params, log) {
         if (params.qiime_ref_databases && params.qiime_ref_taxonomy && !params.qiime_ref_databases.containsKey(params.qiime_ref_taxonomy)) {
-            log.error "=============================================================================\n" +
+            def error_string = "=============================================================================\n" +
                 "  QIIME2 reference database '${params.qiime_ref_taxonomy}' not found in any config files provided to the pipeline.\n" +
                 "  Currently, the available reference taxonomy keys for `--qiime_ref_taxonomy` are:\n" +
                 "  ${params.qiime_ref_databases.keySet().join(", ")}\n" +
                 "==================================================================================="
-            System.exit(1)
+            Nextflow.error(error_string)
         }
     }
 }

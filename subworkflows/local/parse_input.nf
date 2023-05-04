@@ -6,15 +6,15 @@
 def parse_samplesheet(LinkedHashMap row, single_end) {
     //Check if samplesheet contains column sampleID  & forwardReads
     if (row.sampleID == null || row.forwardReads == null) {
-        exit 1, "ERROR: Please check input samplesheet -> Column 'sampleID' and 'forwardReads' are required but not detected."
+        error("ERROR: Please check input samplesheet -> Column 'sampleID' and 'forwardReads' are required but not detected.")
     }
     //Check if samplesheet contains a column for reverse reads
     if (row.reverseReads == null && !single_end) {
-        exit 1, "ERROR: Please check input samplesheet -> Column 'reverseReads' is missing. In case you do have only single ended reads, please specify '--single_end', '--pacbio', or '--iontorrent'."
+        error("ERROR: Please check input samplesheet -> Column 'reverseReads' is missing. In case you do have only single ended reads, please specify '--single_end', '--pacbio', or '--iontorrent'.")
     }
     //Check if samplesheet contains a column run and empty fields
     if (row.run != null && row.run == "") {
-        exit 1, "ERROR: Please check input samplesheet -> Column 'run' contains an empty field. Either remove column 'run' or fill each field with a value."
+        error("ERROR: Please check input samplesheet -> Column 'run' contains an empty field. Either remove column 'run' or fill each field with a value.")
     }
     //read meta info
     def meta = [:]
@@ -24,13 +24,13 @@ def parse_samplesheet(LinkedHashMap row, single_end) {
     //read data info
     def array = []
     if (!file(row.forwardReads).exists()) {
-        exit 1, "ERROR: Please check input samplesheet -> Forward read FastQ file does not exist!\n${row.forwardReads}"
+        error("ERROR: Please check input samplesheet -> Forward read FastQ file does not exist!\n${row.forwardReads}")
     }
     if (meta.single_end) {
         array = [ meta, file(row.forwardReads) ]
     } else {
         if (!file(row.reverseReads).exists()) {
-            exit 1, "ERROR: Please check input samplesheet -> Reverse read FastQ file does not exist!\n${row.reverseReads}"
+            error("ERROR: Please check input samplesheet -> Reverse read FastQ file does not exist!\n${row.reverseReads}")
         }
         array = [ meta, [ file(row.forwardReads), file(row.reverseReads) ] ]
     }
@@ -60,7 +60,7 @@ workflow PARSE_INPUT {
             // extracts read files from TSV and distribute into channels
             Channel
                 .fromPath(input)
-                .ifEmpty {exit 1, log.info "Cannot find path file ${tsvFile}"}
+                .ifEmpty { error("Cannot find path file ${tsvFile}") }
                 .splitCsv(header:true, sep:'\t')
                 .map { parse_samplesheet(it, single_end) }
                 .set { ch_reads }
@@ -79,7 +79,7 @@ workflow PARSE_INPUT {
                 //Get files - single end
                 Channel
                     .fromPath( input + folders + extension )
-                    .ifEmpty { exit 1, "${error_message}" }
+                    .ifEmpty { error("${error_message}") }
                     .map { read ->
                             def meta = [:]
                             meta.id           = read.baseName.toString().indexOf("_") != -1 ? read.baseName.toString().take(read.baseName.toString().indexOf("_")) : read.baseName
@@ -91,7 +91,7 @@ workflow PARSE_INPUT {
                 //Get files - paired end
                 Channel
                     .fromFilePairs( input + folders + extension, size: 2 )
-                    .ifEmpty { exit 1, "${error_message}" }
+                    .ifEmpty { error("${error_message}") }
                     .map { name, reads ->
                             def meta = [:]
                             meta.id           = name.toString().indexOf("_") != -1 ? name.toString().take(name.toString().indexOf("_")) : name
@@ -115,7 +115,7 @@ workflow PARSE_INPUT {
                 //Stop if folder count is 1 and multiple_sequencing_runs
                 ch_folders
                     .count()
-                    .subscribe { if ( it == 1 ) exit 1, "Found only one folder with read data but \"--multiple_sequencing_runs\" was specified. Please review data input." }
+                    .subscribe { if ( it == 1 ) error("Found only one folder with read data but \"--multiple_sequencing_runs\" was specified. Please review data input.") }
             }
         }
 
@@ -126,19 +126,19 @@ workflow PARSE_INPUT {
             .subscribe {
                 if( it.size() != it.unique().size() ) {
                     ids = it.take(10);
-                    exit 1, "Please review data input, sample IDs are not unique! First IDs are $ids"
+                    error("Please review data input, sample IDs are not unique! First IDs are $ids")
                 }
             }
 
         //Check that no dots "." are in sampleID
         ch_reads
             .map { meta, reads -> meta.id }
-            .subscribe { if ( "$it".contains(".") ) exit 1, "Please review data input, sampleIDs may not contain dots, but \"$it\" does." }
+            .subscribe { if ( "$it".contains(".") ) error("Please review data input, sampleIDs may not contain dots, but \"$it\" does.") }
 
         //Check that sampleIDs do not start with a number when using metadata (sampleID gets X prepended by R and metadata wont match any more!)
         ch_reads
             .map { meta, reads -> meta.id }
-            .subscribe { if ( params.metadata && "$it"[0].isNumber() ) exit 1, "Please review data input, sampleIDs may not start with a number, but \"$it\" does. The pipeline unintentionally modifies such strings and the metadata will not match any more." }
+            .subscribe { if ( params.metadata && "$it"[0].isNumber() ) error("Please review data input, sampleIDs may not start with a number, but \"$it\" does. The pipeline unintentionally modifies such strings and the metadata will not match any more.") }
 
         //Filter empty files
         ch_reads.dump(tag:'parse_input.nf: ch_reads')

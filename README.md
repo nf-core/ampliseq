@@ -12,20 +12,19 @@
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
 [![Launch on Nextflow Tower](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Nextflow%20Tower-%234256e7?labelColor=000000)](https://tower.nf/launch?pipeline=https://github.com/nf-core/ampliseq)
 
-[![Get help on Slack](http://img.shields.io/badge/slack-nf--core%20%23ampliseq-4A154B?labelColor=000000&logo=slack)](https://nfcore.slack.com/channels/ampliseq)
-[![Follow on Twitter](http://img.shields.io/badge/twitter-%40nf__core-1DA1F2?labelColor=000000&logo=twitter)](https://twitter.com/nf_core)
-[![Watch on YouTube](http://img.shields.io/badge/youtube-nf--core-FF0000?labelColor=000000&logo=youtube)](https://www.youtube.com/c/nf-core)
-[![Watch on YouTube](http://img.shields.io/badge/youtube-ampliseq-FFFF00?labelColor=000000&logo=youtube)](https://youtu.be/a0VOEeAvETs)
+[![Get help on Slack](http://img.shields.io/badge/slack-nf--core%20%23ampliseq-4A154B?labelColor=000000&logo=slack)](https://nfcore.slack.com/channels/ampliseq)[![Follow on Twitter](http://img.shields.io/badge/twitter-%40nf__core-1DA1F2?labelColor=000000&logo=twitter)](https://twitter.com/nf_core)[![Follow on Mastodon](https://img.shields.io/badge/mastodon-nf__core-6364ff?labelColor=FFFFFF&logo=mastodon)](https://mstdn.science/@nf_core)[![Watch on YouTube](http://img.shields.io/badge/youtube-nf--core-FF0000?labelColor=000000&logo=youtube)](https://www.youtube.com/c/nf-core)[![Watch on YouTube](http://img.shields.io/badge/youtube-ampliseq-FFFF00?labelColor=000000&logo=youtube)](https://youtu.be/a0VOEeAvETs)
 
 ## Introduction
 
 **nfcore/ampliseq** is a bioinformatics analysis pipeline used for amplicon sequencing, supporting denoising of any amplicon and, currently, taxonomic assignment of 16S, ITS, CO1 and 18S amplicons. Phylogenetic placement is also possible. Supported is paired-end Illumina or single-end Illumina, PacBio and IonTorrent data. Default is the analysis of 16S rRNA gene amplicons sequenced paired-end with Illumina.
 
+A video about relevance, usage and output of the pipeline (version 2.1.0; 26th Oct. 2021) can also be found in [YouTube](https://youtu.be/a0VOEeAvETs) and [billibilli](https://www.bilibili.com/video/BV1B44y1e7MM), the slides are deposited at [figshare](https://doi.org/10.6084/m9.figshare.16871008.v1).
+
 <p align="center">
     <img src="docs/images/ampliseq_workflow.png" alt="nf-core/ampliseq workflow overview" width="60%">
 </p>
 
-The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
+The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies.
 
 On release, automated continuous integration tests run the pipeline on a full-sized dataset on the AWS cloud infrastructure. This ensures that the pipeline runs on AWS, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources. The results obtained from the full-sized test can be viewed on the [nf-core website](https://nf-co.re/ampliseq/results).
 
@@ -43,37 +42,43 @@ By default, the pipeline currently performs the following:
 - Calls differentially abundant taxa ([ANCOM](https://www.ncbi.nlm.nih.gov/pubmed/26028277))
 - Overall pipeline run summaries ([MultiQC](https://multiqc.info/))
 
-## Quick Start
+## Usage
 
-1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=22.10.1`)
+> **Note**
+> If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how
+> to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline)
+> with `-profile test` before running the workflow on actual data.
 
-2. Install any of [`Docker`](https://docs.docker.com/engine/installation/), [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/) (you can follow [this tutorial](https://singularity-tutorial.github.io/01-installation/)), [`Podman`](https://podman.io/), [`Shifter`](https://nersc.gitlab.io/development/shifter/how-to-use/) or [`Charliecloud`](https://hpc.github.io/charliecloud/) for full pipeline reproducibility _(you can use [`Conda`](https://conda.io/miniconda.html) both to install Nextflow itself and also to manage software within pipelines. Please only use it within pipelines as a last resort; see [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles))_.
+First, you need to know whether the sequencing files at hand are expected to contain primer sequences (usually yes) and if yes, what primer sequences. In the example below, the paired end sequencing data was produced with 515f (GTGYCAGCMGCCGCGGTAA) and 806r (GGACTACNVGGGTWTCTAAT) primers of the V4 region of the 16S rRNA gene. Please note, that those sequences should not contain any sequencing adapter sequences, only the sequence that matches the biological amplicon.
 
-3. Download the pipeline and test it on a minimal dataset with a single command:
+Next, the data needs to be organized in a folder, here `data`, or detailed in a samplesheet (see [input documentation](https://nf-co.re/ampliseq/usage#input-specifications)).
 
-   ```bash
-   nextflow run nf-core/ampliseq -profile test,YOURPROFILE --outdir <OUTDIR>
-   ```
+Now, you can run the pipeline using:
 
-   Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
+```bash
+nextflow run nf-core/ampliseq \
+   -profile <docker/singularity/.../institute> \
+   --input "data" \
+   --FW_primer "GTGYCAGCMGCCGCGGTAA" \
+   --RV_primer "GGACTACNVGGGTWTCTAAT" \
+   --outdir <OUTDIR>
+```
 
-   > - The pipeline comes with config profiles called `docker`, `singularity`, `podman`, `shifter`, `charliecloud` and `conda` which instruct the pipeline to use the named tool for software management. For example, `-profile test,docker`.
-   > - Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
-   > - If you are using `singularity`, please use the [`nf-core download`](https://nf-co.re/tools/#downloading-pipelines-for-offline-use) command to download images first, before running the pipeline. Setting the [`NXF_SINGULARITY_CACHEDIR` or `singularity.cacheDir`](https://www.nextflow.io/docs/latest/singularity.html?#singularity-docker-hub) Nextflow options enables you to store and re-use the images from a central location for future pipeline runs.
-   > - If you are using `conda`, it is highly recommended to use the [`NXF_CONDA_CACHEDIR` or `conda.cacheDir`](https://www.nextflow.io/docs/latest/conda.html) settings to store the environments in a central location for future pipeline runs.
+> **Note**
+> Adding metadata will considerably increase the output, see [metadata documentation](https://nf-co.re/ampliseq/usage#metadata).
 
-4. Start running your own analysis!
+> **Warning:**
+> Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those
+> provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;
+> see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).
 
-   ```bash
-   #16S rRNA gene amplicon analysis of Illumina paired-end data
-   nextflow run nf-core/ampliseq -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input "data" --FW_primer "GTGYCAGCMGCCGCGGTAA" --RV_primer "GGACTACNVGGGTWTCTAAT" --metadata "data/Metadata.tsv" --outdir <OUTDIR>
-   ```
+For more details, please refer to the [usage documentation](https://nf-co.re/ampliseq/usage) and the [parameter documentation](https://nf-co.re/ampliseq/parameters).
 
-See [usage docs](https://nf-co.re/ampliseq/usage) and [parameter docs](https://nf-co.re/ampliseq/parameters) for all of the available options when running the pipeline.
+## Pipeline output
 
-## Documentation
-
-The nf-core/ampliseq pipeline comes with documentation about the pipeline [usage](https://nf-co.re/ampliseq/usage), [parameters](https://nf-co.re/ampliseq/parameters) and [output](https://nf-co.re/ampliseq/output). A video about relevance, usage and output of the pipeline (version 2.1.0; 26th Oct. 2021) can also be found in [YouTube](https://youtu.be/a0VOEeAvETs) and [billibilli](https://www.bilibili.com/video/BV1B44y1e7MM), the slides are deposited at [figshare](https://doi.org/10.6084/m9.figshare.16871008.v1).
+To see the the results of a test run with a full size dataset refer to the [results](https://nf-co.re/ampliseq/results) tab on the nf-core website pipeline page.
+For more details about the output files and reports, please refer to the
+[output documentation](https://nf-co.re/ampliseq/output).
 
 ## Credits
 
@@ -97,7 +102,11 @@ For further information or help, don't hesitate to get in touch on the [Slack `#
 
 If you use `nf-core/ampliseq` for your analysis, please cite the `ampliseq` article as follows:
 
-> Daniel Straub, Nia Blackwell, Adrian Langarica-Fuentes, Alexander Peltzer, Sven Nahnsen, Sara Kleindienst **Interpretations of Environmental Microbial Community Studies Are Biased by the Selected 16S rRNA (Gene) Amplicon Sequencing Pipeline** _Frontiers in Microbiology_ 2020, 11:2652 [doi: 10.3389/fmicb.2020.550420](https://doi.org/10.3389/fmicb.2020.550420).
+> **Interpretations of Environmental Microbial Community Studies Are Biased by the Selected 16S rRNA (Gene) Amplicon Sequencing Pipeline**
+>
+> Daniel Straub, Nia Blackwell, Adrian Langarica-Fuentes, Alexander Peltzer, Sven Nahnsen, Sara Kleindienst
+>
+> _Frontiers in Microbiology_ 2020, 11:2652 [doi: 10.3389/fmicb.2020.550420](https://doi.org/10.3389/fmicb.2020.550420).
 
 You can cite the `nf-core/ampliseq` zenodo record for a specific version using the following [doi: 10.5281/zenodo.1493841](https://zenodo.org/badge/latestdoi/150448201)
 

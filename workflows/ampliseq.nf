@@ -15,7 +15,7 @@ def checkPathParamList = [ params.multiqc_config, params.metadata, params.classi
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
-if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
+if (params.input) { ch_input = file(params.input) } else { error('Input samplesheet not specified!') }
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -87,8 +87,7 @@ if ( !single_end && !params.illumina_pe_its && (params.trunclenf == null || para
 } else { find_truncation_values = false }
 
 if ( !is_fasta_input && (!params.FW_primer || !params.RV_primer) && !params.skip_cutadapt ) {
-    log.error "Incompatible parameters: `--FW_primer` and `--RV_primer` are required for primer trimming. If primer trimming is not needed, use `--skip_cutadapt`."
-    System.exit(1)
+    error("Incompatible parameters: `--FW_primer` and `--RV_primer` are required for primer trimming. If primer trimming is not needed, use `--skip_cutadapt`.")
 }
 
 // save params to values to be able to overwrite it
@@ -104,8 +103,7 @@ if ( params.dada_ref_taxonomy ) {
 //make sure that taxlevels adheres to requirements when mixed with addSpecies
 if ( params.dada_ref_taxonomy && !params.skip_dada_addspecies && !params.skip_taxonomy && taxlevels ) {
     if ( !taxlevels.endsWith(",Genus,Species") && !taxlevels.endsWith(",Genus") ) {
-        log.error "Incompatible settings: To use exact species annotations, taxonomic levels must end with `,Genus,Species` or `,Genus,Species` but are currently `${taxlevels}`. Taxonomic levels can be set with `--dada_assign_taxlevels`. Skip exact species annotations with `--skip_dada_addspecies`.\n"
-        System.exit(1)
+        error("Incompatible settings: To use exact species annotations, taxonomic levels must end with `,Genus,Species` or `,Genus,Species` but are currently `${taxlevels}`. Taxonomic levels can be set with `--dada_assign_taxlevels`. Skip exact species annotations with `--skip_dada_addspecies`.\n")
     }
 }
 
@@ -329,8 +327,7 @@ workflow AMPLISEQ {
         BARRNAPSUMMARY ( BARRNAP.out.gff.collect() )
         BARRNAPSUMMARY.out.warning.subscribe {
             if ( it.baseName.toString().startsWith("WARNING") ) {
-                log.error "Barrnap could not identify any rRNA in the ASV sequences! This will result in all sequences being removed with SSU filtering."
-                System.exit(1)
+                error("Barrnap could not identify any rRNA in the ASV sequences! This will result in all sequences being removed with SSU filtering.")
             }
         }
         ch_barrnapsummary = BARRNAPSUMMARY.out.summary

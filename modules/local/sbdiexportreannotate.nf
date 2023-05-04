@@ -10,6 +10,7 @@ process SBDIEXPORTREANNOTATE {
     input:
     path taxonomytable
     val  taxonomymethod
+    val  dbversion
     path predictions
 
     output:
@@ -21,19 +22,13 @@ process SBDIEXPORTREANNOTATE {
 
     script:
     """
-    if [[ $taxonomymethod == "sintax" ]] ; then
-        db_version="${params.sintax_ref_databases[params.sintax_ref_taxonomy]["dbversion"]}"
-    else
-        db_version="${params.dada_ref_databases[params.dada_ref_taxonomy]["dbversion"]}"
-    fi
-
     if [[ $workflow.manifest.version == *dev ]]; then
         ampliseq_version="v$workflow.manifest.version, revision: ${workflow.scriptId.substring(0,10)}"
     else
         ampliseq_version="v$workflow.manifest.version"
     fi
 
-    sbdiexportreannotate.R \"\$db_version\" $taxonomytable $taxonomymethod \"\$ampliseq_version\" $predictions
+    sbdiexportreannotate.R \"$dbversion\" $taxonomytable $taxonomymethod \"\$ampliseq_version\" $predictions
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -110,6 +110,8 @@ if ( params.dada_ref_taxonomy ) {
 } else { taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" : "" }
 if ( params.sintax_ref_taxonomy ) {
     sintax_taxlevels = params.sintax_ref_databases[params.sintax_ref_taxonomy]["taxlevels"] ?: ""
+} else {
+    sintax_taxlevels = ""
 }
 
 //make sure that taxlevels adheres to requirements when mixed with addSpecies
@@ -691,10 +693,12 @@ workflow AMPLISEQ {
     if ( params.sbdiexport ) {
         if ( params.sintax_ref_taxonomy ) {
             SBDIEXPORT ( ch_dada2_asv, ch_sintax_tax, ch_metadata )
-            SBDIEXPORTREANNOTATE ( ch_sintax_tax, "sintax", ch_barrnapsummary.ifEmpty([]) )
+            db_version = params.sintax_ref_databases[params.sintax_ref_taxonomy]["dbversion"]
+            SBDIEXPORTREANNOTATE ( ch_sintax_tax, "sintax", db_version, ch_barrnapsummary.ifEmpty([]) )
         } else {
             SBDIEXPORT ( ch_dada2_asv, ch_dada2_tax, ch_metadata )
-            SBDIEXPORTREANNOTATE ( ch_dada2_tax, "dada2", ch_barrnapsummary.ifEmpty([]) )
+            db_version = params.dada_ref_databases[params.dada_ref_taxonomy]["dbversion"]
+            SBDIEXPORTREANNOTATE ( ch_dada2_tax, "dada2", db_version, ch_barrnapsummary.ifEmpty([]) )
         }
         ch_versions = ch_versions.mix(SBDIEXPORT.out.versions.first())
     }

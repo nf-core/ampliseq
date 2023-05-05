@@ -154,7 +154,6 @@ include { MERGE_STATS as MERGE_STATS_FILTERSSU    } from '../modules/local/merge
 include { MERGE_STATS as MERGE_STATS_FILTERLENASV } from '../modules/local/merge_stats'
 include { FORMAT_FASTAINPUT             } from '../modules/local/format_fastainput'
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
-include { FORMAT_TAXONOMY_SINTAX        } from '../modules/local/format_taxonomy_sintax'
 include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
 include { MERGE_STATS as MERGE_STATS_STD} from '../modules/local/merge_stats'
 include { DADA2_TAXONOMY                } from '../modules/local/dada2_taxonomy'
@@ -162,7 +161,6 @@ include { DADA2_ADDSPECIES              } from '../modules/local/dada2_addspecie
 include { ASSIGNSH                      } from '../modules/local/assignsh'
 include { FORMAT_TAXRESULTS as FORMAT_TAXRESULTS_STD   } from '../modules/local/format_taxresults'
 include { FORMAT_TAXRESULTS as FORMAT_TAXRESULTS_ADDSP } from '../modules/local/format_taxresults'
-include { FORMAT_TAXRESULTS_SINTAX      } from '../modules/local/format_taxresults_sintax'
 include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'
 include { QIIME2_FILTERTAXA             } from '../modules/local/qiime2_filtertaxa'
 include { QIIME2_INASV                  } from '../modules/local/qiime2_inasv'
@@ -187,6 +185,7 @@ include { DADA2_PREPROCESSING           } from '../subworkflows/local/dada2_prep
 include { QIIME2_PREPTAX                } from '../subworkflows/local/qiime2_preptax'
 include { QIIME2_TAXONOMY               } from '../subworkflows/local/qiime2_taxonomy'
 include { CUTADAPT_WORKFLOW             } from '../subworkflows/local/cutadapt_workflow'
+include { SINTAX_TAXONOMY               } from '../subworkflows/local/sintax_taxonomy'
 include { QIIME2_EXPORT                 } from '../subworkflows/local/qiime2_export'
 include { QIIME2_BARPLOTAVG             } from '../subworkflows/local/qiime2_barplotavg'
 include { QIIME2_DIVERSITY              } from '../subworkflows/local/qiime2_diversity'
@@ -206,7 +205,6 @@ include { CUTADAPT as CUTADAPT_TAXONOMY     } from '../modules/nf-core/cutadapt/
 include { FASTQC                            } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/custom/dumpsoftwareversions/main'
-include { VSEARCH_SINTAX                    } from '../modules/nf-core/vsearch/sintax/main'
 include { VSEARCH_USEARCHGLOBAL             } from '../modules/nf-core/vsearch/usearchglobal/main'
 include { FASTA_NEWICK_EPANG_GAPPA          } from '../subworkflows/nf-core/fasta_newick_epang_gappa/main'
 
@@ -488,30 +486,17 @@ workflow AMPLISEQ {
         ch_dada2_tax = Channel.empty()
     }
 
-    // Sintax
+    // SINTAX
     // This will only run if --sintax_ref_taxonomy is defined,
     // i.e. if the channel ch_sintax_ref_taxonomy is not empty
     if (!params.skip_taxonomy) {
-        FORMAT_TAXONOMY_SINTAX ( ch_sintax_ref_taxonomy.collect() )
-        ch_sintaxdb = FORMAT_TAXONOMY_SINTAX.out.db
-        if (params.cut_its == "none") {
-            ASV_tax_name = "ASV_tax_sintax.${val_sintax_ref_taxonomy}"
-            ASV_tax_name2 = "ASV_tax_sintax.${val_sintax_ref_taxonomy}"
-        } else {
-            ASV_tax_name = "ASV_ITS_tax_sintax.${val_sintax_ref_taxonomy}"
-            ASV_tax_name2 = "ASV_tax_sintax.${val_sintax_ref_taxonomy}"
-        }
-        ch_fasta
-            .map {
-                fasta ->
-                    def meta = [:]
-                    meta.id = ASV_tax_name + ".raw"
-                    [ meta, fasta ] }
-            .set { ch_fasta_sintax }
-        VSEARCH_SINTAX( ch_fasta_sintax, ch_sintaxdb )
-        ch_versions = ch_versions.mix(VSEARCH_SINTAX.out.versions)
-        FORMAT_TAXRESULTS_SINTAX( VSEARCH_SINTAX.out.tsv, ch_full_fasta, ASV_tax_name2 + '.tsv', sintax_taxlevels )
-        ch_sintax_tax = FORMAT_TAXRESULTS_SINTAX.out.tsv
+        SINTAX_TAXONOMY (
+            ch_sintax_ref_taxonomy.collect(),
+            val_sintax_ref_taxonomy,
+            ch_fasta,
+            ch_full_fasta,
+            sintax_taxlevels
+        ).tax.set { ch_sintax_tax }
     } else {
         ch_sintax_tax = Channel.empty()
     }
@@ -552,6 +537,7 @@ workflow AMPLISEQ {
         )
         ch_versions = ch_versions.mix( QIIME2_TAXONOMY.out.versions.ifEmpty(null) ) //usually a .first() is here, dont know why this leads here to a warning
     }
+
     //
     // SUBWORKFLOW / MODULES : Downstream analysis with QIIME2
     //

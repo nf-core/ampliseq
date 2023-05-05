@@ -6,7 +6,7 @@ include { FASTA_NEWICK_EPANG_GAPPA      } from '../../subworkflows/nf-core/fasta
 
 include { FORMAT_PPLACETAX              } from '../../modules/local/format_pplacetax'
 
-workflow PPLACE_TAXONOMY {
+workflow PPLACE_TAXONOMY_WF {
     take:
     ch_fasta
 

@@ -7,7 +7,7 @@ include { VSEARCH_SINTAX                } from '../../modules/nf-core/vsearch/si
 include { FORMAT_TAXONOMY_SINTAX        } from '../../modules/local/format_taxonomy_sintax'
 include { FORMAT_TAXRESULTS_SINTAX      } from '../../modules/local/format_taxresults_sintax'
 
-workflow SINTAX_TAXONOMY {
+workflow SINTAX_TAXONOMY_WF {
     take:
     ch_sintax_ref_taxonomy
     val_sintax_ref_taxonomy

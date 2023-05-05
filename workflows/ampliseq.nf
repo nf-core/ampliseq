@@ -56,9 +56,6 @@ if (params.dada_ref_tax_custom) {
     //standard ref taxonomy input from params.dada_ref_taxonomy & conf/ref_databases.config
     ch_dada_ref_taxonomy = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["file"]).map { file(it) }
     val_dada_ref_taxonomy = params.dada_ref_taxonomy.replace('=','_').replace('.','_')
-    if (params.addsh) {
-        ch_shinfo = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]).map { file(it) }
-    }
 } else {
     ch_dada_ref_taxonomy = Channel.empty()
     val_dada_ref_taxonomy = "none"
@@ -128,10 +125,6 @@ if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1)
     if ( workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1 ) { log.warn "Conda or mamba is enabled, any steps involving QIIME2 are not available. Use a container engine instead of conda to enable all software." }
 }
 
-// Set cutoff to use for SH assignment
-if ( params.addsh ) {
-    vsearch_cutoff = 0.985
-}
 
 /*
 ========================================================================================
@@ -156,11 +149,6 @@ include { FORMAT_FASTAINPUT             } from '../modules/local/format_fastainp
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
 include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
 include { MERGE_STATS as MERGE_STATS_STD} from '../modules/local/merge_stats'
-include { DADA2_TAXONOMY                } from '../modules/local/dada2_taxonomy'
-include { DADA2_ADDSPECIES              } from '../modules/local/dada2_addspecies'
-include { ASSIGNSH                      } from '../modules/local/assignsh'
-include { FORMAT_TAXRESULTS as FORMAT_TAXRESULTS_STD   } from '../modules/local/format_taxresults'
-include { FORMAT_TAXRESULTS as FORMAT_TAXRESULTS_ADDSP } from '../modules/local/format_taxresults'
 include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'
 include { QIIME2_FILTERTAXA             } from '../modules/local/qiime2_filtertaxa'
 include { QIIME2_INASV                  } from '../modules/local/qiime2_inasv'
@@ -184,8 +172,9 @@ include { DADA2_PREPROCESSING           } from '../subworkflows/local/dada2_prep
 include { QIIME2_PREPTAX                } from '../subworkflows/local/qiime2_preptax'
 include { QIIME2_TAXONOMY               } from '../subworkflows/local/qiime2_taxonomy'
 include { CUTADAPT_WORKFLOW             } from '../subworkflows/local/cutadapt_workflow'
-include { SINTAX_TAXONOMY               } from '../subworkflows/local/sintax_taxonomy'
-include { PPLACE_TAXONOMY               } from '../subworkflows/local/pplace_taxonomy'
+include { DADA2_TAXONOMY_WF             } from '../subworkflows/local/dada2_taxonomy_wf'
+include { SINTAX_TAXONOMY_WF            } from '../subworkflows/local/sintax_taxonomy_wf'
+include { PPLACE_TAXONOMY_WF            } from '../subworkflows/local/pplace_taxonomy_wf'
 include { QIIME2_EXPORT                 } from '../subworkflows/local/qiime2_export'
 include { QIIME2_BARPLOTAVG             } from '../subworkflows/local/qiime2_barplotavg'
 include { QIIME2_DIVERSITY              } from '../subworkflows/local/qiime2_diversity'
@@ -201,11 +190,9 @@ include { QIIME2_ANCOM                  } from '../subworkflows/local/qiime2_anc
 // MODULE: Installed directly from nf-core/modules
 //
 
-include { CUTADAPT as CUTADAPT_TAXONOMY     } from '../modules/nf-core/cutadapt/main'
 include { FASTQC                            } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/custom/dumpsoftwareversions/main'
-include { VSEARCH_USEARCHGLOBAL             } from '../modules/nf-core/vsearch/usearchglobal/main'
 
 
 /*
@@ -409,78 +396,15 @@ workflow AMPLISEQ {
             ch_assigntax = FORMAT_TAXONOMY.out.assigntax
             ch_addspecies = FORMAT_TAXONOMY.out.addspecies
         }
-        //Cut taxonomy to expected amplicon
-        if (params.cut_dada_ref_taxonomy) {
-            ch_assigntax
-                .map {
-                    db ->
-                        def meta = [:]
-                        meta.single_end = true
-                        meta.id = "assignTaxonomy"
-                        [ meta, db ] }
-                .set { ch_assigntax }
-            CUTADAPT_TAXONOMY ( ch_assigntax ).reads
-                .map { meta, db -> db }
-                .set { ch_assigntax }
-        }
-        if (params.cut_its == "none") {
-            ASV_tax_name = "ASV_tax"
-        } else {
-            ASV_tax_name = "ASV_ITS_tax"
-	}
-        DADA2_TAXONOMY ( ch_fasta, ch_assigntax, ASV_tax_name + ".${val_dada_ref_taxonomy}.tsv", taxlevels )
-        ch_versions = ch_versions.mix(DADA2_TAXONOMY.out.versions)
-        if (params.cut_its != "none") {
-            FORMAT_TAXRESULTS_STD ( DADA2_TAXONOMY.out.tsv, ch_full_fasta, "ASV_tax.${val_dada_ref_taxonomy}.tsv" )
-            ch_versions = ch_versions.mix( FORMAT_TAXRESULTS_STD.out.versions.ifEmpty(null) )
-        }
-        if (!params.skip_dada_addspecies) {
-            DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, ASV_tax_name + "_species.${val_dada_ref_taxonomy}.tsv", taxlevels )
-            if (params.cut_its == "none") {
-		ch_dada2_addsp = DADA2_ADDSPECIES.out.tsv
-            } else {
-                FORMAT_TAXRESULTS_ADDSP ( DADA2_ADDSPECIES.out.tsv, ch_fasta, "ASV_tax_species.${val_dada_ref_taxonomy}.tsv" )
-		ch_dada2_addsp = FORMAT_TAXRESULTS_ADDSP.out.tsv
-            }
-            if ( params.addsh ) {
-                ch_fasta
-                    .map {
-                        fasta ->
-                            def meta = [:]
-                            meta.id = ASV_tax_name + ".vsearch"
-                            [ meta, fasta ] }
-                    .set { ch_fasta_map }
-                VSEARCH_USEARCHGLOBAL( ch_fasta_map, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
-                ch_versions = ch_versions.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
-                ASSIGNSH( ch_dada2_addsp, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, "ASV_tax_species_SH.${val_dada_ref_taxonomy}.tsv")
-                ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
-                ch_dada2_tax = ASSIGNSH.out.tsv
-            } else {
-                ch_dada2_tax = ch_dada2_addsp
-            }
-        } else {
-            if (params.cut_its == "none") {
-		ch_dada2_tax1 = DADA2_TAXONOMY.out.tsv
-            } else {
-		ch_dada2_tax1 = FORMAT_TAXRESULTS_STD.out.tsv
-            }
-            if ( params.addsh ) {
-                ch_fasta
-                    .map {
-                        fasta ->
-                            def meta = [:]
-                            meta.id = ASV_tax_name + ".vsearch"
-                            [ meta, fasta ] }
-                    .set { ch_fasta_map }
-                VSEARCH_USEARCHGLOBAL( ch_fasta_map, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
-                ch_versions = ch_versions.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
-                ASSIGNSH( ch_dada2_tax1.out.tsv, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, "ASV_tax_SH.${val_dada_ref_taxonomy}.tsv")
-                ch_versions = ch_versions.mix(ASSIGNSH.out.versions.ifEmpty(null))
-                ch_dada2_tax = ASSIGNSH.out.tsv
-            } else {
-                ch_dada2_tax = ch_dada2_tax1
-            }
-        }
+        DADA2_TAXONOMY_WF (
+            ch_assigntax,
+            ch_addspecies,
+            val_dada_ref_taxonomy,
+            ch_fasta,
+            ch_full_fasta,
+            taxlevels
+        ).tax.set { ch_dada2_tax }
+        ch_versions = ch_versions.mix(DADA2_TAXONOMY_WF.out.versions)
     } else {
         ch_dada2_tax = Channel.empty()
     }
@@ -489,22 +413,22 @@ workflow AMPLISEQ {
     // This will only run if --sintax_ref_taxonomy is defined,
     // i.e. if the channel ch_sintax_ref_taxonomy is not empty
     if (!params.skip_taxonomy) {
-        SINTAX_TAXONOMY (
+        SINTAX_TAXONOMY_WF (
             ch_sintax_ref_taxonomy.collect(),
             val_sintax_ref_taxonomy,
             ch_fasta,
             ch_full_fasta,
             sintax_taxlevels
         ).tax.set { ch_sintax_tax }
-	ch_versions = ch_versions.mix(SINTAX_TAXONOMY.out.versions)
+        ch_versions = ch_versions.mix(SINTAX_TAXONOMY_WF.out.versions)
     } else {
         ch_sintax_tax = Channel.empty()
     }
 
     // Phylo placement
     if ( params.pplace_tree ) {
-        ch_pplace_tax = PPLACE_TAXONOMY ( ch_fasta ).tax
-	ch_versions = ch_versions.mix(PPLACE_TAXONOMY.out.versions)
+        ch_pplace_tax = PPLACE_TAXONOMY_WF ( ch_fasta ).tax
+        ch_versions = ch_versions.mix(PPLACE_TAXONOMY_WF.out.versions)
     } else {
         ch_pplace_tax = Channel.empty()
     }

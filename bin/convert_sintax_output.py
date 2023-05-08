@@ -116,9 +116,9 @@ for line in args.infile:
     tmp_list = line.split("\t")
     sequence = seqs[tmp_list[0]] if tmp_list[0] in seqs else ""
     if tmp_list[3] != "":
-        annot = re.sub(".\:", "", tmp_list[3])
+        annot = re.sub("[dkpcofgs]\:", "", tmp_list[3])
         annot_list = annot.split(",")
-        raw_annot = re.sub(".\:", "", tmp_list[1])
+        raw_annot = re.sub("[dkpcofgs]\:", "", tmp_list[1])
         raw_annot_list = raw_annot.split(",")
         confidence = raw_annot_list[len(annot_list) - 1].split("(")[1]
         confidence = confidence[:-1]

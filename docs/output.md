@@ -1,3 +1,9 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+
 # nf-core/ampliseq: Output
 
 ## Introduction
@@ -20,11 +26,13 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [Barrnap](#barrnap) - Predict ribosomal RNA sequences and optional filtering
   - [Length filter](#length-filter) - Optionally, ASV can be filtered by length thresholds
   - [ITSx](#itsx) - Optionally, the ITS region can be extracted
-- [Taxonomic classification with DADA2](#taxonomic-classification-with-dada2) - Taxonomic classification of (filtered) ASVs
-  - [assignSH](#assignsh) - Optionally, a UNITE species hypothesis (SH) can be added to the taxonomy
+- [Taxonomic classification](#taxonomic-classification) - Taxonomic classification of (filtered) ASVs
+  - [DADA2](#dada2) - Taxonomic classification with DADA2
+  - [assignSH](#assignsh) - Optionally, a UNITE species hypothesis (SH) can be added to the DADA2 taxonomy
+  - [SINTAX](#sintax) - Taxonomic classification with SINTAX
+  - [Taxonomic classification with QIIME2](#taxonomic-classification-with-qiime2) - Taxonomic classification with QIIME2
 - [Phlogenetic placement and taxonomic classification](#phylogenetic-placement-and-taxonomic-classification) - Placing ASVs into a phyloenetic tree
 - [QIIME2](#qiime2) - Secondary analysis
-  - [Taxonomic classification](#taxonomic-classification) - Taxonomical classification of ASVs
   - [Abundance tables](#abundance-tables) - Exported abundance tables
   - [Relative abundance tables](#relative-abundance-tables) - Exported relative abundance tables
   - [Barplot](#barplot) - Interactive barplot
@@ -189,7 +197,7 @@ Optionally, the ITS region can be extracted from each ASV sequence using ITSx, a
 
 ### Taxonomic classification
 
-DADA2 and/or SINTAX can be used to taxonomically classify the ASVs using a choice of supplied databases (specified with `--dada_ref_taxonomy` and/or `sintax_ref_taxonomy`). By default, DADA2 is used for the classification. The taxonomic classification will be done based on filtered ASV sequences (see above).
+DADA2 and/or SINTAX can be used to taxonomically classify the ASVs using a choice of supplied databases (specified with `--dada_ref_taxonomy` and/or `--sintax_ref_taxonomy`). By default, DADA2 is used for the classification. The taxonomic classification will be done based on filtered ASV sequences (see above).
 
 #### DADA2
 
@@ -262,6 +270,20 @@ Files when using ITSx:
 
 </details>
 
+#### Taxonomic classification with QIIME2
+
+Taxonomic classification with QIIME2 is typically similar to DADA2 classifications. However, both options are available. When taxonomic classification with DADA2 and QIIME2 is performed, DADA2 classification takes precedence over QIIME2 classifications for all downstream analysis. Taxonomic classification by SINTAX or phylogenetic placement superseeds DADA2 and QIIME2 classification.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `qiime2/taxonomy/`
+  - `taxonomy.tsv`: Tab-separated table with taxonomic classification for each ASV
+  - `*-classifier.qza`: QIIME2 artefact of the trained classifier. Can be supplied to other pipeline runs with `--classifier`
+  - `ref_taxonomy.txt`: Information about the used reference taxonomy, such as title, version, citation.
+
+</details>
+
 ### Phylogenetic placement and taxonomic classification
 
 Phylogenetic placement grafts sequences onto a phylogenetic reference tree and optionally outputs taxonomic annotations. The reference tree is ideally made from full-length high-quality sequences containing better evolutionary signal than short amplicons. It is hence superior to estimating de-novo phylogenetic trees from short amplicon sequences. On providing required reference files, ASV sequences are aligned to the reference alignment with either [HMMER](http://hmmer.org/) (default) or [MAFFT](https://mafft.cbrc.jp/alignment/software/). Subsequently, phylogenetic placement of query sequences is performed with [EPA-NG](https://github.com/Pbdas/epa-ng), and finally a number of summary operations are performed with [Gappa](https://github.com/lczech/gappa). This uses code from [nf-core/phyloplace](https://nf-co.re/phyloplace) in the form of its main [subworkflow](https://github.com/nf-core/modules/tree/master/subworkflows/nf-core/fasta_newick_epang_gappa), therefore its detailed documentation also applies here.
@@ -296,20 +318,6 @@ Intermediate data imported to QIIME2 is saved as QIIME2 fragments, that can be c
   - `table.qza`: ASV count table.
   - `rep-seqs.qza`: ASV sequences.
   - `taxonomy.qza`: ASV taxonomic classification.
-
-</details>
-
-#### Taxonomic classification
-
-Taxonomic classification with QIIME2 is typically similar to DADA2 classifications. However, both options are available. When taxonomic classification with DADA2 and QIIME2 is performed, DADA2 classification takes precedence over QIIME2 classifications for all downstream analysis. Taxonomic classification by phylogenetic placement superseeds DADA2 and QIIME2 classification.
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `qiime2/taxonomy/`
-  - `taxonomy.tsv`: Tab-separated table with taxonomic classification for each ASV
-  - `*-classifier.qza`: QIIME2 artefact of the trained classifier. Can be supplied to other pipeline runs with `--classifier`
-  - `ref_taxonomy.txt`: Information about the used reference taxonomy, such as title, version, citation.
 
 </details>
 

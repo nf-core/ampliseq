@@ -153,6 +153,7 @@ include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'
 include { QIIME2_FILTERTAXA             } from '../modules/local/qiime2_filtertaxa'
 include { QIIME2_INASV                  } from '../modules/local/qiime2_inasv'
 include { QIIME2_INTREE                 } from '../modules/local/qiime2_intree'
+include { FORMAT_PPLACETAX              } from '../modules/local/format_pplacetax'
 include { FILTER_STATS                  } from '../modules/local/filter_stats'
 include { MERGE_STATS as MERGE_STATS_FILTERTAXA } from '../modules/local/merge_stats'
 include { QIIME2_BARPLOT                } from '../modules/local/qiime2_barplot'
@@ -174,7 +175,6 @@ include { QIIME2_TAXONOMY               } from '../subworkflows/local/qiime2_tax
 include { CUTADAPT_WORKFLOW             } from '../subworkflows/local/cutadapt_workflow'
 include { DADA2_TAXONOMY_WF             } from '../subworkflows/local/dada2_taxonomy_wf'
 include { SINTAX_TAXONOMY_WF            } from '../subworkflows/local/sintax_taxonomy_wf'
-include { PPLACE_TAXONOMY_WF            } from '../subworkflows/local/pplace_taxonomy_wf'
 include { QIIME2_EXPORT                 } from '../subworkflows/local/qiime2_export'
 include { QIIME2_BARPLOTAVG             } from '../subworkflows/local/qiime2_barplotavg'
 include { QIIME2_DIVERSITY              } from '../subworkflows/local/qiime2_diversity'
@@ -193,6 +193,7 @@ include { QIIME2_ANCOM                  } from '../subworkflows/local/qiime2_anc
 include { FASTQC                            } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/custom/dumpsoftwareversions/main'
+include { FASTA_NEWICK_EPANG_GAPPA          } from '../subworkflows/nf-core/fasta_newick_epang_gappa/main'
 
 
 /*
@@ -427,8 +428,22 @@ workflow AMPLISEQ {
 
     // Phylo placement
     if ( params.pplace_tree ) {
-        ch_pplace_tax = PPLACE_TAXONOMY_WF ( ch_fasta ).tax
-        ch_versions = ch_versions.mix(PPLACE_TAXONOMY_WF.out.versions)
+        ch_pp_data = ch_fasta.map { it ->
+            [ meta: [ id: params.pplace_name ?: 'user_tree' ],
+            data: [
+                alignmethod:  params.pplace_alnmethod ?: 'hmmer',
+                queryseqfile: it,
+                refseqfile:   file( params.pplace_aln, checkIfExists: true ),
+                hmmfile:      [],
+                refphylogeny: file( params.pplace_tree, checkIfExists: true ),
+                model:        params.pplace_model,
+                taxonomy:     params.pplace_taxonomy ? file( params.pplace_taxonomy, checkIfExists: true ) : []
+            ] ]
+        }
+        FASTA_NEWICK_EPANG_GAPPA ( ch_pp_data )
+        ch_versions = ch_versions.mix( FASTA_NEWICK_EPANG_GAPPA.out.versions )
+
+        ch_pplace_tax = FORMAT_PPLACETAX ( FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query ).tsv
     } else {
         ch_pplace_tax = Channel.empty()
     }

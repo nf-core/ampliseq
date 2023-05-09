@@ -29,7 +29,7 @@ workflow DADA2_TAXONOMY_WF {
         vsearch_cutoff = 0.985
         ch_shinfo = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]).map { file(it) }
     }
-    
+
     //cut taxonomy to expected amplicon
     if (params.cut_dada_ref_taxonomy) {
         ch_assigntax
@@ -51,7 +51,7 @@ workflow DADA2_TAXONOMY_WF {
     } else {
         ASV_tax_name = "ASV_ITS_tax"
     }
- 
+
     //DADA2 assignTaxonomy
     DADA2_TAXONOMY ( ch_fasta, ch_assigntax, ASV_tax_name + ".${val_dada_ref_taxonomy}.tsv", taxlevels )
     ch_versions_dada_taxonomy = ch_versions_dada_taxonomy.mix(DADA2_TAXONOMY.out.versions)

@@ -1,0 +1,29 @@
+{
+    "input": {
+        "content": [
+            "ASV_seqs.fasta:md5,39b0d4ad96b37fa68d4ee5c21b667fed"
+        ],
+        "timestamp": "2023-04-27T18:25:06+0000"
+    },
+    "software_versions": {
+        "content": [
+            "software_versions.yml:md5,deb619b1495d7a8ff2d83e7b1f1b3698"
+        ],
+        "timestamp": "2023-04-27T18:25:06+0000"
+    },
+    "dada2": {
+        "content": [
+            "ref_taxonomy.txt:md5,815c4fce9f3d1de019fb995a43fb66ed"
+        ],
+        "timestamp": "2023-04-27T18:25:06+0000"
+    },
+    "barrnap": {
+        "content": [
+            "rrna.arc.gff:md5,6dae470aace9293d5eb8c318584852dd",
+            "rrna.bac.gff:md5,439a9084f089120f700f938dfb58fa41",
+            "rrna.euk.gff:md5,c9bc1d9d8fb77dc19c95dee2d53840eb",
+            "rrna.mito.gff:md5,df19e1b84ba6f691d20c72b397c88abf"
+        ],
+        "timestamp": "2023-04-27T18:25:06+0000"
+    }
+}

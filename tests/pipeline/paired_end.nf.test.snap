@@ -1,0 +1,76 @@
+{
+    "input": {
+        "content": [
+            "Samplesheet.tsv:md5,dbf8d1a2b7933dab9e5a139f33c2b1f4",
+            "Metadata.tsv:md5,060b56528bb566eed71f6dfdb52cc395"
+        ],
+        "timestamp": "2023-04-27T18:48:59+0000"
+    },
+    "SBDI": {
+        "content": [
+            "dna.tsv:md5,46bb52a05204ade2d571ac089f732012",
+            "emof.tsv:md5,52ff7d226c79b1f78d5f4895d748f915",
+            "event.tsv:md5,d275c5c0d7dbf7a5b2c61082fbce486d"
+        ],
+        "timestamp": "2023-04-27T18:48:59+0000"
+    },
+    "software_versions": {
+        "content": [
+            "software_versions.yml:md5,ae6b7f27baa60d8dcff36c45b9c63f8f"
+        ],
+        "timestamp": "2023-04-27T18:48:59+0000"
+    },
+    "cutadapt": {
+        "content": [
+            "cutadapt_summary.tsv:md5,5d02749984a811479e7d534fda75163f"
+        ],
+        "timestamp": "2023-04-27T18:48:59+0000"
+    },
+    "overall_summary_tsv": {
+        "content": [
+            "overall_summary.tsv:md5,42879bf840cad10ef96b1da77e0768b7"
+        ],
+        "timestamp": "2023-04-27T18:48:59+0000"
+    },
+    "dada2": {
+        "content": [
+            "ASV_seqs.fasta:md5,864c3e0dc9b4a7649beee0c8665dceb5",
+            "ASV_table.tsv:md5,2618251e597593e4d716dd9bed095539",
+            "ref_taxonomy.txt:md5,eb743d553579d464dcaa6bdd75f69ccd",
+            "DADA2_stats.tsv:md5,54a1ac8d6c5a3ff15f700c4b2dd40c86",
+            "DADA2_table.rds:md5,d095501019ce7ebccfa0eb801db1ed29",
+            "DADA2_table.tsv:md5,5c9fb0bfd70da165f0ce6a361bfe0b43"
+        ],
+        "timestamp": "2023-04-27T18:48:59+0000"
+    },
+    "barrnap": {
+        "content": [
+            "ASV_seqs.ssu.fasta:md5,10f0d101b63c193b5899c704488f9001",
+            "ASV_table.ssu.tsv:md5,03556c7c2372ad6c3cecc7390ed9617d",
+            "rrna.arc.gff:md5,6dae470aace9293d5eb8c318584852dd",
+            "rrna.bac.gff:md5,439a9084f089120f700f938dfb58fa41",
+            "rrna.euk.gff:md5,c9bc1d9d8fb77dc19c95dee2d53840eb",
+            "stats.ssu.tsv:md5,dbb23448395135334093edbb3efb1cd0",
+            "rrna.mito.gff:md5,df19e1b84ba6f691d20c72b397c88abf"
+        ],
+        "timestamp": "2023-04-27T18:48:59+0000"
+    },
+    "multiqc": {
+        "content": [
+            "multiqc_fastqc.txt:md5,3a4417c7d95a9bbe17751dc974157cd3",
+            "multiqc_general_stats.txt:md5,88c2b9e6d02b83afe4f9551e6c9a91a7",
+            "multiqc_cutadapt.txt:md5,330a7b72dc671ca99fcb3fb84b6776c1"
+        ],
+        "timestamp": "2023-04-27T18:48:59+0000"
+    },
+    "asv_length_filter": {
+        "content": [
+            "ASV_len_filt.tsv:md5,a0a6de452999953191b5df29d0b3176a",
+            "ASV_len_orig.tsv:md5,09a300b31acf0eee817367dad5083f48",
+            "ASV_seqs.len.fasta:md5,04e8838f97cabf090b95891cde5c45b7",
+            "ASV_table.len.tsv:md5,8a68fdf1da3bbb0e24bfe4f90af0fbfd",
+            "stats.len.tsv:md5,9b13b65cf9cc5fd59f6d8717d26202ed"
+        ],
+        "timestamp": "2023-04-27T18:48:59+0000"
+    }
+}

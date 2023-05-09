@@ -1,76 +1,83 @@
+# This is the nf-core CI workflow configuration for GitHub Actions
 name: nf-core CI
-# This workflow runs the pipeline with the minimal test dataset to check that it completes without any syntax errors
+
+# This workflow is triggered when a pull request is made to the 'dev' branch or when a new release is published
 on:
-  push:
+  pull_request:
     branches:
       - dev
-  pull_request:
   release:
     types: [published]
 
+# Setting environment variable for Nextflow logs
 env:
   NXF_ANSI_LOG: false
 
+# Cancel if a newer run is started
 concurrency:
-  group: "${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}"
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+  # Define the jobs to be run in parallel
 jobs:
   test:
-    name: Run pipeline with test data
-    # Only run on push if this is the nf-core dev branch (merged PRs)
-    if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/ampliseq') }}"
+    # Name the job with the corresponding profile, Nextflow version and aligner
+    name: Run ${{ matrix.profile }}-${{ matrix.NXF_VER }} pipeline test
+
+    # Set the condition for running the job
+    if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/rnaseq') }}"
+
+    # Specify the runner for the job
     runs-on: ubuntu-latest
+
+    # Define the matrix for different Nextflow versions, profiles
     strategy:
       matrix:
         NXF_VER:
-          - "22.10.1"
           - "latest-everything"
+        profile: ["docker"]
+
+    # Define the steps for the job
     steps:
+      # Checkout the pipeline code from the repository
       - name: Check out pipeline code
         uses: actions/checkout@v3
 
+      # Cache Test Data
+      - name: Cache test data
+        uses: actions/cache@v2
+        with:
+          path: /usr/local/bin/nextflow
+          key: ${{ runner.os }}
+          restore-keys: |
+            ${{ runner.os }}-nextflow-
+
+      # Install the specified version of Nextflow
       - name: Install Nextflow
         uses: nf-core/setup-nextflow@v1
         with:
           version: "${{ matrix.NXF_VER }}"
 
-      - name: Run pipeline with test data
+      # Install nf-test
+      - name: Install nf-test
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test,docker --outdir ./results
+          wget -qO- https://code.askimed.com/install/nf-test | bash
+          sudo mv nf-test /usr/local/bin/
 
-  profiles:
-    name: Run workflow profile
-    # Only run on push if this is the nf-core dev branch (merged PRs)
-    if: ${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/ampliseq') }}
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        # Run remaining test profiles with minimum nextflow version
-        profile:
-          [
-            test_multi,
-            test_pacbio_its,
-            test_doubleprimers,
-            test_iontorrent,
-            test_single,
-            test_fasta,
-            test_reftaxcustom,
-            test_novaseq,
-            test_pplace,
-            test_sintax,
-          ]
-    steps:
-      - name: Check out pipeline code
-        uses: actions/checkout@v2
-
-      - name: Install Nextflow
+      # Run nf-test with the specified aligner and output test results in TAP format
+      - name: Run nf-test
         run: |
-          wget -qO- get.nextflow.io | bash
-          sudo mv nextflow /usr/local/bin/
+          nf-test test tests/pipeline/ --tap=test.tap
 
-      - name: Run pipeline with ${{ matrix.profile }} test profile
+      # If the test fails, output the software_versions.yml using the 'batcat' utility
+      - name: Output log on failure
+        if: failure()
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile ${{ matrix.profile }},docker --outdir ./results
+          sudo apt install bat > /dev/null
+          batcat --decorations=always --color=always /home/runner/work/ampliseq/ampliseq/.nf-test/tests/*/output/pipeline_info/software_versions.yml
 
-#
+      # Use TAP summary to display test results
+      - uses: pcolby/tap-summary@v1
+        with:
+          path: >-
+            test.tap

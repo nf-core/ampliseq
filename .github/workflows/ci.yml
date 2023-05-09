@@ -25,7 +25,7 @@ jobs:
     name: Run ${{ matrix.profile }}-${{ matrix.NXF_VER }} pipeline test
 
     # Set the condition for running the job
-    if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/rnaseq') }}"
+    if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/ampliseq') }}"
 
     # Specify the runner for the job
     runs-on: ubuntu-latest

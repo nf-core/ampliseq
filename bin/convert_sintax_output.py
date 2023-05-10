@@ -71,7 +71,7 @@ args = parser.parse_args()
 
 
 def complete_list(some_list, target_len):
-    return some_list[:target_len] + ["NA"] * (target_len - len(some_list))
+    return some_list[:target_len] + [""] * (target_len - len(some_list))
 
 
 # Find out if taxonomies contain SH groups
@@ -132,7 +132,7 @@ for line in args.infile:
                 annot_list.append(sh)
             print(tmp_list[0], "\t".join(annot_list), confidence, sequence, sep="\t", file=args.outfile)
     else:
-        print(tmp_list[0], "\t".join(["NA"] * num_cols), "", sequence, sep="\t", file=args.outfile)
+        print(tmp_list[0], "\t".join([""] * num_cols), "", sequence, sep="\t", file=args.outfile)
 
 
 args.outfile.close()

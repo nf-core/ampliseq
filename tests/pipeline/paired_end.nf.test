@@ -35,7 +35,7 @@ nextflow_pipeline {
                 { assert new File("$outputDir/cutadapt/sampleID_2.trimmed.cutadapt.log").exists() },
                 { assert snapshot(path("$outputDir/dada2/ASV_seqs.fasta"),
                                 path("$outputDir/dada2/ASV_table.tsv"),
-                                path("$outputDir/dada2/ref_taxonomy.txt"),
+                                path("$outputDir/dada2/ref_taxonomy.gtdb.txt"),
                                 path("$outputDir/dada2/DADA2_stats.tsv"),
                                 path("$outputDir/dada2/DADA2_table.rds"),
                                 path("$outputDir/dada2/DADA2_table.tsv")).match("dada2") },

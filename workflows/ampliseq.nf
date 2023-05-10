@@ -413,7 +413,7 @@ workflow AMPLISEQ {
     // SINTAX
     // This will only run if --sintax_ref_taxonomy is defined,
     // i.e. if the channel ch_sintax_ref_taxonomy is not empty
-    if (!params.skip_taxonomy) {
+    if (!params.skip_taxonomy && params.sintax_ref_taxonomy) {
         SINTAX_TAXONOMY_WF (
             ch_sintax_ref_taxonomy.collect(),
             val_sintax_ref_taxonomy,

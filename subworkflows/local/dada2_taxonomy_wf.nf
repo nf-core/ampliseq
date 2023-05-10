@@ -103,7 +103,6 @@ workflow DADA2_TAXONOMY_WF {
         ch_dada2_tax = ch_dada2_tax1
     }
 
-
     emit:
     tax      = ch_dada2_tax
     versions = ch_versions_dada_taxonomy

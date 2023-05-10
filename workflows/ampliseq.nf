@@ -534,7 +534,7 @@ workflow AMPLISEQ {
         // Import phylogenetic tree into QIIME2
         if ( params.pplace_tree ) {
             ch_tree = QIIME2_INTREE ( FASTA_NEWICK_EPANG_GAPPA.out.grafted_phylogeny ).qza
-        } else { ch_tree = Channel.empty() }
+        } else { ch_tree = [] }
 
         // Import taxonomic classification into QIIME2, if available
         if ( params.skip_taxonomy ) {

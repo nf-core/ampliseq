@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 ##### Program description #######
 #
-# Title: Subsetting Insect Biome ASVs 
+# Title: Filtering ASVs with stop codons 
 #
 # Author(s): Lokeshwaran Manoharan
 #
 #
 #
-# Description: The ASVs that are supposed to be of particular length (418 ± nx3 and between 403 and 418), possibly does not contain any stop codon in the right reading frame. 
+# Description: The ASVs are filtered if they contain stop codons in the reading frame specified. 
 #  
 # List of subroutines: 
 #
@@ -15,7 +15,7 @@
 #
 # Overall procedure: using functions and dictionaries in python
 #
-# Usage: filt_InsBiom_asv.py <Seq_file> <ASV_table> <output_basename>
+# Usage: filt_codons.py [-h] -f <Seq_file> -t <ASV_table> [-s BEGIN] [-e END] -p <output_basename>
 #
 ##################################
 
@@ -62,6 +62,15 @@ parser.add_argument(
 	)
 
 parser.add_argument(
+	'-x', '--stop-codons',
+	dest='stopcodon',
+	type=str,
+	help='Specific stop codons to look for. Specify multiple codons with in a comma separated list like: "TAA,TAG". By default TAA and TAG are being looked for.',
+	required=False,
+	default="TAA,TAG"
+	)
+
+parser.add_argument(
 	'-p', '--out-prefix',
 	dest='prefix',
 	type=str,
@@ -72,14 +81,20 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-begin = args.begin
+if args.begin is not None:
+	begin = args.begin
+else:
+	begin = 1
 
-p1 = re.compile('\t')
-p2 = re.compile('>')
+if args.stopcodon is not None:
+	stopcodon = args.stopcodon
+else:
+	stopcodon = 'TAA,TAG'
+
+stop_list = [item.strip() for item in stopcodon.split(',')]
 
 def check_asv(seq, start, stop):
 	sub_seq = seq[start-1:stop]
-	stop_list = ['TAA', 'TAG']
 	sub_list = []
 	for x in range(0, len(sub_seq), 3):
 		sub_list.append(sub_seq[x:x+3])
@@ -95,6 +110,8 @@ Out_list = open(args.prefix+'_filtered.list', 'w')
 Out_table = open(args.prefix+'_filtered.table.tsv', 'w')
 
 count_dict = {}
+p1 = re.compile('\t')
+p2 = re.compile('>')
 
 count = 0
 for line in args.count:

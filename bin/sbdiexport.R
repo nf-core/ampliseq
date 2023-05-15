@@ -52,7 +52,7 @@ taxonomy <- read.delim(taxtable, sep = '\t', stringsAsFactors = FALSE) %>%
     mutate(Genus = if("Genus" %in% colnames(.)) Genus else '') %>%
     mutate(Species = if("Species" %in% colnames(.)) Species else '') %>%
     mutate(Species_exact = if("Species_exact" %in% colnames(.)) Species_exact else '') %>%
-    mutate(SH = if("SH" %in% colnames(.)) SH else '') %>%
+    mutate(otu = if("SH" %in% colnames(.)) SH else if ("BOLD_bin" %in% colnames(.)) BOLD_bin else '') %>%
     relocate(Domain, .after = sequence) %>%
     relocate(Kingdom, .after = Domain) %>%
     relocate(Phylum, .after = Kingdom) %>%
@@ -62,7 +62,7 @@ taxonomy <- read.delim(taxtable, sep = '\t', stringsAsFactors = FALSE) %>%
     relocate(Genus, .after = Family) %>%
     relocate(Species, .after = Genus) %>%
     relocate(Species_exact, .after = Species) %>%
-    relocate(SH, .after = Species_exact)
+    relocate(otu, .after = Species_exact)
 
 
 # Read the metadata table if provided, otherwise create one
@@ -144,7 +144,6 @@ asvtax <- asvs %>%
     mutate(across(domain:species, ~str_replace_all(.,' ','_'))) %>%
     rename(
         specificEpithet = species,
-        otu = SH,
         asv_id_alias = ASV_ID,
         DNA_sequence = sequence
     ) %>%
@@ -161,5 +160,5 @@ asvtax <- asvs %>%
     ) %>%
     relocate(otu, .after = infraspecificEpithet) %>%
     relocate(associatedSequences, .before = domain) %>%
-    select(-confidence, -domain, -Species_exact) %>%
+    select_if(!names(.) %in% c('confidence','domain', 'Species_exact', 'SH', 'BOLD_bin')) %>%
     write_tsv("asv-table.tsv", na = '')

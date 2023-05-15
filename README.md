@@ -37,7 +37,7 @@ By default, the pipeline currently performs the following:
 - Infer Amplicon Sequence Variants (ASVs) ([DADA2](https://doi.org/10.1038/nmeth.3869))
 - Predict whether ASVs are ribosomal RNA sequences ([Barrnap](https://github.com/tseemann/barrnap))
 - Phylogenetic placement ([EPA-NG](https://github.com/Pbdas/epa-ng))
-- Taxonomical classification using DADA2 or [QIIME2](https://www.nature.com/articles/s41587-019-0209-9)
+- Taxonomical classification using DADA2, [SINTAX](https://doi.org/10.1101/074161) or [QIIME2](https://www.nature.com/articles/s41587-019-0209-9)
 - Excludes unwanted taxa, produces absolute and relative feature/taxa count tables and plots, plots alpha rarefaction curves, computes alpha and beta diversity indices and plots thereof ([QIIME2](https://www.nature.com/articles/s41587-019-0209-9))
 - Calls differentially abundant taxa ([ANCOM](https://www.ncbi.nlm.nih.gov/pubmed/26028277))
 - Overall pipeline run summaries ([MultiQC](https://multiqc.info/))

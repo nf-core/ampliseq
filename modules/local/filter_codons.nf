@@ -32,5 +32,4 @@ process FILTER_CODONS {
             R: \$(R --version | sed -n 1p | sed 's/R version //g' | sed 's/\\s.*\$//')
             END_VERSIONS
         """
-
 }

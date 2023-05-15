@@ -353,7 +353,7 @@ workflow AMPLISEQ {
     //
     // Modules : Filtering based on codons in an open reading frame
     //
-    if (params.filter_codons || params.orf_start || params.orf_end || params.stop_codons) {
+    if (params.filter_codons ) {
         FILTER_CODONS ( ch_dada2_fasta, ch_dada2_asv, ch_stats )
         ch_versions = ch_versions.mix(FILTER_CODONS.out.versions.ifEmpty(null))
         ch_stats = FILTER_CODONS.out.stats

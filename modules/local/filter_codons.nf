@@ -21,15 +21,14 @@ process FILTER_CODONS {
     task.ext.when == null || task.ext.when
 
     script:
-        def args = task.ext.args ?: ''
-        """
-        filt_codons.py -f ${fasta} -t ${asv} -p ASV_codon ${args}
-        filt_codon_stats.r ${dada2stats} ASV_codon_filtered.table.tsv
-
-        cat <<-END_VERSIONS > versions.yml
-            "${task.process}":
-            python: \$(python --version 2>&1 | sed 's/Python //g')
-            R: \$(R --version | sed -n 1p | sed 's/R version //g' | sed 's/\\s.*\$//')
-            END_VERSIONS
-        """
+    def args = task.ext.args ?: ''
+    """
+    filt_codons.py -f ${fasta} -t ${asv} -p ASV_codon ${args}
+    filt_codon_stats.r ${dada2stats} ASV_codon_filtered.table.tsv
+    cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+        python: \$(python --version 2>&1 | sed 's/Python //g')
+        R: \$(R --version | sed -n 1p | sed 's/R version //g' | sed 's/\\s.*\$//')
+        END_VERSIONS
+    """
 }

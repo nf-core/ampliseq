@@ -100,11 +100,6 @@ if ( params.dada_ref_taxonomy && !params.skip_dada_addspecies && !params.skip_ta
     }
 }
 
-// Error message for incompatible combination of --orf_start and --orf_end 
-if ( params.orf_end && ( ( ( params.orf_end + 1 ) - params.orf_start ) % 3 != 0 ) ) {
-    Nextflow.error("Incompatible parameters: The difference of  `--orf_end` and `--orf_start` must be a multiple of 3.")
-}
-
 //only run QIIME2 when taxonomy is actually calculated and all required data is available
 if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) && !params.skip_taxonomy && !params.skip_qiime ) {
     run_qiime2 = true

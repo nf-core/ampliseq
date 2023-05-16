@@ -32,8 +32,8 @@ for file in sys.argv[1:]:
 
 # Write results
 fh = open("summary.tsv", mode="w")
-orglist = list(orgs)
-header = list(orgs)
+orglist = sorted(orgs)
+header = sorted(orgs)
 header.insert(0, "ASV_ID")
 header.append("eval_method")
 fh.write("\t".join(header) + "\n")

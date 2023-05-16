@@ -350,7 +350,8 @@
                     "type": "integer",
                     "description": "Ending position to check for the stop codons in the ASVs",
                     "help_text": "By default, when the `--filter_codons` is triggered, the codons are checked until the end of the ASV sequences. If you would like to change this setting, you can specify until which position of the ASV sequences does the codon triplets be checked.\n\nPlease note that the length of the ASV from the beginning or from the `--orf_start` until this position should be a multiple of 3 to make sure the filtering works properly."
-                },"stop_codons": {
+                },
+                "stop_codons": {
                     "type": "string",
                     "default": "TAA,TAG",
                     "description": "Specific stop codons to check for in the ASV",

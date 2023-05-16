@@ -193,8 +193,7 @@ Optionally, the ASVs can be filtered if they contain stop codons (`"TAA,TAG"`) i
 
 This filtering can be done by the setting the `--filter_codons`. By default, the codons are calculated and checked from the beginning to the end of the ASV sequence and the filter also checks if the length is of multiple of 3. By default the stop codons that are being screend for is `TAA` and `TAG`. These settings can be changed by `--orf_start` option to change the starting position of the codon on the ASV where you would like to start checking of codon usage! For example, setting this parameter to `1`, would start checking the ASV for codons from the beginning of the ASV or if it is set to `22`, the check starts the open reading frame from position 22 on each ASV. By default, the filtering applies from the `--orf_start` to the end of the ASV. But, this can be changed by setting the `--orf_end` to specify the end of the open reading frame where you want to look for stop codons. To look for different stop codons than default, `--stop_codons` can be used by specifying other single/multiple stop codons as a comma-separated list with this parameter like: `--stop_codons "TAA,TAG,TGA"`
 
-> **NB:** just make sure that when you set `--orf_start` and/or `--orf_end`, the length between `--orf_start` and `--orf_end` is a multiple of 3, otherwise all ASVs would be filtered. 
-
+> **NB:** just make sure that when you set `--orf_start` and/or `--orf_end`, the length between `--orf_start` and `--orf_end` is a multiple of 3, otherwise all ASVs would be filtered.
 
 <details markdown="1">
 <summary>Output files</summary>

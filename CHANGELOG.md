@@ -3,6 +3,30 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## nf-core/ampliseq version 2.6.0dev
+
+### `Added`
+
+- [#564](https://github.com/nf-core/ampliseq/pull/564),[#567](https://github.com/nf-core/ampliseq/pull/567),[#582](https://github.com/nf-core/ampliseq/pull/582) - Added phylogenetic placement
+- [#577](https://github.com/nf-core/ampliseq/pull/577),[#577](https://github.com/nf-core/ampliseq/pull/567) - Added SINTAX for taxonomic classification
+- [#575](https://github.com/nf-core/ampliseq/pull/575) - Added filtering step for stop codons for ASVs that are of coding regions!
+
+### `Changed`
+
+- [#563](https://github.com/nf-core/ampliseq/pull/563) - Renamed DADA2 taxonomic classification files to include the chosen reference taxonomy abbreviation.
+- [#567](https://github.com/nf-core/ampliseq/pull/567) - Renamed `--dada_tax_agglom_min` and `--qiime_tax_agglom_min` to `--tax_agglom_min` and `--dada_tax_agglom_max` and `--qiime_tax_agglom_max` to `--tax_agglom_max`
+
+### `Fixed`
+
+- [#553](https://github.com/nf-core/ampliseq/pull/553) - Handle empty barrnap results files
+- [#554](https://github.com/nf-core/ampliseq/pull/554) - Accept taxonomy strings that contain `#`,`'`
+- [#569](https://github.com/nf-core/ampliseq/pull/569) - Make header of overall_summary.tsv consistent between input data types
+- [#573](https://github.com/nf-core/ampliseq/pull/573) - Avoid parser error for single-end data when an empty read file is detected
+- [#578](https://github.com/nf-core/ampliseq/pull/578) - Template update for nf-core/tools version 2.8, including changing `System.exit(1)` to `Nextflow.error()`
+
+### `Dependencies`
+
+### `Removed`
 ## nf-core/ampliseq version 2.5.0 - 2023-03-02
 
 ### `Added`

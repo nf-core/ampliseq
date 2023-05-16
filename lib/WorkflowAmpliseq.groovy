@@ -119,7 +119,7 @@ class WorkflowAmpliseq {
             log.warn "Adding UNITE species hypothesis (SH) assignments is only feasible for ITS sequences. Please use option `--cut_its` to find ITS regions in the ASV sequences, unless the given sequences are already cut to the ITS region.\n"
         }
 
-        // Error message for incompatible combination of --orf_start and --orf_end 
+        // Error message for incompatible combination of --orf_start and --orf_end
         if ( params.orf_end && ( ( ( params.orf_end + 1 ) - params.orf_start ) % 3 != 0 ) ) {
             Nextflow.error("Incompatible parameters: The difference of  `--orf_end` and `--orf_start` must be a multiple of 3.")
         }

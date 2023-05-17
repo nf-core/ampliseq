@@ -145,6 +145,7 @@ include { FILTER_SSU                    } from '../modules/local/filter_ssu'
 include { FILTER_LEN_ASV                } from '../modules/local/filter_len_asv'
 include { MERGE_STATS as MERGE_STATS_FILTERSSU    } from '../modules/local/merge_stats'
 include { MERGE_STATS as MERGE_STATS_FILTERLENASV } from '../modules/local/merge_stats'
+include { FILTER_CODONS                 } from '../modules/local/filter_codons'
 include { FORMAT_FASTAINPUT             } from '../modules/local/format_fastainput'
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
 include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
@@ -313,6 +314,8 @@ workflow AMPLISEQ {
         ch_stats = DADA2_MERGE.out.dada2stats
     }
 
+
+
     //
     // Modules : Filter rRNA
     //
@@ -362,6 +365,17 @@ workflow AMPLISEQ {
         ch_stats = MERGE_STATS_FILTERLENASV.out.tsv
         ch_dada2_fasta = FILTER_LEN_ASV.out.fasta
         ch_dada2_asv = FILTER_LEN_ASV.out.asv
+    }
+
+    //
+    // Modules : Filtering based on codons in an open reading frame
+    //
+    if (params.filter_codons ) {
+        FILTER_CODONS ( ch_dada2_fasta, ch_dada2_asv, ch_stats )
+        ch_versions = ch_versions.mix(FILTER_CODONS.out.versions.ifEmpty(null))
+        ch_stats = FILTER_CODONS.out.stats
+        ch_dada2_fasta = FILTER_CODONS.out.fasta
+        ch_dada2_asv = FILTER_CODONS.out.asv
     }
 
     //

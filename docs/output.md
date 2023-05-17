@@ -26,6 +26,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [Barrnap](#barrnap) - Predict ribosomal RNA sequences and optional filtering
   - [Length filter](#length-filter) - Optionally, ASV can be filtered by length thresholds
   - [ITSx](#itsx) - Optionally, the ITS region can be extracted
+  - [Codons](#codons) - Optionally the ASVs can be filtered by presence of stop codons.
 - [Taxonomic classification](#taxonomic-classification) - Taxonomic classification of (filtered) ASVs
   - [DADA2](#dada2) - Taxonomic classification with DADA2
   - [assignSH](#assignsh) - Optionally, a UNITE species hypothesis (SH) can be added to the DADA2 taxonomy
@@ -192,6 +193,25 @@ Optionally, the ITS region can be extracted from each ASV sequence using ITSx, a
   - `ASV_ITS_seqs.ITS1.full_and_partial.fasta` or `ASV_ITS_seqs.ITS2.full_and_partial.fasta`: If using --cut_its "its1" or --cut_its "its2" and --its_partial; fasta file with complete and partial ITS1 or ITS2 regions from each ASV sequence.
   - `ASV_ITS_seqs.summary.txt`: Summary information from ITSx.
   - `ITSx.args.txt`: File with parameters passed to ITSx.
+
+</details>
+
+#### Codons
+
+Optionally, the ASVs can be filtered if they contain stop codons (`"TAA,TAG"`) in the specified open reading frame of the ASV. The filtering step also filters ASVs in the specifed checking range, if they are not multiple of 3.
+
+This filtering can be done by the setting the `--filter_codons`. By default, the codons are calculated and checked from the beginning to the end of the ASV sequence and the filter also checks if the length is of multiple of 3. By default the stop codons that are being screend for is `TAA` and `TAG`. These settings can be changed by `--orf_start` option to change the starting position of the codon on the ASV where you would like to start checking of codon usage! For example, setting this parameter to `1`, would start checking the ASV for codons from the beginning of the ASV or if it is set to `22`, the check starts the open reading frame from position 22 on each ASV. By default, the filtering applies from the `--orf_start` to the end of the ASV. But, this can be changed by setting the `--orf_end` to specify the end of the open reading frame where you want to look for stop codons. To look for different stop codons than default, `--stop_codons` can be used by specifying other single/multiple stop codons as a comma-separated list with this parameter like: `--stop_codons "TAA,TAG,TGA"`
+
+> **NB:** just make sure that when you set `--orf_start` and/or `--orf_end`, the length between `--orf_start` and `--orf_end` is a multiple of 3, otherwise all ASVs would be filtered.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `Codons_filtered/`
+  - `ASV_codon_filtered.fna`: Fasta file of ASV sequences that passes the filter thresholds explained above.
+  - `ASV_codon_filtered.table.tsv`: The count table of ASVs that successfully passed through the filter thresholds.
+  - `ASV_codon_filtered.list`: List of ASV IDs that pass through the filter thresholds.
+  - `codon.filtered.stats.tsv`: Tracking read numbers through filtering, for each sample.
 
 </details>
 

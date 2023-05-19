@@ -24,4 +24,3 @@ out = out.rename(columns={0: "encoding"})
 
 # write file
 out.to_csv("codon.filtered.stats.tsv", sep="\t", index=False)
-

@@ -198,16 +198,14 @@ Optionally, the ITS region can be extracted from each ASV sequence using ITSx, a
 
 #### Codons
 
-Optionally, the ASVs can be filtered if they contain stop codons (`"TAA,TAG"`) in the specified open reading frame of the ASV. The filtering step also filters ASVs in the specifed checking range, if they are not multiple of 3.
+Optionally, the ASVs can be filtered against the presence of stop codons in the specified open reading frame of the ASV. The filtering step can also filter out ASVs that are not multiple of 3 in length.
 
-This filtering can be done by the setting the `--filter_codons`. By default, the codons are calculated and checked from the beginning to the end of the ASV sequence and the filter also checks if the length is of multiple of 3. By default the stop codons that are being screend for is `TAA` and `TAG`. These settings can be changed by `--orf_start` option to change the starting position of the codon on the ASV where you would like to start checking of codon usage! For example, setting this parameter to `1`, would start checking the ASV for codons from the beginning of the ASV or if it is set to `22`, the check starts the open reading frame from position 22 on each ASV. By default, the filtering applies from the `--orf_start` to the end of the ASV. But, this can be changed by setting the `--orf_end` to specify the end of the open reading frame where you want to look for stop codons. To look for different stop codons than default, `--stop_codons` can be used by specifying other single/multiple stop codons as a comma-separated list with this parameter like: `--stop_codons "TAA,TAG,TGA"`
-
-> **NB:** just make sure that when you set `--orf_start` and/or `--orf_end`, the length between `--orf_start` and `--orf_end` is a multiple of 3, otherwise all ASVs would be filtered.
+Codon filtering can be activated by `--filter_codons`. By default, the codons are calculated and checked from the beginning (`--orf_start 1`) to the end (`--orf_end` not set) of the ASV sequence and the filter also checks if the length is a multiple of 3. By default, the filter screens for the presence of the stop codons `TAA` and `TAG`. To define different stop codons than default, use `--stop_codons`(comma-separated list, e.g. `--stop_codons "TAA,TAG,TGA"`).
 
 <details markdown="1">
 <summary>Output files</summary>
 
-- `codons_filter/`
+- `codon_filter/`
   - `ASV_codon_filtered.fna`: Fasta file of ASV sequences that passes the filter thresholds explained above.
   - `ASV_codon_filtered.table.tsv`: The count table of ASVs that successfully passed through the filter thresholds.
   - `ASV_codon_filtered.list`: List of ASV IDs that pass through the filter thresholds.

@@ -381,24 +381,24 @@
                 "filter_codons": {
                     "type": "boolean",
                     "description": "Filter ASVs based on codon usage",
-                    "help_text": "This setting is to be used when the ASVs need to be filtered if they contain STOP codons in their sequence and they are of length in the multiple of 3."
+                    "help_text": "ASVs will be filtered to contain no stop codon in their coding sequence and that their length is a multiple of 3."
                 },
                 "orf_start": {
                     "type": "integer",
                     "default": 1,
-                    "description": "Starting position to check for the stop codons in the ASVs",
-                    "help_text": "By default, when the `--filter_codons` is triggered, the codons start from the beginning of the ASV sequences. If you would like to change this setting, you can specify from which position of the ASV does the codon triplets be calculated and checked. \n\nPlease note that the length from this position to the end of the ASV or until the `--orf_end` should be a multiple of 3 to make sure the filtering works properly."
+                    "description": "Starting position of codon tripletts",
+                    "help_text": "By default, when `--filter_codons` is set, the codons start from the first position of the ASV sequences. The start of the codons can be changed to any position."
                 },
                 "orf_end": {
                     "type": "integer",
-                    "description": "Ending position to check for the stop codons in the ASVs",
-                    "help_text": "By default, when the `--filter_codons` is triggered, the codons are checked until the end of the ASV sequences. If you would like to change this setting, you can specify until which position of the ASV sequences does the codon triplets be checked.\n\nPlease note that the length of the ASV from the beginning or from the `--orf_start` until this position should be a multiple of 3 to make sure the filtering works properly."
+                    "description": "Ending position of codon tripletts",
+                    "help_text": "By default, when `--filter_codons` is set, the codons are checked until the end of the ASV sequences. If you would like to change this setting, you can specify until which position of the ASV sequences does the codon triplets be checked.\n\nPlease note that the length of the ASV from the beginning or from the `--orf_start` until this position must be a multiple of 3."
                 },
                 "stop_codons": {
                     "type": "string",
                     "default": "TAA,TAG",
-                    "description": "Specific stop codons to check for in the ASV",
-                    "help_text": "By default, when the `--filter_codons` is triggered, the codons `TAA,TAG` are checked in the ASVs that are to be filtered. If there are other single/multiple stop codons that needs to be checked, the codons can be specified as a comma-separated list with this parameter like: `--stop_codons \"TAA,TAG,TGA\"`"
+                    "description": "Define stop codons",
+                    "help_text": "By default, when `--filter_codons` is set, the codons `TAA,TAG` are set as stop codons. Here you can specify any comma-separated list of codons to be used as stop codons, e.g. `--stop_codons \"TAA,TAG,TGA\"`"
                 },
                 "exclude_taxa": {
                     "type": "string",

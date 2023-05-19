@@ -207,7 +207,7 @@ This filtering can be done by the setting the `--filter_codons`. By default, the
 <details markdown="1">
 <summary>Output files</summary>
 
-- `Codons_filtered/`
+- `codons_filter/`
   - `ASV_codon_filtered.fna`: Fasta file of ASV sequences that passes the filter thresholds explained above.
   - `ASV_codon_filtered.table.tsv`: The count table of ASVs that successfully passed through the filter thresholds.
   - `ASV_codon_filtered.list`: List of ASV IDs that pass through the filter thresholds.

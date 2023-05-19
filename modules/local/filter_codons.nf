@@ -2,8 +2,10 @@ process FILTER_CODONS {
     tag "${fasta}"
     label 'process_low'
 
-    conda (params.enable_conda ? { exit 1 "QIIME2 has no conda package" } : null)
-    container "quay.io/qiime2/core:2022.8"
+    conda "conda-forge::pandas=1.1.5"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/pandas:1.1.5':
+        'quay.io/biocontainers/pandas:1.1.5' }"
 
     input:
     path(fasta)
@@ -24,11 +26,12 @@ process FILTER_CODONS {
     def args = task.ext.args ?: ''
     """
     filt_codons.py -f ${fasta} -t ${asv} -p ASV_codon ${args}
-    filt_codon_stats.r ${dada2stats} ASV_codon_filtered.table.tsv
+    filt_codon_stats.py ASV_codon_filtered.table.tsv
+
     cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
+    "${task.process}":
         python: \$(python --version 2>&1 | sed 's/Python //g')
-        R: \$(R --version | sed -n 1p | sed 's/R version //g' | sed 's/\\s.*\$//')
-        END_VERSIONS
+        pandas: \$(python -c "import pkg_resources; print(pkg_resources.get_distribution('pandas').version)")
+    END_VERSIONS
     """
 }

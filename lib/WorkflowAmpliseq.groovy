@@ -2,6 +2,7 @@
 // This file holds several functions specific to the workflow/ampliseq.nf in the nf-core/ampliseq pipeline
 //
 
+import nextflow.Nextflow
 import groovy.text.SimpleTemplateEngine
 
 class WorkflowAmpliseq {
@@ -13,106 +14,83 @@ class WorkflowAmpliseq {
         if ( params.pacbio || params.iontorrent || params.single_end ) {
             if (params.trunclenr) { log.warn "Unused parameter: `--trunclenr` is ignored because the data is single end." }
         } else if (params.trunclenf && !params.trunclenr) {
-            log.error "Invalid command: `--trunclenf` is set, but `--trunclenr` is not. Either both parameters `--trunclenf` and `--trunclenr` must be set or none."
-            System.exit(1)
+            Nextflow.error("Invalid command: `--trunclenf` is set, but `--trunclenr` is not. Either both parameters `--trunclenf` and `--trunclenr` must be set or none.")
         } else if (!params.trunclenf && params.trunclenr) {
-            log.error "Invalid command: `--trunclenr` is set, but `--trunclenf` is not. Either both parameters `--trunclenf` and `--trunclenr` must be set or none."
-            System.exit(1)
+            Nextflow.error("Invalid command: `--trunclenr` is set, but `--trunclenf` is not. Either both parameters `--trunclenf` and `--trunclenr` must be set or none.")
         }
 
         if (!["pooled", "independent", "pseudo"].contains(params.sample_inference)) {
-            log.error "Please set `--sample_inference` to one of the following:\n" +
+            def error_string = "Please set `--sample_inference` to one of the following:\n" +
                 "\t-\"independent\" (lowest sensitivity and lowest resources),\n" +
                 "\t-\"pseudo\" (balance between required resources and sensitivity),\n" +
                 "\t-\"pooled\" (highest sensitivity and resources)."
-            System.exit(1)
+            Nextflow.error(error_string)
         }
 
         if (params.double_primer && params.retain_untrimmed) {
-            log.error "Incompatible parameters `--double_primer` and `--retain_untrimmed` cannot be set at the same time."
-            System.exit(1)
+            Nextflow.error("Incompatible parameters `--double_primer` and `--retain_untrimmed` cannot be set at the same time.")
         }
 
         if ( params.min_len_asv && params.max_len_asv && (params.min_len_asv > params.max_len_asv) ) {
-            log.error "Incompatible parameters: `--min_len_asv` may not be greater than `--max_len_asv`."
-            System.exit(1)
+            Nextflow.error("Incompatible parameters: `--min_len_asv` may not be greater than `--max_len_asv`.")
         }
 
         if ( params.skip_dada_quality && (params.trunclenf == null || params.trunclenr == null) ) {
-            log.error "Incompatible parameters: `--skip_dada_quality` may not be used without setting `--trunclenf` and `--trunclenr`."
-            System.exit(1)
+            Nextflow.error("Incompatible parameters: `--skip_dada_quality` may not be used without setting `--trunclenf` and `--trunclenr`.")
         }
 
-        if (params.dada_tax_agglom_min > params.dada_tax_agglom_max) {
-            log.error "Incompatible parameters: `--dada_tax_agglom_min` may not be greater than `--dada_tax_agglom_max`."
-            System.exit(1)
-        }
-
-        if (params.qiime_tax_agglom_min > params.qiime_tax_agglom_max) {
-            log.error "Incompatible parameters: `--qiime_tax_agglom_min` may not be greater than `--qiime_tax_agglom_max`."
-            System.exit(1)
+        if (params.tax_agglom_min > params.tax_agglom_max) {
+            Nextflow.error("Incompatible parameters: `--tax_agglom_min` may not be greater than `--tax_agglom_max`.")
         }
 
         if (!params.dada_ref_tax_custom && params.dada_ref_tax_custom_sp) {
-            log.error "Incompatible parameters: `--dada_ref_tax_custom_sp` requires `--dada_ref_tax_custom`."
-            System.exit(1)
+            Nextflow.error("Incompatible parameters: `--dada_ref_tax_custom_sp` requires `--dada_ref_tax_custom`.")
         }
 
         if (params.dada_ref_tax_custom && !params.dada_ref_tax_custom_sp && !params.skip_dada_addspecies) {
-            log.error "Incompatible parameters: Either `--skip_dada_addspecies` or `--dada_ref_tax_custom_sp` is additionally required to `--dada_ref_tax_custom`."
-            System.exit(1)
+            Nextflow.error("Incompatible parameters: Either `--skip_dada_addspecies` or `--dada_ref_tax_custom_sp` is additionally required to `--dada_ref_tax_custom`.")
         }
 
         if (params.pplace_tree) {
             if (!params.pplace_aln) {
-                log.error "Missing parameter: Phylogenetic placement requires in addition to `--pplace_tree` also `--pplace_aln`."
-                System.exit(1)
+                Nextflow.error("Missing parameter: Phylogenetic placement requires in addition to `--pplace_tree` also `--pplace_aln`.")
             }
             if (!params.pplace_model) {
-                log.error "Missing parameter: Phylogenetic placement requires in addition to `--pplace_tree` also `--pplace_model`."
-                System.exit(1)
+                Nextflow.error("Missing parameter: Phylogenetic placement requires in addition to `--pplace_tree` also `--pplace_model`.")
             }
         }
 
         if (params.dada_assign_taxlevels && params.sbdiexport) {
-            log.error "Incompatible parameters: `--sbdiexport` expects specific taxonomics ranks (default) and therefore excludes modifying those using `--dada_assign_taxlevels`."
-            System.exit(1)
+            Nextflow.error("Incompatible parameters: `--sbdiexport` expects specific taxonomics ranks (default) and therefore excludes modifying those using `--dada_assign_taxlevels`.")
         }
 
         if (params.skip_dada_addspecies && params.sbdiexport) {
-            log.error "Incompatible parameters: `--sbdiexport` expects species annotation and therefore excludes `--skip_dada_addspecies`."
-            System.exit(1)
+            Nextflow.error("Incompatible parameters: `--sbdiexport` expects species annotation and therefore excludes `--skip_dada_addspecies`.")
         }
 
         if (params.skip_taxonomy && params.sbdiexport) {
-            log.error "Incompatible parameters: `--sbdiexport` expects taxa annotation and therefore excludes `--skip_taxonomy`."
-            System.exit(1)
+            Nextflow.error("Incompatible parameters: `--sbdiexport` expects taxa annotation and therefore excludes `--skip_taxonomy`.")
         }
 
         if ( (!params.FW_primer || !params.RV_primer) && params.qiime_ref_taxonomy && !params.skip_qiime && !params.skip_taxonomy ) {
-            log.error "Incompatible parameters: `--FW_primer` and `--RV_primer` are required for cutting the QIIME2 reference database to the amplicon sequences. Please specify primers or do not use `--qiime_ref_taxonomy`."
-            System.exit(1)
+            Nextflow.error("Incompatible parameters: `--FW_primer` and `--RV_primer` are required for cutting the QIIME2 reference database to the amplicon sequences. Please specify primers or do not use `--qiime_ref_taxonomy`.")
         }
 
         if ( (!params.FW_primer || !params.RV_primer) && params.cut_dada_ref_taxonomy && !params.skip_taxonomy ) {
-            log.error "Incompatible parameters: `--FW_primer` and `--RV_primer` are required for cutting the DADA2 reference database to the amplicon sequences. Please specify primers or do not use `--cut_dada_ref_taxonomy`."
-            System.exit(1)
+            Nextflow.error("Incompatible parameters: `--FW_primer` and `--RV_primer` are required for cutting the DADA2 reference database to the amplicon sequences. Please specify primers or do not use `--cut_dada_ref_taxonomy`.")
         }
 
         if (params.qiime_ref_taxonomy && params.classifier) {
-            log.error "Incompatible parameters: `--qiime_ref_taxonomy` will produce a classifier but `--classifier` points to a precomputed classifier, therefore, only use one of those."
-            System.exit(1)
+            Nextflow.error("Incompatible parameters: `--qiime_ref_taxonomy` will produce a classifier but `--classifier` points to a precomputed classifier, therefore, only use one of those.")
         }
 
         if (params.filter_ssu && params.skip_barrnap) {
-            log.error "Incompatible parameters: `--filter_ssu` cannot be used with `--skip_barrnap` because filtering for SSU's depends on barrnap."
-            System.exit(1)
+            Nextflow.error("Incompatible parameters: `--filter_ssu` cannot be used with `--skip_barrnap` because filtering for SSU's depends on barrnap.")
         }
 
         String[] sbdi_compatible_databases = ["coidb","coidb=221216","gtdb","gtdb=R07-RS207","gtdb=R06-RS202","gtdb=R05-RS95","midori2-co1","midori2-co1=gb250","pr2","pr2=4.14.0","pr2=4.13.0","rdp","rdp=18","sbdi-gtdb","sbdi-gtdb=R07-RS207-1","silva","silva=138","silva=132","unite-fungi","unite-fungi=8.3","unite-fungi=8.2","unite-alleuk","unite-alleuk=8.3","unite-alleuk=8.2"]
         if ( params.sbdiexport && !Arrays.stream(sbdi_compatible_databases).anyMatch(entry -> params.dada_ref_taxonomy.toString().equals(entry)) ) {
-            log.error "Incompatible parameters: `--sbdiexport` does not work with the chosen database of `--dada_ref_taxonomy`, because the expected taxonomic levels do not match."
-            System.exit(1)
+            Nextflow.error("Incompatible parameters: `--sbdiexport` does not work with the chosen database of `--dada_ref_taxonomy`, because the expected taxonomic levels do not match.")
         }
 
         if (params.addsh && !params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]) {
@@ -122,12 +100,16 @@ class WorkflowAmpliseq {
                     validDBs += " " + db
                 }
             }
-            log.error "UNITE species hypothesis information is not available for the selected reference database, please use the option `--dada_ref_taxonomy` to select an appropriate database. Currently, the option `--addsh` can only be used together with the following UNITE reference databases:\n" + validDBs + "."
-            System.exit(1)
+            Nextflow.error("UNITE species hypothesis information is not available for the selected reference database, please use the option `--dada_ref_taxonomy` to select an appropriate database. Currently, the option `--addsh` can only be used together with the following UNITE reference databases:\n" + validDBs + ".")
         }
 
         if (params.addsh && params.cut_its == "none") {
             log.warn "Adding UNITE species hypothesis (SH) assignments is only feasible for ITS sequences. Please use option `--cut_its` to find ITS regions in the ASV sequences, unless the given sequences are already cut to the ITS region.\n"
+        }
+
+        // Error message for incompatible combination of --orf_start and --orf_end
+        if ( params.orf_end && ( ( ( params.orf_end + 1 ) - params.orf_start ) % 3 != 0 ) ) {
+            Nextflow.error("Incompatible parameters: The difference of  `--orf_end` and `--orf_start` must be a multiple of 3.")
         }
     }
 

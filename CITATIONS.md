@@ -69,7 +69,9 @@
 
 ### Phylogenetic placement
 
-- nf-core/phyloplace (https://github.com/nf-core/phyloplace, https://nf-co.re/phyloplace) was originally written by Daniel Lundin.
+- [nf-core/phyloplace](https://nf-co.re/phyloplace)
+
+  > Daniel Lundin. (2023). nf-core/phyloplace: First release (1.0.0). Zenodo. https://doi.org/10.5281/zenodo.7643948
 
 - [HMMER](https://pubmed.ncbi.nlm.nih.gov/22039361/)
 
@@ -131,7 +133,11 @@
 
 - VSEARCH option usearch_global implements the [USEARCH](https://doi.org/10.1093/bioinformatics/btq461) algorithm
 
-  > R.C. Edgar. Search and clustering orders of magnitude faster than BLAST. Bioinformatics. 2010 26(19) 2460-2461
+  > Edgar RC. Search and clustering orders of magnitude faster than BLAST. Bioinformatics. 2010 26(19) 2460-2461
+
+- VSEARCH option sintax implements the [SINTAX](https://doi.org/10.1101/074161) algorithm
+
+  > Edgar RC. (2016) SINTAX: a simple non-Bayesian taxonomy classifier for 16S and ITS sequences, BioRxiv, 074161. Preprint.
 
 ### Summarizing software
 

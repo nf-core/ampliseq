@@ -1,11 +1,14 @@
 # This is the nf-core CI workflow configuration for GitHub Actions
 name: nf-core CI
-
 # This workflow is triggered when a pull request is made to the 'dev' branch or when a new release is published
 on:
+  push:
+    branches:
+      - dev
   pull_request:
     branches:
       - dev
+      - master
   release:
     types: [published]
 
@@ -20,22 +23,17 @@ concurrency:
 
   # Define the jobs to be run in parallel
 jobs:
-  test:
-    # Name the job with the corresponding profile, Nextflow version and aligner
-    name: Run ${{ matrix.profile }}-${{ matrix.NXF_VER }} pipeline test
-
-    # Set the condition for running the job
-    if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/ampliseq') }}"
-
-    # Specify the runner for the job
+  test-dev:
+    # Only run this job if the base branch is 'dev' or if a push event is triggered
+    if: github.base_ref == 'dev' || github.event_name == 'push'
+    name: Run pipeline with test data on dev
     runs-on: ubuntu-latest
-
-    # Define the matrix for different Nextflow versions, profiles
+    # Define the matrix strategy for the job
     strategy:
       matrix:
-        NXF_VER:
-          - "latest-everything"
+        NXF_VER: ["latest-everything"]
         profile: ["docker"]
+        aligner: ["paired_end", "single_end", "misc"]
 
     # Define the steps for the job
     steps:
@@ -67,7 +65,7 @@ jobs:
       # Run nf-test with the specified aligner and output test results in TAP format
       - name: Run nf-test
         run: |
-          nf-test test tests/pipeline/ --tap=test.tap
+          nf-test test tests/pipeline/${{ matrix.aligner }}/ --tap=test.tap
 
       # If the test fails, output the software_versions.yml using the 'batcat' utility
       - name: Output log on failure
@@ -76,8 +74,67 @@ jobs:
           sudo apt install bat > /dev/null
           batcat --decorations=always --color=always /home/runner/work/ampliseq/ampliseq/.nf-test/tests/*/output/pipeline_info/software_versions.yml
 
-      # Use TAP summary to display test results
-      - uses: pcolby/tap-summary@v1
+      # Comment on the PR with the test results
+      - name: PR comment with file
+        if: github.event_name == 'pull_request'
+        uses: thollander/actions-comment-pull-request@v2
         with:
-          path: >-
-            test.tap
+          filePath: test.tap
+
+  test-master:
+    # Only run this job if the base branch is 'master'
+    if: github.base_ref == 'master'
+    name: Run pipeline with test data on master
+    runs-on: ubuntu-latest
+    # Define the matrix strategy for the job
+    strategy:
+      matrix:
+        NXF_VER: ["22.10.1", "latest-everything"]
+        profile: ["docker"]
+        aligner: ["paired_end", "single_end", "misc"]
+
+    # Define the steps for the job
+    steps:
+      # Checkout the pipeline code from the repository
+      - name: Check out pipeline code
+        uses: actions/checkout@v3
+
+      # Cache Test Data
+      - name: Cache test data
+        uses: actions/cache@v2
+        with:
+          path: /usr/local/bin/nextflow
+          key: ${{ runner.os }}
+          restore-keys: |
+            ${{ runner.os }}-nextflow-
+
+      # Install the specified version of Nextflow
+      - name: Install Nextflow
+        uses: nf-core/setup-nextflow@v1
+        with:
+          version: "${{ matrix.NXF_VER }}"
+
+      # Install nf-test
+      - name: Install nf-test
+        run: |
+          wget -qO- https://code.askimed.com/install/nf-test | bash
+          sudo mv nf-test /usr/local/bin/
+
+      # Run nf-test with the specified aligner and output test results in TAP format
+      - name: Run nf-test
+        run: |
+          nf-test test tests/pipeline/${{ matrix.aligner }}/ --tap=test.tap
+
+      # If the test fails, output the software_versions.yml using the 'batcat' utility
+      - name: Output log on failure
+        if: failure()
+        run: |
+          sudo apt install bat > /dev/null
+          batcat --decorations=always --color=always /home/runner/work/ampliseq/ampliseq/.nf-test/tests/*/output/pipeline_info/software_versions.yml
+
+      # Comment on the PR with the test results
+      - name: PR comment with file
+        if: github.event_name == 'pull_request'
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          filePath: test.tap

@@ -316,9 +316,11 @@
                     "enum": [
                         "coidb",
                         "coidb=221216",
+                        "unite-fungi=9.0",
                         "unite-fungi=8.3",
                         "unite-fungi=8.2",
                         "unite-fungi",
+                        "unite-alleuk=9.0",
                         "unite-alleuk=8.3",
                         "unite-alleuk=8.2",
                         "unite-alleuk"

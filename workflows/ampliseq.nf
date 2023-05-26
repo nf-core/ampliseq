@@ -502,7 +502,7 @@ workflow AMPLISEQ {
         } else if ( params.pplace_tree && params.pplace_taxonomy) {
             log.info "Use EPA-NG / GAPPA taxonomy classification"
             ch_tax = QIIME2_INTAX ( ch_pplace_tax ).qza
-        } else if ( params.dada_ref_taxonomy ) {
+        } else if ( params.dada_ref_taxonomy && !params.skip_dada_taxonomy ) {
             log.info "Use DADA2 taxonomy classification"
             ch_tax = QIIME2_INTAX ( ch_dada2_tax ).qza
         } else if ( params.qiime_ref_taxonomy || params.classifier ) {

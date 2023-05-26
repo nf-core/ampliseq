@@ -118,7 +118,7 @@ if ( params.dada_ref_taxonomy && !params.skip_dada_addspecies && !params.skip_da
 }
 
 //only run QIIME2 when taxonomy is actually calculated and all required data is available
-if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) && !params.skip_taxonomy && !params.skip_qiime && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy) ) {
+if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) && !params.skip_taxonomy && !params.skip_qiime && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.qiime_ref_taxonomy) ) {
     run_qiime2 = true
 } else {
     run_qiime2 = false

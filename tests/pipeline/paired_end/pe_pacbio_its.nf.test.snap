@@ -1,0 +1,130 @@
+{
+    "assignsh": {
+        "content": [
+            "ASV_tax_species_SH.unite-fungi.tsv:md5,91211af4f17cf4537fe715b50a0b2b64"
+        ],
+        "timestamp": "2023-05-25T23:57:46+0000"
+    },
+    "input": {
+        "content": [
+            "Samplesheet_pacbio_ITS.tsv:md5,905b0fc4850149d6457c9da7076c2c2d",
+            "Metadata_pacbio_ITS.tsv:md5,51d81b0fe29f6377fa21ce8399fc5ae0"
+        ],
+        "timestamp": "2023-05-25T23:57:46+0000"
+    },
+    "itsx": {
+        "content": [
+            "ASV_ITS_seqs.full.fasta:md5,dab051f759c877a79adf47f5729f5665",
+            "ITSx.args.txt:md5,32430f2c36d83c08273352bad45857e8"
+        ],
+        "timestamp": "2023-05-25T23:57:46+0000"
+    },
+    "SBDI": {
+        "content": [
+            "dna.tsv:md5,061ca46725294da75acd8237390f4291",
+            "emof.tsv:md5,c6599c76a70fe5458db56ff8c2e89a37",
+            "event.tsv:md5,bfcf7d8ac2a3c6b48d075d6dc235f0e4"
+        ],
+        "timestamp": "2023-05-25T23:57:46+0000"
+    },
+    "cutadapt": {
+        "content": [
+            "cutadapt_summary.tsv:md5,d185ccd02c22b859fcaf2e5158ce70c6"
+        ],
+        "timestamp": "2023-05-25T23:57:46+0000"
+    },
+    "software_versions": {
+        "content": [
+            {
+                "ASSIGNSH": {
+                    "pandas": "1.1.5",
+                    "python": "3.9.1"
+                },
+                "BARRNAP": {
+                    "barrnap": "0.9"
+                },
+                "CUSTOM_DUMPSOFTWAREVERSIONS": {
+                    "python": "3.11.0",
+                    "yaml": "6.0"
+                },
+                "CUTADAPT_BASIC": {
+                    "cutadapt": "3.4"
+                },
+                "DADA2_DENOISING": {
+                    "R": "4.1.1",
+                    "dada2": "1.22.0"
+                },
+                "DADA2_FILTNTRIM": {
+                    "R": "4.1.1",
+                    "dada2": "1.22.0"
+                },
+                "DADA2_QUALITY1": {
+                    "R": "4.1.1",
+                    "ShortRead": "1.52.0",
+                    "dada2": "1.22.0"
+                },
+                "DADA2_TAXONOMY": {
+                    "R": "4.1.1",
+                    "dada2": "1.22.0"
+                },
+                "FASTQC": {
+                    "fastqc": "0.11.9"
+                },
+                "FORMAT_TAXRESULTS_STD": {
+                    "pandas": "1.1.5",
+                    "python": "3.9.1"
+                },
+                "ITSX_CUTASV": {
+                    "ITSx": "1.1.3"
+                },
+                "RENAME_RAW_DATA_FILES": {
+                    "sed": "4.7"
+                },
+                "SBDIEXPORT": {
+                    "R": "3.6.3"
+                },
+                "VSEARCH_USEARCHGLOBAL": {
+                    "vsearch": "2.21.1"
+                },
+                "Workflow": {
+                    "nf-core/ampliseq": "2.6.0dev"
+                }
+            }
+        ],
+        "timestamp": "2023-05-25T23:57:46+0000"
+    },
+    "overall_summary_tsv": {
+        "content": [
+            "overall_summary.tsv:md5,97a8ee12c40a0bc582ba1cefda117f95"
+        ],
+        "timestamp": "2023-05-25T23:57:46+0000"
+    },
+    "dada2": {
+        "content": [
+            "ASV_seqs.fasta:md5,a2632b1cc533d290db19ceedaf350dcd",
+            "ASV_table.tsv:md5,6de5507a0fcb0c9b03f8fec0270440be",
+            "ref_taxonomy.unite-fungi.txt:md5,7151eab71d460eeb86061d2e4a16bafc",
+            "DADA2_stats.tsv:md5,4bbde0bbf579f60e692bd32d14034f0d",
+            "DADA2_table.rds:md5,a36558c04a7b21050bb6e479b09bd483",
+            "DADA2_table.tsv:md5,7e7aab7ae9a3b20fb08f3fe7f8b0430c"
+        ],
+        "timestamp": "2023-05-25T23:57:46+0000"
+    },
+    "barrnap": {
+        "content": [
+            "rrna.arc.gff:md5,6bb50a4c244d80d56e759ecfbb045381",
+            "rrna.bac.gff:md5,7c38dd6692b792ace17142158afeb33e",
+            "rrna.euk.gff:md5,8ae155cbe43335084a0c9a2ccd655cb3",
+            "rrna.mito.gff:md5,df19e1b84ba6f691d20c72b397c88abf"
+        ],
+        "timestamp": "2023-05-25T23:57:46+0000"
+    },
+    "multiqc": {
+        "content": [
+            "multiqc_fastqc.txt:md5,d289cd1a2523f9ad66e93a895dcbe52c",
+            "multiqc_general_stats.txt:md5,05682be32bc30bc4610f0ca608cafe67",
+            "multiqc_cutadapt.txt:md5,1b3b6833e78db31ab12e5c16b7fa1d73"
+        ],
+        "timestamp": "2023-05-25T23:57:46+0000"
+    }
+}

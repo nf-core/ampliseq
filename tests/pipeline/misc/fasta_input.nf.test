@@ -2,7 +2,7 @@ nextflow_pipeline {
 
     name "Test Workflow main.nf"
     script "main.nf"
-    options "-profile test_fasta,docker"
+    profile "test_fasta,docker"
     tag "pipeline"
 
     test("Fasta Input") {
@@ -14,9 +14,13 @@ nextflow_pipeline {
         }
 
         then {
+            // Remove Nextflow version from software_versions.yml
+            def softwareVersions = path("$outputDir/pipeline_info/software_versions.yml").yaml
+            if (softwareVersions.containsKey("Workflow")) { softwareVersions.Workflow.remove("Nextflow") }
+            
             assertAll(
                 { assert workflow.success },
-                { assert snapshot(path("$outputDir/pipeline_info/software_versions.yml")).match("software_versions") },
+                { assert snapshot(softwareVersions).match("software_versions") },
                 { assert snapshot(path("$outputDir/barrnap/rrna.arc.gff"),
                                 path("$outputDir/barrnap/rrna.bac.gff"),
                                 path("$outputDir/barrnap/rrna.euk.gff"),

@@ -1,0 +1,91 @@
+{
+    "input": {
+        "content": [
+            "Samplesheet_it_SE_ITS.tsv:md5,929870dea597430aaeee2a52283b427f"
+        ],
+        "timestamp": "2023-05-25T23:49:49+0000"
+    },
+    "cutadapt": {
+        "content": [
+            "cutadapt_summary.tsv:md5,ee0bc82cf4798b0c2f599ba105314f86"
+        ],
+        "timestamp": "2023-05-25T23:49:49+0000"
+    },
+    "software_versions": {
+        "content": [
+            {
+                "BARRNAP": {
+                    "barrnap": "0.9"
+                },
+                "CUSTOM_DUMPSOFTWAREVERSIONS": {
+                    "python": "3.11.0",
+                    "yaml": "6.0"
+                },
+                "CUTADAPT_BASIC": {
+                    "cutadapt": "3.4"
+                },
+                "DADA2_DENOISING": {
+                    "R": "4.1.1",
+                    "dada2": "1.22.0"
+                },
+                "DADA2_FILTNTRIM": {
+                    "R": "4.1.1",
+                    "dada2": "1.22.0"
+                },
+                "DADA2_QUALITY1": {
+                    "R": "4.1.1",
+                    "ShortRead": "1.52.0",
+                    "dada2": "1.22.0"
+                },
+                "DADA2_TAXONOMY": {
+                    "R": "4.1.1",
+                    "dada2": "1.22.0"
+                },
+                "FASTQC": {
+                    "fastqc": "0.11.9"
+                },
+                "RENAME_RAW_DATA_FILES": {
+                    "sed": "4.7"
+                },
+                "Workflow": {
+                    "nf-core/ampliseq": "2.6.0dev"
+                }
+            }
+        ],
+        "timestamp": "2023-05-25T23:49:49+0000"
+    },
+    "overall_summary_tsv": {
+        "content": [
+            "overall_summary.tsv:md5,a7d1d93ad079ec0ea2479126dba0a607"
+        ],
+        "timestamp": "2023-05-25T23:49:49+0000"
+    },
+    "dada2": {
+        "content": [
+            "ASV_seqs.fasta:md5,24a69ad674c0b99882d095f6e8afdc03",
+            "ASV_table.tsv:md5,bd99a0696aa853c0d12c2870ec9fb987",
+            "ref_taxonomy.unite-fungi.txt:md5,7151eab71d460eeb86061d2e4a16bafc",
+            "DADA2_stats.tsv:md5,f543f7445bbb3941138166615fcf4866",
+            "DADA2_table.rds:md5,bbbe293f2e03869cbe6b8f6b15ea0ed8",
+            "DADA2_table.tsv:md5,d92684c4ac57c34341171f1dffccb4d6"
+        ],
+        "timestamp": "2023-05-25T23:49:49+0000"
+    },
+    "barrnap": {
+        "content": [
+            "rrna.arc.gff:md5,df19e1b84ba6f691d20c72b397c88abf",
+            "rrna.bac.gff:md5,df19e1b84ba6f691d20c72b397c88abf",
+            "rrna.euk.gff:md5,df19e1b84ba6f691d20c72b397c88abf",
+            "rrna.mito.gff:md5,df19e1b84ba6f691d20c72b397c88abf"
+        ],
+        "timestamp": "2023-05-25T23:49:49+0000"
+    },
+    "multiqc": {
+        "content": [
+            "multiqc_fastqc.txt:md5,a64a5b74f7f336909d706a5747ad596d",
+            "multiqc_general_stats.txt:md5,e50f532aa2a52a79a2f76b66f970771c",
+            "multiqc_cutadapt.txt:md5,9315dca2bd7b5476e54a9ccd8b1f24d5"
+        ],
+        "timestamp": "2023-05-25T23:49:49+0000"
+    }
+}

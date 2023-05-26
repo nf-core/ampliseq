@@ -2,7 +2,7 @@ nextflow_pipeline {
 
     name "Test Workflow main.nf"
     script "main.nf"
-    options "-profile test_pacbio_its,docker"
+    profile "test_pacbio_its,docker"
     tag "pipeline"
 
     test("Paired-End Pacbio ITS") {
@@ -14,12 +14,16 @@ nextflow_pipeline {
         }
 
         then {
+            // Remove Nextflow version from software_versions.yml
+            def softwareVersions = path("$outputDir/pipeline_info/software_versions.yml").yaml
+            if (softwareVersions.containsKey("Workflow")) { softwareVersions.Workflow.remove("Nextflow") }
+            
             assertAll(
                 { assert workflow.success },
-                { assert snapshot(path("$outputDir/pipeline_info/software_versions.yml")).match("software_versions") },
+                { assert snapshot(softwareVersions).match("software_versions") },
                 { assert snapshot(path("$outputDir/overall_summary.tsv")).match("overall_summary_tsv") },
                 { assert snapshot(path("$outputDir/assignsh/ASV_tax_species_SH.unite-fungi.tsv")).match("assignsh") },
-                { assert new File("$outputDir/assignsh/ASV_cut.vsearch.txt").exists() },
+                { assert new File("$outputDir/assignsh/ASV_ITS_tax.vsearch.txt").exists() },
                 { assert snapshot(path("$outputDir/barrnap/rrna.arc.gff"),
                                 path("$outputDir/barrnap/rrna.bac.gff"),
                                 path("$outputDir/barrnap/rrna.euk.gff"),
@@ -35,7 +39,7 @@ nextflow_pipeline {
                                 path("$outputDir/dada2/DADA2_stats.tsv"),
                                 path("$outputDir/dada2/DADA2_table.rds"),
                                 path("$outputDir/dada2/DADA2_table.tsv")).match("dada2") },
-                { assert new File("$outputDir/dada2/ASV_tax.tsv").exists() },
+                { assert new File("$outputDir/dada2/ASV_tax.unite-fungi.tsv").exists() },
                 { assert new File("$outputDir/dada2/ASV_tax_species.unite-fungi.tsv").exists() },
                 { assert new File("$outputDir/dada2/ASV_ITS_tax.unite-fungi.tsv").exists() },
                 { assert new File("$outputDir/dada2/ASV_ITS_tax_species.unite-fungi.tsv").exists() },

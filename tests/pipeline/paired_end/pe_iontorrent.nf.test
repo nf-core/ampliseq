@@ -17,7 +17,7 @@ nextflow_pipeline {
             // Remove Nextflow version from software_versions.yml
             def softwareVersions = path("$outputDir/pipeline_info/software_versions.yml").yaml
             if (softwareVersions.containsKey("Workflow")) { softwareVersions.Workflow.remove("Nextflow") }
-            
+
             assertAll(
                 { assert workflow.success },
                 { assert snapshot(softwareVersions).match("software_versions") },

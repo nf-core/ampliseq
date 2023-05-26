@@ -2,7 +2,7 @@
 
 # Untar the Unite file
 tar xzf *gz
-mv */*_dynamic_*.fasta .
+mv */*_dynamic_* .
 
 # Select and rename dynamic files
 cat *_dynamic_*.fasta > unite.fna

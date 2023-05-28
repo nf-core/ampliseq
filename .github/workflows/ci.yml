@@ -1,14 +1,10 @@
-# This is the nf-core CI workflow configuration for GitHub Actions
+# This workflow runs the pipeline with the minimal test dataset to check that it completes without any syntax errors
 name: nf-core CI
-# This workflow is triggered when a pull request is made to the 'dev' branch or when a new release is published
 on:
   push:
-    branches:
-      - dev
+    branches: ["dev"]
   pull_request:
-    branches:
-      - dev
-      - master
+    branches: ["dev", "master"]
   release:
     types: [published]
 
@@ -25,13 +21,14 @@ concurrency:
 jobs:
   test-dev:
     # Only run this job if the base branch is 'dev' or if a push event is triggered
-    if: github.base_ref == 'dev' || github.event_name == 'push'
+    if: ${{ (github.base_ref == 'dev' || (github.event_name == 'push')) && !contains(github.event.head_commit.message, '[ci skip]') }}
     name: Run pipeline with test data on dev
     runs-on: ubuntu-latest
     # Define the matrix strategy for the job
     strategy:
       matrix:
         NXF_VER: ["latest-everything"]
+        NFTEST_VER: ["0.7.3"]
         profile: ["docker"]
         aligner: ["paired_end", "single_end", "misc"]
 
@@ -41,14 +38,34 @@ jobs:
       - name: Check out pipeline code
         uses: actions/checkout@v3
 
-      # Cache Test Data
+      - name: Hash Github Workspace
+        id: hash_workspace
+        run: |
+          echo "digest=$(echo ampliseq_2.6_${{ github.workspace }} | md5sum | cut -c 1-25)" >> $GITHUB_OUTPUT
+
       - name: Cache test data
-        uses: actions/cache@v2
+        id: cache-testdata
+        uses: actions/cache@v3
         with:
-          path: /usr/local/bin/nextflow
-          key: ${{ runner.os }}
-          restore-keys: |
-            ${{ runner.os }}-nextflow-
+          path: test-datasets/
+          key: ${{ steps.hash_workspace.outputs.digest }}
+
+      - name: Check out test data
+        if: steps.cache-testdata.outputs.cache-hit != 'true'
+        uses: actions/checkout@v3
+        with:
+          repository: nf-core/test-datasets
+          ref: ampliseq2
+          path: test-datasets/
+
+      - name: Replace remote paths in samplesheets
+        run: |
+          for f in ${{ github.workspace }}/test-datasets/samplesheet/*.tsv; do
+            sed -i "s=https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/=${{ github.workspace }}/test-datasets/=g" $f
+            echo "========== $f ============"
+            cat $f
+            echo "========================================"
+          done;
 
       # Install the specified version of Nextflow
       - name: Install Nextflow
@@ -59,7 +76,7 @@ jobs:
       # Install nf-test
       - name: Install nf-test
         run: |
-          wget -qO- https://code.askimed.com/install/nf-test | bash
+          wget -qO- https://code.askimed.com/install/nf-test | bash -s ${{ matrix.NFTEST_VER }}
           sudo mv nf-test /usr/local/bin/
 
       # Run nf-test with the specified aligner and output test results in TAP format
@@ -83,13 +100,14 @@ jobs:
 
   test-master:
     # Only run this job if the base branch is 'master'
-    if: github.base_ref == 'master'
+    if: ${{ (github.base_ref == 'master') }}
     name: Run pipeline with test data on master
     runs-on: ubuntu-latest
     # Define the matrix strategy for the job
     strategy:
       matrix:
         NXF_VER: ["22.10.1", "latest-everything"]
+        NFTEST_VER: ["0.7.3"]
         profile: ["docker"]
         aligner: ["paired_end", "single_end", "misc"]
 
@@ -99,14 +117,34 @@ jobs:
       - name: Check out pipeline code
         uses: actions/checkout@v3
 
-      # Cache Test Data
+      - name: Hash Github Workspace
+        id: hash_workspace
+        run: |
+          echo "digest=$(echo ampliseq_2.6_${{ github.workspace }} | md5sum | cut -c 1-25)" >> $GITHUB_OUTPUT
+
       - name: Cache test data
-        uses: actions/cache@v2
+        id: cache-testdata
+        uses: actions/cache@v3
         with:
-          path: /usr/local/bin/nextflow
-          key: ${{ runner.os }}
-          restore-keys: |
-            ${{ runner.os }}-nextflow-
+          path: test-datasets/
+          key: ${{ steps.hash_workspace.outputs.digest }}
+
+      - name: Check out test data
+        if: steps.cache-testdata.outputs.cache-hit != 'true'
+        uses: actions/checkout@v3
+        with:
+          repository: nf-core/test-datasets
+          ref: ampliseq2
+          path: test-datasets/
+
+      - name: Replace remote paths in samplesheets
+        run: |
+          for f in ${{ github.workspace }}/test-datasets/samplesheet/*.tsv; do
+            sed -i "s=https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/=${{ github.workspace }}/test-datasets/=g" $f
+            echo "========== $f ============"
+            cat $f
+            echo "========================================"
+          done;
 
       # Install the specified version of Nextflow
       - name: Install Nextflow
@@ -117,7 +155,7 @@ jobs:
       # Install nf-test
       - name: Install nf-test
         run: |
-          wget -qO- https://code.askimed.com/install/nf-test | bash
+          wget -qO- https://code.askimed.com/install/nf-test | bash -s ${{ matrix.NFTEST_VER }}
           sudo mv nf-test /usr/local/bin/
 
       # Run nf-test with the specified aligner and output test results in TAP format

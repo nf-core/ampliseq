@@ -3,44 +3,13 @@
         "content": [
             "Samplesheet_novaseq.tsv:md5,bcca78fe24736f4ee4ea26fdbd47ee64"
         ],
-        "timestamp": "2023-05-25T21:07:38+0000"
+        "timestamp": "2023-05-28T20:36:52+0000"
     },
     "software_versions": {
         "content": [
-            {
-                "CUSTOM_DUMPSOFTWAREVERSIONS": {
-                    "python": "3.11.0",
-                    "yaml": "6.0"
-                },
-                "DADA2_DENOISING": {
-                    "R": "4.1.1",
-                    "dada2": "1.22.0"
-                },
-                "DADA2_FILTNTRIM": {
-                    "R": "4.1.1",
-                    "dada2": "1.22.0"
-                },
-                "DADA2_QUALITY1": {
-                    "R": "4.1.1",
-                    "ShortRead": "1.52.0",
-                    "dada2": "1.22.0"
-                },
-                "FASTQC": {
-                    "fastqc": "0.11.9"
-                },
-                "RENAME_RAW_DATA_FILES": {
-                    "sed": "4.7"
-                },
-                "TRUNCLEN": {
-                    "pandas": "1.1.5",
-                    "python": "3.9.1"
-                },
-                "Workflow": {
-                    "nf-core/ampliseq": "2.6.0dev"
-                }
-            }
+            "{CUSTOM_DUMPSOFTWAREVERSIONS={python=3.11.0, yaml=6.0}, DADA2_DENOISING={R=4.1.1, dada2=1.22.0}, DADA2_FILTNTRIM={R=4.1.1, dada2=1.22.0}, DADA2_QUALITY1={R=4.1.1, ShortRead=1.52.0, dada2=1.22.0}, FASTQC={fastqc=0.11.9}, RENAME_RAW_DATA_FILES={sed=4.7}, TRUNCLEN={pandas=1.1.5, python=3.9.1}, Workflow={nf-core/ampliseq=2.6.0dev}}"
         ],
-        "timestamp": "2023-05-25T21:07:38+0000"
+        "timestamp": "2023-05-28T20:36:52+0000"
     },
     "dada2": {
         "content": [
@@ -50,13 +19,13 @@
             "DADA2_table.rds:md5,e7cc351e115cccdeabd0d0e9e7d9045a",
             "DADA2_table.tsv:md5,fba33455974dd6c07ce54a72f7147425"
         ],
-        "timestamp": "2023-05-25T21:07:38+0000"
+        "timestamp": "2023-05-28T20:36:52+0000"
     },
     "multiqc": {
         "content": [
             "multiqc_fastqc.txt:md5,ac8744f9d5d4dc51957a719183074c2f",
             "multiqc_general_stats.txt:md5,c4d6a79d9c271a72c2f6a7ef66fe39c6"
         ],
-        "timestamp": "2023-05-25T21:07:38+0000"
+        "timestamp": "2023-05-28T20:36:52+0000"
     }
 }

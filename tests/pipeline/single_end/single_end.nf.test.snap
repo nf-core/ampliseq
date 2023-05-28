@@ -3,62 +3,25 @@
         "content": [
             "Samplesheet_single_end.tsv:md5,71bcb9920b1187571ba9e2a5759ee4a5"
         ],
-        "timestamp": "2023-05-25T22:30:02+0000"
+        "timestamp": "2023-05-28T20:35:33+0000"
     },
     "cutadapt": {
         "content": [
             "cutadapt_summary.tsv:md5,5e5bfa4a7324a44f6d9e3cb0978ca291"
         ],
-        "timestamp": "2023-05-25T22:30:02+0000"
+        "timestamp": "2023-05-28T20:35:33+0000"
     },
     "software_versions": {
         "content": [
-            {
-                "BARRNAP": {
-                    "barrnap": "0.9"
-                },
-                "CUSTOM_DUMPSOFTWAREVERSIONS": {
-                    "python": "3.11.0",
-                    "yaml": "6.0"
-                },
-                "CUTADAPT_BASIC": {
-                    "cutadapt": "3.4"
-                },
-                "DADA2_DENOISING": {
-                    "R": "4.1.1",
-                    "dada2": "1.22.0"
-                },
-                "DADA2_FILTNTRIM": {
-                    "R": "4.1.1",
-                    "dada2": "1.22.0"
-                },
-                "DADA2_QUALITY1": {
-                    "R": "4.1.1",
-                    "ShortRead": "1.52.0",
-                    "dada2": "1.22.0"
-                },
-                "DADA2_TAXONOMY": {
-                    "R": "4.1.1",
-                    "dada2": "1.22.0"
-                },
-                "FASTQC": {
-                    "fastqc": "0.11.9"
-                },
-                "RENAME_RAW_DATA_FILES": {
-                    "sed": "4.7"
-                },
-                "Workflow": {
-                    "nf-core/ampliseq": "2.6.0dev"
-                }
-            }
+            "{BARRNAP={barrnap=0.9}, CUSTOM_DUMPSOFTWAREVERSIONS={python=3.11.0, yaml=6.0}, CUTADAPT_BASIC={cutadapt=3.4}, DADA2_DENOISING={R=4.1.1, dada2=1.22.0}, DADA2_FILTNTRIM={R=4.1.1, dada2=1.22.0}, DADA2_QUALITY1={R=4.1.1, ShortRead=1.52.0, dada2=1.22.0}, DADA2_TAXONOMY={R=4.1.1, dada2=1.22.0}, FASTQC={fastqc=0.11.9}, RENAME_RAW_DATA_FILES={sed=4.7}, Workflow={nf-core/ampliseq=2.6.0dev}}"
         ],
-        "timestamp": "2023-05-25T22:30:02+0000"
+        "timestamp": "2023-05-28T20:35:33+0000"
     },
     "overall_summary_tsv": {
         "content": [
             "overall_summary.tsv:md5,0feea9a92fde36cbf63dba6e63617c7e"
         ],
-        "timestamp": "2023-05-25T22:30:02+0000"
+        "timestamp": "2023-05-28T20:35:33+0000"
     },
     "dada2": {
         "content": [
@@ -69,7 +32,7 @@
             "DADA2_table.rds:md5,aefd24f6ac2753a43baca19a93c4e2ee",
             "DADA2_table.tsv:md5,3e5280fd5b36c943c0148c4d5b50cb65"
         ],
-        "timestamp": "2023-05-25T22:30:02+0000"
+        "timestamp": "2023-05-28T20:35:33+0000"
     },
     "barrnap": {
         "content": [
@@ -78,7 +41,7 @@
             "rrna.euk.gff:md5,1978664ae39a761f9082ae605c026182",
             "rrna.mito.gff:md5,df19e1b84ba6f691d20c72b397c88abf"
         ],
-        "timestamp": "2023-05-25T22:30:02+0000"
+        "timestamp": "2023-05-28T20:35:33+0000"
     },
     "multiqc": {
         "content": [
@@ -86,6 +49,6 @@
             "multiqc_general_stats.txt:md5,5040629a246bb3288879d3d30e9d6f40",
             "multiqc_cutadapt.txt:md5,48d079bea04fe93d260b980c15793a0c"
         ],
-        "timestamp": "2023-05-25T22:30:02+0000"
+        "timestamp": "2023-05-28T20:35:33+0000"
     }
 }

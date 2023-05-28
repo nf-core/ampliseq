@@ -14,13 +14,9 @@ nextflow_pipeline {
         }
 
         then {
-            // Remove Nextflow version from software_versions.yml
-            def softwareVersions = path("$outputDir/pipeline_info/software_versions.yml").yaml
-            if (softwareVersions.containsKey("Workflow")) { softwareVersions.Workflow.remove("Nextflow") }
-
             assertAll(
                 { assert workflow.success },
-                { assert snapshot(softwareVersions).match("software_versions") },
+                { assert snapshot(UTILS.removeNextflowVersion("$outputDir")).match("software_versions") },
                 { assert snapshot(path("$outputDir/dada2/ASV_seqs.fasta"),
                                 path("$outputDir/dada2/ASV_table.tsv"),
                                 path("$outputDir/dada2/DADA2_stats.tsv"),

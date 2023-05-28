@@ -60,7 +60,7 @@ jobs:
 
       - name: Replace remote paths in samplesheets
         run: |
-          for f in ${{ github.workspace }}/test-datasets/samplesheet/*.tsv; do
+          for f in ${{ github.workspace }}/test-datasets/samplesheets/*.tsv; do
             sed -i "s=https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/=${{ github.workspace }}/test-datasets/=g" $f
             echo "========== $f ============"
             cat $f
@@ -89,7 +89,7 @@ jobs:
         if: failure()
         run: |
           sudo apt install bat > /dev/null
-          batcat --decorations=always --color=always /home/runner/work/ampliseq/ampliseq/.nf-test/tests/*/output/pipeline_info/software_versions.yml
+          batcat --decorations=always --color=always ${{ github.workspace }}/.nf-test/tests/*/output/pipeline_info/software_versions.yml
 
       # Comment on the PR with the test results
       - name: PR comment with file
@@ -139,7 +139,7 @@ jobs:
 
       - name: Replace remote paths in samplesheets
         run: |
-          for f in ${{ github.workspace }}/test-datasets/samplesheet/*.tsv; do
+          for f in ${{ github.workspace }}/test-datasets/samplesheets/*.tsv; do
             sed -i "s=https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/=${{ github.workspace }}/test-datasets/=g" $f
             echo "========== $f ============"
             cat $f
@@ -168,7 +168,7 @@ jobs:
         if: failure()
         run: |
           sudo apt install bat > /dev/null
-          batcat --decorations=always --color=always /home/runner/work/ampliseq/ampliseq/.nf-test/tests/*/output/pipeline_info/software_versions.yml
+          batcat --decorations=always --color=always ${{ github.workspace }}/.nf-test/tests/*/output/pipeline_info/software_versions.yml
 
       # Comment on the PR with the test results
       - name: PR comment with file

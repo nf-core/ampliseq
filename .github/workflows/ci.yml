@@ -61,7 +61,7 @@ jobs:
       - name: Replace remote paths in samplesheets
         run: |
           for f in ${{ github.workspace }}/test-datasets/samplesheets/*.tsv; do
-            sed -i "s=https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/=${{ github.workspace }}/test-datasets/=g" $f
+            sed -i "s=https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/=${{ github.workspace }}/test-datasets/=g" $f
             echo "========== $f ============"
             cat $f
             echo "========================================"
@@ -140,7 +140,7 @@ jobs:
       - name: Replace remote paths in samplesheets
         run: |
           for f in ${{ github.workspace }}/test-datasets/samplesheets/*.tsv; do
-            sed -i "s=https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/=${{ github.workspace }}/test-datasets/=g" $f
+            sed -i "s=https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/=${{ github.workspace }}/test-datasets/=g" $f
             echo "========== $f ============"
             cat $f
             echo "========================================"

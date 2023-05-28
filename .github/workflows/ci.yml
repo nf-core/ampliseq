@@ -55,7 +55,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: nf-core/test-datasets
-          ref: ampliseq2
+          ref: ampliseq
           path: test-datasets/
 
       - name: Replace remote paths in samplesheets
@@ -134,7 +134,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: nf-core/test-datasets
-          ref: ampliseq2
+          ref: ampliseq
           path: test-datasets/
 
       - name: Replace remote paths in samplesheets

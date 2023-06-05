@@ -2,7 +2,7 @@ nextflow_pipeline {
 
     name "Test Workflow main.nf"
     script "main.nf"
-    tag "dada2
+    tag "dada2"
     tag "pipeline"
 
     test("Custom DADA2 Reference Taxonomy Database") {

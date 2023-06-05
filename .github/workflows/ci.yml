@@ -2,15 +2,20 @@
 name: nf-core CI
 on:
   push:
-    branches: ["dev"]
+    branches:
+      - "dev"
   pull_request:
-    branches: ["dev", "master"]
+    branches:
+      - "dev"
+      - "master"
   release:
-    types: [published]
+    types:
+      - "published"
 
-# Setting environment variable for Nextflow logs
+# Setting environment variable for Nextflow logs & NFTEST version
 env:
   NXF_ANSI_LOG: false
+  NFTEST_VER: "0.7.3"
 
 # Cancel if a newer run is started
 concurrency:
@@ -21,16 +26,20 @@ concurrency:
 jobs:
   test-dev:
     # Only run this job if the base branch is 'dev' or if a push event is triggered
-    if: ${{ (github.base_ref == 'dev' || (github.event_name == 'push')) && !contains(github.event.head_commit.message, '[ci skip]') }}
+    if: (github.base_ref == 'dev' || (github.event_name == 'push'))
     name: Run pipeline with test data on dev
     runs-on: ubuntu-latest
     # Define the matrix strategy for the job
     strategy:
       matrix:
-        NXF_VER: ["latest-everything"]
-        NFTEST_VER: ["0.7.3"]
-        profile: ["docker"]
-        aligner: ["paired_end", "single_end", "misc"]
+        NXF_VER:
+          - "latest-everything"
+        aligner:
+          - "paired_end"
+          - "single_end"
+          - "misc"
+        profile:
+          - "docker"
 
     # Define the steps for the job
     steps:
@@ -76,13 +85,13 @@ jobs:
       # Install nf-test
       - name: Install nf-test
         run: |
-          wget -qO- https://code.askimed.com/install/nf-test | bash -s ${{ matrix.NFTEST_VER }}
+          wget -qO- https://code.askimed.com/install/nf-test | bash -s $NFTEST_VER
           sudo mv nf-test /usr/local/bin/
 
       # Run nf-test with the specified aligner and output test results in TAP format
       - name: Run nf-test
         run: |
-          nf-test test tests/pipeline/${{ matrix.aligner }}/ --tap=test.tap
+          nf-test test tests/pipeline/${{ matrix.aligner }}/ --profile ${{ matrix.profile }} --tap=test.tap
 
       # If the test fails, output the software_versions.yml using the 'batcat' utility
       - name: Output log on failure
@@ -90,13 +99,6 @@ jobs:
         run: |
           sudo apt install bat > /dev/null
           batcat --decorations=always --color=always ${{ github.workspace }}/.nf-test/tests/*/output/pipeline_info/software_versions.yml
-
-      # Comment on the PR with the test results
-      - name: PR comment with file
-        if: github.event_name == 'pull_request'
-        uses: thollander/actions-comment-pull-request@v2
-        with:
-          filePath: test.tap
 
   test-master:
     # Only run this job if the base branch is 'master'
@@ -106,10 +108,15 @@ jobs:
     # Define the matrix strategy for the job
     strategy:
       matrix:
-        NXF_VER: ["22.10.1", "latest-everything"]
-        NFTEST_VER: ["0.7.3"]
-        profile: ["docker"]
-        aligner: ["paired_end", "single_end", "misc"]
+        NXF_VER:
+          - "22.10.1"
+          - "latest-everything"
+        aligner:
+          - "paired_end"
+          - "single_end"
+          - "misc"
+        profile:
+          - "docker"
 
     # Define the steps for the job
     steps:
@@ -155,13 +162,13 @@ jobs:
       # Install nf-test
       - name: Install nf-test
         run: |
-          wget -qO- https://code.askimed.com/install/nf-test | bash -s ${{ matrix.NFTEST_VER }}
+          wget -qO- https://code.askimed.com/install/nf-test | bash -s $NFTEST_VER
           sudo mv nf-test /usr/local/bin/
 
       # Run nf-test with the specified aligner and output test results in TAP format
       - name: Run nf-test
         run: |
-          nf-test test tests/pipeline/${{ matrix.aligner }}/ --tap=test.tap
+          nf-test test tests/pipeline/${{ matrix.aligner }}/ --profile ${{ matrix.profile }} --tap=test.tap
 
       # If the test fails, output the software_versions.yml using the 'batcat' utility
       - name: Output log on failure
@@ -169,10 +176,3 @@ jobs:
         run: |
           sudo apt install bat > /dev/null
           batcat --decorations=always --color=always ${{ github.workspace }}/.nf-test/tests/*/output/pipeline_info/software_versions.yml
-
-      # Comment on the PR with the test results
-      - name: PR comment with file
-        if: github.event_name == 'pull_request'
-        uses: thollander/actions-comment-pull-request@v2
-        with:
-          filePath: test.tap

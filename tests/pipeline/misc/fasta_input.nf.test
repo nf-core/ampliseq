@@ -2,14 +2,25 @@ nextflow_pipeline {
 
     name "Test Workflow main.nf"
     script "main.nf"
-    profile "test_fasta,docker"
+    tag "fasta_input"
     tag "pipeline"
 
     test("Fasta Input") {
 
         when {
             params {
-                outdir = "$outputDir"
+                outdir                     = "$outputDir"
+                config_profile_name        = 'Test fasta input profile'
+                config_profile_description = 'Minimal test dataset to check pipeline function with fasta input'
+                // Limit resources so that this can run on GitHub Actions
+                max_cpus                   = 2
+                max_memory                 = '6.GB'
+                max_time                   = '6.h'
+                // Input data
+                input                      = "https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/ASV_seqs.fasta"
+                dada_ref_taxonomy          = "rdp=18"
+                dada_assign_taxlevels      = "K,P,C,O,F,Genus"
+                skip_qiime                 = true
             }
         }
 

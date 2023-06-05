@@ -2,14 +2,28 @@ nextflow_pipeline {
 
     name "Test Workflow main.nf"
     script "main.nf"
-    profile "test_doubleprimers,docker"
+    tag "doubleprimers"
     tag "pipeline"
 
     test("Double-Primers") {
 
         when {
             params {
-                outdir = "$outputDir"
+                outdir                     = "$outputDir"
+                config_profile_name        = 'Test doubleprimers profile'
+                config_profile_description = 'Minimal test dataset to check pipeline function when removing double primers'
+                // Limit resources so that this can run on GitHub Actions
+                max_cpus                   = 2
+                max_memory                 = '6.GB'
+                max_time                   = '6.h'
+                // Input data
+                FW_primer                  = "NNNNCCTAHGGGRBGCAGCAG"
+                RV_primer                  = "GACTACHVGGGTATCTAATCC"
+                double_primer              = true
+                dada_ref_taxonomy          = false
+                input                      = "https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/samplesheets/Samplesheet_double_primer.tsv"
+                trunc_qmin                 = 30
+                skip_fastqc                = true
             }
         }
 

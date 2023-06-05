@@ -2,14 +2,28 @@ nextflow_pipeline {
 
     name "Test Workflow main.nf"
     script "main.nf"
-    profile "test_single,docker"
+    tag "single_end"
     tag "pipeline"
 
     test("Single-End") {
 
         when {
             params {
-                outdir = "$outputDir"
+                outdir                     = "$outputDir"
+                config_profile_name        = 'Test profile for SE reads'
+                config_profile_description = 'Minimal test dataset to check pipeline function for single end Illumina sequences'
+                // Limit resources so that this can run on GitHub Actions
+                max_cpus                   = 2
+                max_memory                 = '6.GB'
+                max_time                   = '6.h'
+                // Input data
+                FW_primer                  = "GTGYCAGCMGCCGCGGTAA"
+                RV_primer                  = "GGACTACNVGGGTWTCTAAT"
+                input                      = "https://github.com/nf-core/test-datasets/raw/ampliseq/samplesheets/Samplesheet_single_end.tsv"
+                dada_ref_taxonomy          = "rdp=18"
+                cut_dada_ref_taxonomy      = true
+                single_end                 = true
+                skip_qiime                 = true
             }
         }
 

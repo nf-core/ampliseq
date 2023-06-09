@@ -297,7 +297,6 @@
                     "enum": [
                         "silva=138",
                         "silva",
-                        "unite-fungi=9.0",
                         "unite-fungi=8.3",
                         "unite-fungi=8.2",
                         "unite-fungi",

@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#569](https://github.com/nf-core/ampliseq/pull/569) - Make header of overall_summary.tsv consistent between input data types
 - [#573](https://github.com/nf-core/ampliseq/pull/573) - Avoid parser error for single-end data when an empty read file is detected
 - [#578](https://github.com/nf-core/ampliseq/pull/578) - Template update for nf-core/tools version 2.8, including changing `System.exit(1)` to `Nextflow.error()`
+- [#594](https://github.com/nf-core/ampliseq/pull/594) - Update metadata documentation
 
 ### `Dependencies`
 

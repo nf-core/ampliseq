@@ -31,10 +31,17 @@ process QIIME2_DIVERSITY_CORE {
 
     mindepth=\$(count_table_minmax_reads.py $stats minimum 2>&1)
     if [ \"\$mindepth\" -lt \"$mindepth\" ]; then mindepth=$mindepth; fi
-    if [ \"\$mindepth\" -gt \"10000\" ]; then echo \$mindepth >\"Use the sampling depth of \$mindepth for rarefaction.txt\" ; fi
-    if [ \"\$mindepth\" -lt \"10000\" -a \"\$mindepth\" -gt \"5000\" ]; then echo \$mindepth >\"WARNING The sampling depth of \$mindepth is quite small for rarefaction.txt\" ; fi
-    if [ \"\$mindepth\" -lt \"5000\" -a \"\$mindepth\" -gt \"1000\" ]; then echo \$mindepth >\"WARNING The sampling depth of \$mindepth is very small for rarefaction.txt\" ; fi
-    if [ \"\$mindepth\" -lt \"1000\" ]; then echo \$mindepth >\"WARNING The sampling depth of \$mindepth seems too small for rarefaction.txt\" ; fi
+
+    # report the rarefaction depth and return warning, if needed
+    if [ \"\$mindepth\" -lt \"1000\" ]; then
+        echo \$mindepth >\"WARNING The sampling depth of \$mindepth seems too small for rarefaction.txt\"
+    elif [ \"\$mindepth\" -lt \"5000\" ]; then
+        echo \$mindepth >\"WARNING The sampling depth of \$mindepth is very small for rarefaction.txt\"
+    elif [ \"\$mindepth\" -lt \"10000\" ]; then
+        echo \$mindepth >\"WARNING The sampling depth of \$mindepth is quite small for rarefaction.txt\"
+    else
+        echo \$mindepth >\"Use the sampling depth of \$mindepth for rarefaction.txt\"
+    fi
 
     qiime diversity core-metrics-phylogenetic \\
         --m-metadata-file ${metadata} \\

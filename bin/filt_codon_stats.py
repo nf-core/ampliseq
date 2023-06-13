@@ -7,7 +7,7 @@ import sys
 if len(sys.argv) != 2:
     exit("Usage: count_table_max_reads.py <ASVcounts.tsv>")
 
-# read tsv and skip first two rows
+# read tsv
 data = pd.read_csv(sys.argv[1], sep="\t", skiprows=None)  # count table
 
 # drop feature ids

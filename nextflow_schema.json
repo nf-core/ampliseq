@@ -392,7 +392,7 @@
                 "orf_end": {
                     "type": "integer",
                     "description": "Ending position of codon tripletts",
-                    "help_text": "By default, when `--filter_codons` is set, the codons are checked until the end of the ASV sequences. If you would like to change this setting, you can specify until which position of the ASV sequences does the codon triplets be checked.\n\nPlease note that the length of the ASV from the beginning or from the `--orf_start` until this position must be a multiple of 3."
+                    "help_text": "By default, when `--filter_codons` is set, the codons are checked until the end of the ASV sequences. If you would like to change this setting, you can specify until which position of the ASV sequences the codon triplets are checked.\n\nPlease note that the length of the ASV from the beginning or from the `--orf_start` until this position must be a multiple of 3."
                 },
                 "stop_codons": {
                     "type": "string",

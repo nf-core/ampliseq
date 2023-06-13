@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#591](https://github.com/nf-core/ampliseq/pull/591) - New version of the Unite taxonomy databases: 9.0
 - [#564](https://github.com/nf-core/ampliseq/pull/564),[#567](https://github.com/nf-core/ampliseq/pull/567),[#582](https://github.com/nf-core/ampliseq/pull/582) - Added phylogenetic placement
 - [#577](https://github.com/nf-core/ampliseq/pull/577),[#577](https://github.com/nf-core/ampliseq/pull/567) - Added SINTAX for taxonomic classification
-- [#575](https://github.com/nf-core/ampliseq/pull/575) - Added filtering step for stop codons for ASVs that are of coding regions!
+- [#575](https://github.com/nf-core/ampliseq/pull/575), [#586](https://github.com/nf-core/ampliseq/pull/586) - Added filtering step for stop codons for ASVs that are of coding regions.
 
 ### `Changed`
 
@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#569](https://github.com/nf-core/ampliseq/pull/569) - Make header of overall_summary.tsv consistent between input data types
 - [#573](https://github.com/nf-core/ampliseq/pull/573) - Avoid parser error for single-end data when an empty read file is detected
 - [#578](https://github.com/nf-core/ampliseq/pull/578) - Template update for nf-core/tools version 2.8, including changing `System.exit(1)` to `Nextflow.error()`
+- [#594](https://github.com/nf-core/ampliseq/pull/594) - Update metadata documentation
+- [#595](https://github.com/nf-core/ampliseq/pull/595) - Closing gaps in rarefaction depth for diversity calculations (`mindepth` in QIIME2_DIVERSITY_CORE)
 
 ### `Dependencies`
 

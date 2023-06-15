@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 - [#591](https://github.com/nf-core/ampliseq/pull/591) - New version of the Unite taxonomy databases: 9.0
+- [#596](https://github.com/nf-core/ampliseq/pull/596) - New version of the PR2 taxonomy database: 5.0.0, only available with DADA2 (`--dada_ref_taxonomy`)
 - [#564](https://github.com/nf-core/ampliseq/pull/564),[#567](https://github.com/nf-core/ampliseq/pull/567),[#582](https://github.com/nf-core/ampliseq/pull/582) - Added phylogenetic placement
 - [#577](https://github.com/nf-core/ampliseq/pull/577),[#577](https://github.com/nf-core/ampliseq/pull/567) - Added SINTAX for taxonomic classification
 - [#575](https://github.com/nf-core/ampliseq/pull/575), [#586](https://github.com/nf-core/ampliseq/pull/586) - Added filtering step for stop codons for ASVs that are of coding regions.

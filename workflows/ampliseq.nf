@@ -61,7 +61,7 @@ if (params.dada_ref_tax_custom) {
     val_dada_ref_taxonomy = "none"
 }
 
-if (params.qiime_ref_taxonomy && !params.skip_dada_taxonomy && !params.skip_taxonomy && !params.classifier) {
+if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
     ch_qiime_ref_taxonomy = Channel.fromList(params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"]).map { file(it) }
 } else { ch_qiime_ref_taxonomy = Channel.empty() }
 
@@ -118,7 +118,7 @@ if ( params.dada_ref_taxonomy && !params.skip_dada_addspecies && !params.skip_da
 }
 
 //only run QIIME2 when taxonomy is actually calculated and all required data is available
-if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) && !params.skip_taxonomy && !params.skip_qiime && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy) ) {
+if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) && !params.skip_taxonomy && !params.skip_qiime && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.qiime_ref_taxonomy) ) {
     run_qiime2 = true
 } else {
     run_qiime2 = false
@@ -504,7 +504,7 @@ workflow AMPLISEQ {
         } else if ( params.pplace_tree && params.pplace_taxonomy) {
             log.info "Use EPA-NG / GAPPA taxonomy classification"
             ch_tax = QIIME2_INTAX ( ch_pplace_tax ).qza
-        } else if ( params.dada_ref_taxonomy ) {
+        } else if ( params.dada_ref_taxonomy && !params.skip_dada_taxonomy ) {
             log.info "Use DADA2 taxonomy classification"
             ch_tax = QIIME2_INTAX ( ch_dada2_tax ).qza
         } else if ( params.qiime_ref_taxonomy || params.classifier ) {

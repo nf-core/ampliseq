@@ -88,8 +88,8 @@
                 "min_read_counts": {
                     "type": "integer",
                     "default": 1,
-                    "description": "Set read count threshold for failed input samples.",
-                    "help_text": "Samples with less reads than this threshold at input or after trimming stops the pipeline. Using `--ignore_empty_input_files` or `--ignore_failed_trimming ignores` samples with read numbers below the threshold and lets the pipeline continue with less samples.",
+                    "description": "Set read count threshold for failed samples.",
+                    "help_text": "Samples with less reads than this threshold at input or after trimming stop the pipeline. Using `--ignore_empty_input_files` or `--ignore_failed_trimming ignores` samples with read numbers below the threshold and lets the pipeline continue with less samples.",
                     "fa_icon": "fas fa-greater-than-equal"
                 },
                 "ignore_empty_input_files": {

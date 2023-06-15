@@ -148,7 +148,7 @@
        id="linearGradient5670-9-95"
        xlink:href="#linearGradient5668"
        inkscape:collect="always"
-       gradientTransform="matrix(0.26458333,0,0,0.28227706,103.97164,88.655711)" />
+       gradientTransform="matrix(0.26458333,0,0,0.2796764,103.97164,89.114258)" />
     <linearGradient
        gradientUnits="userSpaceOnUse"
        y2="103.70081"
@@ -168,7 +168,7 @@
        id="linearGradient5670-9-6-0"
        xlink:href="#linearGradient5668"
        inkscape:collect="always"
-       gradientTransform="matrix(0,-0.26458333,0.16636474,0,88.865774,175.75701)" />
+       gradientTransform="matrix(-0.26458333,0,0,-0.10679224,158.30358,174.09233)" />
     <linearGradient
        y2="103.70081"
        x2="105"
@@ -218,16 +218,16 @@
      inkscape:document-rotation="0"
      showguides="true"
      inkscape:window-maximized="1"
-     inkscape:window-y="27"
+     inkscape:window-y="0"
      inkscape:window-x="72"
-     inkscape:window-height="1016"
+     inkscape:window-height="1043"
      inkscape:window-width="1848"
      showgrid="false"
      inkscape:current-layer="layer1"
      inkscape:document-units="mm"
-     inkscape:cy="49.718955"
-     inkscape:cx="457.52391"
-     inkscape:zoom="2"
+     inkscape:cy="389.54699"
+     inkscape:cx="545.39105"
+     inkscape:zoom="1"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="1.0"
@@ -271,6 +271,14 @@
        width="272.11987"
        id="rect5574"
        style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0.0456839;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+       inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png" />
+    <path
+       inkscape:export-ydpi="305.81"
+       inkscape:export-xdpi="305.81"
+       inkscape:connector-curvature="0"
+       id="path5662-9-86-5"
+       d="m 131.61149,163.26876 -7e-5,10.71746 -0.22614,-0.7056 c -2.01924,-6.30028 -3.07454,-7.8449 -6.67589,-9.77131 l -0.92328,-0.49387 0.88175,-0.55986 c 1.65673,-1.05192 2.41296,-1.64645 3.26592,-2.56759 1.10577,-1.19414 2.04839,-2.93554 3.03195,-5.60124 0.21285,-0.57687 0.44524,-1.20332 0.51642,-1.39211 0.11127,-0.29512 0.1294,1.15952 0.12934,10.37412 z"
+       style="opacity:1;fill:url(#linearGradient5670-9-6-0);fill-opacity:1;stroke:#000000;stroke-width:0.05;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png" />
     <path
        inkscape:export-ydpi="305.81"
@@ -737,14 +745,6 @@
        d="m 14.001811,71.901176 16.55274,7e-5 -1.08976,0.22614 c -9.73056,2.01924 -12.11618,3.07454 -15.09147,6.67589 l -0.76276,0.92328 -0.86469,-0.88175 c -1.62465,-1.65673 -2.54289,-2.41296 -3.9655589,-3.26592 -1.8443191,-1.10577 -4.5338576,-2.04839 -8.65098787,-3.03195 -0.89095934,-0.21285 -1.85848953,-0.44524 -2.15007953,-0.51642 -0.4558103,-0.11127 1.79085986,-0.1294 16.0225663,-0.12934 z"
        style="fill:url(#linearGradient120814);fill-opacity:1;stroke:#000000;stroke-width:0.05;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png" />
-    <path
-       inkscape:export-ydpi="305.81"
-       inkscape:export-xdpi="305.81"
-       inkscape:connector-curvature="0"
-       id="path5662-9-86-5"
-       d="m 105.72705,149.06492 -16.695966,-7e-5 1.099203,-0.22614 c 9.81474,-2.01924 12.221003,-3.07454 15.222033,-6.67589 l 0.76936,-0.92328 0.87218,0.88175 c 1.63871,1.65673 2.5649,2.41296 3.99987,3.26592 1.86028,1.10577 4.57309,2.04839 8.72582,3.03195 0.89866,0.21285 1.87457,0.44524 2.16867,0.51642 0.45976,0.11127 -1.80633,0.1294 -16.16117,0.12934 z"
-       style="opacity:1;fill:url(#linearGradient5670-9-6-0);fill-opacity:1;stroke:#000000;stroke-width:0.05;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
-       inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png" />
     <rect
        inkscape:export-ydpi="305.81"
        inkscape:export-xdpi="305.81"
@@ -763,21 +763,16 @@
        id="text4732-0"
        y="83.788673"
        x="59.691353"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778006px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
        xml:space="preserve"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png"><tspan
-         id="tspan4938"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.264583"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778006px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.26458299"
          y="83.788673"
          x="59.691353"
-         sodipodi:role="line">Infer Amplicon</tspan><tspan
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.264583"
-         y="87.316452"
-         x="59.691353"
          sodipodi:role="line"
-         id="tspan13308">Sequence Variants</tspan><tspan
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.264583"
-         y="90.844231"
+         id="tspan13308">Infer sequences</tspan><tspan
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778006px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.26458299"
+         y="87.316452"
          x="60.305443"
          sodipodi:role="line"
          id="tspan13310">(ASVs) </tspan></text>
@@ -810,21 +805,21 @@
        inkscape:export-xdpi="305.81"
        inkscape:connector-curvature="0"
        id="path5662-9-2"
-       d="m 123.78452,110.91469 7e-5,-28.328499 0.22614,1.865045 c 2.01924,16.652964 3.07454,20.735714 6.67589,25.827654 l 0.92328,1.30539 -0.88175,1.47985 c -1.65672,2.78045 -2.41296,4.35193 -3.26592,6.78668 -1.10577,3.15639 -2.04838,7.75931 -3.03195,14.80541 -0.21285,1.52479 -0.44524,3.18064 -0.51642,3.67967 -0.11127,0.78008 -0.1294,-3.06489 -0.12934,-27.4212 z"
+       d="m 123.78452,111.16816 7e-5,-28.067503 0.22614,1.847862 c 2.01924,16.499541 3.07454,20.544671 6.67589,25.589701 l 0.92328,1.29336 -0.88175,1.46622 c -1.65672,2.75483 -2.41296,4.31183 -3.26592,6.72415 -1.10577,3.12731 -2.04838,7.68782 -3.03195,14.66901 -0.21285,1.51074 -0.44524,3.15133 -0.51642,3.64577 -0.11127,0.77289 -0.1294,-3.03666 -0.12934,-27.16857 z"
        style="opacity:1;fill:url(#linearGradient5670-9-95);fill-opacity:1;stroke:#000000;stroke-width:0.05;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png" />
     <rect
        inkscape:export-ydpi="305.81"
        inkscape:export-xdpi="305.81"
-       ry="3.8647702"
-       y="79.754517"
-       x="87.314934"
-       height="61.195156"
-       width="36.362129"
+       ry="4.3057985"
+       y="79.768295"
+       x="87.32872"
+       height="94.557945"
+       width="36.334572"
        id="rect4728-6-3"
-       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.5;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.52755815;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png"
-       rx="3.8647702" />
+       rx="3.8618414" />
     <text
        inkscape:export-ydpi="305.81"
        inkscape:export-xdpi="305.81"
@@ -876,13 +871,13 @@
        inkscape:export-ydpi="305.81"
        inkscape:export-xdpi="305.81"
        id="text4732-0-6-7-7"
-       y="95.343864"
+       y="91.639694"
        x="48.903481"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778006px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
        xml:space="preserve"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.264583"
-         y="95.343864"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778006px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.26458299"
+         y="91.639694"
          x="48.903481"
          sodipodi:role="line"
          id="tspan19050-9-3">DADA2</tspan></text>
@@ -890,21 +885,21 @@
        inkscape:export-ydpi="305.81"
        inkscape:export-xdpi="305.81"
        id="text4732-0-6-7-2"
-       y="118.36993"
+       y="116.78242"
        x="96.411736"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778006px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
        xml:space="preserve"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.264583"
-         y="118.36993"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778006px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.26458299"
+         y="116.78242"
          x="96.411736"
          sodipodi:role="line"
          id="tspan19050-9-2">QIIME2</tspan></text>
     <g
        id="g18349"
-       transform="translate(-4.9145208,-2.6458334)">
+       transform="translate(-4.9145208,-3.1750001)">
       <rect
-         style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-7-0"
          width="32.312801"
          height="4.9341259"
@@ -914,7 +909,7 @@
          rx="2.467063" />
       <text
          xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.17499995px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
          x="98.522102"
          y="107.1206"
          id="text4774-3-1"><tspan
@@ -922,13 +917,13 @@
            id="tspan4772-2-9"
            x="98.522102"
            y="107.1206"
-           style="font-size:3.175px;stroke-width:0.264583">assignTaxonomy</tspan></text>
+           style="font-size:3.17499995px;stroke-width:0.26458299">assignTaxonomy</tspan></text>
     </g>
     <g
        id="g18344"
-       transform="translate(-4.9145208,-3.7041668)">
+       transform="translate(-4.9145208,-4.7625002)">
       <rect
-         style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-7-0-0"
          width="32.312801"
          height="4.9341259"
@@ -938,7 +933,7 @@
          rx="2.467063" />
       <text
          xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.17499995px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
          x="102.10405"
          y="114.70055"
          id="text4774-3-1-2"><tspan
@@ -946,13 +941,13 @@
            id="tspan4772-2-9-3"
            x="102.10405"
            y="114.70055"
-           style="font-size:3.175px;stroke-width:0.264583">addSpecies</tspan></text>
+           style="font-size:3.17499995px;stroke-width:0.26458299">addSpecies</tspan></text>
     </g>
     <g
        id="g60531"
-       transform="translate(0,-7.9375004)">
+       transform="translate(0,-9.5250005)">
       <rect
-         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-5-6"
          width="32.161411"
          height="4.9222064"
@@ -962,7 +957,7 @@
          rx="2.4611032" />
       <text
          xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.17499995px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
          x="96.222145"
          y="131.5257"
          id="text4774-8-5-2"><tspan
@@ -970,13 +965,13 @@
            id="tspan4772-5-7-3"
            x="96.222145"
            y="131.5257"
-           style="font-size:3.175px;stroke-width:0.264583">extract-reads</tspan></text>
+           style="font-size:3.17499995px;stroke-width:0.26458299">extract-reads</tspan></text>
     </g>
     <g
        id="g60521"
-       transform="translate(0,-7.9375004)">
+       transform="translate(0,-10.583334)">
       <rect
-         style="fill:#fffffb;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         style="fill:#fffffb;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-5-6-9"
          width="32.161411"
          height="4.9222064"
@@ -986,7 +981,7 @@
          rx="2.4611032" />
       <text
          xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.17499995px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
          x="94.681152"
          y="144.39555"
          id="text4774-8-5-2-4"><tspan
@@ -994,13 +989,13 @@
            id="tspan4772-5-7-3-7"
            x="94.681152"
            y="144.39555"
-           style="font-size:3.175px;stroke-width:0.264583">classify-sklearn</tspan></text>
+           style="font-size:3.17499995px;stroke-width:0.26458299">classify-sklearn</tspan></text>
     </g>
     <g
        id="g60526"
-       transform="translate(0,-7.9375004)">
+       transform="translate(0,-10.054167)">
       <rect
-         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-5-6-9-6"
          width="32.161411"
          height="4.9222064"
@@ -1010,7 +1005,7 @@
          rx="2.4611032" />
       <text
          xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222009px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
          x="90.392021"
          y="137.71246"
          id="text4774-8-5-2-4-1"><tspan
@@ -1018,37 +1013,37 @@
            id="tspan4772-5-7-3-7-0"
            x="90.392021"
            y="137.71246"
-           style="font-size:2.82222px;stroke-width:0.264583">fit-classifier-naive-bayes</tspan></text>
+           style="font-size:2.82222009px;stroke-width:0.26458299">fit-classifier-naive-bayes</tspan></text>
     </g>
     <rect
        inkscape:export-ydpi="305.81"
        inkscape:export-xdpi="305.81"
-       ry="2.1282914"
-       y="149.23203"
-       x="80.698616"
-       height="30.000584"
-       width="51.872746"
+       ry="1.7337639"
+       y="151.32298"
+       x="131.4729"
+       height="24.439289"
+       width="51.92411"
        id="rect4728-6-3-3"
-       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.52962554;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+       style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.47825915;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png"
-       rx="1.8946861" />
+       rx="1.8965623" />
     <text
        inkscape:export-ydpi="305.81"
        inkscape:export-xdpi="305.81"
        id="text4732-0-6-5"
-       y="153.6925"
-       x="107.0341"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       y="155.80914"
+       x="157.83369"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778006px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
        xml:space="preserve"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png"><tspan
          id="tspan5056-7"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.264583"
-         y="153.6925"
-         x="107.0341"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778006px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.26458299"
+         y="155.80914"
+         x="157.83369"
          sodipodi:role="line">Reference taxonomy</tspan></text>
     <g
        id="g120180"
-       transform="translate(4.6095048,-8.1997259)">
+       transform="translate(55.409533,-6.0830591)">
       <rect
          style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-8-6-6-3-6"
@@ -1072,7 +1067,7 @@
     </g>
     <g
        id="g120175"
-       transform="translate(37.679653,-13.77825)">
+       transform="translate(88.479685,-11.661582)">
       <rect
          style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-8-6-6-3-6-9"
@@ -1096,7 +1091,7 @@
     </g>
     <g
        id="g120170"
-       transform="translate(31.957981,-24.092699)">
+       transform="translate(82.758013,-21.976031)">
       <rect
          style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-8-6-6-3-6-6"
@@ -1120,7 +1115,7 @@
     </g>
     <g
        id="g120165"
-       transform="translate(4.900734,-28.493905)">
+       transform="translate(55.700763,-26.377237)">
       <rect
          style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-5-6-0"
@@ -1144,7 +1139,7 @@
     </g>
     <g
        id="g120160"
-       transform="translate(42.856739,-29.671084)">
+       transform="translate(93.656771,-27.554416)">
       <rect
          style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-8-6-6-3-6-6-5"
@@ -1830,9 +1825,9 @@
        style="stroke-width:8.51516" />
     <g
        id="g87720"
-       transform="translate(-34.925004,-20.376751)">
+       transform="translate(-34.925004,-24.08092)">
       <rect
-         style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-8-6-6-3-4"
          width="34.438263"
          height="4.9158392"
@@ -1844,12 +1839,12 @@
          id="text4774-6-2"
          y="120.57699"
          x="86.734497"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.17499995px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
          xml:space="preserve"
          inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png"
          inkscape:export-xdpi="305.81"
          inkscape:export-ydpi="305.81"><tspan
-           style="font-size:3.175px;stroke-width:0.264583"
+           style="font-size:3.17499995px;stroke-width:0.26458299"
            y="120.57699"
            x="86.734497"
            id="tspan4772-0-5"
@@ -1857,9 +1852,9 @@
     </g>
     <g
        id="g87730"
-       transform="translate(-34.925004,2.3737315)">
+       transform="translate(-34.925004,-1.8596019)">
       <rect
-         style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-8-6-6-3-0"
          width="34.438263"
          height="4.9158392"
@@ -1871,12 +1866,12 @@
          id="text4774-5"
          y="103.90809"
          x="91.037338"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.17499995px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
          xml:space="preserve"
          inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png"
          inkscape:export-xdpi="305.81"
          inkscape:export-ydpi="305.81"><tspan
-           style="font-size:3.175px;stroke-width:0.264583"
+           style="font-size:3.17499995px;stroke-width:0.26458299"
            y="103.90809"
            x="91.037338"
            id="tspan4772-1"
@@ -1884,9 +1879,9 @@
     </g>
     <g
        id="g87715"
-       transform="translate(-34.925004,-23.030184)">
+       transform="translate(-34.925004,-27.792687)">
       <rect
-         style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-8-6-6-3-8"
          width="34.438263"
          height="4.9158392"
@@ -1896,7 +1891,7 @@
          rx="2.4579196" />
       <text
          xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.17499995px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
          x="78.8032"
          y="135.39359"
          id="text4774-6-2-0"><tspan
@@ -1904,13 +1899,13 @@
            id="tspan4772-0-5-9"
            x="78.8032"
            y="135.39359"
-           style="font-size:3.175px;stroke-width:0.264583">removeBimeraDenovo</tspan></text>
+           style="font-size:3.17499995px;stroke-width:0.26458299">removeBimeraDenovo</tspan></text>
     </g>
     <g
        id="g17790"
-       transform="translate(0,-7.4083337)">
+       transform="translate(0,-12.700002)">
       <rect
-         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-8-6-6-3-8-2"
          width="34.438263"
          height="4.9158392"
@@ -1920,7 +1915,7 @@
          rx="2.4579196" />
       <text
          xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.17499995px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
          x="53.933769"
          y="146.506"
          id="text4774-6-2-0-7"><tspan
@@ -1928,13 +1923,13 @@
            id="tspan4772-0-5-9-0"
            x="53.933769"
            y="146.506"
-           style="font-size:3.175px;stroke-width:0.264583">Barrnap</tspan></text>
+           style="font-size:3.17499995px;stroke-width:0.26458299">Barrnap</tspan></text>
     </g>
     <g
        id="g17790-3"
-       transform="translate(0,-1.3229206)">
+       transform="translate(0,-7.1437543)">
       <rect
-         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-8-6-6-3-8-2-6"
          width="34.438263"
          height="4.9158392"
@@ -1944,7 +1939,7 @@
          rx="2.4579196" />
       <text
          xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.17499995px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
          x="49.756504"
          y="146.506"
          id="text4774-6-2-0-7-7"><tspan
@@ -1952,7 +1947,7 @@
            id="tspan4772-0-5-9-0-5"
            x="49.756504"
            y="146.506"
-           style="font-size:3.175px;stroke-width:0.264583">length filtering</tspan></text>
+           style="font-size:3.17499995px;stroke-width:0.26458299">length filtering</tspan></text>
     </g>
     <rect
        inkscape:export-ydpi="305.81"
@@ -2059,9 +2054,9 @@
          id="flowPara4555-5-1-0"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20.7634px;line-height:1.25;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro';fill:#000000;stroke-width:1.00309px" /></flowRoot>    <g
        id="g10951"
-       transform="translate(-34.925004,-21.695841)">
+       transform="translate(-34.925004,-26.987511)">
       <rect
-         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-8-6-6-3"
          width="34.438263"
          height="4.9158392"
@@ -2071,7 +2066,7 @@
          rx="2.4579196" />
       <text
          xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.17499995px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
          x="78.293236"
          y="139.89142"
          id="text4774-8-5-2-6"><tspan
@@ -2079,13 +2074,13 @@
            id="tspan4772-5-7-3-8"
            x="78.293236"
            y="139.89142"
-           style="font-size:3.175px;stroke-width:0.264583">mergeSequenceTables</tspan></text>
+           style="font-size:3.17499995px;stroke-width:0.26458299">mergeSequenceTables</tspan></text>
     </g>
     <g
        id="g11997"
-       transform="translate(-34.925004,-15.287071)">
+       transform="translate(-34.925004,-20.578741)">
       <rect
-         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-8-6-6-3-1"
          width="34.438263"
          height="4.9158392"
@@ -2095,7 +2090,7 @@
          rx="2.4579196" />
       <text
          xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.17499995px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
          x="91.177238"
          y="143.87534"
          id="text4774-8-5-2-6-2"><tspan
@@ -2103,7 +2098,7 @@
            id="tspan4772-5-7-3-8-9"
            x="91.177238"
            y="143.87534"
-           style="font-size:3.175px;stroke-width:0.264583">ITSx</tspan></text>
+           style="font-size:3.17499995px;stroke-width:0.26458299">ITSx</tspan></text>
     </g>
     <text
        xml:space="preserve"
@@ -2204,13 +2199,13 @@
        inkscape:export-ydpi="305.81"
        inkscape:export-xdpi="305.81"
        id="text4732-3-3"
-       y="124.10577"
+       y="118.8141"
        x="41.088692"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:0.25;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778006px;line-height:0.25;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
        xml:space="preserve"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
-         y="124.10577"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778006px;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.26458299"
+         y="118.8141"
          x="41.088692"
          id="tspan4730-1-1"
          sodipodi:role="line">Extract ITS region</tspan></text>
@@ -2218,13 +2213,13 @@
        inkscape:export-ydpi="305.81"
        inkscape:export-xdpi="305.81"
        id="text4732-3-3-2"
-       y="134.49713"
+       y="129.20554"
        x="41.395306"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:0.25;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778006px;line-height:0.25;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
        xml:space="preserve"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.264583"
-         y="134.49713"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778006px;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.26458299"
+         y="129.20554"
          x="41.395306"
          id="tspan4730-1-1-9"
          sodipodi:role="line">Filter ASVs</tspan></text>
@@ -2281,30 +2276,9 @@
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.264583px"
          x="40.422691"
          y="161.44469">mandatory</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.17499995px;line-height:125%;font-family:'Abyssinica SIL';-inkscape-font-specification:'Abyssinica SIL, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="90.354195"
-       y="172.53464"
-       id="text29958-7"><tspan
-         sodipodi:role="line"
-         id="tspan29956-5"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.17499995px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.26458299px"
-         x="90.354195"
-         y="172.53464">DADA2 only</tspan></text>
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.295425px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 109.72702,155.83294 -0.57082,0.47303 v 21.15631 l 0.53294,0.60202"
-       id="path62925"
-       inkscape:connector-curvature="0" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.26458299px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 109.12792,171.64789 h -1.21608"
-       id="path63155"
-       inkscape:connector-curvature="0" />
     <g
        id="g120160-3"
-       transform="translate(42.856739,-23.945895)">
+       transform="translate(66.443358,-27.554416)">
       <rect
          style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-8-6-6-3-6-6-5-5"
@@ -2325,6 +2299,159 @@
            x="74.265755"
            y="200.36026"
            style="font-size:3.17499995px;stroke-width:0.26458299">CO1</tspan></text>
+    </g>
+    <g
+       id="g17790-3-3"
+       transform="translate(-0.04483596,-1.5043653)">
+      <rect
+         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         id="rect4770-6-1-8-6-6-3-8-2-6-6"
+         width="34.438263"
+         height="4.9158392"
+         x="42.425919"
+         y="142.91327"
+         ry="2.4579196"
+         rx="2.4579196" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.17499995px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
+         x="49.756504"
+         y="146.506"
+         id="text4774-6-2-0-7-7-7"><tspan
+           sodipodi:role="line"
+           id="tspan4772-0-5-9-0-5-5"
+           x="49.756504"
+           y="146.506"
+           style="font-size:3.17499995px;stroke-width:0.26458299">coding region</tspan></text>
+    </g>
+    <text
+       inkscape:export-ydpi="305.81"
+       inkscape:export-xdpi="305.81"
+       id="text4732-0-6-7-2-3"
+       y="139.86646"
+       x="96.411736"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778029px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
+       xml:space="preserve"
+       inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778029px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.26458299"
+         y="139.86646"
+         x="96.411736"
+         sodipodi:role="line"
+         id="tspan19050-9-2-5">SINTAX</tspan></text>
+    <g
+       id="g60531-6"
+       transform="translate(0,13.02973)">
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         id="rect4770-6-5-6-2"
+         width="32.161411"
+         height="4.9222064"
+         x="89.415291"
+         y="127.92979"
+         ry="2.4611032"
+         rx="2.4611032" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.17499995px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
+         x="96.222145"
+         y="131.5257"
+         id="text4774-8-5-2-9"><tspan
+           sodipodi:role="line"
+           id="tspan4772-5-7-3-1"
+           x="96.222145"
+           y="131.5257"
+           style="font-size:3.17499995px;stroke-width:0.26458299">VSEARCH</tspan></text>
+    </g>
+    <text
+       inkscape:export-ydpi="305.81"
+       inkscape:export-xdpi="305.81"
+       id="text4732-0-6-7-2-3-2"
+       y="150.58925"
+       x="89.426796"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778029px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299;"
+       xml:space="preserve"
+       inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778029px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:start;text-anchor:start;stroke-width:0.26458299;"
+         y="150.58925"
+         x="102.066"
+         sodipodi:role="line"
+         id="tspan516">Phylogenetic</tspan><tspan
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778029px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:start;text-anchor:start;stroke-width:0.26458299;"
+         y="154.11703"
+         x="102.066"
+         sodipodi:role="line"
+         id="tspan520">placement</tspan></text>
+    <g
+       id="g60531-6-1"
+       transform="translate(0,27.456574)">
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         id="rect4770-6-5-6-2-8"
+         width="32.161411"
+         height="4.9222064"
+         x="89.415291"
+         y="127.92979"
+         ry="2.4611032"
+         rx="2.4611032" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.17499995px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
+         x="92.792122"
+         y="131.5257"
+         id="text4774-8-5-2-9-7"><tspan
+           sodipodi:role="line"
+           id="tspan4772-5-7-3-1-9"
+           x="92.792122"
+           y="131.5257"
+           style="font-size:3.17499995px;stroke-width:0.26458299">HMMER / MAFFT</tspan></text>
+    </g>
+    <g
+       id="g60521-2-2"
+       transform="translate(0,26.398241)">
+      <rect
+         style="fill:#fffffb;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         id="rect4770-6-5-6-9-7-0"
+         width="32.161411"
+         height="4.9222064"
+         x="89.415291"
+         y="141.11357"
+         ry="2.4611032"
+         rx="2.4611032" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.17499995px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
+         x="100.64978"
+         y="144.3537"
+         id="text4774-8-5-2-4-0-2"><tspan
+           sodipodi:role="line"
+           id="tspan4772-5-7-3-7-9-3"
+           x="100.64978"
+           y="144.3537"
+           style="font-size:3.17499995px;stroke-width:0.26458299">Gappa</tspan></text>
+    </g>
+    <g
+       id="g60526-3-7"
+       transform="translate(0,26.927408)">
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         id="rect4770-6-5-6-9-6-6-5"
+         width="32.161411"
+         height="4.9222064"
+         x="89.415291"
+         y="134.52168"
+         ry="2.4611032"
+         rx="2.4611032" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222009px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
+         x="99.515739"
+         y="138.07574"
+         id="text4774-8-5-2-4-1-0-9"><tspan
+           sodipodi:role="line"
+           id="tspan4772-5-7-3-7-0-6-2"
+           x="99.515739"
+           y="138.07574"
+           style="font-size:3.17499995px;stroke-width:0.26458299">EPA-NG</tspan></text>
     </g>
   </g>
 </svg>

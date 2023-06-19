@@ -22,6 +22,7 @@ params:
     flag_retain_untrimmed: TRUE
     flag_ref_tax_user: FALSE
     flag_single_end: FALSE
+    flag_dada2_taxonomy: FALSE
     trunclenf: ""
     trunclenr: ""
     max_ee: ""
@@ -48,7 +49,7 @@ params:
     path_rrna_mito: ""
     path_barrnap_sum: ""
     ref_tax_path: ""
-    dada2_taxonomy: ""
+    dada2_taxonomy: "empty"
     sintax_taxonomy: ""
     pplace_taxonomy: ""
     qiime2_taxonomy: ""
@@ -325,7 +326,7 @@ ggplot(df_sum,
         theme_bw()
 ```
 
-```{r, eval = (params$dada2_taxonomy != ""), results='asis'}
+```{r, eval = params$flag_dada2_taxonomy, results='asis'}
 # Header
 cat("# Taxonomic Classification\n")
 cat("## Taxonomic Classification using DADA2\n")

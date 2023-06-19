@@ -40,6 +40,7 @@ option_list = list(
     make_option(c("--path_barrnap_sum"), type="character", default=NULL, help="MultiQC plots", metavar="character"),
     make_option(c("--ref_tax_path"), type="character", default=NULL, help="MultiQC plots", metavar="character"),
     make_option(c("--dada2_taxonomy"), type="character", default=NULL, help="MultiQC plots", metavar="character"),
+    make_option(c("--flag_dada2_taxonomy"), action="store_true", default=FALSE, help="MultiQC plots", metavar="character"),
     make_option(c("--sintax_taxonomy"), type="character", default=NULL, help="MultiQC plots", metavar="character"),
     make_option(c("--pplace_taxonomy"), type="character", default=NULL, help="MultiQC plots", metavar="character"),
     make_option(c("--qiime2_taxonomy"), type="character", default=NULL, help="MultiQC plots", metavar="character")
@@ -83,6 +84,7 @@ rmarkdown::render(opt$report, output_file = opt$output,
                         path_barrnap_sum = opt$path_barrnap_sum,
                         ref_tax_path = opt$ref_tax_path,
                         dada2_taxonomy = opt$dada2_taxonomy,
+                        flag_dada2_taxonomy = opt$flag_dada2_taxonomy,
                         sintax_taxonomy = opt$sintax_taxonomy,
                         pplace_taxonomy = opt$pplace_taxonomy,
                         qiime2_taxonomy = opt$qiime2_taxonomy))

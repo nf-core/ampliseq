@@ -52,7 +52,7 @@ process SUMMARY_REPORT  {
     def dada_err = meta.single_end ? "--dada_1_err_path $dada_err_svgs" : "--dada_1_err_path ${dada_err_svgs[0]} --dada_2_err_path ${dada_err_svgs[1]}"
     def barrnap = params.skip_barrnap ? "--skip_barrnap" : "--path_rrna_arc ${barrnap_gff[0]} --path_rrna_bac ${barrnap_gff[1]} --path_rrna_euk ${barrnap_gff[2]} --path_rrna_mito ${barrnap_gff[3]} --path_barrnap_sum $barrnap_summary"
     def dada2_taxonomy = !dada2_tax ? "" :
-        params.dada_ref_tax_custom ? "--dada2_taxonomy $dada2_tax --ref_tax_user" : "--dada2_taxonomy $dada2_tax --ref_tax_path $dada2_tax_reference"
+        params.dada_ref_tax_custom ? "--flag_dada2_taxonomy --dada2_taxonomy $dada2_tax --ref_tax_user" : "--flag_dada2_taxonomy --dada2_taxonomy $dada2_tax --ref_tax_path $dada2_tax_reference"
     def sintax_taxonomy = sintax_tax ? "--sintax_taxonomy $sintax_tax" : ""
     def pplace_taxonomy = pplace_tax ? "--pplace_taxonomy $pplace_tax" : ""
     def qiime2_taxonomy = qiime2_tax ? "--qiime2_taxonomy $qiime2_tax" : ""

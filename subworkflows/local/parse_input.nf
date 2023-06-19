@@ -154,9 +154,9 @@ workflow PARSE_INPUT {
             .subscribe {
                 samples = it.join("\n")
                 if (params.ignore_empty_input_files) {
-                    log.warn "At least one input file for the following sample(s) had too less reads (<$params.min_read_counts):\n$samples\nThe threshold can be adjusted with `--min_read_counts`. Ignoring failed samples and continue!\n"
+                    log.warn "At least one input file for the following sample(s) had too few reads (<$params.min_read_counts):\n$samples\nThe threshold can be adjusted with `--min_read_counts`. Ignoring failed samples and continue!\n"
                 } else {
-                    error("At least one input file for the following sample(s) had too less reads (<$params.min_read_counts):\n$samples\nEither remove those samples, adjust the threshold with `--min_read_counts`, or ignore that samples using `--ignore_empty_input_files`.")
+                    error("At least one input file for the following sample(s) had too few reads (<$params.min_read_counts):\n$samples\nEither remove those samples, adjust the threshold with `--min_read_counts`, or ignore that samples using `--ignore_empty_input_files`.")
                 }
             }
     }

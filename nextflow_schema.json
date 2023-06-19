@@ -94,7 +94,7 @@
                 },
                 "ignore_empty_input_files": {
                     "type": "boolean",
-                    "description": "Ignore input files with too less reads.",
+                    "description": "Ignore input files with too few reads.",
                     "help_text": "Ignore input files with less reads than specified by `--min_read_counts` and continue the pipeline without those samples."
                 }
             }
@@ -129,7 +129,7 @@
                 },
                 "ignore_failed_trimming": {
                     "type": "boolean",
-                    "description": "Ignore files with too less reads after trimming.",
+                    "description": "Ignore files with too few reads after trimming.",
                     "help_text": "Ignore files with less reads than specified by `--min_read_counts` after trimming and continue the pipeline without those samples."
                 }
             }

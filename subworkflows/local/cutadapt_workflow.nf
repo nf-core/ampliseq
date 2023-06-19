@@ -61,7 +61,7 @@ workflow CUTADAPT_WORKFLOW {
         .subscribe {
             samples = it.join("\n")
             if (params.ignore_failed_trimming) {
-                log.warn "The following samples had too less reads (<$params.min_read_counts) after trimming with cutadapt:\n$samples\nIgnoring failed samples and continue!\n"
+                log.warn "The following samples had too few reads (<$params.min_read_counts) after trimming with cutadapt:\n$samples\nIgnoring failed samples and continue!\n"
             } else {
                 error("The following samples had too too less reads (<$params.min_read_counts) after trimming with cutadapt:\n$samples\nPlease check whether the correct primer sequences for trimming were supplied. Ignore that samples using `--ignore_failed_trimming` or adjust the threshold with `--min_read_counts`.")
             }

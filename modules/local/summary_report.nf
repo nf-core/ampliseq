@@ -2,7 +2,7 @@ process SUMMARY_REPORT  {
 
     label 'process_low'
 
-    container 'tillenglert/ampliseq_report:latest'
+    container 'docker.io/tillenglert/ampliseq_report:latest'
     //conda (params.enable_conda ? "bioconda:r-markdown==0.8--r3.4.1_1" : null)
     //container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
     //    'https://depot.galaxyproject.org/singularity/r-markdown:0.8--r3.4.1_1' :

@@ -2,40 +2,14 @@ nextflow_pipeline {
 
     name "Test Workflow main.nf"
     script "main.nf"
-    tag "paired_end"
+    tag "test"
     tag "pipeline"
 
     test("Paired-End") {
 
         when {
             params {
-                outdir                      = "$outputDir"
-                config_profile_name         = 'Test profile'
-                config_profile_description  = 'Minimal test dataset to check pipeline function'
-                // Limit resources so that this can run on GitHub Actions
-                max_cpus                    = 2
-                max_memory                  = '6.GB'
-                max_time                    = '6.h'
-                // Input data
-                FW_primer                   = "GTGYCAGCMGCCGCGGTAA"
-                RV_primer                   = "GGACTACNVGGGTWTCTAAT"
-                input                       = "https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/samplesheets/Samplesheet.tsv"
-                metadata                    = "https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/samplesheets/Metadata.tsv"
-                dada_ref_taxonomy           = "gtdb"
-                cut_dada_ref_taxonomy       = true
-                qiime_ref_taxonomy          = "greengenes85"
-                max_len_asv                 = 255
-                filter_ssu                  = "bac"
-                //this is to remove low abundance ASVs to reduce runtime of downstream processes
-                min_samples                 = 2
-                min_frequency               = 10
-                //produce average barplots
-                metadata_category_barplot   = "treatment1,badpairwise10"
-                //restrict ANCOM analysis to higher taxonomic levels
-                tax_agglom_max              = 4
-                sbdiexport                  = true
-                qiime_adonis_formula        = "treatment1,mix8"
-                diversity_rarefaction_depth = 500
+                outdir = "$outputDir"
             }
         }
 

@@ -2,28 +2,14 @@ nextflow_pipeline {
 
     name "Test Workflow main.nf"
     script "main.nf"
-    tag "novaseq"
+    tag "test_novaseq"
     tag "pipeline"
 
     test("Paired-End Novaseq") {
 
         when {
             params {
-                outdir                     = "$outputDir"
-                config_profile_name        = 'Test profile Novaseq data'
-                config_profile_description = 'Minimal test dataset to check pipeline function with Novaseq data'
-                // Limit resources so that this can run on GitHub Actions
-                max_cpus                   = 2
-                max_memory                 = '6.GB'
-                max_time                   = '6.h'
-                // Input data
-                input                      = "https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/samplesheets/Samplesheet_novaseq.tsv"
-                illumina_novaseq           = true
-                // Skip steps
-                skip_cutadapt              = true
-                skip_barrnap               = true
-                skip_taxonomy              = true
-                skip_qiime                 = true
+                outdir = "$outputDir"
             }
         }
 

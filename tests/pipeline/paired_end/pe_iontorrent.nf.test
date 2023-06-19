@@ -2,28 +2,14 @@ nextflow_pipeline {
 
     name "Test Workflow main.nf"
     script "main.nf"
-    tag "iontorrent"
+    tag "test_iontorrent"
     tag "pipeline"
 
     test("Paired-End Ion Torrent") {
 
         when {
             params {
-                outdir                     = "$outputDir"
-                config_profile_name        = 'Test profile single-end ionTorrent reads'
-                config_profile_description = 'Minimal test dataset to check pipeline function with single-end ionTorrent sequences'
-                // Limit resources so that this can run on GitHub Actions
-                max_cpus                   = 2
-                max_memory                 = '6.GB'
-                max_time                   = '6.h'
-                // Input data
-                FW_primer                  = "GTGARTCATCGARTCTTTG"
-                RV_primer                  = "TCCTCSSCTTATTGATATGC"
-                dada_ref_taxonomy          = "unite-fungi"
-                input                      = "https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/samplesheets/Samplesheet_it_SE_ITS.tsv"
-                iontorrent                 = true
-                max_ee                     = 5
-                skip_qiime                 = true
+                outdir = "$outputDir"
             }
         }
 

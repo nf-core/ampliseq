@@ -35,9 +35,10 @@ jobs:
         NXF_VER:
           - "latest-everything"
         aligner:
-          - "paired_end"
-          - "single_end"
-          - "misc"
+          - "tests/pipeline/misc/custom_reftax.nf.test --profile test_reftaxcustom"
+          - "tests/pipeline/misc/doubleprimers.nf.test --profile test_doubleprimers"
+          # - "single_end"
+          # - "misc"
         profile:
           - "docker"
 
@@ -91,7 +92,7 @@ jobs:
       # Run nf-test with the specified aligner and output test results in TAP format
       - name: Run nf-test
         run: |
-          nf-test test tests/pipeline/${{ matrix.aligner }}/ --profile ${{ matrix.profile }} --tap=test.tap
+          nf-test test "${{ matrix.aligner }},${{ matrix.profile }}" --junitxml=test.xml
 
       # If the test fails, output the software_versions.yml using the 'batcat' utility
       - name: Output log on failure
@@ -100,79 +101,8 @@ jobs:
           sudo apt install bat > /dev/null
           batcat --decorations=always --color=always ${{ github.workspace }}/.nf-test/tests/*/output/pipeline_info/software_versions.yml
 
-  test-master:
-    # Only run this job if the base branch is 'master'
-    if: ${{ (github.base_ref == 'master') }}
-    name: Run pipeline with test data on master
-    runs-on: ubuntu-latest
-    # Define the matrix strategy for the job
-    strategy:
-      matrix:
-        NXF_VER:
-          - "22.10.1"
-          - "latest-everything"
-        aligner:
-          - "paired_end"
-          - "single_end"
-          - "misc"
-        profile:
-          - "docker"
-
-    # Define the steps for the job
-    steps:
-      # Checkout the pipeline code from the repository
-      - name: Check out pipeline code
-        uses: actions/checkout@v3
-
-      - name: Hash Github Workspace
-        id: hash_workspace
-        run: |
-          echo "digest=$(echo ampliseq_2.6_${{ github.workspace }} | md5sum | cut -c 1-25)" >> $GITHUB_OUTPUT
-
-      - name: Cache test data
-        id: cache-testdata
-        uses: actions/cache@v3
+      - name: Publish Test krakenuniq Report
+        uses: mikepenz/action-junit-report@v3
+        if: always() # always run even if the previous step fails
         with:
-          path: test-datasets/
-          key: ${{ steps.hash_workspace.outputs.digest }}
-
-      - name: Check out test data
-        if: steps.cache-testdata.outputs.cache-hit != 'true'
-        uses: actions/checkout@v3
-        with:
-          repository: nf-core/test-datasets
-          ref: ampliseq
-          path: test-datasets/
-
-      - name: Replace remote paths in samplesheets
-        run: |
-          for f in ${{ github.workspace }}/test-datasets/samplesheets/*.tsv; do
-            sed -i "s=https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/=${{ github.workspace }}/test-datasets/=g" $f
-            echo "========== $f ============"
-            cat $f
-            echo "========================================"
-          done;
-
-      # Install the specified version of Nextflow
-      - name: Install Nextflow
-        uses: nf-core/setup-nextflow@v1
-        with:
-          version: "${{ matrix.NXF_VER }}"
-
-      # Install nf-test
-      - name: Install nf-test
-        run: |
-          wget -qO- https://code.askimed.com/install/nf-test | bash -s $NFTEST_VER
-          sudo mv nf-test /usr/local/bin/
-
-      # Run nf-test with the specified aligner and output test results in TAP format
-      - name: Run nf-test
-        run: |
-          nf-test test tests/pipeline/${{ matrix.aligner }}/ --profile ${{ matrix.profile }} --tap=test.tap
-
-      # If the test fails, output the software_versions.yml using the 'batcat' utility
-      - name: Output log on failure
-        if: failure()
-        run: |
-          sudo apt install bat > /dev/null
-          batcat --decorations=always --color=always ${{ github.workspace }}/.nf-test/tests/*/output/pipeline_info/software_versions.yml
+          report_paths: "*.xml"

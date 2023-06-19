@@ -682,8 +682,11 @@ workflow AMPLISEQ {
         DADA2_MERGE.out.dada2stats,
         !params.skip_barrnap ? BARRNAP.out.gff.collect(sort: true) : [],
         !params.skip_barrnap ? BARRNAPSUMMARY.out.summary : [],
-        !params.skip_taxonomy ? !params.dada_ref_tax_custom ? FORMAT_TAXONOMY.out.ref_tax_info : [] : [],
-        !params.skip_taxonomy ? !params.skip_dada_addspecies ? DADA2_ADDSPECIES.out.tsv : DADA2_TAXONOMY.out.tsv : []
+        !params.skip_taxonomy && !params.dada_ref_tax_custom ? FORMAT_TAXONOMY.out.ref_tax_info : [],
+        !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy ? ch_dada2_tax : [],
+        !params.skip_taxonomy && params.sintax_ref_taxonomy ? ch_sintax_tax : [],
+        !params.skip_taxonomy && params.pplace_tree ? ch_pplace_tax : [],
+        !params.skip_taxonomy && ( params.qiime_ref_taxonomy || params.classifier ) && run_qiime2 ? QIIME2_TAXONOMY.out.tsv : []
     )
 
 

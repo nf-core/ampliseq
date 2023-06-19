@@ -18,7 +18,7 @@ params:
     flag_skip_cutadapt: FALSE
     flag_skip_dada_quality: FALSE
     flag_skip_barrnap: FALSE
-    flag_skip_taxonomy: FALSE
+    #flag_skip_taxonomy: FALSE
     flag_retain_untrimmed: TRUE
     flag_ref_tax_user: FALSE
     flag_single_end: FALSE
@@ -48,7 +48,11 @@ params:
     path_rrna_mito: ""
     path_barrnap_sum: ""
     ref_tax_path: ""
-    asv_tax_path: ""
+    dada2_taxonomy: ""
+    sintax_taxonomy: ""
+    pplace_taxonomy: ""
+    qiime2_taxonomy: ""
+
 ---
 
 ```{r setup, include=FALSE}
@@ -324,7 +328,7 @@ ggplot(barrnap_df,
         theme_bw()
 ```
 
-```{r, eval = !params$flag_skip_taxonomy, results='asis'}
+```{r, eval = (params$dada2_taxonomy != ""), results='asis'}
 # Header
 cat("# Taxonomic Classification\n")
 cat("## Taxonomic Classification using DADA2\n")
@@ -348,7 +352,7 @@ if (!params$flag_ref_tax_user) {
             "provided by the user.\n\n", sep = "")
 }
 
-asv_tax <- read.table(params$asv_tax_path, header = TRUE, sep = "\t")
+asv_tax <- read.table(params$dada2_taxonomy, header = TRUE, sep = "\t")
 
 # Calculate the classified numbers/percent of asv
 level <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus")

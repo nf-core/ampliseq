@@ -11,7 +11,7 @@ option_list = list(
     make_option(c("--skip_cutadapt"), action="store_true", default=FALSE, help="Trigger to skip cutadapt filtering", metavar="logical"),
     make_option(c("--skip_dada_quality"), action="store_true", default=FALSE, help="Trigger to skip dada2 quality plotting", metavar="logical"),
     make_option(c("--skip_barrnap"), action="store_true", default=FALSE, help="Trigger to skip barrnap ASV filtering", metavar="logical"),
-    make_option(c("--skip_taxonomy"), action="store_true", default=FALSE, help="Trigger to skip taxonomic classification", metavar="logical"),
+    #make_option(c("--skip_taxonomy"), action="store_true", default=FALSE, help="Trigger to skip taxonomic classification", metavar="logical"),
     make_option(c("--retain_untrimmed"), action="store_true", default=FALSE, help="Flag to retain the untrimmed sequences", metavar="logical"),
     make_option(c("--ref_tax_user"), action="store_true", default=FALSE, help="Flag that user provided custom db", metavar="logical"),
     make_option(c("--single_end"), action="store_true", default=FALSE, help="Flag if single end data is used", metavar="logical"),
@@ -39,7 +39,10 @@ option_list = list(
     make_option(c("--path_rrna_mito"), type="character", default=NULL, help="MultiQC plots", metavar="character"),
     make_option(c("--path_barrnap_sum"), type="character", default=NULL, help="MultiQC plots", metavar="character"),
     make_option(c("--ref_tax_path"), type="character", default=NULL, help="MultiQC plots", metavar="character"),
-    make_option(c("--asv_tax_path"), type="character", default=NULL, help="MultiQC plots", metavar="character")
+    make_option(c("--dada2_taxonomy"), type="character", default=NULL, help="MultiQC plots", metavar="character"),
+    make_option(c("--sintax_taxonomy"), type="character", default=NULL, help="MultiQC plots", metavar="character"),
+    make_option(c("--pplace_taxonomy"), type="character", default=NULL, help="MultiQC plots", metavar="character"),
+    make_option(c("--qiime2_taxonomy"), type="character", default=NULL, help="MultiQC plots", metavar="character")
 )
 
 opt_parser = OptionParser(option_list = option_list)
@@ -51,7 +54,7 @@ rmarkdown::render(opt$report, output_file = opt$output,
                         flag_skip_cutadapt = opt$skip_cutadapt,
                         flag_skip_dada_quality = opt$skip_dada_quality,
                         flag_skip_barrnap = opt$skip_barrnap,
-                        flag_skip_taxonomy = opt$skip_taxonomy,
+                        #flag_skip_taxonomy = opt$skip_taxonomy,
                         flag_retain_untrimmed = opt$retain_untrimmed,
                         flag_ref_tax_user = opt$ref_tax_user,
                         flag_single_end = opt$single_end,
@@ -79,4 +82,7 @@ rmarkdown::render(opt$report, output_file = opt$output,
                         path_rrna_mito = opt$path_rrna_mito,
                         path_barrnap_sum = opt$path_barrnap_sum,
                         ref_tax_path = opt$ref_tax_path,
-                        asv_tax_path = opt$asv_tax_path))
+                        dada2_taxonomy = opt$dada2_taxonomy,
+                        sintax_taxonomy = opt$sintax_taxonomy,
+                        pplace_taxonomy = opt$pplace_taxonomy,
+                        qiime2_taxonomy = opt$qiime2_taxonomy))

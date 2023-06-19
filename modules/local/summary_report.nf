@@ -24,8 +24,11 @@ process SUMMARY_REPORT  {
     path(dada_stats)
     path(barrnap_gff)
     path(barrnap_summary)
-    path(tax_reference)
-    path(asv_tax)
+    path(dada2_tax_reference)
+    path(dada2_tax)
+    path(sintax_tax)
+    path(pplace_tax)
+    path(qiime2_tax)
 
 
     output:
@@ -48,8 +51,11 @@ process SUMMARY_REPORT  {
     def find_truncation = find_truncation_values ? "--trunc_qmin $params.trunc_qmin --trunc_rmin $params.trunc_rmin" : ""
     def dada_err = meta.single_end ? "--dada_1_err_path $dada_err_svgs" : "--dada_1_err_path ${dada_err_svgs[0]} --dada_2_err_path ${dada_err_svgs[1]}"
     def barrnap = params.skip_barrnap ? "--skip_barrnap" : "--path_rrna_arc ${barrnap_gff[0]} --path_rrna_bac ${barrnap_gff[1]} --path_rrna_euk ${barrnap_gff[2]} --path_rrna_mito ${barrnap_gff[3]} --path_barrnap_sum $barrnap_summary"
-    def taxonomy = params.skip_taxonomy ? "--skip_taxonomy" :
-        params.dada_ref_tax_custom ? "--ref_tax_user --asv_tax_path $asv_tax" : "--ref_tax_path $tax_reference --asv_tax_path $asv_tax"
+    def dada2_taxonomy = dada2_tax ? "--dada2_taxonomy $dada2_tax" : ""
+    dada2_taxonomy += params.dada_ref_tax_custom ? " --ref_tax_user" : " --ref_tax_path $dada2_tax_reference"
+    def sintax_taxonomy = sintax_tax ? "--sintax_taxonomy $sintax_tax" : ""
+    def pplace_taxonomy = pplace_tax ? "--pplace_taxonomy $pplace_tax" : ""
+    def qiime2_taxonomy = qiime2_tax ? "--qiime2_taxonomy $qiime2_tax" : ""
     """
     generate_report.R   --report $report_template \\
                         --output "Summary_Report.html" \\
@@ -63,12 +69,15 @@ process SUMMARY_REPORT  {
                         --dada_filtntrim_args $dada_filtntrim_args \\
                         $dada_err \\
                         $barrnap \\
-                        $taxonomy \\
                         $single_end \\
                         $find_truncation \\
                         --trunclenf $params.trunclenf \\
                         --trunclenr $params.trunclenr \\
-                        --max_ee $params.max_ee
+                        --max_ee $params.max_ee \\
+                        $dada2_taxonomy \\
+                        $sintax_taxonomy \\
+                        $pplace_taxonomy \\
+                        $qiime2_taxonomy
     """
     //--pl_results $results_dir \\
     //cat <<-END_VERSIONS > versions.yml

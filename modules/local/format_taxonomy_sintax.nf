@@ -1,4 +1,4 @@
-process FORMAT_TAXONOMY {
+process FORMAT_TAXONOMY_SINTAX {
     label 'process_low'
 
     conda "conda-forge::sed=4.7"
@@ -8,12 +8,10 @@ process FORMAT_TAXONOMY {
 
     input:
     path(database)
-    val(suffix)
 
     output:
-    path( "*assignTaxonomy.fna*" ), emit: assigntax
-    path( "*addSpecies.fna*")     , emit: addspecies
-    path( "ref_taxonomy.*.txt")   , emit: ref_tax_info
+    path( "sintaxdb.fa.gz" ), emit: db
+    path( "ref_taxonomy_sintax.txt")     , emit: ref_tax_info
     path "versions.yml"           , emit: versions
 
     when:
@@ -21,13 +19,13 @@ process FORMAT_TAXONOMY {
 
     script:
     """
-    ${params.dada_ref_databases[params.dada_ref_taxonomy]["fmtscript"]}
+    ${params.sintax_ref_databases[params.sintax_ref_taxonomy]["fmtscript"]}
 
     #Giving out information
-    echo -e "--dada_ref_taxonomy: ${params.dada_ref_taxonomy}\n" >ref_taxonomy.${suffix}.txt
-    echo -e "Title: ${params.dada_ref_databases[params.dada_ref_taxonomy]["title"]}\n" >>ref_taxonomy.${suffix}.txt
-    echo -e "Citation: ${params.dada_ref_databases[params.dada_ref_taxonomy]["citation"]}\n" >>ref_taxonomy.${suffix}.txt
-    echo "All entries: ${params.dada_ref_databases[params.dada_ref_taxonomy]}" >>ref_taxonomy.${suffix}.txt
+    echo -e "--sintax_ref_taxonomy: ${params.sintax_ref_taxonomy}\n" >ref_taxonomy_sintax.txt
+    echo -e "Title: ${params.sintax_ref_databases[params.sintax_ref_taxonomy]["title"]}\n" >>ref_taxonomy_sintax.txt
+    echo -e "Citation: ${params.sintax_ref_databases[params.sintax_ref_taxonomy]["citation"]}\n" >>ref_taxonomy_sintax.txt
+    echo "All entries: ${params.sintax_ref_databases[params.sintax_ref_taxonomy]}" >>ref_taxonomy_sintax.txt
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -2,6 +2,7 @@
 # @author Jeanette Tångrot
 
 # Adds UNITE species hypothesis (SH) information to ASV table based on vsearch usearch_global results in blast6 format.
+# The look-up files required (<seq2sh.tsv>, <SHs.tax>), see below, can be generated as described in https://github.com/biodiversitydata-se/unite-shinfo
 #
 # Usage: add_sh_to_taxonomy.py <seq2sh.tsv> <SHs.tax> <tax.tsv> <blastout.tab> <outfile>
 #   Input:

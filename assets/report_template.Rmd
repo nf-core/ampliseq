@@ -354,6 +354,7 @@ if (!params$flag_ref_tax_user) {
 
 asv_tax <- read.table(params$dada2_taxonomy, header = TRUE, sep = "\t")
 
+#TODO: this depends on the database used and is defined in ref_databases.config in "taxlevels"
 # Calculate the classified numbers/percent of asv
 level <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus")
 

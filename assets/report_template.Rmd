@@ -284,43 +284,40 @@ cat("Barrnap classifies the ASVs into the origin domain (including ",
         "be filtered by sample origin.\n\n", sep = "")
 
 # Read the barrnap files and count the lines
-# TODO: rather use "results/barrnap/summary.tsv", that includes all info
-# TODO: use lowest p-value for ASVs, i.e. use https://github.com/nf-core/ampliseq/blob/78b7514ceeba80efb66b0e973e5321878cb9b0ba/modules/local/filter_ssu.nf#L38-L41
-# TODO: "results/barrnap/summary.tsv" contains only ASVs with annotations, i.e. sequences that do not match are not listed, so use previous ASV count for making relative values!
-l_paths_rrna <- c(params$path_rrna_arc, params$path_rrna_bac, params$path_rrna_euk, params$path_rrna_mito)
-n_rrna <- c()
-for (path_rrna in l_paths_rrna) {
-        n_rrna <- append(n_rrna, length(readLines(path_rrna)) - 1)
-}
-barrnap_sum <- read.table(params$path_barrnap_sum)
-label <- c("Archea", "Bacteria", "Eukaryotes", "Mitochondria")
-p_rrna <- round(n_rrna / nrow(barrnap_sum) * 100, 2)
-barrnap_df <- data.frame(label, n_rrna, p_rrna)
+df = read.table( params$path_barrnap_sum, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+# keep only ASV_ID & eval columns & sort
+df <- subset(df, select = c(ASV_ID,mito_eval,euk_eval,arc_eval,bac_eval))
+# choose kingdom (column) with lowest evalue
+df[is.na(df)] <- 1
+df$result = colnames(df[,2:5])[apply(df[,2:5],1,which.min)]
+df$result = gsub("_eval", "", df$result)
+
+#import asv table
+asv_table <- read.table(file = params$asv_table_path, header = TRUE, sep = "\t")
+n_asv <- length(asv_table$ASV_ID)
+
+# calculate numbers
+n_classified <- length(df$result)
+n_bac <- sum(grepl("bac", df$result))
+n_arc <- sum(grepl("arc", df$result))
+n_mito <- sum(grepl("mito", df$result))
+n_euk <- sum(grepl("euk", df$result))
+
+df_sum <- data.frame(label=c('Bacteria','Archea','Mitochondria','Eukaryotes','Unclassified'),
+                 count=c(n_bac,n_arc,n_mito,n_euk,n_asv - n_classified),
+                 percent=c(round( (n_bac/n_asv)*100, 2), round( (n_arc/n_asv)*100, 2), round( (n_mito/n_asv)*100, 2), round( (n_euk/n_asv)*100, 2), round( ( (n_asv - n_classified) /n_asv)*100, 2) ) )
 
 # Build outputtext
-outputstr <- "Barrnap classified "
-
-for (row in seq_len(nrow(barrnap_df))) {
-        outputstr <- paste0(outputstr, barrnap_df[row, ]$n_rrna, " (",
-                        barrnap_df[row, ]$p_rrna, " %) ASVs similar to ",
-                        barrnap_df[row, ]$label)
-        switch(as.character(row),
-                "3" = outputstr <- paste0(outputstr, " and "),
-                "4" = outputstr <- paste0(outputstr, ", respectively.\n\n"),
-                outputstr <- paste0(outputstr, ", "))
-}
-
-# Output text
-cat(outputstr)
+cat( "Barrnap classified ")
+cat( df_sum$count[1], "(", df_sum$percent[1],"%) ASVs as most similar to Bacteria, " )
+cat( df_sum$count[2], "(", df_sum$percent[2],"%) ASVs to Archea, " )
+cat( df_sum$count[3], "(", df_sum$percent[3],"%) ASVs to Mitochondria, " )
+cat( df_sum$count[4], "(", df_sum$percent[4],"%) ASVs to Eukaryotes, and" )
+cat( df_sum$count[5], "(", df_sum$percent[5],"%) were below similarity threshold to any kingdom." )
 
 # Barplot
-
-# Fix order of bars
-barrnap_df$label <- factor(barrnap_df$label, levels = barrnap_df$label)
-
-# Plot
-ggplot(barrnap_df,
-        aes(x = reorder(label, desc(label)), y = p_rrna)) +
+ggplot(df_sum,
+        aes(x = reorder(label, desc(label)), y = percent)) +
         geom_bar(stat = "identity", fill = rgb(0.1, 0.4, 0.75), width = 0.5) +
         ylab("% Classification") +
         xlab("rRNA origins") +

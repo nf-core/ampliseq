@@ -218,15 +218,15 @@
      inkscape:document-rotation="0"
      showguides="true"
      inkscape:window-maximized="1"
-     inkscape:window-y="0"
-     inkscape:window-x="72"
-     inkscape:window-height="1043"
-     inkscape:window-width="1848"
+     inkscape:window-y="27"
+     inkscape:window-x="1920"
+     inkscape:window-height="1136"
+     inkscape:window-width="1920"
      showgrid="false"
      inkscape:current-layer="layer1"
      inkscape:document-units="mm"
-     inkscape:cy="389.54699"
-     inkscape:cx="545.39105"
+     inkscape:cy="353.13594"
+     inkscape:cx="488.23615"
      inkscape:zoom="1"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
@@ -768,14 +768,9 @@
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png"><tspan
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778006px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.26458299"
          y="83.788673"
-         x="59.691353"
-         sodipodi:role="line"
-         id="tspan13308">Infer sequences</tspan><tspan
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778006px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.26458299"
-         y="87.316452"
          x="60.305443"
          sodipodi:role="line"
-         id="tspan13310">(ASVs) </tspan></text>
+         id="tspan13310">Infer ASVs </tspan></text>
     <text
        inkscape:export-ydpi="305.81"
        inkscape:export-xdpi="305.81"
@@ -871,13 +866,13 @@
        inkscape:export-ydpi="305.81"
        inkscape:export-xdpi="305.81"
        id="text4732-0-6-7-7"
-       y="91.639694"
+       y="88.993858"
        x="48.903481"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778006px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
        xml:space="preserve"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png"><tspan
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778006px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.26458299"
-         y="91.639694"
+         y="88.993858"
          x="48.903481"
          sodipodi:role="line"
          id="tspan19050-9-3">DADA2</tspan></text>
@@ -1825,7 +1820,7 @@
        style="stroke-width:8.51516" />
     <g
        id="g87720"
-       transform="translate(-34.925004,-24.08092)">
+       transform="translate(-34.925004,-26.726755)">
       <rect
          style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-8-6-6-3-4"
@@ -1852,7 +1847,7 @@
     </g>
     <g
        id="g87730"
-       transform="translate(-34.925004,-1.8596019)">
+       transform="translate(-34.925004,-3.9762687)">
       <rect
          style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-8-6-6-3-0"
@@ -1879,7 +1874,7 @@
     </g>
     <g
        id="g87715"
-       transform="translate(-34.925004,-27.792687)">
+       transform="translate(-34.925004,-29.380188)">
       <rect
          style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-8-6-6-3-8"
@@ -1903,7 +1898,7 @@
     </g>
     <g
        id="g17790"
-       transform="translate(0,-12.700002)">
+       transform="translate(0,-13.758336)">
       <rect
          style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-8-6-6-3-8-2"
@@ -1927,7 +1922,7 @@
     </g>
     <g
        id="g17790-3"
-       transform="translate(0,-7.1437543)">
+       transform="translate(0,-7.672921)">
       <rect
          style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-8-6-6-3-8-2-6"
@@ -2054,7 +2049,7 @@
          id="flowPara4555-5-1-0"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20.7634px;line-height:1.25;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro';fill:#000000;stroke-width:1.00309px" /></flowRoot>    <g
        id="g10951"
-       transform="translate(-34.925004,-26.987511)">
+       transform="translate(-34.925004,-28.045845)">
       <rect
          style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-8-6-6-3"
@@ -2078,7 +2073,7 @@
     </g>
     <g
        id="g11997"
-       transform="translate(-34.925004,-20.578741)">
+       transform="translate(-34.925004,-21.637075)">
       <rect
          style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-8-6-6-3-1"
@@ -2199,13 +2194,13 @@
        inkscape:export-ydpi="305.81"
        inkscape:export-xdpi="305.81"
        id="text4732-3-3"
-       y="118.8141"
+       y="117.75576"
        x="41.088692"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778006px;line-height:0.25;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
        xml:space="preserve"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png"><tspan
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778006px;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.26458299"
-         y="118.8141"
+         y="117.75576"
          x="41.088692"
          id="tspan4730-1-1"
          sodipodi:role="line">Extract ITS region</tspan></text>
@@ -2213,13 +2208,13 @@
        inkscape:export-ydpi="305.81"
        inkscape:export-xdpi="305.81"
        id="text4732-3-3-2"
-       y="129.20554"
+       y="128.14722"
        x="41.395306"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778006px;line-height:0.25;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
        xml:space="preserve"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png"><tspan
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778006px;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';stroke-width:0.26458299"
-         y="129.20554"
+         y="128.14722"
          x="41.395306"
          id="tspan4730-1-1-9"
          sodipodi:role="line">Filter ASVs</tspan></text>

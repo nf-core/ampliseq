@@ -143,8 +143,8 @@ workflow PARSE_INPUT {
         //Filter empty files
         ch_reads.dump(tag:'parse_input.nf: ch_reads')
             .branch {
-                failed: it[0].single_end ? it[1].size() < 1.KB : it[1][0].size() < 1.KB || it[1][1].size() < 1.KB
-                passed: it[0].single_end ? it[1].size() >= 1.KB : it[1][0].size() >= 1.KB && it[1][1].size() >= 1.KB
+                failed: it[0].single_end ? it[1].countFastq() < params.min_read_counts : it[1][0].countFastq() < params.min_read_counts || it[1][1].countFastq() < params.min_read_counts
+                passed: true
             }
             .set { ch_reads_result }
         ch_reads_result.passed.set { ch_reads_passed }
@@ -154,9 +154,9 @@ workflow PARSE_INPUT {
             .subscribe {
                 samples = it.join("\n")
                 if (params.ignore_empty_input_files) {
-                    log.warn "At least one input file for the following sample(s) was too small (<1KB):\n$samples\nIgnoring failed samples and continue!\n"
+                    log.warn "At least one input file for the following sample(s) had too few reads (<$params.min_read_counts):\n$samples\nThe threshold can be adjusted with `--min_read_counts`. Ignoring failed samples and continue!\n"
                 } else {
-                    error("At least one input file for the following sample(s) was too small (<1KB):\n$samples\nEither remove those samples or ignore that samples using `--ignore_empty_input_files`.")
+                    error("At least one input file for the following sample(s) had too few reads (<$params.min_read_counts):\n$samples\nEither remove those samples, adjust the threshold with `--min_read_counts`, or ignore that samples using `--ignore_empty_input_files`.")
                 }
             }
     }

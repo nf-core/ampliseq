@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#564](https://github.com/nf-core/ampliseq/pull/564),[#567](https://github.com/nf-core/ampliseq/pull/567),[#582](https://github.com/nf-core/ampliseq/pull/582) - Added phylogenetic placement
 - [#577](https://github.com/nf-core/ampliseq/pull/577) - Added SINTAX for taxonomic classification
 - [#575](https://github.com/nf-core/ampliseq/pull/575), [#586](https://github.com/nf-core/ampliseq/pull/586) - Added filtering step for stop codons for ASVs that are of coding regions.
+- [#597](https://github.com/nf-core/ampliseq/pull/597) - Samples with less reads than specified with `--min_read_counts` (default: 1) stop the pipeline, previously the threshold was 1KB in size.
 
 ### `Changed`
 

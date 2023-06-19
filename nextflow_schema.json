@@ -85,9 +85,17 @@
                     "description": "Naming of sequencing files",
                     "help_text": "Indicates the naming of sequencing files (default: `\"/*_R{1,2}_001.fastq.gz\"`).\n\nPlease note:\n\n1. The prepended slash (`/`) is required\n2. The star (`*`) is the required wildcard for sample names\n3. The curly brackets (`{}`) enclose the orientation for paired end reads, separated by a comma (`,`).\n4. The pattern must be enclosed in quotes\n\nFor example for one sample (name: `1`) with forward (file: `1_a.fastq.gz`) and reverse (file: `1_b.fastq.gz`) reads in folder `data`:\n\n```bash\n--input \"data\" --extension \"/*_{a,b}.fastq.gz\"\n```"
                 },
+                "min_read_counts": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Set read count threshold for failed samples.",
+                    "help_text": "Samples with less reads than this threshold at input or after trimming stop the pipeline. Using `--ignore_empty_input_files` or `--ignore_failed_trimming ignores` samples with read numbers below the threshold and lets the pipeline continue with less samples.",
+                    "fa_icon": "fas fa-greater-than-equal"
+                },
                 "ignore_empty_input_files": {
                     "type": "boolean",
-                    "description": "Ignore input files considered too small (<1KB) for individual samples and continue the pipeline without those samples."
+                    "description": "Ignore input files with too few reads.",
+                    "help_text": "Ignore input files with less reads than specified by `--min_read_counts` and continue the pipeline without those samples."
                 }
             }
         },
@@ -121,7 +129,8 @@
                 },
                 "ignore_failed_trimming": {
                     "type": "boolean",
-                    "description": "Ignore files considered too small (<1KB) after trimming and continue the pipeline without those samples."
+                    "description": "Ignore files with too few reads after trimming.",
+                    "help_text": "Ignore files with less reads than specified by `--min_read_counts` after trimming and continue the pipeline without those samples."
                 }
             }
         },

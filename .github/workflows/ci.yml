@@ -36,23 +36,25 @@ jobs:
           fi
 
   test:
-    name: Run pipeline with test data
+    name: nf-test
     needs: define_nxf_versions
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         NXF_VER: ${{ fromJson(needs.define_nxf_versions.outputs.matrix) }}
-        component:
-          - "tests/pipeline/misc/custom_reftax.nf.test --profile test_reftaxcustom"
-          - "tests/pipeline/misc/doubleprimers.nf.test --profile test_doubleprimers"
-          - "tests/pipeline/misc/fasta_input.nf.test --profile test_fasta"
-          - "tests/pipeline/misc/multi_seq.nf.test --profile test_multi"
-          - "tests/pipeline/paired_end/paired_end.nf.test --profile test"
-          - "tests/pipeline/paired_end/pe_iontorrent.nf.test --profile test_iontorrent"
-          - "tests/pipeline/paired_end/pe_novaseq.nf.test --profile test_novaseq"
-          - "tests/pipeline/paired_end/pe_pacbio_its.nf.test --profile test_pacbio_its"
-          - "tests/pipeline/single_end/single_end.nf.test --profile test_single"
+        tags:
+          - "test"
+          - "test_single"
+          - "test_fasta"
+          - "test_multi"
+          - "test_reftaxcustom"
+          - "test_doubleprimers"
+          - "test_iontorrent"
+          - "test_novaseq"
+          - "test_pacbio_its"
+          - "test_sintax"
+          - "test_pplace"
         profile:
           - "docker"
 
@@ -101,7 +103,7 @@ jobs:
 
       - name: Run nf-test
         run: |
-          nf-test test ${{ matrix.component }},${{ matrix.profile }} --junitxml=test.xml
+          nf-test test --tag ${{ matrix.tags }} --profile ${{ matrix.tags }},${{ matrix.profile }} --junitxml=test.xml
 
       - name: Output log on failure
         if: failure()

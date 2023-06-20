@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#580](https://github.com/nf-core/ampliseq/pull/580) - Add NF-TEST pipeline end-to-end tests for existing CI tests
 - [#591](https://github.com/nf-core/ampliseq/pull/591) - New version of the Unite taxonomy databases: 9.0
 - [#564](https://github.com/nf-core/ampliseq/pull/564),[#567](https://github.com/nf-core/ampliseq/pull/567),[#582](https://github.com/nf-core/ampliseq/pull/582) - Added phylogenetic placement
 - [#577](https://github.com/nf-core/ampliseq/pull/577) - Added SINTAX for taxonomic classification
@@ -15,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#580](https://github.com/nf-core/ampliseq/pull/580) - GitHub Actions CI - pull_request to `dev` tests with NXF_VER `latest-everything` & pull_request to `master` tests with NXF_VER `22.10.1` & `latest-everything`
 - [#563](https://github.com/nf-core/ampliseq/pull/563) - Renamed DADA2 taxonomic classification files to include the chosen reference taxonomy abbreviation.
 - [#567](https://github.com/nf-core/ampliseq/pull/567) - Renamed `--dada_tax_agglom_min` and `--qiime_tax_agglom_min` to `--tax_agglom_min` and `--dada_tax_agglom_max` and `--qiime_tax_agglom_max` to `--tax_agglom_max`
 - [#598](https://github.com/nf-core/ampliseq/pull/598) - Updated Workflow figure with SINTAX and phylogenetic placement

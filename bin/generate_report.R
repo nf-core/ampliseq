@@ -44,6 +44,7 @@ option_list = list(
     make_option(c("--sintax_taxonomy"), type="character", default=NULL, help="MultiQC plots", metavar="character"),
     make_option(c("--flag_sintax_taxonomy"), action="store_true", default=FALSE, help="MultiQC plots", metavar="character"),
     make_option(c("--pplace_taxonomy"), type="character", default=NULL, help="MultiQC plots", metavar="character"),
+    make_option(c("--flag_pplace_taxonomy"), action="store_true", default=FALSE, help="MultiQC plots", metavar="character"),
     make_option(c("--flag_qiime2_taxonomy"), action="store_true", default=FALSE, help="MultiQC plots", metavar="character"),
     make_option(c("--qiime2_taxonomy"), type="character", default=NULL, help="MultiQC plots", metavar="character")
 )
@@ -89,6 +90,7 @@ rmarkdown::render(opt$report, output_file = opt$output,
                         flag_dada2_taxonomy = opt$flag_dada2_taxonomy,
                         flag_sintax_taxonomy = opt$flag_sintax_taxonomy,
                         sintax_taxonomy = opt$sintax_taxonomy,
+                        flag_pplace_taxonomy = opt$flag_pplace_taxonomy,
                         pplace_taxonomy = opt$pplace_taxonomy,
                         flag_qiime2_taxonomy = opt$flag_qiime2_taxonomy,
                         qiime2_taxonomy = opt$qiime2_taxonomy))

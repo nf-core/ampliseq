@@ -54,7 +54,7 @@ process SUMMARY_REPORT  {
     def dada2_taxonomy = !dada2_tax ? "" :
         params.dada_ref_tax_custom ? "--flag_dada2_taxonomy --dada2_taxonomy $dada2_tax --ref_tax_user" : "--flag_dada2_taxonomy --dada2_taxonomy $dada2_tax --ref_tax_path $dada2_tax_reference"
     def sintax_taxonomy = sintax_tax ? "--flag_sintax_taxonomy --sintax_taxonomy $sintax_tax" : ""
-    def pplace_taxonomy = pplace_tax ? "--pplace_taxonomy $pplace_tax" : ""
+    def pplace_taxonomy = pplace_tax ? "--flag_pplace_taxonomy --pplace_taxonomy $pplace_tax" : ""
     def qiime2_taxonomy = qiime2_tax ? "--flag_qiime2_taxonomy --qiime2_taxonomy $qiime2_tax" : ""
     """
     generate_report.R   --report $report_template \\

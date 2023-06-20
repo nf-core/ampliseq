@@ -23,6 +23,7 @@ params:
     flag_ref_tax_user: FALSE
     flag_single_end: FALSE
     flag_dada2_taxonomy: FALSE
+    flag_qiime2_taxonomy: FALSE
     trunclenf: ""
     trunclenr: ""
     max_ee: ""
@@ -377,6 +378,66 @@ asv_classi_df <- data.frame(level, n_asv_classified, p_asv_classified)
 
 # Build output string
 outputstr <- "DADA2 classified "
+for (row in seq_len(nrow(asv_classi_df))) {
+        outputstr <- paste0(outputstr, asv_classi_df[row, ]$p_asv_classified,
+                         " % ASVs at ", asv_classi_df[row, ]$level, " level, ")
+}
+outputstr <- substr(outputstr, 1, nchar(outputstr)-2)
+outputstr <- paste0(outputstr, ".\n\n")
+
+# Output Text Classifications
+cat(outputstr)
+
+# Barplot
+# Plot
+asv_classi_df$level <- factor(asv_classi_df$level, levels = asv_classi_df$level)
+ggplot(asv_classi_df,
+        aes(x = reorder(level, desc(level)), y = p_asv_classified)) +
+        geom_bar(stat = "identity", fill = rgb(0.1, 0.4, 0.75), width = 0.5) +
+        ylab("% Classification") +
+        xlab("Levels") +
+        coord_flip() +
+        theme_bw()
+```
+
+```{r, eval = params$flag_qiime2_taxonomy, results='asis'}
+# Header
+cat("## Taxonomic Classification using QIIME2\n")
+
+#TODO: add database information
+#TODO: only tested for greengenes85, need to test also UNITE and SILVA!
+
+# Read file and prepare table
+asv_tax <- read.table(params$qiime2_taxonomy, header = TRUE, sep = "\t")
+#asv_tax <- data.frame(do.call('rbind', strsplit(as.character(asv_tax$Taxon),'; ',fixed=TRUE)))
+asv_tax <- subset(asv_tax, select = Taxon)
+
+# Remove greengenes85 ".__" placeholders
+df = as.data.frame(lapply(asv_tax, function(x) gsub(".__", "", x)))
+# remove all last, empty ;
+df = as.data.frame(lapply(df, function(x) gsub(" ;","",x)))
+# remove last remaining, empty ;
+df = as.data.frame(lapply(df, function(x) gsub("; $","",x)))
+
+# get maximum amount of taxa levels per ASV
+max_taxa <- lengths(regmatches(df$Taxon, gregexpr("; ", df$Taxon)))+1
+
+# Currently, all QIIME2 databases seem to have the same levels!
+level <- c("Kingdom","Phylum","Class","Order","Family","Genus","Species")
+
+# Calculate the classified numbers/percent of asv
+n_asv_tax = nrow(asv_tax)
+
+n_asv_classified <- length(which(max_taxa>=1))
+for (x in 2:length(level)) {
+    n_asv_classified <- c(n_asv_classified, length(which(max_taxa>=x)) )
+}
+p_asv_classified <- round(n_asv_classified / n_asv_tax * 100, 2)
+
+asv_classi_df <- data.frame(level, n_asv_classified, p_asv_classified)
+
+# Build output string
+outputstr <- "QIIME2 classified "
 for (row in seq_len(nrow(asv_classi_df))) {
         outputstr <- paste0(outputstr, asv_classi_df[row, ]$p_asv_classified,
                          " % ASVs at ", asv_classi_df[row, ]$level, " level, ")

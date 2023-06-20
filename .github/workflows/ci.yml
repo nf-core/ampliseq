@@ -12,39 +12,50 @@ on:
     types:
       - "published"
 
-# Setting environment variable for Nextflow logs & NFTEST version
 env:
   NXF_ANSI_LOG: false
   NFTEST_VER: "0.7.3"
 
-# Cancel if a newer run is started
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
-  # Define the jobs to be run in parallel
 jobs:
-  test-dev:
-    # Only run this job if the base branch is 'dev' or if a push event is triggered
-    if: (github.base_ref == 'dev' || (github.event_name == 'push'))
-    name: Run pipeline with test data on dev
+  define_nxf_versions:
+    name: Choose nextflow versions to test against depending on target branch
     runs-on: ubuntu-latest
-    # Define the matrix strategy for the job
+    outputs:
+      matrix: ${{ steps.nxf_versions.outputs.matrix }}
+    steps:
+      - id: nxf_versions
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" && "${{ github.base_ref }}" == "dev" && "${{ matrix.NXF_VER }}" != "latest-everything" ]]; then
+            echo matrix='["latest-everything"]' | tee -a $GITHUB_OUTPUT
+          else
+            echo matrix='["latest-everything", "22.10.1"]' | tee -a $GITHUB_OUTPUT
+          fi
+
+  test:
+    name: Run pipeline with test data
+    needs: define_nxf_versions
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        NXF_VER:
-          - "latest-everything"
-        aligner:
+        NXF_VER: ${{ fromJson(needs.define_nxf_versions.outputs.matrix) }}
+        test_profiles:
           - "tests/pipeline/misc/custom_reftax.nf.test --profile test_reftaxcustom"
           - "tests/pipeline/misc/doubleprimers.nf.test --profile test_doubleprimers"
-          # - "single_end"
-          # - "misc"
+          - "tests/pipeline/misc/fasta_input.nf.test --profile test_fasta"
+          - "tests/pipeline/misc/multi_seq.nf.test --profile test_multi"
+          - "tests/pipeline/paired_end/paired_end.nf.test --profile test"
+          - "tests/pipeline/paired_end/pe_iontorrent.nf.test --profile test_iontorrent"
+          - "tests/pipeline/paired_end/pe_novaseq.nf.test --profile test_novaseq"
+          - "tests/pipeline/paired_end/pe_pacbio_its.nf.test --profile test_pacbio_its"
+          - "tests/pipeline/single_end/single_end.nf.test --profile test_single"
         profile:
           - "docker"
 
-    # Define the steps for the job
     steps:
-      # Checkout the pipeline code from the repository
       - name: Check out pipeline code
         uses: actions/checkout@v3
 
@@ -77,31 +88,27 @@ jobs:
             echo "========================================"
           done;
 
-      # Install the specified version of Nextflow
       - name: Install Nextflow
         uses: nf-core/setup-nextflow@v1
         with:
           version: "${{ matrix.NXF_VER }}"
 
-      # Install nf-test
       - name: Install nf-test
         run: |
           wget -qO- https://code.askimed.com/install/nf-test | bash -s $NFTEST_VER
           sudo mv nf-test /usr/local/bin/
 
-      # Run nf-test with the specified aligner and output test results in TAP format
       - name: Run nf-test
         run: |
-          nf-test test ${{ matrix.aligner }},${{ matrix.profile }} --junitxml=test.xml
+          nf-test test ${{ matrix.test_profiles }},${{ matrix.profile }} --junitxml=test.xml
 
-      # If the test fails, output the software_versions.yml using the 'batcat' utility
       - name: Output log on failure
         if: failure()
         run: |
           sudo apt install bat > /dev/null
           batcat --decorations=always --color=always ${{ github.workspace }}/.nf-test/tests/*/output/pipeline_info/software_versions.yml
 
-      - name: Publish Test krakenuniq Report
+      - name: Publish Test Report
         uses: mikepenz/action-junit-report@v3
         if: always() # always run even if the previous step fails
         with:

@@ -352,23 +352,24 @@ if (!params$flag_ref_tax_user) {
 
 asv_tax <- read.table(params$dada2_taxonomy, header = TRUE, sep = "\t")
 
-#TODO: this depends on the database used and is defined in ref_databases.config in "taxlevels"
 # Calculate the classified numbers/percent of asv
-level <- c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus")
+level <- subset(asv_tax, select = -c(ASV_ID,confidence,sequence))
+level <- colnames(level)
 
-# Catch 100% Kingdom assignment
-if (count(asv_tax, Kingdom)$n[1] == nrow(asv_tax)){
-    n_kingdom = 0
+# Catch 100% highest taxa (e.g. Kingdom) assignment
+if (count(asv_tax, level[1])$n[1] == nrow(asv_tax)){
+    n_1 = 0
 } else {
-    n_kingdom = count(asv_tax, Kingdom)$n[1]
+    n_1 = count(asv_tax, level[1])$n[1]
 }
 n_asv_tax = nrow(asv_tax)
-n_asv_unclassified <- c(n_kingdom,
-                        count(asv_tax, Phylum)$n[1],
-                        count(asv_tax, Class)$n[1],
-                        count(asv_tax, Order)$n[1],
-                        count(asv_tax, Family)$n[1],
-                        count(asv_tax, Genus)$n[1])
+n_asv_unclassified <- c(n_1)
+for (x in level[2:length(level)]) {
+    asv_tax_subset <- subset(asv_tax, select = x)
+    colnames(asv_tax_subset)[1] <- "count_this"
+    n_asv_unclassified <- c(n_asv_unclassified, count(asv_tax_subset, count_this)$n[1])
+}
+
 n_asv_classified <- n_asv_tax - n_asv_unclassified
 p_asv_classified <- round(n_asv_classified / n_asv_tax * 100, 2)
 
@@ -376,15 +377,12 @@ asv_classi_df <- data.frame(level, n_asv_classified, p_asv_classified)
 
 # Build output string
 outputstr <- "DADA2 classified "
-
 for (row in seq_len(nrow(asv_classi_df))) {
         outputstr <- paste0(outputstr, asv_classi_df[row, ]$p_asv_classified,
-                         " % ASVs at ", asv_classi_df[row, ]$level, " level")
-        switch(as.character(row),
-                "5" = outputstr <- paste0(outputstr, " and "),
-                "6" = outputstr <- paste0(outputstr, ".\n\n"),
-                outputstr <- paste0(outputstr, ", "))
+                         " % ASVs at ", asv_classi_df[row, ]$level, " level, ")
 }
+outputstr <- substr(outputstr, 1, nchar(outputstr)-2)
+outputstr <- paste0(outputstr, ".\n\n")
 
 # Output Text Classifications
 cat(outputstr)

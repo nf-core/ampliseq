@@ -40,6 +40,7 @@ jobs:
     needs: define_nxf_versions
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         NXF_VER: ${{ fromJson(needs.define_nxf_versions.outputs.matrix) }}
         test_profiles:

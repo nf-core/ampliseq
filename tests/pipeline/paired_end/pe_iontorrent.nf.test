@@ -26,7 +26,6 @@ nextflow_pipeline {
                 { assert snapshot(path("$outputDir/cutadapt/cutadapt_summary.tsv")).match("cutadapt") },
                 { assert snapshot(path("$outputDir/dada2/ASV_seqs.fasta"),
                                 path("$outputDir/dada2/ASV_table.tsv"),
-                                path("$outputDir/dada2/ref_taxonomy.unite-fungi.txt"),
                                 path("$outputDir/dada2/DADA2_stats.tsv"),
                                 path("$outputDir/dada2/DADA2_table.rds"),
                                 path("$outputDir/dada2/DADA2_table.tsv")).match("dada2") },

@@ -1,0 +1,51 @@
+nextflow_pipeline {
+
+    name "Test Workflow main.nf"
+    script "main.nf"
+    tag "test_single"
+    tag "pipeline"
+
+    test("Single-End") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(UTILS.removeNextflowVersion("$outputDir")).match("software_versions") },
+                { assert snapshot(path("$outputDir/overall_summary.tsv")).match("overall_summary_tsv") },
+                { assert snapshot(path("$outputDir/barrnap/rrna.arc.gff"),
+                                path("$outputDir/barrnap/rrna.bac.gff"),
+                                path("$outputDir/barrnap/rrna.euk.gff"),
+                                path("$outputDir/barrnap/rrna.mito.gff")).match("barrnap") },
+                { assert new File("$outputDir/barrnap/summary.tsv").exists() },
+                { assert snapshot(path("$outputDir/cutadapt/cutadapt_summary.tsv")).match("cutadapt") },
+                { assert new File("$outputDir/cutadapt/1a_S103_L001_R1_001.trimmed.cutadapt.log").exists() },
+                { assert new File("$outputDir/cutadapt/1_S103_L001_R1_001.trimmed.cutadapt.log").exists() },
+                { assert new File("$outputDir/cutadapt/2a_S115_L001_R1_001.trimmed.cutadapt.log").exists() },
+                { assert new File("$outputDir/cutadapt/2_S115_L001_R1_001.trimmed.cutadapt.log").exists() },
+                { assert new File("$outputDir/cutadapt/assignTaxonomy.cutadapt.log").exists() },
+                { assert snapshot(path("$outputDir/dada2/ASV_seqs.fasta"),
+                                path("$outputDir/dada2/ASV_table.tsv"),
+                                path("$outputDir/dada2/ref_taxonomy.rdp_18.txt"),
+                                path("$outputDir/dada2/DADA2_stats.tsv"),
+                                path("$outputDir/dada2/DADA2_table.rds"),
+                                path("$outputDir/dada2/DADA2_table.tsv")).match("dada2") },
+                { assert new File("$outputDir/dada2/ASV_tax.rdp_18.tsv").exists() },
+                { assert new File("$outputDir/dada2/ASV_tax_species.rdp_18.tsv").exists() },
+                { assert new File("$outputDir/fastqc/1a_S103_L001_R1_001_fastqc.html").exists() },
+                { assert new File("$outputDir/fastqc/1_S103_L001_R1_001_fastqc.html").exists() },
+                { assert new File("$outputDir/fastqc/2a_S115_L001_R1_001_fastqc.html").exists() },
+                { assert new File("$outputDir/fastqc/2_S115_L001_R1_001_fastqc.html").exists() },
+                { assert snapshot(path("$outputDir/input/Samplesheet_single_end.tsv")).match("input") },
+                { assert snapshot(path("$outputDir/multiqc/multiqc_data/multiqc_fastqc.txt"),
+                                path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt"),
+                                path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt")).match("multiqc") }
+            )
+        }
+    }
+}

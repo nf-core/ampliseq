@@ -1,0 +1,54 @@
+{
+    "input": {
+        "content": [
+            "Samplesheet_multi.tsv:md5,25b97db179c42b568e28f00a1c475f78"
+        ],
+        "timestamp": "2023-05-28T21:15:03+0000"
+    },
+    "qiime2": {
+        "content": [
+            "descriptive_stats.tsv:md5,f6c6527f32005a005fef4d1830874a3e",
+            "seven_number_summary.tsv:md5,4b177ed9a865e3320953b69860a435ef"
+        ],
+        "timestamp": "2023-05-28T21:15:03+0000"
+    },
+    "software_versions": {
+        "content": [
+            "{BARRNAP={barrnap=0.9}, CUSTOM_DUMPSOFTWAREVERSIONS={python=3.11.0, yaml=6.0}, DADA2_DENOISING={R=4.1.1, dada2=1.22.0}, DADA2_FILTNTRIM={R=4.1.1, dada2=1.22.0}, DADA2_TAXONOMY={R=4.1.1, dada2=1.22.0}, FASTQC={fastqc=0.11.9}, FILTER_STATS={pandas=1.1.5, python=3.9.1}, QIIME2_INSEQ={qiime2=2022.11.1}, RENAME_RAW_DATA_FILES={sed=4.7}, Workflow={nf-core/ampliseq=2.6.0dev}}"
+        ],
+        "timestamp": "2023-05-28T21:15:03+0000"
+    },
+    "overall_summary_tsv": {
+        "content": [
+            "overall_summary.tsv:md5,cc01727705136cc5d096d373237e1e06"
+        ],
+        "timestamp": "2023-05-28T21:15:03+0000"
+    },
+    "dada2": {
+        "content": [
+            "ASV_seqs.fasta:md5,f786f2a262c3b7bf1eca475dc2c9bef6",
+            "ASV_table.tsv:md5,91ca9b9ab06a873033c29af4f93dfa80",
+            "ref_taxonomy.rdp_18.txt:md5,815c4fce9f3d1de019fb995a43fb66ed",
+            "DADA2_stats.tsv:md5,1413d7b7abcdd9344efe78b550112345",
+            "DADA2_table.rds:md5,e55f6c929176c853ac4d91123532df9c",
+            "DADA2_table.tsv:md5,e9d7e7dfabdd1f9d3bbaa45eba545367"
+        ],
+        "timestamp": "2023-05-28T21:15:03+0000"
+    },
+    "barrnap": {
+        "content": [
+            "rrna.arc.gff:md5,07229e8767a6165fdc2e392d75aec74a",
+            "rrna.bac.gff:md5,5e2dc0da75181e69c61ad49fe877848a",
+            "rrna.euk.gff:md5,12cd46457b8fcf5853a6cfba39dd7c63",
+            "rrna.mito.gff:md5,737567148a9252d93deb529a06f3239c"
+        ],
+        "timestamp": "2023-05-28T21:15:03+0000"
+    },
+    "multiqc": {
+        "content": [
+            "multiqc_general_stats.txt:md5,5692ee73c6933866807706d29b15c880",
+            "multiqc_fastqc.txt:md5,3a4417c7d95a9bbe17751dc974157cd3"
+        ],
+        "timestamp": "2023-05-28T21:15:03+0000"
+    }
+}

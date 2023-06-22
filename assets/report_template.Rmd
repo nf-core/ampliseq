@@ -329,6 +329,16 @@ ggplot(df_sum,
         theme_bw()
 ```
 
+```{r, results='asis'}
+# Check if any taxonomic classification is available
+any_taxonomy <- params$flag_dada2_taxonomy || params$flag_qiime2_taxonomy || params$flag_sintax_taxonomy || params$flag_pplace_taxonomy
+```
+
+```{r, eval = any_taxonomy, results='asis'}
+# Header if any taxonomic classification is available
+cat("# Taxonomic Classification\n")
+```
+
 ```{r, eval = params$flag_dada2_taxonomy, results='asis'}
 # Header
 cat("# Taxonomic Classification\n")
@@ -403,7 +413,7 @@ ggplot(asv_classi_df,
 ```
 
 ```{r, eval = params$flag_qiime2_taxonomy, results='asis'}
-# Header #TODO: that header line needs to be also displayed with other taxonomic assignments!
+# Header
 cat("## Taxonomic Classification using QIIME2\n")
 
 #TODO: add database information
@@ -522,7 +532,6 @@ ggplot(asv_classi_df,
 cat("## Taxonomic Classification using Phylogenetic Placement\n")
 
 #TODO: add database information
-#TODO: only tested for greengenes85, need to test also UNITE and SILVA!
 
 # Read file and prepare table
 asv_tax <- read.table(params$pplace_taxonomy, header = TRUE, sep = "\t")

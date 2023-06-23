@@ -3,10 +3,12 @@ process SUMMARY_REPORT  {
     label 'process_low'
 
     container 'docker.io/tillenglert/ampliseq_report:latest'
-    //conda (params.enable_conda ? "bioconda:r-markdown==0.8--r3.4.1_1" : null)
-    //container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-    //    'https://depot.galaxyproject.org/singularity/r-markdown:0.8--r3.4.1_1' :
-    //   'quay.io/biocontainers/r-markdown:0.8--r3.4.1_1' }"
+    /* this is from https://github.com/nf-core/modules/blob/master/modules/nf-core/rmarkdownnotebook/main.nf but doesnt work
+    conda "conda-forge::r-base=4.1.0 conda-forge::r-rmarkdown=2.9 conda-forge::r-yaml=2.2.1"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/mulled-v2-31ad840d814d356e5f98030a4ee308a16db64ec5:0e852a1e4063fdcbe3f254ac2c7469747a60e361-0' :
+        'biocontainers/mulled-v2-31ad840d814d356e5f98030a4ee308a16db64ec5:0e852a1e4063fdcbe3f254ac2c7469747a60e361-0' }"
+    */
 
     input:
     path(report_template)
@@ -24,6 +26,9 @@ process SUMMARY_REPORT  {
     path(dada_stats)
     path(barrnap_gff)
     path(barrnap_summary)
+    path(filter_len_asv_stats)
+    path(filter_len_asv_len_orig)
+    path(filter_codons_stats)
     path(dada2_tax_reference)
     path(dada2_tax)
     path(sintax_tax)
@@ -51,6 +56,10 @@ process SUMMARY_REPORT  {
     def find_truncation = find_truncation_values ? "--trunc_qmin $params.trunc_qmin --trunc_rmin $params.trunc_rmin" : ""
     def dada_err = meta.single_end ? "--dada_1_err_path $dada_err_svgs" : "--dada_1_err_path ${dada_err_svgs[0]} --dada_2_err_path ${dada_err_svgs[1]}"
     def barrnap = params.skip_barrnap ? "--skip_barrnap" : "--path_rrna_arc ${barrnap_gff[0]} --path_rrna_bac ${barrnap_gff[1]} --path_rrna_euk ${barrnap_gff[2]} --path_rrna_mito ${barrnap_gff[3]} --path_barrnap_sum $barrnap_summary"
+    def filter_len_asv = filter_len_asv_stats ? "--filter_len_asv $filter_len_asv_stats --filter_len_asv_len_orig $filter_len_asv_len_orig" : ""
+        filter_len_asv += params.min_len_asv ? " --min_len_asv $params.min_len_asv " : " --min_len_asv 0"
+        filter_len_asv += params.max_len_asv ? " --max_len_asv $params.max_len_asv" : " --max_len_asv 0"
+    def filter_codons = filter_codons_stats ? "--filter_codons $filter_codons_stats" : ""
     def dada2_taxonomy = !dada2_tax ? "" :
         params.dada_ref_tax_custom ? "--flag_dada2_taxonomy --dada2_taxonomy $dada2_tax --ref_tax_user" : "--flag_dada2_taxonomy --dada2_taxonomy $dada2_tax --ref_tax_path $dada2_tax_reference"
     def sintax_taxonomy = sintax_tax ? "--flag_sintax_taxonomy --sintax_taxonomy $sintax_tax" : ""
@@ -74,6 +83,8 @@ process SUMMARY_REPORT  {
                         --trunclenf $params.trunclenf \\
                         --trunclenr $params.trunclenr \\
                         --max_ee $params.max_ee \\
+                        $filter_len_asv \\
+                        $filter_codons \\
                         $dada2_taxonomy \\
                         $sintax_taxonomy \\
                         $pplace_taxonomy \\

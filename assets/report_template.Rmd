@@ -31,6 +31,8 @@ params:
     max_ee: ""
     trunc_qmin: ""
     trunc_rmin: ""
+    min_len_asv: ""
+    max_len_asv: ""
 
     # file paths
     mqc_plot: ""
@@ -51,8 +53,11 @@ params:
     path_rrna_euk: ""
     path_rrna_mito: ""
     path_barrnap_sum: ""
+    filter_len_asv: ""
+    filter_len_asv_len_orig: ""
+    filter_codons: ""
     ref_tax_path: ""
-    dada2_taxonomy: "empty"
+    dada2_taxonomy: ""
     sintax_taxonomy: ""
     pplace_taxonomy: ""
     qiime2_taxonomy: ""
@@ -304,13 +309,13 @@ if ( params$flag_single_end ) {
 }
 
 # Plot
-dada_stats_ex_t$steps_t <- factor(dada_stats_ex_t$steps_t, levels=unique(dada_stats_ex_t$steps_t))
-ggplot(dada_stats_ex_t, aes(fill = steps_t, y = asvs_abs_t, x = samples_t)) +
-        geom_bar(position = "stack", stat = "identity") +
-        xlab("Samples") +
-        ylab("Absolute reads") +
-        coord_flip() +
-        scale_fill_brewer("Filtering Steps", palette = "Spectral")
+#dada_stats_ex_t$steps_t <- factor(dada_stats_ex_t$steps_t, levels=unique(dada_stats_ex_t$steps_t))
+#ggplot(dada_stats_ex_t, aes(fill = steps_t, y = asvs_abs_t, x = samples_t)) +
+#        geom_bar(position = "stack", stat = "identity") +
+#        xlab("Samples") +
+#        ylab("Absolute reads") +
+#        coord_flip() +
+#        scale_fill_brewer("Filtering Steps", palette = "Spectral")
 
 # Plot
 dada_stats_p_t$steps_t <- factor(dada_stats_p_t$steps_t, levels=unique(dada_stats_p_t$steps_t))
@@ -336,16 +341,22 @@ n_asv <- length(asv_table$ASV_ID)
 # Output text
 cat("Finally,", n_asv,
         "amplicon sequence variants (ASVs) were obtained across all samples. ")
-cat("The ASVs can be found in ['dada2/ASV_seqs.fasta'](../dada2/ASV_seqs.fasta). And the corresponding",
-        " quantification of the ASVs across samples can be found in",
-        "['dada2/ASV_table.tsv'](../dada2/ASV_table.tsv). An extensive table containing both can ",
-        "be found ['dada2/DADA2_table.tsv'](../dada2/DADA2_table.tsv)")
+cat("The ASVs can be found in ['dada2/ASV_seqs.fasta'](../dada2/). And the corresponding",
+        " quantification of the ASVs across samples is in",
+        "['dada2/ASV_table.tsv'](../dada2/). An extensive table containing both was ",
+        "saved as ['dada2/DADA2_table.tsv'](../dada2/)")
+```
+
+```{r, results='asis'}
+flag_any_filtering <- !params$flag_skip_barrnap || isTRUE(params$filter_len_asv != "") || isTRUE(params$filter_codons != "")
+```
+
+```{r, eval = flag_any_filtering, results='asis'}
+cat("# Filtering of ASVs\n")
 ```
 
 ```{r, eval = !params$flag_skip_barrnap, results='asis'}
-# Header
-cat("# Filtering of ASVs\n")
-cat("## ASV filtering using Barrnap\n")
+cat("## rRNA detection\n")
 cat("Barrnap classifies the ASVs into the origin domain (including ",
         "mitochondiral origin). Using this classification the ASVs can ",
         "be filtered by sample origin.\n\n", sep = "")
@@ -393,6 +404,79 @@ ggplot(df_sum,
 ```
 
 ```{r, results='asis'}
+flag_filter_len_asv <- isTRUE(params$filter_len_asv != "")
+```
+
+```{r, eval = flag_filter_len_asv, results='asis'}
+cat("## Sequence length\n")
+
+cat("A length filter was used to reduce potential contamination after ASV computation.",
+    "Before filtering, ASVs had the following length profile:\n\n")
+
+# ASV length profile
+
+# import length profile tsv
+filter_len_profile <- read.table(file = params$filter_len_asv_len_orig, header = TRUE, sep = "\t")
+
+# find number of ASVs filtered
+filter_len_asv_filtered <- filter_len_profile
+if ( params$min_len_asv != 0 ) {
+    filter_len_asv_filtered <- subset(filter_len_asv_filtered, Length >= params$min_len_asv)
+}
+if ( params$max_len_asv != 0 ) {
+    filter_len_asv_filtered <- subset(filter_len_asv_filtered, Length <= params$max_len_asv)
+}
+
+ggplot(filter_len_profile,
+        aes(x = Length, y = Counts)) +
+        geom_bar(stat = "identity", fill = rgb(0.1, 0.4, 0.75), width = 0.5) +
+        ylab("Number of ASVs") +
+        xlab("Length") +
+        coord_flip() +
+        theme_bw()
+
+# Reads removed
+
+# import stats tsv
+filter_len_stats <- read.table(file = params$filter_len_asv, header = TRUE, sep = "\t")
+# re-name & re-order columns
+colnames(filter_len_stats) <- gsub("lenfilter_","",colnames(filter_len_stats))
+filter_len_stats <- filter_len_stats[, c("sample", "input", "output")]
+filter_len_stats$'retained%' <- round( filter_len_stats$output / filter_len_stats$input * 100 , 2)
+filter_len_stats_avg_removed <- 100-sum(filter_len_stats$'retained%')/length(filter_len_stats$'retained%')
+filter_len_stats_max_removed <- 100-min(filter_len_stats$'retained%')
+
+cat("\n\n")
+if ( params$min_len_asv != 0 && params$max_len_asv != 0 ) {
+    cat("Filtering omitted all ASVs with length lower than",params$min_len_asv,"or above",params$max_len_asv,"bp. ")
+} else if ( params$min_len_asv != 0 ) {
+    cat("Filtering omitted all ASVs with length lower than",params$min_len_asv,"bp. ")
+} else if ( params$max_len_asv != 0 ) {
+    cat("Filtering omitted all ASVs with length above",params$max_len_asv,"bp. ")
+}
+cat("The following table shows (read) counts for each sample before and after filtering:")
+
+# Display table
+datatable(filter_len_stats, options = list(
+        scrollX = TRUE,
+        scrollY = "300px",
+        paging = FALSE))
+
+cat("In average", filter_len_stats_avg_removed, "% reads were removed, but at most",filter_len_stats_max_removed,"% reads per sample. ")
+cat("The number of ASVs was reduced by",sum(filter_len_profile$Counts)-sum(filter_len_asv_filtered$Counts),"(",100-round( sum(filter_len_asv_filtered$Counts)/sum(filter_len_profile$Counts)*100 ,2),"%), from",sum(filter_len_profile$Counts),"to",sum(filter_len_asv_filtered$Counts)," ASVs.")
+```
+
+```{r, results='asis'}
+flag_filter_codons <- isTRUE(params$filter_codons != "")
+```
+
+```{r, eval = flag_filter_codons, results='asis'}
+cat("## Codon usage\n")
+#TODO: fill with content!
+cat("flag_filter_codons", flag_filter_codons, "params$filter_codons", params$filter_codons)
+```
+
+```{r, results='asis'}
 # Check if any taxonomic classification is available
 any_taxonomy <- params$flag_dada2_taxonomy || params$flag_qiime2_taxonomy || params$flag_sintax_taxonomy || params$flag_pplace_taxonomy
 ```
@@ -403,8 +487,6 @@ cat("# Taxonomic Classification\n")
 ```
 
 ```{r, eval = params$flag_dada2_taxonomy, results='asis'}
-# Header
-cat("# Taxonomic Classification\n")
 cat("## Taxonomic Classification using DADA2\n")
 
 if (!params$flag_ref_tax_user) {

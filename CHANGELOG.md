@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#563](https://github.com/nf-core/ampliseq/pull/563) - Renamed DADA2 taxonomic classification files to include the chosen reference taxonomy abbreviation.
 - [#567](https://github.com/nf-core/ampliseq/pull/567) - Renamed `--dada_tax_agglom_min` and `--qiime_tax_agglom_min` to `--tax_agglom_min` and `--dada_tax_agglom_max` and `--qiime_tax_agglom_max` to `--tax_agglom_max`
 - [#598](https://github.com/nf-core/ampliseq/pull/598) - Updated Workflow figure with SINTAX and phylogenetic placement
+- [#599](https://github.com/nf-core/ampliseq/pull/599) - For exact species assignment (DADA2's addSpecies) PR2 taxonomy database (e.g. `--dada_ref_taxonomy pr2`) now excludes any taxa that end with " sp.".
 
 ### `Fixed`
 

@@ -118,20 +118,23 @@ if (!params$flag_retain_untrimmed) cutadapt_text <- paste0(
 
 cat(cutadapt_text)
 
+# shorten header by "cutadapt_" to optimize visualisation
+colnames(cutadapt_summary) <- gsub("cutadapt_","",colnames(cutadapt_summary))
+
 datatable(cutadapt_summary, options = list(
         scrollX = TRUE,
         scrollY = "300px",
         paging = FALSE))
 
-cutadapt_summary$passed_num <- passed_col
-
-ggplot(cutadapt_summary,
-        aes(x = sample, y = passed_col)) +
-        geom_bar(stat = "identity", fill = rgb(0.1, 0.4, 0.75), width = 0.5) +
-        ylab("% sequencing reads passing filters of cutadapt") +
-        xlab("Samples") +
-        coord_flip() +
-        theme_bw()
+# Barplot TODO: currently skipper, because this is already in the table
+#cutadapt_summary$passed_num <- passed_col
+#ggplot(cutadapt_summary,
+#        aes(x = sample, y = passed_col)) +
+#        geom_bar(stat = "identity", fill = rgb(0.1, 0.4, 0.75), width = 0.5) +
+#        ylab("% sequencing reads passing filters of cutadapt") +
+#        xlab("Samples") +
+#        coord_flip() +
+#        theme_bw()
 ```
 
 ## Quality filtering using DADA2

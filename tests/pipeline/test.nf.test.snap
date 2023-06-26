@@ -22,7 +22,7 @@
     },
     "software_versions": {
         "content": [
-            "{BARRNAP={barrnap=0.9}, CUSTOM_DUMPSOFTWAREVERSIONS={python=3.11.0, yaml=6.0}, CUTADAPT_BASIC={cutadapt=3.4}, DADA2_DENOISING={R=4.1.1, dada2=1.22.0}, DADA2_FILTNTRIM={R=4.1.1, dada2=1.22.0}, DADA2_QUALITY1={R=4.1.1, ShortRead=1.52.0, dada2=1.22.0}, DADA2_TAXONOMY={R=4.1.1, dada2=1.22.0}, FASTQC={fastqc=0.11.9}, FILTER_LEN_ASV={Biostrings=2.58.0, R=4.0.3}, FILTER_STATS={pandas=1.1.5, python=3.9.1}, QIIME2_INSEQ={qiime2=2022.11.1}, RENAME_RAW_DATA_FILES={sed=4.7}, SBDIEXPORT={R=3.6.3}, TRUNCLEN={pandas=1.1.5, python=3.9.1}, Workflow={nf-core/ampliseq=2.6.0dev}}"
+            "{BARRNAP={barrnap=0.9}, CUSTOM_DUMPSOFTWAREVERSIONS={python=3.11.0, yaml=6.0}, CUTADAPT_BASIC={cutadapt=3.4}, DADA2_DENOISING={R=4.1.1, dada2=1.22.0}, DADA2_FILTNTRIM={R=4.1.1, dada2=1.22.0}, DADA2_QUALITY1={R=4.1.1, ShortRead=1.52.0, dada2=1.22.0}, DADA2_TAXONOMY={R=4.1.1, dada2=1.22.0}, FASTQC={fastqc=0.11.9}, FILTER_LEN_ASV={Biostrings=2.58.0, R=4.0.3}, FILTER_STATS={pandas=1.1.5, python=3.9.1}, QIIME2_INSEQ={qiime2=2022.11.1}, RENAME_RAW_DATA_FILES={sed=4.7}, SBDIEXPORT={R=3.6.3}, TRUNCLEN={pandas=1.1.5, python=3.9.1}, Workflow={nf-core/ampliseq=2.6.0}}"
         ],
         "timestamp": "2023-05-28T20:55:32+0000"
     },

@@ -1,74 +1,106 @@
-name: nf-core CI
 # This workflow runs the pipeline with the minimal test dataset to check that it completes without any syntax errors
+name: nf-core CI
 on:
   push:
     branches:
-      - dev
+      - "dev"
   pull_request:
+    branches:
+      - "dev"
+      - "master"
   release:
-    types: [published]
+    types:
+      - "published"
 
 env:
   NXF_ANSI_LOG: false
+  NFTEST_VER: "0.7.3"
 
 concurrency:
-  group: "${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}"
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
+  define_nxf_versions:
+    name: Choose nextflow versions to test against depending on target branch
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.nxf_versions.outputs.matrix }}
+    steps:
+      - id: nxf_versions
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" && "${{ github.base_ref }}" == "dev" && "${{ matrix.NXF_VER }}" != "latest-everything" ]]; then
+            echo matrix='["latest-everything"]' | tee -a $GITHUB_OUTPUT
+          else
+            echo matrix='["latest-everything", "22.10.1"]' | tee -a $GITHUB_OUTPUT
+          fi
+
   test:
-    name: Run pipeline with test data
-    # Only run on push if this is the nf-core dev branch (merged PRs)
-    if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/ampliseq') }}"
+    name: nf-test
+    needs: define_nxf_versions
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        NXF_VER:
-          - "22.10.1"
-          - "latest-everything"
+        NXF_VER: ${{ fromJson(needs.define_nxf_versions.outputs.matrix) }}
+        tags:
+          - "test"
+          - "test_single"
+          - "test_fasta"
+          - "test_multi"
+          - "test_reftaxcustom"
+          - "test_doubleprimers"
+          - "test_iontorrent"
+          - "test_novaseq"
+          - "test_pacbio_its"
+          - "test_sintax"
+          - "test_pplace"
+        profile:
+          - "docker"
+
     steps:
       - name: Check out pipeline code
         uses: actions/checkout@v3
+
+      - name: Check out test data
+        uses: actions/checkout@v3
+        with:
+          repository: nf-core/test-datasets
+          ref: ampliseq
+          path: test-datasets/
+          fetch-depth: 1
+
+      - name: Replace remote paths in samplesheets
+        run: |
+          for f in ${{ github.workspace }}/test-datasets/samplesheets/*.tsv; do
+            sed -i "s=https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/=${{ github.workspace }}/test-datasets/=g" $f
+            echo "========== $f ============"
+            cat $f
+            echo "========================================"
+          done;
 
       - name: Install Nextflow
         uses: nf-core/setup-nextflow@v1
         with:
           version: "${{ matrix.NXF_VER }}"
 
-      - name: Run pipeline with test data
+      - name: Install nf-test
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test,docker --outdir ./results
+          wget -qO- https://code.askimed.com/install/nf-test | bash -s $NFTEST_VER
+          sudo mv nf-test /usr/local/bin/
 
-  profiles:
-    name: Run workflow profile
-    # Only run on push if this is the nf-core dev branch (merged PRs)
-    if: ${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/ampliseq') }}
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        # Run remaining test profiles with minimum nextflow version
-        profile:
-          [
-            test_multi,
-            test_pacbio_its,
-            test_doubleprimers,
-            test_iontorrent,
-            test_single,
-            test_fasta,
-            test_reftaxcustom,
-            test_novaseq,
-          ]
-    steps:
-      - name: Check out pipeline code
-        uses: actions/checkout@v2
-
-      - name: Install Nextflow
+      - name: Run nf-test
         run: |
-          wget -qO- get.nextflow.io | bash
-          sudo mv nextflow /usr/local/bin/
+          nf-test test --tag ${{ matrix.tags }} --profile ${{ matrix.tags }},${{ matrix.profile }} --junitxml=test.xml
 
-      - name: Run pipeline with ${{ matrix.profile }} test profile
+      - name: Output log on failure
+        if: failure()
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile ${{ matrix.profile }},docker --outdir ./results
+          sudo apt install bat > /dev/null
+          batcat --decorations=always --color=always ${{ github.workspace }}/.nf-test/tests/*/output/pipeline_info/software_versions.yml
 
-#
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v3
+        if: always() # always run even if the previous step fails
+        with:
+          report_paths: "*.xml"

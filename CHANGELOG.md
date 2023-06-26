@@ -3,6 +3,40 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## nf-core/ampliseq version 2.6.0 - 2023-06-27
+
+### `Added`
+
+- [#580](https://github.com/nf-core/ampliseq/pull/580) - Add NF-TEST pipeline end-to-end tests for existing CI tests
+- [#591](https://github.com/nf-core/ampliseq/pull/591) - New version of the Unite taxonomy databases: 9.0
+- [#596](https://github.com/nf-core/ampliseq/pull/596) - New version of the PR2 taxonomy database: 5.0.0, only available with DADA2 (`--dada_ref_taxonomy`)
+- [#564](https://github.com/nf-core/ampliseq/pull/564),[#567](https://github.com/nf-core/ampliseq/pull/567),[#582](https://github.com/nf-core/ampliseq/pull/582) - Added phylogenetic placement
+- [#577](https://github.com/nf-core/ampliseq/pull/577) - Added SINTAX for taxonomic classification
+- [#575](https://github.com/nf-core/ampliseq/pull/575), [#586](https://github.com/nf-core/ampliseq/pull/586) - Added filtering step for stop codons for ASVs that are of coding regions.
+- [#597](https://github.com/nf-core/ampliseq/pull/597) - Samples with less reads than specified with `--min_read_counts` (default: 1) stop the pipeline, previously the threshold was 1KB in size.
+
+### `Changed`
+
+- [#580](https://github.com/nf-core/ampliseq/pull/580) - GitHub Actions CI - pull_request to `dev` tests with NXF_VER `latest-everything` & pull_request to `master` tests with NXF_VER `22.10.1` & `latest-everything`
+- [#563](https://github.com/nf-core/ampliseq/pull/563) - Renamed DADA2 taxonomic classification files to include the chosen reference taxonomy abbreviation.
+- [#567](https://github.com/nf-core/ampliseq/pull/567) - Renamed `--dada_tax_agglom_min` and `--qiime_tax_agglom_min` to `--tax_agglom_min` and `--dada_tax_agglom_max` and `--qiime_tax_agglom_max` to `--tax_agglom_max`
+- [#598](https://github.com/nf-core/ampliseq/pull/598) - Updated Workflow figure with SINTAX and phylogenetic placement
+- [#599](https://github.com/nf-core/ampliseq/pull/599) - For exact species assignment (DADA2's addSpecies) PR2 taxonomy database (e.g. `--dada_ref_taxonomy pr2`) now excludes any taxa that end with " sp.".
+
+### `Fixed`
+
+- [#553](https://github.com/nf-core/ampliseq/pull/553) - Handle empty barrnap results files
+- [#554](https://github.com/nf-core/ampliseq/pull/554) - Accept taxonomy strings that contain `#`,`'`
+- [#569](https://github.com/nf-core/ampliseq/pull/569) - Make header of overall_summary.tsv consistent between input data types
+- [#573](https://github.com/nf-core/ampliseq/pull/573) - Avoid parser error for single-end data when an empty read file is detected
+- [#578](https://github.com/nf-core/ampliseq/pull/578) - Template update for nf-core/tools version 2.8, including changing `System.exit(1)` to `Nextflow.error()`
+- [#594](https://github.com/nf-core/ampliseq/pull/594) - Update metadata documentation
+- [#595](https://github.com/nf-core/ampliseq/pull/595) - Closing gaps in rarefaction depth for diversity calculations (`mindepth` in QIIME2_DIVERSITY_CORE)
+
+### `Dependencies`
+
+### `Removed`
+
 ## nf-core/ampliseq version 2.5.0 - 2023-03-02
 
 ### `Added`

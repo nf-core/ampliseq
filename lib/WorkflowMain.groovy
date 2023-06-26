@@ -2,6 +2,8 @@
 // This file holds several functions specific to the main.nf workflow in the nf-core/ampliseq pipeline
 //
 
+import nextflow.Nextflow
+
 class WorkflowMain {
 
     //
@@ -22,7 +24,7 @@ class WorkflowMain {
     //
     // Generate help string
     //
-    public static String help(workflow, params, log) {
+    public static String help(workflow, params) {
         def command = "nextflow run ${workflow.manifest.name} --input samplesheet.csv -profile docker"
         def help_string = ''
         help_string += NfcoreTemplate.logo(workflow, params.monochrome_logs)
@@ -35,7 +37,7 @@ class WorkflowMain {
     //
     // Generate parameter summary log string
     //
-    public static String paramsSummaryLog(workflow, params, log) {
+    public static String paramsSummaryLog(workflow, params) {
         def summary_log = ''
         summary_log += NfcoreTemplate.logo(workflow, params.monochrome_logs)
         summary_log += NfcoreSchema.paramsSummaryLog(workflow, params)
@@ -50,7 +52,7 @@ class WorkflowMain {
     public static void initialise(workflow, params, log) {
         // Print help to screen if required
         if (params.help) {
-            log.info help(workflow, params, log)
+            log.info help(workflow, params)
             System.exit(0)
         }
 
@@ -70,7 +72,7 @@ class WorkflowMain {
         }
 
         // Print parameter summary log to screen
-        log.info paramsSummaryLog(workflow, params, log)
+        log.info paramsSummaryLog(workflow, params)
 
         // Validate workflow parameters via the JSON schema
         if (params.validate_params) {
@@ -94,12 +96,12 @@ class WorkflowMain {
     //
     private static void dadareftaxonomyExistsError(params, log) {
         if (params.dada_ref_databases && params.dada_ref_taxonomy && !params.dada_ref_databases.containsKey(params.dada_ref_taxonomy)) {
-            log.error "=============================================================================\n" +
+            def error_string = "=============================================================================\n" +
                 "  DADA2 reference database '${params.dada_ref_taxonomy}' not found in any config files provided to the pipeline.\n" +
                 "  Currently, the available reference taxonomy keys for `--dada_ref_taxonomy` are:\n" +
                 "  ${params.dada_ref_databases.keySet().join(", ")}\n" +
                 "==================================================================================="
-            System.exit(1)
+            Nextflow.error(error_string)
         }
     }
     //
@@ -107,12 +109,12 @@ class WorkflowMain {
     //
     private static void qiimereftaxonomyExistsError(params, log) {
         if (params.qiime_ref_databases && params.qiime_ref_taxonomy && !params.qiime_ref_databases.containsKey(params.qiime_ref_taxonomy)) {
-            log.error "=============================================================================\n" +
+            def error_string = "=============================================================================\n" +
                 "  QIIME2 reference database '${params.qiime_ref_taxonomy}' not found in any config files provided to the pipeline.\n" +
                 "  Currently, the available reference taxonomy keys for `--qiime_ref_taxonomy` are:\n" +
                 "  ${params.qiime_ref_databases.keySet().join(", ")}\n" +
                 "==================================================================================="
-            System.exit(1)
+            Nextflow.error(error_string)
         }
     }
 }

@@ -1,3 +1,9 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+
 # nf-core/ampliseq: Output
 
 ## Introduction
@@ -20,10 +26,14 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [Barrnap](#barrnap) - Predict ribosomal RNA sequences and optional filtering
   - [Length filter](#length-filter) - Optionally, ASV can be filtered by length thresholds
   - [ITSx](#itsx) - Optionally, the ITS region can be extracted
-- [Taxonomic classification with DADA2](#taxonomic-classification-with-dada2) - Taxonomic classification of (filtered) ASVs
-  - [assignSH](#assignsh) - Optionally, a UNITE species hypothesis (SH) can be added to the taxonomy
+  - [Codons](#codons) - Optionally the ASVs can be filtered by presence of stop codons.
+- [Taxonomic classification](#taxonomic-classification) - Taxonomic classification of (filtered) ASVs
+  - [DADA2](#dada2) - Taxonomic classification with DADA2
+  - [assignSH](#assignsh) - Optionally, a UNITE species hypothesis (SH) can be added to the DADA2 taxonomy
+  - [SINTAX](#sintax) - Taxonomic classification with SINTAX
+  - [Taxonomic classification with QIIME2](#taxonomic-classification-with-qiime2) - Taxonomic classification with QIIME2
+- [Phlogenetic placement and taxonomic classification](#phylogenetic-placement-and-taxonomic-classification) - Placing ASVs into a phyloenetic tree
 - [QIIME2](#qiime2) - Secondary analysis
-  - [Taxonomic classification](#taxonomic-classification) - Taxonomical classification of ASVs
   - [Abundance tables](#abundance-tables) - Exported abundance tables
   - [Relative abundance tables](#relative-abundance-tables) - Exported relative abundance tables
   - [Barplot](#barplot) - Interactive barplot
@@ -186,11 +196,30 @@ Optionally, the ITS region can be extracted from each ASV sequence using ITSx, a
 
 </details>
 
-### Taxonomic classification with DADA2
+#### Codons
 
-DADA2 taxonomically classifies the ASVs using a choice of supplied databases (specified with `--dada_ref_taxonomy`). The taxonomic classification will be done based on filtered ASV sequences (see above).
+Optionally, the ASVs can be filtered against the presence of stop codons in the specified open reading frame of the ASV. The filtering step can also filter out ASVs that are not multiple of 3 in length.
 
-Depending on the reference taxonomy database, sequences can be classified down to species rank. Species classification is reported in columns "Species" using DADA2's assignTaxonomy function or "Species_exact" using DADA2's addSpecies function, the latter only assigns exact sequence matches. Generally, species assignment without exact matches are much less trustworthy than those with exact matches. With short amplicons, e.g. 16S rRNA gene V4 region, the non-exact species annotation is not recommended to be trusted. The longer the ASVs are, the more acceptable is the non-exact species classification, e.g. PacBio (nearly) full length 16S rRNA gene sequences are thought to be trustworthy.
+Codon filtering can be activated by `--filter_codons`. By default, the codons are calculated and checked from the beginning (`--orf_start 1`) to the end (`--orf_end` not set) of the ASV sequence and the filter also checks if the length is a multiple of 3. By default, the filter screens for the presence of the stop codons `TAA` and `TAG`. To define different stop codons than default, use `--stop_codons`(comma-separated list, e.g. `--stop_codons "TAA,TAG,TGA"`).
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `codon_filter/`
+  - `ASV_codon_filtered.fna`: Fasta file of ASV sequences that passes the filter thresholds explained above.
+  - `ASV_codon_filtered.table.tsv`: The count table of ASVs that successfully passed through the filter thresholds.
+  - `ASV_codon_filtered.list`: List of ASV IDs that pass through the filter thresholds.
+  - `codon.filtered.stats.tsv`: Tracking read numbers through filtering, for each sample.
+
+</details>
+
+### Taxonomic classification
+
+DADA2 and/or SINTAX can be used to taxonomically classify the ASVs using a choice of supplied databases (specified with `--dada_ref_taxonomy` and/or `--sintax_ref_taxonomy`). By default, DADA2 is used for the classification. The taxonomic classification will be done based on filtered ASV sequences (see above).
+
+#### DADA2
+
+DADA2 is the default method for taxonomy classification. Depending on the reference taxonomy database, sequences can be classified down to species rank. Species classification is reported in columns "Species" using DADA2's assignTaxonomy function or "Species_exact" using DADA2's addSpecies function, the latter only assigns exact sequence matches. Generally, species assignment without exact matches are much less trustworthy than those with exact matches. With short amplicons, e.g. 16S rRNA gene V4 region, the non-exact species annotation is not recommended to be trusted. The longer the ASVs are, the more acceptable is the non-exact species classification, e.g. PacBio (nearly) full length 16S rRNA gene sequences are thought to be trustworthy.
 
 Files when _not_ using ITSx (default):
 
@@ -198,9 +227,9 @@ Files when _not_ using ITSx (default):
 <summary>Output files</summary>
 
 - `dada2/`
-  - `ASV_tax.tsv`: Taxonomic classification for each ASV sequence.
-  - `ASV_tax_species.tsv`: Exact species classification for each ASV sequence.
-  - `ref_taxonomy.txt`: Information about the used reference taxonomy, such as title, version, citation.
+  - `ASV_tax.*.tsv`: Taxonomic classification for each ASV sequence.
+  - `ASV_tax_species.*.tsv`: Exact species classification for each ASV sequence.
+  - `ref_taxonomy.*.txt`: Information about the used reference taxonomy, such as title, version, citation.
 
 </details>
 
@@ -210,17 +239,17 @@ Files when using ITSx:
 <summary>Output files</summary>
 
 - `dada2/`
-  - `ASV_ITS_tax.tsv`: Taxonomic classification with ITS region of each ASV sequence.
-  - `ASV_ITS_tax_species.tsv`: Exact species classification with ITS region of each ASV sequence.
-  - `ASV_tax.tsv`: Taxonomic classification of each ASV sequence, based on the ITS region.
-  - `ASV_tax_species.tsv`: Exact species classification of each ASV sequence, based on the ITS region.
-  - `ref_taxonomy.txt`: Information about the used reference taxonomy, such as title, version, citation.
+  - `ASV_ITS_tax.*.tsv`: Taxonomic classification with ITS region of each ASV sequence.
+  - `ASV_ITS_tax_species.*.tsv`: Exact species classification with ITS region of each ASV sequence.
+  - `ASV_tax.*.tsv`: Taxonomic classification of each ASV sequence, based on the ITS region.
+  - `ASV_tax_species.*.tsv`: Exact species classification of each ASV sequence, based on the ITS region.
+  - `ref_taxonomy.*.txt`: Information about the used reference taxonomy, such as title, version, citation.
 
 </details>
 
 #### assignSH
 
-Optionally, a UNITE species hypothesis (SH) can be added to the taxonomy. In short, the sequences are matched to the selected UNITE database with VSEARCH, using the sequence identity cutoff 98.5%. If a good enough and unique match is found, the sequence is assigned the SH of the matching sequence, and the taxonomy assignment for the sequence is changed to that of the SH. If no match is found, the taxonomy generated by assignTaxonomy and/or assignSpecies is kept.
+Optionally, a UNITE species hypothesis (SH) can be added to the DADA2 taxonomy. In short, the sequences are matched to the selected UNITE database with VSEARCH, using the sequence identity cutoff 98.5%. If a good enough and unique match is found, the sequence is assigned the SH of the matching sequence, and the taxonomy assignment for the sequence is changed to that of the SH. The look-up tables for SH taxonomies are generated as descibed at https://github.com/biodiversitydata-se/unite-shinfo. If no match is found, the taxonomy generated by assignTaxonomy and/or assignSpecies is kept.
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -228,6 +257,67 @@ Optionally, a UNITE species hypothesis (SH) can be added to the taxonomy. In sho
 - `assignsh/`
   - `ASV_tax_species_SH.tsv`: Taxonomic classification with SH taxonomy added in case of a match.
   - `*.vsearch.txt`: Raw vsearch results.
+
+</details>
+
+#### SINTAX
+
+Alternatively, ASVs can be taxonomically classified using the SINTAX algorithm as implemented in VSEARCH. Depending on the reference taxonomy database (specified with `sintax_ref_taxonomy`), sequences can be classified down to species rank.
+
+Files when _not_ using ITSx (default):
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `sintax/`
+  - `ASV_tax_sintax.*.raw.tsv`: Raw output from SINTAX.
+  - `ASV_tax_sintax.*.tsv`: Taxonomic classification for each ASV sequence in a format similar to DADA2 output.
+  - `ref_taxonomy.*.txt`: Information about the used reference taxonomy, such as title, version, citation.
+
+</details>
+
+Files when using ITSx:
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `sintax/`
+  - `ASV_ITS_tax_sintax.*.raw.tsv`: Raw output from SINTAX, when using cut sequences as input.
+  - `ASV_tax_sintax.*.tsv`: Taxonomic classification for each ASV sequence, based on the chosen ITS region, in a format similar to DADA2 output.
+  - `ref_taxonomy.*.txt`: Information about the used reference taxonomy, such as title, version, citation.
+
+</details>
+
+#### Taxonomic classification with QIIME2
+
+Taxonomic classification with QIIME2 is typically similar to DADA2 classifications. However, both options are available. When taxonomic classification with DADA2 and QIIME2 is performed, DADA2 classification takes precedence over QIIME2 classifications for all downstream analysis. Taxonomic classification by SINTAX or phylogenetic placement superseeds DADA2 and QIIME2 classification.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `qiime2/taxonomy/`
+  - `taxonomy.tsv`: Tab-separated table with taxonomic classification for each ASV
+  - `*-classifier.qza`: QIIME2 artefact of the trained classifier. Can be supplied to other pipeline runs with `--classifier`
+  - `ref_taxonomy.txt`: Information about the used reference taxonomy, such as title, version, citation.
+
+</details>
+
+### Phylogenetic placement and taxonomic classification
+
+Phylogenetic placement grafts sequences onto a phylogenetic reference tree and optionally outputs taxonomic annotations. The reference tree is ideally made from full-length high-quality sequences containing better evolutionary signal than short amplicons. It is hence superior to estimating de-novo phylogenetic trees from short amplicon sequences. On providing required reference files, ASV sequences are aligned to the reference alignment with either [HMMER](http://hmmer.org/) (default) or [MAFFT](https://mafft.cbrc.jp/alignment/software/). Subsequently, phylogenetic placement of query sequences is performed with [EPA-NG](https://github.com/Pbdas/epa-ng), and finally a number of summary operations are performed with [Gappa](https://github.com/lczech/gappa). This uses code from [nf-core/phyloplace](https://nf-co.re/phyloplace) in the form of its main [subworkflow](https://github.com/nf-core/modules/tree/master/subworkflows/nf-core/fasta_newick_epang_gappa), therefore its detailed documentation also applies here.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `pplace/`
+  - `*.graft.*.epa_result.newick`: Full phylogeny with query sequences grafted on to the reference phylogeny, in newick format.
+  - `*.taxonomy.per_query.tsv`: Tab separated file with taxonomy information per query from classification by `gappa examine examinassign`
+  - `*.per_query_unique.tsv`: Tab separated file with taxonomy information as above, but one row per query, by filtering for lowest LWR (likelihood weight ratio)
+  - `*.heattree.tree.svg`: Heattree in SVG format from calling `gappa examine heattree`, see [Gappa documentation](https://github.com/Pbdas/epa-ng/blob/master/README.md) for details.
+  - `pplace/hmmer/`: Contains intermediatary files if HMMER is used
+  - `pplace/mafft/`: Contains intermediatary files if MAFFT is used
+  - `pplace/epang/`: Output files from EPA-NG.
+  - `pplace/gappa/`: Gappa output described in the [Gappa documentation](https://github.com/Pbdas/epa-ng/blob/master/README.md).
 
 </details>
 
@@ -249,23 +339,9 @@ Intermediate data imported to QIIME2 is saved as QIIME2 fragments, that can be c
 
 </details>
 
-#### Taxonomic classification
-
-Taxonomic classification with QIIME2 is typically similar to DADA2 classifications. However, both options are available. When taxonomic classification with DADA2 and QIIME2 is performed, DADA2 classification takes precedence over QIIME2 classifications for all downstream analysis.
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `qiime2/taxonomy/`
-  - `taxonomy.tsv`: Tab-separated table with taxonomic classification for each ASV
-  - `*-classifier.qza`: QIIME2 artefact of the trained classifier. Can be supplied to other pipeline runs with `--classifier`
-  - `ref_taxonomy.txt`: Information about the used reference taxonomy, such as title, version, citation.
-
-</details>
-
 #### Abundance tables
 
-The abundance tables are the final data for further downstream analysis and visualisations. The tables are based on the computed ASVs and taxonomic classification (DADA2 classification takes precedence over QIIME2 classifications), but after removal of unwanted taxa. Unwanted taxa are often off-targets generated in PCR with primers that are not perfectly specific for the target DNA (can be specified by `--exclude_taxa`), by default mitrochondria and chloroplast sequences are removed because these are frequent unwanted non-bacteria PCR products.
+The abundance tables are the final data for further downstream analysis and visualisations. The tables are based on the computed ASVs and taxonomic classification (in the following priotity: phylogenetic placement [EPA-NG, Gappa], DADA2, QIIME2), but after removal of unwanted taxa. Unwanted taxa are often off-targets generated in PCR with primers that are not perfectly specific for the target DNA (can be specified by `--exclude_taxa`), by default mitrochondria and chloroplast sequences are removed because these are frequent unwanted non-bacteria PCR products.
 
 All following analysis is based on these filtered tables.
 
@@ -298,6 +374,7 @@ Absolute abundance tables produced by the previous steps contain count data, but
   - `rel-table-ASV.tsv`: Tab-separated relative abundance table for all ASVs.
   - `rel-table-ASV_with-DADA2-tax.tsv`: Tab-separated table for all ASVs with DADA2 taxonomic classification, sequence and relative abundance.
   - `rel-table-ASV_with-QIIME2-tax.tsv`: Tab-separated table for all ASVs with QIIME2 taxonomic classification, sequence and relative abundance.
+  - `rel-table-ASV_with-PPLACE-tax.tsv`: Tab-separated table for all ASVs with EPA-NG - Gappa taxonomic classification, sequence and relative abundance.
 
 </details>
 

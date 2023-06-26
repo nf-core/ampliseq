@@ -1,0 +1,70 @@
+nextflow_pipeline {
+
+    name "Test Workflow main.nf"
+    script "main.nf"
+    tag "test_multi"
+    tag "pipeline"
+
+    test("Multiple Sequencing Runs") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(UTILS.removeNextflowVersion("$outputDir")).match("software_versions") },
+                { assert snapshot(path("$outputDir/overall_summary.tsv")).match("overall_summary_tsv") },
+                { assert snapshot(path("$outputDir/barrnap/rrna.arc.gff"),
+                                path("$outputDir/barrnap/rrna.bac.gff"),
+                                path("$outputDir/barrnap/rrna.euk.gff"),
+                                path("$outputDir/barrnap/rrna.mito.gff")).match("barrnap") },
+                { assert new File("$outputDir/barrnap/summary.tsv").exists() },
+                { assert snapshot(path("$outputDir/dada2/ASV_seqs.fasta"),
+                                path("$outputDir/dada2/ASV_table.tsv"),
+                                path("$outputDir/dada2/ref_taxonomy.rdp_18.txt"),
+                                path("$outputDir/dada2/DADA2_stats.tsv"),
+                                path("$outputDir/dada2/DADA2_table.rds"),
+                                path("$outputDir/dada2/DADA2_table.tsv")).match("dada2") },
+                { assert new File("$outputDir/dada2/ASV_tax.rdp_18.tsv").exists() },
+                { assert new File("$outputDir/fastqc/sampleID_1_1_fastqc.html").exists() },
+                { assert new File("$outputDir/fastqc/sampleID_1_2_fastqc.html").exists() },
+                { assert new File("$outputDir/fastqc/sampleID_1a_1_fastqc.html").exists() },
+                { assert new File("$outputDir/fastqc/sampleID_1a_2_fastqc.html").exists() },
+                { assert new File("$outputDir/fastqc/sampleID_2_1_fastqc.html").exists() },
+                { assert new File("$outputDir/fastqc/sampleID_2_2_fastqc.html").exists() },
+                { assert new File("$outputDir/fastqc/sampleID_2a_1_fastqc.html").exists() },
+                { assert new File("$outputDir/fastqc/sampleID_2a_2_fastqc.html").exists() },
+                { assert snapshot(path("$outputDir/input/Samplesheet_multi.tsv")).match("input") },
+                { assert snapshot(path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt"),
+                                path("$outputDir/multiqc/multiqc_data/multiqc_fastqc.txt")).match("multiqc") },
+                { assert new File("$outputDir/qiime2/abundance_tables/abs-abund-table-2.tsv").exists() },
+                { assert new File("$outputDir/qiime2/abundance_tables/abs-abund-table-3.tsv").exists() },
+                { assert new File("$outputDir/qiime2/abundance_tables/abs-abund-table-4.tsv").exists() },
+                { assert new File("$outputDir/qiime2/abundance_tables/abs-abund-table-5.tsv").exists() },
+                { assert new File("$outputDir/qiime2/abundance_tables/abs-abund-table-6.tsv").exists() },
+                { assert new File("$outputDir/qiime2/abundance_tables/count_table_filter_stats.tsv").exists() },
+                { assert new File("$outputDir/qiime2/abundance_tables/filtered-table.qza").exists() },
+                { assert new File("$outputDir/qiime2/abundance_tables/feature-table.biom").exists() },
+                { assert new File("$outputDir/qiime2/abundance_tables/feature-table.tsv").exists() },
+                { assert new File("$outputDir/qiime2/input/rep-seqs.qza").exists() },
+                { assert new File("$outputDir/qiime2/input/table.qza").exists() },
+                { assert new File("$outputDir/qiime2/input/taxonomy.qza").exists() },
+                { assert new File("$outputDir/qiime2/rel_abundance_tables/rel-table-2.tsv").exists() },
+                { assert new File("$outputDir/qiime2/rel_abundance_tables/rel-table-3.tsv").exists() },
+                { assert new File("$outputDir/qiime2/rel_abundance_tables/rel-table-4.tsv").exists() },
+                { assert new File("$outputDir/qiime2/rel_abundance_tables/rel-table-5.tsv").exists() },
+                { assert new File("$outputDir/qiime2/rel_abundance_tables/rel-table-6.tsv").exists() },
+                { assert new File("$outputDir/qiime2/rel_abundance_tables/rel-table-ASV.tsv").exists() },
+                { assert new File("$outputDir/qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-tax.tsv").exists() },
+                { assert new File("$outputDir/qiime2/representative_sequences/filtered-sequences.qza").exists() },
+                { assert new File("$outputDir/qiime2/representative_sequences/rep-seq.fasta").exists() },
+                { assert snapshot(path("$outputDir/qiime2/representative_sequences/descriptive_stats.tsv"),
+                                path("$outputDir/qiime2/representative_sequences/seven_number_summary.tsv")).match("qiime2") }
+            )
+        }
+    }
+}

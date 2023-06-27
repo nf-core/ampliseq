@@ -47,8 +47,10 @@ predictions <- data.frame(
 taxtable  <- taxonomy %>%
     inner_join(predictions, by = 'ASV_ID') %>%
     mutate(Domain = if("Domain" %in% colnames(.)) Domain else '') %>%
-    mutate(Kingdom = if("Kingdom" %in% colnames(.)) Kingdom else '') %>%
-    mutate(Phylum = if("Phylum" %in% colnames(.)) Phylum else '') %>%
+    mutate(Kingdom = if("Kingdom" %in% colnames(.)) Kingdom
+                     else if ("Supergroup" %in% colnames(.)) Supergroup else '') %>%
+    mutate(Phylum = if("Phylum" %in% colnames(.)) Phylum
+                     else if ("Division" %in% colnames(.)) Division else '') %>%
     mutate(Class = if("Class" %in% colnames(.)) Class else '') %>%
     mutate(Order = if("Order" %in% colnames(.)) Order else '') %>%
     mutate(Family = if("Family" %in% colnames(.)) Family else '') %>%
@@ -122,5 +124,5 @@ taxtable  <- taxonomy %>%
     relocate(infraspecificEpithet, .after = specificEpithet) %>%
     relocate(annotation_confidence, .after = otu) %>%
     relocate(date_identified:taxon_remarks, .after = annotation_confidence) %>%
-    select_if(!names(.) %in% c('domain', 'species_exact', 'SH', 'BOLD_bin')) %>%
+    select_if(!names(.) %in% c('domain', 'species_exact', 'SH', 'BOLD_bin', 'Supergroup', 'Division', 'Subdivision')) %>%
     write_tsv("annotation.tsv", na = '')

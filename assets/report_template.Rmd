@@ -56,6 +56,7 @@ params:
     filter_len_asv: ""
     filter_len_asv_len_orig: ""
     filter_codons: ""
+    stop_codons: ""
     ref_tax_path: ""
     dada2_taxonomy: ""
     sintax_taxonomy: ""
@@ -401,6 +402,8 @@ ggplot(df_sum,
         xlab("rRNA origins") +
         coord_flip() +
         theme_bw()
+
+#TODO: add reads/ASVs removed as below?!
 ```
 
 ```{r, results='asis'}
@@ -472,8 +475,23 @@ flag_filter_codons <- isTRUE(params$filter_codons != "")
 
 ```{r, eval = flag_filter_codons, results='asis'}
 cat("## Codon usage\n")
-#TODO: fill with content!
-cat("flag_filter_codons", flag_filter_codons, "params$filter_codons", params$filter_codons)
+
+cat("Amplicons of coding regions are expected to be free of stop codons and consist of condon tripletts.",
+    "ASVs were filtered against the presence of stop codons (",params$stop_codons,") in the specified open reading frame of the ASV.",
+    "Additionally, ASVs that are not multiple of 3 in length were omitted.\n\n")
+
+# import stats tsv
+filter_codons_stats <- read.table(file = params$filter_codons, header = TRUE, sep = "\t")
+
+cat("The following table shows read counts for each sample after filtering:")
+
+# Display table
+datatable(filter_codons_stats, options = list(
+        scrollX = TRUE,
+        scrollY = "300px",
+        paging = FALSE))
+
+#TODO: add ASV count after filtering
 ```
 
 ```{r, results='asis'}

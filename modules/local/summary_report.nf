@@ -59,7 +59,7 @@ process SUMMARY_REPORT  {
     def filter_len_asv = filter_len_asv_stats ? "--filter_len_asv $filter_len_asv_stats --filter_len_asv_len_orig $filter_len_asv_len_orig" : ""
         filter_len_asv += params.min_len_asv ? " --min_len_asv $params.min_len_asv " : " --min_len_asv 0"
         filter_len_asv += params.max_len_asv ? " --max_len_asv $params.max_len_asv" : " --max_len_asv 0"
-    def filter_codons = filter_codons_stats ? "--filter_codons $filter_codons_stats" : ""
+    def filter_codons = filter_codons_stats ? "--filter_codons $filter_codons_stats --stop_codons $params.stop_codons" : ""
     def dada2_taxonomy = !dada2_tax ? "" :
         params.dada_ref_tax_custom ? "--flag_dada2_taxonomy --dada2_taxonomy $dada2_tax --ref_tax_user" : "--flag_dada2_taxonomy --dada2_taxonomy $dada2_tax --ref_tax_path $dada2_tax_reference"
     def sintax_taxonomy = sintax_tax ? "--flag_sintax_taxonomy --sintax_taxonomy $sintax_tax" : ""

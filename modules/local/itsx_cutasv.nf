@@ -4,7 +4,7 @@ process ITSX_CUTASV {
     conda "bioconda::itsx=1.1.3"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/itsx:1.1.3--hdfd78af_1' :
-        'quay.io/biocontainers/itsx:1.1.3--hdfd78af_1' }"
+        'biocontainers/itsx:1.1.3--hdfd78af_1' }"
 
     input:
     path fasta

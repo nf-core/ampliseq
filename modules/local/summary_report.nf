@@ -30,6 +30,7 @@ process SUMMARY_REPORT  {
     path(filter_len_asv_stats)
     path(filter_len_asv_len_orig)
     path(filter_codons_stats)
+    path(itsx_cutasv_summary)
     path(dada2_tax_reference)
     path(dada2_tax)
     path(sintax_tax)
@@ -62,6 +63,7 @@ process SUMMARY_REPORT  {
         filter_len_asv += params.min_len_asv ? " --min_len_asv $params.min_len_asv " : " --min_len_asv 0"
         filter_len_asv += params.max_len_asv ? " --max_len_asv $params.max_len_asv" : " --max_len_asv 0"
     def filter_codons = filter_codons_stats ? "--filter_codons $filter_codons_stats --stop_codons $params.stop_codons" : ""
+    def itsx_cutasv = itsx_cutasv_summary ? "--itsx_cutasv_summary $itsx_cutasv_summary --cut_its $params.cut_its" : "--cut_its none"
     def dada2_taxonomy = !dada2_tax ? "" :
         params.dada_ref_tax_custom ? "--flag_dada2_taxonomy --dada2_taxonomy $dada2_tax --ref_tax_user" : "--flag_dada2_taxonomy --dada2_taxonomy $dada2_tax --ref_tax_path $dada2_tax_reference"
     def sintax_taxonomy = sintax_tax ? "--flag_sintax_taxonomy --sintax_taxonomy $sintax_tax" : ""
@@ -87,6 +89,7 @@ process SUMMARY_REPORT  {
                         --max_ee $params.max_ee \\
                         $filter_len_asv \\
                         $filter_codons \\
+                        $itsx_cutasv \\
                         $dada2_taxonomy \\
                         $sintax_taxonomy \\
                         $pplace_taxonomy \\

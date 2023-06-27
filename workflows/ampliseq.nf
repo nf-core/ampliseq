@@ -686,6 +686,7 @@ workflow AMPLISEQ {
         params.min_len_asv || params.max_len_asv ? FILTER_LEN_ASV.out.stats : [],
         params.min_len_asv || params.max_len_asv ? FILTER_LEN_ASV.out.len_orig : [],
         params.filter_codons ? FILTER_CODONS.out.stats : [],
+        params.cut_its != "none" ? ITSX_CUTASV.out.summary : [],
         !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy && !params.dada_ref_tax_custom ? FORMAT_TAXONOMY.out.ref_tax_info : [],
         !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy ? ch_dada2_tax : [],
         !params.skip_taxonomy && params.sintax_ref_taxonomy ? ch_sintax_tax : [],

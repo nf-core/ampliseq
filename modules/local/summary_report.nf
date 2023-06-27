@@ -46,7 +46,7 @@ process SUMMARY_REPORT  {
 
     script:
     def single_end = meta.single_end ? "--single_end" : ""
-    def fastqc = params.skip_fastqc ? "--skip_fastqc" : "--mqc_plot ${mqc_plots}/svg/mqc_fastqc_per_sequence_quality_scores_plot_1.svg"
+    def fastqc = params.skip_fastqc || params.skip_multiqc ? "--skip_fastqc" : "--mqc_plot ${mqc_plots}/svg/mqc_fastqc_per_sequence_quality_scores_plot_1.svg"
     def cutadapt = params.skip_cutadapt ? "--skip_cutadapt" :
         params.retain_untrimmed ? "--retain_untrimmed --ca_sum_path $ca_summary" :
         "--ca_sum_path $ca_summary"

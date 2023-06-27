@@ -669,7 +669,7 @@ workflow AMPLISEQ {
     SUMMARY_REPORT (
         Channel.fromPath("${baseDir}/assets/report_template.Rmd"),
         Channel.fromPath("${baseDir}/assets/report_styles.css"),
-        MULTIQC.out.plots, //.collect().flatten().collectFile(name: "mqc_fastqc_per_sequence_quality_scores_plot_1.svg")
+        !params.skip_multiqc ? MULTIQC.out.plots : [], //.collect().flatten().collectFile(name: "mqc_fastqc_per_sequence_quality_scores_plot_1.svg")
         !params.skip_cutadapt ? CUTADAPT_WORKFLOW.out.summary.collect() : [],
         find_truncation_values,
         DADA2_PREPROCESSING.out.args.first(),

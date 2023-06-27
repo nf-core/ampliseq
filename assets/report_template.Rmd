@@ -31,6 +31,7 @@ params:
     max_ee: ""
     trunc_qmin: ""
     trunc_rmin: ""
+    filter_ssu: ""
     min_len_asv: ""
     max_len_asv: ""
 
@@ -48,11 +49,9 @@ params:
     path_asv_fa: ""
     path_dada2_tab: ""
     dada_stats_path: ""
-    path_rrna_arc: ""
-    path_rrna_bac: ""
-    path_rrna_euk: ""
-    path_rrna_mito: ""
     path_barrnap_sum: ""
+    filter_ssu_stats: ""
+    filter_ssu_asv: ""
     filter_len_asv: ""
     filter_len_asv_len_orig: ""
     filter_codons: ""
@@ -358,52 +357,80 @@ cat("# Filtering of ASVs\n")
 
 ```{r, eval = !params$flag_skip_barrnap, results='asis'}
 cat("## rRNA detection\n")
-cat("Barrnap classifies the ASVs into the origin domain (including ",
-        "mitochondiral origin). Using this classification the ASVs can ",
-        "be filtered by sample origin.\n\n", sep = "")
+cat("Barrnap classifies the ASVs into the origin domain (including mitochondiral origin).\n\n", sep = "")
 
 # Read the barrnap files and count the lines
-df = read.table( params$path_barrnap_sum, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+barrnap_sum = read.table( params$path_barrnap_sum, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
 # keep only ASV_ID & eval columns & sort
-df <- subset(df, select = c(ASV_ID,mito_eval,euk_eval,arc_eval,bac_eval))
+barrnap_sum <- subset(barrnap_sum, select = c(ASV_ID,mito_eval,euk_eval,arc_eval,bac_eval))
 # choose kingdom (column) with lowest evalue
-df[is.na(df)] <- 1
-df$result = colnames(df[,2:5])[apply(df[,2:5],1,which.min)]
-df$result = gsub("_eval", "", df$result)
+barrnap_sum[is.na(barrnap_sum)] <- 1
+barrnap_sum$result = colnames(barrnap_sum[,2:5])[apply(barrnap_sum[,2:5],1,which.min)]
+barrnap_sum$result = gsub("_eval", "", barrnap_sum$result)
 
 #import asv table
 asv_table <- read.table(file = params$asv_table_path, header = TRUE, sep = "\t")
 n_asv <- length(asv_table$ASV_ID)
 
 # calculate numbers
-n_classified <- length(df$result)
-n_bac <- sum(grepl("bac", df$result))
-n_arc <- sum(grepl("arc", df$result))
-n_mito <- sum(grepl("mito", df$result))
-n_euk <- sum(grepl("euk", df$result))
+n_classified <- length(barrnap_sum$result)
+n_bac <- sum(grepl("bac", barrnap_sum$result))
+n_arc <- sum(grepl("arc", barrnap_sum$result))
+n_mito <- sum(grepl("mito", barrnap_sum$result))
+n_euk <- sum(grepl("euk", barrnap_sum$result))
 
-df_sum <- data.frame(label=c('Bacteria','Archea','Mitochondria','Eukaryotes','Unclassified'),
+barrnap_df_sum <- data.frame(label=c('Bacteria','Archea','Mitochondria','Eukaryotes','Unclassified'),
                  count=c(n_bac,n_arc,n_mito,n_euk,n_asv - n_classified),
                  percent=c(round( (n_bac/n_asv)*100, 2), round( (n_arc/n_asv)*100, 2), round( (n_mito/n_asv)*100, 2), round( (n_euk/n_asv)*100, 2), round( ( (n_asv - n_classified) /n_asv)*100, 2) ) )
 
 # Build outputtext
 cat( "Barrnap classified ")
-cat( df_sum$count[1], "(", df_sum$percent[1],"%) ASVs as most similar to Bacteria, " )
-cat( df_sum$count[2], "(", df_sum$percent[2],"%) ASVs to Archea, " )
-cat( df_sum$count[3], "(", df_sum$percent[3],"%) ASVs to Mitochondria, " )
-cat( df_sum$count[4], "(", df_sum$percent[4],"%) ASVs to Eukaryotes, and " )
-cat( df_sum$count[5], "(", df_sum$percent[5],"%) were below similarity threshold to any kingdom." )
+cat( barrnap_df_sum$count[1], "(", barrnap_df_sum$percent[1],"%) ASVs as most similar to Bacteria, " )
+cat( barrnap_df_sum$count[2], "(", barrnap_df_sum$percent[2],"%) ASVs to Archea, " )
+cat( barrnap_df_sum$count[3], "(", barrnap_df_sum$percent[3],"%) ASVs to Mitochondria, " )
+cat( barrnap_df_sum$count[4], "(", barrnap_df_sum$percent[4],"%) ASVs to Eukaryotes, and " )
+cat( barrnap_df_sum$count[5], "(", barrnap_df_sum$percent[5],"%) were below similarity threshold to any kingdom." )
 
 # Barplot
-ggplot(df_sum,
+ggplot(barrnap_df_sum,
         aes(x = reorder(label, desc(label)), y = percent)) +
         geom_bar(stat = "identity", fill = rgb(0.1, 0.4, 0.75), width = 0.5) +
         ylab("% Classification") +
         xlab("rRNA origins") +
         coord_flip() +
         theme_bw()
+```
 
-#TODO: add reads/ASVs removed as below?!
+```{r, results='asis'}
+flag_filter_ssu <- !params$flag_skip_barrnap && isTRUE(params$filter_ssu != "none")
+```
+
+```{r, eval = flag_filter_ssu, results='asis'}
+cat("ASVs were filtered for (",params$filter_ssu,") using the above classification.",
+    "The following table shows read counts for each sample before and after filtering:\n\n", sep = "")
+
+# Read the barrnap stats file
+filter_ssu_stats = read.table( params$filter_ssu_stats, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+# shorten header by "ssufilter_" to optimize visualisation
+colnames(filter_ssu_stats) <- gsub("ssufilter_","",colnames(filter_ssu_stats))
+filter_ssu_stats <- subset(filter_ssu_stats, select = c(sample,input,output))
+filter_ssu_stats$'retained%' <- round( filter_ssu_stats$output / filter_ssu_stats$input *100, 2)
+filter_ssu_stats_avg_removed <- 100-sum(filter_ssu_stats$'retained%')/length(filter_ssu_stats$'retained%')
+filter_ssu_stats_max_removed <- 100-min(filter_ssu_stats$'retained%')
+
+# Display table
+datatable(filter_ssu_stats, options = list(
+        scrollX = TRUE,
+        scrollY = "300px",
+        paging = FALSE))
+
+# Read the barrnap asv file
+filter_ssu_asv <- read.table( params$filter_ssu_asv, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+filter_ssu_asv_filtered <- nrow(filter_ssu_asv)
+
+cat("In average", round(filter_ssu_stats_avg_removed,2), "% reads were removed, but at most",filter_ssu_stats_max_removed,"% reads per sample. ")
+# "n_asv" is taken from the barrnap block above
+cat("The number of ASVs was reduced by",n_asv-filter_ssu_asv_filtered,"(",100-round( filter_ssu_asv_filtered/n_asv*100 ,2),"%), from",n_asv,"to",filter_ssu_asv_filtered," ASVs.")
 ```
 
 ```{r, results='asis'}

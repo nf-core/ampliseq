@@ -24,8 +24,9 @@ process SUMMARY_REPORT  {
     path(dada_asv_fa)
     path(dada_tab)
     path(dada_stats)
-    path(barrnap_gff)
     path(barrnap_summary)
+    path(filter_ssu_stats)
+    path(filter_ssu_asv)
     path(filter_len_asv_stats)
     path(filter_len_asv_len_orig)
     path(filter_codons_stats)
@@ -55,7 +56,8 @@ process SUMMARY_REPORT  {
         "--dada_qc_f_path 'FW_qual_stats.svg' --dada_qc_r_path 'RV_qual_stats.svg' --dada_pp_qc_f_path 'FW_preprocessed_qual_stats.svg' --dada_pp_qc_r_path 'RV_preprocessed_qual_stats.svg'"
     def find_truncation = find_truncation_values ? "--trunc_qmin $params.trunc_qmin --trunc_rmin $params.trunc_rmin" : ""
     def dada_err = meta.single_end ? "--dada_1_err_path $dada_err_svgs" : "--dada_1_err_path ${dada_err_svgs[0]} --dada_2_err_path ${dada_err_svgs[1]}"
-    def barrnap = params.skip_barrnap ? "--skip_barrnap" : "--path_rrna_arc ${barrnap_gff[0]} --path_rrna_bac ${barrnap_gff[1]} --path_rrna_euk ${barrnap_gff[2]} --path_rrna_mito ${barrnap_gff[3]} --path_barrnap_sum $barrnap_summary"
+    def barrnap = params.skip_barrnap ? "--skip_barrnap" : "--path_barrnap_sum $barrnap_summary"
+        barrnap += filter_ssu_stats ? " --filter_ssu_stats $filter_ssu_stats --filter_ssu_asv $filter_ssu_asv --filter_ssu $params.filter_ssu" : " --filter_ssu none"
     def filter_len_asv = filter_len_asv_stats ? "--filter_len_asv $filter_len_asv_stats --filter_len_asv_len_orig $filter_len_asv_len_orig" : ""
         filter_len_asv += params.min_len_asv ? " --min_len_asv $params.min_len_asv " : " --min_len_asv 0"
         filter_len_asv += params.max_len_asv ? " --max_len_asv $params.max_len_asv" : " --max_len_asv 0"

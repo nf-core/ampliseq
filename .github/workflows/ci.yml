@@ -32,7 +32,7 @@ jobs:
           if [[ "${{ github.event_name }}" == "pull_request" && "${{ github.base_ref }}" == "dev" && "${{ matrix.NXF_VER }}" != "latest-everything" ]]; then
             echo matrix='["latest-everything"]' | tee -a $GITHUB_OUTPUT
           else
-            echo matrix='["latest-everything", "22.10.1"]' | tee -a $GITHUB_OUTPUT
+            echo matrix='["latest-everything", "23.04.0"]' | tee -a $GITHUB_OUTPUT
           fi
 
   test:

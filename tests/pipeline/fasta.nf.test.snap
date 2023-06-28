@@ -7,7 +7,7 @@
     },
     "software_versions": {
         "content": [
-            "{BARRNAP={barrnap=0.9}, CUSTOM_DUMPSOFTWAREVERSIONS={python=3.11.0, yaml=6.0}, DADA2_TAXONOMY={R=4.1.1, dada2=1.22.0}, Workflow={nf-core/ampliseq=2.6.1}}"
+            "{BARRNAP={barrnap=0.9}, CUSTOM_DUMPSOFTWAREVERSIONS={python=3.11.0, yaml=6.0}, DADA2_TAXONOMY={R=4.1.1, dada2=1.22.0}, Workflow={nf-core/ampliseq=2.7.0dev}}"
         ],
         "timestamp": "2023-05-28T21:06:17+0000"
     },

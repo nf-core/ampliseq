@@ -35,7 +35,7 @@
     },
     "software_versions": {
         "content": [
-            "{ASSIGNSH={pandas=1.1.5, python=3.9.1}, BARRNAP={barrnap=0.9}, CUSTOM_DUMPSOFTWAREVERSIONS={python=3.11.0, yaml=6.0}, CUTADAPT_BASIC={cutadapt=3.4}, DADA2_DENOISING={R=4.1.1, dada2=1.22.0}, DADA2_FILTNTRIM={R=4.1.1, dada2=1.22.0}, DADA2_QUALITY1={R=4.1.1, ShortRead=1.52.0, dada2=1.22.0}, DADA2_TAXONOMY={R=4.1.1, dada2=1.22.0}, FASTQC={fastqc=0.11.9}, FORMAT_TAXRESULTS_STD={pandas=1.1.5, python=3.9.1}, ITSX_CUTASV={ITSx=1.1.3}, RENAME_RAW_DATA_FILES={sed=4.7}, SBDIEXPORT={R=3.6.3}, VSEARCH_USEARCHGLOBAL={vsearch=2.21.1}, Workflow={nf-core/ampliseq=2.6.1}}"
+            "{ASSIGNSH={pandas=1.1.5, python=3.9.1}, BARRNAP={barrnap=0.9}, CUSTOM_DUMPSOFTWAREVERSIONS={python=3.11.0, yaml=6.0}, CUTADAPT_BASIC={cutadapt=3.4}, DADA2_DENOISING={R=4.1.1, dada2=1.22.0}, DADA2_FILTNTRIM={R=4.1.1, dada2=1.22.0}, DADA2_QUALITY1={R=4.1.1, ShortRead=1.52.0, dada2=1.22.0}, DADA2_TAXONOMY={R=4.1.1, dada2=1.22.0}, FASTQC={fastqc=0.11.9}, FORMAT_TAXRESULTS_STD={pandas=1.1.5, python=3.9.1}, ITSX_CUTASV={ITSx=1.1.3}, RENAME_RAW_DATA_FILES={sed=4.7}, SBDIEXPORT={R=3.6.3}, VSEARCH_USEARCHGLOBAL={vsearch=2.21.1}, Workflow={nf-core/ampliseq=2.7.0dev}}"
         ],
         "timestamp": "2023-06-20T02:07:02+0000"
     },

@@ -3,7 +3,25 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## nf-core/ampliseq version 2.6.0dev
+## nf-core/ampliseq version 2.7.0dev
+
+### `Added`
+
+### `Changed`
+
+### `Fixed`
+
+### `Dependencies`
+
+### `Removed`
+
+## nf-core/ampliseq version 2.6.1 - 2023-06-28
+
+### `Fixed`
+
+- [#603](https://github.com/nf-core/ampliseq/pull/603) - Fix all containers registry
+
+## nf-core/ampliseq version 2.6.0 - 2023-06-27
 
 ### `Added`
 
@@ -21,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#563](https://github.com/nf-core/ampliseq/pull/563) - Renamed DADA2 taxonomic classification files to include the chosen reference taxonomy abbreviation.
 - [#567](https://github.com/nf-core/ampliseq/pull/567) - Renamed `--dada_tax_agglom_min` and `--qiime_tax_agglom_min` to `--tax_agglom_min` and `--dada_tax_agglom_max` and `--qiime_tax_agglom_max` to `--tax_agglom_max`
 - [#598](https://github.com/nf-core/ampliseq/pull/598) - Updated Workflow figure with SINTAX and phylogenetic placement
+- [#599](https://github.com/nf-core/ampliseq/pull/599) - For exact species assignment (DADA2's addSpecies) PR2 taxonomy database (e.g. `--dada_ref_taxonomy pr2`) now excludes any taxa that end with " sp.".
 
 ### `Fixed`
 

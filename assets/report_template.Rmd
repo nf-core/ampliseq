@@ -260,8 +260,6 @@ Samples with unusual low reads numbers relative to the number of expected ASVs (
 should be treated cautiously, because the abundance estimate will be very granular and might vary strongly between (theoretical)
 replicates due to high impact of stochasticity.
 
-Stacked barcharts of read numbers per sample and processing stage (see above):
-
 ```{r, results='asis'}
 # Stacked barchart to num of reads
 
@@ -269,13 +267,15 @@ Stacked barcharts of read numbers per sample and processing stage (see above):
 
 if ( params$flag_single_end ) {
     # single end
+    cat("Stacked barcharts of read numbers per sample and processing stage (see above):\n\n")
+
     dada_stats_ex <- data.frame(sample = dada_stats$sample,
                             input = dada_stats$DADA2_input,
                             filtered = dada_stats$DADA2_input-dada_stats$filtered,
                             denoised = dada_stats$filtered-dada_stats$denoised,
                             nonchim = dada_stats$denoised-dada_stats$nonchim,
                             analysis = dada_stats$nonchim)
-    dada_stats_p <- data.frame(sample = dada_stats_ex$sample, round(dada_stats_ex[2:6]/dada_stats_ex$input, 2))
+    dada_stats_p <- data.frame(sample = dada_stats_ex$sample, round(dada_stats_ex[2:6]/dada_stats_ex$input*100, 2))
     n_samples <- length(dada_stats_p$sample)
     # Stack columns for both stacked barcharts
     samples_t <- c(rep(dada_stats_p$sample, 4))
@@ -289,15 +289,17 @@ if ( params$flag_single_end ) {
     dada_stats_p_t <- data.frame(samples_t, steps_t, asvs_p_t)
 } else {
     # paired end
+    cat("Stacked barcharts of read pair numbers (denoisedF & denoisedR halfed, because each pair is split) per sample and processing stage (see above):\n\n")
+
     dada_stats_ex <- data.frame(sample = dada_stats$sample,
                             DADA2_input = dada_stats$DADA2_input,
                             filtered = dada_stats$DADA2_input-dada_stats$filtered,
-                            denoisedF = dada_stats$filtered-dada_stats$denoisedF,
-                            denoisedR = dada_stats$denoisedF-dada_stats$denoisedR,
-                            merged = dada_stats$denoisedR-dada_stats$merged,
+                            denoisedF = (dada_stats$filtered-dada_stats$denoisedF)/2,
+                            denoisedR = (dada_stats$filtered-dada_stats$denoisedR)/2,
+                            merged = (dada_stats$denoisedF+dada_stats$denoisedR)/2-dada_stats$merged,
                             nonchim = dada_stats$merged-dada_stats$nonchim,
                             analysis = dada_stats$nonchim)
-    dada_stats_p <- data.frame(sample = dada_stats_ex$sample, round(dada_stats_ex[2:8]/dada_stats_ex$DADA2_input, 2))
+    dada_stats_p <- data.frame(sample = dada_stats_ex$sample, round(dada_stats_ex[2:8]/dada_stats_ex$DADA2_input*100, 2))
     # Stack columns for both stacked barcharts
     n_samples <- length(dada_stats_p$sample)
     samples_t <- c(rep(dada_stats_p$sample, 6))
@@ -326,7 +328,7 @@ dada_stats_p_t$steps_t <- factor(dada_stats_p_t$steps_t, levels=unique(dada_stat
 ggplot(dada_stats_p_t, aes(fill = steps_t, y = asvs_p_t, x = samples_t)) +
         geom_bar(position = "fill", stat = "identity") +
         xlab("Samples") +
-        ylab("% of total reads") +
+        ylab("Fraction of total reads") +
         coord_flip() +
         scale_fill_brewer("Filtering Steps", palette = "Spectral")
 ```

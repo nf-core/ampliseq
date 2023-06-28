@@ -60,11 +60,11 @@ class WorkflowAmpliseq {
             }
         }
 
-        if (params.dada_assign_taxlevels && params.sbdiexport) {
+        if (params.dada_assign_taxlevels && params.sbdiexport && !params.sintax_ref_taxonomy) {
             Nextflow.error("Incompatible parameters: `--sbdiexport` expects specific taxonomics ranks (default) and therefore excludes modifying those using `--dada_assign_taxlevels`.")
         }
 
-        if (params.skip_dada_addspecies && params.sbdiexport) {
+        if (params.skip_dada_addspecies && params.sbdiexport && !params.sintax_ref_taxonomy) {
             Nextflow.error("Incompatible parameters: `--sbdiexport` expects species annotation and therefore excludes `--skip_dada_addspecies`.")
         }
 
@@ -89,8 +89,8 @@ class WorkflowAmpliseq {
         }
 
         String[] sbdi_compatible_databases = ["coidb","coidb=221216","gtdb","gtdb=R07-RS207","gtdb=R06-RS202","gtdb=R05-RS95","midori2-co1","midori2-co1=gb250","pr2=4.14.0","pr2=4.13.0","rdp","rdp=18","sbdi-gtdb","sbdi-gtdb=R07-RS207-1","silva","silva=138","silva=132","unite-fungi","unite-fungi=9.0","unite-fungi=8.3","unite-fungi=8.2","unite-alleuk","unite-alleuk=9.0","unite-alleuk=8.3","unite-alleuk=8.2"]
-        if ( params.sbdiexport && !Arrays.stream(sbdi_compatible_databases).anyMatch(entry -> params.dada_ref_taxonomy.toString().equals(entry)) ) {
-            Nextflow.error("Incompatible parameters: `--sbdiexport` does not work with the chosen database of `--dada_ref_taxonomy`, because the expected taxonomic levels do not match.")
+        if (params.sbdiexport && (!Arrays.stream(sbdi_compatible_databases).anyMatch(entry -> params.dada_ref_taxonomy.toString().equals(entry)) || (params.sintax_ref_taxonomy && !Arrays.stream(sbdi_compatible_databases).anyMatch(entry -> params.sintax_ref_taxonomy.toString().equals(entry)) )) {
+            Nextflow.error("Incompatible parameters: `--sbdiexport` does not work with the chosen database of `--dada_ref_taxonomy`/`--sintax_ref_taxonomy` because the expected taxonomic levels do not match.")
         }
 
         if (params.addsh && !params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]) {

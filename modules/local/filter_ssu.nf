@@ -5,7 +5,7 @@ process FILTER_SSU {
     conda "bioconductor::biostrings=2.58.0"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/bioconductor-biostrings:2.58.0--r40h037d062_0' :
-        'quay.io/biocontainers/bioconductor-biostrings:2.58.0--r40h037d062_0' }"
+        'biocontainers/bioconductor-biostrings:2.58.0--r40h037d062_0' }"
 
     input:
     path(fasta)

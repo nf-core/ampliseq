@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Removed`
 
+## nf-core/ampliseq version 2.6.1 - 2023-06-28
+
+### `Fixed`
+
+- [#603](https://github.com/nf-core/ampliseq/pull/603) - Fix all containers registry
+
 ## nf-core/ampliseq version 2.6.0 - 2023-06-27
 
 ### `Added`

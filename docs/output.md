@@ -510,7 +510,7 @@ Most of the fields in the template will not be populated by the export process, 
 <summary>Output files</summary>
 
 - `SBDI/`
-  - `annotation.tsv`: SBDI specific output for taxonomi reannotation, not used in submission to SBDI.
+  - `annotation.tsv`: SBDI specific output for taxonomic reannotation, not used in submission to SBDI.
   - `asv-table.tsv`: asv-table tab of template.
   - `emof.tsv`: emof tab of template.
   - `event.tsv`: event tab of template.

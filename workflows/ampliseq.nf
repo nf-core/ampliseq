@@ -704,7 +704,15 @@ workflow AMPLISEQ {
         !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy ? ch_dada2_tax : [],
         !params.skip_taxonomy && params.sintax_ref_taxonomy ? ch_sintax_tax : [],
         !params.skip_taxonomy && params.pplace_tree ? ch_pplace_tax : [],
-        !params.skip_taxonomy && ( params.qiime_ref_taxonomy || params.classifier ) && run_qiime2 ? QIIME2_TAXONOMY.out.tsv : []
+        !params.skip_taxonomy && ( params.qiime_ref_taxonomy || params.classifier ) && run_qiime2 ? QIIME2_TAXONOMY.out.tsv : [],
+        run_qiime2,
+        run_qiime2 && !params.skip_barplot ? QIIME2_BARPLOT.out.folder : [],
+        run_qiime2 && !params.skip_abundance_tables ? "done" : "",
+        run_qiime2 && !params.skip_alpha_rarefaction ? "done" : "",
+        run_qiime2 && !params.skip_diversity_indices && params.metadata ? "done" : "",
+        run_qiime2 && !params.skip_ancom && params.metadata ? "done" : "",
+        params.picrust ? PICRUST.out.pathways : []
+        // params.qiime_adonis_formula
     )
 
 

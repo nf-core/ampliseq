@@ -53,7 +53,14 @@ option_list = list(
     make_option(c("--pplace_taxonomy"), type="character", default=NULL, help="MultiQC plots", metavar="character"),
     make_option(c("--flag_pplace_taxonomy"), action="store_true", default=FALSE, help="MultiQC plots", metavar="character"),
     make_option(c("--flag_qiime2_taxonomy"), action="store_true", default=FALSE, help="MultiQC plots", metavar="character"),
-    make_option(c("--qiime2_taxonomy"), type="character", default=NULL, help="MultiQC plots", metavar="character")
+    make_option(c("--qiime2_taxonomy"), type="character", default=NULL, help="MultiQC plots", metavar="character"),
+    make_option(c("--flag_skip_qiime"), action="store_true", default=FALSE, help="Downstream analysis with QIIME2", metavar="logical"),
+    make_option(c("--flag_skip_barplot"), action="store_true", default=FALSE, help="Downstream analysis with QIIME2", metavar="logical"),
+    make_option(c("--flag_skip_abundance_tables"), action="store_true", default=FALSE, help="Downstream analysis with QIIME2", metavar="logical"),
+    make_option(c("--flag_skip_alpha_rarefaction"), action="store_true", default=FALSE, help="Downstream analysis with QIIME2", metavar="logical"),
+    make_option(c("--flag_skip_diversity_indices"), action="store_true", default=FALSE, help="Downstream analysis with QIIME2", metavar="logical"),
+    make_option(c("--flag_skip_ancom"), action="store_true", default=FALSE, help="Downstream analysis with QIIME2", metavar="logical"),
+    make_option(c("--picrust_pathways"), type="character", default=NULL, help="MultiQC plots", metavar="character")
 )
 
 opt_parser = OptionParser(option_list = option_list)
@@ -108,4 +115,11 @@ rmarkdown::render(opt$report, output_file = opt$output,
                         flag_pplace_taxonomy = opt$flag_pplace_taxonomy,
                         pplace_taxonomy = opt$pplace_taxonomy,
                         flag_qiime2_taxonomy = opt$flag_qiime2_taxonomy,
-                        qiime2_taxonomy = opt$qiime2_taxonomy))
+                        qiime2_taxonomy = opt$qiime2_taxonomy,
+                        flag_skip_qiime = opt$flag_skip_qiime,
+                        flag_skip_barplot = opt$flag_skip_barplot,
+                        flag_skip_abundance_tables = opt$flag_skip_abundance_tables,
+                        flag_skip_alpha_rarefaction = opt$flag_skip_alpha_rarefaction,
+                        flag_skip_diversity_indices = opt$flag_skip_diversity_indices,
+                        flag_skip_ancom = opt$flag_skip_ancom,
+                        picrust_pathways = opt$picrust_pathways))

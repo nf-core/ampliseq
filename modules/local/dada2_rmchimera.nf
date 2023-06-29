@@ -5,7 +5,7 @@ process DADA2_RMCHIMERA {
     conda "bioconda::bioconductor-dada2=1.22.0 conda-forge::r-digest=0.6.30"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.22.0--r41h399db7b_0' :
-        'quay.io/biocontainers/bioconductor-dada2:1.22.0--r41h399db7b_0' }"
+        'biocontainers/bioconductor-dada2:1.22.0--r41h399db7b_0' }"
 
     input:
     tuple val(meta), path(seqtab)

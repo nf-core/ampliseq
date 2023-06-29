@@ -3,6 +3,26 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## nf-core/ampliseq version 2.7.0dev
+
+### `Added`
+
+### `Changed`
+
+### `Fixed`
+
+- [#605](https://github.com/nf-core/ampliseq/pull/605) - Make `--sbdiexport` compatible with PR2 version 5.0.0
+
+### `Dependencies`
+
+### `Removed`
+
+## nf-core/ampliseq version 2.6.1 - 2023-06-28
+
+### `Fixed`
+
+- [#603](https://github.com/nf-core/ampliseq/pull/603) - Fix all containers registry
+
 ## nf-core/ampliseq version 2.6.0 - 2023-06-27
 
 ### `Added`

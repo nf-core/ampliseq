@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
+- [#605](https://github.com/nf-core/ampliseq/pull/605) - Make `--sbdiexport` compatible with PR2 version 5.0.0
+
 ### `Dependencies`
 
 ### `Removed`

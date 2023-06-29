@@ -44,10 +44,8 @@ n_samples <- length(colnames(asvs)) - 1
 # Read taxonomy table and make sure all expected columns are there
 taxonomy <- read.delim(taxtable, sep = '\t', stringsAsFactors = FALSE) %>%
     mutate(Domain = if("Domain" %in% colnames(.)) Domain else '') %>%
-    mutate(Kingdom = if("Kingdom" %in% colnames(.)) Kingdom
-                     else if ("Supergroup" %in% colnames(.)) Supergroup else '') %>%
-    mutate(Phylum = if("Phylum" %in% colnames(.)) Phylum
-                     else if ("Division" %in% colnames(.)) Division else '') %>%
+    mutate(Kingdom = if("Kingdom" %in% colnames(.)) Kingdom else if ("Supergroup" %in% colnames(.)) Supergroup else '') %>%
+    mutate(Phylum = if("Phylum" %in% colnames(.)) Phylum else if ("Division" %in% colnames(.)) Division else '') %>%
     mutate(Class = if("Class" %in% colnames(.)) Class else '') %>%
     mutate(Order = if("Order" %in% colnames(.)) Order else '') %>%
     mutate(Family = if("Family" %in% colnames(.)) Family else '') %>%

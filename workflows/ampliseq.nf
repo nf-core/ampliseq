@@ -675,7 +675,20 @@ workflow AMPLISEQ {
         DADA2_PREPROCESSING.out.args.first(),
         !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg : [],
         !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg_preprocessed : [],
-        DADA2_ERR.out.svg,
+        DADA2_ERR.out.svg
+            .map {
+                meta_old, svgs ->
+                def meta = [:]
+                meta.single_end = meta_old.single_end
+                [ meta, svgs, meta_old.run ] }
+            .groupTuple(by: 0 )
+            .map {
+                meta_old, svgs, runs ->
+                def meta = [:]
+                meta.single_end = meta_old.single_end
+                meta.run = runs.flatten()
+                [ meta, svgs.flatten() ]
+            },
         DADA2_MERGE.out.asv,
         DADA2_MERGE.out.fasta,
         DADA2_MERGE.out.dada2asv,

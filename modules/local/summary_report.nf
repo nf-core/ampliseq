@@ -56,7 +56,12 @@ process SUMMARY_REPORT  {
         meta.single_end ? "--dada_qc_f_path $dada_qual_stats --dada_pp_qc_f_path $dada_pp_qual_stats" :
         "--dada_qc_f_path 'FW_qual_stats.svg' --dada_qc_r_path 'RV_qual_stats.svg' --dada_pp_qc_f_path 'FW_preprocessed_qual_stats.svg' --dada_pp_qc_r_path 'RV_preprocessed_qual_stats.svg'"
     def find_truncation = find_truncation_values ? "--trunc_qmin $params.trunc_qmin --trunc_rmin $params.trunc_rmin" : ""
-    def dada_err = meta.single_end ? "--dada_1_err_path $dada_err_svgs" : "--dada_1_err_path ${dada_err_svgs[0]} --dada_2_err_path ${dada_err_svgs[1]}"
+    // make comma separated list of error profile path when multiple sequencing runs were performed
+    if ( meta.run.size() == 1 && meta.single_end ) {
+        dada_err = "--dada_err_path $dada_err_svgs --dada_err_run " + meta.run
+    } else {
+        dada_err = "--dada_err_path " + dada_err_svgs.join(',') + " --dada_err_run " + meta.run.join(',')
+    }
     def barrnap = params.skip_barrnap ? "--skip_barrnap" : "--path_barrnap_sum $barrnap_summary"
         barrnap += filter_ssu_stats ? " --filter_ssu_stats $filter_ssu_stats --filter_ssu_asv $filter_ssu_asv --filter_ssu $params.filter_ssu" : " --filter_ssu none"
     def filter_len_asv = filter_len_asv_stats ? "--filter_len_asv $filter_len_asv_stats --filter_len_asv_len_orig $filter_len_asv_len_orig" : ""

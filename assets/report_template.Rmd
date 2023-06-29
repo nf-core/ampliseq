@@ -44,8 +44,8 @@ params:
     dada_qc_r_path: ""
     dada_pp_qc_f_path: ""
     dada_pp_qc_r_path: ""
-    dada_1_err_path: ""
-    dada_2_err_path: ""
+    dada_err_path: ""
+    dada_err_run: ""
     asv_table_path: ""
     path_asv_fa: ""
     path_dada2_tab: ""
@@ -225,8 +225,29 @@ read pair merging (for paired end Illumina reads only) and PCR chimera removal.
 
 Read error correction was performed using estimated error rates, visualized below.
 
+```{r, results='asis'}
+# check if single run or multirun
+flag_multirun = length ( unlist( strsplit( params$dada_err_run,"," ) ) ) != 1
+
+if ( flag_multirun && params$flag_single_end ) {
+    # single end multi run
+    cat("Error rates were estimated for each sequencing run separately. ",
+        "Each 4x4 figure represents one run, in the sequence ", params$dada_err_run,".")
+} else if ( flag_multirun && !params$flag_single_end ) {
+    # paired end multi run
+    cat("Error rates were estimated for each sequencing run separately. ",
+        "Each row represents one run, in the sequence ", params$dada_err_run,".",
+        "For each row, the error rates for forward reads are at the left side and reverse reads are at the right side.")
+} else if ( !flag_multirun && !params$flag_single_end ) {
+    # paired end single run
+    cat("Error rates for forward reads are at the left side and reverse reads are at the right side.")
+
+}
+```
+
 ```{r, out.width="49%", fig.show='hold', fig.align='default'}
-knitr::include_graphics(c(params$dada_1_err_path, params$dada_2_err_path))
+dada_err_path <- unlist( strsplit( params$dada_err_path,"," ) )
+knitr::include_graphics(dada_err_path)
 ```
 
 Estimated error rates for each possible transition. The black line shows the estimated error rates after

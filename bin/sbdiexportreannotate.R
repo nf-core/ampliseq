@@ -117,7 +117,7 @@ taxtable  <- taxonomy %>%
         ),
         identification_references = 'https://docs.biodiversitydata.se/analyse-data/molecular-tools/#taxonomy-annotation',
         taxon_remarks = ifelse(!(is.na(domain) | domain == ''), paste('Domain = \'',domain,'\'',sep=''),''),
-        kingdom = ifelse(is.na(kingdom), 'Unassigned', kingdom)
+        kingdom = ifelse(is.na(kingdom) | kingdom == '', 'Unassigned', kingdom)
     ) %>%
     relocate(asv_sequence, .after = asv_id_alias) %>%
     relocate(scientificName:taxonRank, .after = asv_sequence) %>%

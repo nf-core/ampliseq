@@ -705,6 +705,8 @@ workflow AMPLISEQ {
             !params.skip_taxonomy && params.pplace_tree ? ch_pplace_tax : [],
             !params.skip_taxonomy && ( params.qiime_ref_taxonomy || params.classifier ) && run_qiime2 ? QIIME2_TAXONOMY.out.tsv : [],
             run_qiime2,
+            run_qiime2 && ( params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1 ) ? ch_dada2_asv.countLines()+","+QIIME2_FILTERTAXA.out.tsv.countLines() : "",
+            run_qiime2 && ( params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1 ) ? FILTER_STATS.out.tsv : [],
             run_qiime2 && !params.skip_barplot ? QIIME2_BARPLOT.out.folder : [],
             run_qiime2 && !params.skip_abundance_tables ? "done" : "",
             run_qiime2 && !params.skip_alpha_rarefaction ? "done" : "",

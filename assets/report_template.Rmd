@@ -44,6 +44,10 @@ params:
     dada2_ref_tax_title: ""
     qiime2_ref_tax_title: ""
     sintax_ref_tax_title: ""
+    exclude_taxa: ""
+    min_frequency: ""
+    min_samples: ""
+    qiime2_filtertaxa: ""
 
     # file paths
     mqc_plot: ""
@@ -71,6 +75,7 @@ params:
     sintax_taxonomy: ""
     pplace_taxonomy: ""
     qiime2_taxonomy: ""
+    filter_stats_tsv: ""
     picrust_pathways: ""
 
 ---
@@ -864,7 +869,45 @@ cat("\n\nPhylogenetic placement taxonomy assignments can be found in folder [ppl
 # Header
 cat("# Downstream analysis with QIIME2\n")
 
-#TODO: report filtering & qiime2 input files in qiime2/input/
+#TODO: qiime2 input files in qiime2/input/
+```
+
+```{r, results='asis'}
+flag_filter_stats_tsv <- isTRUE(params$filter_stats_tsv != "")
+```
+
+```{r, eval = params$flag_filter_stats_tsv, results='asis'}
+cat("## ASV filtering\n",
+    "Unwanted taxa are often off-targets generated in PCR with primers that are not perfectly specific for the target DNA, for 16S rRNA sequencing mitrochondria and chloroplast sequences are typically removed because these are frequent unwanted non-bacteria PCR products. ")
+if ( params$exclude_taxa != "none" ) {
+    cat("ASVs were removed when the taxonomic string contanied any of", params$exclude_taxa)
+}
+if ( params$min_frequency != 1 ) {
+    cat(", had fewer than", params$min_frequency ,"total read counts over all sample")
+}
+if ( params$min_samples != 1 ) {
+    cat(", and that were present in fewer than", params$min_samples ,"samples")
+}
+cat(". ")
+
+qiime2_filtertaxa <- unlist( strsplit( params$qiime2_filtertaxa, "," ) )
+qiime2_filtertaxa_orig <- as.numeric( qiime2_filtertaxa[1] )
+qiime2_filtertaxa_filt <- as.numeric( qiime2_filtertaxa[2] )
+qiime2_filtertaxa_rm <- qiime2_filtertaxa_orig-qiime2_filtertaxa_filt
+qiime2_filtertaxa_rm_percent <- round( qiime2_filtertaxa_rm/qiime2_filtertaxa_orig*100 ,2)
+
+cat("Consequently,",qiime2_filtertaxa_orig,"ASVs were reduced by",qiime2_filtertaxa_rm,"(",qiime2_filtertaxa_rm_percent,"%) to",qiime2_filtertaxa_filt,".",
+    "The following table shows (read) counts for each sample before and after filtering:")
+
+# import stats tsv
+filter_stats_tsv <- read.table(file = params$filter_stats_tsv, header = TRUE, sep = "\t")
+colnames(filter_stats_tsv) <- gsub("_tax_filter","",colnames(filter_stats_tsv))
+
+# Display table
+datatable(filter_stats_tsv, options = list(
+        scrollX = TRUE,
+        scrollY = "300px",
+        paging = FALSE))
 ```
 
 ```{r, eval = !params$flag_skip_abundance_tables, results='asis'}

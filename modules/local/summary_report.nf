@@ -36,6 +36,8 @@ process SUMMARY_REPORT  {
     path(pplace_tax)
     path(qiime2_tax)
     val(run_qiime2)
+    val(qiime2_filtertaxa) // <ASV count original +1>,<ASV count filtered +1>
+    path(filter_stats_tsv)
     path(barplot)
     val(abundance_tables)
     val(alpha_rarefaction)
@@ -81,6 +83,7 @@ process SUMMARY_REPORT  {
     def pplace_taxonomy = pplace_tax ? "--flag_pplace_taxonomy --pplace_taxonomy $pplace_tax" : ""
     def qiime2_taxonomy = qiime2_tax ? "--flag_qiime2_taxonomy --qiime2_taxonomy $qiime2_tax --qiime2_ref_tax_title '${params.qiime_ref_databases[params.qiime_ref_taxonomy]["title"]}'" : ""
     def qiime2 = run_qiime2 ? "" : "--flag_skip_qiime"
+        qiime2 += filter_stats_tsv ? "--filter_stats_tsv $filter_stats_tsv --qiime2_filtertaxa '$qiime2_filtertaxa' --exclude_taxa $params.exclude_taxa --min_frequency $params.min_frequency --min_samples $params.min_samples" : ""
         qiime2 += barplot ? "" : " --flag_skip_barplot"
         qiime2 += abundance_tables ? "" : " --flag_skip_abundance_tables"
         qiime2 += alpha_rarefaction ? "" : " --flag_skip_alpha_rarefaction"

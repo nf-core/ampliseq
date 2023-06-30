@@ -882,7 +882,7 @@ cat("# Downstream analysis with QIIME2\n",
 flag_filter_stats_tsv <- isTRUE(params$filter_stats_tsv != "")
 ```
 
-```{r, eval = params$flag_filter_stats_tsv, results='asis'}
+```{r, eval = flag_filter_stats_tsv, results='asis'}
 cat("## ASV filtering\n",
     "Unwanted taxa are often off-targets generated in PCR with primers that are not perfectly specific for the target DNA, for 16S rRNA sequencing mitrochondria and chloroplast sequences are typically removed because these are frequent unwanted non-bacteria PCR products. ")
 if ( params$exclude_taxa != "none" ) {
@@ -897,8 +897,8 @@ if ( params$min_samples != 1 ) {
 cat(". ")
 
 qiime2_filtertaxa <- unlist( strsplit( params$qiime2_filtertaxa, "," ) )
-qiime2_filtertaxa_orig <- as.numeric( qiime2_filtertaxa[1] )
-qiime2_filtertaxa_filt <- as.numeric( qiime2_filtertaxa[2] )
+qiime2_filtertaxa_orig <- as.numeric( qiime2_filtertaxa[1] ) -1
+qiime2_filtertaxa_filt <- as.numeric( qiime2_filtertaxa[2] ) -2
 qiime2_filtertaxa_rm <- qiime2_filtertaxa_orig-qiime2_filtertaxa_filt
 qiime2_filtertaxa_rm_percent <- round( qiime2_filtertaxa_rm/qiime2_filtertaxa_orig*100 ,2)
 

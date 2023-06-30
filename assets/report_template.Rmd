@@ -91,6 +91,9 @@ library("purrr")
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
+The bioinformatics analysis pipeline [nfcore/ampliseq](https://nf-co.re/ampliseq) is used for amplicon sequencing,
+supporting denoising of any amplicon and supports a variety of taxonomic databases for taxonomic assignment of 16S, ITS, CO1 and 18S amplicons.
+
 # Preprocessing
 
 ```{r, eval = !params$flag_skip_fastqc, results='asis'}
@@ -900,7 +903,7 @@ qiime2_filtertaxa_rm <- qiime2_filtertaxa_orig-qiime2_filtertaxa_filt
 qiime2_filtertaxa_rm_percent <- round( qiime2_filtertaxa_rm/qiime2_filtertaxa_orig*100 ,2)
 
 cat("Consequently,",qiime2_filtertaxa_orig,"ASVs were reduced by",qiime2_filtertaxa_rm,"(",qiime2_filtertaxa_rm_percent,"%) to",qiime2_filtertaxa_filt,".",
-    "The following table shows (read) counts for each sample before and after filtering:")
+    "The following table shows read counts for each sample before and after filtering:")
 
 # import stats tsv
 filter_stats_tsv <- read.table(file = params$filter_stats_tsv, header = TRUE, sep = "\t")
@@ -982,3 +985,13 @@ cat("## PICRUSt2\n",
     "Quantifications are not normalized yet, they can be normalized e.g. by the total sum per sample.",
     sep = "\n")
 ```
+
+# Final notes
+
+This report (file 'summary_report.html') is located in folder [summary_report](.) of the original pipeline results folder.
+In this file, all links to files and folders are relative, therefore hyperlinks will only work when the report is at its original place in the pipeline results folder.
+
+A comprehensive read count report throughout the pipeline can be found in the [base results folder](../) in file 'overall_summary.tsv'.
+Technical information to the pipeline run are collected in folder [pipeline_info](../pipeline_info).
+
+Please cite the [pipeline publication](https://doi.org/10.3389/fmicb.2020.550420) and any software tools used by the pipeline (see [citations](https://nf-co.re/ampliseq#citations)) when you use any of the pipeline results in your study.

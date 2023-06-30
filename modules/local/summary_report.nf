@@ -31,7 +31,6 @@ process SUMMARY_REPORT  {
     path(filter_len_asv_len_orig)
     path(filter_codons_stats)
     path(itsx_cutasv_summary)
-    path(dada2_tax_reference)
     path(dada2_tax)
     path(sintax_tax)
     path(pplace_tax)
@@ -46,8 +45,8 @@ process SUMMARY_REPORT  {
 
 
     output:
-    path "Summary_Report.html"      ,   emit: report
-    //path "versions.yml"             ,   emit: versions
+    path "summary_report.html"      ,   emit: report
+    path "versions.yml"             ,   emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -77,10 +76,10 @@ process SUMMARY_REPORT  {
     def filter_codons = filter_codons_stats ? "--filter_codons $filter_codons_stats --stop_codons $params.stop_codons" : ""
     def itsx_cutasv = itsx_cutasv_summary ? "--itsx_cutasv_summary $itsx_cutasv_summary --cut_its $params.cut_its" : "--cut_its none"
     def dada2_taxonomy = !dada2_tax ? "" :
-        params.dada_ref_tax_custom ? "--flag_dada2_taxonomy --dada2_taxonomy $dada2_tax --ref_tax_user" : "--flag_dada2_taxonomy --dada2_taxonomy $dada2_tax --ref_tax_path $dada2_tax_reference"
-    def sintax_taxonomy = sintax_tax ? "--flag_sintax_taxonomy --sintax_taxonomy $sintax_tax" : ""
+        params.dada_ref_tax_custom ? "--flag_dada2_taxonomy --dada2_taxonomy $dada2_tax --ref_tax_user" : "--flag_dada2_taxonomy --dada2_taxonomy $dada2_tax --dada2_ref_tax_title '${params.dada_ref_databases[params.dada_ref_taxonomy]["title"]}'"
+    def sintax_taxonomy = sintax_tax ? "--flag_sintax_taxonomy --sintax_taxonomy $sintax_tax --sintax_ref_tax_title '${params.sintax_ref_databases[params.sintax_ref_taxonomy]["title"]}'" : ""
     def pplace_taxonomy = pplace_tax ? "--flag_pplace_taxonomy --pplace_taxonomy $pplace_tax" : ""
-    def qiime2_taxonomy = qiime2_tax ? "--flag_qiime2_taxonomy --qiime2_taxonomy $qiime2_tax" : ""
+    def qiime2_taxonomy = qiime2_tax ? "--flag_qiime2_taxonomy --qiime2_taxonomy $qiime2_tax --qiime2_ref_tax_title '${params.qiime_ref_databases[params.qiime_ref_taxonomy]["title"]}'" : ""
     def qiime2 = run_qiime2 ? "" : "--flag_skip_qiime"
         qiime2 += barplot ? "" : " --flag_skip_barplot"
         qiime2 += abundance_tables ? "" : " --flag_skip_abundance_tables"
@@ -90,7 +89,7 @@ process SUMMARY_REPORT  {
     def picrust = picrust_pathways ? "--picrust_pathways $picrust_pathways" : ""
     """
     generate_report.R   --report $report_template \\
-                        --output "Summary_Report.html" \\
+                        --output "summary_report.html" \\
                         $fastqc \\
                         $cutadapt \\
                         $dada_quality \\
@@ -115,10 +114,12 @@ process SUMMARY_REPORT  {
                         $qiime2_taxonomy \\
                         $qiime2 \\
                         $picrust
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        R: \$(R --version 2>&1 | sed -n 1p | sed 's/R version //' | sed 's/ (.*//')
+        rmarkdown: \$(Rscript -e "cat(paste(packageVersion('rmarkdown'), collapse='.'))")
+        knitr: \$(Rscript -e "cat(paste(packageVersion('knitr'), collapse='.'))")
+    END_VERSIONS
     """
-    //--pl_results $results_dir \\
-    //cat <<-END_VERSIONS > versions.yml
-    //"${task.process}":
-    //    R: \$(R --version 2>&1 | sed -n 1p | sed 's/R version //' | sed 's/ (.*//')
-    //END_VERSIONS
 }

@@ -665,59 +665,56 @@ workflow AMPLISEQ {
     //
     // MODULE: Summary Report
     //
-
-    SUMMARY_REPORT (
-        Channel.fromPath("${baseDir}/assets/report_template.Rmd"),
-        Channel.fromPath("${baseDir}/assets/report_styles.css"),
-        !params.skip_multiqc ? MULTIQC.out.plots : [], //.collect().flatten().collectFile(name: "mqc_fastqc_per_sequence_quality_scores_plot_1.svg")
-        !params.skip_cutadapt ? CUTADAPT_WORKFLOW.out.summary.collect() : [],
-        find_truncation_values,
-        DADA2_PREPROCESSING.out.args.first(),
-        !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg : [],
-        !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg_preprocessed : [],
-        DADA2_ERR.out.svg
-            .map {
-                meta_old, svgs ->
-                def meta = [:]
-                meta.single_end = meta_old.single_end
-                [ meta, svgs, meta_old.run ] }
-            .groupTuple(by: 0 )
-            .map {
-                meta_old, svgs, runs ->
-                def meta = [:]
-                meta.single_end = meta_old.single_end
-                meta.run = runs.flatten()
-                [ meta, svgs.flatten() ]
-            },
-        DADA2_MERGE.out.asv,
-        DADA2_MERGE.out.fasta,
-        DADA2_MERGE.out.dada2asv,
-        DADA2_MERGE.out.dada2stats,
-        !params.skip_barrnap ? BARRNAPSUMMARY.out.summary : [],
-        params.filter_ssu ? FILTER_SSU.out.stats : [],
-        params.filter_ssu ? FILTER_SSU.out.asv : [],
-        params.min_len_asv || params.max_len_asv ? FILTER_LEN_ASV.out.stats : [],
-        params.min_len_asv || params.max_len_asv ? FILTER_LEN_ASV.out.len_orig : [],
-        params.filter_codons ? FILTER_CODONS.out.stats : [],
-        params.cut_its != "none" ? ITSX_CUTASV.out.summary : [],
-        !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy && !params.dada_ref_tax_custom ? FORMAT_TAXONOMY.out.ref_tax_info : [],
-        !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy ? ch_dada2_tax : [],
-        !params.skip_taxonomy && params.sintax_ref_taxonomy ? ch_sintax_tax : [],
-        !params.skip_taxonomy && params.pplace_tree ? ch_pplace_tax : [],
-        !params.skip_taxonomy && ( params.qiime_ref_taxonomy || params.classifier ) && run_qiime2 ? QIIME2_TAXONOMY.out.tsv : [],
-        run_qiime2,
-        run_qiime2 && !params.skip_barplot ? QIIME2_BARPLOT.out.folder : [],
-        run_qiime2 && !params.skip_abundance_tables ? "done" : "",
-        run_qiime2 && !params.skip_alpha_rarefaction ? "done" : "",
-        run_qiime2 && !params.skip_diversity_indices && params.metadata ? "done" : "",
-        run_qiime2 && !params.skip_ancom && params.metadata ? "done" : "",
-        params.picrust ? PICRUST.out.pathways : []
-        // params.qiime_adonis_formula
-    )
-
-
-    // TODO Versions in Report
-    //ch_versions    = ch_versions.mix(SUMMARY_REPORT.out.versions)
+    if (!params.skip_summary_report) {
+        SUMMARY_REPORT (
+            Channel.fromPath("${baseDir}/assets/report_template.Rmd"),
+            Channel.fromPath("${baseDir}/assets/report_styles.css"),
+            !params.skip_multiqc ? MULTIQC.out.plots : [], //.collect().flatten().collectFile(name: "mqc_fastqc_per_sequence_quality_scores_plot_1.svg")
+            !params.skip_cutadapt ? CUTADAPT_WORKFLOW.out.summary.collect() : [],
+            find_truncation_values,
+            DADA2_PREPROCESSING.out.args.first(),
+            !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg : [],
+            !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg_preprocessed : [],
+            DADA2_ERR.out.svg
+                .map {
+                    meta_old, svgs ->
+                    def meta = [:]
+                    meta.single_end = meta_old.single_end
+                    [ meta, svgs, meta_old.run ] }
+                .groupTuple(by: 0 )
+                .map {
+                    meta_old, svgs, runs ->
+                    def meta = [:]
+                    meta.single_end = meta_old.single_end
+                    meta.run = runs.flatten()
+                    [ meta, svgs.flatten() ]
+                },
+            DADA2_MERGE.out.asv,
+            DADA2_MERGE.out.fasta,
+            DADA2_MERGE.out.dada2asv,
+            DADA2_MERGE.out.dada2stats,
+            !params.skip_barrnap ? BARRNAPSUMMARY.out.summary : [],
+            params.filter_ssu ? FILTER_SSU.out.stats : [],
+            params.filter_ssu ? FILTER_SSU.out.asv : [],
+            params.min_len_asv || params.max_len_asv ? FILTER_LEN_ASV.out.stats : [],
+            params.min_len_asv || params.max_len_asv ? FILTER_LEN_ASV.out.len_orig : [],
+            params.filter_codons ? FILTER_CODONS.out.stats : [],
+            params.cut_its != "none" ? ITSX_CUTASV.out.summary : [],
+            !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy ? ch_dada2_tax : [],
+            !params.skip_taxonomy && params.sintax_ref_taxonomy ? ch_sintax_tax : [],
+            !params.skip_taxonomy && params.pplace_tree ? ch_pplace_tax : [],
+            !params.skip_taxonomy && ( params.qiime_ref_taxonomy || params.classifier ) && run_qiime2 ? QIIME2_TAXONOMY.out.tsv : [],
+            run_qiime2,
+            run_qiime2 && !params.skip_barplot ? QIIME2_BARPLOT.out.folder : [],
+            run_qiime2 && !params.skip_abundance_tables ? "done" : "",
+            run_qiime2 && !params.skip_alpha_rarefaction ? "done" : "",
+            run_qiime2 && !params.skip_diversity_indices && params.metadata ? "done" : "",
+            run_qiime2 && !params.skip_ancom && params.metadata ? "done" : "",
+            params.picrust ? PICRUST.out.pathways : []
+            // params.qiime_adonis_formula
+        )
+        ch_versions    = ch_versions.mix(SUMMARY_REPORT.out.versions)
+    }
 
     //Save input in results folder
     input = file(params.input)

@@ -41,6 +41,9 @@ params:
     min_len_asv: ""
     max_len_asv: ""
     cut_its: ""
+    dada2_ref_tax_title: ""
+    qiime2_ref_tax_title: ""
+    sintax_ref_tax_title: ""
 
     # file paths
     mqc_plot: ""
@@ -64,7 +67,6 @@ params:
     filter_codons: ""
     stop_codons: ""
     itsx_cutasv_summary: ""
-    ref_tax_path: ""
     dada2_taxonomy: ""
     sintax_taxonomy: ""
     pplace_taxonomy: ""
@@ -629,20 +631,9 @@ cat("\n\nITSx results can be found in folder [itsx](../itsx).")
 cat("## DADA2\n")
 
 if (!params$flag_ref_tax_user) {
-    ref_tax <- readLines(params$ref_tax_path)
-
-    db <- "Unknown DB"
-    for (line in ref_tax){
-            if (grepl("Title:", line)) {
-                    db <- sub(".*Title: ", "", line)
-            }
-    }
-
-    # Output text db
     cat("The taxonomic classification was performed by DADA2 using the database: ",
-            "\"", db, "\".\n\n", sep = "")
+            "\"", params$dada2_ref_tax_title, "\".\n\n", sep = "")
 } else {
-    # Output text db
     cat("The taxonomic classification was performed by DADA2 using a custom database ",
             "provided by the user.\n\n", sep = "")
 }
@@ -702,7 +693,7 @@ cat("\n\nDADA2 taxonomy assignments can be found in folder [dada2](../dada2) in 
 # Header
 cat("## QIIME2\n")
 
-#TODO: add database information
+cat("The taxonomic classification was performed by QIIME2 using the database: \"", params$qiime2_ref_tax_title, "\".\n\n", sep = "")
 #TODO: only tested for greengenes85, need to test also UNITE and SILVA!
 
 # Read file and prepare table
@@ -764,7 +755,7 @@ cat("\n\nQIIME2 taxonomy assignments can be found in folder [qiime2/taxonomy](..
 # Header
 cat("## SINTAX\n")
 
-#TODO: add database information
+cat("The taxonomic classification was performed by SINTAX using the database: \"", params$sintax_ref_tax_title, "\".\n\n", sep = "")
 
 asv_tax <- read.table(params$sintax_taxonomy, header = TRUE, sep = "\t")
 
@@ -820,8 +811,6 @@ cat("\n\nSINTAX taxonomy assignments can be found in folder [sintax](../sintax).
 ```{r, eval = params$flag_pplace_taxonomy, results='asis'}
 # Header
 cat("## Phylogenetic Placement\n")
-
-#TODO: add database information
 
 # Read file and prepare table
 asv_tax <- read.table(params$pplace_taxonomy, header = TRUE, sep = "\t")

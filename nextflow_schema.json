@@ -557,6 +557,10 @@
                 "skip_multiqc": {
                     "type": "boolean",
                     "description": "Skip MultiQC reporting"
+                },
+                "skip_summary_report": {
+                    "type": "boolean",
+                    "description": "Skip Markdown summary report"
                 }
             }
         },

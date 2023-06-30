@@ -48,6 +48,7 @@ params:
     min_frequency: ""
     min_samples: ""
     qiime2_filtertaxa: ""
+    val_used_taxonomy: ""
 
     # file paths
     mqc_plot: ""
@@ -815,7 +816,9 @@ cat("\n\nSINTAX taxonomy assignments can be found in folder [sintax](../sintax).
 
 ```{r, eval = params$flag_pplace_taxonomy, results='asis'}
 # Header
-cat("## Phylogenetic Placement\n")
+cat("## Phylogenetic Placement\n",
+    "Phylogenetic placement grafts sequences onto a phylogenetic reference tree and optionally outputs taxonomic annotations. The reference tree is ideally made from full-length high-quality sequences containing better evolutionary signal than short amplicons. It is hence superior to estimating de-novo phylogenetic trees from short amplicon sequences. ",
+    "Extraction of taxonomic classification wads performed with EPA-NG and GAPPA.")
 
 # Read file and prepare table
 asv_tax <- read.table(params$pplace_taxonomy, header = TRUE, sep = "\t")
@@ -867,9 +870,9 @@ cat("\n\nPhylogenetic placement taxonomy assignments can be found in folder [ppl
 
 ```{r, eval = !params$flag_skip_qiime, results='asis'}
 # Header
-cat("# Downstream analysis with QIIME2\n")
-
-#TODO: qiime2 input files in qiime2/input/
+cat("# Downstream analysis with QIIME2\n",
+    "Files that were input to QIIME2 can be found in folder [qiime2/input/](../qiime2/input/).",
+    "Results of taxonomic classification of",params$val_used_taxonomy,"was used in all following analysis, see in the above sections.")
 ```
 
 ```{r, results='asis'}
@@ -908,6 +911,8 @@ datatable(filter_stats_tsv, options = list(
         scrollX = TRUE,
         scrollY = "300px",
         paging = FALSE))
+
+cat("\n\nTables with read count numbers and filtered abundance tables are in folder [qiime2/abundance_tables](../qiime2/abundance_tables).")
 ```
 
 ```{r, eval = !params$flag_skip_abundance_tables, results='asis'}

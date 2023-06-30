@@ -496,23 +496,29 @@ workflow AMPLISEQ {
         // Import taxonomic classification into QIIME2, if available
         if ( params.skip_taxonomy ) {
             log.info "Skip taxonomy classification"
+            val_used_taxonomy = "skipped"
             ch_tax = Channel.empty()
             tax_agglom_min = 1
             tax_agglom_max = 2
         } else if ( params.sintax_ref_taxonomy ) {
             log.info "Use SINTAX taxonomy classification"
+            val_used_taxonomy = "SINTAX"
             ch_tax = QIIME2_INTAX ( ch_sintax_tax ).qza
         } else if ( params.pplace_tree && params.pplace_taxonomy) {
             log.info "Use EPA-NG / GAPPA taxonomy classification"
+            val_used_taxonomy = "phylogenetic placement"
             ch_tax = QIIME2_INTAX ( ch_pplace_tax ).qza
         } else if ( params.dada_ref_taxonomy && !params.skip_dada_taxonomy ) {
             log.info "Use DADA2 taxonomy classification"
+            val_used_taxonomy = "DADA2"
             ch_tax = QIIME2_INTAX ( ch_dada2_tax ).qza
         } else if ( params.qiime_ref_taxonomy || params.classifier ) {
             log.info "Use QIIME2 taxonomy classification"
+            val_used_taxonomy = "QIIME2"
             ch_tax = QIIME2_TAXONOMY.out.qza
         } else {
             log.info "Use no taxonomy classification"
+            val_used_taxonomy = "none"
             ch_tax = Channel.empty()
             tax_agglom_min = 1
             tax_agglom_max = 2
@@ -705,6 +711,7 @@ workflow AMPLISEQ {
             !params.skip_taxonomy && params.pplace_tree ? ch_pplace_tax : [],
             !params.skip_taxonomy && ( params.qiime_ref_taxonomy || params.classifier ) && run_qiime2 ? QIIME2_TAXONOMY.out.tsv : [],
             run_qiime2,
+            run_qiime2 ? val_used_taxonomy : "",
             run_qiime2 && ( params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1 ) ? ch_dada2_asv.countLines()+","+QIIME2_FILTERTAXA.out.tsv.countLines() : "",
             run_qiime2 && ( params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1 ) ? FILTER_STATS.out.tsv : [],
             run_qiime2 && !params.skip_barplot ? QIIME2_BARPLOT.out.folder : [],

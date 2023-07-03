@@ -32,6 +32,7 @@ process SUMMARY_REPORT  {
     path(filter_codons_stats)
     path(itsx_cutasv_summary)
     path(dada2_tax)
+    tuple val(meta_ref), path(cut_dada_ref_taxonomy) // cutadapt log when params.cut_dada_ref_taxonomy
     path(sintax_tax)
     path(pplace_tax)
     path(qiime2_tax)
@@ -80,6 +81,7 @@ process SUMMARY_REPORT  {
     def itsx_cutasv = itsx_cutasv_summary ? "--itsx_cutasv_summary $itsx_cutasv_summary --cut_its $params.cut_its" : "--cut_its none"
     def dada2_taxonomy = !dada2_tax ? "" :
         params.dada_ref_tax_custom ? "--flag_dada2_taxonomy --dada2_taxonomy $dada2_tax --ref_tax_user" : "--flag_dada2_taxonomy --dada2_taxonomy $dada2_tax --dada2_ref_tax_title '${params.dada_ref_databases[params.dada_ref_taxonomy]["title"]}'"
+        dada2_taxonomy += cut_dada_ref_taxonomy ? " --cut_dada_ref_taxonomy $cut_dada_ref_taxonomy" : ""
     def sintax_taxonomy = sintax_tax ? "--flag_sintax_taxonomy --sintax_taxonomy $sintax_tax --sintax_ref_tax_title '${params.sintax_ref_databases[params.sintax_ref_taxonomy]["title"]}'" : ""
     def pplace_taxonomy = pplace_tax ? "--flag_pplace_taxonomy --pplace_taxonomy $pplace_tax" : ""
     def qiime2_taxonomy = qiime2_tax ? "--flag_qiime2_taxonomy --qiime2_taxonomy $qiime2_tax --qiime2_ref_tax_title '${params.qiime_ref_databases[params.qiime_ref_taxonomy]["title"]}'" : ""

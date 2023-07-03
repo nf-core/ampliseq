@@ -73,6 +73,7 @@ params:
     filter_codons: ""
     stop_codons: ""
     itsx_cutasv_summary: ""
+    cut_dada_ref_taxonomy: ""
     dada2_taxonomy: ""
     sintax_taxonomy: ""
     pplace_taxonomy: ""
@@ -648,6 +649,7 @@ cat("\n\nITSx results can be found in folder [itsx](../itsx).")
 ```{r, eval = params$flag_dada2_taxonomy, results='asis'}
 cat("## DADA2\n")
 
+# indicate reference taxonomy
 if (!params$flag_ref_tax_user) {
     cat("The taxonomic classification was performed by DADA2 using the database: ",
             "\"", params$dada2_ref_tax_title, "\".\n\n", sep = "")
@@ -656,6 +658,31 @@ if (!params$flag_ref_tax_user) {
             "provided by the user.\n\n", sep = "")
 }
 
+# mention if taxonomy was cut by cutadapt
+if ( isTRUE(params$cut_dada_ref_taxonomy != "") ) {
+    cut_dada_ref_taxonomy <- readLines(params$cut_dada_ref_taxonomy)
+    for (line in cut_dada_ref_taxonomy){
+        if (grepl("Total reads processed:", line)) {
+            cut_dada_ref_taxonomy_orig <- sub("Total reads processed: *\t*", "", line)
+        }
+        if (grepl("Reads written \\(passing filters\\):", line)) {
+            cut_dada_ref_taxonomy_filt <- sub("Reads written .passing filters.: *\t*", "", line)
+        }
+        if (grepl("Total basepairs processed:", line)) {
+            cut_dada_ref_taxonomy_orig_bp <- sub("Total basepairs processed: *\t*", "", line)
+        }
+        if (grepl("Total written \\(filtered\\):", line)) {
+            cut_dada_ref_taxonomy_filt_bp <- sub("Total written \\(filtered\\): *\t*", "", line)
+        }
+    }
+
+    cat("The taxonomic reference database was cut by primer sequences to improve matching.
+        The original database had ",cut_dada_ref_taxonomy_orig," sequences with ",cut_dada_ref_taxonomy_orig_bp,
+        ", retained were ",cut_dada_ref_taxonomy_filt," sequences that represented ",cut_dada_ref_taxonomy_filt_bp,".\n\n",
+        sep = "")
+}
+
+# make statistics of taxonomic classification
 asv_tax <- read.table(params$dada2_taxonomy, header = TRUE, sep = "\t")
 
 # Calculate the classified numbers/percent of asv
@@ -982,7 +1009,7 @@ cat("This step calculates alpha diversity using various methods and performs pai
     "(2) Pairwise comparisons of groups of samples is performed for specific metadata that can be found in folder [qiime2/diversity/beta_diversity/](../qiime2/diversity/beta_diversity/). Each folder named '{method}_distance_matrix-{treatment}' contains an 'index.html' that allows to view the result of the statistical test for the diversity method between treatments.",
     sep = "\n")
 #TODO: adonis test is missing here!
-#TODO: report rarefaction depth, note phylogenetic tree & phylogenetic placement
+#TODO: note phylogenetic tree & phylogenetic placement
 ```
 
 ```{r, eval = !params$flag_skip_ancom, results='asis'}

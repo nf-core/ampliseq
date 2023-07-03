@@ -707,6 +707,7 @@ workflow AMPLISEQ {
             params.filter_codons ? FILTER_CODONS.out.stats : [],
             params.cut_its != "none" ? ITSX_CUTASV.out.summary : [],
             !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy ? ch_dada2_tax : [],
+            !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy ? DADA2_TAXONOMY_WF.out.cut_tax : [],
             !params.skip_taxonomy && params.sintax_ref_taxonomy ? ch_sintax_tax : [],
             !params.skip_taxonomy && params.pplace_tree ? ch_pplace_tax : [],
             !params.skip_taxonomy && ( params.qiime_ref_taxonomy || params.classifier ) && run_qiime2 ? QIIME2_TAXONOMY.out.tsv : [],

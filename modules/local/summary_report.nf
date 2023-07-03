@@ -102,6 +102,7 @@ process SUMMARY_REPORT  {
                         --path_dada2_tab $dada_tab \\
                         --dada_stats_path $dada_stats \\
                         --dada_filtntrim_args $dada_filtntrim_args \\
+                        --dada_sample_inference $params.sample_inference \\
                         $dada_err \\
                         $barrnap \\
                         $single_end \\

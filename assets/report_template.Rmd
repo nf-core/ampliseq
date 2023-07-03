@@ -37,6 +37,7 @@ params:
     max_ee: ""
     trunc_qmin: ""
     trunc_rmin: ""
+    dada_sample_inference: ""
     filter_ssu: ""
     min_len_asv: ""
     max_len_asv: ""
@@ -391,7 +392,14 @@ cat("Finally,", n_asv,
 cat("The ASVs can be found in ['dada2/ASV_seqs.fasta'](../dada2/). And the corresponding",
         " quantification of the ASVs across samples is in",
         "['dada2/ASV_table.tsv'](../dada2/). An extensive table containing both was ",
-        "saved as ['dada2/DADA2_table.tsv'](../dada2/)")
+        "saved as ['dada2/DADA2_table.tsv'](../dada2/). ")
+if ( params$dada_sample_inference == "independent" ) {
+    cat("ASVs were inferred for each sample independently.")
+} else if ( params$dada_sample_inference == "pooled" ) {
+    cat("ASVs were inferred from pooled sample information.")
+} else {
+    cat("ASVs were initally inferred for each sample independently, but re-examined with all samples (pseudo-pooled).")
+}
 ```
 
 ```{r, results='asis'}
@@ -937,16 +945,24 @@ cat("## Barplot\n",
 
 ```{r, eval = !params$flag_skip_alpha_rarefaction, results='asis'}
 cat("## Alpha diversity rarefaction curves\n",
-    "Produces rarefaction plots for several alpha diversity indices, and is primarily used to determine if the richness of the samples has been fully observed or sequenced. If the slope of the curves does not level out and the lines do not becomes horizontal, this might be because the sequencing depth was too low to observe all diversity or that sequencing error artificially increases sequence diversity and causes false discoveries. ",
-    "Folder [qiime2/alpha-rarefaction](../qiime2/alpha-rarefaction) contains the data, click [qiime2/alpha-rarefaction/index.html](../qiime2/alpha-rarefaction/index.html) to open it in your web browser.")
-#TODO: highlight DADA2's pooling vs independent
+    "Produces rarefaction plots for several alpha diversity indices, and is primarily used to determine if the richness of the samples has been fully observed or sequenced. If the slope of the curves does not level out and the lines do not becomes horizontal, this might be because the sequencing depth was too low to observe all diversity or that sequencing error artificially increases sequence diversity and causes false discoveries. ")
+# warning if dada_sample_inference is independent, because alpha diversities are not expected to be accurate!
+if ( params$dada_sample_inference == "independent") {
+    cat("Please note that ASVs were inferred for each sample independently, that can make alpha diversity indices a poor estimate of true diversity. ")
+}
+cat("Folder [qiime2/alpha-rarefaction](../qiime2/alpha-rarefaction) contains the data, click [qiime2/alpha-rarefaction/index.html](../qiime2/alpha-rarefaction/index.html) to open it in your web browser.")
 ```
 
 ```{r, eval = !params$flag_skip_diversity_indices, results='asis'}
 cat("## Diversity analysis\n",
     "Diversity measures summarize important sample features (alpha diversity) or differences between samples (beta diversity). To do so, sample data is first rarefied to the minimum number of counts per sample. ",
     "\n### Alpha diversity indices\n",
-    "Alpha diversity measures the species diversity within samples. Diversity calculations are based on sub-sampled data rarefied to the minimum read count of all samples. This step calculates alpha diversity using various methods and performs pairwise comparisons of groups of samples. It is based on a phylogenetic tree of all ASV sequences. ",
+    "Alpha diversity measures the species diversity within samples. Diversity calculations are based on sub-sampled data rarefied to the minimum read count of all samples. ",
+    sep = "\n")
+if ( params$dada_sample_inference == "independent") {
+    cat("Please note that ASVs were inferred for each sample independently, that can make alpha diversity indices a poor estimate of true diversity. ")
+}
+cat("This step calculates alpha diversity using various methods and performs pairwise comparisons of groups of samples. It is based on a phylogenetic tree of all ASV sequences. ",
     "Folder [qiime2/diversity/alpha_diversity](../qiime2/diversity/alpha_diversity) contains the alpha-diverity data:\n",
     "- Shannon’s diversity index (quantitative): [qiime2/diversity/alpha_diversity/shannon_vector/index.html](../qiime2/diversity/alpha_diversity/shannon_vector/index.html)\n",
     "- Pielou’s Evenness: [qiime2/diversity/alpha_diversity/evenness_vector/index.html](../qiime2/diversity/alpha_diversity/evenness_vector/index.html)\n",
@@ -963,7 +979,7 @@ cat("## Diversity analysis\n",
     "(2) Pairwise comparisons of groups of samples is performed for specific metadata that can be found in folder [qiime2/diversity/beta_diversity/](../qiime2/diversity/beta_diversity/). Each folder named '{method}_distance_matrix-{treatment}' contains an 'index.html' that allows to view the result of the statistical test for the diversity method between treatments.",
     sep = "\n")
 #TODO: adonis test is missing here!
-#TODO: report rarefaction depth, note phylogenetic tree & phylogenetic placement, highlight DADA2's pooled method
+#TODO: report rarefaction depth, note phylogenetic tree & phylogenetic placement
 ```
 
 ```{r, eval = !params$flag_skip_ancom, results='asis'}

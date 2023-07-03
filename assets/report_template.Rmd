@@ -333,7 +333,7 @@ if ( params$flag_single_end ) {
     dada_stats_p_t <- data.frame(samples_t, steps_t, asvs_p_t)
 } else {
     # paired end
-    cat("Stacked barcharts of read pair numbers (denoisedF & denoisedR halfed, because each pair is split) per sample and processing stage (see above):\n\n")
+    cat("Stacked barchart of read pair numbers (denoisedF & denoisedR halfed, because each pair is split) per sample and processing stage (see above):\n\n")
 
     dada_stats_ex <- data.frame(sample = dada_stats$sample,
                             DADA2_input = dada_stats$DADA2_input,
@@ -369,12 +369,18 @@ if ( params$flag_single_end ) {
 
 # Plot
 dada_stats_p_t$steps_t <- factor(dada_stats_p_t$steps_t, levels=unique(dada_stats_p_t$steps_t))
-ggplot(dada_stats_p_t, aes(fill = steps_t, y = asvs_p_t, x = samples_t)) +
+
+plot_dada_stats_p_t <- ggplot(dada_stats_p_t, aes(fill = steps_t, y = asvs_p_t, x = samples_t)) +
         geom_bar(position = "fill", stat = "identity") +
         xlab("Samples") +
         ylab("Fraction of total reads") +
         coord_flip() +
         scale_fill_brewer("Filtering Steps", palette = "Spectral")
+plot_dada_stats_p_t
+
+svg("stacked_barchart_of_reads.svg")
+plot_dada_stats_p_t
+dev.off()
 ```
 
 The proportion of lost reads per processing stage and sample should not be too high, totalling typically <50%.
@@ -449,13 +455,18 @@ cat( barrnap_df_sum$count[4], "(", barrnap_df_sum$percent[4],"%) ASVs to Eukaryo
 cat( barrnap_df_sum$count[5], "(", barrnap_df_sum$percent[5],"%) were below similarity threshold to any kingdom." )
 
 # Barplot
-ggplot(barrnap_df_sum,
+plot_barrnap_df_sum <- ggplot(barrnap_df_sum,
         aes(x = reorder(label, desc(label)), y = percent)) +
         geom_bar(stat = "identity", fill = rgb(0.1, 0.4, 0.75), width = 0.5) +
         ylab("% Classification") +
         xlab("rRNA origins") +
         coord_flip() +
         theme_bw()
+plot_barrnap_df_sum
+
+svg("rrna_detection_with_barrnap.svg")
+plot_barrnap_df_sum
+dev.off()
 
 cat("\n\nrRNA filter results can be found in folder [barrnap](../barrnap).")
 ```
@@ -516,13 +527,18 @@ if ( params$max_len_asv != 0 ) {
     filter_len_asv_filtered <- subset(filter_len_asv_filtered, Length <= params$max_len_asv)
 }
 
-ggplot(filter_len_profile,
+plot_filter_len_profile <- ggplot(filter_len_profile,
         aes(x = Length, y = Counts)) +
         geom_bar(stat = "identity", fill = rgb(0.1, 0.4, 0.75), width = 0.5) +
         ylab("Number of ASVs") +
         xlab("Length") +
         coord_flip() +
         theme_bw()
+plot_filter_len_profile
+
+svg("asv_length_profile_before_length_filter.svg")
+plot_filter_len_profile
+dev.off()
 
 # Reads removed
 
@@ -635,13 +651,18 @@ itsx_origins$percent <- round( itsx_origins$count / itsx_summary_nasv * 100, 2)
 cat(itsx_summary_its, "of",itsx_summary_nasv,"(",round( itsx_summary_its/itsx_summary_nasv*100 ,2),"%) ASVs were identified as ITS.",
     "The following plot shows ITS sequences by preliminary origin:")
 
-ggplot(itsx_origins,
+plot_itsx_origins <- ggplot(itsx_origins,
         aes(x = origin, y = percent)) +
         geom_bar(stat = "identity", fill = rgb(0.1, 0.4, 0.75), width = 0.5) +
         ylab("%") +
         xlab("ITS sequences by preliminary origin") +
         coord_flip() +
         theme_bw()
+plot_itsx_origins
+
+svg("itsx_preliminary_origin.svg")
+plot_itsx_origins
+dev.off()
 
 cat("\n\nITSx results can be found in folder [itsx](../itsx).")
 ```
@@ -723,13 +744,18 @@ cat(outputstr)
 # Barplot
 # Plot
 asv_classi_df$level <- factor(asv_classi_df$level, levels = asv_classi_df$level)
-ggplot(asv_classi_df,
+plot_asv_classi_df <- ggplot(asv_classi_df,
         aes(x = reorder(level, desc(level)), y = p_asv_classified)) +
         geom_bar(stat = "identity", fill = rgb(0.1, 0.4, 0.75), width = 0.5) +
         ylab("% Classification") +
         xlab("Levels") +
         coord_flip() +
         theme_bw()
+plot_asv_classi_df
+
+svg("dada2_taxonomic_classification_per_taxonomy_level.svg")
+plot_asv_classi_df
+dev.off()
 
 cat("\n\nDADA2 taxonomy assignments can be found in folder [dada2](../dada2) in files 'ASV_tax_*.tsv'.")
 ```
@@ -784,13 +810,18 @@ cat(outputstr)
 # Barplot
 # Plot
 asv_classi_df$level <- factor(asv_classi_df$level, levels = asv_classi_df$level)
-ggplot(asv_classi_df,
+plot_asv_classi_df <- ggplot(asv_classi_df,
         aes(x = reorder(level, desc(level)), y = p_asv_classified)) +
         geom_bar(stat = "identity", fill = rgb(0.1, 0.4, 0.75), width = 0.5) +
         ylab("% Classification") +
         xlab("Levels") +
         coord_flip() +
         theme_bw()
+plot_asv_classi_df
+
+svg("qiime2_taxonomic_classification_per_taxonomy_level.svg")
+plot_asv_classi_df
+dev.off()
 
 cat("\n\nQIIME2 taxonomy assignments can be found in folder [qiime2/taxonomy](../qiime2/taxonomy).")
 ```
@@ -841,13 +872,18 @@ cat(outputstr)
 # Barplot
 # Plot
 asv_classi_df$level <- factor(asv_classi_df$level, levels = asv_classi_df$level)
-ggplot(asv_classi_df,
+plot_asv_classi_df <- ggplot(asv_classi_df,
         aes(x = reorder(level, desc(level)), y = p_asv_classified)) +
         geom_bar(stat = "identity", fill = rgb(0.1, 0.4, 0.75), width = 0.5) +
         ylab("% Classification") +
         xlab("Levels") +
         coord_flip() +
         theme_bw()
+plot_asv_classi_df
+
+svg("sintax_taxonomic_classification_per_taxonomy_level.svg")
+plot_asv_classi_df
+dev.off()
 
 cat("\n\nSINTAX taxonomy assignments can be found in folder [sintax](../sintax).")
 ```
@@ -893,13 +929,18 @@ cat(outputstr)
 # Barplot
 # Plot
 asv_classi_df$level <- factor(asv_classi_df$level, levels = asv_classi_df$level)
-ggplot(asv_classi_df,
+plot_asv_classi_df <- ggplot(asv_classi_df,
         aes(x = reorder(level, desc(level)), y = p_asv_classified)) +
         geom_bar(stat = "identity", fill = rgb(0.1, 0.4, 0.75), width = 0.5) +
         ylab("% Classification") +
         xlab("Taxonomic levels") +
         coord_flip() +
         theme_bw()
+plot_asv_classi_df
+
+svg("phylogenetic_placement_taxonomic_classification_per_taxonomy_level.svg")
+plot_asv_classi_df
+dev.off()
 
 #TODO: *.heattree.tree.svg could be displayed as well!
 
@@ -1035,6 +1076,7 @@ cat("## PICRUSt2\n",
 
 This report (file 'summary_report.html') is located in folder [summary_report](.) of the original pipeline results folder.
 In this file, all links to files and folders are relative, therefore hyperlinks will only work when the report is at its original place in the pipeline results folder.
+Plots specifically produced for this report (if any) can be also found in folder [summary_report](.).
 
 A comprehensive read count report throughout the pipeline can be found in the [base results folder](../) in file 'overall_summary.tsv'.
 Technical information to the pipeline run are collected in folder [pipeline_info](../pipeline_info).

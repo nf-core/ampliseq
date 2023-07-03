@@ -42,7 +42,7 @@ process SUMMARY_REPORT  {
     path(barplot)
     val(abundance_tables)
     val(alpha_rarefaction)
-    val(diversity_indices)
+    path(diversity_indices)
     val(ancom)
     path(picrust_pathways)
 
@@ -88,7 +88,7 @@ process SUMMARY_REPORT  {
         qiime2 += barplot ? "" : " --flag_skip_barplot"
         qiime2 += abundance_tables ? "" : " --flag_skip_abundance_tables"
         qiime2 += alpha_rarefaction ? "" : " --flag_skip_alpha_rarefaction"
-        qiime2 += diversity_indices ? "" : " --flag_skip_diversity_indices"
+        qiime2 += diversity_indices ? " --diversity_indices_depth $diversity_indices" : " --flag_skip_diversity_indices"
         qiime2 += ancom ? "" : " --flag_skip_ancom"
     def picrust = picrust_pathways ? "--picrust_pathways $picrust_pathways" : ""
     """

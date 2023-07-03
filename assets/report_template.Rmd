@@ -78,6 +78,7 @@ params:
     pplace_taxonomy: ""
     qiime2_taxonomy: ""
     filter_stats_tsv: ""
+    diversity_indices_depth: ""
     picrust_pathways: ""
 
 ---
@@ -954,10 +955,12 @@ cat("Folder [qiime2/alpha-rarefaction](../qiime2/alpha-rarefaction) contains the
 ```
 
 ```{r, eval = !params$flag_skip_diversity_indices, results='asis'}
+diversity_indices_depth <- readLines(params$diversity_indices_depth)
+
 cat("## Diversity analysis\n",
-    "Diversity measures summarize important sample features (alpha diversity) or differences between samples (beta diversity). To do so, sample data is first rarefied to the minimum number of counts per sample. ",
+    "Diversity measures summarize important sample features (alpha diversity) or differences between samples (beta diversity). Diversity calculations are based on sub-sampled data rarefied to",diversity_indices_depth, "counts. ",
     "\n### Alpha diversity indices\n",
-    "Alpha diversity measures the species diversity within samples. Diversity calculations are based on sub-sampled data rarefied to the minimum read count of all samples. ",
+    "Alpha diversity measures the species diversity within samples. ",
     sep = "\n")
 if ( params$dada_sample_inference == "independent") {
     cat("Please note that ASVs were inferred for each sample independently, that can make alpha diversity indices a poor estimate of true diversity. ")
@@ -969,7 +972,7 @@ cat("This step calculates alpha diversity using various methods and performs pai
     "- Faith’s Phylogenetic Diversity (qualitiative, phylogenetic) [qiime2/diversity/alpha_diversity/faith_pd_vector/index.html](../qiime2/diversity/alpha_diversity/faith_pd_vector/index.html)\n",
     "- Observed OTUs (qualitative): [qiime2/diversity/alpha_diversity/observed_otus_vector/index.html](../qiime2/diversity/alpha_diversity/observed_otus_vector/index.html)\n",
     "\n### Beta diversity indices\n",
-    "Beta diversity measures the species community differences between samples. Diversity calculations are based on sub-sampled data rarefied to the minimum read count of all samples. This step calculates beta diversity distances using various methods and performs pairwise comparisons of groups of samples. Additionally, principle coordinates analysis (PCoA) plots are produced that can be visualized with Emperor in your default browser without the need for installation. This calculations are based on a phylogenetic tree of all ASV sequences. ",
+    "Beta diversity measures the species community differences between samples. This step calculates beta diversity distances using various methods and performs pairwise comparisons of groups of samples. Additionally, principle coordinates analysis (PCoA) plots are produced that can be visualized with Emperor in your default browser without the need for installation. This calculations are based on a phylogenetic tree of all ASV sequences. ",
     "Folder [qiime2/diversity/beta_diversity](../qiime2/diversity/beta_diversity) contains the beta-diverity data:\n",
     "(1) PCoA for four different beta diversity distances are accessible via:",
     "- Bray-Curtis distance (quantitative): [qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA/index.html](../qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA/index.html)\n",

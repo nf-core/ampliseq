@@ -71,4 +71,11 @@ workflow QIIME2_DIVERSITY {
             .set{ ch_to_diversity_betaord }
         QIIME2_DIVERSITY_BETAORD ( ch_to_diversity_betaord )
     }
+
+    emit:
+    depth   = QIIME2_DIVERSITY_CORE.out.depth
+    alpha   = QIIME2_DIVERSITY_ALPHA.out.alpha
+    beta    = QIIME2_DIVERSITY_BETA.out.beta
+    betaord = QIIME2_DIVERSITY_BETAORD.out.beta
+    adonis  = QIIME2_DIVERSITY_ADONIS.out.html
 }

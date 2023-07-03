@@ -131,7 +131,7 @@ cutadapt_summary <- read.table(file = params$ca_sum_path, header = TRUE, sep = "
 passed_col <- as.numeric(substr(
         cutadapt_summary$cutadapt_passing_filters_percent, 1, 4))
 
-max_disc <- 100 - min(passed_col)
+max_disc <- round( 100 - min(passed_col), 1 )
 avg_passed <- round(mean(passed_col),1)
 
 cutadapt_text_unch <- "Primers were trimmed using cutadapt"
@@ -739,7 +739,6 @@ cat("\n\nDADA2 taxonomy assignments can be found in folder [dada2](../dada2) in 
 cat("## QIIME2\n")
 
 cat("The taxonomic classification was performed by QIIME2 using the database: \"", params$qiime2_ref_tax_title, "\".\n\n", sep = "")
-#TODO: only tested for greengenes85, need to test also UNITE and SILVA!
 
 # Read file and prepare table
 asv_tax <- read.table(params$qiime2_taxonomy, header = TRUE, sep = "\t")
@@ -922,7 +921,7 @@ flag_filter_stats_tsv <- isTRUE(params$filter_stats_tsv != "")
 cat("## ASV filtering\n",
     "Unwanted taxa are often off-targets generated in PCR with primers that are not perfectly specific for the target DNA, for 16S rRNA sequencing mitrochondria and chloroplast sequences are typically removed because these are frequent unwanted non-bacteria PCR products. ")
 if ( params$exclude_taxa != "none" ) {
-    cat("ASVs were removed when the taxonomic string contanied any of", params$exclude_taxa)
+    cat("ASVs were removed when the taxonomic string contanied any of '", params$exclude_taxa, "' (comma separated)")
 }
 if ( params$min_frequency != 1 ) {
     cat(", had fewer than", params$min_frequency ,"total read counts over all sample")

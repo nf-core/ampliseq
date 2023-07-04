@@ -77,6 +77,7 @@ params:
     dada2_taxonomy: ""
     sintax_taxonomy: ""
     pplace_taxonomy: ""
+    pplace_heattree: ""
     qiime2_taxonomy: ""
     filter_stats_tsv: ""
     diversity_indices_depth: ""
@@ -892,7 +893,7 @@ cat("\n\nSINTAX taxonomy assignments can be found in folder [sintax](../sintax).
 # Header
 cat("## Phylogenetic Placement\n",
     "Phylogenetic placement grafts sequences onto a phylogenetic reference tree and optionally outputs taxonomic annotations. The reference tree is ideally made from full-length high-quality sequences containing better evolutionary signal than short amplicons. It is hence superior to estimating de-novo phylogenetic trees from short amplicon sequences. ",
-    "Extraction of taxonomic classification wads performed with EPA-NG and GAPPA.")
+    "Extraction of taxonomic classification wads performed with EPA-NG and GAPPA. ")
 
 # Read file and prepare table
 asv_tax <- read.table(params$pplace_taxonomy, header = TRUE, sep = "\t")
@@ -942,8 +943,14 @@ svg("phylogenetic_placement_taxonomic_classification_per_taxonomy_level.svg")
 plot_asv_classi_df
 dev.off()
 
-#TODO: *.heattree.tree.svg could be displayed as well!
+cat("\n\nHeattree of the phylogenetic placement:")
+```
 
+```{r, eval = params$flag_pplace_taxonomy, out.width="100%", fig.show='hold', fig.align='default'}
+knitr::include_graphics(c(params$pplace_heattree))
+```
+
+```{r, eval = params$flag_pplace_taxonomy, results='asis'}
 cat("\n\nPhylogenetic placement taxonomy assignments can be found in folder [pplace](../pplace) in file '*.taxonomy.per_query_unique.tsv'.")
 ```
 
@@ -1049,7 +1056,6 @@ cat("This step calculates alpha diversity using various methods and performs pai
     "(2) Pairwise comparisons of groups of samples is performed for specific metadata that can be found in folder [qiime2/diversity/beta_diversity/](../qiime2/diversity/beta_diversity/). Each folder named '{method}_distance_matrix-{treatment}' contains an 'index.html' that allows to view the result of the statistical test for the diversity method between treatments.",
     sep = "\n")
 #TODO: adonis test is missing here!
-#TODO: note phylogenetic tree & phylogenetic placement
 ```
 
 ```{r, eval = !params$flag_skip_ancom, results='asis'}

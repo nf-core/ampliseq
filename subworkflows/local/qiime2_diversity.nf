@@ -73,9 +73,9 @@ workflow QIIME2_DIVERSITY {
     }
 
     emit:
-    depth   = QIIME2_DIVERSITY_CORE.out.depth
-    alpha   = QIIME2_DIVERSITY_ALPHA.out.alpha
-    beta    = QIIME2_DIVERSITY_BETA.out.beta
-    betaord = QIIME2_DIVERSITY_BETAORD.out.beta
-    adonis  = QIIME2_DIVERSITY_ADONIS.out.html
+    depth   = !skip_diversity_indices ? QIIME2_DIVERSITY_CORE.out.depth : []
+    alpha   = !skip_diversity_indices ? QIIME2_DIVERSITY_ALPHA.out.alpha : []
+    beta    = !skip_diversity_indices ? QIIME2_DIVERSITY_BETA.out.beta : []
+    betaord = !skip_diversity_indices ? QIIME2_DIVERSITY_BETAORD.out.beta : []
+    adonis  = params.qiime_adonis_formula ? QIIME2_DIVERSITY_ADONIS.out.html : []
 }

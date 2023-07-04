@@ -50,6 +50,7 @@ params:
     min_samples: ""
     qiime2_filtertaxa: ""
     val_used_taxonomy: ""
+    qiime_adonis_formula: ""
 
     # file paths
     mqc_plot: ""
@@ -81,6 +82,7 @@ params:
     qiime2_taxonomy: ""
     filter_stats_tsv: ""
     diversity_indices_depth: ""
+    diversity_indices_adonis: ""
     picrust_pathways: ""
 
 ---
@@ -154,16 +156,6 @@ datatable(cutadapt_summary, options = list(
         scrollX = TRUE,
         scrollY = "300px",
         paging = FALSE))
-
-# Barplot TODO: currently skipper, because this is already in the table
-#cutadapt_summary$passed_num <- passed_col
-#ggplot(cutadapt_summary,
-#        aes(x = sample, y = passed_col)) +
-#        geom_bar(stat = "identity", fill = rgb(0.1, 0.4, 0.75), width = 0.5) +
-#        ylab("% sequencing reads passing filters of cutadapt") +
-#        xlab("Samples") +
-#        coord_flip() +
-#        theme_bw()
 
 cat("\n\nCutadapt results can be found in folder [cutadapt](../cutadapt).")
 ```
@@ -1076,7 +1068,31 @@ cat("This step calculates alpha diversity using various methods and performs pai
     "- weighted UniFrac distance (quantitative, phylogenetic): [qiime2/diversity/beta_diversity/weighted_unifrac_pcoa_results-PCoA/index.html](../qiime2/diversity/beta_diversity/weighted_unifrac_pcoa_results-PCoA/index.html)\n",
     "(2) Pairwise comparisons of groups of samples is performed for specific metadata that can be found in folder [qiime2/diversity/beta_diversity/](../qiime2/diversity/beta_diversity/). Each folder named '{method}_distance_matrix-{treatment}' contains an 'index.html' that allows to view the result of the statistical test for the diversity method between treatments.",
     sep = "\n")
-#TODO: adonis test is missing here!
+```
+
+```{r, results='asis'}
+flag_qiime_adonis_formula <- isTRUE(params$qiime_adonis_formula != "")
+```
+
+```{r, eval = params$flag_qiime_adonis_formula, results='asis'}
+#qiime_adonis_formula
+#diversity_indices_adonis
+cat("**   ADONIS test for beta diversity**\n\n")
+cat("Permutational multivariate analysis of variance using distance matrices (adonis)
+    determines whether groups of samples are significantly different from one another.
+    The formula was '",params$qiime_adonis_formula,"' (multiple formulas are comma separated).
+    ADONIS computes an R2 value (effect size) which shows the percentage of variation explained
+    by a condition, as well as a p-value to determine the statistical significance.
+    The sequence of conditions in the formula matters, the variance of factors is removed
+    (statistically controlled for) from beginning to end of the formula. " )
+
+cat("\n\nTest results are in separate folders following the scheme '{method}_distance_matrix-{adonis formula}':\n")
+diversity_indices_adonis <- unlist( strsplit( params$diversity_indices_adonis,"," ) )
+for (folder in diversity_indices_adonis) {
+    adonis_index_path <- paste0("qiime2/diversity/beta_diversity/adonis/",folder)
+    cat("\n- [",adonis_index_path,"/index.html](../",adonis_index_path,"/index.html)\n", sep="")
+}
+
 ```
 
 ```{r, eval = !params$flag_skip_ancom, results='asis'}

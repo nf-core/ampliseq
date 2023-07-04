@@ -312,7 +312,7 @@ replicates due to high impact of stochasticity.
 
 if ( params$flag_single_end ) {
     # single end
-    cat("Stacked barcharts of read numbers per sample and processing stage (see above):\n\n")
+    cat("Stacked barcharts of read numbers per sample and processing stage")
 
     dada_stats_ex <- data.frame(sample = dada_stats$sample,
                             input = dada_stats$DADA2_input,
@@ -321,8 +321,14 @@ if ( params$flag_single_end ) {
                             nonchim = dada_stats$denoised-dada_stats$nonchim,
                             analysis = dada_stats$nonchim)
     dada_stats_p <- data.frame(sample = dada_stats_ex$sample, round(dada_stats_ex[2:6]/dada_stats_ex$input*100, 2))
-    n_samples <- length(dada_stats_p$sample)
+    # If more than 20 sample only display subset!
+    if ( nrow(dada_stats_p)>=20 ) {
+        cat(" (display 10 samples of each lowest and highest percentage of reads analysed, of",nrow(dada_stats_p),"samples)")
+        dada_stats_p <- dada_stats_p[order(-dada_stats_p$analysis),]
+        dada_stats_p <- rbind(head(dada_stats_p,10),tail(dada_stats_p,10))
+    }
     # Stack columns for both stacked barcharts
+    n_samples <- length(dada_stats_p$sample)
     samples_t <- c(rep(dada_stats_p$sample, 4))
     steps_t <- c(rep("excluded by filtering", n_samples), rep("excluded by denoised", n_samples),
                 rep("excluded by nonchim", n_samples), rep("reads in final ASVs", n_samples))
@@ -334,7 +340,7 @@ if ( params$flag_single_end ) {
     dada_stats_p_t <- data.frame(samples_t, steps_t, asvs_p_t)
 } else {
     # paired end
-    cat("Stacked barchart of read pair numbers (denoisedF & denoisedR halfed, because each pair is split) per sample and processing stage (see above):\n\n")
+    cat("Stacked barchart of read pair numbers (denoisedF & denoisedR halfed, because each pair is split) per sample and processing stage")
 
     dada_stats_ex <- data.frame(sample = dada_stats$sample,
                             DADA2_input = dada_stats$DADA2_input,
@@ -345,6 +351,12 @@ if ( params$flag_single_end ) {
                             nonchim = dada_stats$merged-dada_stats$nonchim,
                             analysis = dada_stats$nonchim)
     dada_stats_p <- data.frame(sample = dada_stats_ex$sample, round(dada_stats_ex[2:8]/dada_stats_ex$DADA2_input*100, 2))
+    # If more than 20 sample only display subset!
+    if ( nrow(dada_stats_p)>=20 ) {
+        cat(" (display 10 samples of each lowest and highest percentage of reads analysed, of",nrow(dada_stats_p),"samples)")
+        dada_stats_p <- dada_stats_p[order(-dada_stats_p$analysis),]
+        dada_stats_p <- rbind(head(dada_stats_p,10),tail(dada_stats_p,10))
+    }
     # Stack columns for both stacked barcharts
     n_samples <- length(dada_stats_p$sample)
     samples_t <- c(rep(dada_stats_p$sample, 6))
@@ -358,6 +370,7 @@ if ( params$flag_single_end ) {
     asvs_p_t <- as.array(flatten_dbl(dada_stats_p[3:8]))
     dada_stats_p_t <- data.frame(samples_t, steps_t, asvs_p_t)
 }
+cat(":\n\n")
 
 # Plot
 #dada_stats_ex_t$steps_t <- factor(dada_stats_ex_t$steps_t, levels=unique(dada_stats_ex_t$steps_t))
@@ -382,6 +395,8 @@ plot_dada_stats_p_t
 svg("stacked_barchart_of_reads.svg")
 plot_dada_stats_p_t
 dev.off()
+
+cat("\n\nBetween",min(dada_stats_p$analysis),"% and",max(dada_stats_p$analysis),"% reads per sample were retained for analysis within DADA2 steps.")
 ```
 
 The proportion of lost reads per processing stage and sample should not be too high, totalling typically <50%.
@@ -512,7 +527,7 @@ flag_filter_len_asv <- isTRUE(params$filter_len_asv != "")
 cat("## Sequence length\n")
 
 cat("A length filter was used to reduce potential contamination after ASV computation.",
-    "Before filtering, ASVs had the following length profile:\n\n")
+    "Before filtering, ASVs had the following length profile (count of 1 was transformed to 1.5 to plot on log10 scale):\n\n")
 
 # ASV length profile
 
@@ -528,12 +543,15 @@ if ( params$max_len_asv != 0 ) {
     filter_len_asv_filtered <- subset(filter_len_asv_filtered, Length <= params$max_len_asv)
 }
 
+# replace 1 with 1.5 to display on log scale
+filter_len_profile$Counts[filter_len_profile$Counts == 1] <- 1.5
+
 plot_filter_len_profile <- ggplot(filter_len_profile,
         aes(x = Length, y = Counts)) +
         geom_bar(stat = "identity", fill = rgb(0.1, 0.4, 0.75), width = 0.5) +
         ylab("Number of ASVs") +
         xlab("Length") +
-        coord_flip() +
+        scale_y_continuous(trans = "log10") +
         theme_bw()
 plot_filter_len_profile
 
@@ -991,6 +1009,9 @@ cat("Consequently,",qiime2_filtertaxa_orig,"ASVs were reduced by",qiime2_filtert
 # import stats tsv
 filter_stats_tsv <- read.table(file = params$filter_stats_tsv, header = TRUE, sep = "\t")
 colnames(filter_stats_tsv) <- gsub("_tax_filter","",colnames(filter_stats_tsv))
+filter_stats_tsv$retained_percent <- round( filter_stats_tsv$retained_percent, 2)
+filter_stats_tsv$lost_percent <- round( filter_stats_tsv$lost_percent, 2)
+colnames(filter_stats_tsv) <- gsub("_percent","%",colnames(filter_stats_tsv))
 
 # Display table
 datatable(filter_stats_tsv, options = list(

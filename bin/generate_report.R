@@ -73,7 +73,7 @@ option_list = list(
     make_option(c("--diversity_indices_depth"), type="character", default=NULL, help="MultiQC plots", metavar="character"),
     make_option(c("--diversity_indices_adonis"), type="character", default=NULL, help="MultiQC plots", metavar="character"),
     make_option(c("--qiime_adonis_formula"), type="character", default=NULL, help="MultiQC plots", metavar="character"),
-    make_option(c("--flag_skip_ancom"), action="store_true", default=FALSE, help="Downstream analysis with QIIME2", metavar="logical"),
+    make_option(c("--ancom"), type="character", default=NULL, help="MultiQC plots", metavar="character"),
     make_option(c("--picrust_pathways"), type="character", default=NULL, help="MultiQC plots", metavar="character")
 )
 
@@ -149,5 +149,5 @@ rmarkdown::render(opt$report, output_file = opt$output,
                         diversity_indices_depth = opt$diversity_indices_depth,
                         diversity_indices_adonis = opt$diversity_indices_adonis,
                         qiime_adonis_formula = opt$qiime_adonis_formula,
-                        flag_skip_ancom = opt$flag_skip_ancom,
+                        ancom = opt$ancom,
                         picrust_pathways = opt$picrust_pathways))

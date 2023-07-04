@@ -46,7 +46,7 @@ process SUMMARY_REPORT  {
     val(alpha_rarefaction)
     path(diversity_indices)
     path(diversity_indices_adonis)
-    val(ancom)
+    path(ancom)
     path(picrust_pathways)
 
 
@@ -95,7 +95,7 @@ process SUMMARY_REPORT  {
         qiime2 += alpha_rarefaction ? "" : " --flag_skip_alpha_rarefaction"
         qiime2 += diversity_indices ? " --diversity_indices_depth $diversity_indices" : " --flag_skip_diversity_indices"
         qiime2 += diversity_indices_adonis ? " --diversity_indices_adonis '"+ diversity_indices_adonis.join(",") +"' --qiime_adonis_formula $params.qiime_adonis_formula" : ""
-        qiime2 += ancom ? "" : " --flag_skip_ancom"
+        qiime2 += ancom ? " --ancom '"+ ancom.join(",") +"'" : ""
     def picrust = picrust_pathways ? "--picrust_pathways $picrust_pathways" : ""
     """
     generate_report.R   --report $report_template \\

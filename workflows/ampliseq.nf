@@ -721,9 +721,8 @@ workflow AMPLISEQ {
             run_qiime2 && !params.skip_alpha_rarefaction ? "done" : "",
             run_qiime2 && !params.skip_diversity_indices && params.metadata ? QIIME2_DIVERSITY.out.depth : [],
             run_qiime2 && !params.skip_diversity_indices && params.metadata ? QIIME2_DIVERSITY.out.adonis.collect() : [],
-            run_qiime2 && !params.skip_ancom && params.metadata ? "done" : "",
+            run_qiime2 && !params.skip_ancom && params.metadata ? QIIME2_ANCOM.out.ancom.collect() : [],
             params.picrust ? PICRUST.out.pathways : []
-            // params.qiime_adonis_formula
         )
         ch_versions    = ch_versions.mix(SUMMARY_REPORT.out.versions)
     }

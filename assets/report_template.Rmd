@@ -394,7 +394,7 @@ plot_dada_stats_p_t
 
 svg("stacked_barchart_of_reads.svg")
 plot_dada_stats_p_t
-dev.off()
+invisible(dev.off())
 
 cat("\n\nBetween",min(dada_stats_p$analysis),"% and",max(dada_stats_p$analysis),"% reads per sample were retained for analysis within DADA2 steps.")
 ```
@@ -482,7 +482,7 @@ plot_barrnap_df_sum
 
 svg("rrna_detection_with_barrnap.svg")
 plot_barrnap_df_sum
-dev.off()
+invisible(dev.off())
 
 cat("\n\nrRNA filter results can be found in folder [barrnap](../barrnap).")
 ```
@@ -557,7 +557,7 @@ plot_filter_len_profile
 
 svg("asv_length_profile_before_length_filter.svg")
 plot_filter_len_profile
-dev.off()
+invisible(dev.off())
 
 # Reads removed
 
@@ -681,7 +681,7 @@ plot_itsx_origins
 
 svg("itsx_preliminary_origin.svg")
 plot_itsx_origins
-dev.off()
+invisible(dev.off())
 
 cat("\n\nITSx results can be found in folder [itsx](../itsx).")
 ```
@@ -774,7 +774,7 @@ plot_asv_classi_df
 
 svg("dada2_taxonomic_classification_per_taxonomy_level.svg")
 plot_asv_classi_df
-dev.off()
+invisible(dev.off())
 
 cat("\n\nDADA2 taxonomy assignments can be found in folder [dada2](../dada2) in files 'ASV_tax_*.tsv'.")
 ```
@@ -840,7 +840,7 @@ plot_asv_classi_df
 
 svg("qiime2_taxonomic_classification_per_taxonomy_level.svg")
 plot_asv_classi_df
-dev.off()
+invisible(dev.off())
 
 cat("\n\nQIIME2 taxonomy assignments can be found in folder [qiime2/taxonomy](../qiime2/taxonomy).")
 ```
@@ -902,7 +902,7 @@ plot_asv_classi_df
 
 svg("sintax_taxonomic_classification_per_taxonomy_level.svg")
 plot_asv_classi_df
-dev.off()
+invisible(dev.off())
 
 cat("\n\nSINTAX taxonomy assignments can be found in folder [sintax](../sintax).")
 ```
@@ -959,7 +959,7 @@ plot_asv_classi_df
 
 svg("phylogenetic_placement_taxonomic_classification_per_taxonomy_level.svg")
 plot_asv_classi_df
-dev.off()
+invisible(dev.off())
 
 cat("\n\nHeattree of the phylogenetic placement:")
 ```

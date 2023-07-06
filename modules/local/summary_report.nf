@@ -45,7 +45,8 @@ process SUMMARY_REPORT  {
     val(abundance_tables)
     val(alpha_rarefaction)
     path(diversity_indices)
-    path(diversity_indices_adonis)
+    path(diversity_indices_beta, stageAs: 'beta_diversity/*') // prevent folder name collisons
+    path(diversity_indices_adonis, stageAs: 'beta_diversity/adonis/*') // prevent folder name collisons
     path(ancom)
     path(picrust_pathways)
 
@@ -91,9 +92,10 @@ process SUMMARY_REPORT  {
     def qiime2 = run_qiime2 ? "--val_used_taxonomy '$val_used_taxonomy'" : "--flag_skip_qiime"
         qiime2 += filter_stats_tsv ? " --filter_stats_tsv $filter_stats_tsv --qiime2_filtertaxa '$qiime2_filtertaxa' --exclude_taxa $params.exclude_taxa --min_frequency $params.min_frequency --min_samples $params.min_samples" : ""
         qiime2 += barplot ? "" : " --flag_skip_barplot"
+        qiime2 += barplot && params.metadata_category_barplot ? " --metadata_category_barplot '$params.metadata_category_barplot'" : ""
         qiime2 += abundance_tables ? "" : " --flag_skip_abundance_tables"
         qiime2 += alpha_rarefaction ? "" : " --flag_skip_alpha_rarefaction"
-        qiime2 += diversity_indices ? " --diversity_indices_depth $diversity_indices" : " --flag_skip_diversity_indices"
+        qiime2 += diversity_indices ? " --diversity_indices_depth $diversity_indices --diversity_indices_beta '"+ diversity_indices_beta.join(",") +"'" : " --flag_skip_diversity_indices"
         qiime2 += diversity_indices_adonis ? " --diversity_indices_adonis '"+ diversity_indices_adonis.join(",") +"' --qiime_adonis_formula $params.qiime_adonis_formula" : ""
         qiime2 += ancom ? " --ancom '"+ ancom.join(",") +"'" : ""
     def picrust = picrust_pathways ? "--picrust_pathways $picrust_pathways" : ""

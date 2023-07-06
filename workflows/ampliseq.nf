@@ -720,6 +720,7 @@ workflow AMPLISEQ {
             run_qiime2 && !params.skip_abundance_tables ? "done" : "",
             run_qiime2 && !params.skip_alpha_rarefaction ? "done" : "",
             run_qiime2 && !params.skip_diversity_indices && params.metadata ? QIIME2_DIVERSITY.out.depth : [],
+            run_qiime2 && !params.skip_diversity_indices && params.metadata ? QIIME2_DIVERSITY.out.beta.collect() : [],
             run_qiime2 && !params.skip_diversity_indices && params.metadata ? QIIME2_DIVERSITY.out.adonis.collect() : [],
             run_qiime2 && !params.skip_ancom && params.metadata ? QIIME2_ANCOM.out.ancom.collect() : [],
             params.picrust ? PICRUST.out.pathways : []

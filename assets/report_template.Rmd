@@ -50,6 +50,7 @@ params:
     min_samples: ""
     qiime2_filtertaxa: ""
     val_used_taxonomy: ""
+    metadata_category_barplot: ""
     qiime_adonis_formula: ""
 
     # file paths
@@ -82,6 +83,7 @@ params:
     qiime2_taxonomy: ""
     filter_stats_tsv: ""
     diversity_indices_depth: ""
+    diversity_indices_beta: ""
     diversity_indices_adonis: ""
     picrust_pathways: ""
 
@@ -1031,6 +1033,21 @@ cat("## Barplot\n",
     "Folder [qiime2/barplot](../qiime2/barplot) contains barplots, click [qiime2/barplot/index.html](../qiime2/barplot/index.html) to open it in your web browser.")
 ```
 
+```{r, results='asis'}
+flag_metadata_category_barplot <- isTRUE(params$metadata_category_barplot != "")
+```
+
+```{r, eval = params$flag_metadata_category_barplot, results='asis'}
+cat("\n\nAdditionally, barplots with average relative abundance values were produced for",
+    params$metadata_category_barplot,"(comma separated if several) in [qiime2/barplot_average](../qiime2/barplot_average)
+    in separate folders following the scheme 'barplot_{treatment}':\n")
+metadata_category_barplot <- sort( unlist( strsplit( params$metadata_category_barplot,"," ) ) )
+for (category in metadata_category_barplot) {
+    barplot_folder_path <- paste0("qiime2/barplot_average/barplot_",category)
+    cat("\n- [",barplot_folder_path,"/index.html](../",barplot_folder_path,"/index.html)\n", sep="")
+}
+```
+
 ```{r, eval = !params$flag_skip_alpha_rarefaction, results='asis'}
 cat("## Alpha diversity rarefaction curves\n",
     "Produces rarefaction plots for several alpha diversity indices, and is primarily used to determine if the richness of the samples has been fully observed or sequenced. If the slope of the curves does not level out and the lines do not becomes horizontal, this might be because the sequencing depth was too low to observe all diversity or that sequencing error artificially increases sequence diversity and causes false discoveries. ")
@@ -1061,13 +1078,18 @@ cat("This step calculates alpha diversity using various methods and performs pai
     "\n### Beta diversity indices\n",
     "Beta diversity measures the species community differences between samples. This step calculates beta diversity distances using various methods and performs pairwise comparisons of groups of samples. Additionally, principle coordinates analysis (PCoA) plots are produced that can be visualized with Emperor in your default browser without the need for installation. This calculations are based on a phylogenetic tree of all ASV sequences. ",
     "Folder [qiime2/diversity/beta_diversity](../qiime2/diversity/beta_diversity) contains the beta-diverity data:\n",
-    "(1) PCoA for four different beta diversity distances are accessible via:",
+    "1 PCoA for four different beta diversity distances are accessible via:\n",
     "- Bray-Curtis distance (quantitative): [qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA/index.html](../qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA/index.html)\n",
     "- Jaccard distance (qualitative): [qiime2/diversity/beta_diversity/jaccard_pcoa_results-PCoA/index.html](../qiime2/diversity/beta_diversity/jaccard_pcoa_results-PCoA/index.html)\n",
     "- unweighted UniFrac distance (qualitative, phylogenetic) [qiime2/diversity/beta_diversity/unweighted_unifrac_pcoa_results-PCoA/index.html](../qiime2/diversity/beta_diversity/unweighted_unifrac_pcoa_results-PCoA/index.html)\n",
     "- weighted UniFrac distance (quantitative, phylogenetic): [qiime2/diversity/beta_diversity/weighted_unifrac_pcoa_results-PCoA/index.html](../qiime2/diversity/beta_diversity/weighted_unifrac_pcoa_results-PCoA/index.html)\n",
-    "(2) Pairwise comparisons of groups of samples is performed for specific metadata that can be found in folder [qiime2/diversity/beta_diversity/](../qiime2/diversity/beta_diversity/). Each folder named '{method}_distance_matrix-{treatment}' contains an 'index.html' that allows to view the result of the statistical test for the diversity method between treatments.",
+    "2 Pairwise comparisons between groups of samples is performed for specific metadata that can be found in folder [qiime2/diversity/beta_diversity/](../qiime2/diversity/beta_diversity/). Each significance test result is in its separate folder following the scheme '{method}_distance_matrix-{treatment}':",
     sep = "\n")
+diversity_indices_beta <- sort( unlist( strsplit( params$diversity_indices_beta,"," ) ) )
+for (folder in diversity_indices_beta) {
+    beta_folder_path <- paste0("qiime2/diversity/",folder) #"beta_diversity/" is defined in input section with "stageAs: 'beta_diversity/*'"
+    cat("\n- [",beta_folder_path,"/index.html](../",beta_folder_path,"/index.html)\n", sep="")
+}
 ```
 
 ```{r, results='asis'}
@@ -1075,13 +1097,11 @@ flag_qiime_adonis_formula <- isTRUE(params$qiime_adonis_formula != "")
 ```
 
 ```{r, eval = params$flag_qiime_adonis_formula, results='asis'}
-#qiime_adonis_formula
-#diversity_indices_adonis
-cat("  **ADONIS test for beta diversity**\n\n")
+cat("_ADONIS test for beta diversity_\n\n")
 cat("Permutational multivariate analysis of variance using distance matrices (adonis)
     determines whether groups of samples are significantly different from one another.
     The formula was '",params$qiime_adonis_formula,"' (multiple formulas are comma separated).
-    ADONIS computes an R2 value (effect size) which shows the percentage of variation explained
+    adonis computes an R2 value (effect size) which shows the percentage of variation explained
     by a condition, as well as a p-value to determine the statistical significance.
     The sequence of conditions in the formula matters, the variance of factors is removed
     (statistically controlled for) from beginning to end of the formula. " )
@@ -1089,7 +1109,7 @@ cat("Permutational multivariate analysis of variance using distance matrices (ad
 cat("\n\nTest results are in separate folders following the scheme '{method}_distance_matrix-{adonis formula}':\n")
 diversity_indices_adonis <- sort( unlist( strsplit( params$diversity_indices_adonis,"," ) ) )
 for (folder in diversity_indices_adonis) {
-    adonis_index_path <- paste0("qiime2/diversity/beta_diversity/adonis/",folder)
+    adonis_index_path <- paste0("qiime2/diversity/",folder) #"beta_diversity/" is defined in input section with "stageAs: 'beta_diversity/adonis/*'"
     cat("\n- [",adonis_index_path,"/index.html](../",adonis_index_path,"/index.html)\n", sep="")
 }
 ```

@@ -50,7 +50,7 @@ params:
     min_samples: ""
     qiime2_filtertaxa: ""
     val_used_taxonomy: ""
-    metadata_category_barplot: ""
+    metadata_category_barplot: FALSE
     qiime_adonis_formula: ""
 
     # file paths
@@ -1033,11 +1033,7 @@ cat("## Barplot\n",
     "Folder [qiime2/barplot](../qiime2/barplot) contains barplots, click [qiime2/barplot/index.html](../qiime2/barplot/index.html) to open it in your web browser.")
 ```
 
-```{r, results='asis'}
-flag_metadata_category_barplot <- isTRUE(params$metadata_category_barplot != "")
-```
-
-```{r, eval = params$flag_metadata_category_barplot, results='asis'}
+```{r, eval = params$metadata_category_barplot, results='asis'}
 cat("\n\nAdditionally, barplots with average relative abundance values were produced for",
     params$metadata_category_barplot,"(comma separated if several) in [qiime2/barplot_average](../qiime2/barplot_average)
     in separate folders following the scheme 'barplot_{treatment}':\n")

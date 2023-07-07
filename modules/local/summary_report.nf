@@ -93,7 +93,7 @@ process SUMMARY_REPORT  {
         "path_dada2_tab='$dada_tab'",
         "dada_stats_path='$dada_stats'",
         params.skip_barrnap ? "skip_barrnap=TRUE" : "path_barrnap_sum='$barrnap_summary'",
-        filter_ssu_stats ? "filter_ssu_stats='$filter_ssu_stats',filter_ssu_asv='$filter_ssu_asv',filter_ssu='$params.filter_ssu'" : "filter_ssu=none",
+        filter_ssu_stats ? "filter_ssu_stats='$filter_ssu_stats',filter_ssu_asv='$filter_ssu_asv',filter_ssu='$params.filter_ssu'" : "filter_ssu='none'",
         filter_len_asv_stats ? "filter_len_asv='$filter_len_asv_stats',filter_len_asv_len_orig='$filter_len_asv_len_orig'" : "",
         params.min_len_asv ? "min_len_asv=$params.min_len_asv" : "min_len_asv=0",
         params.max_len_asv ? "max_len_asv=$params.max_len_asv" : "max_len_asv=0",

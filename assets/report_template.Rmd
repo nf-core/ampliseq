@@ -35,7 +35,7 @@ params:
     trunclenf: ""
     trunclenr: ""
     max_ee: ""
-    trunc_qmin: ""
+    trunc_qmin: FALSE
     trunc_rmin: ""
     dada_sample_inference: ""
     filter_ssu: ""
@@ -168,7 +168,7 @@ cat("\n\nCutadapt results can be found in folder [cutadapt](../cutadapt).")
 cat("Additional quality filtering can improve sequence recovery. ",
     "Often it is advised trimming the last few nucleotides to avoid less well-controlled errors that can arise there. ")
 
-if (params$trunc_qmin != -1) {
+if (params$trunc_qmin) {
     f_and_tr_args <- readLines(params$dada_filtntrim_args)
     trunc_len <- strsplit(gsub(".*truncLen = c\\((.+)\\),maxN.*", "\\1",
                             f_and_tr_args), ", ")

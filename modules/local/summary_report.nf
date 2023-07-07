@@ -80,7 +80,7 @@ process SUMMARY_REPORT  {
         "trunclenf='$params.trunclenf'",
         "trunclenr='$params.trunclenr'",
         "max_ee=$params.max_ee",
-        params.skip_dada_quality ? "--skip_dada_quality" :
+        params.skip_dada_quality ? "flag_skip_dada_quality=TRUE" :
             meta.single_end ? "dada_qc_f_path='$dada_qual_stats',dada_pp_qc_f_path='$dada_pp_qual_stats'" :
             "dada_qc_f_path='FW_qual_stats.svg',dada_qc_r_path='RV_qual_stats.svg',dada_pp_qc_f_path='FW_preprocessed_qual_stats.svg',dada_pp_qc_r_path='RV_preprocessed_qual_stats.svg'",
         "dada_filtntrim_args='$dada_filtntrim_args'",
@@ -92,15 +92,15 @@ process SUMMARY_REPORT  {
         "path_asv_fa='$dada_asv_fa'",
         "path_dada2_tab='$dada_tab'",
         "dada_stats_path='$dada_stats'",
-        params.skip_barrnap ? "skip_barrnap=TRUE" : "path_barrnap_sum='$barrnap_summary'",
+        params.skip_barrnap ? "flag_skip_barrnap=TRUE" : "path_barrnap_sum='$barrnap_summary'",
         filter_ssu_stats ? "filter_ssu_stats='$filter_ssu_stats',filter_ssu_asv='$filter_ssu_asv',filter_ssu='$params.filter_ssu'" : "filter_ssu='none'",
         filter_len_asv_stats ? "filter_len_asv='$filter_len_asv_stats',filter_len_asv_len_orig='$filter_len_asv_len_orig'" : "",
         params.min_len_asv ? "min_len_asv=$params.min_len_asv" : "min_len_asv=0",
         params.max_len_asv ? "max_len_asv=$params.max_len_asv" : "max_len_asv=0",
         filter_codons_stats ? "filter_codons='$filter_codons_stats',stop_codons='$params.stop_codons'" : "",
-        itsx_cutasv_summary ? "itsx_cutasv_summary='$itsx_cutasv_summary','cut_its=$params.cut_its" : "cut_its='none'",
+        itsx_cutasv_summary ? "itsx_cutasv_summary='$itsx_cutasv_summary','cut_its='$params.cut_its'" : "cut_its='none'",
         !dada2_tax ? "" :
-            params.dada_ref_tax_custom ? "flag_dada2_taxonomy=TRUE,dada2_taxonomy='$dada2_tax',ref_tax_user=TRUE" :
+            params.dada_ref_tax_custom ? "flag_dada2_taxonomy=TRUE,dada2_taxonomy='$dada2_tax',flag_ref_tax_user=TRUE" :
             "flag_dada2_taxonomy=TRUE,dada2_taxonomy='$dada2_tax',dada2_ref_tax_title='${params.dada_ref_databases[params.dada_ref_taxonomy]["title"]}'",
         cut_dada_ref_taxonomy ? "cut_dada_ref_taxonomy='$cut_dada_ref_taxonomy'" : "",
         sintax_tax ? "flag_sintax_taxonomy=TRUE,sintax_taxonomy='$sintax_tax',sintax_ref_tax_title='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["title"]}'" : "",

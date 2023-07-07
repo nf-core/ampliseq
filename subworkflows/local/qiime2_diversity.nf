@@ -77,5 +77,5 @@ workflow QIIME2_DIVERSITY {
     alpha   = !skip_diversity_indices ? QIIME2_DIVERSITY_ALPHA.out.alpha : []
     beta    = !skip_diversity_indices ? QIIME2_DIVERSITY_BETA.out.beta : []
     betaord = !skip_diversity_indices ? QIIME2_DIVERSITY_BETAORD.out.beta : []
-    adonis  = params.qiime_adonis_formula ? QIIME2_DIVERSITY_ADONIS.out.html : []
+    adonis  = !skip_diversity_indices && params.qiime_adonis_formula ? QIIME2_DIVERSITY_ADONIS.out.html : []
 }

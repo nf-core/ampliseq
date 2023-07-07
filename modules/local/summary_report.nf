@@ -98,7 +98,7 @@ process SUMMARY_REPORT  {
         params.min_len_asv ? "min_len_asv=$params.min_len_asv" : "min_len_asv=0",
         params.max_len_asv ? "max_len_asv=$params.max_len_asv" : "max_len_asv=0",
         filter_codons_stats ? "filter_codons='$filter_codons_stats',stop_codons='$params.stop_codons'" : "",
-        itsx_cutasv_summary ? "itsx_cutasv_summary='$itsx_cutasv_summary','cut_its='$params.cut_its'" : "cut_its='none'",
+        itsx_cutasv_summary ? "itsx_cutasv_summary='$itsx_cutasv_summary',cut_its='$params.cut_its'" : "cut_its='none'",
         !dada2_tax ? "" :
             params.dada_ref_tax_custom ? "flag_dada2_taxonomy=TRUE,dada2_taxonomy='$dada2_tax',flag_ref_tax_user=TRUE" :
             "flag_dada2_taxonomy=TRUE,dada2_taxonomy='$dada2_tax',dada2_ref_tax_title='${params.dada_ref_databases[params.dada_ref_taxonomy]["title"]}'",
@@ -134,6 +134,5 @@ process SUMMARY_REPORT  {
         paste0("    rmarkdown: ", packageVersion("rmarkdown")),
         paste0("    knitr: ", packageVersion("knitr")) ),
         "versions.yml")
-    #writeLines(c("doesnt","work","yet"),"versions.yml")
     """
 }

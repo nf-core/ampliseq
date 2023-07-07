@@ -51,7 +51,7 @@ params:
     qiime2_filtertaxa: ""
     val_used_taxonomy: ""
     metadata_category_barplot: FALSE
-    qiime_adonis_formula: ""
+    qiime_adonis_formula: FALSE
 
     # file paths
     mqc_plot: ""
@@ -206,7 +206,11 @@ if (params$flag_single_end) {
 ```
 
 ```{r, eval = !params$flag_skip_dada_quality, out.width="49%", fig.show='hold', fig.align='default'}
-knitr::include_graphics(c(params$dada_qc_f_path, params$dada_qc_r_path))
+if (params$flag_single_end) {
+    knitr::include_graphics(params$dada_qc_f_path)
+} else {
+    knitr::include_graphics(c(params$dada_qc_f_path, params$dada_qc_r_path))
+}
 ```
 
 ```{r, eval = !params$flag_skip_dada_quality, results='asis'}
@@ -218,7 +222,11 @@ if (params$flag_single_end) {
 ```
 
 ```{r, eval = !params$flag_skip_dada_quality, out.width="49%", fig.show='hold', fig.align='default'}
-knitr::include_graphics(c(params$dada_pp_qc_f_path, params$dada_pp_qc_r_path))
+if (params$flag_single_end) {
+    knitr::include_graphics(params$dada_pp_qc_f_path)
+} else {
+    knitr::include_graphics(c(params$dada_pp_qc_f_path, params$dada_pp_qc_r_path))
+}
 ```
 
 ```{r, eval = !params$flag_skip_dada_quality, results='asis'}
@@ -1088,11 +1096,7 @@ for (folder in diversity_indices_beta) {
 }
 ```
 
-```{r, results='asis'}
-flag_qiime_adonis_formula <- isTRUE(params$qiime_adonis_formula != "")
-```
-
-```{r, eval = params$flag_qiime_adonis_formula, results='asis'}
+```{r, eval = params$qiime_adonis_formula, results='asis'}
 cat("_ADONIS test for beta diversity_\n\n")
 cat("Permutational multivariate analysis of variance using distance matrices (adonis)
     determines whether groups of samples are significantly different from one another.
@@ -1110,11 +1114,7 @@ for (folder in diversity_indices_adonis) {
 }
 ```
 
-```{r, results='asis'}
-flag_ancom <- isTRUE(params$ancom != "")
-```
-
-```{r, eval = flag_ancom, results='asis'}
+```{r, eval = params$ancom, results='asis'}
 cat("## ANCOM\n\n")
 cat("Analysis of Composition of Microbiomes (ANCOM) is applied to identify features that are differentially
     abundant across sample groups. A key assumption made by ANCOM is that few taxa (less than about 25%)

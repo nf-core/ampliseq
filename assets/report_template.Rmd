@@ -14,23 +14,12 @@ output:
 #bibliography: ./references.bibtex
 params:
     # flags and arguments
-    flag_skip_fastqc: FALSE
-    flag_skip_cutadapt: FALSE
-    flag_skip_dada_quality: FALSE
-    flag_skip_barrnap: FALSE
-    #flag_skip_taxonomy: FALSE
     flag_retain_untrimmed: TRUE
     flag_ref_tax_user: FALSE
     flag_single_end: FALSE
-    flag_dada2_taxonomy: FALSE
-    flag_qiime2_taxonomy: FALSE
-    flag_sintax_taxonomy: FALSE
-    flag_pplace_taxonomy: FALSE
-    flag_skip_qiime: FALSE
-    flag_skip_barplot: FALSE
-    flag_skip_abundance_tables: FALSE
-    flag_skip_alpha_rarefaction: FALSE
-    flag_skip_diversity_indices: FALSE
+    barplot: FALSE
+    abundance_tables: FALSE
+    alpha_rarefaction: FALSE
     ancom: FALSE
     trunclenf: ""
     trunclenr: ""
@@ -38,10 +27,10 @@ params:
     trunc_qmin: FALSE
     trunc_rmin: ""
     dada_sample_inference: ""
-    filter_ssu: ""
+    filter_ssu: FALSE
     min_len_asv: ""
     max_len_asv: ""
-    cut_its: ""
+    cut_its: FALSE
     dada2_ref_tax_title: ""
     qiime2_ref_tax_title: ""
     sintax_ref_tax_title: ""
@@ -49,15 +38,15 @@ params:
     min_frequency: ""
     min_samples: ""
     qiime2_filtertaxa: ""
-    val_used_taxonomy: ""
+    val_used_taxonomy: FALSE
     metadata_category_barplot: FALSE
     qiime_adonis_formula: FALSE
 
     # file paths
-    mqc_plot: ""
-    ca_sum_path: ""
+    mqc_plot: FALSE
+    ca_sum_path: FALSE
     dada_filtntrim_args: ""
-    dada_qc_f_path: ""
+    dada_qc_f_path: FALSE
     dada_qc_r_path: ""
     dada_pp_qc_f_path: ""
     dada_pp_qc_r_path: ""
@@ -67,25 +56,25 @@ params:
     path_asv_fa: ""
     path_dada2_tab: ""
     dada_stats_path: ""
-    path_barrnap_sum: ""
+    path_barrnap_sum: FALSE
     filter_ssu_stats: ""
     filter_ssu_asv: ""
-    filter_len_asv: ""
+    filter_len_asv: FALSE
     filter_len_asv_len_orig: ""
-    filter_codons: ""
+    filter_codons: FALSE
     stop_codons: ""
     itsx_cutasv_summary: ""
-    cut_dada_ref_taxonomy: ""
-    dada2_taxonomy: ""
-    sintax_taxonomy: ""
-    pplace_taxonomy: ""
+    cut_dada_ref_taxonomy: FALSE
+    dada2_taxonomy: FALSE
+    sintax_taxonomy: FALSE
+    pplace_taxonomy: FALSE
     pplace_heattree: ""
-    qiime2_taxonomy: ""
-    filter_stats_tsv: ""
+    qiime2_taxonomy: FALSE
+    filter_stats_tsv: FALSE
     diversity_indices_depth: ""
-    diversity_indices_beta: ""
+    diversity_indices_beta: FALSE
     diversity_indices_adonis: ""
-    picrust_pathways: ""
+    picrust_pathways: FALSE
 
 ---
 
@@ -104,7 +93,7 @@ supporting denoising of any amplicon and supports a variety of taxonomic databas
 
 # Preprocessing
 
-```{r, eval = !params$flag_skip_fastqc, results='asis'}
+```{r, eval = !isFALSE(params$mqc_plot), results='asis'}
 mqc_rep_path <- paste0("../multiqc/multiqc_report.html")
 
 cat("## FastQC\n")
@@ -117,11 +106,11 @@ cat("The sequence quality was checked using FastQC and resulting data was ",
     "MultiQC report, which is found [here](", mqc_rep_path, ").", sep = "")
 ```
 
-```{r, eval = !params$flag_skip_fastqc, out.width='100%', dpi=1200, fig.align='center'}
+```{r, eval = !isFALSE(params$mqc_plot), out.width='100%', dpi=1200, fig.align='center'}
 knitr::include_graphics(params$mqc_plot)
 ```
 
-```{r, eval = !params$flag_skip_cutadapt, results='asis'}
+```{r, eval = !isFALSE(params$ca_sum_path), results='asis'}
 cat("## Primer removal with Cutadapt\n")
 cat("Cutadapt is trimming primer sequences from sequencing reads. ",
     "Primer sequences are non-biological sequences that often introduce ",
@@ -195,7 +184,7 @@ cat("Reads with more than", params$max_ee,"expected errors were discarded.",
     "column 'filtered'.", sep = " ")
 ```
 
-```{r, eval = !params$flag_skip_dada_quality, results='asis'}
+```{r, eval = !isFALSE(params$dada_qc_f_path), results='asis'}
 cat ("**Quality profiles:**\n\n")
 
 if (params$flag_single_end) {
@@ -205,7 +194,7 @@ if (params$flag_single_end) {
 }
 ```
 
-```{r, eval = !params$flag_skip_dada_quality, out.width="49%", fig.show='hold', fig.align='default'}
+```{r, eval = !isFALSE(params$dada_qc_f_path), out.width="49%", fig.show='hold', fig.align='default'}
 if (params$flag_single_end) {
     knitr::include_graphics(params$dada_qc_f_path)
 } else {
@@ -213,7 +202,7 @@ if (params$flag_single_end) {
 }
 ```
 
-```{r, eval = !params$flag_skip_dada_quality, results='asis'}
+```{r, eval = !isFALSE(params$dada_qc_f_path), results='asis'}
 if (params$flag_single_end) {
     cat("Read quality stats for preprocessed data:")
 } else {
@@ -221,7 +210,7 @@ if (params$flag_single_end) {
 }
 ```
 
-```{r, eval = !params$flag_skip_dada_quality, out.width="49%", fig.show='hold', fig.align='default'}
+```{r, eval = !isFALSE(params$dada_qc_f_path), out.width="49%", fig.show='hold', fig.align='default'}
 if (params$flag_single_end) {
     knitr::include_graphics(params$dada_pp_qc_f_path)
 } else {
@@ -229,7 +218,7 @@ if (params$flag_single_end) {
 }
 ```
 
-```{r, eval = !params$flag_skip_dada_quality, results='asis'}
+```{r, eval = !isFALSE(params$dada_qc_f_path), results='asis'}
 cat("Overall read quality profiles as heat map of the frequency of each quality score at each base position. ",
     "The mean quality score at each position is shown by the green line, and the quartiles of the quality score ",
     "distribution by the orange lines. The red line shows the scaled proportion of reads that extend to at least ",
@@ -429,14 +418,14 @@ if ( params$dada_sample_inference == "independent" ) {
 ```
 
 ```{r, results='asis'}
-flag_any_filtering <- !params$flag_skip_barrnap || isTRUE(params$filter_len_asv != "") || isTRUE(params$filter_codons != "")
+flag_any_filtering <- !isFALSE(params$path_barrnap_sum) || !isFALSE(params$filter_len_asv) || !isFALSE(params$filter_codons)
 ```
 
 ```{r, eval = flag_any_filtering, results='asis'}
 cat("# Filtering of ASVs\n")
 ```
 
-```{r, eval = !params$flag_skip_barrnap, results='asis'}
+```{r, eval = !isFALSE(params$path_barrnap_sum), results='asis'}
 cat("## rRNA detection\n")
 cat("Barrnap classifies the ASVs into the origin domain (including mitochondiral origin).\n\n", sep = "")
 
@@ -489,11 +478,7 @@ invisible(dev.off())
 cat("\n\nrRNA filter results can be found in folder [barrnap](../barrnap).")
 ```
 
-```{r, results='asis'}
-flag_filter_ssu <- !params$flag_skip_barrnap && isTRUE(params$filter_ssu != "none")
-```
-
-```{r, eval = flag_filter_ssu, results='asis'}
+```{r, eval = !isFALSE(params$path_barrnap_sum) && !isFALSE(params$filter_ssu), results='asis'}
 cat("\n\nASVs were filtered for (",params$filter_ssu,") using the above classification.",
     "The following table shows read counts for each sample before and after filtering:\n\n", sep = "")
 
@@ -521,11 +506,7 @@ cat("In average", round(filter_ssu_stats_avg_removed,2), "% reads were removed, 
 cat("The number of ASVs was reduced by",n_asv-filter_ssu_asv_filtered,"(",100-round( filter_ssu_asv_filtered/n_asv*100 ,2),"%), from",n_asv,"to",filter_ssu_asv_filtered," ASVs.")
 ```
 
-```{r, results='asis'}
-flag_filter_len_asv <- isTRUE(params$filter_len_asv != "")
-```
-
-```{r, eval = flag_filter_len_asv, results='asis'}
+```{r, eval = !isFALSE(params$filter_len_asv), results='asis'}
 cat("## Sequence length\n")
 
 cat("A length filter was used to reduce potential contamination after ASV computation.",
@@ -594,11 +575,7 @@ cat("The number of ASVs was reduced by",sum(filter_len_profile$Counts)-sum(filte
 cat("\n\nLength filter results can be found in folder [asv_length_filter](../asv_length_filter).")
 ```
 
-```{r, results='asis'}
-flag_filter_codons <- isTRUE(params$filter_codons != "")
-```
-
-```{r, eval = flag_filter_codons, results='asis'}
+```{r, eval = !isFALSE(params$filter_codons), results='asis'}
 cat("## Codon usage\n")
 
 cat("Amplicons of coding regions are expected to be free of stop codons and consist of condon tripletts.",
@@ -623,7 +600,7 @@ cat("\n\nCodon usage filter results can be found in folder [codon_filter](../cod
 
 ```{r, results='asis'}
 # Check if any taxonomic classification is available
-any_taxonomy <- params$flag_dada2_taxonomy || params$flag_qiime2_taxonomy || params$flag_sintax_taxonomy || params$flag_pplace_taxonomy
+any_taxonomy <- !isFALSE(params$dada2_taxonomy) || !isFALSE(params$qiime2_taxonomy) || !isFALSE(params$sintax_taxonomy) || !isFALSE(params$pplace_taxonomy)
 ```
 
 ```{r, eval = any_taxonomy, results='asis'}
@@ -631,12 +608,7 @@ any_taxonomy <- params$flag_dada2_taxonomy || params$flag_qiime2_taxonomy || par
 cat("# Taxonomic Classification\n")
 ```
 
-```{r, results='asis'}
-# Check if ITSX was used
-flag_itsx_cutasv <- isTRUE(params$cut_its != "none")
-```
-
-```{r, eval = flag_itsx_cutasv, results='asis'}
+```{r, eval = !isFALSE(params$cut_its), results='asis'}
 cat("## ITS region\n")
 cat("The ITS region was extracted from each ASV sequence using ITSx.",
     "Taxonomic classification should have improved performance based on extracted ITS sequence.\n")
@@ -688,7 +660,7 @@ invisible(dev.off())
 cat("\n\nITSx results can be found in folder [itsx](../itsx).")
 ```
 
-```{r, eval = params$flag_dada2_taxonomy, results='asis'}
+```{r, eval = !isFALSE(params$dada2_taxonomy), results='asis'}
 cat("## DADA2\n")
 
 # indicate reference taxonomy
@@ -701,7 +673,7 @@ if (!params$flag_ref_tax_user) {
 }
 
 # mention if taxonomy was cut by cutadapt
-if ( isTRUE(params$cut_dada_ref_taxonomy != "") ) {
+if ( !isFALSE(params$cut_dada_ref_taxonomy) ) {
     cut_dada_ref_taxonomy <- readLines(params$cut_dada_ref_taxonomy)
     for (line in cut_dada_ref_taxonomy){
         if (grepl("Total reads processed:", line)) {
@@ -781,7 +753,7 @@ invisible(dev.off())
 cat("\n\nDADA2 taxonomy assignments can be found in folder [dada2](../dada2) in files 'ASV_tax_*.tsv'.")
 ```
 
-```{r, eval = params$flag_qiime2_taxonomy, results='asis'}
+```{r, eval = !isFALSE(params$qiime2_taxonomy), results='asis'}
 # Header
 cat("## QIIME2\n")
 
@@ -847,7 +819,7 @@ invisible(dev.off())
 cat("\n\nQIIME2 taxonomy assignments can be found in folder [qiime2/taxonomy](../qiime2/taxonomy).")
 ```
 
-```{r, eval = params$flag_sintax_taxonomy, results='asis'}
+```{r, eval = !isFALSE(params$sintax_taxonomy), results='asis'}
 # Header
 cat("## SINTAX\n")
 
@@ -909,7 +881,7 @@ invisible(dev.off())
 cat("\n\nSINTAX taxonomy assignments can be found in folder [sintax](../sintax).")
 ```
 
-```{r, eval = params$flag_pplace_taxonomy, results='asis'}
+```{r, eval = !isFALSE(params$pplace_taxonomy), results='asis'}
 # Header
 cat("## Phylogenetic Placement\n",
     "Phylogenetic placement grafts sequences onto a phylogenetic reference tree and optionally outputs taxonomic annotations. The reference tree is ideally made from full-length high-quality sequences containing better evolutionary signal than short amplicons. It is hence superior to estimating de-novo phylogenetic trees from short amplicon sequences. ",
@@ -966,26 +938,22 @@ invisible(dev.off())
 cat("\n\nHeattree of the phylogenetic placement:")
 ```
 
-```{r, eval = params$flag_pplace_taxonomy, out.width="100%", fig.show='hold', fig.align='default'}
+```{r, eval = !isFALSE(params$pplace_taxonomy), out.width="100%", fig.show='hold', fig.align='default'}
 knitr::include_graphics(c(params$pplace_heattree))
 ```
 
-```{r, eval = params$flag_pplace_taxonomy, results='asis'}
+```{r, eval = !isFALSE(params$pplace_taxonomy), results='asis'}
 cat("\n\nPhylogenetic placement taxonomy assignments can be found in folder [pplace](../pplace) in file '*.taxonomy.per_query_unique.tsv'.")
 ```
 
-```{r, eval = !params$flag_skip_qiime, results='asis'}
+```{r, eval = !isFALSE(params$val_used_taxonomy), results='asis'}
 # Header
 cat("# Downstream analysis with QIIME2\n",
     "Files that were input to QIIME2 can be found in folder [qiime2/input/](../qiime2/input/).",
     "Results of taxonomic classification of",params$val_used_taxonomy,"was used in all following analysis, see in the above sections.")
 ```
 
-```{r, results='asis'}
-flag_filter_stats_tsv <- isTRUE(params$filter_stats_tsv != "")
-```
-
-```{r, eval = flag_filter_stats_tsv, results='asis'}
+```{r, eval = !isFALSE(params$filter_stats_tsv), results='asis'}
 cat("## ASV filtering\n",
     "Unwanted taxa are often off-targets generated in PCR with primers that are not perfectly specific for the target DNA, for 16S rRNA sequencing mitrochondria and chloroplast sequences are typically removed because these are frequent unwanted non-bacteria PCR products. ")
 if ( params$exclude_taxa != "none" ) {
@@ -1024,7 +992,7 @@ datatable(filter_stats_tsv, options = list(
 cat("\n\nTables with read count numbers and filtered abundance tables are in folder [qiime2/abundance_tables](../qiime2/abundance_tables).")
 ```
 
-```{r, eval = !params$flag_skip_abundance_tables, results='asis'}
+```{r, eval = !isFALSE(params$abundance_tables), results='asis'}
 cat("## Abundance tables\n",
     "The abundance tables are the final data for further downstream analysis and visualisations. The tables are based on the computed ASVs and taxonomic classification, but after removal of unwanted taxa. ",
     "Folder [qiime2/abundance_tables](../qiime2/abundance_tables) contains tap-separated files (.tsv) that can be opened by any spreadsheet software.")
@@ -1034,14 +1002,14 @@ cat("\n\n## Relative abundance tables\n",
     "Folder [qiime2/rel_abundance_tables](../qiime2/rel_abundance_tables) contains tap-separated files (.tsv) that can be opened by any spreadsheet software.")
 ```
 
-```{r, eval = !params$flag_skip_barplot, results='asis'}
+```{r, eval = !isFALSE(params$barplot), results='asis'}
 cat("## Barplot\n",
     "Interactive abundance plot that aids exploratory browsing the discovered taxa and their abundance",
     "in samples and allows sorting for associated meta data.",
     "Folder [qiime2/barplot](../qiime2/barplot) contains barplots, click [qiime2/barplot/index.html](../qiime2/barplot/index.html) to open it in your web browser.")
 ```
 
-```{r, eval = params$metadata_category_barplot, results='asis'}
+```{r, eval = !isFALSE(params$metadata_category_barplot), results='asis'}
 cat("\n\nAdditionally, barplots with average relative abundance values were produced for",
     params$metadata_category_barplot,"(comma separated if several) in [qiime2/barplot_average](../qiime2/barplot_average)
     in separate folders following the scheme 'barplot_{treatment}':\n")
@@ -1052,7 +1020,7 @@ for (category in metadata_category_barplot) {
 }
 ```
 
-```{r, eval = !params$flag_skip_alpha_rarefaction, results='asis'}
+```{r, eval = !isFALSE(params$alpha_rarefaction), results='asis'}
 cat("## Alpha diversity rarefaction curves\n",
     "Produces rarefaction plots for several alpha diversity indices, and is primarily used to determine if the richness of the samples has been fully observed or sequenced. If the slope of the curves does not level out and the lines do not becomes horizontal, this might be because the sequencing depth was too low to observe all diversity or that sequencing error artificially increases sequence diversity and causes false discoveries. ")
 # warning if dada_sample_inference is independent, because alpha diversities are not expected to be accurate!
@@ -1062,7 +1030,7 @@ if ( params$dada_sample_inference == "independent") {
 cat("Folder [qiime2/alpha-rarefaction](../qiime2/alpha-rarefaction) contains the data, click [qiime2/alpha-rarefaction/index.html](../qiime2/alpha-rarefaction/index.html) to open it in your web browser.")
 ```
 
-```{r, eval = !params$flag_skip_diversity_indices, results='asis'}
+```{r, eval = !isFALSE(params$diversity_indices_beta), results='asis'}
 diversity_indices_depth <- readLines(params$diversity_indices_depth)
 
 cat("## Diversity analysis\n",
@@ -1096,7 +1064,7 @@ for (folder in diversity_indices_beta) {
 }
 ```
 
-```{r, eval = params$qiime_adonis_formula, results='asis'}
+```{r, eval = !isFALSE(params$qiime_adonis_formula), results='asis'}
 cat("_ADONIS test for beta diversity_\n\n")
 cat("Permutational multivariate analysis of variance using distance matrices (adonis)
     determines whether groups of samples are significantly different from one another.
@@ -1114,7 +1082,7 @@ for (folder in diversity_indices_adonis) {
 }
 ```
 
-```{r, eval = params$ancom, results='asis'}
+```{r, eval = !isFALSE(params$ancom), results='asis'}
 cat("## ANCOM\n\n")
 cat("Analysis of Composition of Microbiomes (ANCOM) is applied to identify features that are differentially
     abundant across sample groups. A key assumption made by ANCOM is that few taxa (less than about 25%)
@@ -1131,11 +1099,7 @@ for (folder in ancom) {
 }
 ```
 
-```{r, results='asis'}
-flag_picrust_pathways <- isTRUE(params$picrust_pathways != "")
-```
-
-```{r, eval = flag_picrust_pathways, results='asis'}
+```{r, eval = !isFALSE(params$picrust_pathways), results='asis'}
 cat("## PICRUSt2\n",
     "PICRUSt2 (Phylogenetic Investigation of Communities by Reconstruction of Unobserved States) is a software for predicting functional abundances based only on marker gene sequences.",
     "Enzyme Classification numbers (EC), KEGG orthologs (KO) and MetaCyc ontology predictions were made for each sample.",

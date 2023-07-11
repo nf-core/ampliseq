@@ -1,5 +1,4 @@
 ---
-title: Summary of nf-core/ampliseq results
 output:
     html_document:
         toc: true # table of contents
@@ -8,11 +7,20 @@ output:
         theme: default
         number_sections: true # add section numbering to headers
         df_print: paged # tables are printed as an html table with support for pagination over rows and columns
-        css: ./report_styles.css
         highlight: pygments
     pdf_document: true
+date: "`r Sys.Date()`"
 #bibliography: ./references.bibtex
 params:
+    # report style
+    css: NULL
+    logo: NULL
+    input_dir: "./"
+
+    # pipeline versions
+    workflow_manifest_version: NULL
+    workflow_scriptid: NULL
+
     # flags and arguments
     flag_retain_untrimmed: TRUE
     flag_ref_tax_user: FALSE
@@ -75,18 +83,57 @@ params:
     diversity_indices_beta: FALSE
     diversity_indices_adonis: ""
     picrust_pathways: FALSE
-
 ---
 
-```{r setup, include=FALSE}
+<!-- Load libraries -->
+
+```{r libraries, include=FALSE}
 library("dplyr")
 library("ggplot2")
 library("knitr")
 library("DT")
 library("formattable")
 library("purrr")
-knitr::opts_chunk$set(echo = FALSE)
 ```
+
+<!-- set notebook defaults -->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE) # echo is set in differentialabundance v1.2.0 to TRUE
+```
+
+<!-- Include the CSS and set the logo -->
+
+```{r, echo=FALSE}
+htmltools::includeCSS(params$css)
+```
+
+```{r results="asis", echo=FALSE}
+cat(paste0("
+<style>
+#TOC {
+   background-image: url(\"", knitr::image_uri(params$logo), "\");
+}
+</style>
+"))
+```
+
+```{r}
+if ( endsWith( params$workflow_manifest_version, "dev") ) {
+    ampliseq_version = paste0("version ", params$workflow_manifest_version, ", revision ", params$workflow_scriptid)
+} else {
+    ampliseq_version = paste0("version ",params$workflow_manifest_version)
+}
+report_title <- "Summary of analysis results"
+report_subtitle <- paste0('nf-core/ampliseq workflow ', ampliseq_version)
+```
+
+---
+title:  "<img src=\"`r file.path(params$input_dir, params$logo)`\" style=\"float: left;\"/>`r report_title`"
+subtitle: `r report_subtitle`
+---
+
+# Abstract
 
 The bioinformatics analysis pipeline [nfcore/ampliseq](https://nf-co.re/ampliseq) is used for amplicon sequencing,
 supporting denoising of any amplicon and supports a variety of taxonomic databases for taxonomic assignment of 16S, ITS, CO1 and 18S amplicons.

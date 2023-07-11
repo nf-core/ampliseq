@@ -13,6 +13,7 @@ process SUMMARY_REPORT  {
     input:
     path(report_template)
     path(report_styles)
+    path(report_logo)
     path(mqc_plots)
     path(ca_summary)
     val(find_truncation_values)
@@ -64,6 +65,10 @@ process SUMMARY_REPORT  {
     // all non-boolean or non-numeric values must be encumbered by single quotes (')!
     // all elements must have a value, i.e. booleans also need to be set to TRUE
     def params_list_named  = [
+        "css='$report_styles'",
+        "logo='$report_logo'",
+        "workflow_manifest_version='${workflow.manifest.version}'",
+        "workflow_scriptid='${workflow.scriptId.substring(0,10)}'",
         meta.single_end ? "flag_single_end=TRUE" : "",
         mqc_plots ? "mqc_plot='${mqc_plots}/svg/mqc_fastqc_per_sequence_quality_scores_plot_1.svg'" : "",
         ca_summary ?
@@ -114,9 +119,6 @@ process SUMMARY_REPORT  {
     """
     #!/usr/bin/env Rscript
     library(rmarkdown)
-
-    # Rename .css file to be piced up by Rmd file
-    file.copy("./${report_styles}", "./report_styles.css", overwrite = TRUE)
 
     # Work around  https://github.com/rstudio/rmarkdown/issues/1508
     # If the symbolic link is not replaced by a physical file

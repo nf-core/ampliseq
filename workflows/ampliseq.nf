@@ -675,12 +675,12 @@ workflow AMPLISEQ {
         SUMMARY_REPORT (
             Channel.fromPath("${baseDir}/assets/report_template.Rmd"),
             Channel.fromPath("${baseDir}/assets/report_styles.css"),
-            !params.skip_multiqc ? MULTIQC.out.plots : [], //.collect().flatten().collectFile(name: "mqc_fastqc_per_sequence_quality_scores_plot_1.svg")
-            !params.skip_cutadapt ? CUTADAPT_WORKFLOW.out.summary.collect() : [],
+            !is_fasta_input && !params.skip_fastqc && !params.skip_multiqc ? MULTIQC.out.plots : [], //.collect().flatten().collectFile(name: "mqc_fastqc_per_sequence_quality_scores_plot_1.svg")
+            !params.skip_cutadapt ? CUTADAPT_WORKFLOW.out.summary.collect().ifEmpty( [] ) : [],
             find_truncation_values,
-            DADA2_PREPROCESSING.out.args.first(),
-            !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg : [],
-            !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg_preprocessed : [],
+            DADA2_PREPROCESSING.out.args.first().ifEmpty( [] ),
+            !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg.ifEmpty( [] ) : [],
+            !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg_preprocessed.ifEmpty( [] ) : [],
             DADA2_ERR.out.svg
                 .map {
                     meta_old, svgs ->
@@ -694,11 +694,11 @@ workflow AMPLISEQ {
                     meta.single_end = meta_old.single_end
                     meta.run = runs.flatten()
                     [ meta, svgs.flatten() ]
-                },
-            DADA2_MERGE.out.asv,
-            DADA2_MERGE.out.fasta,
-            DADA2_MERGE.out.dada2asv,
-            DADA2_MERGE.out.dada2stats,
+                }.ifEmpty( [[],[]] ),
+            DADA2_MERGE.out.asv.ifEmpty( [] ),
+            ch_unfiltered_fasta.ifEmpty( [] ), // this is identical to DADA2_MERGE.out.fasta if !is_fasta_input
+            DADA2_MERGE.out.dada2asv.ifEmpty( [] ),
+            DADA2_MERGE.out.dada2stats.ifEmpty( [] ),
             !params.skip_barrnap ? BARRNAPSUMMARY.out.summary : [],
             params.filter_ssu ? FILTER_SSU.out.stats : [],
             params.filter_ssu ? FILTER_SSU.out.asv : [],

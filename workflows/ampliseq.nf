@@ -674,7 +674,7 @@ workflow AMPLISEQ {
     if (!params.skip_summary_report) {
         SUMMARY_REPORT (
             Channel.fromPath("${baseDir}/assets/report_template.Rmd"),
-            Channel.fromPath("${baseDir}/assets/report_styles.css"),
+            Channel.fromPath("${baseDir}/assets/nf-core_style.css"),
             !is_fasta_input && !params.skip_fastqc && !params.skip_multiqc ? MULTIQC.out.plots : [], //.collect().flatten().collectFile(name: "mqc_fastqc_per_sequence_quality_scores_plot_1.svg")
             !params.skip_cutadapt ? CUTADAPT_WORKFLOW.out.summary.collect().ifEmpty( [] ) : [],
             find_truncation_values,

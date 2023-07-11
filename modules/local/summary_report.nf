@@ -115,6 +115,9 @@ process SUMMARY_REPORT  {
     #!/usr/bin/env Rscript
     library(rmarkdown)
 
+    # Rename .css file to be piced up by Rmd file
+    file.copy("./${report_styles}", "./report_styles.css", overwrite = TRUE)
+
     # Work around  https://github.com/rstudio/rmarkdown/issues/1508
     # If the symbolic link is not replaced by a physical file
     # output- and temporary files will be written to the original directory.

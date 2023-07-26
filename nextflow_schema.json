@@ -496,6 +496,29 @@
                 }
             }
         },
+        "pipeline_report": {
+            "title": "Pipeline report",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "report_template": {
+                    "type": "string",
+                    "default": null,
+                    "description": "Path to Markdown file (Rmd)"
+                },
+                "report_css": {
+                    "type": "string",
+                    "default": null,
+                    "description": "Path to style file (css)"
+                },
+                "report_logo": {
+                    "type": "string",
+                    "default": null,
+                    "description": "Path to logo file (png)"
+                }
+            }
+        },
         "skipping_specific_steps": {
             "title": "Skipping specific steps",
             "type": "object",
@@ -558,7 +581,7 @@
                     "type": "boolean",
                     "description": "Skip MultiQC reporting"
                 },
-                "skip_summary_report": {
+                "skip_report": {
                     "type": "boolean",
                     "description": "Skip Markdown summary report"
                 }
@@ -789,6 +812,9 @@
         },
         {
             "$ref": "#/definitions/downstream_analysis"
+        },
+        {
+            "$ref": "#/definitions/pipeline_report"
         },
         {
             "$ref": "#/definitions/skipping_specific_steps"

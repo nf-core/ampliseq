@@ -17,6 +17,7 @@ The directories listed below will be created in the results directory after the 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
 - [Input](#input) - Input files
+- [Html summary](#html-summary) - Overview of pipeline output
 - [Preprocessing](#preprocessing)
   - [FastQC](#fastqc) - Read quality control
   - [Cutadapt](#cutadapt) - Primer trimming
@@ -55,6 +56,20 @@ Samplesheet, ASV fasta, and metadata file are copied into the results folder.
   - `*.tsv`: Samplesheet input if specified with `--input`.
   - `*.tsv`: Metadata input if specified with `--metadata`.
   - `*.fasta|.fna|.fa`: ASV sequence input if specified with `--input`.
+
+</details>
+
+### Html summary
+
+A summary report for most pipeline results in html format produced by [R Markdown](https://rmarkdown.rstudio.com/). The report gives a generl overview of the analysis, includes many tables and visualizations, and links to interactive downstream analysis results, if available.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `summary_report/`
+  - `summary_report.html`: a standalone HTML file that can be viewed in your web browser.
+  - `*.svg*`: plots that were produced for (and are included) in the report.
+  - `versions.yml`: software versions used to produce this report.
 
 </details>
 

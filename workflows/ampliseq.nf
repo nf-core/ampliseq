@@ -73,6 +73,16 @@ if (params.sintax_ref_taxonomy && !params.skip_taxonomy) {
     val_sintax_ref_taxonomy = "none"
 }
 
+// report sources
+ch_report_template = params.report_template ?
+    Channel.fromPath("${params.report_template}", checkIfExists: true) :
+    Channel.fromPath("${baseDir}/assets/report_template.Rmd")
+ch_report_css = params.report_css ?
+    Channel.fromPath("${params.report_css}", checkIfExists: true) :
+    Channel.fromPath("${baseDir}/assets/nf-core_style.css")
+ch_report_logo = params.report_logo ?
+    Channel.fromPath("${params.report_logo}", checkIfExists: true) :
+    Channel.fromPath("${baseDir}/assets/nf-core-ampliseq_logo_light_long.png")
 
 // Set non-params Variables
 
@@ -671,11 +681,11 @@ workflow AMPLISEQ {
     //
     // MODULE: Summary Report
     //
-    if (!params.skip_summary_report) {
+    if (!params.skip_report) {
         SUMMARY_REPORT (
-            Channel.fromPath("${baseDir}/assets/report_template.Rmd"),
-            Channel.fromPath("${baseDir}/assets/nf-core_style.css"),
-            Channel.fromPath("${baseDir}/assets/nf-core-ampliseq_logo_light_long.png"),
+            ch_report_template,
+            ch_report_css,
+            ch_report_logo,
             !is_fasta_input && !params.skip_fastqc && !params.skip_multiqc ? MULTIQC.out.plots : [], //.collect().flatten().collectFile(name: "mqc_fastqc_per_sequence_quality_scores_plot_1.svg")
             !params.skip_cutadapt ? CUTADAPT_WORKFLOW.out.summary.collect().ifEmpty( [] ) : [],
             find_truncation_values,

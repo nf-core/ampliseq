@@ -940,7 +940,7 @@ cat("\n\nSINTAX taxonomy assignments can be found in folder [sintax](../sintax).
 # Header
 cat("## Phylogenetic Placement\n",
     "Phylogenetic placement grafts sequences onto a phylogenetic reference tree and optionally outputs taxonomic annotations. The reference tree is ideally made from full-length high-quality sequences containing better evolutionary signal than short amplicons. It is hence superior to estimating de-novo phylogenetic trees from short amplicon sequences. ",
-    "Extraction of taxonomic classification wads performed with EPA-NG and GAPPA. ")
+    "Extraction of taxonomic classification was performed with EPA-NG and GAPPA. ")
 
 # Read file and prepare table
 asv_tax <- read.table(params$pplace_taxonomy, header = TRUE, sep = "\t")

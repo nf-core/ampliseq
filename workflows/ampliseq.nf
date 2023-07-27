@@ -76,13 +76,13 @@ if (params.sintax_ref_taxonomy && !params.skip_taxonomy) {
 // report sources
 ch_report_template = params.report_template ?
     Channel.fromPath("${params.report_template}", checkIfExists: true) :
-    Channel.fromPath("${baseDir}/assets/report_template.Rmd")
+    Channel.fromPath("$projectDir/assets/report_template.Rmd")
 ch_report_css = params.report_css ?
     Channel.fromPath("${params.report_css}", checkIfExists: true) :
-    Channel.fromPath("${baseDir}/assets/nf-core_style.css")
+    Channel.fromPath("$projectDir/assets/nf-core_style.css")
 ch_report_logo = params.report_logo ?
     Channel.fromPath("${params.report_logo}", checkIfExists: true) :
-    Channel.fromPath("${baseDir}/assets/nf-core-ampliseq_logo_light_long.png")
+    Channel.fromPath("$projectDir/assets/nf-core-ampliseq_logo_light_long.png")
 
 // Set non-params Variables
 
@@ -710,31 +710,31 @@ workflow AMPLISEQ {
             ch_unfiltered_fasta.ifEmpty( [] ), // this is identical to DADA2_MERGE.out.fasta if !is_fasta_input
             DADA2_MERGE.out.dada2asv.ifEmpty( [] ),
             DADA2_MERGE.out.dada2stats.ifEmpty( [] ),
-            !params.skip_barrnap ? BARRNAPSUMMARY.out.summary : [],
-            params.filter_ssu ? FILTER_SSU.out.stats : [],
-            params.filter_ssu ? FILTER_SSU.out.asv : [],
-            params.min_len_asv || params.max_len_asv ? FILTER_LEN_ASV.out.stats : [],
-            params.min_len_asv || params.max_len_asv ? FILTER_LEN_ASV.out.len_orig : [],
-            params.filter_codons ? FILTER_CODONS.out.stats : [],
-            params.cut_its != "none" ? ITSX_CUTASV.out.summary : [],
-            !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy ? ch_dada2_tax : [],
-            !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy ? DADA2_TAXONOMY_WF.out.cut_tax : [[],[]],
-            !params.skip_taxonomy && params.sintax_ref_taxonomy ? ch_sintax_tax : [],
-            !params.skip_taxonomy && params.pplace_tree ? ch_pplace_tax : [],
-            !params.skip_taxonomy && params.pplace_tree ? FASTA_NEWICK_EPANG_GAPPA.out.heattree : [[],[]],
-            !params.skip_taxonomy && ( params.qiime_ref_taxonomy || params.classifier ) && run_qiime2 ? QIIME2_TAXONOMY.out.tsv : [],
+            !params.skip_barrnap ? BARRNAPSUMMARY.out.summary.ifEmpty( [] ) : [],
+            params.filter_ssu ? FILTER_SSU.out.stats.ifEmpty( [] ) : [],
+            params.filter_ssu ? FILTER_SSU.out.asv.ifEmpty( [] ) : [],
+            params.min_len_asv || params.max_len_asv ? FILTER_LEN_ASV.out.stats.ifEmpty( [] ) : [],
+            params.min_len_asv || params.max_len_asv ? FILTER_LEN_ASV.out.len_orig.ifEmpty( [] ) : [],
+            params.filter_codons ? FILTER_CODONS.out.stats.ifEmpty( [] ) : [],
+            params.cut_its != "none" ? ITSX_CUTASV.out.summary.ifEmpty( [] ) : [],
+            !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy ? ch_dada2_tax.ifEmpty( [] ) : [],
+            !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy ? DADA2_TAXONOMY_WF.out.cut_tax.ifEmpty( [[],[]] ) : [[],[]],
+            !params.skip_taxonomy && params.sintax_ref_taxonomy ? ch_sintax_tax.ifEmpty( [] ) : [],
+            !params.skip_taxonomy && params.pplace_tree ? ch_pplace_tax.ifEmpty( [] ) : [],
+            !params.skip_taxonomy && params.pplace_tree ? FASTA_NEWICK_EPANG_GAPPA.out.heattree.ifEmpty( [[],[]] ) : [[],[]],
+            !params.skip_taxonomy && ( params.qiime_ref_taxonomy || params.classifier ) && run_qiime2 ? QIIME2_TAXONOMY.out.tsv.ifEmpty( [] ) : [],
             run_qiime2,
             run_qiime2 ? val_used_taxonomy : "",
             run_qiime2 && ( params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1 ) ? ch_dada2_asv.countLines()+","+QIIME2_FILTERTAXA.out.tsv.countLines() : "",
-            run_qiime2 && ( params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1 ) ? FILTER_STATS.out.tsv : [],
-            run_qiime2 && !params.skip_barplot ? QIIME2_BARPLOT.out.folder : [],
+            run_qiime2 && ( params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1 ) ? FILTER_STATS.out.tsv.ifEmpty( [] ) : [],
+            run_qiime2 && !params.skip_barplot ? QIIME2_BARPLOT.out.folder.ifEmpty( [] ) : [],
             run_qiime2 && !params.skip_abundance_tables ? "done" : "",
-            run_qiime2 && !params.skip_alpha_rarefaction ? "done" : "",
-            run_qiime2 && !params.skip_diversity_indices && params.metadata ? QIIME2_DIVERSITY.out.depth : [],
-            run_qiime2 && !params.skip_diversity_indices && params.metadata ? QIIME2_DIVERSITY.out.beta.collect() : [],
-            run_qiime2 && !params.skip_diversity_indices && params.metadata ? QIIME2_DIVERSITY.out.adonis.collect() : [],
-            run_qiime2 && !params.skip_ancom && params.metadata ? QIIME2_ANCOM.out.ancom.collect() : [],
-            params.picrust ? PICRUST.out.pathways : []
+            run_qiime2 && !params.skip_alpha_rarefaction && params.metadata ? "done" : "",
+            run_qiime2 && !params.skip_diversity_indices && params.metadata ? QIIME2_DIVERSITY.out.depth.ifEmpty( [] ) : [],
+            run_qiime2 && !params.skip_diversity_indices && params.metadata ? QIIME2_DIVERSITY.out.beta.collect().ifEmpty( [] ) : [],
+            run_qiime2 && !params.skip_diversity_indices && params.metadata ? QIIME2_DIVERSITY.out.adonis.collect().ifEmpty( [] ) : [],
+            run_qiime2 && !params.skip_ancom && params.metadata ? QIIME2_ANCOM.out.ancom.collect().ifEmpty( [] ) : [],
+            params.picrust ? PICRUST.out.pathways.ifEmpty( [] ) : []
         )
         ch_versions    = ch_versions.mix(SUMMARY_REPORT.out.versions)
     }

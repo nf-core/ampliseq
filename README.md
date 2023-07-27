@@ -40,7 +40,8 @@ By default, the pipeline currently performs the following:
 - Taxonomical classification using DADA2, [SINTAX](https://doi.org/10.1101/074161) or [QIIME2](https://www.nature.com/articles/s41587-019-0209-9)
 - Excludes unwanted taxa, produces absolute and relative feature/taxa count tables and plots, plots alpha rarefaction curves, computes alpha and beta diversity indices and plots thereof ([QIIME2](https://www.nature.com/articles/s41587-019-0209-9))
 - Calls differentially abundant taxa ([ANCOM](https://www.ncbi.nlm.nih.gov/pubmed/26028277))
-- Overall pipeline run summaries ([MultiQC](https://multiqc.info/))
+- Pipeline QC summaries ([MultiQC](https://multiqc.info/))
+- Overall pipeline html report ([R Markdown](https://github.com/rstudio/rmarkdown))
 
 ## Usage
 

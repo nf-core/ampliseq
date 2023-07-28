@@ -164,9 +164,9 @@ cat("## Primer removal with Cutadapt\n")
 cat("Cutadapt is trimming primer sequences from sequencing reads. ",
     "Primer sequences are non-biological sequences that often introduce ",
     "point mutations that do not reflect sample sequences. This is especially ",
-    "true for degenerated PCR primer. If primer trimming would be omitted, artifactual ",
+    "true for degenerated PCR primer. If primer trimming were to be omitted, artifactual ",
     "amplicon sequence variants might be computed by the denoising tool or ",
-    "sequences might be lost due to become labelled as PCR chimera.\n\n")
+    "sequences might be lost due to being labelled as PCR chimera.\n\n")
 
 # import tsv
 cutadapt_summary <- read.table(file = params$ca_sum_path, header = TRUE, sep = "\t")
@@ -1012,7 +1012,7 @@ cat("# Downstream analysis with QIIME2\n",
 cat("## ASV filtering\n",
     "Unwanted taxa are often off-targets generated in PCR with primers that are not perfectly specific for the target DNA, for 16S rRNA sequencing mitrochondria and chloroplast sequences are typically removed because these are frequent unwanted non-bacteria PCR products. ")
 if ( params$exclude_taxa != "none" ) {
-    cat("ASVs were removed when the taxonomic string contanied any of '", params$exclude_taxa, "' (comma separated)")
+    cat("ASVs were removed when the taxonomic string contained any of '", params$exclude_taxa, "' (comma separated)")
 }
 if ( params$min_frequency != 1 ) {
     cat(", had fewer than", params$min_frequency ,"total read counts over all sample")
@@ -1077,7 +1077,7 @@ for (category in metadata_category_barplot) {
 
 ```{r, eval = !isFALSE(params$alpha_rarefaction), results='asis'}
 cat("## Alpha diversity rarefaction curves\n",
-    "Produces rarefaction plots for several alpha diversity indices, and is primarily used to determine if the richness of the samples has been fully observed or sequenced. If the slope of the curves does not level out and the lines do not becomes horizontal, this might be because the sequencing depth was too low to observe all diversity or that sequencing error artificially increases sequence diversity and causes false discoveries. ")
+    "Produces rarefaction plots for several alpha diversity indices, and is primarily used to determine if the richness of the samples has been fully observed or sequenced. If the slope of the curves does not level out and the lines do not become horizontal, this might be because the sequencing depth was too low to observe all diversity or that sequencing error artificially increases sequence diversity and causes false discoveries. ")
 # warning if dada_sample_inference is independent, because alpha diversities are not expected to be accurate!
 if ( params$dada_sample_inference == "independent") {
     cat("Please note that ASVs were inferred for each sample independently, that can make alpha diversity indices a poor estimate of true diversity. ")
@@ -1097,13 +1097,13 @@ if ( params$dada_sample_inference == "independent") {
     cat("Please note that ASVs were inferred for each sample independently, that can make alpha diversity indices a poor estimate of true diversity. ")
 }
 cat("This step calculates alpha diversity using various methods and performs pairwise comparisons of groups of samples. It is based on a phylogenetic tree of all ASV sequences. ",
-    "Folder [qiime2/diversity/alpha_diversity](../qiime2/diversity/alpha_diversity) contains the alpha-diverity data:\n",
+    "Folder [qiime2/diversity/alpha_diversity](../qiime2/diversity/alpha_diversity) contains the alpha-diversity data:\n",
     "- Shannon’s diversity index (quantitative): [qiime2/diversity/alpha_diversity/shannon_vector/index.html](../qiime2/diversity/alpha_diversity/shannon_vector/index.html)\n",
     "- Pielou’s Evenness: [qiime2/diversity/alpha_diversity/evenness_vector/index.html](../qiime2/diversity/alpha_diversity/evenness_vector/index.html)\n",
     "- Faith’s Phylogenetic Diversity (qualitiative, phylogenetic) [qiime2/diversity/alpha_diversity/faith_pd_vector/index.html](../qiime2/diversity/alpha_diversity/faith_pd_vector/index.html)\n",
     "- Observed OTUs (qualitative): [qiime2/diversity/alpha_diversity/observed_otus_vector/index.html](../qiime2/diversity/alpha_diversity/observed_otus_vector/index.html)\n",
     "\n### Beta diversity indices\n",
-    "Beta diversity measures the species community differences between samples. This step calculates beta diversity distances using various methods and performs pairwise comparisons of groups of samples. Additionally, principle coordinates analysis (PCoA) plots are produced that can be visualized with Emperor in your default browser without the need for installation. This calculations are based on a phylogenetic tree of all ASV sequences. ",
+    "Beta diversity measures the species community differences between samples. This step calculates beta diversity distances using various methods and performs pairwise comparisons of groups of samples. Additionally, principle coordinates analysis (PCoA) plots are produced that can be visualized with Emperor in your default browser without the need for installation. These calculations are based on a phylogenetic tree of all ASV sequences. ",
     "Folder [qiime2/diversity/beta_diversity](../qiime2/diversity/beta_diversity) contains the beta-diverity data:\n",
     "1 PCoA for four different beta diversity distances are accessible via:\n",
     "- Bray-Curtis distance (quantitative): [qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA/index.html](../qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA/index.html)\n",

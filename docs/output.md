@@ -61,14 +61,14 @@ Samplesheet, ASV fasta, and metadata file are copied into the results folder.
 
 ### Html summary
 
-A summary report for most pipeline results in html format produced by [R Markdown](https://rmarkdown.rstudio.com/). The report gives a generl overview of the analysis, includes many tables and visualizations, and links to interactive downstream analysis results, if available.
+A summary report for most pipeline results in html format produced by [R Markdown](https://rmarkdown.rstudio.com/). The report gives a general overview of the analysis, includes many tables and visualizations, and links to interactive downstream analysis results, if available.
 
 <details markdown="1">
 <summary>Output files</summary>
 
 - `summary_report/`
   - `summary_report.html`: a standalone HTML file that can be viewed in your web browser.
-  - `*.svg*`: plots that were produced for (and are included) in the report.
+  - `*.svg*`: plots that were produced for (and are included in) the report.
   - `versions.yml`: software versions used to produce this report.
 
 </details>

@@ -118,6 +118,8 @@ cat(paste0("
 "))
 ```
 
+<!-- Output complete header -->
+
 ```{r}
 if ( endsWith( params$workflow_manifest_version, "dev") ) {
     ampliseq_version = paste0("version ", params$workflow_manifest_version, ", revision ", params$workflow_scriptid)
@@ -133,18 +135,22 @@ title:  "<img src=\"`r file.path(params$input_dir, params$logo)`\" style=\"float
 subtitle: `r report_subtitle`
 ---
 
+<!-- Start with the actual report text -->
+
 # Abstract
 
 The bioinformatics analysis pipeline [nfcore/ampliseq](https://nf-co.re/ampliseq) is used for amplicon sequencing,
 supporting denoising of any amplicon and supports a variety of taxonomic databases for taxonomic assignment of 16S, ITS, CO1 and 18S amplicons.
 
+<!-- Section on Preprocessing -->
+
 ```{r, eval = !isFALSE(params$mqc_plot) || !isFALSE(params$dada_filtntrim_args), results='asis'}
 cat("# Preprocessing\n")
 ```
 
-```{r, eval = !isFALSE(params$mqc_plot), results='asis'}
-mqc_rep_path <- paste0("../multiqc/multiqc_report.html")
+<!-- Subsection on FastQC / MultiQC -->
 
+```{r, eval = !isFALSE(params$mqc_plot), results='asis'}
 cat("## FastQC\n")
 cat("FastQC gives general quality metrics about your sequenced reads. ",
     "It provides information about the quality score distribution across your reads, ",
@@ -152,12 +158,14 @@ cat("FastQC gives general quality metrics about your sequenced reads. ",
 cat("The sequence quality was checked using FastQC and resulting data was ",
     "aggregated using the FastQC module of MultiQC. For more quality ",
     "controls and per sample quality checks you can check the full ",
-    "MultiQC report, which is found [here](", mqc_rep_path, ").", sep = "")
+    "MultiQC report, which can be found in [multiqc/multiqc_report.html](../multiqc/multiqc_report.html).", sep = "")
 ```
 
 ```{r, eval = !isFALSE(params$mqc_plot), out.width='100%', dpi=1200, fig.align='center'}
 knitr::include_graphics(params$mqc_plot)
 ```
+
+<!-- Subsection on Cutadapt -->
 
 ```{r, eval = !isFALSE(params$ca_sum_path), results='asis'}
 cat("## Primer removal with Cutadapt\n")
@@ -200,6 +208,8 @@ datatable(cutadapt_summary, options = list(
 cat("\n\nCutadapt results can be found in folder [cutadapt](../cutadapt).")
 ```
 
+<!-- Subsection on DADA2 QC filtering -->
+
 ```{r, eval = !isFALSE(params$dada_filtntrim_args), results='asis'}
 cat("## Quality filtering using DADA2\n\n")
 cat("Additional quality filtering can improve sequence recovery. ",
@@ -211,7 +221,9 @@ if (params$trunc_qmin) {
                             f_and_tr_args), ", ")
     tr_len_f <- trunc_len[[1]][1]
     tr_len_r <- trunc_len[[1]][2]
-    cat("Reads were trimmed before median quality drops ",
+    cat("Reads were trimmed to a specific length and the length cutoff was ",
+        "automatically determined by the median quality of all input reads. ",
+        "Reads were trimmed before median quality drops ",
         "below ", params$trunc_qmin, " and at least ",params$trunc_rmin*100,
         "% of reads are retained, resulting in a trim of ",
         "forward reads at ", tr_len_f, " bp and reverse ",
@@ -231,6 +243,8 @@ cat("Reads with more than", params$max_ee,"expected errors were discarded.",
     "Read counts passing the filter are shown in section ['Read counts per sample'](#read-counts-per-sample)",
     "column 'filtered'.", sep = " ")
 ```
+
+<!-- Subsection on DADA2 QC visualisation -->
 
 ```{r, eval = !isFALSE(params$dada_qc_f_path), results='asis'}
 cat ("**Quality profiles:**\n\n")
@@ -270,8 +284,10 @@ if (params$flag_single_end) {
 cat("Overall read quality profiles as heat map of the frequency of each quality score at each base position. ",
     "The mean quality score at each position is shown by the green line, and the quartiles of the quality score ",
     "distribution by the orange lines. The red line shows the scaled proportion of reads that extend to at least ",
-    "that position. Original plots can be found [folder dada2/QC/](../dada2/QC/) with names that end in '_qual_stats.pdf'.")
+    "that position. Original plots can be found [folder dada2/QC/](../dada2/QC/) with names that end in `_qual_stats.pdf`.")
 ```
+
+<!-- Section on sequences / DADA2 ASVs -->
 
 ```{r, eval = !isFALSE(params$dada_err_path) || !isFALSE(params$dada_stats_path) || !isFALSE(params$asv_table_path), results='asis'}
 cat("# ASV inference using DADA2\n\n",
@@ -281,6 +297,8 @@ cat("# ASV inference using DADA2\n\n",
     "DADA2 reduces sequence errors and dereplicates sequences by quality filtering, denoising,
     read pair merging (for paired end Illumina reads only) and PCR chimera removal.")
 ```
+
+<!-- Subsection on DADA2 error profiles -->
 
 ```{r, eval = !isFALSE(params$dada_err_path), results='asis'}
 cat("## Error correction\n\n",
@@ -314,8 +332,10 @@ cat("Estimated error rates for each possible transition. The black line shows th
     convergence of the machine-learning algorithm. The red line shows the error rates expected under the nominal
     definition of the Q-score. The estimated error rates (black line) should be a good fit to the observed rates
     (points), and the error rates should drop with increased quality. Original plots can be found in
-    [folder dada2/QC/](../dada2/QC/) with names that end in '.err.pdf'.")
+    [folder dada2/QC/](../dada2/QC/) with names that end in `.err.pdf`.")
 ```
+
+<!-- Subsection on DADA2 read counts per sample -->
 
 ```{r, eval = !isFALSE(params$dada_stats_path), results='asis'}
 cat("## Read counts per sample\n\n",
@@ -339,9 +359,9 @@ datatable(dada_stats, options = list(
         scrollY = "300px",
         paging = FALSE))
 
-cat("Samples with unusual low reads numbers relative to the number of expected ASVs (e.g. 500 reads with 100 ASVs)
-    should be treated cautiously, because the abundance estimate will be very granular and might vary strongly between (theoretical)
-    replicates due to high impact of stochasticity. ")
+cat("Samples with unusual low reads numbers relative to the number of expected ASVs
+    should be treated cautiously, because the abundance estimate will be very granular
+    and might vary strongly between (theoretical) replicates due to high impact of stochasticity. ")
 
 # Stacked barchart to num of reads
 
@@ -410,15 +430,6 @@ if ( params$flag_single_end ) {
 cat(":\n\n")
 
 # Plot
-#dada_stats_ex_t$steps_t <- factor(dada_stats_ex_t$steps_t, levels=unique(dada_stats_ex_t$steps_t))
-#ggplot(dada_stats_ex_t, aes(fill = steps_t, y = asvs_abs_t, x = samples_t)) +
-#        geom_bar(position = "stack", stat = "identity") +
-#        xlab("Samples") +
-#        ylab("Absolute reads") +
-#        coord_flip() +
-#        scale_fill_brewer("Filtering Steps", palette = "Spectral")
-
-# Plot
 dada_stats_p_t$steps_t <- factor(dada_stats_p_t$steps_t, levels=unique(dada_stats_p_t$steps_t))
 
 plot_dada_stats_p_t <- ggplot(dada_stats_p_t, aes(fill = steps_t, y = asvs_p_t, x = samples_t)) +
@@ -439,6 +450,8 @@ cat("\n\nBetween",min(dada_stats_p$analysis),"% and",max(dada_stats_p$analysis),
     (e.g. during nucleotide extraction, library preparation, or sequencing) could have occurred that might add bias to the analysis.")
 ```
 
+<!-- Subsection on DADA2 ASVs -->
+
 ```{r, eval = !isFALSE(params$asv_table_path), results='asis'}
 cat("## Inferred ASVs\n\n")
 
@@ -449,10 +462,10 @@ n_asv <- length(asv_table$ASV_ID)
 # Output text
 cat("Finally,", n_asv,
         "amplicon sequence variants (ASVs) were obtained across all samples. ")
-cat("The ASVs can be found in ['dada2/ASV_seqs.fasta'](../dada2/). And the corresponding",
+cat("The ASVs can be found in [`dada2/ASV_seqs.fasta`](../dada2/). And the corresponding",
         " quantification of the ASVs across samples is in",
-        "['dada2/ASV_table.tsv'](../dada2/). An extensive table containing both was ",
-        "saved as ['dada2/DADA2_table.tsv'](../dada2/). ")
+        "[`dada2/ASV_table.tsv`](../dada2/). An extensive table containing both was ",
+        "saved as [`dada2/DADA2_table.tsv`](../dada2/). ")
 if ( params$dada_sample_inference == "independent" ) {
     cat("ASVs were inferred for each sample independently.")
 } else if ( params$dada_sample_inference == "pooled" ) {
@@ -466,9 +479,13 @@ if ( params$dada_sample_inference == "independent" ) {
 flag_any_filtering <- !isFALSE(params$path_barrnap_sum) || !isFALSE(params$filter_len_asv) || !isFALSE(params$filter_codons)
 ```
 
+<!-- Section on ASV filtering -->
+
 ```{r, eval = flag_any_filtering, results='asis'}
 cat("# Filtering of ASVs\n")
 ```
+
+<!-- Subsection on rRNA classification with Barrnap -->
 
 ```{r, eval = !isFALSE(params$path_barrnap_sum), results='asis'}
 cat("## rRNA detection\n")
@@ -520,8 +537,10 @@ svg("rrna_detection_with_barrnap.svg")
 plot_barrnap_df_sum
 invisible(dev.off())
 
-cat("\n\nrRNA filter results can be found in folder [barrnap](../barrnap).")
+cat("\n\nrRNA classification results can be found in folder [barrnap](../barrnap).")
 ```
+
+<!-- Subsection on rRNA filtering with Barrnap -->
 
 ```{r, eval = !isFALSE(params$path_barrnap_sum) && !isFALSE(params$filter_ssu), results='asis'}
 cat("\n\nASVs were filtered for (",params$filter_ssu,") using the above classification.",
@@ -550,6 +569,8 @@ cat("In average", round(filter_ssu_stats_avg_removed,2), "% reads were removed, 
 # "n_asv" is taken from the barrnap block above
 cat("The number of ASVs was reduced by",n_asv-filter_ssu_asv_filtered,"(",100-round( filter_ssu_asv_filtered/n_asv*100 ,2),"%), from",n_asv,"to",filter_ssu_asv_filtered," ASVs.")
 ```
+
+<!-- Subsection on sequence length filter -->
 
 ```{r, eval = !isFALSE(params$filter_len_asv_len_orig), results='asis'}
 cat("## Sequence length\n")
@@ -630,6 +651,8 @@ cat("The number of ASVs was reduced by",sum(filter_len_profile$Counts)-sum(filte
 cat("\n\nLength filter results can be found in folder [asv_length_filter](../asv_length_filter).")
 ```
 
+<!-- Subsection on codon usage filter -->
+
 ```{r, eval = !isFALSE(params$filter_codons), results='asis'}
 cat("## Codon usage\n")
 
@@ -653,6 +676,8 @@ datatable(filter_codons_stats, options = list(
 cat("\n\nCodon usage filter results can be found in folder [codon_filter](../codon_filter).")
 ```
 
+<!-- Section on taxonomic classification -->
+
 ```{r, results='asis'}
 # Check if any taxonomic classification is available
 any_taxonomy <- !isFALSE(params$dada2_taxonomy) || !isFALSE(params$qiime2_taxonomy) || !isFALSE(params$sintax_taxonomy) || !isFALSE(params$pplace_taxonomy)
@@ -662,6 +687,8 @@ any_taxonomy <- !isFALSE(params$dada2_taxonomy) || !isFALSE(params$qiime2_taxono
 # Header if any taxonomic classification is available
 cat("# Taxonomic Classification\n")
 ```
+
+<!-- Subsection on ITS region filter -->
 
 ```{r, eval = !isFALSE(params$cut_its), results='asis'}
 cat("## ITS region\n")
@@ -714,6 +741,8 @@ invisible(dev.off())
 
 cat("\n\nITSx results can be found in folder [itsx](../itsx).")
 ```
+
+<!-- Subsection on DADA2 taxonomy results -->
 
 ```{r, eval = !isFALSE(params$dada2_taxonomy), results='asis'}
 cat("## DADA2\n")
@@ -805,8 +834,10 @@ svg("dada2_taxonomic_classification_per_taxonomy_level.svg")
 plot_asv_classi_df
 invisible(dev.off())
 
-cat("\n\nDADA2 taxonomy assignments can be found in folder [dada2](../dada2) in files 'ASV_tax_*.tsv'.")
+cat("\n\nDADA2 taxonomy assignments can be found in folder [dada2](../dada2) in files `ASV_tax_*.tsv`.")
 ```
+
+<!-- Subsection on QIIME2 taxonomy results -->
 
 ```{r, eval = !isFALSE(params$qiime2_taxonomy), results='asis'}
 # Header
@@ -874,6 +905,8 @@ invisible(dev.off())
 cat("\n\nQIIME2 taxonomy assignments can be found in folder [qiime2/taxonomy](../qiime2/taxonomy).")
 ```
 
+<!-- Subsection on SINTAX taxonomy results -->
+
 ```{r, eval = !isFALSE(params$sintax_taxonomy), results='asis'}
 # Header
 cat("## SINTAX\n")
@@ -935,6 +968,8 @@ invisible(dev.off())
 
 cat("\n\nSINTAX taxonomy assignments can be found in folder [sintax](../sintax).")
 ```
+
+<!-- Subsection on phylogenetic placements taxonomy results -->
 
 ```{r, eval = !isFALSE(params$pplace_taxonomy), results='asis'}
 # Header
@@ -998,8 +1033,10 @@ knitr::include_graphics(c(params$pplace_heattree))
 ```
 
 ```{r, eval = !isFALSE(params$pplace_taxonomy), results='asis'}
-cat("\n\nPhylogenetic placement taxonomy assignments can be found in folder [pplace](../pplace) in file '*.taxonomy.per_query_unique.tsv'.")
+cat("\n\nPhylogenetic placement taxonomy assignments can be found in folder [pplace](../pplace) in file `*.taxonomy.per_query_unique.tsv`.")
 ```
+
+<!-- Section on QIIME2 downstream analysis -->
 
 ```{r, eval = !isFALSE(params$val_used_taxonomy), results='asis'}
 # Header
@@ -1008,11 +1045,13 @@ cat("# Downstream analysis with QIIME2\n",
     "Results of taxonomic classification of",params$val_used_taxonomy,"was used in all following analysis, see in the above sections.")
 ```
 
+<!-- Subsection on ASV filtering -->
+
 ```{r, eval = !isFALSE(params$filter_stats_tsv), results='asis'}
 cat("## ASV filtering\n",
     "Unwanted taxa are often off-targets generated in PCR with primers that are not perfectly specific for the target DNA, for 16S rRNA sequencing mitrochondria and chloroplast sequences are typically removed because these are frequent unwanted non-bacteria PCR products. ")
 if ( params$exclude_taxa != "none" ) {
-    cat("ASVs were removed when the taxonomic string contained any of '", params$exclude_taxa, "' (comma separated)")
+    cat("ASVs were removed when the taxonomic string contained any of `", params$exclude_taxa, "` (comma separated)", sep="")
 }
 if ( params$min_frequency != 1 ) {
     cat(", had fewer than", params$min_frequency ,"total read counts over all sample")
@@ -1047,6 +1086,8 @@ datatable(filter_stats_tsv, options = list(
 cat("\n\nTables with read count numbers and filtered abundance tables are in folder [qiime2/abundance_tables](../qiime2/abundance_tables).")
 ```
 
+<!-- Subsection on abundance tables -->
+
 ```{r, eval = !isFALSE(params$abundance_tables), results='asis'}
 cat("## Abundance tables\n",
     "The abundance tables are the final data for further downstream analysis and visualisations. The tables are based on the computed ASVs and taxonomic classification, but after removal of unwanted taxa. ",
@@ -1056,6 +1097,8 @@ cat("\n\n## Relative abundance tables\n",
     "Absolute abundance tables produced by the previous steps contain count data, but the compositional nature of 16S rRNA amplicon sequencing requires sequencing depth normalisation. This step computes relative abundance tables using TSS (Total Sum Scaling normalisation) for various taxonomic levels and detailed tables for all ASVs with taxonomic classification, sequence and relative abundance for each sample. Typically used for in depth investigation of taxa abundances. ",
     "Folder [qiime2/rel_abundance_tables](../qiime2/rel_abundance_tables) contains tap-separated files (.tsv) that can be opened by any spreadsheet software.")
 ```
+
+<!-- Subsection on barplot -->
 
 ```{r, eval = !isFALSE(params$barplot), results='asis'}
 cat("## Barplot\n",
@@ -1067,13 +1110,15 @@ cat("## Barplot\n",
 ```{r, eval = !isFALSE(params$metadata_category_barplot), results='asis'}
 cat("\n\nAdditionally, barplots with average relative abundance values were produced for",
     params$metadata_category_barplot,"(comma separated if several) in [qiime2/barplot_average](../qiime2/barplot_average)
-    in separate folders following the scheme 'barplot_{treatment}':\n")
+    in separate folders following the scheme `barplot_{treatment}`:\n")
 metadata_category_barplot <- sort( unlist( strsplit( params$metadata_category_barplot,"," ) ) )
 for (category in metadata_category_barplot) {
     barplot_folder_path <- paste0("qiime2/barplot_average/barplot_",category)
     cat("\n- [",barplot_folder_path,"/index.html](../",barplot_folder_path,"/index.html)\n", sep="")
 }
 ```
+
+<!-- Subsection on alpha rarefaction -->
 
 ```{r, eval = !isFALSE(params$alpha_rarefaction), results='asis'}
 cat("## Alpha diversity rarefaction curves\n",
@@ -1084,6 +1129,8 @@ if ( params$dada_sample_inference == "independent") {
 }
 cat("Folder [qiime2/alpha-rarefaction](../qiime2/alpha-rarefaction) contains the data, click [qiime2/alpha-rarefaction/index.html](../qiime2/alpha-rarefaction/index.html) to open it in your web browser.")
 ```
+
+<!-- Subsection on diversity analysis -->
 
 ```{r, eval = !isFALSE(params$diversity_indices_beta), results='asis'}
 diversity_indices_depth <- readLines(params$diversity_indices_depth)
@@ -1110,7 +1157,7 @@ cat("This step calculates alpha diversity using various methods and performs pai
     "- Jaccard distance (qualitative): [qiime2/diversity/beta_diversity/jaccard_pcoa_results-PCoA/index.html](../qiime2/diversity/beta_diversity/jaccard_pcoa_results-PCoA/index.html)\n",
     "- unweighted UniFrac distance (qualitative, phylogenetic) [qiime2/diversity/beta_diversity/unweighted_unifrac_pcoa_results-PCoA/index.html](../qiime2/diversity/beta_diversity/unweighted_unifrac_pcoa_results-PCoA/index.html)\n",
     "- weighted UniFrac distance (quantitative, phylogenetic): [qiime2/diversity/beta_diversity/weighted_unifrac_pcoa_results-PCoA/index.html](../qiime2/diversity/beta_diversity/weighted_unifrac_pcoa_results-PCoA/index.html)\n",
-    "2 Pairwise comparisons between groups of samples is performed for specific metadata that can be found in folder [qiime2/diversity/beta_diversity/](../qiime2/diversity/beta_diversity/). Each significance test result is in its separate folder following the scheme '{method}_distance_matrix-{treatment}':",
+    "2 Pairwise comparisons between groups of samples is performed for specific metadata that can be found in folder [qiime2/diversity/beta_diversity/](../qiime2/diversity/beta_diversity/). Each significance test result is in its separate folder following the scheme `{method}_distance_matrix-{treatment}`:",
     sep = "\n")
 diversity_indices_beta <- sort( unlist( strsplit( params$diversity_indices_beta,"," ) ) )
 for (folder in diversity_indices_beta) {
@@ -1123,19 +1170,21 @@ for (folder in diversity_indices_beta) {
 cat("_ADONIS test for beta diversity_\n\n")
 cat("Permutational multivariate analysis of variance using distance matrices (adonis)
     determines whether groups of samples are significantly different from one another.
-    The formula was '",params$qiime_adonis_formula,"' (multiple formulas are comma separated).
+    The formula was `",params$qiime_adonis_formula,"` (multiple formulas are comma separated).
     adonis computes an R2 value (effect size) which shows the percentage of variation explained
     by a condition, as well as a p-value to determine the statistical significance.
     The sequence of conditions in the formula matters, the variance of factors is removed
     (statistically controlled for) from beginning to end of the formula. " )
 
-cat("\n\nTest results are in separate folders following the scheme '{method}_distance_matrix-{adonis formula}':\n")
+cat("\n\nTest results are in separate folders following the scheme `{method}_distance_matrix-{adonis formula}`:\n")
 diversity_indices_adonis <- sort( unlist( strsplit( params$diversity_indices_adonis,"," ) ) )
 for (folder in diversity_indices_adonis) {
     adonis_index_path <- paste0("qiime2/diversity/",folder) #"beta_diversity/" is defined in input section with "stageAs: 'beta_diversity/adonis/*'"
     cat("\n- [",adonis_index_path,"/index.html](../",adonis_index_path,"/index.html)\n", sep="")
 }
 ```
+
+<!-- Subsection on ANCOM results -->
 
 ```{r, eval = !isFALSE(params$ancom), results='asis'}
 cat("## ANCOM\n\n")
@@ -1146,7 +1195,7 @@ cat("Analysis of Composition of Microbiomes (ANCOM) is applied to identify featu
     [qiime2/ancom/](../qiime2/ancom/). ",
     sep = "\n")
 
-cat("\n\nTest results are in separate folders following the scheme 'Category-{treatment}-{taxonomic level}':\n")
+cat("\n\nTest results are in separate folders following the scheme `Category-{treatment}-{taxonomic level}`:\n")
 ancom <- sort( unlist( strsplit( params$ancom,"," ) ) )
 for (folder in ancom) {
     ancom_path <- paste0("qiime2/ancom/",folder)
@@ -1154,22 +1203,46 @@ for (folder in ancom) {
 }
 ```
 
+<!-- Subsection on PICRUSt2 results -->
+
 ```{r, eval = !isFALSE(params$picrust_pathways), results='asis'}
 cat("## PICRUSt2\n",
     "PICRUSt2 (Phylogenetic Investigation of Communities by Reconstruction of Unobserved States) is a software for predicting functional abundances based only on marker gene sequences.",
     "Enzyme Classification numbers (EC), KEGG orthologs (KO) and MetaCyc ontology predictions were made for each sample.",
-    "In folder [PICRUSt2/](../PICRUSt2/) are predicted quantifications for Enzyme Classification numbers (EC), see 'EC_pred_metagenome_unstrat_descrip.tsv', KEGG orthologs (KO), see 'KO_pred_metagenome_unstrat_descrip.tsv', MetaCyc ontology, see 'METACYC_path_abun_unstrat_descrip.tsv'.",
+    "In folder [PICRUSt2/](../PICRUSt2/) are predicted quantifications for Enzyme Classification numbers (EC), see `EC_pred_metagenome_unstrat_descrip.tsv`, KEGG orthologs (KO), see `KO_pred_metagenome_unstrat_descrip.tsv`, MetaCyc ontology, see `METACYC_path_abun_unstrat_descrip.tsv`.",
     "Quantifications are not normalized yet, they can be normalized e.g. by the total sum per sample.",
     sep = "\n")
 ```
 
+<!-- Section on methods -->
+
+# Methods
+
+```{r, results='asis'}
+if ( !isFALSE(params$mqc_plot) ) {
+    # with MultiQC
+    cat("MultiQC summarized computational methods in [multiqc/multiqc_report.html](../multiqc/multiqc_report.html).
+        The proposed short methods description can be found in [MultiQC's Methods Description](../multiqc/multiqc_report.html#nf-core-ampliseq-methods-description),
+        versions of software collected at runtime in [MultiQC's Software Versions](../multiqc/multiqc_report.html#software_versions),
+        and a summary of non-default parameter in [MultiQC's Workflow Summary](../multiqc/multiqc_report.html#nf-core-ampliseq-summary).\n\n")
+}
+# with & without MultiQC
+cat("Technical information to the pipeline run are collected in folder [pipeline_info](../pipeline_info),
+    including software versions collected at runtime in file `software_versions.yml` (can be viewed with a text editor),
+    execution report in file `execution_report_{date}_{time}.html`,
+    execution trace in file `execution_trace_{date}_{time}.txt`,
+    execution timeline in file `execution_timelime_{date}_{time}.html`, and
+    pipeline direct acyclic graph (DAG) in file `pipeline_dag_{date}_{time}.html`.")
+```
+
+<!-- Section on final notes -->
+
 # Final notes
 
-This report (file 'summary_report.html') is located in folder [summary_report](.) of the original pipeline results folder.
+This report (file `summary_report.html`) is located in folder [summary_report](.) of the original pipeline results folder.
 In this file, all links to files and folders are relative, therefore hyperlinks will only work when the report is at its original place in the pipeline results folder.
 Plots specifically produced for this report (if any) can be also found in folder [summary_report](.).
 
-A comprehensive read count report throughout the pipeline can be found in the [base results folder](../) in file 'overall_summary.tsv'.
-Technical information to the pipeline run are collected in folder [pipeline_info](../pipeline_info).
+A comprehensive read count report throughout the pipeline can be found in the [base results folder](../) in file `overall_summary.tsv`.
 
 Please cite the [pipeline publication](https://doi.org/10.3389/fmicb.2020.550420) and any software tools used by the pipeline (see [citations](https://nf-co.re/ampliseq#citations)) when you use any of the pipeline results in your study.

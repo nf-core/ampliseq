@@ -12,6 +12,8 @@ output:
 date: "`r Sys.Date()`"
 #bibliography: ./references.bibtex
 params:
+    # any parameter that is by default "FALSE" is used to evaluate the inclusion of a codeblock with e.g. "eval=!isFALSE(params$mqc_plot)"
+
     # report style
     css: NULL
     logo: NULL
@@ -51,6 +53,10 @@ params:
     qiime_adonis_formula: FALSE
 
     # file paths
+    metadata: FALSE
+    samplesheet: FALSE
+    fasta: FALSE
+    input: FALSE
     mqc_plot: FALSE
     ca_sum_path: FALSE
     dada_filtntrim_args: FALSE
@@ -141,6 +147,42 @@ subtitle: `r report_subtitle`
 
 The bioinformatics analysis pipeline [nfcore/ampliseq](https://nf-co.re/ampliseq) is used for amplicon sequencing,
 supporting denoising of any amplicon and supports a variety of taxonomic databases for taxonomic assignment of 16S, ITS, CO1 and 18S amplicons.
+
+<!-- Section on Input -->
+
+# Input
+
+Pipeline input was saved in folder [input](../input).
+
+```{r, results='asis'}
+if ( !isFALSE(params$samplesheet) ) {
+    # samplesheet input
+    cat("Sequencing data was provided in the samplesheet file `", params$samplesheet, "` that is displayed below:", sep="")
+
+    samplesheet <- read.table(file = params$samplesheet, header = TRUE, sep = "\t")
+    # Display table
+    datatable(samplesheet, options = list(
+        scrollX = TRUE,
+        scrollY = "300px",
+        paging = FALSE))
+} else if ( !isFALSE(params$fasta) ) {
+    # fasta input
+    cat("ASV/OTU sequences were provided in the fasta file `", params$fasta, "`. ", sep="")
+} else if ( !isFALSE(params$input) ) {
+    # folder input
+    cat("Sequencing data was retrieved from folder `", params$fasta, "`. ", sep="")
+}
+if ( !isFALSE(params$metadata) ) {
+    cat("Metadata associated with the sequencing data was provided in `", params$metadata, "` and is displayed below:", sep="")
+
+    metadata <- read.table(file = params$metadata, header = TRUE, sep = "\t")
+    # Display table
+    datatable(metadata, options = list(
+        scrollX = TRUE,
+        scrollY = "300px",
+        paging = FALSE))
+}
+```
 
 <!-- Section on Preprocessing -->
 

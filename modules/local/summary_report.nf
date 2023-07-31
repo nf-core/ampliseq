@@ -1,5 +1,4 @@
 process SUMMARY_REPORT  {
-
     label 'process_low'
 
     container 'docker.io/tillenglert/ampliseq_report:latest'
@@ -20,6 +19,9 @@ process SUMMARY_REPORT  {
     path(report_template)
     path(report_styles)
     path(report_logo)
+    path(metadata)
+    path(samplesheet)
+    path(fasta)
     path(mqc_plots)
     path(ca_summary)
     val(find_truncation_values)
@@ -76,6 +78,10 @@ process SUMMARY_REPORT  {
         "workflow_manifest_version='${workflow.manifest.version}'",
         "workflow_scriptid='${workflow.scriptId.substring(0,10)}'",
         meta.single_end ? "flag_single_end=TRUE" : "",
+        metadata ? "metadata='$metadata'" : "",
+        samplesheet ? "samplesheet='$samplesheet'" : "",
+        fasta ? "fasta='$fasta'" : "",
+        !fasta && !samplesheet ? "input='$params.input'" : "",
         mqc_plots ? "mqc_plot='${mqc_plots}/svg/mqc_fastqc_per_sequence_quality_scores_plot_1.svg'" : "",
         ca_summary ?
             params.retain_untrimmed ? "flag_retain_untrimmed=TRUE,ca_sum_path='$ca_summary'" :

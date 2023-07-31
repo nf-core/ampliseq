@@ -686,6 +686,9 @@ workflow AMPLISEQ {
             ch_report_template,
             ch_report_css,
             ch_report_logo,
+            ch_metadata.ifEmpty( [] ),
+            params.input.toString().toLowerCase().endsWith("tsv") ? ch_input : [], // samplesheet input
+            is_fasta_input ? PARSE_INPUT.out.fasta.ifEmpty( [] ) : [], // fasta input
             !is_fasta_input && !params.skip_fastqc && !params.skip_multiqc ? MULTIQC.out.plots : [], //.collect().flatten().collectFile(name: "mqc_fastqc_per_sequence_quality_scores_plot_1.svg")
             !params.skip_cutadapt ? CUTADAPT_WORKFLOW.out.summary.collect().ifEmpty( [] ) : [],
             find_truncation_values,

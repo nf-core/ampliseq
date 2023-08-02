@@ -41,9 +41,15 @@ params:
     min_len_asv: ""
     max_len_asv: ""
     cut_its: FALSE
-    dada2_ref_tax_title: ""
-    qiime2_ref_tax_title: ""
-    sintax_ref_tax_title: ""
+    dada2_ref_tax_title: FALSE
+    qiime2_ref_tax_title: FALSE
+    sintax_ref_tax_title: FALSE
+    dada2_ref_tax_file: ""
+    qiime2_ref_tax_file: ""
+    sintax_ref_tax_file: ""
+    dada2_ref_tax_citation: ""
+    qiime2_ref_tax_citation: ""
+    sintax_ref_tax_citation: ""
     exclude_taxa: ""
     min_frequency: ""
     min_samples: ""
@@ -799,8 +805,8 @@ cat("## DADA2\n")
 
 # indicate reference taxonomy
 if (!params$flag_ref_tax_user) {
-    cat("The taxonomic classification was performed by DADA2 using the database: ",
-            "\"", params$dada2_ref_tax_title, "\".\n\n", sep = "")
+    cat("The taxonomic classification was performed by DADA2 using the database: `", params$dada2_ref_tax_title, "`.
+        More details can be found in the ['Methods section'](#methods).\n\n", sep = "")
 } else {
     cat("The taxonomic classification was performed by DADA2 using a custom database ",
             "provided by the user.\n\n", sep = "")
@@ -893,7 +899,8 @@ cat("\n\nDADA2 taxonomy assignments can be found in folder [dada2](../dada2) in 
 # Header
 cat("## QIIME2\n")
 
-cat("The taxonomic classification was performed by QIIME2 using the database: \"", params$qiime2_ref_tax_title, "\".\n\n", sep = "")
+cat("The taxonomic classification was performed by QIIME2 using the database: `", params$qiime2_ref_tax_title, "`.
+    More details can be found in the ['Methods section'](#methods).\n\n", sep = "")
 
 # Read file and prepare table
 asv_tax <- read.table(params$qiime2_taxonomy, header = TRUE, sep = "\t")
@@ -961,7 +968,8 @@ cat("\n\nQIIME2 taxonomy assignments can be found in folder [qiime2/taxonomy](..
 # Header
 cat("## SINTAX\n")
 
-cat("The taxonomic classification was performed by SINTAX using the database: \"", params$sintax_ref_tax_title, "\".\n\n", sep = "")
+cat("The taxonomic classification was performed by SINTAX using the database: `", params$sintax_ref_tax_title, "`.
+    More details can be found in the ['Methods section'](#methods).\n\n", sep = "")
 
 asv_tax <- read.table(params$sintax_taxonomy, header = TRUE, sep = "\t")
 
@@ -1270,6 +1278,27 @@ cat("## PICRUSt2\n",
 # Methods
 
 ```{r, results='asis'}
+if ( !isFALSE(params$dada2_ref_tax_title) ) {
+    cat("Taxonomic classification by DADA2:\n\n",
+        "- database: `", params$dada2_ref_tax_title, "`\n\n",
+        "- files: `", params$dada2_ref_tax_file, "`\n\n",
+        "- citation: `", params$dada2_ref_tax_citation, "`\n\n", sep = "")
+}
+
+if ( !isFALSE(params$qiime2_ref_tax_title) ) {
+    cat("Taxonomic classification by QIIME2:\n\n",
+        "- database: `", params$qiime2_ref_tax_title, "`\n\n",
+        "- files: `", params$qiime2_ref_tax_file, "`\n\n",
+        "- citation: `", params$qiime2_ref_tax_citation, "`\n\n", sep = "")
+}
+
+if ( !isFALSE(params$sintax_ref_tax_title) ) {
+    cat("Taxonomic classification by SINTAX:\n\n",
+        "- database: `", params$sintax_ref_tax_title, "`\n\n",
+        "- files: `", params$sintax_ref_tax_file, "`\n\n",
+        "- citation: `", params$sintax_ref_tax_citation, "`\n\n", sep = "")
+}
+
 if ( !isFALSE(params$mqc_plot) ) {
     # with MultiQC
     cat("MultiQC summarized computational methods in [multiqc/multiqc_report.html](../multiqc/multiqc_report.html).

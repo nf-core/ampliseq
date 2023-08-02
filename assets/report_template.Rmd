@@ -150,11 +150,15 @@ supporting denoising of any amplicon and supports a variety of taxonomic databas
 
 <!-- Section on Input -->
 
-# Input
-
-Pipeline input was saved in folder [input](../input).
-
 ```{r, results='asis'}
+if ( !isFALSE(params$metadata) ) {
+    cat("# Input and metadata\n\n",
+        "Pipeline input was saved in folder [input](../input).\n\n")
+} else {
+    cat("# Input\n\n",
+        "Pipeline input was saved in folder [input](../input).\n\n")
+}
+
 if ( !isFALSE(params$samplesheet) ) {
     # samplesheet input
     cat("Sequencing data was provided in the samplesheet file `", params$samplesheet, "` that is displayed below:", sep="")
@@ -401,9 +405,13 @@ datatable(dada_stats, options = list(
         scrollY = "300px",
         paging = FALSE))
 
-cat("Samples with unusual low reads numbers relative to the number of expected ASVs
-    should be treated cautiously, because the abundance estimate will be very granular
-    and might vary strongly between (theoretical) replicates due to high impact of stochasticity. ")
+cat(paste0("***
+Samples with unusual low reads numbers relative to the number of expected ASVs
+should be treated cautiously, because the abundance estimate will be very granular
+and might vary strongly between (theoretical) replicates due to high impact of stochasticity.
+
+Following, the numbers of the table above are shown in stacked barcharts as percentage of DADA2 input reads.
+"))
 
 # Stacked barchart to num of reads
 
@@ -553,7 +561,7 @@ n_arc <- sum(grepl("arc", barrnap_sum$result))
 n_mito <- sum(grepl("mito", barrnap_sum$result))
 n_euk <- sum(grepl("euk", barrnap_sum$result))
 
-barrnap_df_sum <- data.frame(label=c('Bacteria','Archea','Mitochondria','Eukaryotes','Unclassified'),
+barrnap_df_sum <- data.frame(label=c('Bacteria','Archaea','Mitochondria','Eukaryotes','Unclassified'),
                  count=c(n_bac,n_arc,n_mito,n_euk,n_asv - n_classified),
                  percent=c(round( (n_bac/n_asv)*100, 2), round( (n_arc/n_asv)*100, 2), round( (n_mito/n_asv)*100, 2), round( (n_euk/n_asv)*100, 2), round( ( (n_asv - n_classified) /n_asv)*100, 2) ) )
 
@@ -585,8 +593,8 @@ cat("\n\nrRNA classification results can be found in folder [barrnap](../barrnap
 <!-- Subsection on rRNA filtering with Barrnap -->
 
 ```{r, eval = !isFALSE(params$path_barrnap_sum) && !isFALSE(params$filter_ssu), results='asis'}
-cat("\n\nASVs were filtered for (",params$filter_ssu,") using the above classification.",
-    "The following table shows read counts for each sample before and after filtering:\n\n", sep = "")
+cat("\n\nASVs were filtered for `",params$filter_ssu,"` (`bac`: bacteria, `arc`: archaea, `mito`: metazoan mitochondria, `euk`: eukaryotes)
+    using the above classification. The following table shows read counts for each sample before and after filtering:\n\n", sep = "")
 
 # Read the barrnap stats file
 filter_ssu_stats = read.table( params$filter_ssu_stats, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
@@ -618,7 +626,7 @@ cat("The number of ASVs was reduced by",n_asv-filter_ssu_asv_filtered,"(",100-ro
 cat("## Sequence length\n")
 
 cat("A length filter was used to reduce potential contamination after ASV computation.",
-    "Before filtering, ASVs had the following length profile (count of 1 was transformed to 1.5 to plot on log10 scale):\n\n")
+    "Before filtering, ASVs had the following length profile (count of 1 was transformed to 1.5 to allow plotting on log10 scale):\n\n")
 
 # ASV length profile
 
@@ -1091,7 +1099,8 @@ cat("# Downstream analysis with QIIME2\n",
 
 ```{r, eval = !isFALSE(params$filter_stats_tsv), results='asis'}
 cat("## ASV filtering\n",
-    "Unwanted taxa are often off-targets generated in PCR with primers that are not perfectly specific for the target DNA, for 16S rRNA sequencing mitrochondria and chloroplast sequences are typically removed because these are frequent unwanted non-bacteria PCR products. ")
+    "Unwanted taxa are often off-targets generated in PCR with primers that are not perfectly specific for the target DNA.
+    For 16S rRNA sequencing mitrochondria and chloroplast sequences are typically removed because these are frequent unwanted non-bacteria PCR products. ")
 if ( params$exclude_taxa != "none" ) {
     cat("ASVs were removed when the taxonomic string contained any of `", params$exclude_taxa, "` (comma separated)", sep="")
 }

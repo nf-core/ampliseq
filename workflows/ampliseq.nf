@@ -83,6 +83,7 @@ ch_report_css = params.report_css ?
 ch_report_logo = params.report_logo ?
     Channel.fromPath("${params.report_logo}", checkIfExists: true) :
     Channel.fromPath("$projectDir/assets/nf-core-ampliseq_logo_light_long.png")
+ch_report_abstract = params.report_abstract ? Channel.fromPath(params.report_abstract, checkIfExists: true) : []
 
 // Set non-params Variables
 
@@ -686,6 +687,7 @@ workflow AMPLISEQ {
             ch_report_template,
             ch_report_css,
             ch_report_logo,
+            ch_report_abstract,
             ch_metadata.ifEmpty( [] ),
             params.input.toString().toLowerCase().endsWith("tsv") ? ch_input : [], // samplesheet input
             is_fasta_input ? PARSE_INPUT.out.fasta.ifEmpty( [] ) : [], // fasta input

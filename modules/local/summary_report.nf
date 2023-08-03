@@ -10,6 +10,7 @@ process SUMMARY_REPORT  {
     path(report_template)
     path(report_styles)
     path(report_logo)
+    path(report_abstract)
     path(metadata)
     path(samplesheet)
     path(fasta)
@@ -65,9 +66,11 @@ process SUMMARY_REPORT  {
     // all elements must have a value, i.e. booleans also need to be set to TRUE
     def params_list_named  = [
         "css='$report_styles'",
-        "logo='$report_logo'",
+        "report_logo='$report_logo'",
         "workflow_manifest_version='${workflow.manifest.version}'",
         "workflow_scriptid='${workflow.scriptId.substring(0,10)}'",
+        params.report_title ? "report_title='$params.report_title'" : "",
+        report_abstract ? "report_abstract='$params.report_abstract'" : "",
         meta.single_end ? "flag_single_end=TRUE" : "",
         metadata ? "metadata='$metadata'" : "",
         samplesheet ? "samplesheet='$samplesheet'" : "",

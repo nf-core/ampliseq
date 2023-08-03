@@ -516,6 +516,16 @@
                     "type": "string",
                     "default": null,
                     "description": "Path to logo file (png)"
+                },
+                "report_title": {
+                    "type": "string",
+                    "default": "Summary of analysis results",
+                    "description": "String used as report title"
+                },
+                "report_abstract": {
+                    "type": "string",
+                    "default": null,
+                    "description": "Path to Markdown file (md) that replaces the 'Abstract' section"
                 }
             }
         },

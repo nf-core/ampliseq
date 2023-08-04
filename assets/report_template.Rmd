@@ -519,6 +519,7 @@ cat(":\n\n")
 
 # Plot
 dada_stats_p_t$steps_t <- factor(dada_stats_p_t$steps_t, levels=unique(dada_stats_p_t$steps_t))
+dada_stats_p_t$samples_t <- factor(dada_stats_p_t$samples_t, levels=dada_stats_p_t[order(dada_stats_p$analysis),"samples_t"])
 
 plot_dada_stats_p_t <- ggplot(dada_stats_p_t, aes(fill = steps_t, y = asvs_p_t, x = samples_t)) +
         geom_bar(position = "fill", stat = "identity") +

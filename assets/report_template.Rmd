@@ -483,9 +483,6 @@ if ( params$flag_single_end ) {
     samples_t <- c(rep(dada_stats_p$sample, 4))
     steps_t <- c(rep("excluded by filtering", n_samples), rep("excluded by denoised", n_samples),
                 rep("excluded by nonchim", n_samples), rep("reads in final ASVs", n_samples))
-    # stack the column for absolute number of asvs
-    asvs_abs_t <- as.array(flatten_dbl(dada_stats_ex[3:6]))
-    dada_stats_ex_t <- data.frame(samples_t, steps_t, asvs_abs_t)
     # stack the column for percentage of asvs
     asvs_p_t <- as.array(flatten_dbl(dada_stats_p[3:6]))
     dada_stats_p_t <- data.frame(samples_t, steps_t, asvs_p_t)
@@ -514,9 +511,6 @@ if ( params$flag_single_end ) {
     steps_t <- c(rep("excluded by filtering", n_samples), rep("excluded by denoisedF", n_samples),
                 rep("excluded by denoisedR", n_samples), rep("excluded by merged", n_samples),
                 rep("excluded by nonchim", n_samples), rep("reads in final ASVs", n_samples))
-    # stack the column for absolute reads
-    asvs_abs_t <- as.array(flatten_dbl(dada_stats_ex[3:8]))
-    dada_stats_ex_t <- data.frame(samples_t, steps_t, asvs_abs_t)
     # stack the column for percentage of asvs
     asvs_p_t <- as.array(flatten_dbl(dada_stats_p[3:8]))
     dada_stats_p_t <- data.frame(samples_t, steps_t, asvs_p_t)

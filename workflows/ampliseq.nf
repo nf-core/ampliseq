@@ -74,15 +74,9 @@ if (params.sintax_ref_taxonomy && !params.skip_taxonomy) {
 }
 
 // report sources
-ch_report_template = params.report_template ?
-    Channel.fromPath("${params.report_template}", checkIfExists: true) :
-    Channel.fromPath("$projectDir/assets/report_template.Rmd")
-ch_report_css = params.report_css ?
-    Channel.fromPath("${params.report_css}", checkIfExists: true) :
-    Channel.fromPath("$projectDir/assets/nf-core_style.css")
-ch_report_logo = params.report_logo ?
-    Channel.fromPath("${params.report_logo}", checkIfExists: true) :
-    Channel.fromPath("$projectDir/assets/nf-core-ampliseq_logo_light_long.png")
+ch_report_template = Channel.fromPath("${params.report_template}", checkIfExists: true)
+ch_report_css = Channel.fromPath("${params.report_css}", checkIfExists: true)
+ch_report_logo = Channel.fromPath("${params.report_logo}", checkIfExists: true)
 ch_report_abstract = params.report_abstract ? Channel.fromPath(params.report_abstract, checkIfExists: true) : []
 
 // Set non-params Variables

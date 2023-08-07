@@ -497,7 +497,7 @@
             }
         },
         "pipeline_report": {
-            "title": "Pipeline report",
+            "title": "Pipeline summary report",
             "type": "object",
             "description": "",
             "default": "",

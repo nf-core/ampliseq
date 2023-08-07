@@ -15,7 +15,7 @@ process SUMMARY_REPORT  {
     path(samplesheet)
     path(fasta)
     path(mqc_plots)
-    path(ca_summary)
+    path(cutadapt_summary)
     val(find_truncation_values)
     path(dada_filtntrim_args)
     path(dada_qual_stats)
@@ -77,9 +77,9 @@ process SUMMARY_REPORT  {
         fasta ? "fasta='$fasta'" : "",
         !fasta && !samplesheet ? "input='$params.input'" : "",
         mqc_plots ? "mqc_plot='${mqc_plots}/svg/mqc_fastqc_per_sequence_quality_scores_plot_1.svg'" : "",
-        ca_summary ?
-            params.retain_untrimmed ? "flag_retain_untrimmed=TRUE,ca_sum_path='$ca_summary'" :
-            "ca_sum_path='$ca_summary'" : "",
+        cutadapt_summary ?
+            params.retain_untrimmed ? "flag_retain_untrimmed=TRUE,cutadapt_summary='$cutadapt_summary'" :
+            "cutadapt_summary='$cutadapt_summary'" : "",
         find_truncation_values ? "trunc_qmin=$params.trunc_qmin,trunc_rmin=$params.trunc_rmin" : "",
         "trunclenf='$params.trunclenf'",
         "trunclenr='$params.trunclenr'",

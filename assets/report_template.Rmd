@@ -24,7 +24,7 @@ params:
     workflow_scriptid: NULL
 
     # flags and arguments
-    flag_retain_untrimmed: TRUE
+    flag_retain_untrimmed: FALSE
     flag_ref_tax_user: FALSE
     flag_single_end: FALSE
     barplot: FALSE
@@ -64,7 +64,7 @@ params:
     fasta: FALSE
     input: FALSE
     mqc_plot: FALSE
-    ca_sum_path: FALSE
+    cutadapt_summary: FALSE
     dada_filtntrim_args: FALSE
     dada_qc_f_path: FALSE
     dada_qc_r_path: ""
@@ -239,7 +239,7 @@ knitr::include_graphics(params$mqc_plot)
 
 <!-- Subsection on Cutadapt -->
 
-```{r, eval = !isFALSE(params$ca_sum_path), results='asis'}
+```{r, eval = !isFALSE(params$cutadapt_summary), results='asis'}
 cat(paste0("
 ## Primer removal with Cutadapt
 
@@ -250,25 +250,26 @@ the denoising tool or sequences might be lost due to being labelled as PCR chime
 "))
 
 # import tsv
-cutadapt_summary <- read.table(file = params$ca_sum_path, header = TRUE, sep = "\t")
+cutadapt_summary <- read.table(file = params$cutadapt_summary, header = TRUE, sep = "\t")
 
-passed_col <- as.numeric(substr(
+cutadapt_passed_col <- as.numeric(substr(
         cutadapt_summary$cutadapt_passing_filters_percent, 1, 4))
 
-max_disc <- round( 100 - min(passed_col), 1 )
-avg_passed <- round(mean(passed_col),1)
+cutadapt_max_discarded <- round( 100 - min(cutadapt_passed_col), 1 )
+cutadapt_avg_passed <- round(mean(cutadapt_passed_col),1)
 
 cutadapt_text_unch <- "Primers were trimmed using cutadapt"
 cutadapt_text_ch <- paste0(" and all untrimmed sequences were discarded. ",
     "Sequences that did not contain primer sequences were considered artifacts. Less than ",
-    max_disc, "% of the sequences were discarded per sample and a mean of ",
-    avg_passed, "% of the sequences per sample passed the filtering.")
+    cutadapt_max_discarded, "% of the sequences were discarded per sample and a mean of ",
+    cutadapt_avg_passed, "% of the sequences per sample passed the filtering. ")
 
-if (!params$flag_retain_untrimmed) cutadapt_text <- paste0(
+if ( isFALSE(params$flag_retain_untrimmed) ) cutadapt_text <- paste0(
     cutadapt_text_unch, cutadapt_text_ch
-    ) else cutadapt_text <- paste0(cutadapt_text_unch, ".")
+    ) else cutadapt_text <- paste0(cutadapt_text_unch, ". ")
 
 cat(cutadapt_text)
+cat("Cutadapt results can be found in folder [cutadapt](../cutadapt).")
 
 # shorten header by "cutadapt_" to optimize visualisation
 colnames(cutadapt_summary) <- gsub("cutadapt_","",colnames(cutadapt_summary))
@@ -277,8 +278,6 @@ datatable(cutadapt_summary, options = list(
         scrollX = TRUE,
         scrollY = "300px",
         paging = FALSE))
-
-cat("\n\nCutadapt results can be found in folder [cutadapt](../cutadapt).")
 ```
 
 <!-- Subsection on DADA2 QC filtering -->
@@ -472,6 +471,7 @@ if ( params$flag_single_end ) {
                             nonchim = dada_stats$denoised-dada_stats$nonchim,
                             analysis = dada_stats$nonchim)
     dada_stats_p <- data.frame(sample = dada_stats_ex$sample, round(dada_stats_ex[2:6]/dada_stats_ex$input*100, 2))
+    dada_stats_p_analysis_average <- round(sum(dada_stats_p$analysis)/length(dada_stats_p$analysis), 1)
     # If more than 20 sample only display subset!
     if ( nrow(dada_stats_p)>=20 ) {
         cat(" (display 10 samples of each lowest and highest percentage of reads analysed, of",nrow(dada_stats_p),"samples)")
@@ -499,6 +499,7 @@ if ( params$flag_single_end ) {
                             nonchim = dada_stats$merged-dada_stats$nonchim,
                             analysis = dada_stats$nonchim)
     dada_stats_p <- data.frame(sample = dada_stats_ex$sample, round(dada_stats_ex[2:8]/dada_stats_ex$DADA2_input*100, 2))
+    dada_stats_p_analysis_average <- round(sum(dada_stats_p$analysis)/length(dada_stats_p$analysis), 1)
     # If more than 20 sample only display subset!
     if ( nrow(dada_stats_p)>=20 ) {
         cat(" (display 10 samples of each lowest and highest percentage of reads analysed, of",nrow(dada_stats_p),"samples)")
@@ -535,7 +536,8 @@ invisible(dev.off())
 
 cat(paste0("
 
-Between ",min(dada_stats_p$analysis),"% and ",max(dada_stats_p$analysis),"% reads per sample were retained for analysis within DADA2 steps.
+Between ",min(dada_stats_p$analysis),"% and ",max(dada_stats_p$analysis),"% reads per sample (average ",dada_stats_p_analysis_average,"%)
+were retained for analysis within DADA2 steps.
 
 The proportion of lost reads per processing stage and sample should not be too high, totalling typically <50%.
 Samples that are very different in lost reads (per stage) to the majority of samples must be compared with caution, because an unusual problem

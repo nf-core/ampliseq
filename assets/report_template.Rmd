@@ -174,7 +174,7 @@ if ( !isFALSE(params$metadata) ) {
     cat(paste0("
 # Data input and Metadata
 
-Pipeline input was saved in folder [input](../input).
+Pipeline input was saved to the [input](../input) directory.
     "))
 } else {
     cat(paste0("
@@ -358,7 +358,7 @@ if (params$flag_single_end) {
 
 ```{r, eval = !isFALSE(params$dada_qc_f_path), results='asis'}
 cat(paste0("
-Overall read quality profiles as heat map of the frequency of each quality score at each base position.
+Overall read quality profiles are displayed as heat map of the frequency of each quality score at each base position.
 The mean quality score at each position is shown by the green line, and the quartiles of the quality score
 distribution by the orange lines. The red line shows the scaled proportion of reads that extend to at least
 that position. Original plots can be found [folder dada2/QC/](../dada2/QC/) with names that end in `_qual_stats.pdf`.
@@ -414,7 +414,7 @@ knitr::include_graphics(dada_err_path)
 
 ```{r, eval = !isFALSE(params$dada_err_path), results='asis'}
 cat(paste0("
-Estimated error rates for each possible transition. The black line shows the estimated error rates after
+Estimated error rates are displayed for each possible transition. The black line shows the estimated error rates after
 convergence of the machine-learning algorithm. The red line shows the error rates expected under the nominal
 definition of the Q-score. The estimated error rates (black line) should be a good fit to the observed rates
 (points), and the error rates should drop with increased quality. Original plots can be found in
@@ -428,7 +428,7 @@ definition of the Q-score. The estimated error rates (black line) should be a go
 cat(paste0("
 ## Read counts per sample
 
-Tracking read numbers through DADA2 processing steps, for each sample. In the following table are read numbers after each processing stage.
+Tracking read numbers through DADA2 processing steps for each sample. The following table shows the read numbers after each processing stage.
 "))
 
 if ( params$flag_single_end ) {
@@ -669,7 +669,7 @@ cat("The number of ASVs was reduced by",n_asv-filter_ssu_asv_filtered,"(",100-ro
 cat(paste0("
 ## Sequence length
 
-A length filter was used to reduce potential contamination after ASV computation.
+A length filter was used to reduce potential contamination.
 Before filtering, ASVs had the following length profile (count of 1 was transformed to 1.5 to allow plotting on log10 scale):
 
 "))
@@ -731,7 +731,7 @@ filter_len_stats$'retained%' <- round( filter_len_stats$output / filter_len_stat
 filter_len_stats_avg_removed <- 100-sum(filter_len_stats$'retained%')/length(filter_len_stats$'retained%')
 filter_len_stats_max_removed <- 100-min(filter_len_stats$'retained%')
 
-cat("The following table shows (read) counts for each sample before and after filtering:")
+cat("The following table shows read counts for each sample before and after filtering:")
 
 # Display table
 datatable(filter_len_stats, options = list(
@@ -854,7 +854,7 @@ cat("## DADA2\n")
 if (!params$flag_ref_tax_user) {
     cat("The taxonomic classification was performed by [DADA2](https://pubmed.ncbi.nlm.nih.gov/27214047/)
         using the database: `", params$dada2_ref_tax_title, "`.
-        More details can be found in the ['Methods section'](#methods).\n\n", sep = "")
+        More details about the reference taxonomy database can be found in the ['Methods section'](#methods).\n\n", sep = "")
 } else {
     cat("The taxonomic classification was performed by DADA2 using a custom database ",
             "provided by the user.\n\n", sep = "")
@@ -949,7 +949,7 @@ cat("## QIIME2\n")
 
 cat("The taxonomic classification was performed by [QIIME2](https://www.nature.com/articles/s41587-019-0209-9)
     using the database: `", params$qiime2_ref_tax_title, "`.
-    More details can be found in the ['Methods section'](#methods).\n\n", sep = "")
+    More details about the reference taxonomy database can be found in the ['Methods section'](#methods).\n\n", sep = "")
 
 # Read file and prepare table
 asv_tax <- read.table(params$qiime2_taxonomy, header = TRUE, sep = "\t")
@@ -1019,7 +1019,7 @@ cat("## SINTAX\n")
 
 cat("The taxonomic classification was performed by [SINTAX](https://doi.org/10.1101/074161)
     using the database: `", params$sintax_ref_tax_title, "`.
-    More details can be found in the ['Methods section'](#methods).\n\n", sep = "")
+    More details about the reference taxonomy database can be found in the ['Methods section'](#methods).\n\n", sep = "")
 
 asv_tax <- read.table(params$sintax_taxonomy, header = TRUE, sep = "\t")
 

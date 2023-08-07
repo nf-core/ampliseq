@@ -44,7 +44,7 @@ nextflow run nf-core/ampliseq \
     --outdir "./results"
 ```
 
-In this example, `--input` is the [Direct FASTQ input](#direct-fastq-input), other options are [Samplesheet input](#samplesheet-input) and [ASV/OTU fasta input](#asvotu-fasta-input). For more details on metadata, see [Metadata](#metadata). For [Reproducibility](#reproducibility), specify the version to run using `-r` (= release, here: 2.3.2). See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters) for more information about pipeline specific parameters.
+In this example, `--input` is the [Direct FASTQ input](#direct-fastq-input), other options are [Samplesheet input](#samplesheet-input) and [ASV/OTU fasta input](#asvotu-fasta-input). For more details on metadata, see [Metadata](#metadata). For [Reproducibility](#reproducibility), specify the version to run using `-r` (= release, e.g. 2.6.1). See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters) for more information about pipeline specific parameters.
 
 It is possible to not provide primer sequences (`--FW_primer` & `--RV_primer`) and skip primer trimming using `--skip_cutadapt`, but this is only for data that indeed does not contain any PCR primers in their sequences. Also, metadata (`--metadata`) isnt required, but aids downstream analysis.
 
@@ -72,7 +72,8 @@ If you wish to repeatedly use the same parameters for multiple runs, rather than
 Pipeline settings can be provided in a `yaml` or `json` file via `-params-file <file>`.
 
 > ⚠️ Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources), other infrastructural tweaks (such as output directories), or module arguments (args).
-> The above pipeline run specified with a params file in yaml format:
+
+The above pipeline run specified with a params file in yaml format:
 
 ```bash
 nextflow run nf-core/ampliseq -profile docker -params-file params.yaml
@@ -86,6 +87,7 @@ FW_primer: "GTGYCAGCMGCCGCGGTAA"
 RV_primer: "GGACTACNVGGGTWTCTAAT"
 metadata: "data/Metadata.tsv"
 outdir: "./results"
+<...>
 ```
 
 You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-co.re/launch).

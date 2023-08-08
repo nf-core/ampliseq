@@ -601,7 +601,7 @@ workflow AMPLISEQ {
                 tax_agglom_max
             )
         }
-    } 
+    }
 
     //
     // MODULE: Predict functional potential of a bacterial community from marker genes with Picrust2

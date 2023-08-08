@@ -1,7 +1,7 @@
 process QIIME2_BARPLOT {
     label 'process_low'
 
-    container "quay.io/qiime2/core:2022.11"
+    container "qiime2/core:2022.11"
 
     // Exit if running this module with -profile conda / -profile mamba
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {

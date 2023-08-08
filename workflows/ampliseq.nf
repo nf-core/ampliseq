@@ -481,7 +481,7 @@ workflow AMPLISEQ {
             ch_qiime_classifier
         )
         ch_versions = ch_versions.mix( QIIME2_TAXONOMY.out.versions.ifEmpty(null) ) //usually a .first() is here, dont know why this leads here to a warning
-    } 
+    }
 
     //
     // SUBWORKFLOW / MODULES : Downstream analysis with QIIME2

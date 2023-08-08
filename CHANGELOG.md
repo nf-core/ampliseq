@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#TODO](https://github.com/nf-core/ampliseq/pull/TODO) - `--input` was split into three params: (1) `--input` for samplesheet, (2) `--input_fasta` for ASV/OTU fasta input, (3) `--input_folder` direct FASTQ input
+
 ### `Fixed`
 
 - [#605](https://github.com/nf-core/ampliseq/pull/605) - Make `--sbdiexport` compatible with PR2 version 5.0.0

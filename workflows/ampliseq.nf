@@ -4,7 +4,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { paramsSummaryLog; paramsSummaryMap } from 'plugin/nf-validation'
+include { paramsSummaryLog; paramsSummaryMap; fromSamplesheet } from 'plugin/nf-validation'
 
 def logo = NfcoreTemplate.logo(workflow, params.monochrome_logs)
 def citation = '\n' + WorkflowMain.citation(workflow) + '\n'
@@ -74,8 +74,10 @@ if (params.sintax_ref_taxonomy && !params.skip_taxonomy) {
 
 // Set non-params Variables
 
-String[] fasta_extensions = [".fasta", ".fna", ".fa"] // this is the alternative ASV fasta input
-is_fasta_input = WorkflowAmpliseq.checkIfFileHasExtension( params.input.toString().toLowerCase(), fasta_extensions )
+// TODO: remove all that following
+// String[] fasta_extensions = [".fasta", ".fna", ".fa"] // this is the alternative ASV fasta input
+// is_fasta_input = WorkflowAmpliseq.checkIfFileHasExtension( params.input.toString().toLowerCase(), fasta_extensions )
+is_fasta_input = params.input_fasta ? true : false
 
 single_end = params.single_end
 if (params.pacbio || params.iontorrent) {
@@ -212,11 +214,45 @@ workflow AMPLISEQ {
     //
     // Create a channel for input read files
     //
-    PARSE_INPUT ( params.input, is_fasta_input, single_end, params.multiple_sequencing_runs, params.extension )
-    ch_reads = PARSE_INPUT.out.reads
-    // TODO: OPTIONAL, you can use nf-validation plugin to create an input channel from the samplesheet with Channel.fromSamplesheet("input")
-    // See the documentation https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
-    // ! There is currently no tooling to help you write a sample sheet schema
+    if ( params.input ) {
+        // See the documentation https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
+        ch_reads = Channel.fromSamplesheet("input")
+            .map{ meta, readfw, readrv ->
+                meta.single_end = single_end.toBoolean()
+                def reads = readfw && readrv ? [readfw,readrv] : readfw
+                return [meta, reads] }
+        ch_fasta = Channel.empty()
+    } else if ( params.input_fasta ) {
+        ch_fasta = Channel.fromPath(params.input_fasta, checkIfExists: true)
+        ch_reads = Channel.empty()
+    } else if ( params.input_folder ) {
+        PARSE_INPUT ( params.input_folder, single_end, params.multiple_sequencing_runs, params.extension )
+        ch_reads = PARSE_INPUT.out.reads
+        ch_fasta = Channel.empty()
+    } else {
+        error "One of --input, --input_fasta, --input_folder must be provided!"
+    }
+
+    //Filter empty files
+    ch_reads.dump(tag:'parse_input.nf: ch_reads')
+        .branch {
+            failed: it[0].single_end ? it[1].countFastq() < params.min_read_counts : it[1][0].countFastq() < params.min_read_counts || it[1][1].countFastq() < params.min_read_counts
+            passed: true
+        }
+        .set { ch_reads_result }
+    ch_reads_result.passed.set { ch_reads }
+    ch_reads_result.failed
+        .map { meta, reads -> [ meta.id ] }
+        .collect()
+        .subscribe {
+            samples = it.join("\n")
+            if (params.ignore_empty_input_files) {
+                log.warn "At least one input file for the following sample(s) had too few reads (<$params.min_read_counts):\n$samples\nThe threshold can be adjusted with `--min_read_counts`. Ignoring failed samples and continue!\n"
+            } else {
+                error("At least one input file for the following sample(s) had too few reads (<$params.min_read_counts):\n$samples\nEither remove those samples, adjust the threshold with `--min_read_counts`, or ignore that samples using `--ignore_empty_input_files`.")
+            }
+        }
+    ch_reads.dump(tag: 'ch_reads')
 
     //
     // MODULE: Rename files
@@ -322,7 +358,7 @@ workflow AMPLISEQ {
     // Modules : Filter rRNA
     //
     if ( is_fasta_input ) {
-        FORMAT_FASTAINPUT( PARSE_INPUT.out.fasta )
+        FORMAT_FASTAINPUT( ch_fasta )
         ch_unfiltered_fasta = FORMAT_FASTAINPUT.out.fasta
     } else {
         ch_unfiltered_fasta = DADA2_MERGE.out.fasta
@@ -663,10 +699,13 @@ workflow AMPLISEQ {
     }
 
     //Save input in results folder
-    input = file(params.input)
-    if ( is_fasta_input || input.toString().toLowerCase().endsWith("tsv") ) {
+    if ( params.input ) {
         file("${params.outdir}/input").mkdir()
-        input.copyTo("${params.outdir}/input")
+        file("${params.input}").copyTo("${params.outdir}/input")
+    }
+    if ( params.input_fasta ) {
+        file("${params.outdir}/input").mkdir()
+        file("${params.input_fasta}").copyTo("${params.outdir}/input")
     }
     //Save metadata in results folder
     if ( params.metadata ) {

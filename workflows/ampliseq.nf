@@ -165,6 +165,10 @@ include { QIIME2_INTAX                  } from '../modules/local/qiime2_intax'
 include { PICRUST                       } from '../modules/local/picrust'
 include { SBDIEXPORT                    } from '../modules/local/sbdiexport'
 include { SBDIEXPORTREANNOTATE          } from '../modules/local/sbdiexportreannotate'
+include { PHYLOSEQ                      } from '../modules/local/phyloseq'
+include { PHYLOSEQ_INASV                } from '../modules/local/phyloseq_inasv'
+include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_PPLACE } from '../modules/local/phyloseq_intax'
+include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_QIIME2 } from '../modules/local/phyloseq_intax'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
@@ -456,7 +460,7 @@ workflow AMPLISEQ {
         }
         FASTA_NEWICK_EPANG_GAPPA ( ch_pp_data )
         ch_versions = ch_versions.mix( FASTA_NEWICK_EPANG_GAPPA.out.versions )
-
+        
         ch_pplace_tax = FORMAT_PPLACETAX ( FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query ).tsv
     } else {
         ch_pplace_tax = Channel.empty()
@@ -477,7 +481,7 @@ workflow AMPLISEQ {
             ch_qiime_classifier
         )
         ch_versions = ch_versions.mix( QIIME2_TAXONOMY.out.versions.ifEmpty(null) ) //usually a .first() is here, dont know why this leads here to a warning
-    }
+    } 
 
     //
     // SUBWORKFLOW / MODULES : Downstream analysis with QIIME2
@@ -597,7 +601,7 @@ workflow AMPLISEQ {
                 tax_agglom_max
             )
         }
-    }
+    } 
 
     //
     // MODULE: Predict functional potential of a bacterial community from marker genes with Picrust2
@@ -625,6 +629,62 @@ workflow AMPLISEQ {
             SBDIEXPORTREANNOTATE ( ch_dada2_tax, "dada2", db_version, ch_barrnapsummary.ifEmpty([]) )
         }
         ch_versions = ch_versions.mix(SBDIEXPORT.out.versions.first())
+    }
+
+    //
+    // MODULE: Create phyloseq objects
+    //
+    if ( !params.skip_taxonomy ) {
+        if ( params.metadata ) {
+            ch_phyloseq_inmeta = ch_metadata.first() // The .first() is to make sure it's a value channel
+        } else { 
+            ch_phyloseq_inmeta = [] 
+        }
+
+        ch_phyloseq_intax = Channel.empty()
+        if ( !params.skip_dada_taxonomy ) {
+            ch_phyloseq_intax = ch_phyloseq_intax.mix ( 
+                ch_dada2_tax.map { it = [ "dada2", file(it) ] } 
+            )
+        }
+
+        if ( params.sintax_ref_taxonomy ) {
+            ch_phyloseq_intax = ch_phyloseq_intax.mix ( 
+                ch_sintax_tax.map { it = [ "sintax", file(it) ] } 
+            )
+        }
+
+        if ( params.pplace_tree ) {
+            ch_phyloseq_intax = ch_phyloseq_intax.mix ( 
+                PHYLOSEQ_INTAX_PPLACE ( 
+                    ch_pplace_tax
+                ).tsv.map { it = [ "pplace", file(it) ] } 
+            )
+
+            ch_phyloseq_intree = FASTA_NEWICK_EPANG_GAPPA.out.grafted_phylogeny.map { it = it[1] }.first()
+        } else {
+            ch_phyloseq_intree = []
+        }
+        
+        if ( run_qiime2 ) {
+            ch_phyloseq_intax = ch_phyloseq_intax.mix ( 
+                PHYLOSEQ_INTAX_QIIME2 ( 
+                    QIIME2_TAXONOMY.out.tsv 
+                ).tsv.map { it = [ "qiime2", file(it) ] } 
+            )
+
+            if ( params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1 ) {
+                ch_phyloseq_inasv = PHYLOSEQ_INASV ( QIIME2_FILTERTAXA.out.tsv ).tsv
+
+            } else { 
+                ch_phyloseq_inasv = ch_dada2_asv 
+            }
+        } else { 
+            ch_phyloseq_inasv = ch_dada2_asv 
+        }
+
+        PHYLOSEQ ( ch_phyloseq_intax, ch_phyloseq_inasv, ch_phyloseq_inmeta, ch_phyloseq_intree )
+        ch_versions = ch_versions.mix(PHYLOSEQ.out.versions.first())
     }
 
     CUSTOM_DUMPSOFTWAREVERSIONS (

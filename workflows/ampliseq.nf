@@ -460,7 +460,6 @@ workflow AMPLISEQ {
         }
         FASTA_NEWICK_EPANG_GAPPA ( ch_pp_data )
         ch_versions = ch_versions.mix( FASTA_NEWICK_EPANG_GAPPA.out.versions )
-        
         ch_pplace_tax = FORMAT_PPLACETAX ( FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query ).tsv
     } else {
         ch_pplace_tax = Channel.empty()

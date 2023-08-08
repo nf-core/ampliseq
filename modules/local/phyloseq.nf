@@ -24,8 +24,8 @@ process PHYLOSEQ {
     def sam_tsv = "\"${sam_tsv}\""
     def otu_tsv = "\"${otu_tsv}\""
     def tax_tsv = "\"${tax_tsv}\""
-    def tree = "\"${tree}\""
-    def prefix = "\"${prefix}\""
+    def tree    = "\"${tree}\""
+    def prefix  = "\"${prefix}\""
     """
     #!/usr/bin/env Rscript
 

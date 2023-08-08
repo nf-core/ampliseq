@@ -678,7 +678,7 @@
                     "description": "Validation of parameters fails when an unrecognised parameter is found.",
                     "default": false,
                     "hidden": true,
-                    "help_text": "By default, when an unrecognised parameter is found, it returns a warninig."
+                    "help_text": "By default, when an unrecognised parameter is found, it returns a warning."
                 },
                 "validationLenientMode": {
                     "type": "boolean",

@@ -54,6 +54,10 @@ process PHYLOSEQ {
     saveRDS(phy_obj, file = paste0($prefix, "_phyloseq.rds"))
     
     # Version information
-    writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    phyloseq: ", packageVersion("phyloseq"))), "versions.yml")
+    writeLines(c("\\"${task.process}\\":", 
+        paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),
+        paste0("    phyloseq: ", packageVersion("phyloseq"))), 
+        "versions.yml"
+    )
     """
 }

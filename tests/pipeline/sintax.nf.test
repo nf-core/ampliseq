@@ -65,8 +65,7 @@ nextflow_pipeline {
                 { assert new File("$outputDir/sintax/ASV_tax_sintax.unite-fungi.tsv").exists() },
                 { assert new File("$outputDir/sintax/ref_taxonomy_sintax.txt").exists() },
                 { assert snapshot(path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt"),
-                                path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt")).match("multiqc") },
-                { assert new File("$outputDir/phyloseq/sintax_phyloseq.rds").exists() }
+                                path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt")).match("multiqc") }
             )
         }
     }

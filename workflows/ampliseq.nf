@@ -165,10 +165,6 @@ include { QIIME2_INTAX                  } from '../modules/local/qiime2_intax'
 include { PICRUST                       } from '../modules/local/picrust'
 include { SBDIEXPORT                    } from '../modules/local/sbdiexport'
 include { SBDIEXPORTREANNOTATE          } from '../modules/local/sbdiexportreannotate'
-include { PHYLOSEQ                      } from '../modules/local/phyloseq'
-include { PHYLOSEQ_INASV                } from '../modules/local/phyloseq_inasv'
-include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_PPLACE } from '../modules/local/phyloseq_intax'
-include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_QIIME2 } from '../modules/local/phyloseq_intax'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
@@ -185,6 +181,7 @@ include { QIIME2_EXPORT                 } from '../subworkflows/local/qiime2_exp
 include { QIIME2_BARPLOTAVG             } from '../subworkflows/local/qiime2_barplotavg'
 include { QIIME2_DIVERSITY              } from '../subworkflows/local/qiime2_diversity'
 include { QIIME2_ANCOM                  } from '../subworkflows/local/qiime2_ancom'
+include { PHYLOSEQ_WORKFLOW             } from '../subworkflows/local/phyloseq_workflow'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -480,6 +477,9 @@ workflow AMPLISEQ {
             ch_qiime_classifier
         )
         ch_versions = ch_versions.mix( QIIME2_TAXONOMY.out.versions.ifEmpty(null) ) //usually a .first() is here, dont know why this leads here to a warning
+        ch_qiime2_tax = QIIME2_TAXONOMY.out.tsv
+    } else {
+        ch_qiime2_tax = Channel.empty()
     }
 
     //
@@ -543,7 +543,7 @@ workflow AMPLISEQ {
         }
         //Export various ASV tables
         if (!params.skip_abundance_tables) {
-            QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, QIIME2_TAXONOMY.out.tsv, ch_dada2_tax, ch_pplace_tax, ch_sintax_tax, tax_agglom_min, tax_agglom_max )
+            QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, ch_qiime2_tax, ch_dada2_tax, ch_pplace_tax, ch_sintax_tax, tax_agglom_min, tax_agglom_max )
         }
 
         if (!params.skip_barplot) {
@@ -600,6 +600,8 @@ workflow AMPLISEQ {
                 tax_agglom_max
             )
         }
+    } else {
+        ch_tsv = ch_dada2_asv
     }
 
     //
@@ -631,59 +633,26 @@ workflow AMPLISEQ {
     }
 
     //
-    // MODULE: Create phyloseq objects
+    // SUBWORKFLOW: Create phyloseq objects
     //
     if ( !params.skip_taxonomy ) {
-        if ( params.metadata ) {
-            ch_phyloseq_inmeta = ch_metadata.first() // The .first() is to make sure it's a value channel
-        } else { 
-            ch_phyloseq_inmeta = [] 
-        }
-
-        ch_phyloseq_intax = Channel.empty()
-        if ( !params.skip_dada_taxonomy ) {
-            ch_phyloseq_intax = ch_phyloseq_intax.mix ( 
-                ch_dada2_tax.map { it = [ "dada2", file(it) ] } 
-            )
-        }
-
-        if ( params.sintax_ref_taxonomy ) {
-            ch_phyloseq_intax = ch_phyloseq_intax.mix ( 
-                ch_sintax_tax.map { it = [ "sintax", file(it) ] } 
-            )
-        }
-
         if ( params.pplace_tree ) {
-            ch_phyloseq_intax = ch_phyloseq_intax.mix ( 
-                PHYLOSEQ_INTAX_PPLACE ( 
-                    ch_pplace_tax
-                ).tsv.map { it = [ "pplace", file(it) ] } 
-            )
-
-            ch_phyloseq_intree = FASTA_NEWICK_EPANG_GAPPA.out.grafted_phylogeny.map { it = it[1] }.first()
+            ch_tree_for_phyloseq = FASTA_NEWICK_EPANG_GAPPA.out.grafted_phylogeny
         } else {
-            ch_phyloseq_intree = []
-        }
-        
-        if ( run_qiime2 ) {
-            ch_phyloseq_intax = ch_phyloseq_intax.mix ( 
-                PHYLOSEQ_INTAX_QIIME2 ( 
-                    QIIME2_TAXONOMY.out.tsv 
-                ).tsv.map { it = [ "qiime2", file(it) ] } 
-            )
-
-            if ( params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1 ) {
-                ch_phyloseq_inasv = PHYLOSEQ_INASV ( QIIME2_FILTERTAXA.out.tsv ).tsv
-
-            } else { 
-                ch_phyloseq_inasv = ch_dada2_asv 
-            }
-        } else { 
-            ch_phyloseq_inasv = ch_dada2_asv 
+            ch_tree_for_phyloseq = []
         }
 
-        PHYLOSEQ ( ch_phyloseq_intax, ch_phyloseq_inasv, ch_phyloseq_inmeta, ch_phyloseq_intree )
-        ch_versions = ch_versions.mix(PHYLOSEQ.out.versions.first())
+        PHYLOSEQ_WORKFLOW ( 
+            ch_dada2_tax.ifEmpty([]),
+            ch_sintax_tax.ifEmpty([]),
+            ch_pplace_tax.ifEmpty([]),
+            ch_qiime2_tax.ifEmpty([]),
+            ch_tsv,
+            ch_metadata.ifEmpty([]),
+            ch_tree_for_phyloseq,
+            run_qiime2
+        )
+        ch_versions = ch_versions.mix(PHYLOSEQ_WORKFLOW.out.versions.first())
     }
 
     CUSTOM_DUMPSOFTWAREVERSIONS (

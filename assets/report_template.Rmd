@@ -584,7 +584,7 @@ cat("# Filtering of ASVs\n")
 
 ```{r, eval = !isFALSE(params$path_barrnap_sum), results='asis'}
 cat("## rRNA detection\n")
-cat("[Barrnap](https://github.com/tseemann/barrnap) classifies the ASVs into the origin domain (including mitochondiral origin).\n\n", sep = "")
+cat("[Barrnap](https://github.com/tseemann/barrnap) classifies the ASVs into the origin domain (including mitochondrial origin).\n\n", sep = "")
 
 # Read the barrnap files and count the lines
 barrnap_sum = read.table( params$path_barrnap_sum, header = TRUE, sep = "\t", stringsAsFactors = FALSE)

@@ -93,7 +93,9 @@ nextflow_pipeline {
                                 path("$outputDir/SBDI/emof.tsv"),
                                 path("$outputDir/SBDI/event.tsv")).match("SBDI") },
                 { assert new File("$outputDir/SBDI/annotation.tsv").exists() },
-                { assert new File("$outputDir/SBDI/asv-table.tsv").exists() }
+                { assert new File("$outputDir/SBDI/asv-table.tsv").exists() },
+                { assert new File("$outputDir/phyloseq/dada2_phyloseq.rds").exists() },
+                { assert new File("$outputDir/phyloseq/qiime2_phyloseq.rds").exists() }
             )
         }
     }

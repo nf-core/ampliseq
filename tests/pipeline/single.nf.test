@@ -44,7 +44,9 @@ nextflow_pipeline {
                 { assert snapshot(path("$outputDir/input/Samplesheet_single_end.tsv")).match("input") },
                 { assert snapshot(path("$outputDir/multiqc/multiqc_data/multiqc_fastqc.txt"),
                                 path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt"),
-                                path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt")).match("multiqc") }
+                                path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt")).match("multiqc") },
+                { assert new File("$outputDir/phyloseq/dada2_phyloseq.rds").exists() },
+                { assert new File("$outputDir/phyloseq/sintax_phyloseq.rds").exists() }
             )
         }
     }

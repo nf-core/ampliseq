@@ -123,6 +123,9 @@ if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1)
     if ( workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1 ) { log.warn "Conda or mamba is enabled, any steps involving QIIME2 are not available. Use a container engine instead of conda to enable all software." }
 }
 
+// This tracks tax tables produced during pipeline and each table will be used during phyloseq
+ch_tax_for_phyloseq = Channel.empty()
+
 
 /*
 ========================================================================================
@@ -163,6 +166,8 @@ include { QIIME2_INTAX                  } from '../modules/local/qiime2_intax'
 include { PICRUST                       } from '../modules/local/picrust'
 include { SBDIEXPORT                    } from '../modules/local/sbdiexport'
 include { SBDIEXPORTREANNOTATE          } from '../modules/local/sbdiexportreannotate'
+include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_PPLACE } from '../modules/local/phyloseq_intax'
+include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_QIIME2 } from '../modules/local/phyloseq_intax'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
@@ -424,6 +429,7 @@ workflow AMPLISEQ {
             taxlevels
         ).tax.set { ch_dada2_tax }
         ch_versions = ch_versions.mix(DADA2_TAXONOMY_WF.out.versions)
+        ch_tax_for_phyloseq = ch_tax_for_phyloseq.mix ( ch_dada2_tax.map { it = [ "dada2", file(it) ] } )
     } else {
         ch_dada2_tax = Channel.empty()
     }
@@ -438,6 +444,7 @@ workflow AMPLISEQ {
             sintax_taxlevels
         ).tax.set { ch_sintax_tax }
         ch_versions = ch_versions.mix(SINTAX_TAXONOMY_WF.out.versions)
+        ch_tax_for_phyloseq = ch_tax_for_phyloseq.mix ( ch_sintax_tax.map { it = [ "sintax", file(it) ] } )
     } else {
         ch_sintax_tax = Channel.empty()
     }
@@ -459,6 +466,7 @@ workflow AMPLISEQ {
         FASTA_NEWICK_EPANG_GAPPA ( ch_pp_data )
         ch_versions = ch_versions.mix( FASTA_NEWICK_EPANG_GAPPA.out.versions )
         ch_pplace_tax = FORMAT_PPLACETAX ( FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query ).tsv
+        ch_tax_for_phyloseq = ch_tax_for_phyloseq.mix ( PHYLOSEQ_INTAX_PPLACE ( ch_pplace_tax ).tsv.map { it = [ "pplace", file(it) ] } )
     } else {
         ch_pplace_tax = Channel.empty()
     }
@@ -479,6 +487,7 @@ workflow AMPLISEQ {
         )
         ch_versions = ch_versions.mix( QIIME2_TAXONOMY.out.versions.ifEmpty(null) ) //usually a .first() is here, dont know why this leads here to a warning
         ch_qiime2_tax = QIIME2_TAXONOMY.out.tsv
+        ch_tax_for_phyloseq = ch_tax_for_phyloseq.mix ( PHYLOSEQ_INTAX_QIIME2 ( ch_qiime2_tax ).tsv.map { it = [ "qiime2", file(it) ] } )
     } else {
         ch_qiime2_tax = Channel.empty()
     }
@@ -643,11 +652,8 @@ workflow AMPLISEQ {
             ch_tree_for_phyloseq = []
         }
 
-        PHYLOSEQ_WORKFLOW ( 
-            ch_dada2_tax.ifEmpty([]),
-            ch_sintax_tax.ifEmpty([]),
-            ch_pplace_tax.ifEmpty([]),
-            ch_qiime2_tax.ifEmpty([]),
+        PHYLOSEQ_WORKFLOW (
+            ch_tax_for_phyloseq,
             ch_tsv,
             ch_metadata.ifEmpty([]),
             ch_tree_for_phyloseq,

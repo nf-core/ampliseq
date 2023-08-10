@@ -13,10 +13,10 @@ tax_df = pd.read_csv(tax_file, sep="\t")
 tax_col = tax_df.columns[1]
 
 # Split the values in the tax column
-split_tax = tax_df[tax_col].str.split(';', expand=True)
+split_tax = tax_df[tax_col].str.split(";", expand=True)
 
 # Assign names to the new columns with an auto incrementing integer
-new_col_names = [f'{tax_col}_{i+1}' for i in range(split_tax.shape[1])]
+new_col_names = [f"{tax_col}_{i+1}" for i in range(split_tax.shape[1])]
 split_tax.columns = new_col_names
 
 # Strip whitespace from the tax names
@@ -29,4 +29,4 @@ tax_df = tax_df.drop(columns=[tax_col])
 result = pd.concat([tax_df, split_tax], axis=1)
 
 # Create new tsv file
-result.to_csv(out_file, sep='\t', index=False)
+result.to_csv(out_file, sep="\t", index=False)

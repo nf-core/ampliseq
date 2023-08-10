@@ -1,7 +1,7 @@
 process PHYLOSEQ {
     tag "$prefix"
     label 'process_low'
-    
+
     conda "bioconda::bioconductor-phyloseq=1.44.0"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/bioconductor-phyloseq:1.44.0--r43hdfd78af_0' :
@@ -9,10 +9,10 @@ process PHYLOSEQ {
 
     input:
     tuple val(prefix), path(tax_tsv)
-    path otu_tsv 
+    path otu_tsv
     path sam_tsv
     path tree
-    
+
     output:
     tuple val(prefix), path("*phyloseq.rds"), emit: rds
     path "versions.yml"                     , emit: versions
@@ -52,11 +52,11 @@ process PHYLOSEQ {
     }
 
     saveRDS(phy_obj, file = paste0($prefix, "_phyloseq.rds"))
-    
+
     # Version information
-    writeLines(c("\\"${task.process}\\":", 
+    writeLines(c("\\"${task.process}\\":",
         paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),
-        paste0("    phyloseq: ", packageVersion("phyloseq"))), 
+        paste0("    phyloseq: ", packageVersion("phyloseq"))),
         "versions.yml"
     )
     """

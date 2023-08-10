@@ -625,7 +625,8 @@ plot_barrnap_df_sum <- ggplot(barrnap_df_sum,
         ylab("% Classification") +
         xlab("rRNA origins") +
         coord_flip() +
-        theme_bw()
+        theme_bw() +
+        ylim(0, 100)
 plot_barrnap_df_sum
 
 svg("rrna_detection_with_barrnap.svg")
@@ -638,7 +639,7 @@ cat("\n\nrRNA classification results can be found in folder [barrnap](../barrnap
 <!-- Subsection on rRNA filtering with Barrnap -->
 
 ```{r, eval = !isFALSE(params$path_barrnap_sum) && !isFALSE(params$filter_ssu), results='asis'}
-cat("\n\nASVs were filtered for `",params$filter_ssu,"` (`bac`: bacteria, `arc`: archaea, `mito`: metazoan mitochondria, `euk`: eukaryotes)
+cat("\n\nASVs were filtered for `",params$filter_ssu,"` (`bac`: Bacteria, `arc`: Archaea, `mito`: Mitochondria, `euk`: Eukaryotes)
     using the above classification. The following table shows read counts for each sample before and after filtering:\n\n", sep = "")
 
 # Read the barrnap stats file

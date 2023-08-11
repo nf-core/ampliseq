@@ -59,6 +59,27 @@ workflow PARSE_INPUT {
             .subscribe { if ( it == 1 ) error("Found only one folder with read data but \"--multiple_sequencing_runs\" was specified. Please review data input.") }
     }
 
+    //Check whether all sampleID = meta.id are unique
+    ch_reads
+        .map { meta, reads -> [ meta.id ] }
+        .toList()
+        .subscribe {
+            if( it.size() != it.unique().size() ) {
+                ids = it.take(10);
+                error("Please review data input, sample IDs are not unique! First IDs are $ids")
+            }
+        }
+
+    //Check that no dots "." are in sampleID
+    ch_reads
+        .map { meta, reads -> meta.id }
+        .subscribe { if ( "$it".contains(".") ) error("Please review data input, sampleIDs may not contain dots, but \"$it\" does.") }
+
+    //Check that sampleIDs do not start with a number when using metadata (sampleID gets X prepended by R and metadata wont match any more!)
+    ch_reads
+        .map { meta, reads -> meta.id }
+        .subscribe { if ( params.metadata && "$it"[0].isNumber() ) error("Please review data input, sampleIDs may not start with a number, but \"$it\" does. The pipeline unintentionally modifies such strings and the metadata will not match any more.") }
+
     emit:
     reads   = ch_reads
 }

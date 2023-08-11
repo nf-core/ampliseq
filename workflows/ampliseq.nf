@@ -71,6 +71,11 @@ if (params.sintax_ref_taxonomy && !params.skip_taxonomy) {
     val_sintax_ref_taxonomy = "none"
 }
 
+// report sources
+ch_report_template = Channel.fromPath("${params.report_template}", checkIfExists: true)
+ch_report_css = Channel.fromPath("${params.report_css}", checkIfExists: true)
+ch_report_logo = Channel.fromPath("${params.report_logo}", checkIfExists: true)
+ch_report_abstract = params.report_abstract ? Channel.fromPath(params.report_abstract, checkIfExists: true) : []
 
 // Set non-params Variables
 
@@ -166,6 +171,7 @@ include { QIIME2_INTAX                  } from '../modules/local/qiime2_intax'
 include { PICRUST                       } from '../modules/local/picrust'
 include { SBDIEXPORT                    } from '../modules/local/sbdiexport'
 include { SBDIEXPORTREANNOTATE          } from '../modules/local/sbdiexportreannotate'
+include { SUMMARY_REPORT                } from '../modules/local/summary_report'
 include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_PPLACE } from '../modules/local/phyloseq_intax'
 include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_QIIME2 } from '../modules/local/phyloseq_intax'
 
@@ -508,23 +514,29 @@ workflow AMPLISEQ {
         // Import taxonomic classification into QIIME2, if available
         if ( params.skip_taxonomy ) {
             log.info "Skip taxonomy classification"
+            val_used_taxonomy = "skipped"
             ch_tax = Channel.empty()
             tax_agglom_min = 1
             tax_agglom_max = 2
         } else if ( params.sintax_ref_taxonomy ) {
             log.info "Use SINTAX taxonomy classification"
+            val_used_taxonomy = "SINTAX"
             ch_tax = QIIME2_INTAX ( ch_sintax_tax ).qza
         } else if ( params.pplace_tree && params.pplace_taxonomy) {
             log.info "Use EPA-NG / GAPPA taxonomy classification"
+            val_used_taxonomy = "phylogenetic placement"
             ch_tax = QIIME2_INTAX ( ch_pplace_tax ).qza
         } else if ( params.dada_ref_taxonomy && !params.skip_dada_taxonomy ) {
             log.info "Use DADA2 taxonomy classification"
+            val_used_taxonomy = "DADA2"
             ch_tax = QIIME2_INTAX ( ch_dada2_tax ).qza
         } else if ( params.qiime_ref_taxonomy || params.classifier ) {
             log.info "Use QIIME2 taxonomy classification"
+            val_used_taxonomy = "QIIME2"
             ch_tax = QIIME2_TAXONOMY.out.qza
         } else {
             log.info "Use no taxonomy classification"
+            val_used_taxonomy = "none"
             ch_tax = Channel.empty()
             tax_agglom_min = 1
             tax_agglom_max = 2
@@ -694,6 +706,71 @@ workflow AMPLISEQ {
             ch_multiqc_logo.toList()
         )
         multiqc_report = MULTIQC.out.report.toList()
+    }
+
+    //
+    // MODULE: Summary Report
+    //
+    if (!params.skip_report) {
+        SUMMARY_REPORT (
+            ch_report_template,
+            ch_report_css,
+            ch_report_logo,
+            ch_report_abstract,
+            ch_metadata.ifEmpty( [] ),
+            params.input.toString().toLowerCase().endsWith("tsv") ? file(params.input) : [], // samplesheet input
+            is_fasta_input ? PARSE_INPUT.out.fasta.ifEmpty( [] ) : [], // fasta input
+            !is_fasta_input && !params.skip_fastqc && !params.skip_multiqc ? MULTIQC.out.plots : [], //.collect().flatten().collectFile(name: "mqc_fastqc_per_sequence_quality_scores_plot_1.svg")
+            !params.skip_cutadapt ? CUTADAPT_WORKFLOW.out.summary.collect().ifEmpty( [] ) : [],
+            find_truncation_values,
+            DADA2_PREPROCESSING.out.args.first().ifEmpty( [] ),
+            !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg.ifEmpty( [] ) : [],
+            !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg_preprocessed.ifEmpty( [] ) : [],
+            DADA2_ERR.out.svg
+                .map {
+                    meta_old, svgs ->
+                    def meta = [:]
+                    meta.single_end = meta_old.single_end
+                    [ meta, svgs, meta_old.run ] }
+                .groupTuple(by: 0 )
+                .map {
+                    meta_old, svgs, runs ->
+                    def meta = [:]
+                    meta.single_end = meta_old.single_end
+                    meta.run = runs.flatten()
+                    [ meta, svgs.flatten() ]
+                }.ifEmpty( [[],[]] ),
+            DADA2_MERGE.out.asv.ifEmpty( [] ),
+            ch_unfiltered_fasta.ifEmpty( [] ), // this is identical to DADA2_MERGE.out.fasta if !is_fasta_input
+            DADA2_MERGE.out.dada2asv.ifEmpty( [] ),
+            DADA2_MERGE.out.dada2stats.ifEmpty( [] ),
+            !params.skip_barrnap ? BARRNAPSUMMARY.out.summary.ifEmpty( [] ) : [],
+            params.filter_ssu ? FILTER_SSU.out.stats.ifEmpty( [] ) : [],
+            params.filter_ssu ? FILTER_SSU.out.asv.ifEmpty( [] ) : [],
+            params.min_len_asv || params.max_len_asv ? FILTER_LEN_ASV.out.stats.ifEmpty( [] ) : [],
+            params.min_len_asv || params.max_len_asv ? FILTER_LEN_ASV.out.len_orig.ifEmpty( [] ) : [],
+            params.filter_codons ? FILTER_CODONS.out.stats.ifEmpty( [] ) : [],
+            params.cut_its != "none" ? ITSX_CUTASV.out.summary.ifEmpty( [] ) : [],
+            !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy ? ch_dada2_tax.ifEmpty( [] ) : [],
+            !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy ? DADA2_TAXONOMY_WF.out.cut_tax.ifEmpty( [[],[]] ) : [[],[]],
+            !params.skip_taxonomy && params.sintax_ref_taxonomy ? ch_sintax_tax.ifEmpty( [] ) : [],
+            !params.skip_taxonomy && params.pplace_tree ? ch_pplace_tax.ifEmpty( [] ) : [],
+            !params.skip_taxonomy && params.pplace_tree ? FASTA_NEWICK_EPANG_GAPPA.out.heattree.ifEmpty( [[],[]] ) : [[],[]],
+            !params.skip_taxonomy && ( params.qiime_ref_taxonomy || params.classifier ) && run_qiime2 ? QIIME2_TAXONOMY.out.tsv.ifEmpty( [] ) : [],
+            run_qiime2,
+            run_qiime2 ? val_used_taxonomy : "",
+            run_qiime2 && ( params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1 ) ? ch_dada2_asv.countLines()+","+QIIME2_FILTERTAXA.out.tsv.countLines() : "",
+            run_qiime2 && ( params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1 ) ? FILTER_STATS.out.tsv.ifEmpty( [] ) : [],
+            run_qiime2 && !params.skip_barplot ? QIIME2_BARPLOT.out.folder.ifEmpty( [] ) : [],
+            run_qiime2 && !params.skip_abundance_tables ? "done" : "",
+            run_qiime2 && !params.skip_alpha_rarefaction && params.metadata ? "done" : "",
+            run_qiime2 && !params.skip_diversity_indices && params.metadata ? QIIME2_DIVERSITY.out.depth.ifEmpty( [] ) : [],
+            run_qiime2 && !params.skip_diversity_indices && params.metadata ? QIIME2_DIVERSITY.out.beta.collect().ifEmpty( [] ) : [],
+            run_qiime2 && !params.skip_diversity_indices && params.metadata ? QIIME2_DIVERSITY.out.adonis.collect().ifEmpty( [] ) : [],
+            run_qiime2 && !params.skip_ancom && params.metadata ? QIIME2_ANCOM.out.ancom.collect().ifEmpty( [] ) : [],
+            params.picrust ? PICRUST.out.pathways.ifEmpty( [] ) : []
+        )
+        ch_versions    = ch_versions.mix(SUMMARY_REPORT.out.versions)
     }
 
     //Save input in results folder

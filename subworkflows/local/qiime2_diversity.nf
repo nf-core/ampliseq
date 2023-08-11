@@ -71,4 +71,11 @@ workflow QIIME2_DIVERSITY {
             .set{ ch_to_diversity_betaord }
         QIIME2_DIVERSITY_BETAORD ( ch_to_diversity_betaord )
     }
+
+    emit:
+    depth   = !skip_diversity_indices ? QIIME2_DIVERSITY_CORE.out.depth : []
+    alpha   = !skip_diversity_indices ? QIIME2_DIVERSITY_ALPHA.out.alpha : []
+    beta    = !skip_diversity_indices ? QIIME2_DIVERSITY_BETA.out.beta : []
+    betaord = !skip_diversity_indices ? QIIME2_DIVERSITY_BETAORD.out.beta : []
+    adonis  = !skip_diversity_indices && params.qiime_adonis_formula ? QIIME2_DIVERSITY_ADONIS.out.html : []
 }

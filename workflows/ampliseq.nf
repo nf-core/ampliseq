@@ -91,10 +91,6 @@ if ( !single_end && !params.illumina_pe_its && (params.trunclenf == null || para
     log.warn "No DADA2 cutoffs were specified (`--trunclenf` & `--trunclenr`), therefore reads will be truncated where median quality drops below ${params.trunc_qmin} (defined by `--trunc_qmin`) but at least a fraction of ${params.trunc_rmin} (defined by `--trunc_rmin`) of the reads will be retained.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
 } else { find_truncation_values = false }
 
-if ( !params.input_fasta && (!params.FW_primer || !params.RV_primer) && !params.skip_cutadapt ) {
-    error("Incompatible parameters: `--FW_primer` and `--RV_primer` are required for primer trimming. If primer trimming is not needed, use `--skip_cutadapt`.")
-}
-
 // save params to values to be able to overwrite it
 tax_agglom_min = params.tax_agglom_min
 tax_agglom_max = params.tax_agglom_max

@@ -518,6 +518,39 @@
                 }
             }
         },
+        "pipeline_report": {
+            "title": "Pipeline summary report",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "report_template": {
+                    "type": "string",
+                    "default": "${projectDir}/assets/report_template.Rmd",
+                    "description": "Path to Markdown file (Rmd)"
+                },
+                "report_css": {
+                    "type": "string",
+                    "default": "${projectDir}/assets/nf-core_style.css",
+                    "description": "Path to style file (css)"
+                },
+                "report_logo": {
+                    "type": "string",
+                    "default": "${projectDir}/assets/nf-core-ampliseq_logo_light_long.png",
+                    "description": "Path to logo file (png)"
+                },
+                "report_title": {
+                    "type": "string",
+                    "default": "Summary of analysis results",
+                    "description": "String used as report title"
+                },
+                "report_abstract": {
+                    "type": "string",
+                    "default": null,
+                    "description": "Path to Markdown file (md) that replaces the 'Abstract' section"
+                }
+            }
+        },
         "skipping_specific_steps": {
             "title": "Skipping specific steps",
             "type": "object",
@@ -579,6 +612,10 @@
                 "skip_multiqc": {
                     "type": "boolean",
                     "description": "Skip MultiQC reporting"
+                },
+                "skip_report": {
+                    "type": "boolean",
+                    "description": "Skip Markdown summary report"
                 }
             }
         },
@@ -816,6 +853,9 @@
         },
         {
             "$ref": "#/definitions/downstream_analysis"
+        },
+        {
+            "$ref": "#/definitions/pipeline_report"
         },
         {
             "$ref": "#/definitions/skipping_specific_steps"

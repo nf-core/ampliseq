@@ -29,11 +29,10 @@ nextflow_pipeline {
                                 path("$outputDir/dada2/DADA2_stats.tsv"),
                                 path("$outputDir/dada2/DADA2_table.rds"),
                                 path("$outputDir/dada2/DADA2_table.tsv")).match("dada2") },
-                { assert new File("$outputDir/qiime2/input/rep-seqs.qza").exists() },
-                { assert new File("$outputDir/qiime2/input/table.qza").exists() },
                 { assert snapshot(path("$outputDir/input/Samplesheet_double_primer.tsv")).match("input") },
                 { assert snapshot(path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt"),
-                                path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt")).match("multiqc") }
+                                path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt")).match("multiqc") },
+                { assert new File("$outputDir/summary_report/summary_report.html").exists() }
             )
         }
     }

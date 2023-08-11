@@ -104,6 +104,7 @@ workflow DADA2_TAXONOMY_WF {
     }
 
     emit:
+    cut_tax  = params.cut_dada_ref_taxonomy ? CUTADAPT_TAXONOMY.out.log : [[],[]]
     tax      = ch_dada2_tax
     versions = ch_versions_dada_taxonomy
 }

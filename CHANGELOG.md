@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#558](https://github.com/nf-core/ampliseq/pull/558) - Pipeline summary report
+
 ### `Changed`
 
 - [#TODO](https://github.com/nf-core/ampliseq/pull/TODO) - `--input` was split into three params: (1) `--input` for samplesheet, (2) `--input_fasta` for ASV/OTU fasta input, (3) `--input_folder` direct FASTQ input

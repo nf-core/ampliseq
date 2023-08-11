@@ -11,6 +11,10 @@ class WorkflowAmpliseq {
     // Check and validate parameters
     //
     public static void initialise(params, log) {
+        if ( !params.input && !params.input_fasta && !params.input_folder ) {
+            Nextflow.error("Missing input declaration: One of `--input`, `--input_fasta`, `--input_folder` is required.")
+        }
+
         if ( params.pacbio || params.iontorrent || params.single_end ) {
             if (params.trunclenr) { log.warn "Unused parameter: `--trunclenr` is ignored because the data is single end." }
         } else if (params.trunclenf && !params.trunclenr) {
@@ -111,13 +115,6 @@ class WorkflowAmpliseq {
         if ( params.orf_end && ( ( ( params.orf_end + 1 ) - params.orf_start ) % 3 != 0 ) ) {
             Nextflow.error("Incompatible parameters: The difference of  `--orf_end` and `--orf_start` must be a multiple of 3.")
         }
-    }
-
-    //
-    // Check string (String s) ends with one entry of an array of strings ("String[] extn")
-    //
-    public static boolean checkIfFileHasExtension(String s, String[] extn) {
-        return Arrays.stream(extn).anyMatch(entry -> s.endsWith(entry));
     }
 
     //

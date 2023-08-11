@@ -111,6 +111,10 @@
 
   > Jari Oksanen, F. Guillaume Blanchet, Michael Friendly, Roeland Kindt, Pierre Legendre, Dan McGlinn, Peter R. Minchin, R. B. O’Hara, Gavin L. Simpson, Peter Solymos, M. Henry H. Stevens, Eduard Szoecs, and Helene Wagner. vegan: Community Ecology Package. 2018. R package version 2.5-3.
 
+- [Phyloseq](https://doi.org/10.1371/journal.pone.0061217)
+
+  > McMurdie PJ, Holmes S (2013). “phyloseq: An R package for reproducible interactive analysis and graphics of microbiome census data.” PLoS ONE, 8(4), e61217.
+
 ### Non-default tools
 
 - [ITSx](https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.12073)

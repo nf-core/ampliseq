@@ -42,6 +42,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [Diversity analysis](#diversity-analysis) - High level overview with different diversity indices
   - [ANCOM](#ancom) - Differential abundance analysis
 - [PICRUSt2](#picrust2) - Predict the functional potential of a bacterial community
+- [SBDI export](#sbdi-export) - Swedish Biodiversity Infrastructure (SBDI) submission file
+- [Phyloseq](#phyloseq) - Phyloseq R objects
 - [Read count report](#read-count-report) - Report of read counts during various steps of the pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
@@ -530,6 +532,18 @@ Most of the fields in the template will not be populated by the export process, 
   - `emof.tsv`: emof tab of template.
   - `event.tsv`: event tab of template.
   - `mixs.tsv`: mixs tab of template.
+
+</details>
+
+### Phyloseq
+
+This directory will hold phyloseq objects for each taxonomy table produced by this pipeline. The objects will contain an ASV abundance table and a taxonomy table. If the pipeline is provided with metadata, that metadata will also be included in the phyloseq object. A phylogenetic tree will also be included if the pipeline produces a tree.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `phyloseq/`
+  - `<taxonomy>_phyloseq.rds`: Phyloseq R object.
 
 </details>
 

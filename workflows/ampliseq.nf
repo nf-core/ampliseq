@@ -128,6 +128,9 @@ if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1)
     if ( workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1 ) { log.warn "Conda or mamba is enabled, any steps involving QIIME2 are not available. Use a container engine instead of conda to enable all software." }
 }
 
+// This tracks tax tables produced during pipeline and each table will be used during phyloseq
+ch_tax_for_phyloseq = Channel.empty()
+
 
 /*
 ========================================================================================
@@ -169,6 +172,8 @@ include { PICRUST                       } from '../modules/local/picrust'
 include { SBDIEXPORT                    } from '../modules/local/sbdiexport'
 include { SBDIEXPORTREANNOTATE          } from '../modules/local/sbdiexportreannotate'
 include { SUMMARY_REPORT                } from '../modules/local/summary_report'
+include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_PPLACE } from '../modules/local/phyloseq_intax'
+include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_QIIME2 } from '../modules/local/phyloseq_intax'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
@@ -185,6 +190,7 @@ include { QIIME2_EXPORT                 } from '../subworkflows/local/qiime2_exp
 include { QIIME2_BARPLOTAVG             } from '../subworkflows/local/qiime2_barplotavg'
 include { QIIME2_DIVERSITY              } from '../subworkflows/local/qiime2_diversity'
 include { QIIME2_ANCOM                  } from '../subworkflows/local/qiime2_ancom'
+include { PHYLOSEQ_WORKFLOW             } from '../subworkflows/local/phyloseq_workflow'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -429,6 +435,7 @@ workflow AMPLISEQ {
             taxlevels
         ).tax.set { ch_dada2_tax }
         ch_versions = ch_versions.mix(DADA2_TAXONOMY_WF.out.versions)
+        ch_tax_for_phyloseq = ch_tax_for_phyloseq.mix ( ch_dada2_tax.map { it = [ "dada2", file(it) ] } )
     } else {
         ch_dada2_tax = Channel.empty()
     }
@@ -443,6 +450,7 @@ workflow AMPLISEQ {
             sintax_taxlevels
         ).tax.set { ch_sintax_tax }
         ch_versions = ch_versions.mix(SINTAX_TAXONOMY_WF.out.versions)
+        ch_tax_for_phyloseq = ch_tax_for_phyloseq.mix ( ch_sintax_tax.map { it = [ "sintax", file(it) ] } )
     } else {
         ch_sintax_tax = Channel.empty()
     }
@@ -463,8 +471,8 @@ workflow AMPLISEQ {
         }
         FASTA_NEWICK_EPANG_GAPPA ( ch_pp_data )
         ch_versions = ch_versions.mix( FASTA_NEWICK_EPANG_GAPPA.out.versions )
-
         ch_pplace_tax = FORMAT_PPLACETAX ( FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query ).tsv
+        ch_tax_for_phyloseq = ch_tax_for_phyloseq.mix ( PHYLOSEQ_INTAX_PPLACE ( ch_pplace_tax ).tsv.map { it = [ "pplace", file(it) ] } )
     } else {
         ch_pplace_tax = Channel.empty()
     }
@@ -484,6 +492,10 @@ workflow AMPLISEQ {
             ch_qiime_classifier
         )
         ch_versions = ch_versions.mix( QIIME2_TAXONOMY.out.versions.ifEmpty(null) ) //usually a .first() is here, dont know why this leads here to a warning
+        ch_qiime2_tax = QIIME2_TAXONOMY.out.tsv
+        ch_tax_for_phyloseq = ch_tax_for_phyloseq.mix ( PHYLOSEQ_INTAX_QIIME2 ( ch_qiime2_tax ).tsv.map { it = [ "qiime2", file(it) ] } )
+    } else {
+        ch_qiime2_tax = Channel.empty()
     }
 
     //
@@ -553,7 +565,7 @@ workflow AMPLISEQ {
         }
         //Export various ASV tables
         if (!params.skip_abundance_tables) {
-            QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, QIIME2_TAXONOMY.out.tsv, ch_dada2_tax, ch_pplace_tax, ch_sintax_tax, tax_agglom_min, tax_agglom_max )
+            QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, ch_qiime2_tax, ch_dada2_tax, ch_pplace_tax, ch_sintax_tax, tax_agglom_min, tax_agglom_max )
         }
 
         if (!params.skip_barplot) {
@@ -610,6 +622,8 @@ workflow AMPLISEQ {
                 tax_agglom_max
             )
         }
+    } else {
+        ch_tsv = ch_dada2_asv
     }
 
     //
@@ -638,6 +652,26 @@ workflow AMPLISEQ {
             SBDIEXPORTREANNOTATE ( ch_dada2_tax, "dada2", db_version, ch_barrnapsummary.ifEmpty([]) )
         }
         ch_versions = ch_versions.mix(SBDIEXPORT.out.versions.first())
+    }
+
+    //
+    // SUBWORKFLOW: Create phyloseq objects
+    //
+    if ( !params.skip_taxonomy ) {
+        if ( params.pplace_tree ) {
+            ch_tree_for_phyloseq = FASTA_NEWICK_EPANG_GAPPA.out.grafted_phylogeny
+        } else {
+            ch_tree_for_phyloseq = []
+        }
+
+        PHYLOSEQ_WORKFLOW (
+            ch_tax_for_phyloseq,
+            ch_tsv,
+            ch_metadata.ifEmpty([]),
+            ch_tree_for_phyloseq,
+            run_qiime2
+        )
+        ch_versions = ch_versions.mix(PHYLOSEQ_WORKFLOW.out.versions.first())
     }
 
     CUSTOM_DUMPSOFTWAREVERSIONS (

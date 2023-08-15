@@ -749,7 +749,7 @@ workflow AMPLISEQ {
             ch_metadata.ifEmpty( [] ),
             params.input ? file(params.input) : [], // samplesheet input
             ch_input_fasta.ifEmpty( [] ), // fasta input
-            !params.skip_fastqc && !params.skip_multiqc ? MULTIQC.out.plots : [], //.collect().flatten().collectFile(name: "mqc_fastqc_per_sequence_quality_scores_plot_1.svg")
+            !params.input_fasta && !params.skip_fastqc && !params.skip_multiqc ? MULTIQC.out.plots : [], //.collect().flatten().collectFile(name: "mqc_fastqc_per_sequence_quality_scores_plot_1.svg")
             !params.skip_cutadapt ? CUTADAPT_WORKFLOW.out.summary.collect().ifEmpty( [] ) : [],
             find_truncation_values,
             DADA2_PREPROCESSING.out.args.first().ifEmpty( [] ),

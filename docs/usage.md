@@ -105,7 +105,7 @@ Optionally, a metadata sheet can be specified for downstream analysis.
 
 #### Samplesheet input
 
-The sample sheet file is a tab-separated file that must have two to four columns with the following headers:
+The sample sheet file can be tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml) that must have two to four columns/entries with the following headers:
 
 | Column       | Necessity | Description                                                                   |
 | ------------ | --------- | ----------------------------------------------------------------------------- |
@@ -129,8 +129,8 @@ For example, the samplesheet may contain:
 
 Please note the following requirements:
 
-- 2 to 4 tab-separated columns
-- Valid file extension: `.tsv`
+- 2 to 4 columns/entries
+- Valid file extensions: `.tsv`,`.csv`,`.yml`,`.yaml`
 - Must contain the header `sampleID` and `forwardReads`
 - May contain the header `reverseReads` and `run`
 - Sample IDs must be unique

@@ -17,6 +17,7 @@ The directories listed below will be created in the results directory after the 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
 - [Input](#input) - Input files
+- [Pipeline summary report](#pipeline-summary-report) - Overview of pipeline output
 - [Preprocessing](#preprocessing)
   - [FastQC](#fastqc) - Read quality control
   - [Cutadapt](#cutadapt) - Primer trimming
@@ -41,6 +42,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [Diversity analysis](#diversity-analysis) - High level overview with different diversity indices
   - [ANCOM](#ancom) - Differential abundance analysis
 - [PICRUSt2](#picrust2) - Predict the functional potential of a bacterial community
+- [SBDI export](#sbdi-export) - Swedish Biodiversity Infrastructure (SBDI) submission file
+- [Phyloseq](#phyloseq) - Phyloseq R objects
 - [Read count report](#read-count-report) - Report of read counts during various steps of the pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
@@ -55,6 +58,20 @@ Samplesheet, ASV fasta, and metadata file are copied into the results folder.
   - `*.tsv`: Samplesheet input if specified with `--input`.
   - `*.tsv`: Metadata input if specified with `--metadata`.
   - `*.fasta|.fna|.fa`: ASV sequence input if specified with `--input`.
+
+</details>
+
+### Pipeline summary report
+
+A summary report for most pipeline results in html format produced by [R Markdown](https://rmarkdown.rstudio.com/). The report gives a general overview of the analysis, includes many tables and visualizations, and links to interactive downstream analysis results, if available.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `summary_report/`
+  - `summary_report.html`: pipeline summary report as standalone HTML file that can be viewed in your web browser.
+  - `*.svg*`: plots that were produced for (and are included in) the report.
+  - `versions.yml`: software versions used to produce this report.
 
 </details>
 
@@ -515,6 +532,18 @@ Most of the fields in the template will not be populated by the export process, 
   - `emof.tsv`: emof tab of template.
   - `event.tsv`: event tab of template.
   - `mixs.tsv`: mixs tab of template.
+
+</details>
+
+### Phyloseq
+
+This directory will hold phyloseq objects for each taxonomy table produced by this pipeline. The objects will contain an ASV abundance table and a taxonomy table. If the pipeline is provided with metadata, that metadata will also be included in the phyloseq object. A phylogenetic tree will also be included if the pipeline produces a tree.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `phyloseq/`
+  - `<taxonomy>_phyloseq.rds`: Phyloseq R object.
 
 </details>
 

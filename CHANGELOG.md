@@ -7,11 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#558](https://github.com/nf-core/ampliseq/pull/558) - Pipeline summary report
+
 ### `Changed`
 
 ### `Fixed`
 
 - [#605](https://github.com/nf-core/ampliseq/pull/605) - Make `--sbdiexport` compatible with PR2 version 5.0.0
+- [#614](https://github.com/nf-core/ampliseq/pull/614) - Template update for nf-core/tools version 2.9
 
 ### `Dependencies`
 

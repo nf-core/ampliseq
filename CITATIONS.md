@@ -18,6 +18,8 @@
 
 - [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 
+  > Andrews, S. (2010). FastQC: A Quality Control Tool for High Throughput Sequence Data [Online]. Available online https://www.bioinformatics.babraham.ac.uk/projects/fastqc/.
+
 - [Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200/479)
 
   > Marcel, M. Cutadapt removes adapter sequences from high-throughput sequencing reads. EMBnet. journal 17.1 (2011): pp-10. doi: 10.14806/ej.17.1.200.
@@ -109,6 +111,10 @@
 
   > Jari Oksanen, F. Guillaume Blanchet, Michael Friendly, Roeland Kindt, Pierre Legendre, Dan McGlinn, Peter R. Minchin, R. B. O’Hara, Gavin L. Simpson, Peter Solymos, M. Henry H. Stevens, Eduard Szoecs, and Helene Wagner. vegan: Community Ecology Package. 2018. R package version 2.5-3.
 
+- [Phyloseq](https://doi.org/10.1371/journal.pone.0061217)
+
+  > McMurdie PJ, Holmes S (2013). “phyloseq: An R package for reproducible interactive analysis and graphics of microbiome census data.” PLoS ONE, 8(4), e61217.
+
 ### Non-default tools
 
 - [ITSx](https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.12073)
@@ -142,6 +148,7 @@
 ### Summarizing software
 
 - [MultiQC](https://pubmed.ncbi.nlm.nih.gov/27312411/)
+
   > Ewels P, Magnusson M, Lundin S, Käller M. MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics. 2016 Oct 1;32(19):3047-8. doi: 10.1093/bioinformatics/btw354. Epub 2016 Jun 16. PubMed PMID: 27312411; PubMed Central PMCID: PMC5039924.
 
 ## Data
@@ -165,5 +172,8 @@
 
 - [Docker](https://dl.acm.org/doi/10.5555/2600239.2600241)
 
+  > Merkel, D. (2014). Docker: lightweight linux containers for consistent development and deployment. Linux Journal, 2014(239), 2. doi: 10.5555/2600239.2600241.
+
 - [Singularity](https://pubmed.ncbi.nlm.nih.gov/28494014/)
+
   > Kurtzer GM, Sochat V, Bauer MW. Singularity: Scientific containers for mobility of compute. PLoS One. 2017 May 11;12(5):e0177459. doi: 10.1371/journal.pone.0177459. eCollection 2017. PubMed PMID: 28494014; PubMed Central PMCID: PMC5426675.

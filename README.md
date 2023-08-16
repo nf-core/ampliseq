@@ -40,7 +40,9 @@ By default, the pipeline currently performs the following:
 - Taxonomical classification using DADA2, [SINTAX](https://doi.org/10.1101/074161) or [QIIME2](https://www.nature.com/articles/s41587-019-0209-9)
 - Excludes unwanted taxa, produces absolute and relative feature/taxa count tables and plots, plots alpha rarefaction curves, computes alpha and beta diversity indices and plots thereof ([QIIME2](https://www.nature.com/articles/s41587-019-0209-9))
 - Calls differentially abundant taxa ([ANCOM](https://www.ncbi.nlm.nih.gov/pubmed/26028277))
-- Overall pipeline run summaries ([MultiQC](https://multiqc.info/))
+- Creates phyloseq R objects ([Phyloseq](https://www.bioconductor.org/packages/release/bioc/html/phyloseq.html))
+- Pipeline QC summaries ([MultiQC](https://multiqc.info/))
+- Pipeline summary report ([R Markdown](https://github.com/rstudio/rmarkdown))
 
 ## Usage
 
@@ -72,11 +74,11 @@ nextflow run nf-core/ampliseq \
 > provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;
 > see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).
 
-For more details, please refer to the [usage documentation](https://nf-co.re/ampliseq/usage) and the [parameter documentation](https://nf-co.re/ampliseq/parameters).
+For more details and further functionality, please refer to the [usage documentation](https://nf-co.re/ampliseq/usage) and the [parameter documentation](https://nf-co.re/ampliseq/parameters).
 
 ## Pipeline output
 
-To see the the results of a test run with a full size dataset refer to the [results](https://nf-co.re/ampliseq/results) tab on the nf-core website pipeline page.
+To see the results of an example test run with a full size dataset refer to the [results](https://nf-co.re/ampliseq/results) tab on the nf-core website pipeline page.
 For more details about the output files and reports, please refer to the
 [output documentation](https://nf-co.re/ampliseq/output).
 

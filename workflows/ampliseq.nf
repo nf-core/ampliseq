@@ -225,6 +225,7 @@ workflow AMPLISEQ {
             .map{ meta, readfw, readrv ->
                 meta.single_end = single_end.toBoolean()
                 def reads = single_end ? readfw : [readfw,readrv]
+                if ( !meta.single_end && !readrv ) { error("Entry `reverseReads` is missing in $params.input for $meta.id, either correct the samplesheet or use `--single_end`, `--pacbio`, or `--iontorrent`") } // make sure that reverse reads are present when single_end isnt specified
                 return [meta, reads] }
     } else if ( params.input_fasta ) {
         ch_input_fasta = Channel.fromPath(params.input_fasta, checkIfExists: true)
@@ -232,7 +233,7 @@ workflow AMPLISEQ {
         PARSE_INPUT ( params.input_folder, single_end, params.multiple_sequencing_runs, params.extension )
         ch_input_reads = PARSE_INPUT.out.reads
     } else {
-        error "One of --input, --input_fasta, --input_folder must be provided!"
+        error("One of `--input`, `--input_fasta`, `--input_folder` must be provided!")
     }
 
     //Filter empty files

@@ -60,9 +60,9 @@ params:
 
     # file paths
     metadata: FALSE
-    samplesheet: FALSE
-    fasta: FALSE
-    input: FALSE
+    input_samplesheet: FALSE
+    input_fasta: FALSE
+    input_folder: FALSE
     mqc_plot: FALSE
     cutadapt_summary: FALSE
     dada_filtntrim_args: FALSE
@@ -184,22 +184,22 @@ Pipeline input was saved in folder [input](../input).
     "))
 }
 
-if ( !isFALSE(params$samplesheet) ) {
+if ( !isFALSE(params$input_samplesheet) ) {
     # samplesheet input
-    cat("\nSequencing data was provided in the samplesheet file `", params$samplesheet, "` that is displayed below:", sep="")
+    cat("\nSequencing data was provided in the samplesheet file `", params$input_samplesheet, "` that is displayed below:", sep="")
 
-    samplesheet <- read.table(file = params$samplesheet, header = TRUE, sep = "\t")
+    samplesheet <- read.table(file = params$input_samplesheet, header = TRUE, sep = "\t")
     # Display table
     datatable(samplesheet, options = list(
         scrollX = TRUE,
         scrollY = "300px",
         paging = FALSE))
-} else if ( !isFALSE(params$fasta) ) {
+} else if ( !isFALSE(params$input_fasta) ) {
     # fasta input
-    cat("\nASV/OTU sequences were provided in the fasta file `", params$fasta, "`. ", sep="")
-} else if ( !isFALSE(params$input) ) {
+    cat("\nASV/OTU sequences were provided in the fasta file `", params$input_fasta, "`. ", sep="")
+} else if ( !isFALSE(params$input_folder) ) {
     # folder input
-    cat("\nSequencing data was retrieved from folder `", params$fasta, "`. ", sep="")
+    cat("\nSequencing data was retrieved from folder `", params$input_folder, "`. ", sep="")
 }
 if ( !isFALSE(params$metadata) ) {
     cat("\nMetadata associated with the sequencing data was provided in `", params$metadata, "` and is displayed below:", sep="")

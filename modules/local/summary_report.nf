@@ -12,8 +12,8 @@ process SUMMARY_REPORT  {
     path(report_logo)
     path(report_abstract)
     path(metadata)
-    path(samplesheet)
-    path(fasta)
+    path(input_samplesheet)
+    path(input_fasta)
     path(mqc_plots)
     path(cutadapt_summary)
     val(find_truncation_values)
@@ -73,9 +73,9 @@ process SUMMARY_REPORT  {
         report_abstract ? "report_abstract='$params.report_abstract'" : "",
         meta.single_end ? "flag_single_end=TRUE" : "",
         metadata ? "metadata='$metadata'" : "",
-        samplesheet ? "samplesheet='$samplesheet'" : "",
-        fasta ? "fasta='$fasta'" : "",
-        !fasta && !samplesheet ? "input='$params.input'" : "",
+        input_samplesheet ? "input_samplesheet='$input_samplesheet'" : "",
+        input_fasta ? "input_fasta='$input_fasta'" : "",
+        !input_fasta && !input_samplesheet ? "input_folder='$params.input_folder'" : "",
         mqc_plots ? "mqc_plot='${mqc_plots}/svg/mqc_fastqc_per_sequence_quality_scores_plot_1.svg'" : "",
         cutadapt_summary ?
             params.retain_untrimmed ? "flag_retain_untrimmed=TRUE,cutadapt_summary='$cutadapt_summary'" :

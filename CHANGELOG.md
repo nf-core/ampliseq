@@ -11,6 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#616](https://github.com/nf-core/ampliseq/pull/616) - When using a sample sheet with `--input` containing forward and reverse reads, specifying `--single_end` will only extract forward reads and treat the data as single ended instead of extracting forward and reverse reads.
+- [#616](https://github.com/nf-core/ampliseq/pull/616) - `--input` was split into three params: (1) `--input` for samplesheet, (2) `--input_fasta` for ASV/OTU fasta input, (3) `--input_folder` direct FASTQ input
+
+| Param updated | Param old | Accepts                                  |
+| ------------- | --------- | ---------------------------------------- |
+| input         | input     | samplesheet, .tsv/.csv/.yml/.yaml        |
+| input_fasta   | input     | ASV/OTU sequences, .fasta                |
+| input_folder  | input     | Folder containing compressed fastq files |
+
 ### `Fixed`
 
 - [#605](https://github.com/nf-core/ampliseq/pull/605) - Make `--sbdiexport` compatible with PR2 version 5.0.0

@@ -37,9 +37,6 @@ class WorkflowMain {
         if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
             qiimereftaxonomyExistsError(params, log)
         }
-        if (params.sintax_ref_taxonomy && !params.skip_taxonomy) {
-            sintaxreftaxonomyExistsError(params, log)
-        }
 
         // Print workflow version and exit on --version
         if (params.version) {
@@ -95,19 +92,6 @@ class WorkflowMain {
                 "  QIIME2 reference database '${params.qiime_ref_taxonomy}' not found in any config file provided to the pipeline.\n" +
                 "  Currently, the available reference taxonomy keys for `--qiime_ref_taxonomy` are:\n" +
                 "  ${params.qiime_ref_databases.keySet().join(", ")}\n" +
-                "==================================================================================="
-            Nextflow.error(error_string)
-        }
-    }
-    //
-    // Exit pipeline if incorrect --qiime_ref_taxonomy key provided
-    //
-    private static void sintaxreftaxonomyExistsError(params, log) {
-        if (params.sintax_ref_databases && params.sintax_ref_taxonomy && !params.sintax_ref_databases.containsKey(params.sintax_ref_taxonomy)) {
-            def error_string = "=============================================================================\n" +
-                "  SINTAX reference database '${params.sintax_ref_taxonomy}' not found in any config files provided to the pipeline.\n" +
-                "  Currently, the available reference taxonomy keys for `--sintax_ref_taxonomy` are:\n" +
-                "  ${params.sintax_ref_databases.keySet().join(", ")}\n" +
                 "==================================================================================="
             Nextflow.error(error_string)
         }

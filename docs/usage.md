@@ -97,7 +97,7 @@ You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-c
 The input data can be passed to nf-core/ampliseq in three possible ways using the parameters `--input`, `--input_fasta`, or `--input_folder`.
 The three parameters and input types are mutually exclusive.
 
-- [Samplesheet input](#samplesheet-input) using `--input`: Tab-separated samplesheet
+- [Samplesheet input](#samplesheet-input) using `--input`: Samplesheet tab-separated, comma-separated, or in YAML format
 - [ASV/OTU fasta input](#asvotu-fasta-input) using `--input_fasta`: Fasta file with sequences to be taxonomically classified
 - [Direct FASTQ input](#direct-fastq-input) using `--input_folder`: Folder containing zipped FastQ files.
 
@@ -118,7 +118,7 @@ The sample sheet file can be tab-separated (.tsv), comma-separated (.csv), or in
 --input 'path/to/samplesheet.tsv'
 ```
 
-For example, the samplesheet may contain:
+For example, the tab-separated samplesheet may contain:
 
 | sampleID | forwardReads              | reverseReads              | run |
 | -------- | ------------------------- | ------------------------- | --- |
@@ -130,7 +130,7 @@ For example, the samplesheet may contain:
 Please note the following requirements:
 
 - 2 to 4 columns/entries
-- Valid file extensions: `.tsv`,`.csv`,`.yml`,`.yaml`
+- File extensions `.tsv`,`.csv`,`.yml`,`.yaml` specify the file type, otherwise file type will be derived from content, if possible
 - Must contain the header `sampleID` and `forwardReads`
 - May contain the header `reverseReads` and `run`
 - Sample IDs must be unique

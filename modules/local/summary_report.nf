@@ -50,7 +50,8 @@ process SUMMARY_REPORT  {
     path(diversity_indices_adonis, stageAs: 'beta_diversity/adonis/*') // prevent folder name collisons
     path(ancom)
     path(picrust_pathways)
-
+    path(sbdi, stageAs: 'sbdi/*')
+    path(phyloseq, stageAs: 'phyloseq/*')
 
     output:
     path "*.svg"               , emit: svg, optional: true
@@ -119,6 +120,8 @@ process SUMMARY_REPORT  {
         diversity_indices ? "diversity_indices_depth='$diversity_indices',diversity_indices_beta='"+ diversity_indices_beta.join(",") +"'" : "",
         diversity_indices_adonis ? "diversity_indices_adonis='"+ diversity_indices_adonis.join(",") +"',qiime_adonis_formula='$params.qiime_adonis_formula'" : "",
         ancom ? "ancom='"+ ancom.join(",") +"'" : "",
+        sbdi ? "sbdi='"+ sbdi.join(",") +"'" : "",
+        phyloseq ? "phyloseq='"+ phyloseq.join(",") +"'" : "",
     ]
     // groovy list to R named list string; findAll removes empty entries
     params_list_named_string = params_list_named.findAll().join(',').trim()

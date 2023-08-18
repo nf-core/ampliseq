@@ -798,7 +798,9 @@ workflow AMPLISEQ {
             run_qiime2 && !params.skip_diversity_indices && params.metadata ? QIIME2_DIVERSITY.out.beta.collect().ifEmpty( [] ) : [],
             run_qiime2 && !params.skip_diversity_indices && params.metadata ? QIIME2_DIVERSITY.out.adonis.collect().ifEmpty( [] ) : [],
             run_qiime2 && !params.skip_ancom && params.metadata ? QIIME2_ANCOM.out.ancom.collect().ifEmpty( [] ) : [],
-            params.picrust ? PICRUST.out.pathways.ifEmpty( [] ) : []
+            params.picrust ? PICRUST.out.pathways.ifEmpty( [] ) : [],
+            params.sbdiexport ? SBDIEXPORT.out.sbditables.mix(SBDIEXPORTREANNOTATE.out.sbdiannottables).collect().ifEmpty( [] ) : [],
+            !params.skip_taxonomy ? PHYLOSEQ_WORKFLOW.out.rds.map{info,rds -> [rds]}.collect().ifEmpty( [] ) : []
         )
         ch_versions    = ch_versions.mix(SUMMARY_REPORT.out.versions)
     }

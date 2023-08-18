@@ -151,7 +151,8 @@ include { FILTER_SSU                    } from '../modules/local/filter_ssu'
 include { FILTER_LEN_ASV                } from '../modules/local/filter_len_asv'
 include { MERGE_STATS as MERGE_STATS_FILTERSSU    } from '../modules/local/merge_stats'
 include { MERGE_STATS as MERGE_STATS_FILTERLENASV } from '../modules/local/merge_stats'
-include { MERGE_STATS as MERGE_STATS_CODONS } from '../modules/local/merge_stats'
+include { MERGE_STATS as MERGE_STATS_CODONS       } from '../modules/local/merge_stats'
+include { MERGE_STATS as MERGE_STATS_CLUSTER      } from '../modules/local/merge_stats'
 include { FILTER_CODONS                 } from '../modules/local/filter_codons'
 include { FORMAT_FASTAINPUT             } from '../modules/local/format_fastainput'
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
@@ -174,6 +175,7 @@ include { SBDIEXPORTREANNOTATE          } from '../modules/local/sbdiexportreann
 include { SUMMARY_REPORT                } from '../modules/local/summary_report'
 include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_PPLACE } from '../modules/local/phyloseq_intax'
 include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_QIIME2 } from '../modules/local/phyloseq_intax'
+include { FILTER_CLUSTERS               } from '../modules/local/filter_clusters'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
@@ -205,6 +207,7 @@ include { PHYLOSEQ_WORKFLOW             } from '../subworkflows/local/phyloseq_w
 include { FASTQC                            } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/custom/dumpsoftwareversions/main'
+include { VSEARCH_CLUSTER                   } from '../modules/nf-core/vsearch/cluster/main'
 include { FASTA_NEWICK_EPANG_GAPPA          } from '../subworkflows/nf-core/fasta_newick_epang_gappa/main'
 
 
@@ -391,6 +394,26 @@ workflow AMPLISEQ {
         ch_stats = MERGE_STATS_CODONS.out.tsv
         ch_dada2_fasta = FILTER_CODONS.out.fasta
         ch_dada2_asv = FILTER_CODONS.out.asv
+    }
+
+    //
+    // MODULE : ASV post-clustering with VSEARCH
+    //
+    if (params.vsearch_cluster) {
+        ch_fasta_for_clustering = ch_dada2_fasta
+            .map {
+                fasta ->
+                    def meta = [:]
+                    meta.id = "ASV_post_clustering"
+                    [ meta, fasta ] }
+        VSEARCH_CLUSTER ( ch_fasta_for_clustering )
+        ch_versions = ch_versions.mix(VSEARCH_CLUSTER.out.versions.ifEmpty(null))
+        FILTER_CLUSTERS ( VSEARCH_CLUSTER.out.clusters, ch_dada2_asv )
+        ch_versions = ch_versions.mix(FILTER_CLUSTERS.out.versions.ifEmpty(null))
+        MERGE_STATS_CLUSTER ( ch_stats, FILTER_CLUSTERS.out.stats )
+        ch_stats = MERGE_STATS_CLUSTER.out.tsv
+        ch_dada2_fasta = FILTER_CLUSTERS.out.fasta
+        ch_dada2_asv = FILTER_CLUSTERS.out.asv
     }
 
     //

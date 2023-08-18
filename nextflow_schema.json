@@ -441,6 +441,19 @@
                     "default": 1,
                     "description": "Prevalence filtering",
                     "help_text": "Filtering low prevalent features from the feature table, e.g. keeping only features that are present in at least two samples can be achived by choosing a value of 2 (default: 1, meaning filter is disabled). Typically only used when having replicates for all samples.\n\nFor example to retain features that are present in at least two sample:\n\n```bash\n--min_samples 2\n```\n\nPlease note this is independent of abundance."
+                },
+                "vsearch_cluster": {
+                    "type": "boolean",
+                    "description": "Post-cluster ASVs with VSEARCH",
+                    "help_text": "ASVs will be clustered with VSEARCH using the id value found in `--cluster_id`."
+                },
+                "cluster_id": {
+                    "type": "number",
+                    "default": 0.97,
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "Pairwise Identity value used when post-clustering ASVs if `--post_cluster` option is used (default: 0.97).",
+                    "help_text": "Lowering or increasing this value can change the number ASVs left over after clustering."
                 }
             },
             "fa_icon": "fas fa-filter"

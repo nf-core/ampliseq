@@ -4,7 +4,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { paramsSummaryLog; paramsSummaryMap } from 'plugin/nf-validation'
+include { paramsSummaryLog; paramsSummaryMap; fromSamplesheet } from 'plugin/nf-validation'
 
 def logo = NfcoreTemplate.logo(workflow, params.monochrome_logs)
 def citation = '\n' + WorkflowMain.citation(workflow) + '\n'
@@ -79,9 +79,6 @@ ch_report_abstract = params.report_abstract ? Channel.fromPath(params.report_abs
 
 // Set non-params Variables
 
-String[] fasta_extensions = [".fasta", ".fna", ".fa"] // this is the alternative ASV fasta input
-is_fasta_input = WorkflowAmpliseq.checkIfFileHasExtension( params.input.toString().toLowerCase(), fasta_extensions )
-
 single_end = params.single_end
 if (params.pacbio || params.iontorrent) {
     single_end = true
@@ -89,14 +86,10 @@ if (params.pacbio || params.iontorrent) {
 
 trunclenf = params.trunclenf ?: 0
 trunclenr = params.trunclenr ?: 0
-if ( !single_end && !params.illumina_pe_its && (params.trunclenf == null || params.trunclenr == null) && !is_fasta_input ) {
+if ( !single_end && !params.illumina_pe_its && (params.trunclenf == null || params.trunclenr == null) && !params.input_fasta ) {
     find_truncation_values = true
     log.warn "No DADA2 cutoffs were specified (`--trunclenf` & `--trunclenr`), therefore reads will be truncated where median quality drops below ${params.trunc_qmin} (defined by `--trunc_qmin`) but at least a fraction of ${params.trunc_rmin} (defined by `--trunc_rmin`) of the reads will be retained.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
 } else { find_truncation_values = false }
-
-if ( !is_fasta_input && (!params.FW_primer || !params.RV_primer) && !params.skip_cutadapt ) {
-    error("Incompatible parameters: `--FW_primer` and `--RV_primer` are required for primer trimming. If primer trimming is not needed, use `--skip_cutadapt`.")
-}
 
 // save params to values to be able to overwrite it
 tax_agglom_min = params.tax_agglom_min
@@ -225,13 +218,47 @@ workflow AMPLISEQ {
     ch_versions = Channel.empty()
 
     //
-    // Create a channel for input read files
+    // Create input channels
     //
-    PARSE_INPUT ( params.input, is_fasta_input, single_end, params.multiple_sequencing_runs, params.extension )
-    ch_reads = PARSE_INPUT.out.reads
-    // TODO: OPTIONAL, you can use nf-validation plugin to create an input channel from the samplesheet with Channel.fromSamplesheet("input")
-    // See the documentation https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
-    // ! There is currently no tooling to help you write a sample sheet schema
+    ch_input_fasta = Channel.empty()
+    ch_input_reads = Channel.empty()
+    if ( params.input ) {
+        // See the documentation https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
+        ch_input_reads = Channel.fromSamplesheet("input")
+            .map{ meta, readfw, readrv ->
+                meta.single_end = single_end.toBoolean()
+                def reads = single_end ? readfw : [readfw,readrv]
+                if ( !meta.single_end && !readrv ) { error("Entry `reverseReads` is missing in $params.input for $meta.id, either correct the samplesheet or use `--single_end`, `--pacbio`, or `--iontorrent`") } // make sure that reverse reads are present when single_end isnt specified
+                return [meta, reads] }
+    } else if ( params.input_fasta ) {
+        ch_input_fasta = Channel.fromPath(params.input_fasta, checkIfExists: true)
+    } else if ( params.input_folder ) {
+        PARSE_INPUT ( params.input_folder, single_end, params.multiple_sequencing_runs, params.extension )
+        ch_input_reads = PARSE_INPUT.out.reads
+    } else {
+        error("One of `--input`, `--input_fasta`, `--input_folder` must be provided!")
+    }
+
+    //Filter empty files
+    ch_input_reads.dump(tag:'ch_input_reads')
+        .branch {
+            failed: it[0].single_end ? it[1].countFastq() < params.min_read_counts : it[1][0].countFastq() < params.min_read_counts || it[1][1].countFastq() < params.min_read_counts
+            passed: true
+        }
+        .set { ch_reads_result }
+    ch_reads_result.passed.set { ch_reads }
+    ch_reads_result.failed
+        .map { meta, reads -> [ meta.id ] }
+        .collect()
+        .subscribe {
+            samples = it.join("\n")
+            if (params.ignore_empty_input_files) {
+                log.warn "At least one input file for the following sample(s) had too few reads (<$params.min_read_counts):\n$samples\nThe threshold can be adjusted with `--min_read_counts`. Ignoring failed samples and continue!\n"
+            } else {
+                error("At least one input file for the following sample(s) had too few reads (<$params.min_read_counts):\n$samples\nEither remove those samples, adjust the threshold with `--min_read_counts`, or ignore that samples using `--ignore_empty_input_files`.")
+            }
+        }
+    ch_reads.dump(tag: 'ch_reads')
 
     //
     // MODULE: Rename files
@@ -336,8 +363,8 @@ workflow AMPLISEQ {
     //
     // Modules : Filter rRNA
     //
-    if ( is_fasta_input ) {
-        FORMAT_FASTAINPUT( PARSE_INPUT.out.fasta )
+    if ( params.input_fasta ) {
+        FORMAT_FASTAINPUT( ch_input_fasta )
         ch_unfiltered_fasta = FORMAT_FASTAINPUT.out.fasta
     } else {
         ch_unfiltered_fasta = DADA2_MERGE.out.fasta
@@ -697,6 +724,9 @@ workflow AMPLISEQ {
         ch_versions = ch_versions.mix(PHYLOSEQ_WORKFLOW.out.versions.first())
     }
 
+    //
+    // MODULE: Sortware versions
+    //
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
@@ -741,9 +771,9 @@ workflow AMPLISEQ {
             ch_report_logo,
             ch_report_abstract,
             ch_metadata.ifEmpty( [] ),
-            params.input.toString().toLowerCase().endsWith("tsv") ? file(params.input) : [], // samplesheet input
-            is_fasta_input ? PARSE_INPUT.out.fasta.ifEmpty( [] ) : [], // fasta input
-            !is_fasta_input && !params.skip_fastqc && !params.skip_multiqc ? MULTIQC.out.plots : [], //.collect().flatten().collectFile(name: "mqc_fastqc_per_sequence_quality_scores_plot_1.svg")
+            params.input ? file(params.input) : [], // samplesheet input
+            ch_input_fasta.ifEmpty( [] ), // fasta input
+            !params.input_fasta && !params.skip_fastqc && !params.skip_multiqc ? MULTIQC.out.plots : [], //.collect().flatten().collectFile(name: "mqc_fastqc_per_sequence_quality_scores_plot_1.svg")
             !params.skip_cutadapt ? CUTADAPT_WORKFLOW.out.summary.collect().ifEmpty( [] ) : [],
             find_truncation_values,
             DADA2_PREPROCESSING.out.args.first().ifEmpty( [] ),
@@ -764,7 +794,7 @@ workflow AMPLISEQ {
                     [ meta, svgs.flatten() ]
                 }.ifEmpty( [[],[]] ),
             DADA2_MERGE.out.asv.ifEmpty( [] ),
-            ch_unfiltered_fasta.ifEmpty( [] ), // this is identical to DADA2_MERGE.out.fasta if !is_fasta_input
+            ch_unfiltered_fasta.ifEmpty( [] ), // this is identical to DADA2_MERGE.out.fasta if !params.input_fasta
             DADA2_MERGE.out.dada2asv.ifEmpty( [] ),
             DADA2_MERGE.out.dada2stats.ifEmpty( [] ),
             !params.skip_barrnap ? BARRNAPSUMMARY.out.summary.ifEmpty( [] ) : [],
@@ -791,16 +821,21 @@ workflow AMPLISEQ {
             run_qiime2 && !params.skip_diversity_indices && params.metadata ? QIIME2_DIVERSITY.out.beta.collect().ifEmpty( [] ) : [],
             run_qiime2 && !params.skip_diversity_indices && params.metadata ? QIIME2_DIVERSITY.out.adonis.collect().ifEmpty( [] ) : [],
             run_qiime2 && !params.skip_ancom && params.metadata ? QIIME2_ANCOM.out.ancom.collect().ifEmpty( [] ) : [],
-            params.picrust ? PICRUST.out.pathways.ifEmpty( [] ) : []
+            params.picrust ? PICRUST.out.pathways.ifEmpty( [] ) : [],
+            params.sbdiexport ? SBDIEXPORT.out.sbditables.mix(SBDIEXPORTREANNOTATE.out.sbdiannottables).collect().ifEmpty( [] ) : [],
+            !params.skip_taxonomy ? PHYLOSEQ_WORKFLOW.out.rds.map{info,rds -> [rds]}.collect().ifEmpty( [] ) : []
         )
         ch_versions    = ch_versions.mix(SUMMARY_REPORT.out.versions)
     }
 
     //Save input in results folder
-    input = file(params.input)
-    if ( is_fasta_input || input.toString().toLowerCase().endsWith("tsv") ) {
+    if ( params.input ) {
         file("${params.outdir}/input").mkdir()
-        input.copyTo("${params.outdir}/input")
+        file("${params.input}").copyTo("${params.outdir}/input")
+    }
+    if ( params.input_fasta ) {
+        file("${params.outdir}/input").mkdir()
+        file("${params.input_fasta}").copyTo("${params.outdir}/input")
     }
     //Save metadata in results folder
     if ( params.metadata ) {

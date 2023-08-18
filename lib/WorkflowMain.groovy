@@ -28,14 +28,14 @@ class WorkflowMain {
     public static void initialise(workflow, params, log) {
 
         // Check that keys for reference databases are valid
-        if (params.dada_ref_taxonomy && !params.skip_taxonomy) {
+        if (params.dada_ref_taxonomy && !params.skip_taxonomy && !params.skip_dada_taxonomy) {
             dadareftaxonomyExistsError(params, log)
-        }
-        if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
-            qiimereftaxonomyExistsError(params, log)
         }
         if (params.sintax_ref_taxonomy && !params.skip_taxonomy) {
             sintaxreftaxonomyExistsError(params, log)
+        }
+        if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
+            qiimereftaxonomyExistsError(params, log)
         }
 
         // Print workflow version and exit on --version
@@ -63,9 +63,22 @@ class WorkflowMain {
     private static void dadareftaxonomyExistsError(params, log) {
         if (params.dada_ref_databases && params.dada_ref_taxonomy && !params.dada_ref_databases.containsKey(params.dada_ref_taxonomy)) {
             def error_string = "=============================================================================\n" +
-                "  DADA2 reference database '${params.dada_ref_taxonomy}' not found in any config files provided to the pipeline.\n" +
+                "  DADA2 reference database '${params.dada_ref_taxonomy}' not found in any config file provided to the pipeline.\n" +
                 "  Currently, the available reference taxonomy keys for `--dada_ref_taxonomy` are:\n" +
                 "  ${params.dada_ref_databases.keySet().join(", ")}\n" +
+                "==================================================================================="
+            Nextflow.error(error_string)
+        }
+    }
+    //
+    // Exit pipeline if incorrect --sintax_ref_taxonomy key provided
+    //
+    private static void sintaxreftaxonomyExistsError(params, log) {
+        if (params.sintax_ref_databases && params.sintax_ref_taxonomy && !params.sintax_ref_databases.containsKey(params.sintax_ref_taxonomy)) {
+            def error_string = "=============================================================================\n" +
+                "  SINTAX reference database '${params.sintax_ref_taxonomy}' not found in any config file provided to the pipeline.\n" +
+                "  Currently, the available reference taxonomy keys for `--sintax_ref_taxonomy` are:\n" +
+                "  ${params.sintax_ref_databases.keySet().join(", ")}\n" +
                 "==================================================================================="
             Nextflow.error(error_string)
         }
@@ -76,22 +89,9 @@ class WorkflowMain {
     private static void qiimereftaxonomyExistsError(params, log) {
         if (params.qiime_ref_databases && params.qiime_ref_taxonomy && !params.qiime_ref_databases.containsKey(params.qiime_ref_taxonomy)) {
             def error_string = "=============================================================================\n" +
-                "  QIIME2 reference database '${params.qiime_ref_taxonomy}' not found in any config files provided to the pipeline.\n" +
+                "  QIIME2 reference database '${params.qiime_ref_taxonomy}' not found in any config file provided to the pipeline.\n" +
                 "  Currently, the available reference taxonomy keys for `--qiime_ref_taxonomy` are:\n" +
                 "  ${params.qiime_ref_databases.keySet().join(", ")}\n" +
-                "==================================================================================="
-            Nextflow.error(error_string)
-        }
-    }
-    //
-    // Exit pipeline if incorrect --qiime_ref_taxonomy key provided
-    //
-    private static void sintaxreftaxonomyExistsError(params, log) {
-        if (params.sintax_ref_databases && params.sintax_ref_taxonomy && !params.sintax_ref_databases.containsKey(params.sintax_ref_taxonomy)) {
-            def error_string = "=============================================================================\n" +
-                "  SINTAX reference database '${params.sintax_ref_taxonomy}' not found in any config files provided to the pipeline.\n" +
-                "  Currently, the available reference taxonomy keys for `--sintax_ref_taxonomy` are:\n" +
-                "  ${params.sintax_ref_databases.keySet().join(", ")}\n" +
                 "==================================================================================="
             Nextflow.error(error_string)
         }

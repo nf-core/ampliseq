@@ -468,7 +468,7 @@
                     "default": 0.97,
                     "minimum": 0.0,
                     "maximum": 1.0,
-                    "description": "Pairwise Identity value used when post-clustering ASVs if `--post_cluster` option is used (default: 0.97).",
+                    "description": "Pairwise Identity value used when post-clustering ASVs if `--vsearch_cluster` option is used (default: 0.97).",
                     "help_text": "Lowering or increasing this value can change the number ASVs left over after clustering."
                 }
             },

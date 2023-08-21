@@ -461,9 +461,9 @@
                 "vsearch_cluster": {
                     "type": "boolean",
                     "description": "Post-cluster ASVs with VSEARCH",
-                    "help_text": "ASVs will be clustered with VSEARCH using the id value found in `--cluster_id`."
+                    "help_text": "ASVs will be clustered with VSEARCH using the id value found in `--vsearch_cluster_id`."
                 },
-                "cluster_id": {
+                "vsearch_cluster_id": {
                     "type": "number",
                     "default": 0.97,
                     "minimum": 0.0,

@@ -22,13 +22,13 @@
     },
     "software_versions": {
         "content": [
-            "{BARRNAP={barrnap=0.9}, CUSTOM_DUMPSOFTWAREVERSIONS={python=3.11.0, yaml=6.0}, CUTADAPT_BASIC={cutadapt=3.4}, DADA2_DENOISING={R=4.1.1, dada2=1.22.0}, DADA2_FILTNTRIM={R=4.1.1, dada2=1.22.0}, DADA2_QUALITY1={R=4.1.1, ShortRead=1.52.0, dada2=1.22.0}, DADA2_TAXONOMY={R=4.1.1, dada2=1.22.0}, FASTQC={fastqc=0.11.9}, FILTER_LEN_ASV={Biostrings=2.58.0, R=4.0.3}, FILTER_STATS={pandas=1.1.5, python=3.9.1}, PHYLOSEQ={R=4.3.0, phyloseq=1.44.0}, QIIME2_INSEQ={qiime2=2022.11.1}, RENAME_RAW_DATA_FILES={sed=4.7}, SBDIEXPORT={R=3.6.3}, TRUNCLEN={pandas=1.1.5, python=3.9.1}, Workflow={nf-core/ampliseq=2.7.0dev}}"
+            "{BARRNAP={barrnap=0.9}, CUSTOM_DUMPSOFTWAREVERSIONS={python=3.11.0, yaml=6.0}, CUTADAPT_BASIC={cutadapt=3.4}, DADA2_DENOISING={R=4.1.1, dada2=1.22.0}, DADA2_FILTNTRIM={R=4.1.1, dada2=1.22.0}, DADA2_QUALITY1={R=4.1.1, ShortRead=1.52.0, dada2=1.22.0}, DADA2_TAXONOMY={R=4.1.1, dada2=1.22.0}, FASTQC={fastqc=0.11.9}, FILTER_CLUSTERS={pandas=1.1.5, python=3.9.1}, FILTER_LEN_ASV={Biostrings=2.58.0, R=4.0.3}, FILTER_STATS={pandas=1.1.5, python=3.9.1}, PHYLOSEQ={R=4.3.0, phyloseq=1.44.0}, QIIME2_INSEQ={qiime2=2022.11.1}, RENAME_RAW_DATA_FILES={sed=4.7}, SBDIEXPORT={R=3.6.3}, TRUNCLEN={pandas=1.1.5, python=3.9.1}, VSEARCH_CLUSTER={vsearch=2.21.1}, Workflow={nf-core/ampliseq=2.7.0dev}}"
         ],
         "timestamp": "2023-05-28T20:55:32+0000"
     },
     "overall_summary_tsv": {
         "content": [
-            "overall_summary.tsv:md5,42879bf840cad10ef96b1da77e0768b7"
+            "overall_summary.tsv:md5,4c1ca619577cd9abfee793f0f41375af"
         ],
         "timestamp": "2023-05-28T20:55:32+0000"
     },
@@ -45,11 +45,11 @@
     },
     "barrnap": {
         "content": [
-            "ASV_seqs.ssu.fasta:md5,10f0d101b63c193b5899c704488f9001",
-            "ASV_table.ssu.tsv:md5,03556c7c2372ad6c3cecc7390ed9617d",
-            "rrna.arc.gff:md5,6dae470aace9293d5eb8c318584852dd",
-            "rrna.bac.gff:md5,439a9084f089120f700f938dfb58fa41",
-            "rrna.euk.gff:md5,c9bc1d9d8fb77dc19c95dee2d53840eb",
+            "ASV_seqs.ssu.fasta:md5,12ec676f3a7edeb075705430ad8c208e",
+            "ASV_table.ssu.tsv:md5,78df5df258b5e24b1fbcb97a3aeddec0",
+            "rrna.arc.gff:md5,e4c828506e3713c9c74a87d02c941440",
+            "rrna.bac.gff:md5,4a832ff1efb4c8a306c014481033cb09",
+            "rrna.euk.gff:md5,ad8b84800ff3f911db88657fd58b7cd9",
             "stats.ssu.tsv:md5,dbb23448395135334093edbb3efb1cd0",
             "rrna.mito.gff:md5,df19e1b84ba6f691d20c72b397c88abf"
         ],
@@ -65,11 +65,19 @@
     },
     "asv_length_filter": {
         "content": [
-            "ASV_len_filt.tsv:md5,a0a6de452999953191b5df29d0b3176a",
-            "ASV_len_orig.tsv:md5,09a300b31acf0eee817367dad5083f48",
-            "ASV_seqs.len.fasta:md5,04e8838f97cabf090b95891cde5c45b7",
-            "ASV_table.len.tsv:md5,8a68fdf1da3bbb0e24bfe4f90af0fbfd",
+            "ASV_len_filt.tsv:md5,3099f093f831e21397de2310d4c83ff4",
+            "ASV_len_orig.tsv:md5,5ad596085cdcb600ce32c09bc786a678",
+            "ASV_seqs.len.fasta:md5,1d61dbb2e90956a1f2698718a4dc48c5",
+            "ASV_table.len.tsv:md5,9464eadabcf39ed4b71a75957660e2a7",
             "stats.len.tsv:md5,9b13b65cf9cc5fd59f6d8717d26202ed"
+        ],
+        "timestamp": "2023-05-28T20:55:32+0000"
+    },
+    "vsearch_cluster": {
+        "content": [
+            "ASV_post_clustering_filtered.fna:md5,57379771c59df16d0c0164db34e8f148",
+            "ASV_post_clustering_filtered.stats.tsv:md5,222f6a7cdbf2d4b3f745a49359a61c0d",
+            "ASV_post_clustering_filtered.table.tsv:md5,e607469a32d490bbe139e9196ff4a47d"
         ],
         "timestamp": "2023-05-28T20:55:32+0000"
     }

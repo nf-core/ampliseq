@@ -28,6 +28,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [Length filter](#length-filter) - Optionally, ASV can be filtered by length thresholds
   - [ITSx](#itsx) - Optionally, the ITS region can be extracted
   - [Codons](#codons) - Optionally the ASVs can be filtered by presence of stop codons.
+  - [VSEARCH cluster](#vsearch-cluster) - Centroid fasta file, filtered asv table, and stats
 - [Taxonomic classification](#taxonomic-classification) - Taxonomic classification of (filtered) ASVs
   - [DADA2](#dada2) - Taxonomic classification with DADA2
   - [assignSH](#assignsh) - Optionally, a UNITE species hypothesis (SH) can be added to the DADA2 taxonomy
@@ -44,7 +45,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [PICRUSt2](#picrust2) - Predict the functional potential of a bacterial community
 - [SBDI export](#sbdi-export) - Swedish Biodiversity Infrastructure (SBDI) submission file
 - [Phyloseq](#phyloseq) - Phyloseq R objects
-- [VSEARCH cluster](#vsearch-cluster) - Centroid fasta file, filtered asv table, and stats
 - [Read count report](#read-count-report) - Report of read counts during various steps of the pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
@@ -160,6 +160,21 @@ For binned quality scores in NovaSeq data, monotonicity in the fitted error mode
 </details>
 
 ### Optional ASV filtering
+
+#### VSEARCH cluster
+
+Optionally, VSEARCH can be used to cluster the denoised ASVs. This will be performed before other filtering steps.
+This directory will hold the centroid fasta file, the filtered asv count table (after merging non-centroid counts with their respective centroid counts), and a stats table.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `vsearch_cluster/`
+  - `ASV_post_clustering_filtered.fna`: Centroid fasta file.
+  - `ASV_post_clustering_filtered.stats.tsv`: Stats table.
+  - `ASV_post_clustering_filtered.table.tsv`: ASV table.
+
+</details>
 
 #### Barrnap
 
@@ -545,21 +560,6 @@ This directory will hold phyloseq objects for each taxonomy table produced by th
 
 - `phyloseq/`
   - `<taxonomy>_phyloseq.rds`: Phyloseq R object.
-
-</details>
-
-### VSEARCH cluster
-
-This directory will hold the centroid fasta file, the filtered asv count table (after merging non-centroid counts with their respective centroid counts), and a stats table.
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `vsearch_cluster/`
-  - `ASV_post_clustering_filtered.fna`: Centroid fasta file.
-  - `ASV_post_clustering_filtered.stats.tsv`: Stats table.
-  - `ASV_post_clustering_filtered.table.tsv`: ASV table.
-
 
 </details>
 

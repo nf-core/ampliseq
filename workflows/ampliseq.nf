@@ -358,7 +358,28 @@ workflow AMPLISEQ {
         ch_stats = DADA2_MERGE.out.dada2stats
     }
 
-
+    //
+    // MODULE : ASV post-clustering with VSEARCH
+    //
+    if (params.vsearch_cluster) {
+        ch_fasta_for_clustering = DADA2_MERGE.out.fasta
+            .map {
+                fasta ->
+                    def meta = [:]
+                    meta.id = "ASV_post_clustering"
+                    [ meta, fasta ] }
+        VSEARCH_CLUSTER ( ch_fasta_for_clustering )
+        ch_versions = ch_versions.mix(VSEARCH_CLUSTER.out.versions.ifEmpty(null))
+        FILTER_CLUSTERS ( VSEARCH_CLUSTER.out.clusters, DADA2_MERGE.out.asv )
+        ch_versions = ch_versions.mix(FILTER_CLUSTERS.out.versions.ifEmpty(null))
+        MERGE_STATS_CLUSTER ( ch_stats, FILTER_CLUSTERS.out.stats )
+        ch_stats = MERGE_STATS_CLUSTER.out.tsv
+        ch_dada2_fasta = FILTER_CLUSTERS.out.fasta
+        ch_dada2_asv = FILTER_CLUSTERS.out.asv
+    } else {
+        ch_dada2_fasta = DADA2_MERGE.out.fasta
+        ch_dada2_asv = DADA2_MERGE.out.asv
+    }
 
     //
     // Modules : Filter rRNA
@@ -367,7 +388,7 @@ workflow AMPLISEQ {
         FORMAT_FASTAINPUT( ch_input_fasta )
         ch_unfiltered_fasta = FORMAT_FASTAINPUT.out.fasta
     } else {
-        ch_unfiltered_fasta = DADA2_MERGE.out.fasta
+        ch_unfiltered_fasta = ch_dada2_fasta
     }
 
     if (!params.skip_barrnap && params.filter_ssu) {
@@ -380,7 +401,7 @@ workflow AMPLISEQ {
         }
         ch_barrnapsummary = BARRNAPSUMMARY.out.summary
         ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))
-        FILTER_SSU ( DADA2_MERGE.out.fasta, DADA2_MERGE.out.asv, BARRNAPSUMMARY.out.summary )
+        FILTER_SSU ( ch_dada2_fasta, ch_dada2_asv, BARRNAPSUMMARY.out.summary )
         MERGE_STATS_FILTERSSU ( ch_stats, FILTER_SSU.out.stats )
         ch_stats = MERGE_STATS_FILTERSSU.out.tsv
         ch_dada2_fasta = FILTER_SSU.out.fasta
@@ -392,11 +413,11 @@ workflow AMPLISEQ {
         ch_barrnapsummary = BARRNAPSUMMARY.out.summary
         ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))
         ch_dada2_fasta = ch_unfiltered_fasta
-        ch_dada2_asv = DADA2_MERGE.out.asv
+        ch_dada2_asv = ch_dada2_asv
     } else {
         ch_barrnapsummary = Channel.empty()
         ch_dada2_fasta = ch_unfiltered_fasta
-        ch_dada2_asv = DADA2_MERGE.out.asv
+        ch_dada2_asv = ch_dada2_asv
     }
 
     //
@@ -421,26 +442,6 @@ workflow AMPLISEQ {
         ch_stats = MERGE_STATS_CODONS.out.tsv
         ch_dada2_fasta = FILTER_CODONS.out.fasta
         ch_dada2_asv = FILTER_CODONS.out.asv
-    }
-
-    //
-    // MODULE : ASV post-clustering with VSEARCH
-    //
-    if (params.vsearch_cluster) {
-        ch_fasta_for_clustering = ch_dada2_fasta
-            .map {
-                fasta ->
-                    def meta = [:]
-                    meta.id = "ASV_post_clustering"
-                    [ meta, fasta ] }
-        VSEARCH_CLUSTER ( ch_fasta_for_clustering )
-        ch_versions = ch_versions.mix(VSEARCH_CLUSTER.out.versions.ifEmpty(null))
-        FILTER_CLUSTERS ( VSEARCH_CLUSTER.out.clusters, ch_dada2_asv )
-        ch_versions = ch_versions.mix(FILTER_CLUSTERS.out.versions.ifEmpty(null))
-        MERGE_STATS_CLUSTER ( ch_stats, FILTER_CLUSTERS.out.stats )
-        ch_stats = MERGE_STATS_CLUSTER.out.tsv
-        ch_dada2_fasta = FILTER_CLUSTERS.out.fasta
-        ch_dada2_asv = FILTER_CLUSTERS.out.asv
     }
 
     //

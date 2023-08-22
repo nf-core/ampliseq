@@ -46,9 +46,7 @@ for cluster_fasta in cluster_fastas:
     read_num = 0
 
     # Loop through each line of current fasta file and open output fasta file in append mode
-    with gzip.open(cluster_fasta, "rt") as in_fasta, open(
-        args.prefix + "_filtered.fna", "a"
-    ) as out_fasta:
+    with gzip.open(cluster_fasta, "rt") as in_fasta, open(args.prefix + "_filtered.fna", "a") as out_fasta:
         for line in in_fasta:
             line = line.rstrip("\n")
 
@@ -82,9 +80,7 @@ count_df = pd.read_table(args.count, delimiter="\t", index_col=0, header=0)
 # Get the number of ASVs per sample before clustering
 for sample in count_df.columns:
     sam_asv_counts[sample] = (count_df[sample] != 0).sum()
-stats_df = pd.DataFrame(
-    list(sam_asv_counts.items()), columns=["sample", "ASVs_before_clustering"]
-)
+stats_df = pd.DataFrame(list(sam_asv_counts.items()), columns=["sample", "ASVs_before_clustering"])
 
 # Loop through centroids
 for centroid in cluster_dict.keys():

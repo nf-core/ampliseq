@@ -40,7 +40,7 @@ nextflow run nf-core/ampliseq \
     --input "samplesheet.tsv" \
     --FW_primer GTGYCAGCMGCCGCGGTAA \
     --RV_primer GGACTACNVGGGTWTCTAAT \
-    --metadata "data/Metadata.tsv"
+    --metadata "data/Metadata.tsv" \
     --outdir "./results"
 ```
 

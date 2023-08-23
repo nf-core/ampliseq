@@ -145,7 +145,6 @@ include { FILTER_LEN_ASV                } from '../modules/local/filter_len_asv'
 include { MERGE_STATS as MERGE_STATS_FILTERSSU    } from '../modules/local/merge_stats'
 include { MERGE_STATS as MERGE_STATS_FILTERLENASV } from '../modules/local/merge_stats'
 include { MERGE_STATS as MERGE_STATS_CODONS       } from '../modules/local/merge_stats'
-include { MERGE_STATS as MERGE_STATS_CLUSTER      } from '../modules/local/merge_stats'
 include { FILTER_CODONS                 } from '../modules/local/filter_codons'
 include { FORMAT_FASTAINPUT             } from '../modules/local/format_fastainput'
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
@@ -372,8 +371,6 @@ workflow AMPLISEQ {
         ch_versions = ch_versions.mix(VSEARCH_CLUSTER.out.versions.ifEmpty(null))
         FILTER_CLUSTERS ( VSEARCH_CLUSTER.out.clusters, DADA2_MERGE.out.asv )
         ch_versions = ch_versions.mix(FILTER_CLUSTERS.out.versions.ifEmpty(null))
-        MERGE_STATS_CLUSTER ( ch_stats, FILTER_CLUSTERS.out.stats )
-        ch_stats = MERGE_STATS_CLUSTER.out.tsv
         ch_dada2_fasta = FILTER_CLUSTERS.out.fasta
         ch_dada2_asv = FILTER_CLUSTERS.out.asv
     } else {
@@ -413,11 +410,9 @@ workflow AMPLISEQ {
         ch_barrnapsummary = BARRNAPSUMMARY.out.summary
         ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))
         ch_dada2_fasta = ch_unfiltered_fasta
-        ch_dada2_asv = ch_dada2_asv
     } else {
         ch_barrnapsummary = Channel.empty()
         ch_dada2_fasta = ch_unfiltered_fasta
-        ch_dada2_asv = ch_dada2_asv
     }
 
     //

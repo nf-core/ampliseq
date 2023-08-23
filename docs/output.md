@@ -24,11 +24,11 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [MultiQC](#multiqc) - Aggregate report describing results
 - [ASV inferrence with DADA2](#asv-inferrence-with-dada2) - Infer Amplicon Sequence Variants (ASVs)
 - [Optional ASV filtering](#optional-asv-filtering) - Filter ASVs to optimize downstream analysis
+  - [VSEARCH cluster](#vsearch-cluster) - Centroid fasta file, filtered asv table, and stats
   - [Barrnap](#barrnap) - Predict ribosomal RNA sequences and optional filtering
   - [Length filter](#length-filter) - Optionally, ASV can be filtered by length thresholds
   - [ITSx](#itsx) - Optionally, the ITS region can be extracted
   - [Codons](#codons) - Optionally the ASVs can be filtered by presence of stop codons.
-  - [VSEARCH cluster](#vsearch-cluster) - Centroid fasta file, filtered asv table, and stats
 - [Taxonomic classification](#taxonomic-classification) - Taxonomic classification of (filtered) ASVs
   - [DADA2](#dada2) - Taxonomic classification with DADA2
   - [assignSH](#assignsh) - Optionally, a UNITE species hypothesis (SH) can be added to the DADA2 taxonomy

@@ -24,6 +24,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [MultiQC](#multiqc) - Aggregate report describing results
 - [ASV inferrence with DADA2](#asv-inferrence-with-dada2) - Infer Amplicon Sequence Variants (ASVs)
 - [Optional ASV filtering](#optional-asv-filtering) - Filter ASVs to optimize downstream analysis
+  - [VSEARCH cluster](#vsearch-cluster) - Centroid fasta file, filtered asv table, and stats
   - [Barrnap](#barrnap) - Predict ribosomal RNA sequences and optional filtering
   - [Length filter](#length-filter) - Optionally, ASV can be filtered by length thresholds
   - [ITSx](#itsx) - Optionally, the ITS region can be extracted
@@ -159,6 +160,21 @@ For binned quality scores in NovaSeq data, monotonicity in the fitted error mode
 </details>
 
 ### Optional ASV filtering
+
+#### VSEARCH cluster
+
+Optionally, VSEARCH can be used to cluster the denoised ASVs. This will be performed before other filtering steps.
+This directory will hold the centroid fasta file, the filtered asv count table (after merging non-centroid counts with their respective centroid counts), and a stats table.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `vsearch_cluster/`
+  - `ASV_post_clustering_filtered.fna`: Centroid fasta file.
+  - `ASV_post_clustering_filtered.stats.tsv`: Stats table.
+  - `ASV_post_clustering_filtered.table.tsv`: ASV table.
+
+</details>
 
 #### Barrnap
 

@@ -75,6 +75,11 @@
                         "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
                         "installed_by": ["modules"]
                     },
+                    "vsearch/cluster": {
+                        "branch": "master",
+                        "git_sha": "89945ea085b94d3413013b6c82e2633b5184f24d",
+                        "installed_by": ["modules"]
+                    },
                     "vsearch/sintax": {
                         "branch": "master",
                         "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",

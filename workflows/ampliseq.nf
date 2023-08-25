@@ -144,7 +144,7 @@ include { FILTER_SSU                    } from '../modules/local/filter_ssu'
 include { FILTER_LEN_ASV                } from '../modules/local/filter_len_asv'
 include { MERGE_STATS as MERGE_STATS_FILTERSSU    } from '../modules/local/merge_stats'
 include { MERGE_STATS as MERGE_STATS_FILTERLENASV } from '../modules/local/merge_stats'
-include { MERGE_STATS as MERGE_STATS_CODONS } from '../modules/local/merge_stats'
+include { MERGE_STATS as MERGE_STATS_CODONS       } from '../modules/local/merge_stats'
 include { FILTER_CODONS                 } from '../modules/local/filter_codons'
 include { FORMAT_FASTAINPUT             } from '../modules/local/format_fastainput'
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
@@ -167,6 +167,7 @@ include { SBDIEXPORTREANNOTATE          } from '../modules/local/sbdiexportreann
 include { SUMMARY_REPORT                } from '../modules/local/summary_report'
 include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_PPLACE } from '../modules/local/phyloseq_intax'
 include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_QIIME2 } from '../modules/local/phyloseq_intax'
+include { FILTER_CLUSTERS               } from '../modules/local/filter_clusters'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
@@ -198,6 +199,7 @@ include { PHYLOSEQ_WORKFLOW             } from '../subworkflows/local/phyloseq_w
 include { FASTQC                            } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/custom/dumpsoftwareversions/main'
+include { VSEARCH_CLUSTER                   } from '../modules/nf-core/vsearch/cluster/main'
 include { FASTA_NEWICK_EPANG_GAPPA          } from '../subworkflows/nf-core/fasta_newick_epang_gappa/main'
 
 
@@ -355,7 +357,26 @@ workflow AMPLISEQ {
         ch_stats = DADA2_MERGE.out.dada2stats
     }
 
-
+    //
+    // MODULE : ASV post-clustering with VSEARCH
+    //
+    if (params.vsearch_cluster) {
+        ch_fasta_for_clustering = DADA2_MERGE.out.fasta
+            .map {
+                fasta ->
+                    def meta = [:]
+                    meta.id = "ASV_post_clustering"
+                    [ meta, fasta ] }
+        VSEARCH_CLUSTER ( ch_fasta_for_clustering )
+        ch_versions = ch_versions.mix(VSEARCH_CLUSTER.out.versions.ifEmpty(null))
+        FILTER_CLUSTERS ( VSEARCH_CLUSTER.out.clusters, DADA2_MERGE.out.asv )
+        ch_versions = ch_versions.mix(FILTER_CLUSTERS.out.versions.ifEmpty(null))
+        ch_dada2_fasta = FILTER_CLUSTERS.out.fasta
+        ch_dada2_asv = FILTER_CLUSTERS.out.asv
+    } else {
+        ch_dada2_fasta = DADA2_MERGE.out.fasta
+        ch_dada2_asv = DADA2_MERGE.out.asv
+    }
 
     //
     // Modules : Filter rRNA
@@ -364,7 +385,7 @@ workflow AMPLISEQ {
         FORMAT_FASTAINPUT( ch_input_fasta )
         ch_unfiltered_fasta = FORMAT_FASTAINPUT.out.fasta
     } else {
-        ch_unfiltered_fasta = DADA2_MERGE.out.fasta
+        ch_unfiltered_fasta = ch_dada2_fasta
     }
 
     if (!params.skip_barrnap && params.filter_ssu) {
@@ -377,7 +398,7 @@ workflow AMPLISEQ {
         }
         ch_barrnapsummary = BARRNAPSUMMARY.out.summary
         ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))
-        FILTER_SSU ( DADA2_MERGE.out.fasta, DADA2_MERGE.out.asv, BARRNAPSUMMARY.out.summary )
+        FILTER_SSU ( ch_dada2_fasta, ch_dada2_asv, BARRNAPSUMMARY.out.summary )
         MERGE_STATS_FILTERSSU ( ch_stats, FILTER_SSU.out.stats )
         ch_stats = MERGE_STATS_FILTERSSU.out.tsv
         ch_dada2_fasta = FILTER_SSU.out.fasta
@@ -389,11 +410,9 @@ workflow AMPLISEQ {
         ch_barrnapsummary = BARRNAPSUMMARY.out.summary
         ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))
         ch_dada2_fasta = ch_unfiltered_fasta
-        ch_dada2_asv = DADA2_MERGE.out.asv
     } else {
         ch_barrnapsummary = Channel.empty()
         ch_dada2_fasta = ch_unfiltered_fasta
-        ch_dada2_asv = DADA2_MERGE.out.asv
     }
 
     //

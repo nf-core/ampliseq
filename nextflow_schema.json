@@ -388,6 +388,19 @@
             "description": "",
             "default": "",
             "properties": {
+                "vsearch_cluster": {
+                    "type": "boolean",
+                    "description": "Post-cluster ASVs with VSEARCH",
+                    "help_text": "ASVs will be clustered with VSEARCH using the id value found in `--vsearch_cluster_id`."
+                },
+                "vsearch_cluster_id": {
+                    "type": "number",
+                    "default": 0.97,
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "Pairwise Identity value used when post-clustering ASVs if `--vsearch_cluster` option is used (default: 0.97).",
+                    "help_text": "Lowering or increasing this value can change the number ASVs left over after clustering."
+                },
                 "filter_ssu": {
                     "type": "string",
                     "description": "Enable SSU filtering. Comma separated list of kingdoms (domains) in Barrnap, a combination (or one) of \"bac\", \"arc\", \"mito\", and \"euk\". ASVs that have their lowest evalue in that kingdoms are kept.",

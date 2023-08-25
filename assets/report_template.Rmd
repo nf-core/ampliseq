@@ -37,6 +37,7 @@ params:
     trunc_qmin: FALSE
     trunc_rmin: ""
     dada_sample_inference: ""
+    vsearch_cluster_id: ""
     filter_ssu: FALSE
     min_len_asv: ""
     max_len_asv: ""
@@ -76,6 +77,7 @@ params:
     path_asv_fa: FALSE
     path_dada2_tab: FALSE
     dada_stats_path: FALSE
+    vsearch_cluster: FALSE
     path_barrnap_sum: FALSE
     filter_ssu_stats: ""
     filter_ssu_asv: ""
@@ -555,6 +557,7 @@ cat("## Inferred ASVs\n\n")
 #import asv table
 asv_table <- read.table(file = params$asv_table_path, header = TRUE, sep = "\t")
 n_asv <- length(asv_table$ASV_ID)
+n_asv_dada <- length(asv_table$ASV_ID) #this is to rteport the original number later in the methods section
 
 # Output text
 cat("Finally,", n_asv,
@@ -573,13 +576,28 @@ if ( params$dada_sample_inference == "independent" ) {
 ```
 
 ```{r, results='asis'}
-flag_any_filtering <- !isFALSE(params$path_barrnap_sum) || !isFALSE(params$filter_len_asv) || !isFALSE(params$filter_codons)
+flag_any_filtering <- !isFALSE(params$path_barrnap_sum) || !isFALSE(params$filter_len_asv) || !isFALSE(params$filter_codons) || !isFALSE(params$vsearch_cluster)
 ```
 
 <!-- Section on ASV filtering -->
 
 ```{r, eval = flag_any_filtering, results='asis'}
-cat("# Filtering of ASVs\n")
+cat("# Post processing of ASVs\n")
+```
+
+<!-- Subsection on ASV clustering with VSEARCH -->
+
+```{r, eval = !isFALSE(params$vsearch_cluster), results='asis'}
+vsearch_cluster = read.table( params$vsearch_cluster, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+n_asv_vsearch_cluster <- nrow(vsearch_cluster)
+
+cat(paste0("
+## Clustering of ASVs
+
+[VSEARCH](https://peerj.com/articles/2584/) clustered ",n_asv_dada," ASVs into ",n_asv_vsearch_cluster,"
+centroids with pairwise identity of ",params$vsearch_cluster_id,".
+Clustered ASV sequences and abundances can be found in folder [vsearch_cluster](../vsearch_cluster).
+"))
 ```
 
 <!-- Subsection on rRNA classification with Barrnap -->
@@ -599,7 +617,7 @@ barrnap_sum$result = gsub("_eval", "", barrnap_sum$result)
 
 #import asv table
 asv_table <- readLines(params$path_asv_fa)
-n_asv <- sum(grepl("^>", asv_table))
+n_asv_barrnap <- sum(grepl("^>", asv_table))
 
 # calculate numbers
 n_classified <- length(barrnap_sum$result)
@@ -609,8 +627,8 @@ n_mito <- sum(grepl("mito", barrnap_sum$result))
 n_euk <- sum(grepl("euk", barrnap_sum$result))
 
 barrnap_df_sum <- data.frame(label=c('Bacteria','Archaea','Mitochondria','Eukaryotes','Unclassified'),
-                 count=c(n_bac,n_arc,n_mito,n_euk,n_asv - n_classified),
-                 percent=c(round( (n_bac/n_asv)*100, 2), round( (n_arc/n_asv)*100, 2), round( (n_mito/n_asv)*100, 2), round( (n_euk/n_asv)*100, 2), round( ( (n_asv - n_classified) /n_asv)*100, 2) ) )
+                 count=c(n_bac,n_arc,n_mito,n_euk,n_asv_barrnap - n_classified),
+                 percent=c(round( (n_bac/n_asv_barrnap)*100, 2), round( (n_arc/n_asv_barrnap)*100, 2), round( (n_mito/n_asv_barrnap)*100, 2), round( (n_euk/n_asv_barrnap)*100, 2), round( ( (n_asv_barrnap - n_classified) /n_asv_barrnap)*100, 2) ) )
 
 # Build outputtext
 cat( "Barrnap classified ")
@@ -664,8 +682,8 @@ filter_ssu_asv <- read.table( params$filter_ssu_asv, header = TRUE, sep = "\t", 
 filter_ssu_asv_filtered <- nrow(filter_ssu_asv)
 
 cat("In average", round(filter_ssu_stats_avg_removed,2), "% reads were removed, but at most",filter_ssu_stats_max_removed,"% reads per sample. ")
-# "n_asv" is taken from the barrnap block above
-cat("The number of ASVs was reduced by",n_asv-filter_ssu_asv_filtered,"(",100-round( filter_ssu_asv_filtered/n_asv*100 ,2),"%), from",n_asv,"to",filter_ssu_asv_filtered," ASVs.")
+# "n_asv_barrnap" is taken from the barrnap block above
+cat("The number of ASVs was reduced by",n_asv_barrnap-filter_ssu_asv_filtered,"(",100-round( filter_ssu_asv_filtered/n_asv_barrnap*100 ,2),"%), from",n_asv_barrnap,"to",filter_ssu_asv_filtered," ASVs.")
 ```
 
 <!-- Subsection on sequence length filter -->
@@ -1179,10 +1197,10 @@ if ( params$exclude_taxa != "none" ) {
     cat("ASVs were removed when the taxonomic string contained any of `", params$exclude_taxa, "` (comma separated)", sep="")
 }
 if ( params$min_frequency != 1 ) {
-    cat(", had fewer than", params$min_frequency ,"total read counts over all sample")
+    cat(", had fewer than", params$min_frequency ,"total read counts over all samples")
 }
 if ( params$min_samples != 1 ) {
-    cat(", and that were present in fewer than", params$min_samples ,"samples")
+    cat(", or that were present in fewer than", params$min_samples ,"samples")
 }
 cat(". ")
 
@@ -1431,7 +1449,209 @@ The files can be found in folder [phyloseq](../phyloseq/).
 
 # Methods
 
+<!-- Subsection manuscript methods section -->
+
+## Proposed methods section
+
+Data was processed using nf-core/ampliseq `r ampliseq_version` (doi: [10.5281/zenodo.1493841](https://zenodo.org/badge/latestdoi/150448201))
+([Straub et al., 2020](https://doi.org/10.3389/fmicb.2020.550420)) of the nf-core collection of workflows
+([Ewels et al., 2020](https://dx.doi.org/10.1038/s41587-020-0439-x)), utilising reproducible software environments
+from the Bioconda ([Grüning et al., 2018](https://pubmed.ncbi.nlm.nih.gov/29967506/)) and Biocontainers
+([da Veiga Leprevost et al., 2017](https://pubmed.ncbi.nlm.nih.gov/28379341/)) projects.
+
+```{r, eval = !isFALSE(params$mqc_plot), results='asis'}
+cat(paste0("
+Data quality was evaluated with FastQC ([Andrews, 2010](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
+and summarized with MultiQC ([Ewels et al., 2016](https://pubmed.ncbi.nlm.nih.gov/27312411/)).
+"))
+```
+```{r, eval = !isFALSE(params$cutadapt_summary), results='asis'}
+cutadapt_intro = "Cutadapt ([Marcel et al., 2011](https://doi.org/10.14806/ej.17.1.200)) trimmed primers"
+if ( isFALSE(params$flag_retain_untrimmed) ) {
+    cat(paste0(cutadapt_intro,cutadapt_text_ch))
+} else {
+    cat(paste0(cutadapt_intro, "."))
+}
+```
+```{r, eval = !isFALSE(params$dada_filtntrim_args), results='asis'}
+if ( !isFALSE(params$cutadapt_summary) && isFALSE(params$flag_retain_untrimmed) ) {
+    cat("Adapter and primer-free sequences were processed ")
+} else {
+    cat("Sequences were processed ")
+}
+
+if ( params$dada_sample_inference == "independent" ) {
+    cat("sample-wise (independent) ")
+} else if ( params$dada_sample_inference == "pooled" ) {
+    cat("as one pool (pooled)")
+} else {
+    cat("initally independently, but re-examined as one pool (pseudo-pooled) ")
+}
+
+cat("with DADA2 ([Callahan et al., 2016](https://pubmed.ncbi.nlm.nih.gov/27214047/)) to eliminate PhiX contamination, ")
+
+if (params$trunc_qmin) {
+    cat("trim reads (before median quality drops below ", params$trunc_qmin,
+        " and at least ",params$trunc_rmin*100, "% of reads are retained; ",
+        "forward reads at ", tr_len_f, " bp and reverse reads at ", tr_len_r,
+        " bp, reads shorter than this were discarded), ", sep = "")
+} else if (params$trunclenf == "null" && params$trunclenr == "null") {
+    cat("")
+} else if (params$trunclenf != 0 && params$trunclenr != 0) {
+    cat("trim reads (forward reads at ", params$trunclenf,
+            " bp and reverse reads at ", params$trunclenr,
+            " bp, reads shorter than this were discarded), ", sep = "")
+} else if (params$trunclenf != 0) {
+    cat("trim reads (forward reads at ", params$trunclenf," bp, reads shorter than this were discarded), ", sep = "")
+} else if (params$trunclenr != 0) {
+    cat("trim reads (reverse reads at ", params$trunclenr," bp, reads shorter than this were discarded), ", sep = "")
+}
+if ( as.integer(params$max_ee) > 0 ) {
+    cat("discard reads with >", params$max_ee,"expected errors, ")
+}
+cat("correct errors, ")
+if ( isFALSE(params$flag_single_end) ) {
+    cat("merge read pairs, ")
+}
+cat(paste0("
+and remove polymerase chain reaction (PCR) chimeras;
+ultimately, ",n_asv_dada," amplicon sequencing variants (ASVs) were obtained across all samples.
+Between ",min(dada_stats_p$analysis),"% and ",max(dada_stats_p$analysis),"% reads per sample
+(average ",dada_stats_p_analysis_average,"%) were retained.
+The ASV count table contained in total ",sum(dada_stats_ex$analysis)," counts,
+at least ",min(dada_stats_ex$analysis)," and at most ",max(dada_stats_ex$analysis)," per sample
+(average ",round(sum(dada_stats_ex$analysis)/length(dada_stats_ex$analysis),0),").
+"))
+```
+
+```{r, eval = !isFALSE(params$vsearch_cluster), results='asis'}
+cat(paste0("
+VSEARCH ([Rognes et al., 2016](https://peerj.com/articles/2584/)) clustered ",n_asv_dada," ASVs into ",n_asv_vsearch_cluster,"
+centroids with pairwise identity of ",params$vsearch_cluster_id,".
+"))
+```
+```{r, eval = !isFALSE(params$path_barrnap_sum) && !isFALSE(params$filter_ssu), results='asis'}
+cat(paste0("Barrnap ([Seemann, 2013](https://github.com/tseemann/barrnap)) filtered ASVs for `",params$filter_ssu,"` (`bac`: Bacteria, `arc`: Archaea, `mito`: Mitochondria, `euk`: Eukaryotes),
+",n_asv_barrnap-filter_ssu_asv_filtered," ASVs were removed with
+less than ",filter_ssu_stats_max_removed,"% counts per sample
+(",filter_ssu_asv_filtered," ASVs passed).
+"))
+```
+```{r, eval = !isFALSE(params$filter_len_asv_len_orig), results='asis'}
+cat(sum(filter_len_profile$Counts)-sum(filter_len_asv_filtered$Counts))
+if ( params$min_len_asv != 0 && params$max_len_asv != 0 ) {
+    cat(" ASVs with length lower than",params$min_len_asv,"or above",params$max_len_asv,"bp")
+} else if ( params$min_len_asv != 0 ) {
+    cat(" ASVs with length lower than",params$min_len_asv,"bp")
+} else if ( params$max_len_asv != 0 ) {
+    cat(" ASVs with length above",params$max_len_asv,"bp")
+}
+cat(paste0("
+were removed with less than ",round(filter_len_stats_max_removed,2),"% counts per sample
+(",sum(filter_len_asv_filtered$Counts)," ASVs passed).
+"))
+```
+```{r, eval = !isFALSE(params$filter_codons), results='asis'}
+cat("ASVs with stop codons (",params$stop_codons,") or with a length not multiple of 3 in length were removed.")
+```
+
+```{r, eval = any_taxonomy, results='asis'}
+methods_taxonomic_classification <- c("Taxonomic classification was performed by ")
+if ( !isFALSE(params$dada2_ref_tax_title) ) {
+    methods_taxonomic_classification_dada <- paste("DADA2 and the database '",params$dada2_ref_tax_title,"' (`", params$dada2_ref_tax_citation,"`)", sep="")
+    if ( !isFALSE(params$cut_dada_ref_taxonomy) ) {
+        methods_taxonomic_classification_dada <- paste(methods_taxonomic_classification_dada,
+            "that had",cut_dada_ref_taxonomy_filt,"sequences extracted by PCR primers to improve assignments")
+    }
+    methods_taxonomic_classification <- c(methods_taxonomic_classification, methods_taxonomic_classification_dada)
+}
+if ( !isFALSE(params$qiime2_ref_tax_title) ) {
+    methods_taxonomic_classification <- c(methods_taxonomic_classification,
+        paste("QIIME2 and the database '",params$qiime2_ref_tax_title,"' (`", params$qiime2_ref_tax_citation,"`)", sep=""))
+}
+if ( !isFALSE(params$sintax_ref_tax_title) ) {
+    methods_taxonomic_classification <- c(methods_taxonomic_classification,
+        paste("SINTAX and the database '",params$sintax_ref_tax_title,"' (`", params$sintax_ref_tax_citation,"`)", sep=""))
+}
+
+cat(paste0(methods_taxonomic_classification[1],methods_taxonomic_classification[2]))
+if (length(methods_taxonomic_classification) >= 3) {
+    for (x in 3:length(methods_taxonomic_classification)) {
+        cat(paste(",",methods_taxonomic_classification[x]))
+    }
+}
+cat(".")
+```
+
+```{r, eval = !isFALSE(params$val_used_taxonomy), results='asis'}
+cat("ASV sequences, abundance and ",params$val_used_taxonomy," taxonomic assignments were loaded into QIIME2 ([Bolyen et al., 2019](https://www.nature.com/articles/s41587-019-0209-9)).")
+```
+```{r, eval = !isFALSE(params$filter_stats_tsv), results='asis'}
+if ( as.integer(qiime2_filtertaxa_rm) > 0 ) {
+    qiime_filter <- c(paste("Of",qiime2_filtertaxa_orig,"ASVs,",qiime2_filtertaxa_rm,"were removed because"))
+    if ( params$exclude_taxa != "none" ) {
+        qiime_filter <- c(qiime_filter,
+            paste("the taxonomic string contained any of (", params$exclude_taxa,")",sep=""))
+    }
+    if ( params$min_frequency != 1 ) {
+        qiime_filter <- c(qiime_filter,
+            paste("had fewer than", params$min_frequency ,"total read counts over all samples"))
+    }
+    if ( params$min_samples != 1 ) {
+        qiime_filter <- c(qiime_filter,
+            paste("were present in fewer than", params$min_samples ,"samples"))
+    }
+    cat(paste(qiime_filter[1],qiime_filter[2]))
+    if (length(qiime_filter) >= 3) {
+        for (x in 3:length(qiime_filter)) {
+        cat(paste(", ",qiime_filter[x]))
+        }
+    }
+    cat(" (",qiime2_filtertaxa_filt," ASVs passed). ",sep="")
+}
+```
+```{r, eval = !isFALSE(params$val_used_taxonomy), results='asis'}
+if (!isFALSE(params$barplot) || !isFALSE(params$alpha_rarefaction) || !isFALSE(params$diversity_indices_beta) || !isFALSE(params$ancom)) {
+    qiime_final <- c("Within QIIME2, the final microbial community data was")
+    if (!isFALSE(params$barplot)) {
+        qiime_final <- c(qiime_final,"visualized in a barplot")
+    }
+    if (!isFALSE(params$alpha_rarefaction)) {
+        qiime_final <- c(qiime_final,"evaluated for sufficient sequencing depth with alpha rarefaction curves")
+    }
+    if (!isFALSE(params$diversity_indices_beta)) {
+        qiime_final <- c(qiime_final,
+            paste("investigated for alpha (within-sample) and beta (between-sample) diversity after rarefaction to",diversity_indices_depth,"counts"))
+    }
+    if (!isFALSE(params$ancom)) {
+        qiime_final <- c(qiime_final,"used to find differential abundant taxa with ANCOM ([Mandal et al., 2015](https://pubmed.ncbi.nlm.nih.gov/26028277/))")
+    }
+    cat(paste(qiime_final[1],qiime_final[2]))
+    if (length(qiime_final) >= 3) {
+        for (x in 3:length(qiime_final)) {
+            cat(paste(", ",qiime_final[x]))
+        }
+    }
+    cat(".")
+}
+```
+
 ```{r, results='asis'}
+cat(paste0("
+> **WARNING**
+> This methods section is lacking software versions, these can be found
+"))
+if ( !isFALSE(params$mqc_plot) ) {
+    cat("in [MultiQC's report section Software Versions](../multiqc/multiqc_report.html#software_versions) or ")
+}
+cat("in folder [pipeline_info](../pipeline_info) file `software_versions.yml`.")
+```
+
+<!-- Subsection on taxonomic databases -->
+
+```{r, eval = any_taxonomy, results='asis'}
+cat("## Reference databases\n\n")
+
 if ( !isFALSE(params$dada2_ref_tax_title) ) {
     cat("Taxonomic classification by DADA2:\n\n",
         "- database: `", params$dada2_ref_tax_title, "`\n\n",
@@ -1452,16 +1672,27 @@ if ( !isFALSE(params$sintax_ref_tax_title) ) {
         "- files: `", params$sintax_ref_tax_file, "`\n\n",
         "- citation: `", params$sintax_ref_tax_citation, "`\n\n", sep = "")
 }
+```
 
-if ( !isFALSE(params$mqc_plot) ) {
-    # with MultiQC
-    cat("[MultiQC](https://multiqc.info/) summarized computational methods in [multiqc/multiqc_report.html](../multiqc/multiqc_report.html).
-        The proposed short methods description can be found in [MultiQC's Methods Description](../multiqc/multiqc_report.html#nf-core-ampliseq-methods-description),
-        versions of software collected at runtime in [MultiQC's Software Versions](../multiqc/multiqc_report.html#software_versions),
-        and a summary of non-default parameter in [MultiQC's Workflow Summary](../multiqc/multiqc_report.html#nf-core-ampliseq-summary).\n\n")
-}
-# with & without MultiQC
+<!-- Subsection on MultiQC methods summary -->
+
+```{r, eval = !isFALSE(params$mqc_plot), results='asis'}
 cat(paste0("
+## MultiQC methods summary
+
+[MultiQC](https://multiqc.info/) summarized computational methods in [multiqc/multiqc_report.html](../multiqc/multiqc_report.html).
+The proposed short methods description can be found in [MultiQC's Methods Description](../multiqc/multiqc_report.html#nf-core-ampliseq-methods-description),
+versions of software collected at runtime in [MultiQC's Software Versions](../multiqc/multiqc_report.html#software_versions),
+and a summary of non-default parameter in [MultiQC's Workflow Summary](../multiqc/multiqc_report.html#nf-core-ampliseq-summary).
+"))
+```
+
+<!-- Subsection on nextflow and pipeline information -->
+
+```{r, results='asis'}
+cat(paste0("
+## Nextflow and pipeline information
+
 Technical information to the pipeline run are collected in folder [pipeline_info](../pipeline_info),
 including software versions collected at runtime in file `software_versions.yml` (can be viewed with a text editor),
 execution report in file `execution_report_{date}_{time}.html`,

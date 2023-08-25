@@ -99,7 +99,7 @@ nextflow_pipeline {
                 { assert new File("$outputDir/phyloseq/qiime2_phyloseq.rds").exists() },
                 { assert snapshot(path("$outputDir/vsearch_cluster/ASV_post_clustering_filtered.fna"),
                                 path("$outputDir/vsearch_cluster/ASV_post_clustering_filtered.stats.tsv"),
-                                path("$outputDir/vsearch_cluster/ASV_post_clustering_filtered.table.tsv")).match("SBDI") }
+                                path("$outputDir/vsearch_cluster/ASV_post_clustering_filtered.table.tsv")).match("vsearch_cluster") }
             )
         }
     }

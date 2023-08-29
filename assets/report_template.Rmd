@@ -557,7 +557,7 @@ cat("## Inferred ASVs\n\n")
 #import asv table
 asv_table <- read.table(file = params$asv_table_path, header = TRUE, sep = "\t")
 n_asv <- length(asv_table$ASV_ID)
-n_asv_dada <- length(asv_table$ASV_ID) #this is to rteport the original number later in the methods section
+n_asv_dada <- length(asv_table$ASV_ID) #this is to report the original number later in the methods section
 
 # Output text
 cat("Finally,", n_asv,

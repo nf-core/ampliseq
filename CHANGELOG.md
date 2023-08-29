@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#605](https://github.com/nf-core/ampliseq/pull/605) - Make `--sbdiexport` compatible with PR2 version 5.0.0
 - [#614](https://github.com/nf-core/ampliseq/pull/614),[#620](https://github.com/nf-core/ampliseq/pull/620) - Template update for nf-core/tools version 2.9
 - [#617](https://github.com/nf-core/ampliseq/pull/617) - Fix database compatibility check for `--sbdiexport`
+- [#628](https://github.com/nf-core/ampliseq/pull/628) - Fix edge case for sample sheet input when using specific combinations of sampleID and forwardReads or reverseReads that will forward one file too much to cutadapt
 
 ### `Dependencies`
 

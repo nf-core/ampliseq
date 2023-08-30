@@ -13,7 +13,7 @@ process FILTER_LEN_ASV {
 
     output:
     path( "stats.len.tsv" )      , emit: stats
-    path( "ASV_table.len.tsv" )  , emit: asv
+    path( "ASV_table.len.tsv" )  , emit: asv, optional: true
     path( "ASV_seqs.len.fasta" ) , emit: fasta
     path( "ASV_len_orig.tsv" )   , emit: len_orig
     path( "ASV_len_filt.tsv" )   , emit: len_filt
@@ -27,6 +27,7 @@ process FILTER_LEN_ASV {
     def max_len_asv = params.max_len_asv ?: '1000000'
 
     def read_table  = table ? "table <- read.table(file = '$table', sep = '\t', comment.char = '', header=TRUE)" : "table <- data.frame(matrix(ncol = 1, nrow = 0))"
+    def asv_table_filtered  = table ? "ASV_table.len.tsv" : "empty_ASV_table.len.tsv"
     """
     #!/usr/bin/env Rscript
 
@@ -53,7 +54,7 @@ process FILTER_LEN_ASV {
     distribution_after <- data.frame(Length=names(distribution_after),Counts=as.vector(distribution_after))
 
     #write
-    write.table(filtered_table, file = "ASV_table.len.tsv", row.names=FALSE, sep="\t", col.names = TRUE, quote = FALSE, na = '')
+    write.table(filtered_table, file = "$asv_table_filtered", row.names=FALSE, sep="\t", col.names = TRUE, quote = FALSE, na = '')
     write.table(data.frame(s = sprintf(">%s\n%s", filtered_seq\$ID, filtered_seq\$sequence)), 'ASV_seqs.len.fasta', col.names = FALSE, row.names = FALSE, quote = FALSE, na = '')
     write.table(distribution_before, file = "ASV_len_orig.tsv", row.names=FALSE, sep="\t", col.names = TRUE, quote = FALSE, na = '')
     write.table(distribution_after, file = "ASV_len_filt.tsv", row.names=FALSE, sep="\t", col.names = TRUE, quote = FALSE, na = '')

@@ -1546,10 +1546,11 @@ if ( params$min_len_asv != 0 && params$max_len_asv != 0 ) {
 } else if ( params$max_len_asv != 0 ) {
     cat(" ASVs with length above",params$max_len_asv,"bp")
 }
-cat(paste0("
-were removed with less than ",round(filter_len_stats_max_removed,2),"% counts per sample
-(",sum(filter_len_asv_filtered$Counts)," ASVs passed).
-"))
+if ( !isFALSE(params$filter_len_asv) && flag_filter_len_stats ) {
+    cat("were removed with less than ",round(filter_len_stats_max_removed,2),"% counts per sample (",sum(filter_len_asv_filtered$Counts)," ASVs passed).")
+} else {
+    cat("were removed (",sum(filter_len_asv_filtered$Counts)," ASVs passed).")
+}
 ```
 ```{r, eval = !isFALSE(params$filter_codons), results='asis'}
 cat("ASVs with stop codons (",params$stop_codons,") or with a length not multiple of 3 in length were removed.")

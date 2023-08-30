@@ -79,7 +79,7 @@ params:
     dada_stats_path: FALSE
     vsearch_cluster: FALSE
     path_barrnap_sum: FALSE
-    filter_ssu_stats: ""
+    filter_ssu_stats: FALSE
     filter_ssu_asv: ""
     filter_len_asv: FALSE
     filter_len_asv_len_orig: FALSE
@@ -659,8 +659,20 @@ cat("\n\nrRNA classification results can be found in folder [barrnap](../barrnap
 <!-- Subsection on rRNA filtering with Barrnap -->
 
 ```{r, eval = !isFALSE(params$path_barrnap_sum) && !isFALSE(params$filter_ssu), results='asis'}
-cat("\n\nASVs were filtered for `",params$filter_ssu,"` (`bac`: Bacteria, `arc`: Archaea, `mito`: Mitochondria, `euk`: Eukaryotes)
-    using the above classification. The following table shows read counts for each sample before and after filtering:\n\n", sep = "")
+# Read the barrnap asv file
+filter_ssu_asv <- read.table( params$filter_ssu_asv, header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+filter_ssu_asv_filtered <- nrow(filter_ssu_asv)/2
+
+ # "n_asv_barrnap" is taken from the barrnap block above
+cat(paste0("
+ASVs were filtered for `",params$filter_ssu,"` (`bac`: Bacteria, `arc`: Archaea, `mito`: Mitochondria, `euk`: Eukaryotes) using the above classification.
+The number of ASVs was reduced by ",n_asv_barrnap-filter_ssu_asv_filtered,
+" (",100-round( filter_ssu_asv_filtered/n_asv_barrnap*100 ,2),"%), from ",n_asv_barrnap," to ",filter_ssu_asv_filtered," ASVs.
+"))
+```
+
+```{r, eval = !isFALSE(params$path_barrnap_sum) && !isFALSE(params$filter_ssu) && !isFALSE(params$filter_ssu_stats), results='asis'}
+cat("The following table shows read counts for each sample before and after filtering:\n\n", sep = "")
 
 # Read the barrnap stats file
 filter_ssu_stats = read.table( params$filter_ssu_stats, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
@@ -677,13 +689,7 @@ datatable(filter_ssu_stats, options = list(
         scrollY = "300px",
         paging = FALSE))
 
-# Read the barrnap asv file
-filter_ssu_asv <- read.table( params$filter_ssu_asv, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
-filter_ssu_asv_filtered <- nrow(filter_ssu_asv)
-
 cat("In average", round(filter_ssu_stats_avg_removed,2), "% reads were removed, but at most",filter_ssu_stats_max_removed,"% reads per sample. ")
-# "n_asv_barrnap" is taken from the barrnap block above
-cat("The number of ASVs was reduced by",n_asv_barrnap-filter_ssu_asv_filtered,"(",100-round( filter_ssu_asv_filtered/n_asv_barrnap*100 ,2),"%), from",n_asv_barrnap,"to",filter_ssu_asv_filtered," ASVs.")
 ```
 
 <!-- Subsection on sequence length filter -->
@@ -1532,10 +1538,11 @@ centroids with pairwise identity of ",params$vsearch_cluster_id,".
 ```
 ```{r, eval = !isFALSE(params$path_barrnap_sum) && !isFALSE(params$filter_ssu), results='asis'}
 cat(paste0("Barrnap ([Seemann, 2013](https://github.com/tseemann/barrnap)) filtered ASVs for `",params$filter_ssu,"` (`bac`: Bacteria, `arc`: Archaea, `mito`: Mitochondria, `euk`: Eukaryotes),
-",n_asv_barrnap-filter_ssu_asv_filtered," ASVs were removed with
-less than ",filter_ssu_stats_max_removed,"% counts per sample
-(",filter_ssu_asv_filtered," ASVs passed).
-"))
+",n_asv_barrnap-filter_ssu_asv_filtered," ASVs were removed "))
+if ( !isFALSE(params$filter_ssu_stats) ) {
+    cat(paste0("with less than ",filter_ssu_stats_max_removed,"% counts per sample "))
+}
+cat(paste0("(",filter_ssu_asv_filtered," ASVs passed)."))
 ```
 ```{r, eval = !isFALSE(params$filter_len_asv_len_orig), results='asis'}
 cat(sum(filter_len_profile$Counts)-sum(filter_len_asv_filtered$Counts))

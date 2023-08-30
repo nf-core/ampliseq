@@ -381,7 +381,7 @@ workflow AMPLISEQ {
     }
 
     //
-    // Modules : Filter rRNA
+    // Entry for ASV fasta files via "--input_fasta"
     //
     if ( params.input_fasta ) {
         FORMAT_FASTAINPUT( ch_input_fasta )
@@ -390,6 +390,9 @@ workflow AMPLISEQ {
         ch_unfiltered_fasta = ch_dada2_fasta
     }
 
+    //
+    // Modules : Filter rRNA
+    //
     if (!params.skip_barrnap && params.filter_ssu) {
         BARRNAP ( ch_unfiltered_fasta )
         BARRNAPSUMMARY ( BARRNAP.out.gff.collect() )
@@ -400,7 +403,7 @@ workflow AMPLISEQ {
         }
         ch_barrnapsummary = BARRNAPSUMMARY.out.summary
         ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))
-        FILTER_SSU ( ch_dada2_fasta, ch_dada2_asv, BARRNAPSUMMARY.out.summary )
+        FILTER_SSU ( ch_unfiltered_fasta, ch_dada2_asv.ifEmpty( [] ), BARRNAPSUMMARY.out.summary )
         MERGE_STATS_FILTERSSU ( ch_stats, FILTER_SSU.out.stats )
         ch_stats = MERGE_STATS_FILTERSSU.out.tsv
         ch_dada2_fasta = FILTER_SSU.out.fasta
@@ -798,7 +801,7 @@ workflow AMPLISEQ {
             params.vsearch_cluster ? FILTER_CLUSTERS.out.asv.ifEmpty( [] ) : [],
             !params.skip_barrnap ? BARRNAPSUMMARY.out.summary.ifEmpty( [] ) : [],
             params.filter_ssu ? FILTER_SSU.out.stats.ifEmpty( [] ) : [],
-            params.filter_ssu ? FILTER_SSU.out.asv.ifEmpty( [] ) : [],
+            params.filter_ssu ? FILTER_SSU.out.fasta.ifEmpty( [] ) : [],
             params.min_len_asv || params.max_len_asv ? FILTER_LEN_ASV.out.stats.ifEmpty( [] ) : [],
             params.min_len_asv || params.max_len_asv ? FILTER_LEN_ASV.out.len_orig.ifEmpty( [] ) : [],
             params.filter_codons ? FILTER_CODONS.out.stats.ifEmpty( [] ) : [],

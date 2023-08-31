@@ -79,11 +79,12 @@ params:
     dada_stats_path: FALSE
     vsearch_cluster: FALSE
     path_barrnap_sum: FALSE
-    filter_ssu_stats: ""
+    filter_ssu_stats: FALSE
     filter_ssu_asv: ""
     filter_len_asv: FALSE
     filter_len_asv_len_orig: FALSE
-    filter_codons: FALSE
+    filter_codons_fasta: FALSE
+    filter_codons_stats: FALSE
     stop_codons: ""
     itsx_cutasv_summary: ""
     cut_dada_ref_taxonomy: FALSE
@@ -576,7 +577,7 @@ if ( params$dada_sample_inference == "independent" ) {
 ```
 
 ```{r, results='asis'}
-flag_any_filtering <- !isFALSE(params$path_barrnap_sum) || !isFALSE(params$filter_len_asv) || !isFALSE(params$filter_codons) || !isFALSE(params$vsearch_cluster)
+flag_any_filtering <- !isFALSE(params$path_barrnap_sum) || !isFALSE(params$filter_len_asv) || !isFALSE(params$filter_codons_fasta) || !isFALSE(params$vsearch_cluster)
 ```
 
 <!-- Section on ASV filtering -->
@@ -659,8 +660,20 @@ cat("\n\nrRNA classification results can be found in folder [barrnap](../barrnap
 <!-- Subsection on rRNA filtering with Barrnap -->
 
 ```{r, eval = !isFALSE(params$path_barrnap_sum) && !isFALSE(params$filter_ssu), results='asis'}
-cat("\n\nASVs were filtered for `",params$filter_ssu,"` (`bac`: Bacteria, `arc`: Archaea, `mito`: Mitochondria, `euk`: Eukaryotes)
-    using the above classification. The following table shows read counts for each sample before and after filtering:\n\n", sep = "")
+# Read the barrnap asv file
+filter_ssu_asv <- read.table( params$filter_ssu_asv, header = FALSE, sep = "\t", stringsAsFactors = FALSE)
+filter_ssu_asv_filtered <- nrow(filter_ssu_asv)/2
+
+ # "n_asv_barrnap" is taken from the barrnap block above
+cat(paste0("
+ASVs were filtered for `",params$filter_ssu,"` (`bac`: Bacteria, `arc`: Archaea, `mito`: Mitochondria, `euk`: Eukaryotes) using the above classification.
+The number of ASVs was reduced by ",n_asv_barrnap-filter_ssu_asv_filtered,
+" (",100-round( filter_ssu_asv_filtered/n_asv_barrnap*100 ,2),"%), from ",n_asv_barrnap," to ",filter_ssu_asv_filtered," ASVs.
+"))
+```
+
+```{r, eval = !isFALSE(params$path_barrnap_sum) && !isFALSE(params$filter_ssu) && !isFALSE(params$filter_ssu_stats), results='asis'}
+cat("The following table shows read counts for each sample before and after filtering:\n\n", sep = "")
 
 # Read the barrnap stats file
 filter_ssu_stats = read.table( params$filter_ssu_stats, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
@@ -677,13 +690,7 @@ datatable(filter_ssu_stats, options = list(
         scrollY = "300px",
         paging = FALSE))
 
-# Read the barrnap asv file
-filter_ssu_asv <- read.table( params$filter_ssu_asv, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
-filter_ssu_asv_filtered <- nrow(filter_ssu_asv)
-
 cat("In average", round(filter_ssu_stats_avg_removed,2), "% reads were removed, but at most",filter_ssu_stats_max_removed,"% reads per sample. ")
-# "n_asv_barrnap" is taken from the barrnap block above
-cat("The number of ASVs was reduced by",n_asv_barrnap-filter_ssu_asv_filtered,"(",100-round( filter_ssu_asv_filtered/n_asv_barrnap*100 ,2),"%), from",n_asv_barrnap,"to",filter_ssu_asv_filtered," ASVs.")
 ```
 
 <!-- Subsection on sequence length filter -->
@@ -772,18 +779,25 @@ cat("\n\nLength filter results can be found in folder [asv_length_filter](../asv
 
 <!-- Subsection on codon usage filter -->
 
-```{r, eval = !isFALSE(params$filter_codons), results='asis'}
+```{r, eval = !isFALSE(params$filter_codons_fasta), results='asis'}
+filter_codons_fasta <- read.table(file = params$filter_codons_fasta, header = FALSE, sep = "\t")
+filter_codons_fasta_passed <- nrow(filter_codons_fasta)/2
+
 cat(paste0("
 ## Codon usage
 
 Amplicons of coding regions are expected to be free of stop codons and consist of condon tripletts.
 ASVs were filtered against the presence of stop codons (",params$stop_codons,") in the specified open reading frame of the ASV.
 Additionally, ASVs that are not multiple of 3 in length were omitted.
+",filter_codons_fasta_passed," ASVs passed the filtering.
 
+Codon usage filter results can be found in folder [codon_filter](../codon_filter).
 "))
+```
 
+```{r, eval = !isFALSE(params$filter_codons_stats), results='asis'}
 # import stats tsv
-filter_codons_stats <- read.table(file = params$filter_codons, header = TRUE, sep = "\t")
+filter_codons_stats <- read.table(file = params$filter_codons_stats, header = TRUE, sep = "\t")
 
 cat("The following table shows read counts for each sample after filtering:")
 
@@ -792,10 +806,6 @@ datatable(filter_codons_stats, options = list(
         scrollX = TRUE,
         scrollY = "300px",
         paging = FALSE))
-
-#TODO: add ASV count after filtering
-
-cat("\n\nCodon usage filter results can be found in folder [codon_filter](../codon_filter).")
 ```
 
 <!-- Section on taxonomic classification -->
@@ -1532,27 +1542,29 @@ centroids with pairwise identity of ",params$vsearch_cluster_id,".
 ```
 ```{r, eval = !isFALSE(params$path_barrnap_sum) && !isFALSE(params$filter_ssu), results='asis'}
 cat(paste0("Barrnap ([Seemann, 2013](https://github.com/tseemann/barrnap)) filtered ASVs for `",params$filter_ssu,"` (`bac`: Bacteria, `arc`: Archaea, `mito`: Mitochondria, `euk`: Eukaryotes),
-",n_asv_barrnap-filter_ssu_asv_filtered," ASVs were removed with
-less than ",filter_ssu_stats_max_removed,"% counts per sample
-(",filter_ssu_asv_filtered," ASVs passed).
-"))
+",n_asv_barrnap-filter_ssu_asv_filtered," ASVs were removed "))
+if ( !isFALSE(params$filter_ssu_stats) ) {
+    cat(paste0("with less than ",filter_ssu_stats_max_removed,"% counts per sample "))
+}
+cat(paste0("(",filter_ssu_asv_filtered," ASVs passed)."))
 ```
 ```{r, eval = !isFALSE(params$filter_len_asv_len_orig), results='asis'}
 cat(sum(filter_len_profile$Counts)-sum(filter_len_asv_filtered$Counts))
 if ( params$min_len_asv != 0 && params$max_len_asv != 0 ) {
-    cat(" ASVs with length lower than",params$min_len_asv,"or above",params$max_len_asv,"bp")
+    cat(" ASVs with length lower than",params$min_len_asv,"or above",params$max_len_asv,"bp ")
 } else if ( params$min_len_asv != 0 ) {
-    cat(" ASVs with length lower than",params$min_len_asv,"bp")
+    cat(" ASVs with length lower than",params$min_len_asv,"bp ")
 } else if ( params$max_len_asv != 0 ) {
-    cat(" ASVs with length above",params$max_len_asv,"bp")
+    cat(" ASVs with length above",params$max_len_asv,"bp ")
 }
-cat(paste0("
-were removed with less than ",round(filter_len_stats_max_removed,2),"% counts per sample
-(",sum(filter_len_asv_filtered$Counts)," ASVs passed).
-"))
+if ( !isFALSE(params$filter_len_asv) && flag_filter_len_stats ) {
+    cat(paste0("were removed with less than ",round(filter_len_stats_max_removed,2),"% counts per sample (",sum(filter_len_asv_filtered$Counts)," ASVs passed)."))
+} else {
+    cat(paste0("were removed (",sum(filter_len_asv_filtered$Counts)," ASVs passed)."))
+}
 ```
-```{r, eval = !isFALSE(params$filter_codons), results='asis'}
-cat("ASVs with stop codons (",params$stop_codons,") or with a length not multiple of 3 in length were removed.")
+```{r, eval = !isFALSE(params$filter_codons_fasta), results='asis'}
+cat(filter_codons_fasta_passed,"ASVs had no stop codons (",params$stop_codons,") and a length of a multiple of 3 (tripletts).")
 ```
 
 ```{r, eval = any_taxonomy, results='asis'}

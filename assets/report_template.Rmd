@@ -1551,20 +1551,20 @@ cat(paste0("(",filter_ssu_asv_filtered," ASVs passed)."))
 ```{r, eval = !isFALSE(params$filter_len_asv_len_orig), results='asis'}
 cat(sum(filter_len_profile$Counts)-sum(filter_len_asv_filtered$Counts))
 if ( params$min_len_asv != 0 && params$max_len_asv != 0 ) {
-    cat(" ASVs with length lower than",params$min_len_asv,"or above",params$max_len_asv,"bp")
+    cat(" ASVs with length lower than",params$min_len_asv,"or above",params$max_len_asv,"bp ")
 } else if ( params$min_len_asv != 0 ) {
-    cat(" ASVs with length lower than",params$min_len_asv,"bp")
+    cat(" ASVs with length lower than",params$min_len_asv,"bp ")
 } else if ( params$max_len_asv != 0 ) {
-    cat(" ASVs with length above",params$max_len_asv,"bp")
+    cat(" ASVs with length above",params$max_len_asv,"bp ")
 }
 if ( !isFALSE(params$filter_len_asv) && flag_filter_len_stats ) {
-    cat("were removed with less than ",round(filter_len_stats_max_removed,2),"% counts per sample (",sum(filter_len_asv_filtered$Counts)," ASVs passed).")
+    cat(paste0("were removed with less than ",round(filter_len_stats_max_removed,2),"% counts per sample (",sum(filter_len_asv_filtered$Counts)," ASVs passed)."))
 } else {
-    cat("were removed (",sum(filter_len_asv_filtered$Counts)," ASVs passed).")
+    cat(paste0("were removed (",sum(filter_len_asv_filtered$Counts)," ASVs passed)."))
 }
 ```
 ```{r, eval = !isFALSE(params$filter_codons_fasta), results='asis'}
-cat(filter_codons_fasta_passed,"ASVs with stop codons (",params$stop_codons,") or with a length not multiple of 3 were removed.")
+cat(filter_codons_fasta_passed,"ASVs had no stop codons (",params$stop_codons,") and a length of a multiple of 3 (tripletts).")
 ```
 
 ```{r, eval = any_taxonomy, results='asis'}

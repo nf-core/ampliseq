@@ -430,6 +430,8 @@ workflow AMPLISEQ {
         ch_stats = MERGE_STATS_FILTERLENASV.out.tsv
         ch_dada2_fasta = FILTER_LEN_ASV.out.fasta
         ch_dada2_asv = FILTER_LEN_ASV.out.asv
+        // Make sure that not all sequences were removed
+        ch_dada2_fasta.subscribe { if (it.countLines() == 0) error("ASV length filtering activated by '--min_len_asv' or '--max_len_asv' removed all ASVs, please adjust settings.") }
     }
 
     //
@@ -442,6 +444,8 @@ workflow AMPLISEQ {
         ch_stats = MERGE_STATS_CODONS.out.tsv
         ch_dada2_fasta = FILTER_CODONS.out.fasta
         ch_dada2_asv = FILTER_CODONS.out.asv
+        // Make sure that not all sequences were removed
+        ch_dada2_fasta.subscribe { if (it.countLines() == 0) error("ASV codon filtering activated by '--filter_codons' removed all ASVs, please adjust settings.") }
     }
 
     //

@@ -436,7 +436,7 @@ workflow AMPLISEQ {
     // Modules : Filtering based on codons in an open reading frame
     //
     if (params.filter_codons ) {
-        FILTER_CODONS ( ch_dada2_fasta, ch_dada2_asv, ch_stats )
+        FILTER_CODONS ( ch_dada2_fasta, ch_dada2_asv.ifEmpty( [] ) )
         ch_versions = ch_versions.mix(FILTER_CODONS.out.versions.ifEmpty(null))
         MERGE_STATS_CODONS( ch_stats, FILTER_CODONS.out.stats )
         ch_stats = MERGE_STATS_CODONS.out.tsv
@@ -804,6 +804,7 @@ workflow AMPLISEQ {
             params.filter_ssu ? FILTER_SSU.out.fasta.ifEmpty( [] ) : [],
             params.min_len_asv || params.max_len_asv ? FILTER_LEN_ASV.out.stats.ifEmpty( [] ) : [],
             params.min_len_asv || params.max_len_asv ? FILTER_LEN_ASV.out.len_orig.ifEmpty( [] ) : [],
+            params.filter_codons ? FILTER_CODONS.out.fasta.ifEmpty( [] ) : [],
             params.filter_codons ? FILTER_CODONS.out.stats.ifEmpty( [] ) : [],
             params.cut_its != "none" ? ITSX_CUTASV.out.summary.ifEmpty( [] ) : [],
             !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy ? ch_dada2_tax.ifEmpty( [] ) : [],

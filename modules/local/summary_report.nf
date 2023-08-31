@@ -31,6 +31,7 @@ process SUMMARY_REPORT  {
     path(filter_ssu_asv)
     path(filter_len_asv_stats)
     path(filter_len_asv_len_orig)
+    path(filter_codons_fasta)
     path(filter_codons_stats)
     path(itsx_cutasv_summary)
     path(dada2_tax)
@@ -105,7 +106,8 @@ process SUMMARY_REPORT  {
         filter_len_asv_len_orig ? "filter_len_asv_len_orig='$filter_len_asv_len_orig'" : "",
         params.min_len_asv ? "min_len_asv=$params.min_len_asv" : "min_len_asv=0",
         params.max_len_asv ? "max_len_asv=$params.max_len_asv" : "max_len_asv=0",
-        filter_codons_stats ? "filter_codons='$filter_codons_stats',stop_codons='$params.stop_codons'" : "",
+        filter_codons_fasta ? "filter_codons_fasta='$filter_codons_fasta',stop_codons='$params.stop_codons'" : "",
+        filter_codons_stats ? "filter_codons_stats='$filter_codons_stats'" : "",
         itsx_cutasv_summary ? "itsx_cutasv_summary='$itsx_cutasv_summary',cut_its='$params.cut_its'" : "",
         !dada2_tax ? "" :
             params.dada_ref_tax_custom ? "dada2_taxonomy='$dada2_tax',flag_ref_tax_user=TRUE" :

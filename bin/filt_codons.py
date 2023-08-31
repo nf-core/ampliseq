@@ -43,7 +43,7 @@ parser.add_argument(
     dest="count",
     type=argparse.FileType("r"),
     help="Count table file of the ASVs from the AmpliSeq pipeline",
-    required=True,
+    required=False,
 )
 
 parser.add_argument(
@@ -115,21 +115,25 @@ def check_asv(seq, start, stop):
 
 Out_Seq = open(args.prefix + "_filtered.fna", "w")
 Out_list = open(args.prefix + "_filtered.list", "w")
-Out_table = open(args.prefix + "_filtered.table.tsv", "w")
+if args.count is not None:
+    Out_table = open(args.prefix + "_filtered.table.tsv", "w")
+else:
+    Out_table = open("empty_" + args.prefix + "_filtered.table.tsv", "w")
 
 count_dict = {}
 p1 = re.compile("\t")
 p2 = re.compile(">")
 
-count = 0
-for line in args.count:
-    line = line.rstrip("\n")
-    if count == 0:
-        print(line, file=Out_table)
-        count += 1
-    else:
-        tmp_list = re.split(p1, line)
-        count_dict[tmp_list[0]] = line
+if args.count is not None:
+    count = 0
+    for line in args.count:
+        line = line.rstrip("\n")
+        if count == 0:
+            print(line, file=Out_table)
+            count += 1
+        else:
+            tmp_list = re.split(p1, line)
+            count_dict[tmp_list[0]] = line
 
 for line in args.fasta:
     line = line.rstrip("\n")
@@ -143,9 +147,11 @@ for line in args.fasta:
         if check_asv(line, begin, end):
             print(">", bin_head, "\n", line, file=Out_Seq, sep="")
             print(bin_head, file=Out_list)
-            print(count_dict[bin_head], file=Out_table)
+            if args.count is not None:
+                print(count_dict[bin_head], file=Out_table)
 
-args.count.close()
+if args.count is not None:
+    args.count.close()
 args.fasta.close()
 Out_Seq.close()
 Out_list.close()

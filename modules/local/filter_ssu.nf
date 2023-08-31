@@ -59,8 +59,9 @@ process FILTER_SSU {
     seq <- data.frame(ID=names(seq), sequence=paste(seq))
 
     #make sure that IDs match, this is only relevant when the fasta is from --input_fasta
-    if(!all(id_filtered\$ASV_ID %in% seq\$ID))  {
+    if(!all(id_filtered\$ASV_ID %in% seq\$ID)) {
         seq\$ID <- sub("[[:space:]].*", "",seq\$ID)
+        if(!all(id_filtered\$ASV_ID %in% seq\$ID)) { stop(paste("ERROR: Some ASV_IDs are not being merged with sequences, please check\n",paste(setdiff(id_filtered\$ASV_ID, seq\$ID),collapse="\n"))) }
     }
 
     #merge

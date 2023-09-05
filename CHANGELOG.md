@@ -29,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#617](https://github.com/nf-core/ampliseq/pull/617) - Fix database compatibility check for `--sbdiexport`
 - [#628](https://github.com/nf-core/ampliseq/pull/628) - Fix edge case for sample sheet input when using specific combinations of sampleID and forwardReads or reverseReads that will forward one file too much to cutadapt
 - [#630](https://github.com/nf-core/ampliseq/pull/630) - ASV rRNA (barrnap), length, and codon filter now work with ASV fasta file input
-- [#631](https://github.com/nf-core/ampliseq/pull/631) - UNIFRAC in QIIME2_DIVERSITY_CORE is now not attempting to use a GPU to avoid errors
+- [#633](https://github.com/nf-core/ampliseq/pull/633) - UNIFRAC in QIIME2_DIVERSITY_CORE is now not attempting to use a GPU to avoid errors
 
 ### `Dependencies`
 

@@ -71,6 +71,14 @@ if (params.sintax_ref_taxonomy && !params.skip_taxonomy) {
     val_sintax_ref_taxonomy = "none"
 }
 
+if (params.kraken2_ref_taxonomy && !params.skip_taxonomy) {
+    ch_kraken2_ref_taxonomy = Channel.fromList(params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["file"]).map { file(it) }
+    val_kraken2_ref_taxonomy = params.kraken2_ref_taxonomy.replace('=','_').replace('.','_')
+} else {
+    ch_kraken2_ref_taxonomy = Channel.empty()
+    val_kraken2_ref_taxonomy = "none"
+}
+
 // report sources
 ch_report_template = Channel.fromPath("${params.report_template}", checkIfExists: true)
 ch_report_css = Channel.fromPath("${params.report_css}", checkIfExists: true)
@@ -105,6 +113,11 @@ if ( params.sintax_ref_taxonomy ) {
 } else {
     sintax_taxlevels = ""
 }
+if ( params.kraken2_ref_taxonomy ) {
+    kraken2_taxlevels = params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["taxlevels"] ?: ""
+} else {
+    kraken2_taxlevels = ""
+}
 
 //make sure that taxlevels adheres to requirements when mixed with addSpecies
 if ( params.dada_ref_taxonomy && !params.skip_dada_addspecies && !params.skip_dada_taxonomy && !params.skip_taxonomy && taxlevels ) {
@@ -114,7 +127,7 @@ if ( params.dada_ref_taxonomy && !params.skip_dada_addspecies && !params.skip_da
 }
 
 //only run QIIME2 when taxonomy is actually calculated and all required data is available
-if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) && !params.skip_taxonomy && !params.skip_qiime && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.qiime_ref_taxonomy) ) {
+if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) && !params.skip_taxonomy && !params.skip_qiime && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.qiime_ref_taxonomy || params.kraken2_ref_taxonomy) ) {
     run_qiime2 = true
 } else {
     run_qiime2 = false
@@ -180,6 +193,7 @@ include { QIIME2_TAXONOMY               } from '../subworkflows/local/qiime2_tax
 include { CUTADAPT_WORKFLOW             } from '../subworkflows/local/cutadapt_workflow'
 include { DADA2_TAXONOMY_WF             } from '../subworkflows/local/dada2_taxonomy_wf'
 include { SINTAX_TAXONOMY_WF            } from '../subworkflows/local/sintax_taxonomy_wf'
+include { KRAKEN2_TAXONOMY_WF           } from '../subworkflows/local/kraken2_taxonomy_wf'
 include { QIIME2_EXPORT                 } from '../subworkflows/local/qiime2_export'
 include { QIIME2_BARPLOTAVG             } from '../subworkflows/local/qiime2_barplotavg'
 include { QIIME2_DIVERSITY              } from '../subworkflows/local/qiime2_diversity'
@@ -495,6 +509,20 @@ workflow AMPLISEQ {
         ch_dada2_tax = Channel.empty()
     }
 
+    //Kraken2
+    if (!params.skip_taxonomy && params.kraken2_ref_taxonomy) {
+        KRAKEN2_TAXONOMY_WF (
+            ch_kraken2_ref_taxonomy.collect(),
+            val_kraken2_ref_taxonomy,
+            ch_fasta,
+            kraken2_taxlevels
+        ).qiime2_tsv.set { ch_kraken2_tax }
+        ch_versions = ch_versions.mix(KRAKEN2_TAXONOMY_WF.out.versions)
+        ch_tax_for_phyloseq = ch_tax_for_phyloseq.mix ( ch_kraken2_tax.map { it = [ "kraken2", file(it) ] } )
+    } else {
+        ch_kraken2_tax = Channel.empty()
+    }
+
     // SINTAX
     if (!params.skip_taxonomy && params.sintax_ref_taxonomy) {
         SINTAX_TAXONOMY_WF (
@@ -576,19 +604,23 @@ workflow AMPLISEQ {
         } else if ( params.sintax_ref_taxonomy ) {
             log.info "Use SINTAX taxonomy classification"
             val_used_taxonomy = "SINTAX"
-            ch_tax = QIIME2_INTAX ( ch_sintax_tax ).qza
+            ch_tax = QIIME2_INTAX ( ch_sintax_tax, "parse_dada2_taxonomy.r" ).qza
         } else if ( params.pplace_tree && params.pplace_taxonomy) {
             log.info "Use EPA-NG / GAPPA taxonomy classification"
             val_used_taxonomy = "phylogenetic placement"
-            ch_tax = QIIME2_INTAX ( ch_pplace_tax ).qza
+            ch_tax = QIIME2_INTAX ( ch_pplace_tax, "parse_dada2_taxonomy.r" ).qza
         } else if ( params.dada_ref_taxonomy && !params.skip_dada_taxonomy ) {
             log.info "Use DADA2 taxonomy classification"
             val_used_taxonomy = "DADA2"
-            ch_tax = QIIME2_INTAX ( ch_dada2_tax ).qza
+            ch_tax = QIIME2_INTAX ( ch_dada2_tax, "parse_dada2_taxonomy.r" ).qza
         } else if ( params.qiime_ref_taxonomy || params.classifier ) {
             log.info "Use QIIME2 taxonomy classification"
             val_used_taxonomy = "QIIME2"
             ch_tax = QIIME2_TAXONOMY.out.qza
+        } else if ( params.kraken2_ref_taxonomy ) {
+            log.info "Use Kraken2 taxonomy classification"
+            val_used_taxonomy = "Kraken2"
+            ch_tax = QIIME2_INTAX ( ch_kraken2_tax, "" ).qza
         } else {
             log.info "Use no taxonomy classification"
             val_used_taxonomy = "none"
@@ -685,7 +717,7 @@ workflow AMPLISEQ {
     // MODULE: Predict functional potential of a bacterial community from marker genes with Picrust2
     //
     if ( params.picrust ) {
-        if ( run_qiime2 && !params.skip_abundance_tables && ( params.dada_ref_taxonomy || params.qiime_ref_taxonomy || params.classifier || params.sintax_ref_taxonomy ) && !params.skip_taxonomy ) {
+        if ( run_qiime2 && !params.skip_abundance_tables && ( params.dada_ref_taxonomy || params.qiime_ref_taxonomy || params.classifier || params.sintax_ref_taxonomy || params.kraken2_ref_taxonomy ) && !params.skip_taxonomy ) {
             PICRUST ( QIIME2_EXPORT.out.abs_fasta, QIIME2_EXPORT.out.abs_tsv, "QIIME2", "This Picrust2 analysis is based on filtered reads from QIIME2" )
         } else {
             PICRUST ( ch_fasta, ch_dada2_asv, "DADA2", "This Picrust2 analysis is based on unfiltered reads from DADA2" )

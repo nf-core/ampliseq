@@ -95,6 +95,7 @@ params:
     qiime2_taxonomy: FALSE
     filter_stats_tsv: FALSE
     diversity_indices_depth: ""
+    diversity_indices_alpha: FALSE
     diversity_indices_beta: FALSE
     diversity_indices_adonis: ""
     picrust_pathways: FALSE
@@ -116,7 +117,7 @@ library("purrr")
 <!-- set notebook defaults -->
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE) # echo is set in differentialabundance v1.2.0 to TRUE
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE) # echo is set in differentialabundance v1.2.0 to TRUE
 ```
 
 <!-- Include the CSS and set the logo -->
@@ -1307,7 +1308,7 @@ Folder [qiime2/alpha-rarefaction](../qiime2/alpha-rarefaction) contains the data
 
 <!-- Subsection on diversity analysis -->
 
-```{r, eval = !isFALSE(params$diversity_indices_beta), results='asis'}
+```{r, eval = !isFALSE(params$diversity_indices_alpha) || !isFALSE(params$diversity_indices_beta), results='asis'}
 diversity_indices_depth <- readLines(params$diversity_indices_depth)
 
 cat(paste0("
@@ -1315,7 +1316,11 @@ cat(paste0("
 
 Diversity measures summarize important sample features (alpha diversity) or differences between samples (beta diversity).
 Diversity calculations are based on sub-sampled data rarefied to ",diversity_indices_depth, " counts.
+"))
+```
 
+```{r, eval = !isFALSE(params$diversity_indices_alpha), results='asis'}
+cat(paste0("
 ### Alpha diversity indices
 
 Alpha diversity measures the species diversity within samples.
@@ -1332,8 +1337,76 @@ Folder [qiime2/diversity/alpha_diversity](../qiime2/diversity/alpha_diversity) c
 - Shannon’s diversity index (quantitative): [qiime2/diversity/alpha_diversity/shannon_vector/index.html](../qiime2/diversity/alpha_diversity/shannon_vector/index.html)
 - Pielou’s Evenness: [qiime2/diversity/alpha_diversity/evenness_vector/index.html](../qiime2/diversity/alpha_diversity/evenness_vector/index.html)
 - Faith’s Phylogenetic Diversity (qualitiative, phylogenetic) [qiime2/diversity/alpha_diversity/faith_pd_vector/index.html](../qiime2/diversity/alpha_diversity/faith_pd_vector/index.html)
-- Observed OTUs (qualitative): [qiime2/diversity/alpha_diversity/observed_otus_vector/index.html](../qiime2/diversity/alpha_diversity/observed_otus_vector/index.html)
+- Observed OTUs (qualitative): [qiime2/diversity/alpha_diversity/observed_features_vector/index.html](../qiime2/diversity/alpha_diversity/observed_features_vector/index.html)
+"))
+```
 
+```{r, eval = !isFALSE(params$diversity_indices_alpha) && !isFALSE(params$abundance_tables), results='asis'}
+count <- read.table("./abundance_tables/feature-table.tsv", sep = '\t', header = TRUE, na.strings = c("NA", "-", "?"), comment="", skip=1)
+count <- as.data.frame( colSums(count[2:ncol(count)]) )
+colnames(count)[1] <- "count"
+
+res_alphadiversity <- data.frame(
+    diversity=character(),
+    rho=integer(),
+    p=integer(),
+    stringsAsFactors=FALSE)
+plots_alphadiversity_counts_spearman <- c()
+for (alphadiversity_folder in c("shannon_vector","evenness_vector", "faith_pd_vector", "observed_features_vector")) {
+    alpha <- read.table(paste0("./alpha_diversity/",alphadiversity_folder,"/metadata.tsv"), sep = '\t', header = TRUE, na.strings = c("NA", "-", "?"))
+    df <- merge(alpha,count, by.x='id', by.y='row.names')
+
+    df_subset <- df[,(ncol(df)-1):ncol(df)]
+    colnames(df_subset) <- c("alpha","count")
+
+    spearman <- cor.test(df_subset$alpha, df_subset$count, method="spearman")
+    pearson <- cor.test(df_subset$alpha, df_subset$count, method="pearson")
+
+    plot_alpha_count_spearman <- ggplot(df_subset, aes(x=count, y=alpha)) +
+        geom_point() +
+        ggtitle(paste0("Spearman's rank correlation\ncoefficient rho ",round(spearman$estimate,2)," and p=",round(spearman$p.value, 3))) +
+        xlab("Total counts per sample") +
+        ylab(paste0(alphadiversity_folder," alpha diversity")) +
+        geom_smooth(method=lm) +
+        theme_bw()
+
+    outfile <- paste0("./",alphadiversity_folder,"_spearman.svg")
+    svg(outfile, height = 3.6, width = 3.6)
+    plot(plot_alpha_count_spearman)
+    invisible(dev.off())
+
+    plots_alphadiversity_counts_spearman <- c(plots_alphadiversity_counts_spearman,outfile)
+    res_alphadiversity <- rbind(res_alphadiversity,
+        data.frame(
+            diversity=alphadiversity_folder,
+            rho=spearman$estimate,
+            p=spearman$p.value,
+            stringsAsFactors=FALSE))
+}
+sign_alphadiversity <- res_alphadiversity[res_alphadiversity$rho > 0 & res_alphadiversity$p < 0.05,]
+
+cat(paste0("
+Alpha diversity is considered not trustworthy when it correlates positively with sequencing depth.
+Spearman's rank correlation was calculated for total counts per sample after all filtering steps
+(in folder [qiime2/abundance_tables](../qiime2/abundance_tables)) with alpha diversity measures.
+"))
+if ( nrow(sign_alphadiversity) > 0 ) {
+    cat(paste0("Significant positive correlation was found for ", paste(sign_alphadiversity$diversity, collapse=', ' ),":\n\n"))
+} else {
+    cat("No significant positive correlation was found between alpha diversity and sample counts:\n\n")
+}
+```
+
+```{r, eval = !isFALSE(params$diversity_indices_alpha) && !isFALSE(params$abundance_tables), out.width="25%", fig.show='hold', fig.align='default'}
+knitr::include_graphics(plots_alphadiversity_counts_spearman)
+```
+
+```{r, eval = !isFALSE(params$diversity_indices_alpha) && !isFALSE(params$abundance_tables), results='asis'}
+cat("Scatter plots with linear regression line (blue) with 95% confidence interval (gray shaded area).")
+```
+
+```{r, eval = !isFALSE(params$diversity_indices_beta), results='asis'}
+cat(paste0("
 ### Beta diversity indices
 
 Beta diversity measures the species community differences between samples. This step calculates beta diversity distances using

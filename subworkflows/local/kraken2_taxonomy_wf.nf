@@ -17,8 +17,9 @@ workflow KRAKEN2_TAXONOMY_WF {
     ch_versions_kraken2_taxonomy = Channel.empty()
 
     // format taxonomy file
+    // TODO: accept folder with database files (not '*.tar.gz')
     UNTAR (
-        ch_kraken2_ref_taxonomy
+        ch_kraken2_ref_taxonomy.dump(tag:'ch_kraken2_ref_taxonomy')
             .map {
                 db ->
                     def meta = [:]

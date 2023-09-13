@@ -71,7 +71,12 @@ if (params.sintax_ref_taxonomy && !params.skip_taxonomy) {
     val_sintax_ref_taxonomy = "none"
 }
 
-if (params.kraken2_ref_taxonomy && !params.skip_taxonomy) {
+if (params.kraken2_ref_tax_custom) {
+    //custom ref taxonomy input from params.kraken2_ref_tax_custom
+    ch_kraken2_ref_taxonomy = Channel.fromPath("${params.kraken2_ref_tax_custom}", checkIfExists: true)
+    val_kraken2_ref_taxonomy = "user"
+} else if (params.kraken2_ref_taxonomy && !params.skip_taxonomy) {
+    //standard ref taxonomy input from params.dada_ref_taxonomy & conf/ref_databases.config
     ch_kraken2_ref_taxonomy = Channel.fromList(params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["file"]).map { file(it) }
     val_kraken2_ref_taxonomy = params.kraken2_ref_taxonomy.replace('=','_').replace('.','_')
 } else {
@@ -114,10 +119,9 @@ if ( params.sintax_ref_taxonomy ) {
     sintax_taxlevels = ""
 }
 if ( params.kraken2_ref_taxonomy ) {
-    kraken2_taxlevels = params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["taxlevels"] ?: ""
-} else {
-    kraken2_taxlevels = ""
-}
+    kraken2_taxlevels = params.kraken2_assign_taxlevels ? "${params.kraken2_assign_taxlevels}" :
+        params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["taxlevels"] ?: ""
+} else { kraken2_taxlevels = params.kraken2_assign_taxlevels ? "${params.kraken2_assign_taxlevels}" : "" }
 
 //make sure that taxlevels adheres to requirements when mixed with addSpecies
 if ( params.dada_ref_taxonomy && !params.skip_dada_addspecies && !params.skip_dada_taxonomy && !params.skip_taxonomy && taxlevels ) {
@@ -127,7 +131,7 @@ if ( params.dada_ref_taxonomy && !params.skip_dada_addspecies && !params.skip_da
 }
 
 //only run QIIME2 when taxonomy is actually calculated and all required data is available
-if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) && !params.skip_taxonomy && !params.skip_qiime && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.qiime_ref_taxonomy || params.kraken2_ref_taxonomy) ) {
+if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) && !params.skip_taxonomy && !params.skip_qiime && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.qiime_ref_taxonomy || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom) ) {
     run_qiime2 = true
 } else {
     run_qiime2 = false
@@ -510,7 +514,7 @@ workflow AMPLISEQ {
     }
 
     //Kraken2
-    if (!params.skip_taxonomy && params.kraken2_ref_taxonomy) {
+    if (!params.skip_taxonomy && (params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom) ) {
         KRAKEN2_TAXONOMY_WF (
             ch_kraken2_ref_taxonomy.collect(),
             val_kraken2_ref_taxonomy,
@@ -617,7 +621,7 @@ workflow AMPLISEQ {
             log.info "Use QIIME2 taxonomy classification"
             val_used_taxonomy = "QIIME2"
             ch_tax = QIIME2_TAXONOMY.out.qza
-        } else if ( params.kraken2_ref_taxonomy ) {
+        } else if ( params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom ) {
             log.info "Use Kraken2 taxonomy classification"
             val_used_taxonomy = "Kraken2"
             ch_tax = QIIME2_INTAX ( ch_kraken2_tax, "" ).qza
@@ -717,7 +721,7 @@ workflow AMPLISEQ {
     // MODULE: Predict functional potential of a bacterial community from marker genes with Picrust2
     //
     if ( params.picrust ) {
-        if ( run_qiime2 && !params.skip_abundance_tables && ( params.dada_ref_taxonomy || params.qiime_ref_taxonomy || params.classifier || params.sintax_ref_taxonomy || params.kraken2_ref_taxonomy ) && !params.skip_taxonomy ) {
+        if ( run_qiime2 && !params.skip_abundance_tables && ( params.dada_ref_taxonomy || params.qiime_ref_taxonomy || params.classifier || params.sintax_ref_taxonomy || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom ) && !params.skip_taxonomy ) {
             PICRUST ( QIIME2_EXPORT.out.abs_fasta, QIIME2_EXPORT.out.abs_tsv, "QIIME2", "This Picrust2 analysis is based on filtered reads from QIIME2" )
         } else {
             PICRUST ( ch_fasta, ch_dada2_asv, "DADA2", "This Picrust2 analysis is based on unfiltered reads from DADA2" )

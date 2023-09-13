@@ -361,6 +361,16 @@
                         "standard=20230605"
                     ]
                 },
+                "kraken2_ref_tax_custom": {
+                    "type": "string",
+                    "help_text": "Is preferred over `--kraken2_ref_taxonomy`. Consider also setting `--kraken2_assign_taxlevels`. Can be compressed tar archive (.tar.gz) or folder containing the database. See also https://benlangmead.github.io/aws-indexes/k2.",
+                    "description": "Path to a custom Kraken2 reference taxonomy database (.tar.gz or folder)"
+                },
+                "kraken2_assign_taxlevels": {
+                    "type": "string",
+                    "help_text": "Typically useful when providing a custom Kraken2 reference taxonomy database with `--kraken2_ref_tax_custom`. In case a database is given with `--kraken2_ref_taxonomy`, the default taxonomic levels will be overwritten with `--kraken2_assign_taxlevels`.",
+                    "description": "Comma separated list of taxonomic levels used in Kraken2. Will overwrite default values."
+                },
                 "sintax_ref_taxonomy": {
                     "type": "string",
                     "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `coidb=221216`) . This will download the desired database and initiate taxonomic classification with VSEARCH sintax and the chosen database, which if needed is formatted to produce a file that is compatible with VSEARCH sintax.\n\nThe following databases are supported:\n- COIDB - eukaryotic Cytochrome Oxidase I (COI) from The Barcode of Life Data System (BOLD) - COI\n- UNITE - eukaryotic nuclear ribosomal ITS region - ITS\n\nGenerally, using `coidb`, `unite-fungi`, or `unite-alleuk` will select the most recent supported version. For details on what values are valid, please either use an invalid value such as `x` (causing the pipeline to send an error message with a list of all valid values) or see `conf/ref_databases.config`.",

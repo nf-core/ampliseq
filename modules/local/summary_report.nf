@@ -45,9 +45,10 @@ process SUMMARY_REPORT  {
     val(qiime2_filtertaxa) // <ASV count original +1>,<ASV count filtered +2>
     path(filter_stats_tsv)
     path(barplot)
-    val(abundance_tables)
+    path(abundance_tables, stageAs: 'abundance_tables/*')
     val(alpha_rarefaction)
     path(diversity_indices)
+    path(diversity_indices_alpha, stageAs: 'alpha_diversity/*') // prevent folder name collisons
     path(diversity_indices_beta, stageAs: 'beta_diversity/*') // prevent folder name collisons
     path(diversity_indices_adonis, stageAs: 'beta_diversity/adonis/*') // prevent folder name collisons
     path(ancom)
@@ -122,7 +123,9 @@ process SUMMARY_REPORT  {
         barplot && params.metadata_category_barplot ? "metadata_category_barplot='$params.metadata_category_barplot'" : "",
         abundance_tables ? "abundance_tables=TRUE" : "",
         alpha_rarefaction ? "alpha_rarefaction=TRUE" : "",
-        diversity_indices ? "diversity_indices_depth='$diversity_indices',diversity_indices_beta='"+ diversity_indices_beta.join(",") +"'" : "",
+        diversity_indices ? "diversity_indices_depth='$diversity_indices'": "",
+        diversity_indices_alpha ? "diversity_indices_alpha=TRUE" : "",
+        diversity_indices_beta ? "diversity_indices_beta='"+ diversity_indices_beta.join(",") +"'" : "",
         diversity_indices_adonis ? "diversity_indices_adonis='"+ diversity_indices_adonis.join(",") +"',qiime_adonis_formula='$params.qiime_adonis_formula'" : "",
         ancom ? "ancom='"+ ancom.join(",") +"'" : "",
         sbdi ? "sbdi='"+ sbdi.join(",") +"'" : "",

@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-- [#558](https://github.com/nf-core/ampliseq/pull/558),[#619](https://github.com/nf-core/ampliseq/pull/619),[#625](https://github.com/nf-core/ampliseq/pull/625) - Pipeline summary report
+- [#558](https://github.com/nf-core/ampliseq/pull/558),[#619](https://github.com/nf-core/ampliseq/pull/619),[#625](https://github.com/nf-core/ampliseq/pull/625),[#632](https://github.com/nf-core/ampliseq/pull/632) - Pipeline summary report
 - [#615](https://github.com/nf-core/ampliseq/pull/615) - Phyloseq R object creation
 - [#622](https://github.com/nf-core/ampliseq/pull/622) - ASV post-clustering with Vsearch
 

@@ -345,6 +345,22 @@
                     "description": "Path to QIIME2 trained classifier file (typically *-classifier.qza)",
                     "help_text": "If you have trained a compatible classifier before, from sources such as SILVA (https://www.arb-silva.de/), Greengenes (http://greengenes.secondgenome.com/downloads) or RDP (https://rdp.cme.msu.edu/). \n\nFor example:\n\n```bash\n--classifier \"FW_primer-RV_primer-classifier.qza\"\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The classifier is a Naive Bayes classifier produced by `qiime feature-classifier fit-classifier-naive-bayes` (e.g. by this pipeline)\n3. The primer pair for the amplicon PCR and the computing of the classifier are exactly the same (or full-length, potentially lower performance)\n4. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses"
                 },
+                "kraken2_ref_taxonomy": {
+                    "type": "string",
+                    "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `silve=138`) . This will download the desired database and initiate taxonomic classification with Kraken2 and the chosen database.\n\nThe following databases are supported:\n- RDP - Ribosomal Database Project - 16S rRNA\n- SILVA ribosomal RNA gene database project - 16S rRNA\n- Greengenes - 16S rRNA\n- Standard Kraken2 database (archaea, bacteria, viral, plasmid, human, UniVec_Core) - any amplicon\n\nGenerally, using `rdp`, `silva`, `greengenes`, `standard` will select the most recent supported version. For details on what values are valid, please either use an invalid value such as `x` (causing the pipeline to send an error message with a list of all valid values) or see `conf/ref_databases.config`.\n\nPlease note that commercial/non-academic entities [require licensing](https://www.arb-silva.de/silva-license-information) for SILVA v132 database (non-default) but not from v138 on.",
+                    "description": "Name of supported database, and optionally also version number",
+                    "enum": [
+                        "silva",
+                        "silva=138",
+                        "silva=132",
+                        "rdp",
+                        "rdp=18",
+                        "greengenes",
+                        "greengenes=13.5",
+                        "standard",
+                        "standard=20230605"
+                    ]
+                },
                 "sintax_ref_taxonomy": {
                     "type": "string",
                     "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `coidb=221216`) . This will download the desired database and initiate taxonomic classification with VSEARCH sintax and the chosen database, which if needed is formatted to produce a file that is compatible with VSEARCH sintax.\n\nThe following databases are supported:\n- COIDB - eukaryotic Cytochrome Oxidase I (COI) from The Barcode of Life Data System (BOLD) - COI\n- UNITE - eukaryotic nuclear ribosomal ITS region - ITS\n\nGenerally, using `coidb`, `unite-fungi`, or `unite-alleuk` will select the most recent supported version. For details on what values are valid, please either use an invalid value such as `x` (causing the pipeline to send an error message with a list of all valid values) or see `conf/ref_databases.config`.",

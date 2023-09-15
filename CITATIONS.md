@@ -31,7 +31,7 @@
 - [DADA2](https://pubmed.ncbi.nlm.nih.gov/27214047/)
   > Callahan BJ, McMurdie PJ, Rosen MJ, Han AW, Johnson AJ, Holmes SP. DADA2: High-resolution sample inference from Illumina amplicon data. Nat Methods. 2016 Jul;13(7):581-3. doi: 10.1038/nmeth.3869. Epub 2016 May 23. PMID: 27214047; PMCID: PMC4927377.
 
-### Taxonomic classification and database (only one database)
+### Taxonomic classification and databases
 
 - Classification by [QIIME2 classifier](https://pubmed.ncbi.nlm.nih.gov/29773078/)
 
@@ -144,6 +144,10 @@
 - VSEARCH option sintax implements the [SINTAX](https://doi.org/10.1101/074161) algorithm
 
   > Edgar RC. (2016) SINTAX: a simple non-Bayesian taxonomy classifier for 16S and ITS sequences, BioRxiv, 074161. Preprint.
+
+- [Kraken2](https://pubmed.ncbi.nlm.nih.gov/31779668/)
+
+ > Wood, D. E., Lu, J., & Langmead, B. (2019). Improved metagenomic analysis with Kraken 2. Genome biology, 20(1), 257. https://doi.org/10.1186/s13059-019-1891-0
 
 ### Summarizing software
 

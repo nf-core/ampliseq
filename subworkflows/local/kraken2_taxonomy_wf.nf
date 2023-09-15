@@ -17,15 +17,23 @@ workflow KRAKEN2_TAXONOMY_WF {
     ch_versions_kraken2_taxonomy = Channel.empty()
 
     // format taxonomy file
-    // TODO: accept folder with database files (not '*.tar.gz')
+    ch_kraken2_ref_taxonomy
+        .branch {
+            tar: it.isFile() && [".tar.gz",".tgz"].contains( it.getName() - it.getSimpleName() )
+            dir: it.isDirectory()
+            failed: true
+        }.set { ch_kraken2_ref_taxonomy }
+    ch_kraken2_ref_taxonomy.failed.subscribe { error "$it is neither a directory nor a file that ends in '.tar.gz' or '.tgz'. Please review input." }
+
     UNTAR (
-        ch_kraken2_ref_taxonomy.dump(tag:'ch_kraken2_ref_taxonomy')
+        ch_kraken2_ref_taxonomy.tar
             .map {
                 db ->
                     def meta = [:]
                     meta.id = val_kraken2_ref_taxonomy
                     [ meta, db ] } )
     ch_kraken2db = UNTAR.out.untar.map{ it[1] }
+    ch_kraken2db = ch_kraken2db.mix(ch_kraken2_ref_taxonomy.dir)
 
     // search taxonomy database with kraken2
     ch_fasta

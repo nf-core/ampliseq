@@ -516,7 +516,7 @@ workflow AMPLISEQ {
     //Kraken2
     if (!params.skip_taxonomy && (params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom) ) {
         KRAKEN2_TAXONOMY_WF (
-            ch_kraken2_ref_taxonomy.collect(),
+            ch_kraken2_ref_taxonomy,
             val_kraken2_ref_taxonomy,
             ch_fasta,
             kraken2_taxlevels

@@ -363,8 +363,8 @@
                 },
                 "kraken2_ref_tax_custom": {
                     "type": "string",
-                    "help_text": "Is preferred over `--kraken2_ref_taxonomy`. Consider also setting `--kraken2_assign_taxlevels`. Can be compressed tar archive (.tar.gz) or folder containing the database. See also https://benlangmead.github.io/aws-indexes/k2.",
-                    "description": "Path to a custom Kraken2 reference taxonomy database (.tar.gz or folder)"
+                    "help_text": "Is preferred over `--kraken2_ref_taxonomy`. Consider also setting `--kraken2_assign_taxlevels`. Can be compressed tar archive (.tar.gz|.tgz) or folder containing the database. See also https://benlangmead.github.io/aws-indexes/k2.",
+                    "description": "Path to a custom Kraken2 reference taxonomy database (*.tar.gz|*.tgz archive or folder)"
                 },
                 "kraken2_assign_taxlevels": {
                     "type": "string",

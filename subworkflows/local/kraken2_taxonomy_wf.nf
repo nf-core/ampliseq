@@ -19,7 +19,7 @@ workflow KRAKEN2_TAXONOMY_WF {
     // format taxonomy file
     ch_kraken2_ref_taxonomy
         .branch {
-            tar: it.isFile() && [".tar.gz",".tgz"].contains( it.getName() - it.getSimpleName() )
+            tar: it.isFile() && ( it.getName().endsWith(".tar.gz") || it.getName().endsWith (".tgz") )
             dir: it.isDirectory()
             failed: true
         }.set { ch_kraken2_ref_taxonomy }

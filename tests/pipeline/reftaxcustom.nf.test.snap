@@ -44,9 +44,9 @@
     },
     "kraken2": {
         "content": [
-            "ASV_tax.greengenes.kraken2.classifiedreads.txt:md5,8a4693c37d5c24b342ef161b92567764",
-            "ASV_tax.greengenes.kraken2.complete.tsv:md5,3613dac9ce1bf03f87b57d1523e705f1",
-            "ASV_tax.greengenes.kraken2.tsv:md5,95c3f9daa5da8fe00159fb07d394c3ce"
+            "ASV_tax.user.kraken2.classifiedreads.txt:md5,8a4693c37d5c24b342ef161b92567764",
+            "ASV_tax.user.kraken2.complete.tsv:md5,3613dac9ce1bf03f87b57d1523e705f1",
+            "ASV_tax.user.kraken2.tsv:md5,95c3f9daa5da8fe00159fb07d394c3ce"
         ],
         "timestamp": "2023-09-15T21:16:26+0000"
     },

@@ -147,7 +147,7 @@
 
 - [Kraken2](https://pubmed.ncbi.nlm.nih.gov/31779668/)
 
- > Wood, D. E., Lu, J., & Langmead, B. (2019). Improved metagenomic analysis with Kraken 2. Genome biology, 20(1), 257. https://doi.org/10.1186/s13059-019-1891-0
+  > Wood, D. E., Lu, J., & Langmead, B. (2019). Improved metagenomic analysis with Kraken 2. Genome biology, 20(1), 257. https://doi.org/10.1186/s13059-019-1891-0
 
 ### Summarizing software
 

@@ -50,6 +50,18 @@
         ],
         "timestamp": "2023-09-15T21:16:26+0000"
     },
+    "qiime2": {
+        "content": [
+            "feature-table.tsv:md5,6685451c4d3cf974ff47aa42978feef6"
+        ],
+        "timestamp": "2023-09-18T13:44:12+0000"
+    },
+    "phyloseq": {
+        "content": [
+            "kraken2_phyloseq.rds:md5,45cea632154234ba50c5e3fa831b0343"
+        ],
+        "timestamp": "2023-09-18T13:44:12+0000"
+    },
     "multiqc": {
         "content": [
             "multiqc_general_stats.txt:md5,8429be0a16adf09b6634bf31b430bfac",

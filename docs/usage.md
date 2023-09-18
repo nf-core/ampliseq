@@ -206,9 +206,11 @@ Please note the following additional requirements:
 
 ### Taxonomic classification
 
-Taxonomic reference databases are the references for taxonomic classification, multiple databases are pre-configured, but user supplied databases are also supported for some tools. Classification of ASVs can be performed with a choice of DADA2, SINTAX, Kraken2 or QIIME2 using pipeline. Alternatively, phylogenetic placement can also be used to extract taxonomic classifications.
+Taxonomic classification of ASVs can be performed with tools DADA2, SINTAX, Kraken2 or QIIME2. Multiple taxonomic reference databases are pre-configured for those tools, but user supplied databases are also supported for some tools. Alternatively (or in addition), phylogenetic placement can be used to extract taxonomic classifications.
 
-In case multiple tools for taxonomic classification are used in one pipeline run, only one taxonomic classification result is forwarded to downstream analysis with QIIME2. The priority is `phylogenetic placement` > `DADA2` > `SINTAX` > `Kraken2` > `QIIME2`.
+In case multiple tools for taxonomic classification are executed in one pipeline run, only the taxonomic classification result of one tool is forwarded to downstream analysis with QIIME2. The priority is `phylogenetic placement` > `DADA2` > `SINTAX` > `Kraken2` > `QIIME2`.
+
+Default setting for taxonomic classification is DADA2 with the SILVA reference taxonomy database.
 
 Pre-configured reference taxonomy databases are:
 

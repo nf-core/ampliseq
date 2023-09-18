@@ -605,10 +605,6 @@ workflow AMPLISEQ {
             ch_tax = Channel.empty()
             tax_agglom_min = 1
             tax_agglom_max = 2
-        } else if ( params.sintax_ref_taxonomy ) {
-            log.info "Use SINTAX taxonomy classification"
-            val_used_taxonomy = "SINTAX"
-            ch_tax = QIIME2_INTAX ( ch_sintax_tax, "parse_dada2_taxonomy.r" ).qza
         } else if ( params.pplace_tree && params.pplace_taxonomy) {
             log.info "Use EPA-NG / GAPPA taxonomy classification"
             val_used_taxonomy = "phylogenetic placement"
@@ -617,14 +613,18 @@ workflow AMPLISEQ {
             log.info "Use DADA2 taxonomy classification"
             val_used_taxonomy = "DADA2"
             ch_tax = QIIME2_INTAX ( ch_dada2_tax, "parse_dada2_taxonomy.r" ).qza
-        } else if ( params.qiime_ref_taxonomy || params.classifier ) {
-            log.info "Use QIIME2 taxonomy classification"
-            val_used_taxonomy = "QIIME2"
-            ch_tax = QIIME2_TAXONOMY.out.qza
+        } else if ( params.sintax_ref_taxonomy ) {
+            log.info "Use SINTAX taxonomy classification"
+            val_used_taxonomy = "SINTAX"
+            ch_tax = QIIME2_INTAX ( ch_sintax_tax, "parse_dada2_taxonomy.r" ).qza
         } else if ( params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom ) {
             log.info "Use Kraken2 taxonomy classification"
             val_used_taxonomy = "Kraken2"
             ch_tax = QIIME2_INTAX ( ch_kraken2_tax, "" ).qza
+        } else if ( params.qiime_ref_taxonomy || params.classifier ) {
+            log.info "Use QIIME2 taxonomy classification"
+            val_used_taxonomy = "QIIME2"
+            ch_tax = QIIME2_TAXONOMY.out.qza
         } else {
             log.info "Use no taxonomy classification"
             val_used_taxonomy = "none"

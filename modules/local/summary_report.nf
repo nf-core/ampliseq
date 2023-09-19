@@ -37,6 +37,7 @@ process SUMMARY_REPORT  {
     path(dada2_tax)
     tuple val(meta_ref), path(cut_dada_ref_taxonomy) // cutadapt log when params.cut_dada_ref_taxonomy
     path(sintax_tax)
+    path(kraken2_tax)
     path(pplace_tax)
     tuple val(meta_pplace), path(pplace_heattree)
     path(qiime2_tax)
@@ -111,10 +112,13 @@ process SUMMARY_REPORT  {
         filter_codons_stats ? "filter_codons_stats='$filter_codons_stats'" : "",
         itsx_cutasv_summary ? "itsx_cutasv_summary='$itsx_cutasv_summary',cut_its='$params.cut_its'" : "",
         !dada2_tax ? "" :
-            params.dada_ref_tax_custom ? "dada2_taxonomy='$dada2_tax',flag_ref_tax_user=TRUE" :
+            params.dada_ref_tax_custom ? "dada2_taxonomy='$dada2_tax',flag_dada_ref_tax_user=TRUE" :
             "dada2_taxonomy='$dada2_tax',dada2_ref_tax_title='${params.dada_ref_databases[params.dada_ref_taxonomy]["title"]}',dada2_ref_tax_file='${params.dada_ref_databases[params.dada_ref_taxonomy]["file"]}',dada2_ref_tax_citation='${params.dada_ref_databases[params.dada_ref_taxonomy]["citation"]}'",
         cut_dada_ref_taxonomy ? "cut_dada_ref_taxonomy='$cut_dada_ref_taxonomy'" : "",
         sintax_tax ? "sintax_taxonomy='$sintax_tax',sintax_ref_tax_title='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["title"]}',sintax_ref_tax_file='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["file"]}',sintax_ref_tax_citation='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["citation"]}'" : "",
+        !kraken2_tax ? "" :
+            params.kraken2_ref_tax_custom ? "kraken2_taxonomy='$kraken2_tax',flag_kraken2_ref_tax_user=TRUE" :
+            "kraken2_taxonomy='$kraken2_tax',kraken2_ref_tax_title='${params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["title"]}',kraken2_ref_tax_file='${params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["file"]}',kraken2_ref_tax_citation='${params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["citation"]}'",
         pplace_tax ? "pplace_taxonomy='$pplace_tax',pplace_heattree='$pplace_heattree'" : "",
         qiime2_tax ? "qiime2_taxonomy='$qiime2_tax',qiime2_ref_tax_title='${params.qiime_ref_databases[params.qiime_ref_taxonomy]["title"]}',qiime2_ref_tax_file='${params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"]}',qiime2_ref_tax_citation='${params.qiime_ref_databases[params.qiime_ref_taxonomy]["citation"]}'" : "",
         run_qiime2 ? "val_used_taxonomy='$val_used_taxonomy'" : "",

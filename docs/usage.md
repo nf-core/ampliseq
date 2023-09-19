@@ -214,9 +214,9 @@ Default setting for taxonomic classification is DADA2 with the SILVA reference t
 
 Pre-configured reference taxonomy databases are:
 
-| Database     | DADA2 | SINTAX | Kraken2 | QIIME2 | Target genes                                  |
+| Database key | DADA2 | SINTAX | Kraken2 | QIIME2 | Target genes                                  |
 | ------------ | ----- | ------ | ------- | ------ | --------------------------------------------- |
-| SILVA        | +     | -      | +       | +      | 16S rRNA                                      |
+| silva        | +     | -      | +       | +      | 16S rRNA                                      |
 | gtdb         | +     | -      | -       | -      | 16S rRNA                                      |
 | sbdi-gtdb    | +     | -      | -       | -      | 16S rRNA                                      |
 | rdp          | +     | -      | +       | -      | 16S rRNA                                      |
@@ -226,17 +226,18 @@ Pre-configured reference taxonomy databases are:
 | unite-alleuk | +     | +      | -       | +      | eukaryotic nuclear ribosomal ITS region       |
 | coidb        | +     | +      | -       | -      | eukaryotic Cytochrome Oxidase I (COI)         |
 | midori2-co1  | +     | -      | -       | -      | eukaryotic Cytochrome Oxidase I (COI)         |
-| nr           | -     | -      | +       | -      | any in genomes of archaea, bacteria, viruses² |
-| custom       | +     | -      | +       | +      | any, user supplied²                           |
+| standard     | -     | -      | +       | -      | any in genomes of archaea, bacteria, viruses² |
+| custom³      | +     | -      | +       | +      | any, user supplied²                           |
 
 ¹: de-replicated at 85%, only for testing purposes
 ²: quality of results might vary
+³: theoretically possible with all classifiers, but specific parameters only available for some tools
 
 Special features of taxonomic classification tools:
 
-- QIIME2's reference taxonomy databases will have regions matching the amplicon extracted with primer sequences.
 - DADA2's reference taxonomy databases **can** have regions matching the amplicon extracted with primer sequences.
 - Kraken2 is very fast and can use large databases containing complete genomes.
+- QIIME2's reference taxonomy databases will have regions matching the amplicon extracted with primer sequences.
 
 Parameter guidance is given in [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#taxonomic-database).
 

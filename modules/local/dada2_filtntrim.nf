@@ -11,10 +11,10 @@ process DADA2_FILTNTRIM {
     tuple val(meta), path(reads), val(trunclenf), val(trunclenr)
 
     output:
-    tuple val(meta), path("*.filter_stats.tsv"), emit: log
-    tuple val(meta), path("*.filt.fastq.gz")   , emit: reads
-    path "versions.yml"                        , emit: versions
-    path "*.args.txt"                          , emit: args
+    tuple val(meta), path("*.filter_stats.tsv"), emit: log     , optional: params.ignore_failed_trimming
+    tuple val(meta), path("*.filt.fastq.gz")   , emit: reads   , optional: params.ignore_failed_trimming
+    path "versions.yml"                        , emit: versions, optional: params.ignore_failed_trimming
+    path "*.args.txt"                          , emit: args    , optional: params.ignore_failed_trimming
 
     when:
     task.ext.when == null || task.ext.when

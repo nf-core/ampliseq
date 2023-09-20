@@ -27,6 +27,7 @@ params:
     flag_retain_untrimmed: FALSE
     flag_dada_ref_tax_user: FALSE
     flag_kraken2_ref_tax_user: FALSE
+    kraken2_confidence: ""
     flag_single_end: FALSE
     barplot: FALSE
     abundance_tables: FALSE
@@ -1131,6 +1132,10 @@ if (!params$flag_kraken2_ref_tax_user) {
         More details about the reference taxonomy database can be found in the ['Methods section'](#methods).\n\n", sep = "")
 } else {
     cat("The taxonomic classification was performed by [Kraken2](https://doi.org/10.1186/s13059-019-1891-0) using a custom database provided by the user.\n\n", sep = "")
+}
+
+if ( params$kraken2_confidence != "0" ) {
+    cat("A confidence score threshold of",params$kraken2_confidence,"was applied for taxonomic classifications.\n\n")
 }
 
 asv_tax <- read.table(params$kraken2_taxonomy, header = TRUE, sep = "\t")

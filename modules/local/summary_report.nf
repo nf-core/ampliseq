@@ -117,8 +117,8 @@ process SUMMARY_REPORT  {
         cut_dada_ref_taxonomy ? "cut_dada_ref_taxonomy='$cut_dada_ref_taxonomy'" : "",
         sintax_tax ? "sintax_taxonomy='$sintax_tax',sintax_ref_tax_title='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["title"]}',sintax_ref_tax_file='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["file"]}',sintax_ref_tax_citation='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["citation"]}'" : "",
         !kraken2_tax ? "" :
-            params.kraken2_ref_tax_custom ? "kraken2_taxonomy='$kraken2_tax',flag_kraken2_ref_tax_user=TRUE" :
-            "kraken2_taxonomy='$kraken2_tax',kraken2_ref_tax_title='${params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["title"]}',kraken2_ref_tax_file='${params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["file"]}',kraken2_ref_tax_citation='${params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["citation"]}'",
+            params.kraken2_ref_tax_custom ? "kraken2_taxonomy='$kraken2_tax',flag_kraken2_ref_tax_user=TRUE,kraken2_confidence='$params.kraken2_confidence'" :
+            "kraken2_taxonomy='$kraken2_tax',kraken2_confidence='$params.kraken2_confidence',kraken2_ref_tax_title='${params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["title"]}',kraken2_ref_tax_file='${params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["file"]}',kraken2_ref_tax_citation='${params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["citation"]}'",
         pplace_tax ? "pplace_taxonomy='$pplace_tax',pplace_heattree='$pplace_heattree'" : "",
         qiime2_tax ? "qiime2_taxonomy='$qiime2_tax',qiime2_ref_tax_title='${params.qiime_ref_databases[params.qiime_ref_taxonomy]["title"]}',qiime2_ref_tax_file='${params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"]}',qiime2_ref_tax_citation='${params.qiime_ref_databases[params.qiime_ref_taxonomy]["citation"]}'" : "",
         run_qiime2 ? "val_used_taxonomy='$val_used_taxonomy'" : "",

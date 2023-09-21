@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#558](https://github.com/nf-core/ampliseq/pull/558),[#619](https://github.com/nf-core/ampliseq/pull/619),[#625](https://github.com/nf-core/ampliseq/pull/625),[#632](https://github.com/nf-core/ampliseq/pull/632) - Pipeline summary report
 - [#615](https://github.com/nf-core/ampliseq/pull/615) - Phyloseq R object creation
 - [#622](https://github.com/nf-core/ampliseq/pull/622) - ASV post-clustering with Vsearch
+- [#639](https://github.com/nf-core/ampliseq/pull/639) - GTDB release 214.1 for taxonomic classification with DADA2, using `--dada_ref_taxonomy gtdb` or `--dada_ref_taxonomy gtdb=R08-RS214`
 
 ### `Changed`
 
@@ -21,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | input         | input     | samplesheet, .tsv/.csv/.yml/.yaml        |
 | input_fasta   | input     | ASV/OTU sequences, .fasta                |
 | input_folder  | input     | Folder containing compressed fastq files |
+
+- [#639](https://github.com/nf-core/ampliseq/pull/639) - `--dada_ref_taxonomy gtdb` points towards GTDB release 214.1 instead of GTDB release 207 for taxonomic classification with DADA2
 
 ### `Fixed`
 

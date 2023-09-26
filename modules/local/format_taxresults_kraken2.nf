@@ -1,10 +1,10 @@
 process FORMAT_TAXRESULTS_KRAKEN2 {
     label 'process_low'
 
-    conda "bioconda::bioconductor-dada2=1.22.0 conda-forge::r-digest=0.6.30"
+    conda "conda-forge::r-base=4.2.1"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.22.0--r41h399db7b_0' :
-        'biocontainers/bioconductor-dada2:1.22.0--r41h399db7b_0' }" // TODO: pure R seems sufficient!
+        'https://depot.galaxyproject.org/singularity/r-base:4.2.1' :
+        'biocontainers/r-base:4.2.1' }"
 
     input:
     tuple val(meta), path(report)
@@ -102,6 +102,6 @@ process FORMAT_TAXRESULTS_KRAKEN2 {
     colnames(qiime) <- c("ASV_ID", "taxonomy")
     write.table(qiime, file = "${prefix}.kraken2.into-qiime2.tsv", row.names=FALSE, quote=FALSE, sep="\t")
 
-    writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
+    writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")) ), "versions.yml")
     """
 }

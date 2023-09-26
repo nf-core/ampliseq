@@ -94,6 +94,10 @@ class WorkflowAmpliseq {
             Nextflow.error("Incompatible parameters: `--qiime_ref_taxonomy` will produce a classifier but `--classifier` points to a precomputed classifier, therefore, only use one of those.")
         }
 
+        if (params.kraken2_ref_tax_custom && !params.kraken2_assign_taxlevels ) {
+            Nextflow.error("Missing parameter: Taxonomic classification with a user provided database via `--kraken2_ref_tax_custom` requires `--kraken2_assign_taxlevels`")
+        }
+
         if (params.filter_ssu && params.skip_barrnap) {
             Nextflow.error("Incompatible parameters: `--filter_ssu` cannot be used with `--skip_barrnap` because filtering for SSU's depends on barrnap.")
         }

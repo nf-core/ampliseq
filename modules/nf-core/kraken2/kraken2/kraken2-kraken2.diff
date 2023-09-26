@@ -1,0 +1,13 @@
+Changes in module 'nf-core/kraken2/kraken2'
+--- modules/nf-core/kraken2/kraken2/main.nf
++++ modules/nf-core/kraken2/kraken2/main.nf
+@@ -39,7 +39,6 @@
+         --db $db \\
+         --threads $task.cpus \\
+         --report ${prefix}.kraken2.report.txt \\
+-        --gzip-compressed \\
+         $unclassified_option \\
+         $classified_option \\
+         $readclassification_option \\
+
+************************************************************

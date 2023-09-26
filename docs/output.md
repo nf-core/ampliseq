@@ -33,7 +33,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [DADA2](#dada2) - Taxonomic classification with DADA2
   - [assignSH](#assignsh) - Optionally, a UNITE species hypothesis (SH) can be added to the DADA2 taxonomy
   - [SINTAX](#sintax) - Taxonomic classification with SINTAX
-  - [Taxonomic classification with QIIME2](#taxonomic-classification-with-qiime2) - Taxonomic classification with QIIME2
+  - [Kraken2](#kraken2) - Taxonomic classification with Kraken2
+  - [QIIME2](#qiime2) - Taxonomic classification with QIIME2
 - [Phlogenetic placement and taxonomic classification](#phylogenetic-placement-and-taxonomic-classification) - Placing ASVs into a phyloenetic tree
 - [QIIME2](#qiime2) - Secondary analysis
   - [Abundance tables](#abundance-tables) - Exported abundance tables
@@ -248,7 +249,7 @@ Codon filtering can be activated by `--filter_codons`. By default, the codons ar
 
 ### Taxonomic classification
 
-DADA2 and/or SINTAX can be used to taxonomically classify the ASVs using a choice of supplied databases (specified with `--dada_ref_taxonomy` and/or `--sintax_ref_taxonomy`). By default, DADA2 is used for the classification. The taxonomic classification will be done based on filtered ASV sequences (see above).
+Taxonomic classification of ASVs can be performed with a choice of DADA2, SINTAX, Kraken2 or QIIME2 using supplied databases or user supplied databases (see parameter documentation). By default, DADA2 is used for the classification. The taxonomic classification will be done based on filtered ASV sequences (see above).
 
 #### DADA2
 
@@ -321,9 +322,26 @@ Files when using ITSx:
 
 </details>
 
-#### Taxonomic classification with QIIME2
+#### Kraken2
 
-Taxonomic classification with QIIME2 is typically similar to DADA2 classifications. However, both options are available. When taxonomic classification with DADA2 and QIIME2 is performed, DADA2 classification takes precedence over QIIME2 classifications for all downstream analysis. Taxonomic classification by SINTAX or phylogenetic placement superseeds DADA2 and QIIME2 classification.
+Kraken2 taxonomically classifies ASVs using exact k-mer matches. Kraken2 matches each k-mer within a query sequence to the lowest common ancestor (LCA) of all genomes/sequences containing the given k-mer.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `kraken2`
+  - `ASV_tax.*.kraken2.report.txt`: Kraken2 report file, i.e. taxonomic classification of ASVs (shows number of ASVs matched at any given taxonomic level)
+  - `ASV_tax.*.kraken2.keys.tsv`: Tab-separated table with extracted information from the report file
+  - `ASV_tax.*.kraken2.classifiedreads.txt`: Classified sequence file, i.e. taxonomic classification (leaf) per ASV
+  - `ASV_tax.*.kraken2.complete.tsv`: Tab-separated table with all extracted and parsed information from report and classified sequence file for each ASV
+  - `ASV_tax.*.kraken2.tsv`: Tab-separated table with chosen taxonomic ranks per ASV
+  - `ASV_tax.*.kraken2.into-qiime2.tsv`: Table with two tab-separated columns, `ASV_ID` and aggregated `taxonomy` (semicolon separated string), input to QIIME2
+
+</details>
+
+#### QIIME2
+
+Taxonomic classification with QIIME2 is based on a classifier trained on sequences extracted with the primers.
 
 <details markdown="1">
 <summary>Output files</summary>

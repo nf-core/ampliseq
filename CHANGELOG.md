@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#558](https://github.com/nf-core/ampliseq/pull/558),[#619](https://github.com/nf-core/ampliseq/pull/619),[#625](https://github.com/nf-core/ampliseq/pull/625),[#632](https://github.com/nf-core/ampliseq/pull/632) - Pipeline summary report
 - [#615](https://github.com/nf-core/ampliseq/pull/615) - Phyloseq R object creation
 - [#622](https://github.com/nf-core/ampliseq/pull/622) - ASV post-clustering with Vsearch
+- [#641](https://github.com/nf-core/ampliseq/pull/641) - Continue analysis even when individual files fail the filtering threshold
 
 ### `Changed`
 

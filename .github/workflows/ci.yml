@@ -47,6 +47,7 @@ jobs:
           - "test"
           - "test_single"
           - "test_fasta"
+          - "test_failed"
           - "test_multi"
           - "test_reftaxcustom"
           - "test_doubleprimers"

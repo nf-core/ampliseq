@@ -97,13 +97,13 @@ workflow DADA2_PREPROCESSING {
     // Break apart the reads and logs so that only the samples
     // which pass filtering are retained
     ch_dada2_filtntrim_results_passed
-        .map{ it -> [it[0], it[1]] }
+        .map{ meta, reads, logs, args -> [meta, reads] }
         .set{ ch_dada2_filtntrim_reads_passed }
     ch_dada2_filtntrim_results_passed
-        .map{ it -> [it[0], it[2]] }
+        .map{ meta, reads, logs, args -> [meta, logs] }
         .set{ ch_dada2_filtntrim_logs_passed }
     ch_dada2_filtntrim_results_passed
-        .map{ it -> it[3] }
+        .map{ meta, reads, logs, args -> args }
         .set{ ch_dada2_filtntrim_args_passed }
 
     //plot post-processing, aggregated quality profile for forward and reverse reads separately

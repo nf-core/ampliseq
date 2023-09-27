@@ -94,11 +94,15 @@ class WorkflowAmpliseq {
             Nextflow.error("Incompatible parameters: `--qiime_ref_taxonomy` will produce a classifier but `--classifier` points to a precomputed classifier, therefore, only use one of those.")
         }
 
+        if (params.kraken2_ref_tax_custom && !params.kraken2_assign_taxlevels ) {
+            Nextflow.error("Missing parameter: Taxonomic classification with a user provided database via `--kraken2_ref_tax_custom` requires `--kraken2_assign_taxlevels`")
+        }
+
         if (params.filter_ssu && params.skip_barrnap) {
             Nextflow.error("Incompatible parameters: `--filter_ssu` cannot be used with `--skip_barrnap` because filtering for SSU's depends on barrnap.")
         }
 
-        String[] sbdi_compatible_databases = ["coidb","coidb=221216","gtdb","gtdb=R07-RS207","gtdb=R06-RS202","gtdb=R05-RS95","midori2-co1","midori2-co1=gb250","pr2","pr2=5.0.0","pr2=4.14.0","pr2=4.13.0","rdp","rdp=18","sbdi-gtdb","sbdi-gtdb=R07-RS207-1","silva","silva=138","silva=132","unite-fungi","unite-fungi=9.0","unite-fungi=8.3","unite-fungi=8.2","unite-alleuk","unite-alleuk=9.0","unite-alleuk=8.3","unite-alleuk=8.2"]
+        String[] sbdi_compatible_databases = ["coidb","coidb=221216","gtdb","gtdb=R08-RS214","gtdb=R07-RS207","gtdb=R06-RS202","gtdb=R05-RS95","midori2-co1","midori2-co1=gb250","pr2","pr2=5.0.0","pr2=4.14.0","pr2=4.13.0","rdp","rdp=18","sbdi-gtdb","sbdi-gtdb=R07-RS207-1","silva","silva=138","silva=132","unite-fungi","unite-fungi=9.0","unite-fungi=8.3","unite-fungi=8.2","unite-alleuk","unite-alleuk=9.0","unite-alleuk=8.3","unite-alleuk=8.2"]
         if (params.sbdiexport){
             if (params.sintax_ref_taxonomy ) {
                 if (!Arrays.stream(sbdi_compatible_databases).anyMatch(entry -> params.sintax_ref_taxonomy.toString().equals(entry)) ) {

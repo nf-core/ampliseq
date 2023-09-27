@@ -254,6 +254,7 @@
                         "gtdb=R05-RS95",
                         "gtdb=R06-RS202",
                         "gtdb=R07-RS207",
+                        "gtdb=R08-RS214",
                         "gtdb",
                         "coidb",
                         "coidb=221216",
@@ -349,6 +350,40 @@
                     "type": "string",
                     "description": "Path to QIIME2 trained classifier file (typically *-classifier.qza)",
                     "help_text": "If you have trained a compatible classifier before, from sources such as SILVA (https://www.arb-silva.de/), Greengenes (http://greengenes.secondgenome.com/downloads) or RDP (https://rdp.cme.msu.edu/). \n\nFor example:\n\n```bash\n--classifier \"FW_primer-RV_primer-classifier.qza\"\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The classifier is a Naive Bayes classifier produced by `qiime feature-classifier fit-classifier-naive-bayes` (e.g. by this pipeline)\n3. The primer pair for the amplicon PCR and the computing of the classifier are exactly the same (or full-length, potentially lower performance)\n4. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses"
+                },
+                "kraken2_ref_taxonomy": {
+                    "type": "string",
+                    "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `silve=138`) . This will download the desired database and initiate taxonomic classification with Kraken2 and the chosen database.\n\nConsider using `--kraken2_confidence` to set a confidence score threshold.\n\nThe following databases are supported:\n- RDP - Ribosomal Database Project - 16S rRNA\n- SILVA ribosomal RNA gene database project - 16S rRNA\n- Greengenes - 16S rRNA\n- Standard Kraken2 database (archaea, bacteria, viral, plasmid, human, UniVec_Core) - any amplicon\n\nGenerally, using `rdp`, `silva`, `greengenes`, `standard` will select the most recent supported version. For details on what values are valid, please either use an invalid value such as `x` (causing the pipeline to send an error message with a list of all valid values) or see `conf/ref_databases.config`.\n\nPlease note that commercial/non-academic entities [require licensing](https://www.arb-silva.de/silva-license-information) for SILVA v132 database (non-default) but not from v138 on.",
+                    "description": "Name of supported database, and optionally also version number",
+                    "enum": [
+                        "silva",
+                        "silva=138",
+                        "silva=132",
+                        "rdp",
+                        "rdp=18",
+                        "greengenes",
+                        "greengenes=13.5",
+                        "standard",
+                        "standard=20230605"
+                    ]
+                },
+                "kraken2_ref_tax_custom": {
+                    "type": "string",
+                    "help_text": "Is preferred over `--kraken2_ref_taxonomy`. Consider also setting `--kraken2_assign_taxlevels`. Can be compressed tar archive (.tar.gz|.tgz) or folder containing the database. See also https://benlangmead.github.io/aws-indexes/k2.",
+                    "description": "Path to a custom Kraken2 reference taxonomy database (*.tar.gz|*.tgz archive or folder)"
+                },
+                "kraken2_assign_taxlevels": {
+                    "type": "string",
+                    "help_text": "Typically useful when providing a custom Kraken2 reference taxonomy database with `--kraken2_ref_tax_custom`. In case a database is given with `--kraken2_ref_taxonomy`, the default taxonomic levels will be overwritten with `--kraken2_assign_taxlevels`.",
+                    "description": "Comma separated list of taxonomic levels used in Kraken2. Will overwrite default values."
+                },
+                "kraken2_confidence": {
+                    "type": "number",
+                    "default": 0,
+                    "help_text": "Increasing the threshold will require more k-mers to match at a taxonomic levels and reduce the taxonomic levels shown until the threshold is met.",
+                    "description": "Confidence score threshold for taxonomic classification.",
+                    "minimum": 0,
+                    "maximum": 1
                 },
                 "sintax_ref_taxonomy": {
                     "type": "string",
@@ -788,7 +823,7 @@
                     "description": "Maximum amount of time that can be requested for any single job.",
                     "default": "240.h",
                     "fa_icon": "far fa-clock",
-                    "pattern": "^(\\d+\\.?\\s*(s|m|h|day)\\s*)+$",
+                    "pattern": "^(\\d+\\.?\\s*(s|m|h|d|day)\\s*)+$",
                     "help_text": "Use to set an upper-limit for the time requirement for each process. Should be a string in the format integer-unit e.g. `--max_time '2.h'`"
                 }
             }

@@ -13,6 +13,7 @@
     - [Samplesheet input](#samplesheet-input)
     - [ASV/OTU fasta input](#asvotu-fasta-input)
     - [Direct FASTQ input](#direct-fastq-input)
+  - [Taxonomic classification](#taxonomic-classification)
   - [Metadata](#metadata)
   - [Updating the pipeline](#updating-the-pipeline)
   - [Reproducibility](#reproducibility)
@@ -202,6 +203,43 @@ Please note the following additional requirements:
 - To run single-end data you must additionally specify `--single_end` and `--extension` may not include curly brackets `{}`
 - Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique (also across sequencing runs)
 - If your data is scattered, produce a sample sheet
+
+### Taxonomic classification
+
+Taxonomic classification of ASVs can be performed with tools DADA2, SINTAX, Kraken2 or QIIME2. Multiple taxonomic reference databases are pre-configured for those tools, but user supplied databases are also supported for some tools. Alternatively (or in addition), phylogenetic placement can be used to extract taxonomic classifications.
+
+In case multiple tools for taxonomic classification are executed in one pipeline run, only the taxonomic classification result of one tool is forwarded to downstream analysis with QIIME2. The priority is `phylogenetic placement` > `DADA2` > `SINTAX` > `Kraken2` > `QIIME2`.
+
+Default setting for taxonomic classification is DADA2 with the SILVA reference taxonomy database.
+
+Pre-configured reference taxonomy databases are:
+
+| Database key | DADA2 | SINTAX | Kraken2 | QIIME2 | Target genes                                  |
+| ------------ | ----- | ------ | ------- | ------ | --------------------------------------------- |
+| silva        | +     | -      | +       | +      | 16S rRNA                                      |
+| gtdb         | +     | -      | -       | -      | 16S rRNA                                      |
+| sbdi-gtdb    | +     | -      | -       | -      | 16S rRNA                                      |
+| rdp          | +     | -      | +       | -      | 16S rRNA                                      |
+| greengenes   | -     | -      | +       | (+)¹   | 16S rRNA                                      |
+| pr2          | +     | -      | -       | -      | 18S rRNA                                      |
+| unite-fungi  | +     | +      | -       | +      | eukaryotic nuclear ribosomal ITS region       |
+| unite-alleuk | +     | +      | -       | +      | eukaryotic nuclear ribosomal ITS region       |
+| coidb        | +     | +      | -       | -      | eukaryotic Cytochrome Oxidase I (COI)         |
+| midori2-co1  | +     | -      | -       | -      | eukaryotic Cytochrome Oxidase I (COI)         |
+| standard     | -     | -      | +       | -      | any in genomes of archaea, bacteria, viruses² |
+| custom³      | +     | -      | +       | +      | any, user supplied²                           |
+
+¹: de-replicated at 85%, only for testing purposes
+²: quality of results might vary
+³: theoretically possible with all classifiers, but specific parameters only available for some tools
+
+Special features of taxonomic classification tools:
+
+- DADA2's reference taxonomy databases **can** have regions matching the amplicon extracted with primer sequences.
+- Kraken2 is very fast and can use large databases containing complete genomes.
+- QIIME2's reference taxonomy databases will have regions matching the amplicon extracted with primer sequences.
+
+Parameter guidance is given in [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#taxonomic-database).
 
 ### Metadata
 

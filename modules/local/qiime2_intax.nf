@@ -11,6 +11,7 @@ process QIIME2_INTAX {
 
     input:
     path(tax) //ASV_tax_species.tsv
+    val(script)
 
     output:
     path("taxonomy.qza") , emit: qza
@@ -20,8 +21,9 @@ process QIIME2_INTAX {
     task.ext.when == null || task.ext.when
 
     script:
+    def script_cmd = script ? "$script $tax" : "cp $tax tax.tsv"
     """
-    parse_dada2_taxonomy.r $tax
+    $script_cmd
 
     qiime tools import \\
         --type 'FeatureData[Taxonomy]' \\

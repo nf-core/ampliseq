@@ -25,7 +25,9 @@ params:
 
     # flags and arguments
     flag_retain_untrimmed: FALSE
-    flag_ref_tax_user: FALSE
+    flag_dada_ref_tax_user: FALSE
+    flag_kraken2_ref_tax_user: FALSE
+    kraken2_confidence: ""
     flag_single_end: FALSE
     barplot: FALSE
     abundance_tables: FALSE
@@ -45,12 +47,15 @@ params:
     dada2_ref_tax_title: FALSE
     qiime2_ref_tax_title: FALSE
     sintax_ref_tax_title: FALSE
+    kraken2_ref_tax_title: FALSE
     dada2_ref_tax_file: ""
     qiime2_ref_tax_file: ""
     sintax_ref_tax_file: ""
+    kraken2_ref_tax_file: ""
     dada2_ref_tax_citation: ""
     qiime2_ref_tax_citation: ""
     sintax_ref_tax_citation: ""
+    kraken2_ref_tax_citation: ""
     exclude_taxa: ""
     min_frequency: ""
     min_samples: ""
@@ -93,6 +98,7 @@ params:
     pplace_taxonomy: FALSE
     pplace_heattree: ""
     qiime2_taxonomy: FALSE
+    kraken2_taxonomy: FALSE
     filter_stats_tsv: FALSE
     diversity_indices_depth: ""
     diversity_indices_alpha: FALSE
@@ -813,7 +819,7 @@ datatable(filter_codons_stats, options = list(
 
 ```{r, results='asis'}
 # Check if any taxonomic classification is available
-any_taxonomy <- !isFALSE(params$dada2_taxonomy) || !isFALSE(params$qiime2_taxonomy) || !isFALSE(params$sintax_taxonomy) || !isFALSE(params$pplace_taxonomy)
+any_taxonomy <- !isFALSE(params$dada2_taxonomy)  || !isFALSE(params$kraken2_taxonomy) || !isFALSE(params$qiime2_taxonomy) || !isFALSE(params$sintax_taxonomy) || !isFALSE(params$pplace_taxonomy)
 ```
 
 ```{r, eval = any_taxonomy, results='asis'}
@@ -888,7 +894,7 @@ invisible(dev.off())
 cat("## DADA2\n")
 
 # indicate reference taxonomy
-if (!params$flag_ref_tax_user) {
+if (!params$flag_dada_ref_tax_user) {
     cat("The taxonomic classification was performed by [DADA2](https://pubmed.ncbi.nlm.nih.gov/27214047/)
         using the database: `", params$dada2_ref_tax_title, "`.
         More details about the reference taxonomy database can be found in the ['Methods section'](#methods).\n\n", sep = "")
@@ -1112,6 +1118,70 @@ plot_asv_classi_df
 invisible(dev.off())
 
 cat("\n\nSINTAX taxonomy assignments can be found in folder [sintax](../sintax).")
+```
+
+<!-- Subsection on Kraken2 taxonomy results -->
+
+```{r, eval = !isFALSE(params$kraken2_taxonomy), results='asis'}
+cat("## Kraken2\n")
+
+# indicate reference taxonomy
+if (!params$flag_kraken2_ref_tax_user) {
+    cat("The taxonomic classification was performed by [Kraken2](https://doi.org/10.1186/s13059-019-1891-0)
+        using the database: `", params$kraken2_ref_tax_title, "`.
+        More details about the reference taxonomy database can be found in the ['Methods section'](#methods).\n\n", sep = "")
+} else {
+    cat("The taxonomic classification was performed by [Kraken2](https://doi.org/10.1186/s13059-019-1891-0) using a custom database provided by the user.\n\n", sep = "")
+}
+
+if ( params$kraken2_confidence != "0" ) {
+    cat("A confidence score threshold of",params$kraken2_confidence,"was applied for taxonomic classifications.\n\n")
+}
+
+asv_tax <- read.table(params$kraken2_taxonomy, header = TRUE, sep = "\t")
+
+# Calculate the classified numbers/percent of asv
+level <- subset(asv_tax, select = -c(ASV_ID,lowest_match))
+level <- colnames(level)
+
+n_asv_tax = nrow(asv_tax)
+
+asv_tax_subset <- subset(asv_tax, select = level)
+n_asv_classified <- colSums( asv_tax_subset != "" & !is.na(asv_tax_subset) )
+
+n_asv_unclassified <- n_asv_tax - n_asv_classified
+p_asv_classified <- round(n_asv_classified / n_asv_tax * 100, 2)
+
+asv_classi_df <- data.frame(level, n_asv_classified, p_asv_classified)
+
+# Build output string
+outputstr <- "Kraken2 classified "
+for (row in seq_len(nrow(asv_classi_df))) {
+        outputstr <- paste0(outputstr, asv_classi_df[row, ]$p_asv_classified,
+                         " % ASVs at ", asv_classi_df[row, ]$level, " level, ")
+}
+outputstr <- substr(outputstr, 1, nchar(outputstr)-2)
+outputstr <- paste0(outputstr, ".\n\n")
+
+# Output Text Classifications
+cat(outputstr)
+
+# Barplot
+asv_classi_df$level <- factor(asv_classi_df$level, levels = asv_classi_df$level)
+plot_asv_classi_df <- ggplot(asv_classi_df,
+        aes(x = reorder(level, desc(level)), y = p_asv_classified)) +
+        geom_bar(stat = "identity", fill = rgb(0.1, 0.4, 0.75), width = 0.5) +
+        ylab("% Classification") +
+        xlab("Levels") +
+        coord_flip() +
+        theme_bw()
+plot_asv_classi_df
+
+svg("kraken2_taxonomic_classification_per_taxonomy_level.svg")
+plot_asv_classi_df
+invisible(dev.off())
+
+cat("\n\nKraken2 taxonomy assignments can be found in folder [kraken2](../kraken2).")
 ```
 
 <!-- Subsection on phylogenetic placements taxonomy results -->
@@ -1654,6 +1724,10 @@ if ( !isFALSE(params$qiime2_ref_tax_title) ) {
     methods_taxonomic_classification <- c(methods_taxonomic_classification,
         paste("QIIME2 and the database '",params$qiime2_ref_tax_title,"' (`", params$qiime2_ref_tax_citation,"`)", sep=""))
 }
+if ( !isFALSE(params$kraken2_ref_tax_title) ) {
+    methods_taxonomic_classification <- c(methods_taxonomic_classification,
+        paste("Kraken2 and the database '",params$kraken2_ref_tax_title,"' (`", params$kraken2_ref_tax_citation,"`)", sep=""))
+}
 if ( !isFALSE(params$sintax_ref_tax_title) ) {
     methods_taxonomic_classification <- c(methods_taxonomic_classification,
         paste("SINTAX and the database '",params$sintax_ref_tax_title,"' (`", params$sintax_ref_tax_citation,"`)", sep=""))
@@ -1744,18 +1818,25 @@ if ( !isFALSE(params$dada2_ref_tax_title) ) {
         "- citation: `", params$dada2_ref_tax_citation, "`\n\n", sep = "")
 }
 
-if ( !isFALSE(params$qiime2_ref_tax_title) ) {
-    cat("Taxonomic classification by QIIME2:\n\n",
-        "- database: `", params$qiime2_ref_tax_title, "`\n\n",
-        "- files: `", params$qiime2_ref_tax_file, "`\n\n",
-        "- citation: `", params$qiime2_ref_tax_citation, "`\n\n", sep = "")
-}
-
 if ( !isFALSE(params$sintax_ref_tax_title) ) {
     cat("Taxonomic classification by SINTAX:\n\n",
         "- database: `", params$sintax_ref_tax_title, "`\n\n",
         "- files: `", params$sintax_ref_tax_file, "`\n\n",
         "- citation: `", params$sintax_ref_tax_citation, "`\n\n", sep = "")
+}
+
+if ( !isFALSE(params$kraken2_ref_tax_title) ) {
+    cat("Taxonomic classification by Kraken2:\n\n",
+        "- database: `", params$kraken2_ref_tax_title, "`\n\n",
+        "- files: `", params$kraken2_ref_tax_file, "`\n\n",
+        "- citation: `", params$kraken2_ref_tax_citation, "`\n\n", sep = "")
+}
+
+if ( !isFALSE(params$qiime2_ref_tax_title) ) {
+    cat("Taxonomic classification by QIIME2:\n\n",
+        "- database: `", params$qiime2_ref_tax_title, "`\n\n",
+        "- files: `", params$qiime2_ref_tax_file, "`\n\n",
+        "- citation: `", params$qiime2_ref_tax_citation, "`\n\n", sep = "")
 }
 ```
 

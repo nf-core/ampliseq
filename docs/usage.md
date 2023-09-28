@@ -61,7 +61,7 @@ work                # Directory containing the nextflow working files
 ```
 
 :::note
-If the data originates from multiple sequencing runs, the error profile of each of those sequencing runs needs to be considered separately. Using the `run` column in the samplesheet input or adding `--multiple_sequencing_runs` for Direct FASTQ input will separate certain processes by the sequencing run. Please see the following example:
+If the data originates from multiple sequencing runs, the error profile of each of those sequencing runs needs to be considered separately. Using the `run` column in the samplesheet input or adding `--multiple_sequencing_runs` for direct FASTQ input will separate certain processes by the sequencing run. Please see the following example:
 :::
 
 <p align="center">

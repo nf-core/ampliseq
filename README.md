@@ -47,10 +47,11 @@ By default, the pipeline currently performs the following:
 
 ## Usage
 
-> **Note**
-> If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how
-> to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline)
-> with `-profile test` before running the workflow on actual data.
+:::note
+If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how
+to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline)
+with `-profile test` before running the workflow on actual data.
+:::
 
 First, you need to know whether the sequencing files at hand are expected to contain primer sequences (usually yes) and if yes, what primer sequences. In the example below, the paired end sequencing data was produced with 515f (GTGYCAGCMGCCGCGGTAA) and 806r (GGACTACNVGGGTWTCTAAT) primers of the V4 region of the 16S rRNA gene. Please note, that those sequences should not contain any sequencing adapter sequences, only the sequence that matches the biological amplicon.
 
@@ -67,16 +68,19 @@ nextflow run nf-core/ampliseq \
    --outdir <OUTDIR>
 ```
 
-> **Note**
-> Adding metadata will considerably increase the output, see [metadata documentation](https://nf-co.re/ampliseq/usage#metadata).
+:::note
+Adding metadata will considerably increase the output, see [metadata documentation](https://nf-co.re/ampliseq/usage#metadata).
+:::
 
-> **Note**
-> By default the taxonomic assignment will be performed with DADA2 on SILVA database, but there are various tools and databases readily available, see [taxonomic classification documentation](https://nf-co.re/ampliseq/usage#taxonomic-classification).
+:::note
+By default the taxonomic assignment will be performed with DADA2 on SILVA database, but there are various tools and databases readily available, see [taxonomic classification documentation](https://nf-co.re/ampliseq/usage#taxonomic-classification).
+:::
 
-> **Warning:**
-> Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those
-> provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;
-> see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).
+:::warning
+Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those
+provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;
+see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).
+:::
 
 For more details and further functionality, please refer to the [usage documentation](https://nf-co.re/ampliseq/usage) and the [parameter documentation](https://nf-co.re/ampliseq/parameters).
 

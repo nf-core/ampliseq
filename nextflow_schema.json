@@ -209,6 +209,11 @@
                     "description": "DADA2 read filtering option",
                     "fa_icon": "fas fa-less-than-equal",
                     "help_text": "Remove reads with length greater than `max_len` after trimming and truncation. Must be a positive integer."
+                },
+                "ignore_failed_filtering": {
+                    "type": "boolean",
+                    "description": "Ignore files with too few reads after quality filtering.",
+                    "help_text": "Ignore files with less reads than specified by `--min_read_counts` after trimming and continue the pipeline without those samples."
                 }
             }
         },

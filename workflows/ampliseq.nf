@@ -47,7 +47,7 @@ if (params.dada_ref_tax_custom) {
     ch_assigntax = Channel.fromPath("${params.dada_ref_tax_custom}", checkIfExists: true)
     if (params.dada_ref_tax_custom_sp) {
         ch_addspecies = Channel.fromPath("${params.dada_ref_tax_custom_sp}", checkIfExists: true)
-    }
+    } else { ch_addspecies = Channel.empty() }
     ch_dada_ref_taxonomy = Channel.empty()
     val_dada_ref_taxonomy = "user"
 } else if (params.dada_ref_taxonomy && !params.skip_dada_taxonomy && !params.skip_taxonomy) {

@@ -1,0 +1,36 @@
+nextflow_pipeline {
+
+    name "Test Workflow main.nf"
+    script "main.nf"
+    tag "test_failed"
+    tag "pipeline"
+
+    test("Failing samples") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert new File("$outputDir/overall_summary.tsv").exists() },
+                { assert new File("$outputDir/barrnap/summary.tsv").exists() },
+                { assert new File("$outputDir/cutadapt/cutadapt_summary.tsv").exists() },
+                { assert new File("$outputDir/dada2/DADA2_table.tsv").exists() },
+                { assert new File("$outputDir/dada2/ASV_tax.user.tsv").exists() },
+                { assert new File("$outputDir/qiime2/abundance_tables/count_table_filter_stats.tsv").exists() },
+                { assert new File("$outputDir/qiime2/abundance_tables/feature-table.tsv").exists() },
+                { assert new File("$outputDir/qiime2/ancom/Category-treatment1-ASV/ancom.tsv").exists() },
+                { assert new File("$outputDir/qiime2/barplot/index.html").exists() },
+                { assert new File("$outputDir/qiime2/alpha-rarefaction/index.html").exists() },
+                { assert new File("$outputDir/qiime2/diversity/alpha_diversity/shannon_vector/kruskal-wallis-pairwise-treatment1.csv").exists() },
+                { assert new File("$outputDir/qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA/index.html").exists() },
+                { assert new File("$outputDir/summary_report/summary_report.html").exists() },
+                { assert new File("$outputDir/phyloseq/dada2_phyloseq.rds").exists() }
+            )
+        }
+    }
+}

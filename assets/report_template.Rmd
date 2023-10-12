@@ -934,21 +934,12 @@ asv_tax <- read.table(params$dada2_taxonomy, header = TRUE, sep = "\t")
 level <- subset(asv_tax, select = -c(ASV_ID,confidence,sequence))
 level <- colnames(level)
 
-# Catch 100% highest taxa (e.g. Kingdom) assignment
-if (count(asv_tax, level[1])$n[1] == nrow(asv_tax)){
-    n_1 = 0
-} else {
-    n_1 = count(asv_tax, level[1])$n[1]
-}
 n_asv_tax = nrow(asv_tax)
-n_asv_unclassified <- c(n_1)
-for (x in level[2:length(level)]) {
-    asv_tax_subset <- subset(asv_tax, select = x)
-    colnames(asv_tax_subset)[1] <- "count_this"
-    n_asv_unclassified <- c(n_asv_unclassified, count(asv_tax_subset, count_this)$n[1])
-}
 
-n_asv_classified <- n_asv_tax - n_asv_unclassified
+asv_tax_subset <- subset(asv_tax, select = level)
+n_asv_classified <- colSums( asv_tax_subset != "" & !is.na(asv_tax_subset) )
+
+n_asv_unclassified <- n_asv_tax - n_asv_classified
 p_asv_classified <- round(n_asv_classified / n_asv_tax * 100, 2)
 
 asv_classi_df <- data.frame(level, n_asv_classified, p_asv_classified)
@@ -1070,21 +1061,12 @@ asv_tax <- read.table(params$sintax_taxonomy, header = TRUE, sep = "\t")
 level <- subset(asv_tax, select = -c(ASV_ID,confidence,sequence))
 level <- colnames(level)
 
-# Catch 100% highest taxa (e.g. Kingdom) assignment
-if (count(asv_tax, level[1])$n[1] == nrow(asv_tax)){
-    n_1 = nrow(asv_tax)
-} else {
-    n_1 = count(asv_tax, level[1])$n[1]
-}
 n_asv_tax = nrow(asv_tax)
-n_asv_unclassified <- c(n_1)
-for (x in level[2:length(level)]) {
-    asv_tax_subset <- subset(asv_tax, select = x)
-    colnames(asv_tax_subset)[1] <- "count_this"
-    n_asv_unclassified <- c(n_asv_unclassified, count(asv_tax_subset, count_this)$n[1])
-}
 
-n_asv_classified <- n_asv_tax - n_asv_unclassified
+asv_tax_subset <- subset(asv_tax, select = level)
+n_asv_classified <- colSums( asv_tax_subset != "" & !is.na(asv_tax_subset) )
+
+n_asv_unclassified <- n_asv_tax - n_asv_classified
 p_asv_classified <- round(n_asv_classified / n_asv_tax * 100, 2)
 
 asv_classi_df <- data.frame(level, n_asv_classified, p_asv_classified)

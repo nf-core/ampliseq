@@ -892,7 +892,7 @@ invisible(dev.off())
 cat("## DADA2\n")
 
 # indicate reference taxonomy
-if (params$dada2_ref_tax_title) {
+if ( !isFALSE(params$dada2_ref_tax_title) ) {
     cat("The taxonomic classification was performed by [DADA2](https://pubmed.ncbi.nlm.nih.gov/27214047/)
         using the database: `", params$dada2_ref_tax_title, "`.
         More details about the reference taxonomy database can be found in the ['Methods section'](#methods).\n\n", sep = "")
@@ -1106,7 +1106,7 @@ cat("\n\nSINTAX taxonomy assignments can be found in folder [sintax](../sintax).
 cat("## Kraken2\n")
 
 # indicate reference taxonomy
-if (params$kraken2_ref_tax_title) {
+if (  !isFALSE(params$kraken2_ref_tax_title) ) {
     cat("The taxonomic classification was performed by [Kraken2](https://doi.org/10.1186/s13059-019-1891-0)
         using the database: `", params$kraken2_ref_tax_title, "`.
         More details about the reference taxonomy database can be found in the ['Methods section'](#methods).\n\n", sep = "")

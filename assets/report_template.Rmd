@@ -1866,6 +1866,7 @@ cat(paste0("
 
 Technical information to the pipeline run are collected in folder [pipeline_info](../pipeline_info),
 including software versions collected at runtime in file `software_versions.yml` (can be viewed with a text editor),
+all parameter settings in file `params_{date}_{time}.json` (can be viewed with a text editor),
 execution report in file `execution_report_{date}_{time}.html`,
 execution trace in file `execution_trace_{date}_{time}.txt`,
 execution timeline in file `execution_timelime_{date}_{time}.html`, and

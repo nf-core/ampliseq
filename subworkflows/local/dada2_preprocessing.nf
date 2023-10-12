@@ -136,7 +136,8 @@ workflow DADA2_PREPROCESSING {
         ch_DADA2_QUALITY2_SVG = DADA2_QUALITY2.out.svg
     }
 
-    //group by sequencing run
+    //group reads by sequencing run
+    //for 'groupTuple', 'size' or 'groupKey' should be used but to produce it we need to know how many elements to group but some can be lost here, so no way knowing before
     ch_dada2_filtntrim_reads_passed
         .map {
             info, reads ->
@@ -154,9 +155,28 @@ workflow DADA2_PREPROCESSING {
                 [ meta, reads.flatten().sort() ] }
         .set { ch_filt_reads }
 
+    //group logs by sequencing run
+    //for 'groupTuple', 'size' or 'groupKey' should be used but to produce it we need to know how many elements to group but some can be lost here, so no way knowing before
+    ch_dada2_filtntrim_logs_passed
+        .map {
+            info, reads ->
+                def meta = [:]
+                meta.run = info.run
+                meta.single_end = info.single_end
+                [ meta, reads, info.id ] }
+        .groupTuple(by: 0 )
+        .map {
+            info, reads, ids ->
+                def meta = [:]
+                meta.run = info.run
+                meta.single_end = info.single_end
+                meta.id = ids.flatten().sort()
+                [ meta, reads.flatten().sort() ] }
+        .set { ch_filt_logs }
+
     emit:
     reads               = ch_filt_reads
-    logs                = ch_dada2_filtntrim_logs_passed
+    logs                = ch_filt_logs
     args                = ch_dada2_filtntrim_args_passed
     qc_svg              = ch_DADA2_QUALITY1_SVG.collect()
     qc_svg_preprocessed = ch_DADA2_QUALITY2_SVG.collect()

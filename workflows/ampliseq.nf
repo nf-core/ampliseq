@@ -344,20 +344,6 @@ workflow AMPLISEQ {
 
     //group by sequencing run & group by meta
     DADA2_PREPROCESSING.out.logs
-        .map {
-            info, reads ->
-                def meta = [:]
-                meta.run = info.run
-                meta.single_end = info.single_end
-                [ meta, reads, info.id ] }
-        .groupTuple(by: 0 )
-        .map {
-            info, reads, ids ->
-                def meta = [:]
-                meta.run = info.run
-                meta.single_end = info.single_end
-                meta.id = ids.flatten().sort()
-                [ meta, reads.flatten().sort() ] }
         .join( DADA2_DENOISING.out.denoised )
         .join( DADA2_DENOISING.out.mergers )
         .join( DADA2_RMCHIMERA.out.rds )

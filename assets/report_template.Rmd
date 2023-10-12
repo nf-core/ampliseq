@@ -1692,8 +1692,12 @@ cat(filter_codons_fasta_passed,"ASVs had no stop codons (",params$stop_codons,")
 
 ```{r, eval = any_taxonomy, results='asis'}
 methods_taxonomic_classification <- c("Taxonomic classification was performed by ")
-if ( !isFALSE(params$dada2_ref_tax_title) ) {
-    methods_taxonomic_classification_dada <- paste("DADA2 and the database '",params$dada2_ref_tax_title,"' (`", params$dada2_ref_tax_citation,"`)", sep="")
+if ( !isFALSE(params$dada2_taxonomy) ) {
+    if ( !isFALSE(params$dada2_ref_tax_title) ) {
+        methods_taxonomic_classification_dada <- paste("DADA2 and the database '",params$dada2_ref_tax_title,"' (`", params$dada2_ref_tax_citation,"`)", sep="")
+    } else {
+        methods_taxonomic_classification_dada <- paste("DADA2 with a user provided database", sep="")
+    }
     if ( !isFALSE(params$cut_dada_ref_taxonomy) ) {
         methods_taxonomic_classification_dada <- paste(methods_taxonomic_classification_dada,
             "that had",cut_dada_ref_taxonomy_filt,"sequences extracted by PCR primers to improve assignments")
@@ -1703,14 +1707,23 @@ if ( !isFALSE(params$dada2_ref_tax_title) ) {
 if ( !isFALSE(params$qiime2_ref_tax_title) ) {
     methods_taxonomic_classification <- c(methods_taxonomic_classification,
         paste("QIIME2 and the database '",params$qiime2_ref_tax_title,"' (`", params$qiime2_ref_tax_citation,"`)", sep=""))
+} else if (!isFALSE(params$qiime2_taxonomy)) {
+    methods_taxonomic_classification <- c(methods_taxonomic_classification,
+        paste("QIIME2 with a user provided database", sep=""))
 }
 if ( !isFALSE(params$kraken2_ref_tax_title) ) {
     methods_taxonomic_classification <- c(methods_taxonomic_classification,
         paste("Kraken2 and the database '",params$kraken2_ref_tax_title,"' (`", params$kraken2_ref_tax_citation,"`)", sep=""))
+} else if (!isFALSE(params$kraken2_taxonomy)) {
+    methods_taxonomic_classification <- c(methods_taxonomic_classification,
+        paste("Kraken2 with a user provided database", sep=""))
 }
 if ( !isFALSE(params$sintax_ref_tax_title) ) {
     methods_taxonomic_classification <- c(methods_taxonomic_classification,
         paste("SINTAX and the database '",params$sintax_ref_tax_title,"' (`", params$sintax_ref_tax_citation,"`)", sep=""))
+} else if (!isFALSE(params$sintax_taxonomy)) {
+    methods_taxonomic_classification <- c(methods_taxonomic_classification,
+        paste("SINTAX with a user provided database", sep=""))
 }
 
 cat(paste0(methods_taxonomic_classification[1],methods_taxonomic_classification[2]))

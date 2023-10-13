@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#622](https://github.com/nf-core/ampliseq/pull/622) - ASV post-clustering with Vsearch
 - [#637](https://github.com/nf-core/ampliseq/pull/637) - Taxonomic classification with Kraken2, parameter `--kraken2_ref_taxonomy`, `--kraken2_ref_tax_custom`, `--kraken2_assign_taxlevels`, `--kraken2_confidence`
 - [#639](https://github.com/nf-core/ampliseq/pull/639) - GTDB release 214.1 for taxonomic classification with DADA2, using `--dada_ref_taxonomy gtdb` or `--dada_ref_taxonomy gtdb=R08-RS214`
-- [#641](https://github.com/nf-core/ampliseq/pull/641) - Continue analysis even when individual files fail the filtering threshold
+- [#641](https://github.com/nf-core/ampliseq/pull/641) - Continue analysis even when individual files fail the filtering threshold, added parameter `--ignore_failed_filtering`
 
 ### `Changed`
 
@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | input_folder  | input     | Folder containing compressed fastq files |
 
 - [#639](https://github.com/nf-core/ampliseq/pull/639) - `--dada_ref_taxonomy gtdb` points towards GTDB release 214.1 instead of GTDB release 207 for taxonomic classification with DADA2
+- [#645](https://github.com/nf-core/ampliseq/pull/645) - Updated documentation, including workflow figure
 
 ### `Fixed`
 

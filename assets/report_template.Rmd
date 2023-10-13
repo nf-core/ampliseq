@@ -25,8 +25,6 @@ params:
 
     # flags and arguments
     flag_retain_untrimmed: FALSE
-    flag_dada_ref_tax_user: FALSE
-    flag_kraken2_ref_tax_user: FALSE
     kraken2_confidence: ""
     flag_single_end: FALSE
     barplot: FALSE
@@ -894,7 +892,7 @@ invisible(dev.off())
 cat("## DADA2\n")
 
 # indicate reference taxonomy
-if (!params$flag_dada_ref_tax_user) {
+if ( !isFALSE(params$dada2_ref_tax_title) ) {
     cat("The taxonomic classification was performed by [DADA2](https://pubmed.ncbi.nlm.nih.gov/27214047/)
         using the database: `", params$dada2_ref_tax_title, "`.
         More details about the reference taxonomy database can be found in the ['Methods section'](#methods).\n\n", sep = "")
@@ -934,21 +932,12 @@ asv_tax <- read.table(params$dada2_taxonomy, header = TRUE, sep = "\t")
 level <- subset(asv_tax, select = -c(ASV_ID,confidence,sequence))
 level <- colnames(level)
 
-# Catch 100% highest taxa (e.g. Kingdom) assignment
-if (count(asv_tax, level[1])$n[1] == nrow(asv_tax)){
-    n_1 = 0
-} else {
-    n_1 = count(asv_tax, level[1])$n[1]
-}
 n_asv_tax = nrow(asv_tax)
-n_asv_unclassified <- c(n_1)
-for (x in level[2:length(level)]) {
-    asv_tax_subset <- subset(asv_tax, select = x)
-    colnames(asv_tax_subset)[1] <- "count_this"
-    n_asv_unclassified <- c(n_asv_unclassified, count(asv_tax_subset, count_this)$n[1])
-}
 
-n_asv_classified <- n_asv_tax - n_asv_unclassified
+asv_tax_subset <- subset(asv_tax, select = level)
+n_asv_classified <- colSums( asv_tax_subset != "" & !is.na(asv_tax_subset) )
+
+n_asv_unclassified <- n_asv_tax - n_asv_classified
 p_asv_classified <- round(n_asv_classified / n_asv_tax * 100, 2)
 
 asv_classi_df <- data.frame(level, n_asv_classified, p_asv_classified)
@@ -1070,21 +1059,12 @@ asv_tax <- read.table(params$sintax_taxonomy, header = TRUE, sep = "\t")
 level <- subset(asv_tax, select = -c(ASV_ID,confidence,sequence))
 level <- colnames(level)
 
-# Catch 100% highest taxa (e.g. Kingdom) assignment
-if (count(asv_tax, level[1])$n[1] == nrow(asv_tax)){
-    n_1 = nrow(asv_tax)
-} else {
-    n_1 = count(asv_tax, level[1])$n[1]
-}
 n_asv_tax = nrow(asv_tax)
-n_asv_unclassified <- c(n_1)
-for (x in level[2:length(level)]) {
-    asv_tax_subset <- subset(asv_tax, select = x)
-    colnames(asv_tax_subset)[1] <- "count_this"
-    n_asv_unclassified <- c(n_asv_unclassified, count(asv_tax_subset, count_this)$n[1])
-}
 
-n_asv_classified <- n_asv_tax - n_asv_unclassified
+asv_tax_subset <- subset(asv_tax, select = level)
+n_asv_classified <- colSums( asv_tax_subset != "" & !is.na(asv_tax_subset) )
+
+n_asv_unclassified <- n_asv_tax - n_asv_classified
 p_asv_classified <- round(n_asv_classified / n_asv_tax * 100, 2)
 
 asv_classi_df <- data.frame(level, n_asv_classified, p_asv_classified)
@@ -1126,7 +1106,7 @@ cat("\n\nSINTAX taxonomy assignments can be found in folder [sintax](../sintax).
 cat("## Kraken2\n")
 
 # indicate reference taxonomy
-if (!params$flag_kraken2_ref_tax_user) {
+if (  !isFALSE(params$kraken2_ref_tax_title) ) {
     cat("The taxonomic classification was performed by [Kraken2](https://doi.org/10.1186/s13059-019-1891-0)
         using the database: `", params$kraken2_ref_tax_title, "`.
         More details about the reference taxonomy database can be found in the ['Methods section'](#methods).\n\n", sep = "")
@@ -1712,8 +1692,12 @@ cat(filter_codons_fasta_passed,"ASVs had no stop codons (",params$stop_codons,")
 
 ```{r, eval = any_taxonomy, results='asis'}
 methods_taxonomic_classification <- c("Taxonomic classification was performed by ")
-if ( !isFALSE(params$dada2_ref_tax_title) ) {
-    methods_taxonomic_classification_dada <- paste("DADA2 and the database '",params$dada2_ref_tax_title,"' (`", params$dada2_ref_tax_citation,"`)", sep="")
+if ( !isFALSE(params$dada2_taxonomy) ) {
+    if ( !isFALSE(params$dada2_ref_tax_title) ) {
+        methods_taxonomic_classification_dada <- paste("DADA2 and the database '",params$dada2_ref_tax_title,"' (`", params$dada2_ref_tax_citation,"`)", sep="")
+    } else {
+        methods_taxonomic_classification_dada <- paste("DADA2 with a user provided database", sep="")
+    }
     if ( !isFALSE(params$cut_dada_ref_taxonomy) ) {
         methods_taxonomic_classification_dada <- paste(methods_taxonomic_classification_dada,
             "that had",cut_dada_ref_taxonomy_filt,"sequences extracted by PCR primers to improve assignments")
@@ -1723,14 +1707,23 @@ if ( !isFALSE(params$dada2_ref_tax_title) ) {
 if ( !isFALSE(params$qiime2_ref_tax_title) ) {
     methods_taxonomic_classification <- c(methods_taxonomic_classification,
         paste("QIIME2 and the database '",params$qiime2_ref_tax_title,"' (`", params$qiime2_ref_tax_citation,"`)", sep=""))
+} else if (!isFALSE(params$qiime2_taxonomy)) {
+    methods_taxonomic_classification <- c(methods_taxonomic_classification,
+        paste("QIIME2 with a user provided database", sep=""))
 }
 if ( !isFALSE(params$kraken2_ref_tax_title) ) {
     methods_taxonomic_classification <- c(methods_taxonomic_classification,
         paste("Kraken2 and the database '",params$kraken2_ref_tax_title,"' (`", params$kraken2_ref_tax_citation,"`)", sep=""))
+} else if (!isFALSE(params$kraken2_taxonomy)) {
+    methods_taxonomic_classification <- c(methods_taxonomic_classification,
+        paste("Kraken2 with a user provided database", sep=""))
 }
 if ( !isFALSE(params$sintax_ref_tax_title) ) {
     methods_taxonomic_classification <- c(methods_taxonomic_classification,
         paste("SINTAX and the database '",params$sintax_ref_tax_title,"' (`", params$sintax_ref_tax_citation,"`)", sep=""))
+} else if (!isFALSE(params$sintax_taxonomy)) {
+    methods_taxonomic_classification <- c(methods_taxonomic_classification,
+        paste("SINTAX with a user provided database", sep=""))
 }
 
 cat(paste0(methods_taxonomic_classification[1],methods_taxonomic_classification[2]))
@@ -1816,6 +1809,9 @@ if ( !isFALSE(params$dada2_ref_tax_title) ) {
         "- database: `", params$dada2_ref_tax_title, "`\n\n",
         "- files: `", params$dada2_ref_tax_file, "`\n\n",
         "- citation: `", params$dada2_ref_tax_citation, "`\n\n", sep = "")
+} else if (!isFALSE(params$dada2_taxonomy)) {
+    cat("Taxonomic classification by DADA2:\n\n",
+        "- database: unknown - user provided\n\n", sep = "")
 }
 
 if ( !isFALSE(params$sintax_ref_tax_title) ) {
@@ -1823,6 +1819,9 @@ if ( !isFALSE(params$sintax_ref_tax_title) ) {
         "- database: `", params$sintax_ref_tax_title, "`\n\n",
         "- files: `", params$sintax_ref_tax_file, "`\n\n",
         "- citation: `", params$sintax_ref_tax_citation, "`\n\n", sep = "")
+} else if (!isFALSE(params$sintax_taxonomy)) {
+    cat("Taxonomic classification by SINTAX:\n\n",
+        "- database: unknown - user provided\n\n", sep = "")
 }
 
 if ( !isFALSE(params$kraken2_ref_tax_title) ) {
@@ -1830,6 +1829,9 @@ if ( !isFALSE(params$kraken2_ref_tax_title) ) {
         "- database: `", params$kraken2_ref_tax_title, "`\n\n",
         "- files: `", params$kraken2_ref_tax_file, "`\n\n",
         "- citation: `", params$kraken2_ref_tax_citation, "`\n\n", sep = "")
+} else if (!isFALSE(params$kraken2_taxonomy)) {
+    cat("Taxonomic classification by Kraken2:\n\n",
+        "- database: unknown - user provided\n\n", sep = "")
 }
 
 if ( !isFALSE(params$qiime2_ref_tax_title) ) {
@@ -1837,6 +1839,9 @@ if ( !isFALSE(params$qiime2_ref_tax_title) ) {
         "- database: `", params$qiime2_ref_tax_title, "`\n\n",
         "- files: `", params$qiime2_ref_tax_file, "`\n\n",
         "- citation: `", params$qiime2_ref_tax_citation, "`\n\n", sep = "")
+} else if (!isFALSE(params$qiime2_taxonomy)) {
+    cat("Taxonomic classification by QIIME2:\n\n",
+        "- database: unknown - user provided\n\n", sep = "")
 }
 ```
 
@@ -1861,6 +1866,7 @@ cat(paste0("
 
 Technical information to the pipeline run are collected in folder [pipeline_info](../pipeline_info),
 including software versions collected at runtime in file `software_versions.yml` (can be viewed with a text editor),
+all parameter settings in file `params_{date}_{time}.json` (can be viewed with a text editor),
 execution report in file `execution_report_{date}_{time}.html`,
 execution trace in file `execution_trace_{date}_{time}.txt`,
 execution timeline in file `execution_timelime_{date}_{time}.html`, and

@@ -137,7 +137,7 @@ workflow DADA2_PREPROCESSING {
     }
 
     //group reads by sequencing run
-    //for 'groupTuple', 'size' or 'groupKey' should be used but to produce it we need to know how many elements to group but some can be lost here, so no way knowing before
+    // 'groupTuple', 'size' or 'groupKey' should be used but to produce it we need to know how many elements to group but some can be lost here, so no way knowing before
     ch_dada2_filtntrim_reads_passed
         .map {
             info, reads ->

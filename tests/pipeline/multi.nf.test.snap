@@ -14,7 +14,7 @@
     },
     "software_versions": {
         "content": [
-            "{BARRNAP={barrnap=0.9}, CUSTOM_DUMPSOFTWAREVERSIONS={python=3.11.0, yaml=6.0}, DADA2_DENOISING={R=4.3.1, dada2=1.28.0}, DADA2_FILTNTRIM={R=4.3.1, dada2=1.28.0}, DADA2_TAXONOMY={R=4.3.1, dada2=1.28.0}, FASTQC={fastqc=0.12.1}, FILTER_STATS={pandas=1.1.5, python=3.9.1}, PHYLOSEQ={R=4.3.0, phyloseq=1.44.0}, QIIME2_INSEQ={qiime2=2023.7}, RENAME_RAW_DATA_FILES={sed=4.7}, Workflow={nf-core/ampliseq=2.7.0dev}}"
+            "{BARRNAP={barrnap=0.9}, CUSTOM_DUMPSOFTWAREVERSIONS={python=3.11.4, yaml=6.0}, DADA2_DENOISING={R=4.3.1, dada2=1.28.0}, DADA2_FILTNTRIM={R=4.3.1, dada2=1.28.0}, DADA2_TAXONOMY={R=4.3.1, dada2=1.28.0}, FASTQC={fastqc=0.12.1}, FILTER_STATS={pandas=1.1.5, python=3.9.1}, PHYLOSEQ={R=4.3.0, phyloseq=1.44.0}, QIIME2_INSEQ={qiime2=2023.7}, RENAME_RAW_DATA_FILES={sed=4.7}, Workflow={nf-core/ampliseq=2.7.0dev}}"
         ],
         "timestamp": "2023-05-28T21:15:03+0000"
     },
@@ -47,7 +47,7 @@
     "multiqc": {
         "content": [
             "multiqc_general_stats.txt:md5,5692ee73c6933866807706d29b15c880",
-            "multiqc_fastqc.txt:md5,3a4417c7d95a9bbe17751dc974157cd3"
+            "multiqc_fastqc.txt:md5,147764e40079c3abf97a17cfe2275c52"
         ],
         "timestamp": "2023-05-28T21:15:03+0000"
     }

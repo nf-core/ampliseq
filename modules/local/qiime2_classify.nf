@@ -2,7 +2,7 @@ process QIIME2_CLASSIFY {
     tag "${repseq},${trained_classifier}"
     label 'process_high'
 
-    container "qiime2/core:2022.11"
+    container "qiime2/core:2023.7"
 
     // Exit if running this module with -profile conda / -profile mamba
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {

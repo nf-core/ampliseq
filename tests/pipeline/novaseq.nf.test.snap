@@ -7,7 +7,7 @@
     },
     "software_versions": {
         "content": [
-            "{CUSTOM_DUMPSOFTWAREVERSIONS={python=3.11.0, yaml=6.0}, DADA2_DENOISING={R=4.1.1, dada2=1.22.0}, DADA2_FILTNTRIM={R=4.1.1, dada2=1.22.0}, DADA2_QUALITY1={R=4.1.1, ShortRead=1.52.0, dada2=1.22.0}, FASTQC={fastqc=0.11.9}, FILTER_CODONS={pandas=1.1.5, python=3.9.1}, RENAME_RAW_DATA_FILES={sed=4.7}, TRUNCLEN={pandas=1.1.5, python=3.9.1}, Workflow={nf-core/ampliseq=2.7.0dev}}"
+            "{CUSTOM_DUMPSOFTWAREVERSIONS={python=3.11.4, yaml=6.0}, DADA2_DENOISING={R=4.3.1, dada2=1.28.0}, DADA2_FILTNTRIM={R=4.3.1, dada2=1.28.0}, DADA2_QUALITY1={R=4.3.1, ShortRead=1.58.0, dada2=1.28.0}, FASTQC={fastqc=0.12.1}, FILTER_CODONS={pandas=1.1.5, python=3.9.1}, RENAME_RAW_DATA_FILES={sed=4.7}, TRUNCLEN={pandas=1.1.5, python=3.9.1}, Workflow={nf-core/ampliseq=2.7.0dev}}"
         ],
         "timestamp": "2023-06-20T00:10:02+0000"
     },
@@ -23,8 +23,8 @@
     },
     "multiqc": {
         "content": [
-            "multiqc_fastqc.txt:md5,ac8744f9d5d4dc51957a719183074c2f",
-            "multiqc_general_stats.txt:md5,c4d6a79d9c271a72c2f6a7ef66fe39c6"
+            "multiqc_fastqc.txt:md5,a99548124efd185a7d4e33245edcb81b",
+            "multiqc_general_stats.txt:md5,195ce3e0c1b032459040613802d25d50"
         ],
         "timestamp": "2023-06-20T00:10:02+0000"
     }

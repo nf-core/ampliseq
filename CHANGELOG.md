@@ -40,6 +40,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Dependencies`
 
+- [#646](https://github.com/nf-core/ampliseq/pull/646) - Updated dependencies, see below:
+
+| software | previously | now    |
+| -------- | ---------- | ------ |
+| FASTQC   | 0.11.9     | 0.12.1 |
+| DADA2    | 1.22.0     | 1.28.0 |
+| PICRUSt2 | 2.5.0      | 2.5.2  |
+| QIIME2   | 2022.11    | 2023.7 |
+
 ### `Removed`
 
 ## nf-core/ampliseq version 2.6.1 - 2023-06-28

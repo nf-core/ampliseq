@@ -37,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#630](https://github.com/nf-core/ampliseq/pull/630) - ASV rRNA (barrnap), length, and codon filter now work with ASV fasta file input
 - [#633](https://github.com/nf-core/ampliseq/pull/633) - UNIFRAC in QIIME2_DIVERSITY_CORE is now prevented from using a GPU to avoid errors
 - [#643](https://github.com/nf-core/ampliseq/pull/643) - Fix using `--skip_dada_addspecies` without `--dada_ref_tax_custom_sp` which was broken in 2.6.0 & 2.6.1
+- [#647](https://github.com/nf-core/ampliseq/pull/647) - Update of credits
 
 ### `Dependencies`
 

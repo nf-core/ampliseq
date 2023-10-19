@@ -15,8 +15,23 @@
                     "type": "string",
                     "mimetype": "text/tsv",
                     "fa_icon": "fas fa-dna",
-                    "description": "Either a tab-separated sample sheet, a fasta file, or a folder containing zipped FastQ files",
-                    "help_text": "Points to the main pipeline input, one of the following:\n- folder containing compressed fastq files\n- sample sheet ending with `.tsv` that points towards compressed fastq files\n- fasta file ending with `.fasta`, `.fna` or `.fa` that will be taxonomically classified\n\nRelated parameters are:\n- `--pacbio` and `--iontorrent` if the sequencing data is PacBio data or IonTorrent data (default expected: paired-end Illumina data)\n- `--single_end` if the sequencing data is single-ended Illumina data (default expected: paired-end Illumina data)\n- `--multiple_sequencing_runs` (folder input only) if the sequencing data originates from multiple sequencing runs\n- `--extension` (folder input only) if the sequencing file names do not follow the default (`\"/*_R{1,2}_001.fastq.gz\"`)\n- `--dada_ref_taxonomy`, `--qiime_ref_taxonomy`, and/or `--sintax_ref_taxonomy` to choose an appropriate reference taxonomy for the type of amplicon (16S/18S/ITS/CO1). If the `--sintax_ref_taxonomy` is given, taxonomic assignment is performed using the USEARCH sintax method in addition to DADA2 assignTaxonomy (default: DADA2 assignTaxonomy and 16S rRNA sequence database)\n\n##### Folder containing zipped FastQ files\n\nFor example:\n\n```bash\n--input 'path/to/data'\n```\n\nExample for input data organization from one sequencing run with two samples, paired-end data:\n\n```bash\ndata\n  \u251c\u2500sample1_1_L001_R1_001.fastq.gz\n  \u251c\u2500sample1_1_L001_R2_001.fastq.gz\n  \u251c\u2500sample2_1_L001_R1_001.fastq.gz\n  \u2514\u2500sample2_1_L001_R2_001.fastq.gz\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The folder must contain gzip compressed demultiplexed fastq files. If the file names do not follow the default (`\"/*_R{1,2}_001.fastq.gz\"`), please check `--extension`.\n3. Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique\n4. If your data is scattered, produce a sample sheet\n5. All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed. Sequencing data originating from multiple sequencing runs requires additionally the parameter `--multiple_sequencing_runs` and a specific folder structure.\n\n##### Sample sheet\n\nThe sample sheet file is an alternative way to provide input reads, it must be a tab-separated file ending with `.tsv` that must have two to four columns with the following headers: \n- `sampleID` (required): Unique sample identifiers, any unique string (may not contain dots `.`, must not start with a number)\n- `forwardReads` (required): Paths to (forward) reads zipped FastQ files\n- `reverseReads` (optional): Paths to reverse reads zipped FastQ files, required if the data is paired-end\n- `run` (optional): If the data was produced by multiple sequencing runs, any string\n\nFor example:\n\n```bash\n--input 'path/to/samplesheet.tsv'\n```\n\n##### Fasta file\n\nWhen pointing at a file ending with `.fasta`, `.fna` or `.fa`, the containing sequences will be taxonomically classified. All other pipeline steps will be skipped.\n\nThe sequence header line may contain a description, that will be kept as part of the sequence name. However, tabs will be changed into spaces.\n\nThe fasta file input option can be used to taxonomically classify previously produced ASV/OTU sequences.\n\nFor example:\n\n```bash\n--input 'path/to/amplicon_sequences.fasta'\n```"
+                    "description": "Path to tab-separated sample sheet",
+                    "help_text": "Path to sample sheet, either tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml), that points to compressed fastq files.\n\nThe sample sheet must have two to four tab-separated columns/entries with the following headers: \n- `sampleID` (required): Unique sample IDs, must start with a letter, and can only contain letters, numbers or underscores\n- `forwardReads` (required): Paths to (forward) reads zipped FastQ files\n- `reverseReads` (optional): Paths to reverse reads zipped FastQ files, required if the data is paired-end\n- `run` (optional): If the data was produced by multiple sequencing runs, any string\n\nRelated parameters are:\n- `--pacbio` and `--iontorrent` if the sequencing data is PacBio data or IonTorrent data (default expected: paired-end Illumina data)\n- `--single_end` if the sequencing data is single-ended Illumina data (default expected: paired-end Illumina data)\n- `--dada_ref_taxonomy`, `--qiime_ref_taxonomy`, and/or `--sintax_ref_taxonomy` to choose an appropriate reference taxonomy for the type of amplicon (16S/18S/ITS/CO1) (default: DADA2 assignTaxonomy and 16S rRNA sequence database)",
+                    "schema": "assets/schema_input.json"
+                },
+                "input_fasta": {
+                    "type": "string",
+                    "mimetype": "text/tsv",
+                    "fa_icon": "fas fa-dna",
+                    "description": "Path to ASV/OTU fasta file",
+                    "help_text": "Path to fasta format file with sequences that will be taxonomically classified. The fasta file input option can be used to taxonomically classify previously produced ASV/OTU sequences.\n\nThe fasta sequence header line may contain a description, that will be kept as part of the sequence name. However, tabs will be changed into spaces.\n\nRelated parameters are:\n- `--dada_ref_taxonomy`, `--qiime_ref_taxonomy`, and/or `--sintax_ref_taxonomy` to choose an appropriate reference taxonomy for the type of amplicon (16S/18S/ITS/CO1) (default: DADA2 assignTaxonomy and 16S rRNA sequence database)"
+                },
+                "input_folder": {
+                    "type": "string",
+                    "mimetype": "text/tsv",
+                    "fa_icon": "fas fa-dna",
+                    "description": "Path to folder containing zipped FastQ files",
+                    "help_text": "Path to folder containing compressed fastq files.\n\nExample for input data organization from one sequencing run with two samples, paired-end data:\n\n```bash\ndata\n  \u251c\u2500sample1_1_L001_R1_001.fastq.gz\n  \u251c\u2500sample1_1_L001_R2_001.fastq.gz\n  \u251c\u2500sample2_1_L001_R1_001.fastq.gz\n  \u2514\u2500sample2_1_L001_R2_001.fastq.gz\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The folder must contain gzip compressed demultiplexed fastq files. If the file names do not follow the default (`\"/*_R{1,2}_001.fastq.gz\"`), please check `--extension`.\n3. Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique\n4. If your data is scattered, produce a sample sheet\n5. All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed. Sequencing data originating from multiple sequencing runs requires additionally the parameter `--multiple_sequencing_runs` and a specific folder structure.\n\nRelated parameters are:\n- `--pacbio` and `--iontorrent` if the sequencing data is PacBio data or IonTorrent data (default expected: paired-end Illumina data)\n- `--single_end` if the sequencing data is single-ended Illumina data (default expected: paired-end Illumina data)\n- `--multiple_sequencing_runs` if the sequencing data originates from multiple sequencing runs\n- `--extension` if the sequencing file names do not follow the default (`\"/*_R{1,2}_001.fastq.gz\"`)\n- `--dada_ref_taxonomy`, `--qiime_ref_taxonomy`, and/or `--sintax_ref_taxonomy` to choose an appropriate reference taxonomy for the type of amplicon (16S/18S/ITS/CO1) (default: DADA2 assignTaxonomy and 16S rRNA sequence database)"
                 },
                 "FW_primer": {
                     "type": "string",
@@ -41,9 +56,16 @@
                     "format": "directory-path",
                     "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
                     "fa_icon": "fas fa-folder-open"
+                },
+                "email": {
+                    "type": "string",
+                    "description": "Email address for completion summary.",
+                    "fa_icon": "fas fa-envelope",
+                    "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
+                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
                 }
             },
-            "required": ["input", "outdir"],
+            "required": ["outdir"],
             "fa_icon": "fas fa-terminal"
         },
         "sequencing_input": {
@@ -66,7 +88,8 @@
                 },
                 "single_end": {
                     "type": "boolean",
-                    "description": "If data is single-ended Illumina reads instead of paired-end"
+                    "description": "If data is single-ended Illumina reads instead of paired-end",
+                    "help_text": "When using a sample sheet with `--input` containing forward and reverse reads, specifying `--single_end` will only extract forward reads and treat the data as single ended instead of extracting forward and reverse reads."
                 },
                 "illumina_pe_its": {
                     "type": "boolean",
@@ -186,6 +209,11 @@
                     "description": "DADA2 read filtering option",
                     "fa_icon": "fas fa-less-than-equal",
                     "help_text": "Remove reads with length greater than `max_len` after trimming and truncation. Must be a positive integer."
+                },
+                "ignore_failed_filtering": {
+                    "type": "boolean",
+                    "description": "Ignore files with too few reads after quality filtering.",
+                    "help_text": "Ignore files with fewer reads than specified by `--min_read_counts` after trimming and continue the pipeline without those samples. Please review all quality trimming and filtering options before using this parameter. For example, one sample with shorter sequences than other samples might loose all sequences due to minimum length requirements by read truncation (see --trunclenf)."
                 }
             }
         },
@@ -217,7 +245,7 @@
             "properties": {
                 "dada_ref_taxonomy": {
                     "type": "string",
-                    "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `silva=138`) . This will download the desired database, format it to produce a file that is compatible with DADA2's assignTaxonomy and another file that is compatible with DADA2's addSpecies.\n\nThe following databases are supported:\n- GTDB - Genome Taxonomy Database - 16S rRNA\n- PR2 - Protist Reference Ribosomal Database - 18S rRNA\n- RDP - Ribosomal Database Project - 16S rRNA\n- SILVA ribosomal RNA gene database project - 16S rRNA\n- UNITE - eukaryotic nuclear ribosomal ITS region - ITS\n- COIDB - eukaryotic Cytochrome Oxidase I (COI) from The Barcode of Life Data System (BOLD) - COI\n\nGenerally, using `gtdb`, `pr2`, `rdp`, `sbdi-gtdb`, `silva`, `coidb`, `unite-fungi`, or `unite-alleuk` will select the most recent supported version. For details on what values are valid, please either use an invalid value such as `x` (causing the pipeline to send an error message with a list of all valid values) or see `conf/ref_databases.config`.\n\nPlease note that commercial/non-academic entities [require licensing](https://www.arb-silva.de/silva-license-information) for SILVA v132 database (non-default) but not from v138 on (default).",
+                    "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `silva=138`) . This will download the desired database, format it to produce a file that is compatible with DADA2's assignTaxonomy and another file that is compatible with DADA2's addSpecies.\n\nThe following databases are supported:\n- GTDB - Genome Taxonomy Database - 16S rRNA\n- SBDI-GTDB, a Sativa-vetted version of the GTDB 16S rRNA\n- PR2 - Protist Reference Ribosomal Database - 18S rRNA\n- RDP - Ribosomal Database Project - 16S rRNA\n- SILVA ribosomal RNA gene database project - 16S rRNA\n- UNITE - eukaryotic nuclear ribosomal ITS region - ITS\n- COIDB - eukaryotic Cytochrome Oxidase I (COI) from The Barcode of Life Data System (BOLD) - COI\n\nGenerally, using `gtdb`, `pr2`, `rdp`, `sbdi-gtdb`, `silva`, `coidb`, `unite-fungi`, or `unite-alleuk` will select the most recent supported version.\n\nPlease note that commercial/non-academic entities [require licensing](https://www.arb-silva.de/silva-license-information) for SILVA v132 database (non-default) but not from v138 on (default).",
                     "description": "Name of supported database, and optionally also version number",
                     "default": "silva=138",
                     "enum": [
@@ -226,6 +254,7 @@
                         "gtdb=R05-RS95",
                         "gtdb=R06-RS202",
                         "gtdb=R07-RS207",
+                        "gtdb=R08-RS214",
                         "gtdb",
                         "coidb",
                         "coidb=221216",
@@ -322,9 +351,43 @@
                     "description": "Path to QIIME2 trained classifier file (typically *-classifier.qza)",
                     "help_text": "If you have trained a compatible classifier before, from sources such as SILVA (https://www.arb-silva.de/), Greengenes (http://greengenes.secondgenome.com/downloads) or RDP (https://rdp.cme.msu.edu/). \n\nFor example:\n\n```bash\n--classifier \"FW_primer-RV_primer-classifier.qza\"\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The classifier is a Naive Bayes classifier produced by `qiime feature-classifier fit-classifier-naive-bayes` (e.g. by this pipeline)\n3. The primer pair for the amplicon PCR and the computing of the classifier are exactly the same (or full-length, potentially lower performance)\n4. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses"
                 },
+                "kraken2_ref_taxonomy": {
+                    "type": "string",
+                    "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `silve=138`) . This will download the desired database and initiate taxonomic classification with Kraken2 and the chosen database.\n\nConsider using `--kraken2_confidence` to set a confidence score threshold.\n\nThe following databases are supported:\n- RDP - Ribosomal Database Project - 16S rRNA\n- SILVA ribosomal RNA gene database project - 16S rRNA\n- Greengenes - 16S rRNA\n- Standard Kraken2 database (RefSeq archaea, bacteria, viral, plasmid, human, UniVec_Core) - any amplicon\n\nGenerally, using `rdp`, `silva`, `greengenes`, `standard` will select the most recent supported version.\n\nPlease note that commercial/non-academic entities [require licensing](https://www.arb-silva.de/silva-license-information) for SILVA v132 database (non-default) but not from v138 on.",
+                    "description": "Name of supported database, and optionally also version number",
+                    "enum": [
+                        "silva",
+                        "silva=138",
+                        "silva=132",
+                        "rdp",
+                        "rdp=18",
+                        "greengenes",
+                        "greengenes=13.5",
+                        "standard",
+                        "standard=20230605"
+                    ]
+                },
+                "kraken2_ref_tax_custom": {
+                    "type": "string",
+                    "help_text": "Is preferred over `--kraken2_ref_taxonomy`. Consider also setting `--kraken2_assign_taxlevels`. Can be compressed tar archive (.tar.gz|.tgz) or folder containing the database. See also https://benlangmead.github.io/aws-indexes/k2.",
+                    "description": "Path to a custom Kraken2 reference taxonomy database (*.tar.gz|*.tgz archive or folder)"
+                },
+                "kraken2_assign_taxlevels": {
+                    "type": "string",
+                    "help_text": "Typically useful when providing a custom Kraken2 reference taxonomy database with `--kraken2_ref_tax_custom`. In case a database is given with `--kraken2_ref_taxonomy`, the default taxonomic levels will be overwritten with `--kraken2_assign_taxlevels`.",
+                    "description": "Comma separated list of taxonomic levels used in Kraken2. Will overwrite default values."
+                },
+                "kraken2_confidence": {
+                    "type": "number",
+                    "default": 0,
+                    "help_text": "Increasing the threshold will require more k-mers to match at a taxonomic levels and reduce the taxonomic levels shown until the threshold is met.",
+                    "description": "Confidence score threshold for taxonomic classification.",
+                    "minimum": 0,
+                    "maximum": 1
+                },
                 "sintax_ref_taxonomy": {
                     "type": "string",
-                    "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `coidb=221216`) . This will download the desired database and initiate taxonomic classification with USEARCH sintax and the chosen database, which if needed is formatted to produce a file that is compatible with USEARCH sintax.\n\nThe following databases are supported:\n- COIDB - eukaryotic Cytochrome Oxidase I (COI) from The Barcode of Life Data System (BOLD) - COI\n- UNITE - eukaryotic nuclear ribosomal ITS region - ITS\n\nGenerally, using `coidb`, `unite-fungi`, or `unite-alleuk` will select the most recent supported version. For details on what values are valid, please either use an invalid value such as `x` (causing the pipeline to send an error message with a list of all valid values) or see `conf/ref_databases.config`.",
+                    "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `coidb=221216`) . This will download the desired database and initiate taxonomic classification with VSEARCH sintax and the chosen database, which if needed is formatted to produce a file that is compatible with VSEARCH sintax.\n\nThe following databases are supported:\n- COIDB - eukaryotic Cytochrome Oxidase I (COI) from The Barcode of Life Data System (BOLD) - COI\n- UNITE - eukaryotic nuclear ribosomal ITS region - ITS\n\nGenerally, using `coidb`, `unite-fungi`, or `unite-alleuk` will select the most recent supported version.",
                     "description": "Name of supported database, and optionally also version number",
                     "enum": [
                         "coidb",
@@ -365,6 +428,19 @@
             "description": "",
             "default": "",
             "properties": {
+                "vsearch_cluster": {
+                    "type": "boolean",
+                    "description": "Post-cluster ASVs with VSEARCH",
+                    "help_text": "ASVs will be clustered with VSEARCH using the id value found in `--vsearch_cluster_id`."
+                },
+                "vsearch_cluster_id": {
+                    "type": "number",
+                    "default": 0.97,
+                    "minimum": 0.0,
+                    "maximum": 1.0,
+                    "description": "Pairwise Identity value used when post-clustering ASVs if `--vsearch_cluster` option is used (default: 0.97).",
+                    "help_text": "Lowering or increasing this value can change the number ASVs left over after clustering."
+                },
                 "filter_ssu": {
                     "type": "string",
                     "description": "Enable SSU filtering. Comma separated list of kingdoms (domains) in Barrnap, a combination (or one) of \"bac\", \"arc\", \"mito\", and \"euk\". ASVs that have their lowest evalue in that kingdoms are kept.",
@@ -496,6 +572,39 @@
                 }
             }
         },
+        "pipeline_report": {
+            "title": "Pipeline summary report",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "report_template": {
+                    "type": "string",
+                    "default": "${projectDir}/assets/report_template.Rmd",
+                    "description": "Path to Markdown file (Rmd)"
+                },
+                "report_css": {
+                    "type": "string",
+                    "default": "${projectDir}/assets/nf-core_style.css",
+                    "description": "Path to style file (css)"
+                },
+                "report_logo": {
+                    "type": "string",
+                    "default": "${projectDir}/assets/nf-core-ampliseq_logo_light_long.png",
+                    "description": "Path to logo file (png)"
+                },
+                "report_title": {
+                    "type": "string",
+                    "default": "Summary of analysis results",
+                    "description": "String used as report title"
+                },
+                "report_abstract": {
+                    "type": "string",
+                    "default": null,
+                    "description": "Path to Markdown file (md) that replaces the 'Abstract' section"
+                }
+            }
+        },
         "skipping_specific_steps": {
             "title": "Skipping specific steps",
             "type": "object",
@@ -557,6 +666,10 @@
                 "skip_multiqc": {
                     "type": "boolean",
                     "description": "Skip MultiQC reporting"
+                },
+                "skip_report": {
+                    "type": "boolean",
+                    "description": "Skip Markdown summary report"
                 }
             }
         },
@@ -571,19 +684,6 @@
                     "type": "integer",
                     "default": 100,
                     "description": "Specifies the random seed."
-                },
-                "email": {
-                    "type": "string",
-                    "description": "Email address for completion summary.",
-                    "fa_icon": "fas fa-envelope",
-                    "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
-                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
-                },
-                "show_hidden_params": {
-                    "type": "boolean",
-                    "fa_icon": "far fa-eye-slash",
-                    "description": "Show all params when using `--help`",
-                    "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
                 },
                 "help": {
                     "type": "boolean",
@@ -643,6 +743,7 @@
                 },
                 "multiqc_config": {
                     "type": "string",
+                    "format": "file-path",
                     "description": "Custom config file to supply to MultiQC.",
                     "fa_icon": "fas fa-cog",
                     "hidden": true
@@ -658,19 +759,33 @@
                     "description": "Custom MultiQC yaml file containing HTML including a methods description.",
                     "fa_icon": "fas fa-cog"
                 },
-                "tracedir": {
-                    "type": "string",
-                    "description": "Directory to keep pipeline Nextflow logs and reports.",
-                    "default": "${params.outdir}/pipeline_info",
-                    "fa_icon": "fas fa-cogs",
-                    "hidden": true
-                },
                 "validate_params": {
                     "type": "boolean",
                     "description": "Boolean whether to validate parameters against the schema at runtime",
                     "default": true,
                     "fa_icon": "fas fa-check-square",
                     "hidden": true
+                },
+                "validationShowHiddenParams": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-eye-slash",
+                    "description": "Show all params when using `--help`",
+                    "hidden": true,
+                    "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
+                },
+                "validationFailUnrecognisedParams": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-check-circle",
+                    "description": "Validation of parameters fails when an unrecognised parameter is found.",
+                    "hidden": true,
+                    "help_text": "By default, when an unrecognised parameter is found, it returns a warning."
+                },
+                "validationLenientMode": {
+                    "type": "boolean",
+                    "fa_icon": "far fa-check-circle",
+                    "description": "Validation of parameters in lenient more.",
+                    "hidden": true,
+                    "help_text": "Allows string values that are parseable as numbers or booleans. For further information see [JSONSchema docs](https://github.com/everit-org/json-schema#lenient-mode)."
                 }
             }
         },
@@ -683,7 +798,7 @@
             "properties": {
                 "max_cpus": {
                     "type": "integer",
-                    "description": "Maximum number of CPUs that can be requested    for any single job.",
+                    "description": "Maximum number of CPUs that can be requested for any single job.",
                     "default": 16,
                     "fa_icon": "fas fa-microchip",
                     "help_text": "Use to set an upper-limit for the CPU requirement for each process. Should be an integer e.g. `--max_cpus 1`"
@@ -701,7 +816,7 @@
                     "description": "Maximum amount of time that can be requested for any single job.",
                     "default": "240.h",
                     "fa_icon": "far fa-clock",
-                    "pattern": "^(\\d+\\.?\\s*(s|m|h|day)\\s*)+$",
+                    "pattern": "^(\\d+\\.?\\s*(s|m|h|d|day)\\s*)+$",
                     "help_text": "Use to set an upper-limit for the time requirement for each process. Should be a string in the format integer-unit e.g. `--max_time '2.h'`"
                 }
             }
@@ -785,6 +900,9 @@
         },
         {
             "$ref": "#/definitions/downstream_analysis"
+        },
+        {
+            "$ref": "#/definitions/pipeline_report"
         },
         {
             "$ref": "#/definitions/skipping_specific_steps"

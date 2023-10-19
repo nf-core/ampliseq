@@ -34,4 +34,7 @@ workflow QIIME2_ANCOM {
     QIIME2_ANCOM_TAX.out.ancom.subscribe { if ( it.baseName[0].toString().startsWith("WARNING") ) log.warn it.baseName[0].toString().replace("WARNING ","QIIME2_ANCOM_TAX: ") }
 
     QIIME2_ANCOM_ASV ( ch_metadata.combine( QIIME2_FILTERSAMPLES_ANCOM.out.qza.flatten() ) )
+
+    emit:
+    ancom = QIIME2_ANCOM_ASV.out.ancom.mix(QIIME2_ANCOM_TAX.out.ancom)
 }

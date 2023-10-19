@@ -41,10 +41,12 @@ workflow DADA2_PREPROCESSING {
             .set { ch_all_trimmed_reads }
     }
 
+    ch_DADA2_QUALITY1_SVG = Channel.empty()
     if ( !params.skip_dada_quality ) {
         DADA2_QUALITY1 ( ch_all_trimmed_reads.dump(tag: 'into_dada2_quality') )
         ch_versions_dada2_preprocessing = ch_versions_dada2_preprocessing.mix(DADA2_QUALITY1.out.versions)
         DADA2_QUALITY1.out.warning.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","DADA2_QUALITY1: ") }
+        ch_DADA2_QUALITY1_SVG = DADA2_QUALITY1.out.svg
     }
 
     //find truncation values in case they are not supplied
@@ -72,20 +74,52 @@ workflow DADA2_PREPROCESSING {
     DADA2_FILTNTRIM ( ch_trimmed_reads.dump(tag: 'into_filtntrim')  )
     ch_versions_dada2_preprocessing = ch_versions_dada2_preprocessing.mix(DADA2_FILTNTRIM.out.versions.first())
 
+    //Filter empty files
+    DADA2_FILTNTRIM.out.reads_logs_args
+        .branch {
+            failed: it[0].single_end ? it[1].countFastq() < params.min_read_counts : it[1][0].countFastq() < params.min_read_counts || it[1][1].countFastq() < params.min_read_counts
+            passed: true
+        }
+        .set { ch_dada2_filtntrim_results }
+    ch_dada2_filtntrim_results.passed.set { ch_dada2_filtntrim_results_passed }
+    ch_dada2_filtntrim_results.failed
+        .map { meta, reads, logs, args -> [ meta.id ] }
+        .collect()
+        .subscribe {
+            samples = it.join("\n")
+            if (params.ignore_failed_filtering) {
+                log.warn "The following samples had too few reads (<$params.min_read_counts) after quality filtering with DADA2:\n$samples\nIgnoring failed samples and continue!\n"
+            } else {
+                error("The following samples had too few reads (<$params.min_read_counts) after quality filtering with DADA2:\n$samples\nPlease check whether the correct primer sequences for trimming were supplied. Ignore that samples using `--ignore_failed_filtering` or adjust the threshold with `--min_read_counts`.")
+            }
+        }
+
+    // Break apart the reads and logs so that only the samples
+    // which pass filtering are retained
+    ch_dada2_filtntrim_results_passed
+        .map{ meta, reads, logs, args -> [meta, reads] }
+        .set{ ch_dada2_filtntrim_reads_passed }
+    ch_dada2_filtntrim_results_passed
+        .map{ meta, reads, logs, args -> [meta, logs] }
+        .set{ ch_dada2_filtntrim_logs_passed }
+    ch_dada2_filtntrim_results_passed
+        .map{ meta, reads, logs, args -> args }
+        .set{ ch_dada2_filtntrim_args_passed }
+
     //plot post-processing, aggregated quality profile for forward and reverse reads separately
     if (single_end) {
-        DADA2_FILTNTRIM.out.reads
+        ch_dada2_filtntrim_reads_passed
             .map { meta, reads -> [ reads ] }
             .collect()
             .map { reads -> [ "single_end", reads ] }
             .set { ch_all_preprocessed_reads }
     } else {
-        DADA2_FILTNTRIM.out.reads
+        ch_dada2_filtntrim_reads_passed
             .map { meta, reads -> [ reads[0] ] }
             .collect()
             .map { reads -> [ "FW", reads ] }
             .set { ch_all_preprocessed_fw }
-        DADA2_FILTNTRIM.out.reads
+        ch_dada2_filtntrim_reads_passed
             .map { meta, reads -> [ reads[1] ] }
             .collect()
             .map { reads -> [ "RV", reads ] }
@@ -94,13 +128,17 @@ workflow DADA2_PREPROCESSING {
             .mix ( ch_all_preprocessed_rv )
             .set { ch_all_preprocessed_reads }
     }
+
+    ch_DADA2_QUALITY2_SVG = Channel.empty()
     if ( !params.skip_dada_quality ) {
         DADA2_QUALITY2 ( ch_all_preprocessed_reads.dump(tag: 'into_dada2_quality2') )
         DADA2_QUALITY2.out.warning.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","DADA2_QUALITY2: ") }
+        ch_DADA2_QUALITY2_SVG = DADA2_QUALITY2.out.svg
     }
 
-    //group by sequencing run
-    DADA2_FILTNTRIM.out.reads
+    //group reads by sequencing run
+    // 'groupTuple', 'size' or 'groupKey' should be used but to produce it we need to know how many elements to group but some can be lost here, so no way knowing before
+    ch_dada2_filtntrim_reads_passed
         .map {
             info, reads ->
                 def meta = [:]
@@ -117,8 +155,30 @@ workflow DADA2_PREPROCESSING {
                 [ meta, reads.flatten().sort() ] }
         .set { ch_filt_reads }
 
+    //group logs by sequencing run
+    //for 'groupTuple', 'size' or 'groupKey' should be used but to produce it we need to know how many elements to group but some can be lost here, so no way knowing before
+    ch_dada2_filtntrim_logs_passed
+        .map {
+            info, reads ->
+                def meta = [:]
+                meta.run = info.run
+                meta.single_end = info.single_end
+                [ meta, reads, info.id ] }
+        .groupTuple(by: 0 )
+        .map {
+            info, reads, ids ->
+                def meta = [:]
+                meta.run = info.run
+                meta.single_end = info.single_end
+                meta.id = ids.flatten().sort()
+                [ meta, reads.flatten().sort() ] }
+        .set { ch_filt_logs }
+
     emit:
-    reads    = ch_filt_reads
-    logs      = DADA2_FILTNTRIM.out.log
-    versions = ch_versions_dada2_preprocessing
+    reads               = ch_filt_reads
+    logs                = ch_filt_logs
+    args                = ch_dada2_filtntrim_args_passed
+    qc_svg              = ch_DADA2_QUALITY1_SVG.collect()
+    qc_svg_preprocessed = ch_DADA2_QUALITY2_SVG.collect()
+    versions            = ch_versions_dada2_preprocessing
 }

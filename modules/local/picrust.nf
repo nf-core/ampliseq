@@ -2,10 +2,10 @@ process PICRUST {
     tag "${seq},${abund}"
     label 'process_medium'
 
-    conda "bioconda::picrust2=2.5.0"
+    conda "bioconda::picrust2=2.5.2"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/picrust2:2.5.0--pyhdfd78af_0' :
-        'biocontainers/picrust2:2.5.0--pyhdfd78af_0' }"
+        'https://depot.galaxyproject.org/singularity/picrust2:2.5.2--pyhdfd78af_0' :
+        'biocontainers/picrust2:2.5.2--pyhdfd78af_0' }"
 
     input:
     path(seq)

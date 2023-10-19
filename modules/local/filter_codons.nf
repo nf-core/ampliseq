@@ -10,13 +10,12 @@ process FILTER_CODONS {
     input:
     path(fasta)
     path(asv)
-    path(dada2stats)
 
     output:
-    path( "ASV_codon_filtered.table.tsv"  ) , emit: asv
+    path( "ASV_codon_filtered.table.tsv"  ) , emit: asv, optional: true
     path( "ASV_codon_filtered.fna"        ) , emit: fasta
     path( "ASV_codon_filtered.list"       ) , emit: list
-    path( "codon.filtered.stats.tsv"      ) , emit: stats
+    path( "codon.filtered.stats.tsv"      ) , emit: stats, optional: true
     path( "versions.yml"                  ) , emit: versions
 
     when:
@@ -24,9 +23,11 @@ process FILTER_CODONS {
 
     script:
     def args = task.ext.args ?: ''
+    def count_table = asv ? "-t ${asv}" : ""
+    def make_stats_cmd = asv ? "filt_codon_stats.py ASV_codon_filtered.table.tsv" : ""
     """
-    filt_codons.py -f ${fasta} -t ${asv} -p ASV_codon ${args}
-    filt_codon_stats.py ASV_codon_filtered.table.tsv
+    filt_codons.py -f ${fasta} ${count_table} -p ASV_codon ${args}
+    $make_stats_cmd
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

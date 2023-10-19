@@ -10,9 +10,10 @@
   - [Quick start](#quick-start)
   - [Setting parameters in a file](#setting-parameters-in-a-file)
   - [Input specifications](#input-specifications)
-    - [Direct FASTQ input](#direct-fastq-input)
     - [Samplesheet input](#samplesheet-input)
     - [ASV/OTU fasta input](#asvotu-fasta-input)
+    - [Direct FASTQ input](#direct-fastq-input)
+  - [Taxonomic classification](#taxonomic-classification)
   - [Metadata](#metadata)
   - [Updating the pipeline](#updating-the-pipeline)
   - [Reproducibility](#reproducibility)
@@ -35,16 +36,16 @@ The typical command for running the pipeline is as follows:
 
 ```bash
 nextflow run nf-core/ampliseq \
-    -r 2.3.2 \
+    -r 2.7.0 \
     -profile singularity \
-    --input "data" \
+    --input "samplesheet.tsv" \
     --FW_primer GTGYCAGCMGCCGCGGTAA \
     --RV_primer GGACTACNVGGGTWTCTAAT \
-    --metadata "data/Metadata.tsv"
+    --metadata "data/Metadata.tsv" \
     --outdir "./results"
 ```
 
-In this example, `--input` is the [Direct FASTQ input](#direct-fastq-input), other options are [Samplesheet input](#samplesheet-input) and [ASV/OTU fasta input](#asvotu-fasta-input). For more details on metadata, see [Metadata](#metadata). For [Reproducibility](#reproducibility), specify the version to run using `-r` (= release, here: 2.3.2). See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters) for more information about pipeline specific parameters.
+In this example, `--input` is the [Samplesheet input](#samplesheet-input), other options are [Direct FASTQ input](#direct-fastq-input) and [ASV/OTU fasta input](#asvotu-fasta-input). For more details on metadata, see [Metadata](#metadata). For [Reproducibility](#reproducibility), specify the version to run using `-r` (= release, e.g. 2.7.0, please use the most recent release). See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters) for more information about pipeline specific parameters.
 
 It is possible to not provide primer sequences (`--FW_primer` & `--RV_primer`) and skip primer trimming using `--skip_cutadapt`, but this is only for data that indeed does not contain any PCR primers in their sequences. Also, metadata (`--metadata`) isnt required, but aids downstream analysis.
 
@@ -59,7 +60,9 @@ work                # Directory containing the nextflow working files
 # Other nextflow hidden files, eg. history of pipeline runs and old logs.
 ```
 
-> **NB:** If the data originates from multiple sequencing runs, the error profile of each of those sequencing runs needs to be considered separately. Using the `run` column in the samplesheet input or adding `--multiple_sequencing_runs` for Direct FASTQ input will separate certain processes by the sequencing run. Please see the following example:
+:::note
+If the data originates from multiple sequencing runs, the error profile of each of those sequencing runs needs to be considered separately. Using the `run` column in the samplesheet input or adding `--multiple_sequencing_runs` for direct FASTQ input will separate certain processes by the sequencing run. Please see the following example:
+:::
 
 <p align="center">
     <img src="images/ampliseq_workflow_multiplesequencingruns.png" alt="nf-core/ampliseq workflow overview with --multiple_sequencing_runs" width="40%">
@@ -71,8 +74,11 @@ If you wish to repeatedly use the same parameters for multiple runs, rather than
 
 Pipeline settings can be provided in a `yaml` or `json` file via `-params-file <file>`.
 
-> ⚠️ Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources), other infrastructural tweaks (such as output directories), or module arguments (args).
-> The above pipeline run specified with a params file in yaml format:
+:::warning
+Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources), other infrastructural tweaks (such as output directories), or module arguments (args).
+:::
+
+The above pipeline run specified with a params file in yaml format:
 
 ```bash
 nextflow run nf-core/ampliseq -profile docker -params-file params.yaml
@@ -81,27 +87,83 @@ nextflow run nf-core/ampliseq -profile docker -params-file params.yaml
 with `params.yaml` containing:
 
 ```yaml
-input: "data"
+input: "samplesheet.tsv"
 FW_primer: "GTGYCAGCMGCCGCGGTAA"
 RV_primer: "GGACTACNVGGGTWTCTAAT"
 metadata: "data/Metadata.tsv"
 outdir: "./results"
+<...>
 ```
 
 You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-co.re/launch).
 
 ### Input specifications
 
-The input data can be passed to nf-core/ampliseq in three possible ways using the `--input` parameter, either a folder containing zipped FastQ files, a tab-separated samplesheet, or a fasta file to be taxonomically classified.
+The input data can be passed to nf-core/ampliseq in three possible ways using the parameters `--input`, `--input_fasta`, or `--input_folder`.
+The three parameters and input types are mutually exclusive.
+
+- [Samplesheet input](#samplesheet-input) using `--input`: Samplesheet tab-separated, comma-separated, or in YAML format
+- [ASV/OTU fasta input](#asvotu-fasta-input) using `--input_fasta`: Fasta file with sequences to be taxonomically classified
+- [Direct FASTQ input](#direct-fastq-input) using `--input_folder`: Folder containing zipped FastQ files.
 
 Optionally, a metadata sheet can be specified for downstream analysis.
 
-#### Direct FASTQ input
+#### Samplesheet input
 
-The easiest way is to specify directly the path to the folder that contains your input FASTQ files. For example:
+The sample sheet file can be tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml) and can have two to four columns/entries with the following headers:
+
+| Column       | Necessity | Description                                                                   |
+| ------------ | --------- | ----------------------------------------------------------------------------- |
+| sampleID     | required  | Unique sample identifiers                                                     |
+| forwardReads | required  | Paths to (forward) reads zipped FastQ files                                   |
+| reverseReads | optional  | Paths to reverse reads zipped FastQ files, required if the data is paired-end |
+| run          | optional  | If the data was produced by multiple sequencing runs, any string              |
 
 ```bash
---input 'path/to/data/'
+--input 'path/to/samplesheet.tsv'
+```
+
+For example, the tab-separated samplesheet may contain:
+
+| sampleID | forwardReads              | reverseReads              | run |
+| -------- | ------------------------- | ------------------------- | --- |
+| sample1  | ./data/S1_R1_001.fastq.gz | ./data/S1_R2_001.fastq.gz | A   |
+| sample2  | ./data/S2_fw.fastq.gz     | ./data/S2_rv.fastq.gz     | A   |
+| sample3  | ./S4x.fastq.gz            | ./S4y.fastq.gz            | B   |
+| sample4  | ./a.fastq.gz              | ./b.fastq.gz              | B   |
+
+Please note the following requirements:
+
+- 2 to 4 columns/entries
+- File extensions `.tsv`,`.csv`,`.yml`,`.yaml` specify the file type, otherwise file type will be derived from content, if possible
+- Must contain the header `sampleID` and `forwardReads`
+- May contain the header `reverseReads` and `run`
+- Sample IDs must be unique
+- Sample IDs must start with a letter
+- Sample IDs can only contain letters, numbers or underscores
+- FastQ files must be compressed (`.fastq.gz`, `.fq.gz`)
+- Within one samplesheet, only one type of raw data should be specified (same amplicon & sequencing method)
+
+An [example samplesheet](../assets/samplesheet.tsv) has been provided with the pipeline.
+
+To avoid producing a sample sheet, [Direct FASTQ input](#direct-fastq-input) may be used instead.
+
+#### ASV/OTU fasta input
+
+To taxonomically classify pre-computed sequence files, a fasta format file with sequences may be provided.
+Most of the steps of the pipeline will be skipped, but ITSx & Barrnap & length filtering can be applied before taxonomic classification.
+The sequence header line may contain a description, that will be kept as part of the sequence name. However, tabs will be changed into spaces.
+
+```bash
+--input_fasta 'path/to/amplicon_sequences.fasta'
+```
+
+#### Direct FASTQ input
+
+An easy way to input sequencing data to the pipeline is to specify directly the path to the folder that contains your input FASTQ files. For example:
+
+```bash
+--input_folder 'path/to/data/'
 ```
 
 File names must follow a specific pattern, default is `/*_R{1,2}_001.fastq.gz`, but this can be adjusted with `--extension`.
@@ -146,59 +208,40 @@ Please note the following additional requirements:
 - Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique (also across sequencing runs)
 - If your data is scattered, produce a sample sheet
 
-#### Samplesheet input
+### Taxonomic classification
 
-The sample sheet file is an alternative way to provide input reads, it must be a tab-separated file ending with `.tsv` that must have two to four columns with the following headers:
+Taxonomic classification of ASVs can be performed with tools DADA2, SINTAX, Kraken2 or QIIME2. Multiple taxonomic reference databases are pre-configured for those tools, but user supplied databases are also supported for some tools. Alternatively (or in addition), phylogenetic placement can be used to extract taxonomic classifications.
 
-| Column       | Necessity | Description                                                                   |
-| ------------ | --------- | ----------------------------------------------------------------------------- |
-| sampleID     | required  | Unique sample identifiers                                                     |
-| forwardReads | required  | Paths to (forward) reads zipped FastQ files                                   |
-| reverseReads | optional  | Paths to reverse reads zipped FastQ files, required if the data is paired-end |
-| run          | optional  | If the data was produced by multiple sequencing runs, any string              |
+In case multiple tools for taxonomic classification are executed in one pipeline run, only the taxonomic classification result of one tool is forwarded to downstream analysis with QIIME2. The priority is `phylogenetic placement` > `DADA2` > `SINTAX` > `Kraken2` > `QIIME2`.
 
-```bash
---input 'path/to/samplesheet.tsv'
-```
+Default setting for taxonomic classification is DADA2 with the SILVA reference taxonomy database.
 
-For example, the samplesheet may contain:
+Pre-configured reference taxonomy databases are:
 
-| sampleID | forwardReads              | reverseReads              | run |
-| -------- | ------------------------- | ------------------------- | --- |
-| sample1  | ./data/S1_R1_001.fastq.gz | ./data/S1_R2_001.fastq.gz | A   |
-| sample2  | ./data/S2_fw.fastq.gz     | ./data/S2_rv.fastq.gz     | A   |
-| sample3  | ./S4x.fastq.gz            | ./S4y.fastq.gz            | B   |
-| sample4  | ./a.fastq.gz              | ./b.fastq.gz              | B   |
+| Database key | DADA2 | SINTAX | Kraken2 | QIIME2 | Target genes                                  |
+| ------------ | ----- | ------ | ------- | ------ | --------------------------------------------- |
+| silva        | +     | -      | +       | +      | 16S rRNA                                      |
+| gtdb         | +     | -      | -       | -      | 16S rRNA                                      |
+| sbdi-gtdb    | +     | -      | -       | -      | 16S rRNA                                      |
+| rdp          | +     | -      | +       | -      | 16S rRNA                                      |
+| greengenes   | -     | -      | +       | (+)¹   | 16S rRNA                                      |
+| pr2          | +     | -      | -       | -      | 18S rRNA                                      |
+| unite-fungi  | +     | +      | -       | +      | eukaryotic nuclear ribosomal ITS region       |
+| unite-alleuk | +     | +      | -       | +      | eukaryotic nuclear ribosomal ITS region       |
+| coidb        | +     | +      | -       | -      | eukaryotic Cytochrome Oxidase I (COI)         |
+| midori2-co1  | +     | -      | -       | -      | eukaryotic Cytochrome Oxidase I (COI)         |
+| standard     | -     | -      | +       | -      | any in genomes of archaea, bacteria, viruses² |
 
-Please note the following requirements:
+¹: de-replicated at 85%, only for testing purposes; ²: quality of results might vary
 
-- 2 to 4 tab-separated columns
-- Valid file extension: `.tsv`
-- Must contain the header `sampleID` and `forwardReads`
-- May contain the header `reverseReads` and `run`
-- Sample IDs must be unique
-- Sample IDs must not contain a dot `.`
-- Sample IDs may not start with a number
-- FastQ files must be compressed (`.fastq.gz`, `.fq.gz`)
-- Within one samplesheet, only one type of raw data should be specified (same amplicon & sequencing method)
+Special features of taxonomic classification tools:
 
-An [example samplesheet](../assets/samplesheet.tsv) has been provided with the pipeline.
+- DADA2's reference taxonomy databases **can** have regions matching the amplicon extracted with primer sequences.
+- Kraken2 is very fast and can use large databases containing complete genomes.
+- QIIME2's reference taxonomy databases will have regions matching the amplicon extracted with primer sequences.
+- DADA2, Kraken2, and QIIME2 have specific parameters to accept custom databases (but theoretically possible with all classifiers)
 
-> **Please note:** All characters other than letters, numbers and underline in Sample IDs will be converted to dots `.`. Avoid those conversions, because they might make summary files not merging correctly and will fail to match to metadata (which can be adjusted though).
-
-#### ASV/OTU fasta input
-
-When pointing at a file ending with `.fasta`, `.fna` or `.fa`, the containing ASV/OTU sequences will be taxonomically classified.
-Most of the steps of the pipeline will be skipped, but ITSx & Barrnap & length filtering can be applied before taxonomic classification.
-The sequence header line may contain a description, that will be kept as part of the sequence name. However, tabs will be changed into spaces.
-
-```bash
---input 'path/to/amplicon_sequences.fasta'
-```
-
-Please note the following requirements:
-
-- Valid file extensions: `.fasta`, `.fna` or `.fa`
+Parameter guidance is given in [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#taxonomic-database).
 
 ### Metadata
 
@@ -246,11 +289,15 @@ This version number will be logged in reports when you run the pipeline, so that
 
 To further assist in reproducbility, you can use share and re-use [parameter files](#running-the-pipeline) to repeat pipeline runs with the same settings without having to write out a command with every single parameter.
 
-> 💡 If you wish to share such profile (such as upload as supplementary material for academic publications), make sure to NOT include cluster specific paths to files, nor institutional specific profiles.
+:::tip
+If you wish to share such profile (such as upload as supplementary material for academic publications), make sure to NOT include cluster specific paths to files, nor institutional specific profiles.
+:::
 
 ## Core Nextflow arguments
 
-> **NB:** These options are part of Nextflow and use a _single_ hyphen (pipeline parameters use a double-hyphen).
+:::note
+These options are part of Nextflow and use a _single_ hyphen (pipeline parameters use a double-hyphen).
+:::
 
 ### `-profile`
 
@@ -258,7 +305,9 @@ Use this parameter to choose a configuration profile. Profiles can give configur
 
 Several generic profiles are bundled with the pipeline which instruct the pipeline to use software packaged using different methods (Docker, Singularity, Podman, Shifter, Charliecloud, Apptainer, Conda) - see below.
 
-> We highly recommend the use of Docker or Singularity containers for full pipeline reproducibility, however when this is not possible, Conda is also supported.
+:::info
+We highly recommend the use of Docker or Singularity containers for full pipeline reproducibility, however when this is not possible, Conda is also supported.
+:::
 
 The pipeline also dynamically loads configurations from [https://github.com/nf-core/configs](https://github.com/nf-core/configs) when it runs, making multiple config profiles for various institutional clusters available at run time. For more information and to see if your system is available in these configs please see the [nf-core/configs documentation](https://github.com/nf-core/configs#documentation).
 

@@ -11,6 +11,14 @@ class WorkflowAmpliseq {
     // Check and validate parameters
     //
     public static void initialise(params, log) {
+        if ( !params.input && !params.input_fasta && !params.input_folder ) {
+            Nextflow.error("Missing input declaration: One of `--input`, `--input_fasta`, `--input_folder` is required.")
+        }
+
+        if ( !params.input_fasta && (!params.FW_primer || !params.RV_primer) && !params.skip_cutadapt ) {
+            Nextflow.error("Incompatible parameters: `--FW_primer` and `--RV_primer` are required for primer trimming. If primer trimming is not needed, use `--skip_cutadapt`.")
+        }
+
         if ( params.pacbio || params.iontorrent || params.single_end ) {
             if (params.trunclenr) { log.warn "Unused parameter: `--trunclenr` is ignored because the data is single end." }
         } else if (params.trunclenf && !params.trunclenr) {
@@ -60,16 +68,18 @@ class WorkflowAmpliseq {
             }
         }
 
-        if (params.dada_assign_taxlevels && params.sbdiexport) {
+        if (params.dada_assign_taxlevels && params.sbdiexport && !params.sintax_ref_taxonomy) {
             Nextflow.error("Incompatible parameters: `--sbdiexport` expects specific taxonomics ranks (default) and therefore excludes modifying those using `--dada_assign_taxlevels`.")
-        }
-
-        if (params.skip_dada_addspecies && params.sbdiexport) {
-            Nextflow.error("Incompatible parameters: `--sbdiexport` expects species annotation and therefore excludes `--skip_dada_addspecies`.")
         }
 
         if (params.skip_taxonomy && params.sbdiexport) {
             Nextflow.error("Incompatible parameters: `--sbdiexport` expects taxa annotation and therefore excludes `--skip_taxonomy`.")
+        }
+
+        if (params.skip_dada_taxonomy && params.sbdiexport) {
+            if (!params.sintax_ref_taxonomy && (params.skip_qiime || !params.qiime_ref_taxonomy)) {
+                Nextflow.error("Incompatible parameters: `--sbdiexport` expects taxa annotation and therefore annotation with either DADA2, SINTAX, or QIIME2 is needed.")
+            }
         }
 
         if ( (!params.FW_primer || !params.RV_primer) && params.qiime_ref_taxonomy && !params.skip_qiime && !params.skip_taxonomy ) {
@@ -84,13 +94,23 @@ class WorkflowAmpliseq {
             Nextflow.error("Incompatible parameters: `--qiime_ref_taxonomy` will produce a classifier but `--classifier` points to a precomputed classifier, therefore, only use one of those.")
         }
 
+        if (params.kraken2_ref_tax_custom && !params.kraken2_assign_taxlevels ) {
+            Nextflow.error("Missing parameter: Taxonomic classification with a user provided database via `--kraken2_ref_tax_custom` requires `--kraken2_assign_taxlevels`")
+        }
+
         if (params.filter_ssu && params.skip_barrnap) {
             Nextflow.error("Incompatible parameters: `--filter_ssu` cannot be used with `--skip_barrnap` because filtering for SSU's depends on barrnap.")
         }
 
-        String[] sbdi_compatible_databases = ["coidb","coidb=221216","gtdb","gtdb=R07-RS207","gtdb=R06-RS202","gtdb=R05-RS95","midori2-co1","midori2-co1=gb250","pr2=4.14.0","pr2=4.13.0","rdp","rdp=18","sbdi-gtdb","sbdi-gtdb=R07-RS207-1","silva","silva=138","silva=132","unite-fungi","unite-fungi=9.0","unite-fungi=8.3","unite-fungi=8.2","unite-alleuk","unite-alleuk=9.0","unite-alleuk=8.3","unite-alleuk=8.2"]
-        if ( params.sbdiexport && !Arrays.stream(sbdi_compatible_databases).anyMatch(entry -> params.dada_ref_taxonomy.toString().equals(entry)) ) {
-            Nextflow.error("Incompatible parameters: `--sbdiexport` does not work with the chosen database of `--dada_ref_taxonomy`, because the expected taxonomic levels do not match.")
+        String[] sbdi_compatible_databases = ["coidb","coidb=221216","gtdb","gtdb=R08-RS214","gtdb=R07-RS207","gtdb=R06-RS202","gtdb=R05-RS95","midori2-co1","midori2-co1=gb250","pr2","pr2=5.0.0","pr2=4.14.0","pr2=4.13.0","rdp","rdp=18","sbdi-gtdb","sbdi-gtdb=R07-RS207-1","silva","silva=138","silva=132","unite-fungi","unite-fungi=9.0","unite-fungi=8.3","unite-fungi=8.2","unite-alleuk","unite-alleuk=9.0","unite-alleuk=8.3","unite-alleuk=8.2"]
+        if (params.sbdiexport){
+            if (params.sintax_ref_taxonomy ) {
+                if (!Arrays.stream(sbdi_compatible_databases).anyMatch(entry -> params.sintax_ref_taxonomy.toString().equals(entry)) ) {
+                    Nextflow.error("Incompatible parameters: `--sbdiexport` does not work with the chosen database of `--sintax_ref_taxonomy` because the expected taxonomic levels do not match.")
+                }
+            } else if (!Arrays.stream(sbdi_compatible_databases).anyMatch(entry -> params.dada_ref_taxonomy.toString().equals(entry)) ) {
+                Nextflow.error("Incompatible parameters: `--sbdiexport` does not work with the chosen database of `--dada_ref_taxonomy` because the expected taxonomic levels do not match.")
+            }
         }
 
         if (params.addsh && !params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]) {
@@ -111,13 +131,6 @@ class WorkflowAmpliseq {
         if ( params.orf_end && ( ( ( params.orf_end + 1 ) - params.orf_start ) % 3 != 0 ) ) {
             Nextflow.error("Incompatible parameters: The difference of  `--orf_end` and `--orf_start` must be a multiple of 3.")
         }
-    }
-
-    //
-    // Check string (String s) ends with one entry of an array of strings ("String[] extn")
-    //
-    public static boolean checkIfFileHasExtension(String s, String[] extn) {
-        return Arrays.stream(extn).anyMatch(entry -> s.endsWith(entry));
     }
 
     //
@@ -147,14 +160,56 @@ class WorkflowAmpliseq {
         return yaml_file_text
     }
 
-    public static String methodsDescriptionText(run_workflow, mqc_methods_yaml) {
+    //
+    // Generate methods description for MultiQC
+    //
+
+    public static String toolCitationText(params) {
+
+        // TODO nf-core: Optionally add in-text citation tools to this list.
+        // Can use ternary operators to dynamically construct based conditions, e.g. params["run_xyz"] ? "Tool (Foo et al. 2023)" : "",
+        // Uncomment function in methodsDescriptionText to render in MultiQC report
+        def citation_text = [
+                "Tools used in the workflow included:",
+                "FastQC (Andrews 2010),",
+                "MultiQC (Ewels et al. 2016)",
+                "."
+            ].join(' ').trim()
+
+        return citation_text
+    }
+
+    public static String toolBibliographyText(params) {
+
+        // TODO Optionally add bibliographic entries to this list.
+        // Can use ternary operators to dynamically construct based conditions, e.g. params["run_xyz"] ? "<li>Author (2023) Pub name, Journal, DOI</li>" : "",
+        // Uncomment function in methodsDescriptionText to render in MultiQC report
+        def reference_text = [
+                "<li>Andrews S, (2010) FastQC, URL: https://www.bioinformatics.babraham.ac.uk/projects/fastqc/).</li>",
+                "<li>Ewels, P., Magnusson, M., Lundin, S., & Käller, M. (2016). MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics , 32(19), 3047–3048. doi: /10.1093/bioinformatics/btw354</li>"
+            ].join(' ').trim()
+
+        return reference_text
+    }
+
+    public static String methodsDescriptionText(run_workflow, mqc_methods_yaml, params) {
         // Convert  to a named map so can be used as with familar NXF ${workflow} variable syntax in the MultiQC YML file
         def meta = [:]
         meta.workflow = run_workflow.toMap()
         meta["manifest_map"] = run_workflow.manifest.toMap()
 
+        // Pipeline DOI
         meta["doi_text"] = meta.manifest_map.doi ? "(doi: <a href=\'https://doi.org/${meta.manifest_map.doi}\'>${meta.manifest_map.doi}</a>)" : ""
         meta["nodoi_text"] = meta.manifest_map.doi ? "": "<li>If available, make sure to update the text to include the Zenodo DOI of version of the pipeline used. </li>"
+
+        // Tool references
+        meta["tool_citations"] = ""
+        meta["tool_bibliography"] = ""
+
+        // TODO Only uncomment below if logic in toolCitationText/toolBibliographyText has been filled!
+        //meta["tool_citations"] = toolCitationText(params).replaceAll(", \\.", ".").replaceAll("\\. \\.", ".").replaceAll(", \\.", ".")
+        //meta["tool_bibliography"] = toolBibliographyText(params)
+
 
         def methods_text = mqc_methods_yaml.text
 

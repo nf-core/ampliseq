@@ -3,7 +3,56 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## nf-core/ampliseq version 2.6.1 - 2023-06-27
+## nf-core/ampliseq version 2.7.0 - 2023-10-20
+
+### `Added`
+
+- [#558](https://github.com/nf-core/ampliseq/pull/558),[#619](https://github.com/nf-core/ampliseq/pull/619),[#625](https://github.com/nf-core/ampliseq/pull/625),[#632](https://github.com/nf-core/ampliseq/pull/632),[#644](https://github.com/nf-core/ampliseq/pull/644) - Pipeline summary report
+- [#615](https://github.com/nf-core/ampliseq/pull/615) - Phyloseq R object creation
+- [#622](https://github.com/nf-core/ampliseq/pull/622) - ASV post-clustering with Vsearch
+- [#637](https://github.com/nf-core/ampliseq/pull/637) - Taxonomic classification with Kraken2, parameter `--kraken2_ref_taxonomy`, `--kraken2_ref_tax_custom`, `--kraken2_assign_taxlevels`, `--kraken2_confidence`
+- [#639](https://github.com/nf-core/ampliseq/pull/639) - GTDB release 214.1 for taxonomic classification with DADA2, using `--dada_ref_taxonomy gtdb` or `--dada_ref_taxonomy gtdb=R08-RS214`
+- [#641](https://github.com/nf-core/ampliseq/pull/641) - Continue analysis even when individual files fail the filtering threshold, added parameter `--ignore_failed_filtering`
+
+### `Changed`
+
+- [#616](https://github.com/nf-core/ampliseq/pull/616) - When using a sample sheet with `--input` containing forward and reverse reads, specifying `--single_end` will only extract forward reads and treat the data as single ended instead of extracting forward and reverse reads.
+- [#616](https://github.com/nf-core/ampliseq/pull/616) - `--input` was split into three params: (1) `--input` for samplesheet, (2) `--input_fasta` for ASV/OTU fasta input, (3) `--input_folder` direct FASTQ input
+
+| Param updated | Param old | Accepts                                  |
+| ------------- | --------- | ---------------------------------------- |
+| input         | input     | samplesheet, .tsv/.csv/.yml/.yaml        |
+| input_fasta   | input     | ASV/OTU sequences, .fasta                |
+| input_folder  | input     | Folder containing compressed fastq files |
+
+- [#639](https://github.com/nf-core/ampliseq/pull/639) - `--dada_ref_taxonomy gtdb` points towards GTDB release 214.1 instead of GTDB release 207 for taxonomic classification with DADA2
+- [#645](https://github.com/nf-core/ampliseq/pull/645) - Updated documentation, including workflow figure
+
+### `Fixed`
+
+- [#605](https://github.com/nf-core/ampliseq/pull/605) - Make `--sbdiexport` compatible with PR2 version 5.0.0
+- [#614](https://github.com/nf-core/ampliseq/pull/614),[#620](https://github.com/nf-core/ampliseq/pull/620),[#642](https://github.com/nf-core/ampliseq/pull/642) - Template update for nf-core/tools version 2.10
+- [#617](https://github.com/nf-core/ampliseq/pull/617) - Fix database compatibility check for `--sbdiexport`
+- [#628](https://github.com/nf-core/ampliseq/pull/628) - Fix edge case for sample sheet input when using specific combinations of sampleID and forwardReads or reverseReads that will forward one file too much to cutadapt
+- [#630](https://github.com/nf-core/ampliseq/pull/630) - ASV rRNA (barrnap), length, and codon filter now work with ASV fasta file input
+- [#633](https://github.com/nf-core/ampliseq/pull/633) - UNIFRAC in QIIME2_DIVERSITY_CORE is now prevented from using a GPU to avoid errors
+- [#643](https://github.com/nf-core/ampliseq/pull/643) - Fix using `--skip_dada_addspecies` without `--dada_ref_tax_custom_sp` which was broken in 2.6.0 & 2.6.1
+- [#647](https://github.com/nf-core/ampliseq/pull/647) - Update of credits
+
+### `Dependencies`
+
+- [#646](https://github.com/nf-core/ampliseq/pull/646) - Updated dependencies, see below:
+
+| software | previously | now    |
+| -------- | ---------- | ------ |
+| FASTQC   | 0.11.9     | 0.12.1 |
+| DADA2    | 1.22.0     | 1.28.0 |
+| PICRUSt2 | 2.5.0      | 2.5.2  |
+| QIIME2   | 2022.11    | 2023.7 |
+
+### `Removed`
+
+## nf-core/ampliseq version 2.6.1 - 2023-06-28
 
 ### `Fixed`
 

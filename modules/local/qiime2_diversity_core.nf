@@ -1,7 +1,7 @@
 process QIIME2_DIVERSITY_CORE {
     label 'process_low'
 
-    container "quay.io/qiime2/core:2022.11"
+    container "qiime2/core:2023.7"
 
     // Exit if running this module with -profile conda / -profile mamba
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
@@ -27,6 +27,10 @@ process QIIME2_DIVERSITY_CORE {
 
     script:
     """
+    # FIX: detecting a viable GPU on your system, but the GPU is unavailable for compute, causing UniFrac to fail.
+    # COMMENT: might be fixed in version after QIIME2 2023.5
+    export UNIFRAC_USE_GPU=N
+
     export XDG_CONFIG_HOME="\${PWD}/HOME"
 
     mindepth=\$(count_table_minmax_reads.py $stats minimum 2>&1)

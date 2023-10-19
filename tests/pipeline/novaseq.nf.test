@@ -28,7 +28,8 @@ nextflow_pipeline {
                 { assert new File("$outputDir/fastqc/S2_2_fastqc.html").exists() },
                 { assert snapshot(path("$outputDir/input/Samplesheet_novaseq.tsv")).match("input") },
                 { assert snapshot(path("$outputDir/multiqc/multiqc_data/multiqc_fastqc.txt"),
-                                path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt")).match("multiqc") }
+                                path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt")).match("multiqc") },
+                { assert new File("$outputDir/summary_report/summary_report.html").exists() }
             )
         }
     }

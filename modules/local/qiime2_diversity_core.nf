@@ -31,8 +31,9 @@ process QIIME2_DIVERSITY_CORE {
     # COMMENT: might be fixed in version after QIIME2 2023.5
     export UNIFRAC_USE_GPU=N
 
-    export XDG_CONFIG_HOME="\${PWD}/HOME"
-	export MPLCONFIGDIR="\${PWD}/HOME"
+    export XDG_CONFIG_HOME="/tmp/xdgconfig"
+	export MPLCONFIGDIR="/tmp/mplconfigdir"
+    export NUMBA_CACHE_DIR="/tmp/numbacache"
 
     mindepth=\$(count_table_minmax_reads.py $stats minimum 2>&1)
     if [ \"\$mindepth\" -lt \"$mindepth\" ]; then mindepth=$mindepth; fi

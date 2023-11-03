@@ -21,8 +21,9 @@ process QIIME2_DIVERSITY_BETAORD {
 
     script:
     """
-    export XDG_CONFIG_HOME="\${PWD}/HOME"
-	export MPLCONFIGDIR="\${PWD}/HOME"
+    export XDG_CONFIG_HOME="/tmp/xdgconfig"
+	export MPLCONFIGDIR="/tmp/mplconfigdir"
+    export NUMBA_CACHE_DIR="/tmp/numbacache"
     mkdir beta_diversity
 
     qiime emperor plot \\

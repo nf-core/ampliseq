@@ -22,8 +22,9 @@ process QIIME2_TRAIN {
 
     script:
     """
-    export XDG_CONFIG_HOME="\${PWD}/HOME"
-	export MPLCONFIGDIR="\${PWD}/HOME"
+    export XDG_CONFIG_HOME="/tmp/xdgconfig"
+	export MPLCONFIGDIR="/tmp/mplconfigdir"
+    export NUMBA_CACHE_DIR="/tmp/numbacache"
 
     #Train classifier
     qiime feature-classifier fit-classifier-naive-bayes \\

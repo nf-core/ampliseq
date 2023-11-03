@@ -23,8 +23,9 @@ process QIIME2_EXPORT_RELTAX {
 
     script:
     """
-    export XDG_CONFIG_HOME="\${PWD}/HOME"
-	export MPLCONFIGDIR="\${PWD}/HOME"
+    export XDG_CONFIG_HOME="/tmp/xdgconfig"
+	export MPLCONFIGDIR="/tmp/mplconfigdir"
+    export NUMBA_CACHE_DIR="/tmp/numbacache"
 
     ##on several taxa level
     array=(\$(seq ${tax_agglom_min} 1 ${tax_agglom_max}))

@@ -21,7 +21,8 @@ process QIIME2_INASV {
 
     script:
     """
-    export MPLCONFIGDIR="\${PWD}/HOME"
+    export MPLCONFIGDIR="/tmp/mplconfigdir"
+    export NUMBA_CACHE_DIR="/tmp/numbacache"
 
     # remove first line if needed
     sed '/^# Constructed from biom file/d' "$asv" > biom-table.txt

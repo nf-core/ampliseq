@@ -29,8 +29,9 @@ process QIIME2_EXPORT_ABSOLUTE {
 
     script:
     """
-    export XDG_CONFIG_HOME="\${PWD}/HOME"
-	export MPLCONFIGDIR="\${PWD}/HOME"
+    export XDG_CONFIG_HOME="/tmp/xdgconfig"
+	export MPLCONFIGDIR="/tmp/mplconfigdir"
+    export NUMBA_CACHE_DIR="/tmp/numbacache"
 
     #produce raw count table in biom format "table/feature-table.biom"
     qiime tools export \\

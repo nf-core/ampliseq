@@ -22,6 +22,7 @@ process QIIME2_FEATURETABLE_GROUP {
     script:
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
+	export MPLCONFIGDIR="\${PWD}/HOME"
 
     qiime feature-table filter-samples \\
         --i-table "${table}" \\

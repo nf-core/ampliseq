@@ -23,6 +23,7 @@ process QIIME2_DIVERSITY_ADONIS {
     def args = task.ext.args ?: ''
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
+	export MPLCONFIGDIR="\${PWD}/HOME"
 
     qiime diversity adonis \\
         --p-n-jobs $task.cpus \\

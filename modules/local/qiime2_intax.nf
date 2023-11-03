@@ -23,6 +23,8 @@ process QIIME2_INTAX {
     script:
     def script_cmd = script ? "$script $tax" : "cp $tax tax.tsv"
     """
+    export MPLCONFIGDIR="\${PWD}/HOME"
+
     $script_cmd
 
     qiime tools import \\

@@ -21,6 +21,8 @@ process QIIME2_INTREE {
 
     script:
     """
+    export MPLCONFIGDIR="\${PWD}/HOME"
+
     qiime tools import \\
         --type 'Phylogeny[Rooted]' \\
         --input-path $tree \\

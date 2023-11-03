@@ -26,6 +26,7 @@ process QIIME2_BARPLOT {
     def metadata_cmd = metadata ? "--m-metadata-file ${metadata}": ""
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
+	export MPLCONFIGDIR="\${PWD}/HOME"
 
     qiime taxa barplot  \\
         --i-table ${table}  \\

@@ -24,6 +24,7 @@ process QIIME2_CLASSIFY {
     script:
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
+	export MPLCONFIGDIR="\${PWD}/HOME"
 
     qiime feature-classifier classify-sklearn  \\
         --i-classifier ${trained_classifier}  \\

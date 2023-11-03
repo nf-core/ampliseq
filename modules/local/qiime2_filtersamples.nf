@@ -24,6 +24,7 @@ process QIIME2_FILTERSAMPLES {
     def prefix = task.ext.prefix ?: "${filter}"
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
+	export MPLCONFIGDIR="\${PWD}/HOME"
 
     qiime feature-table filter-samples \\
         --i-table ${table} \\

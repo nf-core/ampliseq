@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
+- [#656](https://github.com/nf-core/ampliseq/pull/656) - Moved conda-check to script-section and replaced `exit 1` with `error()`
+
 ### `Dependencies`
 
 ### `Removed`

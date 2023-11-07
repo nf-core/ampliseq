@@ -3,11 +3,6 @@ process QIIME2_EXPORT_ABSOLUTE {
 
     container "qiime2/core:2023.7"
 
-    // Exit if running this module with -profile conda / -profile mamba
-    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
-        exit 1, "QIIME2 does not support Conda. Please use Docker / Singularity / Podman instead."
-    }
-
     input:
     path(table)
     path(repseq)
@@ -28,6 +23,10 @@ process QIIME2_EXPORT_ABSOLUTE {
     task.ext.when == null || task.ext.when
 
     script:
+    // Exit if running this module with -profile conda / -profile mamba
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
+        error "QIIME2 does not support Conda. Please use Docker / Singularity / Podman instead."
+    }
     """
     export XDG_CONFIG_HOME="\${PWD}/HOME"
 

@@ -21,8 +21,8 @@ process QIIME2_INTREE {
 
     script:
     """
-    export MPLCONFIGDIR="/tmp/mplconfigdir"
-    export NUMBA_CACHE_DIR="/tmp/numbacache"
+    export MPLCONFIGDIR="./mplconfigdir"
+    export NUMBA_CACHE_DIR="./numbacache"
 
     qiime tools import \\
         --type 'Phylogeny[Rooted]' \\

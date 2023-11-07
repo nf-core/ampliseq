@@ -23,9 +23,9 @@ process QIIME2_FILTERSAMPLES {
     def args = task.ext.args ?: "--p-where \'${filter}<>\"\"\'"
     def prefix = task.ext.prefix ?: "${filter}"
     """
-    export XDG_CONFIG_HOME="/tmp/xdgconfig"
-	export MPLCONFIGDIR="/tmp/mplconfigdir"
-    export NUMBA_CACHE_DIR="/tmp/numbacache"
+    export XDG_CONFIG_HOME="./xdgconfig"
+	export MPLCONFIGDIR="./mplconfigdir"
+    export NUMBA_CACHE_DIR="./numbacache"
 
     qiime feature-table filter-samples \\
         --i-table ${table} \\

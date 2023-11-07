@@ -23,9 +23,9 @@ process QIIME2_CLASSIFY {
 
     script:
     """
-    export XDG_CONFIG_HOME="/tmp/xdgconfig"
-	export MPLCONFIGDIR="/tmp/mplconfigdir"
-    export NUMBA_CACHE_DIR="/tmp/numbacache"
+    export XDG_CONFIG_HOME="./xdgconfig"
+	export MPLCONFIGDIR="./mplconfigdir"
+    export NUMBA_CACHE_DIR="./numbacache"
 
     qiime feature-classifier classify-sklearn  \\
         --i-classifier ${trained_classifier}  \\

@@ -21,9 +21,9 @@ process QIIME2_DIVERSITY_ALPHA {
 
     script:
     """
-    export XDG_CONFIG_HOME="/tmp/xdgconfig"
-	export MPLCONFIGDIR="/tmp/mplconfigdir"
-    export NUMBA_CACHE_DIR="/tmp/numbacache"
+    export XDG_CONFIG_HOME="./xdgconfig"
+	export MPLCONFIGDIR="./mplconfigdir"
+    export NUMBA_CACHE_DIR="./numbacache"
 
     qiime diversity alpha-group-significance \\
         --i-alpha-diversity ${core} \\

@@ -20,9 +20,9 @@ process QIIME2_EXPORT_RELASV {
 
     script:
     """
-    export XDG_CONFIG_HOME="/tmp/xdgconfig"
-	export MPLCONFIGDIR="/tmp/mplconfigdir"
-    export NUMBA_CACHE_DIR="/tmp/numbacache"
+    export XDG_CONFIG_HOME="./xdgconfig"
+	export MPLCONFIGDIR="./mplconfigdir"
+    export NUMBA_CACHE_DIR="./numbacache"
 
     #convert to relative abundances
     qiime feature-table relative-frequency \\

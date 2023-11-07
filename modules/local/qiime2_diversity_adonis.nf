@@ -23,7 +23,7 @@ process QIIME2_DIVERSITY_ADONIS {
     def args = task.ext.args ?: ''
     """
     export XDG_CONFIG_HOME="./xdgconfig"
-	export MPLCONFIGDIR="./mplconfigdir"
+    export MPLCONFIGDIR="./mplconfigdir"
     export NUMBA_CACHE_DIR="./numbacache"
 
     qiime diversity adonis \\

@@ -22,7 +22,7 @@ process QIIME2_DIVERSITY_BETAORD {
     script:
     """
     export XDG_CONFIG_HOME="./xdgconfig"
-	export MPLCONFIGDIR="./mplconfigdir"
+    export MPLCONFIGDIR="./mplconfigdir"
     export NUMBA_CACHE_DIR="./numbacache"
     mkdir beta_diversity
 

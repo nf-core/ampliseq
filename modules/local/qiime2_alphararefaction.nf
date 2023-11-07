@@ -24,7 +24,7 @@ process QIIME2_ALPHARAREFACTION {
     script:
     """
     export XDG_CONFIG_HOME="./xdgconfig"
-	export MPLCONFIGDIR="./mplconfigdir"
+    export MPLCONFIGDIR="./mplconfigdir"
     export NUMBA_CACHE_DIR="./numbacache"
 
     maxdepth=\$(count_table_minmax_reads.py $stats maximum 2>&1)

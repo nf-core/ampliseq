@@ -32,7 +32,7 @@ process QIIME2_DIVERSITY_CORE {
     export UNIFRAC_USE_GPU=N
 
     export XDG_CONFIG_HOME="./xdgconfig"
-	export MPLCONFIGDIR="./mplconfigdir"
+    export MPLCONFIGDIR="./mplconfigdir"
     export NUMBA_CACHE_DIR="./numbacache"
 
     mindepth=\$(count_table_minmax_reads.py $stats minimum 2>&1)

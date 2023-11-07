@@ -24,7 +24,7 @@ process QIIME2_EXPORT_RELTAX {
     script:
     """
     export XDG_CONFIG_HOME="./xdgconfig"
-	export MPLCONFIGDIR="./mplconfigdir"
+    export MPLCONFIGDIR="./mplconfigdir"
     export NUMBA_CACHE_DIR="./numbacache"
 
     ##on several taxa level

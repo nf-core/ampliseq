@@ -21,6 +21,9 @@ process QIIME2_INTREE {
 
     script:
     """
+    export MPLCONFIGDIR="./mplconfigdir"
+    export NUMBA_CACHE_DIR="./numbacache"
+
     qiime tools import \\
         --type 'Phylogeny[Rooted]' \\
         --input-path $tree \\

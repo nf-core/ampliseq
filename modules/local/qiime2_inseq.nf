@@ -21,6 +21,9 @@ process QIIME2_INSEQ {
 
     script:
     """
+    export MPLCONFIGDIR="./mplconfigdir"
+    export NUMBA_CACHE_DIR="./numbacache"
+
     qiime tools import \\
         --input-path "$seq" \\
         --type 'FeatureData[Sequence]' \\

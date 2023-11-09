@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
+- [#655](https://github.com/nf-core/ampliseq/pull/655) - Added `NUMBA_CACHE_DIR` to fix downstream analysis with QIIME2 that failed on some systems
+
 ### `Dependencies`
 
 ### `Removed`

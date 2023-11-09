@@ -22,7 +22,9 @@ process QIIME2_EXTRACT {
 
     script:
     """
-    export XDG_CONFIG_HOME="\${PWD}/HOME"
+    export XDG_CONFIG_HOME="./xdgconfig"
+    export MPLCONFIGDIR="./mplconfigdir"
+    export NUMBA_CACHE_DIR="./numbacache"
 
     ### Import
     qiime tools import \\

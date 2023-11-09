@@ -76,25 +76,30 @@
             "properties": {
                 "illumina_novaseq": {
                     "type": "boolean",
-                    "description": "If data has binned quality scores such as Illumina NovaSeq"
+                    "description": "If data has binned quality scores such as Illumina NovaSeq",
+                    "fa_icon": "fas fa-align-justify"
                 },
                 "pacbio": {
                     "type": "boolean",
-                    "description": "If data is single-ended PacBio reads instead of Illumina"
+                    "description": "If data is single-ended PacBio reads instead of Illumina",
+                    "fa_icon": "fas fa-align-justify"
                 },
                 "iontorrent": {
                     "type": "boolean",
-                    "description": "If data is single-ended IonTorrent reads instead of Illumina"
+                    "description": "If data is single-ended IonTorrent reads instead of Illumina",
+                    "fa_icon": "fas fa-align-justify"
                 },
                 "single_end": {
                     "type": "boolean",
                     "description": "If data is single-ended Illumina reads instead of paired-end",
-                    "help_text": "When using a sample sheet with `--input` containing forward and reverse reads, specifying `--single_end` will only extract forward reads and treat the data as single ended instead of extracting forward and reverse reads."
+                    "help_text": "When using a sample sheet with `--input` containing forward and reverse reads, specifying `--single_end` will only extract forward reads and treat the data as single ended instead of extracting forward and reverse reads.",
+                    "fa_icon": "fas fa-align-left"
                 },
                 "illumina_pe_its": {
                     "type": "boolean",
                     "description": "If analysing ITS amplicons or any other region with large length variability with Illumina paired end reads",
-                    "help_text": "This will cause the pipeline to\n- not truncate input reads if not `--trunclenf` and `--trunclenr` are overwriting defaults\n- remove reverse complement primers from the end of reads in case the read length exceeds the amplicon length"
+                    "help_text": "This will cause the pipeline to\n- not truncate input reads if not `--trunclenf` and `--trunclenr` are overwriting defaults\n- remove reverse complement primers from the end of reads in case the read length exceeds the amplicon length",
+                    "fa_icon": "fas fa-align-justify"
                 },
                 "multiple_sequencing_runs": {
                     "type": "boolean",
@@ -106,7 +111,8 @@
                     "type": "string",
                     "default": "/*_R{1,2}_001.fastq.gz",
                     "description": "If using `--input_folder`: naming of sequencing files",
-                    "help_text": "Indicates the naming of sequencing files (default: `\"/*_R{1,2}_001.fastq.gz\"`).\n\nPlease note:\n\n1. The prepended slash (`/`) is required\n2. The star (`*`) is the required wildcard for sample names\n3. The curly brackets (`{}`) enclose the orientation for paired end reads, separated by a comma (`,`).\n4. The pattern must be enclosed in quotes\n\nFor example for one sample (name: `1`) with forward (file: `1_a.fastq.gz`) and reverse (file: `1_b.fastq.gz`) reads in folder `data`:\n\n```bash\n--input_folder \"data\" --extension \"/*_{a,b}.fastq.gz\"\n```"
+                    "help_text": "Indicates the naming of sequencing files (default: `\"/*_R{1,2}_001.fastq.gz\"`).\n\nPlease note:\n\n1. The prepended slash (`/`) is required\n2. The star (`*`) is the required wildcard for sample names\n3. The curly brackets (`{}`) enclose the orientation for paired end reads, separated by a comma (`,`).\n4. The pattern must be enclosed in quotes\n\nFor example for one sample (name: `1`) with forward (file: `1_a.fastq.gz`) and reverse (file: `1_b.fastq.gz`) reads in folder `data`:\n\n```bash\n--input_folder \"data\" --extension \"/*_{a,b}.fastq.gz\"\n```",
+                    "fa_icon": "fab fa-amilia"
                 },
                 "min_read_counts": {
                     "type": "integer",
@@ -118,14 +124,15 @@
                 "ignore_empty_input_files": {
                     "type": "boolean",
                     "description": "Ignore input files with too few reads.",
-                    "help_text": "Ignore input files with less reads than specified by `--min_read_counts` and continue the pipeline without those samples."
+                    "help_text": "Ignore input files with less reads than specified by `--min_read_counts` and continue the pipeline without those samples.",
+                    "fa_icon": "fas fa-arrow-right"
                 }
-            }
+            },
+            "fa_icon": "fas fa-align-justify"
         },
         "primer_removal": {
             "title": "Primer removal",
             "type": "object",
-            "description": "",
             "default": "",
             "properties": {
                 "retain_untrimmed": {
@@ -137,12 +144,14 @@
                 "cutadapt_min_overlap": {
                     "type": "integer",
                     "default": 3,
-                    "description": "Sets the minimum overlap for valid matches of primer sequences with reads for cutadapt (-O)."
+                    "description": "Sets the minimum overlap for valid matches of primer sequences with reads for cutadapt (-O).",
+                    "fa_icon": "fas fa-align-left"
                 },
                 "cutadapt_max_error_rate": {
                     "type": "number",
                     "default": 0.1,
-                    "description": "Sets the maximum error rate for valid matches of primer sequences with reads for cutadapt (-e)."
+                    "description": "Sets the maximum error rate for valid matches of primer sequences with reads for cutadapt (-e).",
+                    "fa_icon": "fas fa-exclamation-circle"
                 },
                 "double_primer": {
                     "type": "boolean",
@@ -153,9 +162,11 @@
                 "ignore_failed_trimming": {
                     "type": "boolean",
                     "description": "Ignore files with too few reads after trimming.",
-                    "help_text": "Ignore files with less reads than specified by `--min_read_counts` after trimming and continue the pipeline without those samples."
+                    "help_text": "Ignore files with less reads than specified by `--min_read_counts` after trimming and continue the pipeline without those samples.",
+                    "fa_icon": "fas fa-arrow-right"
                 }
-            }
+            },
+            "fa_icon": "fas fa-align-left"
         },
         "read_trimming_and_quality_filtering": {
             "title": "Read trimming and quality filtering",
@@ -188,7 +199,8 @@
                     "description": "Assures that values chosen with --trunc_qmin will retain a fraction of reads.",
                     "help_text": "Value can range from 0 to 1. 0 means no reads need to be retained and 1 means all reads need to be retained. The minimum lengths of --trunc_qmin and --trunc_rmin are chosen as DADA2 cutoffs.",
                     "minimum": 0,
-                    "maximum": 1
+                    "maximum": 1,
+                    "fa_icon": "fas fa-greater-than-equal"
                 },
                 "max_ee": {
                     "type": "integer",
@@ -213,14 +225,15 @@
                 "ignore_failed_filtering": {
                     "type": "boolean",
                     "description": "Ignore files with too few reads after quality filtering.",
-                    "help_text": "Ignore files with fewer reads than specified by `--min_read_counts` after trimming and continue the pipeline without those samples. Please review all quality trimming and filtering options before using this parameter. For example, one sample with shorter sequences than other samples might loose all sequences due to minimum length requirements by read truncation (see --trunclenf)."
+                    "help_text": "Ignore files with fewer reads than specified by `--min_read_counts` after trimming and continue the pipeline without those samples. Please review all quality trimming and filtering options before using this parameter. For example, one sample with shorter sequences than other samples might loose all sequences due to minimum length requirements by read truncation (see --trunclenf).",
+                    "fa_icon": "fas fa-arrow-right"
                 }
-            }
+            },
+            "fa_icon": "fas fa-ban"
         },
         "amplicon_sequence_variants_asv_calculation": {
             "title": "Amplicon Sequence Variants (ASV) calculation",
             "type": "object",
-            "description": "",
             "default": "",
             "properties": {
                 "sample_inference": {
@@ -235,12 +248,85 @@
                     "description": "Not recommended: When paired end reads are not sufficiently overlapping for merging.",
                     "help_text": "This parameters specifies that paired-end reads are not merged after denoising but concatenated (separated by 10 N's). This is of advantage when an amplicon was sequenced that is too long for merging (i.e. bad experimental design). This is an alternative to only analyzing the forward or reverse read in case of non-overlapping paired-end sequencing data.\n\n**This parameter is not recommended! Only if all other options fail.**"
                 }
-            }
+            },
+            "fa_icon": "fas fa-braille"
+        },
+        "asv_post_processing": {
+            "title": "ASV post processing",
+            "type": "object",
+            "default": "",
+            "properties": {
+                "vsearch_cluster": {
+                    "type": "boolean",
+                    "description": "Post-cluster ASVs with VSEARCH",
+                    "help_text": "ASVs will be clustered with VSEARCH using the id value found in `--vsearch_cluster_id`."
+                },
+                "vsearch_cluster_id": {
+                    "type": "number",
+                    "default": 0.97,
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Pairwise Identity value used when post-clustering ASVs if `--vsearch_cluster` option is used (default: 0.97).",
+                    "help_text": "Lowering or increasing this value can change the number ASVs left over after clustering."
+                },
+                "filter_ssu": {
+                    "type": "string",
+                    "description": "Enable SSU filtering. Comma separated list of kingdoms (domains) in Barrnap, a combination (or one) of \"bac\", \"arc\", \"mito\", and \"euk\". ASVs that have their lowest evalue in that kingdoms are kept.",
+                    "enum": [
+                        "bac,arc,mito,euk",
+                        "bac",
+                        "arc",
+                        "mito",
+                        "euk",
+                        "bac,arc",
+                        "bac,mito",
+                        "bac,euk",
+                        "arc,mito",
+                        "arc,euk",
+                        "mito,euk",
+                        "bac,arc,mito",
+                        "bac,mito,euk",
+                        "arc,mito,euk"
+                    ]
+                },
+                "min_len_asv": {
+                    "type": "integer",
+                    "description": "Minimal ASV length",
+                    "help_text": "Remove ASV that are below the minimum length threshold (default: filter is disabled, otherwise 1). Increasing the threshold might reduce false positive ASVs (e.g. PCR off-targets)."
+                },
+                "max_len_asv": {
+                    "type": "integer",
+                    "description": "Maximum ASV length",
+                    "help_text": "Remove ASV that are above the maximum length threshold (default: filter is disabled, otherwise 1000000). Lowering the threshold might reduce false positive ASVs (e.g. PCR off-targets)."
+                },
+                "filter_codons": {
+                    "type": "boolean",
+                    "description": "Filter ASVs based on codon usage",
+                    "help_text": "ASVs will be filtered to contain no stop codon in their coding sequence and that their length is a multiple of 3."
+                },
+                "orf_start": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Starting position of codon tripletts",
+                    "help_text": "By default, when `--filter_codons` is set, the codons start from the first position of the ASV sequences. The start of the codons can be changed to any position."
+                },
+                "orf_end": {
+                    "type": "integer",
+                    "description": "Ending position of codon tripletts",
+                    "help_text": "By default, when `--filter_codons` is set, the codons are checked until the end of the ASV sequences. If you would like to change this setting, you can specify until which position of the ASV sequences the codon triplets are checked.\n\nPlease note that the length of the ASV from the beginning or from the `--orf_start` until this position must be a multiple of 3."
+                },
+                "stop_codons": {
+                    "type": "string",
+                    "default": "TAA,TAG",
+                    "description": "Define stop codons",
+                    "help_text": "By default, when `--filter_codons` is set, the codons `TAA,TAG` are set as stop codons. Here you can specify any comma-separated list of codons to be used as stop codons, e.g. `--stop_codons \"TAA,TAG,TGA\"`"
+                }
+            },
+            "fa_icon": "fas fa-filter"
         },
         "taxonomic_database": {
             "title": "Taxonomic database",
             "type": "object",
-            "description": "",
             "default": "",
             "properties": {
                 "dada_ref_taxonomy": {
@@ -379,7 +465,7 @@
                 },
                 "kraken2_confidence": {
                     "type": "number",
-                    "default": 0,
+                    "default": 0.0,
                     "help_text": "Increasing the threshold will require more k-mers to match at a taxonomic levels and reduce the taxonomic levels shown until the threshold is met.",
                     "description": "Confidence score threshold for taxonomic classification.",
                     "minimum": 0,
@@ -425,74 +511,9 @@
         "asv_filtering": {
             "title": "ASV filtering",
             "type": "object",
-            "description": "",
             "default": "",
+            "fa_icon": "fas fa-filter",
             "properties": {
-                "vsearch_cluster": {
-                    "type": "boolean",
-                    "description": "Post-cluster ASVs with VSEARCH",
-                    "help_text": "ASVs will be clustered with VSEARCH using the id value found in `--vsearch_cluster_id`."
-                },
-                "vsearch_cluster_id": {
-                    "type": "number",
-                    "default": 0.97,
-                    "minimum": 0.0,
-                    "maximum": 1.0,
-                    "description": "Pairwise Identity value used when post-clustering ASVs if `--vsearch_cluster` option is used (default: 0.97).",
-                    "help_text": "Lowering or increasing this value can change the number ASVs left over after clustering."
-                },
-                "filter_ssu": {
-                    "type": "string",
-                    "description": "Enable SSU filtering. Comma separated list of kingdoms (domains) in Barrnap, a combination (or one) of \"bac\", \"arc\", \"mito\", and \"euk\". ASVs that have their lowest evalue in that kingdoms are kept.",
-                    "enum": [
-                        "bac,arc,mito,euk",
-                        "bac",
-                        "arc",
-                        "mito",
-                        "euk",
-                        "bac,arc",
-                        "bac,mito",
-                        "bac,euk",
-                        "arc,mito",
-                        "arc,euk",
-                        "mito,euk",
-                        "bac,arc,mito",
-                        "bac,mito,euk",
-                        "arc,mito,euk"
-                    ]
-                },
-                "min_len_asv": {
-                    "type": "integer",
-                    "description": "Minimal ASV length",
-                    "help_text": "Remove ASV that are below the minimum length threshold (default: filter is disabled, otherwise 1). Increasing the threshold might reduce false positive ASVs (e.g. PCR off-targets)."
-                },
-                "max_len_asv": {
-                    "type": "integer",
-                    "description": "Maximum ASV length",
-                    "help_text": "Remove ASV that are above the maximum length threshold (default: filter is disabled, otherwise 1000000). Lowering the threshold might reduce false positive ASVs (e.g. PCR off-targets)."
-                },
-                "filter_codons": {
-                    "type": "boolean",
-                    "description": "Filter ASVs based on codon usage",
-                    "help_text": "ASVs will be filtered to contain no stop codon in their coding sequence and that their length is a multiple of 3."
-                },
-                "orf_start": {
-                    "type": "integer",
-                    "default": 1,
-                    "description": "Starting position of codon tripletts",
-                    "help_text": "By default, when `--filter_codons` is set, the codons start from the first position of the ASV sequences. The start of the codons can be changed to any position."
-                },
-                "orf_end": {
-                    "type": "integer",
-                    "description": "Ending position of codon tripletts",
-                    "help_text": "By default, when `--filter_codons` is set, the codons are checked until the end of the ASV sequences. If you would like to change this setting, you can specify until which position of the ASV sequences the codon triplets are checked.\n\nPlease note that the length of the ASV from the beginning or from the `--orf_start` until this position must be a multiple of 3."
-                },
-                "stop_codons": {
-                    "type": "string",
-                    "default": "TAA,TAG",
-                    "description": "Define stop codons",
-                    "help_text": "By default, when `--filter_codons` is set, the codons `TAA,TAG` are set as stop codons. Here you can specify any comma-separated list of codons to be used as stop codons, e.g. `--stop_codons \"TAA,TAG,TGA\"`"
-                },
                 "exclude_taxa": {
                     "type": "string",
                     "default": "mitochondria,chloroplast",
@@ -511,15 +532,14 @@
                     "description": "Prevalence filtering",
                     "help_text": "Filtering low prevalent features from the feature table, e.g. keeping only features that are present in at least two samples can be achived by choosing a value of 2 (default: 1, meaning filter is disabled). Typically only used when having replicates for all samples.\n\nFor example to retain features that are present in at least two sample:\n\n```bash\n--min_samples 2\n```\n\nPlease note this is independent of abundance."
                 }
-            },
-            "fa_icon": "fas fa-filter"
+            }
         },
         "downstream_analysis": {
             "title": "Downstream analysis",
             "type": "object",
             "description": "",
             "default": "",
-            "fa_icon": "fas fa-filter",
+            "fa_icon": "fas fa-bacteria",
             "properties": {
                 "metadata_category": {
                     "type": "string",
@@ -600,10 +620,10 @@
                 },
                 "report_abstract": {
                     "type": "string",
-                    "default": null,
                     "description": "Path to Markdown file (md) that replaces the 'Abstract' section"
                 }
-            }
+            },
+            "fa_icon": "fas fa-book-open"
         },
         "skipping_specific_steps": {
             "title": "Skipping specific steps",
@@ -671,7 +691,8 @@
                     "type": "boolean",
                     "description": "Skip Markdown summary report"
                 }
-            }
+            },
+            "fa_icon": "fas fa-hand-paper"
         },
         "generic_options": {
             "title": "Generic options",
@@ -891,6 +912,9 @@
         },
         {
             "$ref": "#/definitions/amplicon_sequence_variants_asv_calculation"
+        },
+        {
+            "$ref": "#/definitions/asv_post_processing"
         },
         {
             "$ref": "#/definitions/taxonomic_database"

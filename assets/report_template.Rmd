@@ -989,17 +989,18 @@ asv_tax <- read.table(params$qiime2_taxonomy, header = TRUE, sep = "\t")
 asv_tax <- subset(asv_tax, select = Taxon)
 
 # Remove greengenes85 ".__" placeholders
-df = as.data.frame(lapply(asv_tax, function(x) gsub(".__", "", x)))
-# remove all last, empty ;
-df = as.data.frame(lapply(df, function(x) gsub(" ;","",x)))
+df = as.data.frame(lapply(asv_tax, function(x) gsub(" .__", "", x)))
+# remove all empty ;
+df = as.data.frame(lapply(df, function(x) gsub(";;","",x)))
 # remove last remaining, empty ;
-df = as.data.frame(lapply(df, function(x) gsub("; $","",x)))
+df = as.data.frame(lapply(df, function(x) gsub(";$","",x)))
 
 # get maximum amount of taxa levels per ASV
-max_taxa <- lengths(regmatches(df$Taxon, gregexpr("; ", df$Taxon)))+1
+max_taxa <- lengths(regmatches(df$Taxon, gregexpr(";", df$Taxon)))+1
 
-# Currently, all QIIME2 databases seem to have the same levels!
+# Currently, all QIIME2 databases seem to have the same levels! But for compatibility, restrict number of levels to max_taxa
 level <- c("Kingdom","Phylum","Class","Order","Family","Genus","Species")
+level <- head(level, n= max(max_taxa) )
 
 # Calculate the classified numbers/percent of asv
 n_asv_tax = nrow(asv_tax)

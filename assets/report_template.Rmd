@@ -370,7 +370,7 @@ cat(paste0("
 Overall read quality profiles are displayed as heat map of the frequency of each quality score at each base position.
 The mean quality score at each position is shown by the green line, and the quartiles of the quality score
 distribution by the orange lines. The red line shows the scaled proportion of reads that extend to at least
-that position. Original plots can be found [folder dada2/QC/](../dada2/QC/) with names that end in `_qual_stats.pdf`.
+that position. Original plots can be found in folder [dada2/QC/](../dada2/QC/) with names that end in `_qual_stats.pdf`.
 "))
 ```
 
@@ -426,8 +426,8 @@ cat(paste0("
 Estimated error rates are displayed for each possible transition. The black line shows the estimated error rates after
 convergence of the machine-learning algorithm. The red line shows the error rates expected under the nominal
 definition of the Q-score. The estimated error rates (black line) should be a good fit to the observed rates
-(points), and the error rates should drop with increased quality. Original plots can be found in
-[folder dada2/QC/](../dada2/QC/) with names that end in `.err.pdf`.
+(points), and the error rates should drop with increased quality. Original plots can be found in folder
+[dada2/QC/](../dada2/QC/) with names that end in `.err.pdf`.
 "))
 ```
 
@@ -1813,7 +1813,7 @@ if ( !isFALSE(params$dada2_ref_tax_title) ) {
         "- citation: `", params$dada2_ref_tax_citation, "`\n\n", sep = "")
 } else if (!isFALSE(params$dada2_taxonomy)) {
     cat("Taxonomic classification by DADA2:\n\n",
-        "- database: unknown - user provided\n\n", sep = "")
+        "- database: user provided file(s)\n\n", sep = "")
 }
 
 if ( !isFALSE(params$sintax_ref_tax_title) ) {
@@ -1823,7 +1823,7 @@ if ( !isFALSE(params$sintax_ref_tax_title) ) {
         "- citation: `", params$sintax_ref_tax_citation, "`\n\n", sep = "")
 } else if (!isFALSE(params$sintax_taxonomy)) {
     cat("Taxonomic classification by SINTAX:\n\n",
-        "- database: unknown - user provided\n\n", sep = "")
+        "- database: user provided file\n\n", sep = "")
 }
 
 if ( !isFALSE(params$kraken2_ref_tax_title) ) {
@@ -1833,7 +1833,7 @@ if ( !isFALSE(params$kraken2_ref_tax_title) ) {
         "- citation: `", params$kraken2_ref_tax_citation, "`\n\n", sep = "")
 } else if (!isFALSE(params$kraken2_taxonomy)) {
     cat("Taxonomic classification by Kraken2:\n\n",
-        "- database: unknown - user provided\n\n", sep = "")
+        "- database: user provided files\n\n", sep = "")
 }
 
 if ( !isFALSE(params$qiime2_ref_tax_title) ) {
@@ -1843,7 +1843,7 @@ if ( !isFALSE(params$qiime2_ref_tax_title) ) {
         "- citation: `", params$qiime2_ref_tax_citation, "`\n\n", sep = "")
 } else if (!isFALSE(params$qiime2_taxonomy)) {
     cat("Taxonomic classification by QIIME2:\n\n",
-        "- database: unknown - user provided\n\n", sep = "")
+        "- database: user provided file\n\n", sep = "")
 }
 ```
 

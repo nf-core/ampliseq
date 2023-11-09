@@ -724,9 +724,10 @@ if ( params$max_len_asv != 0 ) {
 }
 
 # replace 1 with 1.5 to display on log scale
-filter_len_profile$Counts[filter_len_profile$Counts == 1] <- 1.5
+filter_len_profile_replaced <- filter_len_profile
+filter_len_profile_replaced$Counts[filter_len_profile_replaced$Counts == 1] <- 1.5
 
-plot_filter_len_profile <- ggplot(filter_len_profile,
+plot_filter_len_profile <- ggplot(filter_len_profile_replaced,
         aes(x = Length, y = Counts)) +
         geom_bar(stat = "identity", fill = rgb(0.1, 0.4, 0.75), width = 0.5) +
         ylab("Number of ASVs") +

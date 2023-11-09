@@ -22,7 +22,9 @@ process QIIME2_ALPHARAREFACTION {
         error "QIIME2 does not support Conda. Please use Docker / Singularity / Podman instead."
     }
     """
-    export XDG_CONFIG_HOME="\${PWD}/HOME"
+    export XDG_CONFIG_HOME="./xdgconfig"
+    export MPLCONFIGDIR="./mplconfigdir"
+    export NUMBA_CACHE_DIR="./numbacache"
 
     maxdepth=\$(count_table_minmax_reads.py $stats maximum 2>&1)
 

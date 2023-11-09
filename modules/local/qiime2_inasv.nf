@@ -20,6 +20,9 @@ process QIIME2_INASV {
         error "QIIME2 does not support Conda. Please use Docker / Singularity / Podman instead."
     }
     """
+    export MPLCONFIGDIR="./mplconfigdir"
+    export NUMBA_CACHE_DIR="./numbacache"
+
     # remove first line if needed
     sed '/^# Constructed from biom file/d' "$asv" > biom-table.txt
 

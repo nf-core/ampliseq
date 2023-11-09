@@ -20,7 +20,9 @@ process QIIME2_DIVERSITY_BETA {
         error "QIIME2 does not support Conda. Please use Docker / Singularity / Podman instead."
     }
     """
-    export XDG_CONFIG_HOME="\${PWD}/HOME"
+    export XDG_CONFIG_HOME="./xdgconfig"
+    export MPLCONFIGDIR="./mplconfigdir"
+    export NUMBA_CACHE_DIR="./numbacache"
 
     qiime diversity beta-group-significance \\
         --i-distance-matrix ${core} \\

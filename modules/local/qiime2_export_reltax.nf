@@ -22,7 +22,9 @@ process QIIME2_EXPORT_RELTAX {
         error "QIIME2 does not support Conda. Please use Docker / Singularity / Podman instead."
     }
     """
-    export XDG_CONFIG_HOME="\${PWD}/HOME"
+    export XDG_CONFIG_HOME="./xdgconfig"
+    export MPLCONFIGDIR="./mplconfigdir"
+    export NUMBA_CACHE_DIR="./numbacache"
 
     ##on several taxa level
     array=(\$(seq ${tax_agglom_min} 1 ${tax_agglom_max}))

@@ -21,7 +21,9 @@ process QIIME2_EXTRACT {
         error "QIIME2 does not support Conda. Please use Docker / Singularity / Podman instead."
     }
     """
-    export XDG_CONFIG_HOME="\${PWD}/HOME"
+    export XDG_CONFIG_HOME="./xdgconfig"
+    export MPLCONFIGDIR="./mplconfigdir"
+    export NUMBA_CACHE_DIR="./numbacache"
 
     ### Import
     qiime tools import \\

@@ -24,7 +24,9 @@ process QIIME2_BARPLOT {
     suffix = setting ? "_${table.baseName}" : ""
     def metadata_cmd = metadata ? "--m-metadata-file ${metadata}": ""
     """
-    export XDG_CONFIG_HOME="\${PWD}/HOME"
+    export XDG_CONFIG_HOME="./xdgconfig"
+    export MPLCONFIGDIR="./mplconfigdir"
+    export NUMBA_CACHE_DIR="./numbacache"
 
     qiime taxa barplot  \\
         --i-table ${table}  \\

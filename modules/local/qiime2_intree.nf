@@ -20,6 +20,9 @@ process QIIME2_INTREE {
         error "QIIME2 does not support Conda. Please use Docker / Singularity / Podman instead."
     }
     """
+    export MPLCONFIGDIR="./mplconfigdir"
+    export NUMBA_CACHE_DIR="./numbacache"
+
     qiime tools import \\
         --type 'Phylogeny[Rooted]' \\
         --input-path $tree \\

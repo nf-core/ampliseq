@@ -1001,7 +1001,7 @@ max_taxa <- lengths(regmatches(df$Taxon, gregexpr(";", df$Taxon)))+1
 
 # Currently, all QIIME2 databases seem to have the same levels! But for compatibility, restrict number of levels to max_taxa
 level <- c("Kingdom","Phylum","Class","Order","Family","Genus","Species")
-level <- head(level, n= max(max_taxa) )
+level <- head(level, n = max(max_taxa) )
 
 # Calculate the classified numbers/percent of asv
 n_asv_tax = nrow(asv_tax)

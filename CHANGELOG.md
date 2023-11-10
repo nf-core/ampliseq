@@ -9,10 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#657](https://github.com/nf-core/ampliseq/pull/657) - Improved parameter descriptions and sequence
+
 ### `Fixed`
 
 - [#655](https://github.com/nf-core/ampliseq/pull/655) - Added `NUMBA_CACHE_DIR` to fix downstream analysis with QIIME2 that failed on some systems
 - [#656](https://github.com/nf-core/ampliseq/pull/656) - Moved conda-check to script-section and replaced `exit 1` with `error()`
+- [#657](https://github.com/nf-core/ampliseq/pull/657) - Corrected inaccurate reporting of QIIME2 taxonomic classifications and ASV length filtering
 
 ### `Dependencies`
 

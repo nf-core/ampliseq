@@ -4,11 +4,6 @@ process QIIME2_FILTERSAMPLES {
 
     container "qiime2/core:2023.7"
 
-    // Exit if running this module with -profile conda / -profile mamba
-    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
-        exit 1, "QIIME2 does not support Conda. Please use Docker / Singularity / Podman instead."
-    }
-
     input:
     tuple path(metadata), path(table), val(filter)
 
@@ -20,10 +15,16 @@ process QIIME2_FILTERSAMPLES {
     task.ext.when == null || task.ext.when
 
     script:
+    // Exit if running this module with -profile conda / -profile mamba
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
+        error "QIIME2 does not support Conda. Please use Docker / Singularity / Podman instead."
+    }
     def args = task.ext.args ?: "--p-where \'${filter}<>\"\"\'"
     def prefix = task.ext.prefix ?: "${filter}"
     """
-    export XDG_CONFIG_HOME="\${PWD}/HOME"
+    export XDG_CONFIG_HOME="./xdgconfig"
+    export MPLCONFIGDIR="./mplconfigdir"
+    export NUMBA_CACHE_DIR="./numbacache"
 
     qiime feature-table filter-samples \\
         --i-table ${table} \\

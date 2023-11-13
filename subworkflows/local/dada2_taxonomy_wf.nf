@@ -83,7 +83,7 @@ workflow DADA2_TAXONOMY_WF {
         //set file name prefix for SH assignments
         if (!params.skip_dada_addspecies) {
             ASV_SH_name = "ASV_tax_species_SH"
-    } else {
+        } else {
             ASV_SH_name = "ASV_tax_SH"
         }
         //find SHs

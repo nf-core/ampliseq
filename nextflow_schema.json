@@ -429,7 +429,8 @@
                         "unite-alleuk=8.3",
                         "unite-alleuk=8.2",
                         "unite-alleuk",
-                        "greengenes85"
+                        "greengenes85",
+                        "greengenes2022"
                     ]
                 },
                 "classifier": {

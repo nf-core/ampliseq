@@ -62,7 +62,7 @@ if (params.dada_ref_tax_custom) {
 if (params.qiime_ref_tax_custom) {
     ch_qiime_ref_taxonomy = Channel.fromPath("${params.qiime_ref_tax_custom}", checkIfExists: true)
     val_qiime_ref_taxonomy = "user"
-} else if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {.
+} else if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
     ch_qiime_ref_taxonomy = Channel.fromList(params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"]).map { file(it) }
     val_qiime_ref_taxonomy = params.qiime_ref_taxonomy.replace('=','_').replace('.','_')
 } else {

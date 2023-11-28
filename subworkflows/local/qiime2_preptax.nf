@@ -6,7 +6,6 @@ include { UNTAR                 } from '../../modules/nf-core/untar/main'
 include { FORMAT_TAXONOMY_QIIME } from '../../modules/local/format_taxonomy_qiime'
 include { QIIME2_EXTRACT        } from '../../modules/local/qiime2_extract'
 include { QIIME2_TRAIN          } from '../../modules/local/qiime2_train'
-include { QIIME2_UNPACK         } from '../../modules/local/qiime2_unpack'
 
 workflow QIIME2_PREPTAX {
     take:
@@ -35,9 +34,20 @@ workflow QIIME2_PREPTAX {
         ch_qiime_db_dir = UNTAR.out.untar.map{ it[1] }
         ch_qiime_db_dir = ch_qiime_db_dir.mix(ch_qiime_ref_tax_branched.dir)
 
-        QIIME2_UNPACK(ch_qiime_db_dir)
+        ch_ref_database_fna = ch_qiime_db_dir.map{ dir ->
+            files = file(dir.resolve("*.fna"), checkIfExists: true)
+        } | filter {
+            if (it instanceof List) log.warn "Found multiple fasta files for QIIME2 reference database."
+            ! it instanceof List
+        }
+        ch_ref_database_tax = ch_qiime_db_dir.map{ dir ->
+            files = file(dir.resolve("*.tax"), checkIfExists: true)
+        } | filter {
+            if (it instanceof List) log.warn "Found multiple fasta files for QIIME2 reference database."
+            ! it instanceof List
+        }
 
-        ch_ref_database = QIIME2_UNPACK.out.fasta.combine(QIIME2_UNPACK.out.tax)
+        ch_ref_database = ch_ref_database_fna.combine(ch_ref_database_tax)
     } else {
         FORMAT_TAXONOMY_QIIME ( ch_qiime_ref_taxonomy.collect() )
 

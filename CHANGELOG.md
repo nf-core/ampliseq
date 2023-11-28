@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-- []() - Added Greengenes2 database, version 2022.10, support for QIIME2 taxonomic classification.
+- [#666](https://github.com/nf-core/ampliseq/pull/666) - Added Greengenes2 database, version 2022.10, support for QIIME2 taxonomic classification.
 
 ### `Changed`
 

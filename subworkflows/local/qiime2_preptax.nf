@@ -36,7 +36,7 @@ workflow QIIME2_PREPTAX {
 
         ch_ref_database = ch_qiime_db_dir.map{ Channel.fromPath(it + "/*.tax").combine(Channel.fromPath(it + "/*.fna")) }
     } else {
-        FORMAT_TAXONOMY_QIIME ( ch_qiime_ref_taxonomy )
+        FORMAT_TAXONOMY_QIIME ( ch_qiime_ref_taxonomy.collect() )
 
         ch_ref_database = FORMAT_TAXONOMY_QIIME.out.fasta.combine(FORMAT_TAXONOMY_QIIME.out.tax)
     }

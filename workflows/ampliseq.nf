@@ -561,7 +561,7 @@ workflow AMPLISEQ {
     if ( run_qiime2 ) {
         if ((params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && !params.classifier) {
             QIIME2_PREPTAX (
-                ch_qiime_ref_taxonomy.collect(),
+                ch_qiime_ref_taxonomy,
                 val_qiime_ref_taxonomy,
                 params.FW_primer,
                 params.RV_primer

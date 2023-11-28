@@ -37,7 +37,7 @@ workflow QIIME2_PREPTAX {
 
         QIIME2_UNPACK(ch_qiime_db_dir)
 
-        ch_ref_database = ch_qiime_db_dir.map{ QIIME2_UNPACK.out.fasta.combine(QIIME2_UNPACK.out.tax) }
+        ch_ref_database = QIIME2_UNPACK.out.fasta.combine(QIIME2_UNPACK.out.tax)
     } else {
         FORMAT_TAXONOMY_QIIME ( ch_qiime_ref_taxonomy.collect() )
 

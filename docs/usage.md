@@ -225,6 +225,7 @@ Pre-configured reference taxonomy databases are:
 | sbdi-gtdb    | +     | -      | -       | -      | 16S rRNA                                      |
 | rdp          | +     | -      | +       | -      | 16S rRNA                                      |
 | greengenes   | -     | -      | +       | (+)¹   | 16S rRNA                                      |
+| greengenes2  | -     | -      | -       | +      | 16S rRNA                                      |
 | pr2          | +     | -      | -       | -      | 18S rRNA                                      |
 | unite-fungi  | +     | +      | -       | +      | eukaryotic nuclear ribosomal ITS region       |
 | unite-alleuk | +     | +      | -       | +      | eukaryotic nuclear ribosomal ITS region       |

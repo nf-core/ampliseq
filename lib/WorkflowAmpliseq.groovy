@@ -77,12 +77,12 @@ class WorkflowAmpliseq {
         }
 
         if (params.skip_dada_taxonomy && params.sbdiexport) {
-            if (!params.sintax_ref_taxonomy && (params.skip_qiime || !params.qiime_ref_taxonomy)) {
+            if (!params.sintax_ref_taxonomy && (params.skip_qiime || (!params.qiime_ref_taxonomy && !params.qiime_ref_tax_custom))) {
                 Nextflow.error("Incompatible parameters: `--sbdiexport` expects taxa annotation and therefore annotation with either DADA2, SINTAX, or QIIME2 is needed.")
             }
         }
 
-        if ( (!params.FW_primer || !params.RV_primer) && params.qiime_ref_taxonomy && !params.skip_qiime && !params.skip_taxonomy ) {
+        if ( (!params.FW_primer || !params.RV_primer) && (params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && !params.skip_qiime && !params.skip_taxonomy ) {
             Nextflow.error("Incompatible parameters: `--FW_primer` and `--RV_primer` are required for cutting the QIIME2 reference database to the amplicon sequences. Please specify primers or do not use `--qiime_ref_taxonomy`.")
         }
 
@@ -90,7 +90,7 @@ class WorkflowAmpliseq {
             Nextflow.error("Incompatible parameters: `--FW_primer` and `--RV_primer` are required for cutting the DADA2 reference database to the amplicon sequences. Please specify primers or do not use `--cut_dada_ref_taxonomy`.")
         }
 
-        if (params.qiime_ref_taxonomy && params.classifier) {
+        if ((params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && params.classifier) {
             Nextflow.error("Incompatible parameters: `--qiime_ref_taxonomy` will produce a classifier but `--classifier` points to a precomputed classifier, therefore, only use one of those.")
         }
 

@@ -34,7 +34,7 @@ class WorkflowMain {
         if (params.sintax_ref_taxonomy && !params.skip_taxonomy) {
             sintaxreftaxonomyExistsError(params, log)
         }
-        if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
+        if ((params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && !params.skip_taxonomy && !params.classifier) {
             qiimereftaxonomyExistsError(params, log)
         }
 

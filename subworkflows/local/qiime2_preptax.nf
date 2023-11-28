@@ -21,18 +21,18 @@ workflow QIIME2_PREPTAX {
                 tar: it.isFile() && ( it.getName().endsWith(".tar.gz") || it.getName().endsWith (".tgz") )
                 dir: it.isDirectory()
                 failed: true
-            }.set { ch_qiime_ref_taxonomy }
-        ch_qiime_ref_taxonomy.failed.subscribe { error "$it is neither a directory nor a file that ends in '.tar.gz' or '.tgz'. Please review input." }
+            }.set { ch_qiime_ref_tax_branched }
+        ch_qiime_ref_tax_branched.failed.subscribe { error "$it is neither a directory nor a file that ends in '.tar.gz' or '.tgz'. Please review input." }
 
         UNTAR (
-            ch_qiime_ref_taxonomy.tar
+            ch_qiime_ref_tax_branched.tar
                 .map {
                     db ->
                         def meta = [:]
                         meta.id = val_qiime_ref_taxonomy
                         [ meta, db ] } )
         ch_qiime_db_dir = UNTAR.out.untar.map{ it[1] }
-        ch_qiime_db_dir = ch_qiime_db_dir.mix(ch_qiime_ref_taxonomy.dir)
+        ch_qiime_db_dir = ch_qiime_db_dir.mix(ch_qiime_ref_tax_branched.dir)
 
         ch_ref_database = ch_qiime_db_dir.map{ Channel.fromPath(it + "/*.tax").combine(Channel.fromPath(it + "/*.fna")) }
     } else {

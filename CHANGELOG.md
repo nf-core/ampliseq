@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+[]() - Added `--qiime_ref_tax_custom` to permit custom reference database for QIIME2 taxonomic classification.
+
 ### `Changed`
 
 ### `Fixed`

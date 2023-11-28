@@ -59,9 +59,16 @@ if (params.dada_ref_tax_custom) {
     val_dada_ref_taxonomy = "none"
 }
 
-if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
+if (params.qiime_ref_tax_custom) {
+    ch_qiime_ref_taxonomy = Channel.fromPath("${params.qiime_ref_tax_custom}", checkIfExists: true)
+    val_qiime_ref_taxonomy = "user"
+} else if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {.
     ch_qiime_ref_taxonomy = Channel.fromList(params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"]).map { file(it) }
-} else { ch_qiime_ref_taxonomy = Channel.empty() }
+    val_qiime_ref_taxonomy = params.qiime_ref_taxonomy.replace('=','_').replace('.','_')
+} else {
+    ch_qiime_ref_taxonomy = Channel.empty()
+    val_qiime_ref_taxonomy = "none"
+}
 
 if (params.sintax_ref_taxonomy && !params.skip_taxonomy) {
     ch_sintax_ref_taxonomy = Channel.fromList(params.sintax_ref_databases[params.sintax_ref_taxonomy]["file"]).map { file(it) }
@@ -131,7 +138,7 @@ if ( params.dada_ref_taxonomy && !params.skip_dada_addspecies && !params.skip_da
 }
 
 //only run QIIME2 when taxonomy is actually calculated and all required data is available
-if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) && !params.skip_taxonomy && !params.skip_qiime && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.qiime_ref_taxonomy || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom) ) {
+if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) && !params.skip_taxonomy && !params.skip_qiime && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom) ) {
     run_qiime2 = true
 } else {
     run_qiime2 = false
@@ -552,7 +559,7 @@ workflow AMPLISEQ {
 
     //QIIME2
     if ( run_qiime2 ) {
-        if (params.qiime_ref_taxonomy && !params.classifier) {
+        if ((params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && !params.classifier) {
             QIIME2_PREPTAX (
                 ch_qiime_ref_taxonomy.collect(),
                 params.FW_primer,

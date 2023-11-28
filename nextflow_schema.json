@@ -432,6 +432,11 @@
                         "greengenes85"
                     ]
                 },
+                "qiime_ref_tax_custom": {
+                    "type": "string",
+                    "help_text": "Is preferred over `--qiime_ref_taxonomy`. Can be compressed tar archive (.tar.gz|.tgz) or folder containing the database.",
+                    "description": "Path to a custom QIIME2 reference taxonomy database (*.tar.gz|*.tgz archive or folder)"
+                },
                 "classifier": {
                     "type": "string",
                     "description": "Path to QIIME2 trained classifier file (typically *-classifier.qza)",

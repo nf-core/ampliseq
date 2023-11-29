@@ -91,7 +91,7 @@ class WorkflowAmpliseq {
         }
 
         if ((params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && params.classifier) {
-            Nextflow.error("Incompatible parameters: `--qiime_ref_taxonomy` will produce a classifier but `--classifier` points to a precomputed classifier, therefore, only use one of those.")
+            Nextflow.error("Incompatible parameters: `--qiime_ref_taxonomy` and `--qiime_ref_tax_custom` will produce a classifier but `--classifier` points to a precomputed classifier, therefore, only use one of those.")
         }
 
         if (params.kraken2_ref_tax_custom && !params.kraken2_assign_taxlevels ) {

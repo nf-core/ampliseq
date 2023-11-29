@@ -19,6 +19,7 @@ workflow QIIME2_PREPTAX {
     ch_qiime2_preptax_versions = Channel.empty()
 
     if (params.qiime_ref_tax_custom) {
+        // Handle case where we have been provided a pair of filepaths.
         if ("${params.qiime_ref_tax_custom}".contains(",")) {
             ch_qiime_ref_taxonomy.flatten()
                 .branch {
@@ -35,6 +36,7 @@ workflow QIIME2_PREPTAX {
             ch_qiime_db_files = ch_qiime_db_files.mix(ch_qiime_ref_tax_branched.decompressed)
 
             ch_ref_database = ch_qiime_db_files.collate(2)
+        // Handle case we have been provided a single filepath (tarball or directory).
         } else {
             ch_qiime_ref_taxonomy.flatten()
                 .branch {

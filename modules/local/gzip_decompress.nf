@@ -19,7 +19,7 @@ process GZIP_DECOMPRESS {
 
     script:
     def args  = task.ext.args ?: ''
-    outfile = task.ext.outfile ?: ( meta.id ? "${meta.id}" : archive.baseName.toString().replaceFirst(/\.gz$/, ""))
+    outfile = task.ext.outfile ?: archive.baseName.toString().replaceFirst(/\.gz$/, "")
 
     """
     gzip $args -c -d $file > $outfile

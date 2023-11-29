@@ -20,24 +20,23 @@ workflow QIIME2_PREPTAX {
 
     if (params.qiime_ref_tax_custom) {
         if ("${params.qiime_ref_tax_custom}".contains(",")) {
-            ch_qiime_ref_taxonomy
-                .map { filepath ->
-                    candidate = file(filepath, checkIfExists: true)
-                    if (filepath.endsWith(".gz")) {
-                        GZIP_DECOMPRESS(ch_qiime_ref_tax_branched.gzip)
-                        ch_qiime2_preptax_versions = ch_qiime2_preptax_versions.mix(GZIP_DECOMPRESS.out.versions)
+            ch_qiime_ref_taxonomy.flatten()
+                .branch {
+                    compressed: it.isFile() && it.getName().endsWith(".gz")
+                    decompressed: it.isFile() && ( it.getName().endsWith(".fna") || it.getName().endsWith(".tax") )
+                    failed: true
+                }.set { ch_qiime_ref_tax_branched }
+            ch_qiime_ref_tax_branched.failed.subscribe { error "$it is neither a compressed or decompressed sequence or taxonomy file. Please review input." }
 
-                        return GZIP_DECOMPRESS.out.ungzip
-                    } else if (filepath.endsWith(".fna") || filepath.endsWith(".tax")) {
-                        return candidate
-                    } else {
-                        error "$filepath is neither a compressed or decompressed sequence or taxonomy file. Please review input."
-                    }
-                }.set { ch_qiime_db_files }
+            GZIP_DECOMPRESS(ch_qiime_ref_tax_branched.compressed)
+            ch_qiime2_preptax_versions = ch_qiime2_preptax_versions.mix(GZIP_DECOMPRESS.out.versions)
+
+            ch_qiime_db_files = GZIP_DECOMPRESS.out.ungzip
+            ch_qiime_db_files = ch_qiime_db_files.mix(ch_qiime_ref_tax_branched.decompressed)
 
             ch_ref_database = ch_qiime_db_files.collate(2)
         } else {
-            ch_qiime_ref_taxonomy
+            ch_qiime_ref_taxonomy.flatten()
                 .branch {
                     tar: it.isFile() && ( it.getName().endsWith(".tar.gz") || it.getName().endsWith (".tgz") )
                     dir: it.isDirectory()

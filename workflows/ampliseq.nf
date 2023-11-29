@@ -60,11 +60,11 @@ if (params.dada_ref_tax_custom) {
 }
 
 if (params.qiime_ref_tax_custom) {
-    if (!"${params.qiime_ref_tax_custom}".contains(",")) {
-        error "--qiime_ref_tax_custom takes two filepaths separated by a comma. Please review input."
+    if ("${params.qiime_ref_tax_custom}".contains(",")) {
+        ch_qiime_ref_taxonomy = Channel.fromPath(Arrays.asList("${params.qiime_ref_tax_custom}".split(",")), checkIfExists: true)
+    } else {
+        ch_qiime_ref_taxonomy = Channel.fromPath("${params.qiime_ref_tax_custom}", checkIfExists: true)
     }
-
-    ch_qiime_ref_taxonomy = Channel.fromPath("${params.qiime_ref_tax_custom}".split(","), checkIfExists: true)
     val_qiime_ref_taxonomy = "user"
 } else if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
     ch_qiime_ref_taxonomy = Channel.fromList(params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"]).map { file(it) }

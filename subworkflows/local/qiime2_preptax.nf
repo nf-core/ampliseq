@@ -19,23 +19,56 @@ workflow QIIME2_PREPTAX {
     ch_qiime2_preptax_versions = Channel.empty()
 
     if (params.qiime_ref_tax_custom) {
-        ch_qiime_ref_taxonomy.view()
+        if ("${params.qiime_ref_tax_custom}".contains(",")) {
+            ch_qiime_ref_taxonomy
+                .branch {
+                    gzip: it.isFile() && ( it.getName().endsWith(".gz") )
+                    decompressed: it.isFile() && ( it.getName().endsWith(".fna") || it.getName().endsWith (".tax") )
+                    failed: true
+                }.set { ch_qiime_ref_tax_branched }
+            ch_qiime_ref_tax_branched.failed.subscribe { error "$it is neither a compressed or decompressed sequence or taxonomy file. Please review input." }
 
-        // ch_qiime_ref_taxonomy
-        //     .branch {
-        //         gzip: it.isFile() && ( it.getName().endsWith(".gz") )
-        //         decompressed: it.isFile() && ( it.getName().endsWith(".fna") || it.getName().endsWith (".tax") )
-        //         failed: true
-        //     }.set { ch_qiime_ref_tax_branched }
-        // ch_qiime_ref_tax_branched.failed.subscribe { error "$it is neither a compressed or decompressed sequence or taxonomy file. Please review input." }
+            GZIP_DECOMPRESS(ch_qiime_ref_tax_branched.gzip)
+            ch_qiime2_preptax_versions = ch_qiime2_preptax_versions.mix(GZIP_DECOMPRESS.out.versions)
 
-        // GZIP_DECOMPRESS(ch_qiime_ref_tax_branched.gzip)
-        // ch_qiime2_preptax_versions = ch_qiime2_preptax_versions.mix(GZIP_DECOMPRESS.out.versions)
+            ch_qiime_db_files = GZIP_DECOMPRESS.out.ungzip
+            ch_qiime_db_files = ch_qiime_db_files.mix(ch_qiime_ref_tax_branched.decompressed)
 
-        // ch_qiime_db_files = GZIP_DECOMPRESS.out.ungzip
-        // ch_qiime_db_files = ch_qiime_db_files.mix(ch_qiime_ref_tax_branched.decompressed)
+            ch_ref_database = ch_qiime_db_files.collate(2)
+        } else {
+            ch_qiime_ref_taxonomy
+                .branch {
+                    tar: it.isFile() && ( it.getName().endsWith(".tar.gz") || it.getName().endsWith (".tgz") )
+                    dir: it.isDirectory()
+                    failed: true
+                }.set { ch_qiime_ref_tax_branched }
+            ch_qiime_ref_tax_branched.failed.subscribe { error "$it is neither a directory nor a file that ends in '.tar.gz' or '.tgz'. Please review input." }
 
-        // ch_ref_database = ch_qiime_db_files.collate(2)
+            UNTAR (
+                ch_qiime_ref_tax_branched.tar
+                    .map {
+                        db ->
+                            def meta = [:]
+                            meta.id = val_qiime_ref_taxonomy
+                            [ meta, db ] } )
+            ch_qiime_db_dir = UNTAR.out.untar.map{ it[1] }
+            ch_qiime_db_dir = ch_qiime_db_dir.mix(ch_qiime_ref_tax_branched.dir)
+
+            ch_ref_database_fna = ch_qiime_db_dir.map{ dir ->
+                files = file(dir.resolve("*.fna"), checkIfExists: true)
+            } | filter {
+                if (it.size() > 1) log.warn "Found multiple fasta files for QIIME2 reference database."
+                it.size() == 1
+            }
+            ch_ref_database_tax = ch_qiime_db_dir.map{ dir ->
+                files = file(dir.resolve("*.tax"), checkIfExists: true)
+            } | filter {
+                if (it.size() > 1) log.warn "Found multiple tax files for QIIME2 reference database."
+                it.size() == 1
+            }
+        }
+
+        ch_ref_database = ch_ref_database_fna.combine(ch_ref_database_tax)
     } else {
         FORMAT_TAXONOMY_QIIME ( ch_qiime_ref_taxonomy.collect() )
 
@@ -57,3 +90,4 @@ workflow QIIME2_PREPTAX {
     classifier      = QIIME2_TRAIN.out.qza
     versions        = QIIME2_TRAIN.out.versions
 }
+

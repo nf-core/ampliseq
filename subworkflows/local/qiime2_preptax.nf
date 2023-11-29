@@ -66,9 +66,9 @@ workflow QIIME2_PREPTAX {
                 if (it.size() > 1) log.warn "Found multiple tax files for QIIME2 reference database."
                 it.size() == 1
             }
-        }
 
-        ch_ref_database = ch_ref_database_fna.combine(ch_ref_database_tax)
+            ch_ref_database = ch_ref_database_fna.combine(ch_ref_database_tax)
+        }
     } else {
         FORMAT_TAXONOMY_QIIME ( ch_qiime_ref_taxonomy.collect() )
 

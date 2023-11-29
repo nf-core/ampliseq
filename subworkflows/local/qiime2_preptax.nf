@@ -3,6 +3,7 @@
  */
 
 include { UNTAR                 } from '../../modules/nf-core/untar/main'
+include { GZIP_DECOMPRESS       } from '../../modules/local/gzip_decompress.nf'
 include { FORMAT_TAXONOMY_QIIME } from '../../modules/local/format_taxonomy_qiime'
 include { QIIME2_EXTRACT        } from '../../modules/local/qiime2_extract'
 include { QIIME2_TRAIN          } from '../../modules/local/qiime2_train'
@@ -15,36 +16,56 @@ workflow QIIME2_PREPTAX {
     RV_primer //val
 
     main:
+    ch_qiime2_preptax_versions = Channel.empty()
+
     if (params.qiime_ref_tax_custom) {
-        ch_qiime_ref_taxonomy
-            .branch {
-                tar: it.isFile() && ( it.getName().endsWith(".tar.gz") || it.getName().endsWith (".tgz") )
-                dir: it.isDirectory()
-                failed: true
-            }.set { ch_qiime_ref_tax_branched }
-        ch_qiime_ref_tax_branched.failed.subscribe { error "$it is neither a directory nor a file that ends in '.tar.gz' or '.tgz'. Please review input." }
+        if (ch_qiime_ref_taxonomy.size() == 2) {
+            ch_qiime_ref_taxonomy
+                .branch {
+                    gzip: it.isFile() && ( it.getName().endsWith(".gz") )
+                    decompressed: it.isFile() && ( it.getName().endsWith(".fna") || it.getName().endsWith (".tax") )
+                    failed: true
+                }.set { ch_qiime_ref_tax_branched }
+            ch_qiime_ref_tax_branched.failed.subscribe { error "$it is neither a compressed or decompressed sequence or taxonomy file. Please review input." }
 
-        UNTAR (
-            ch_qiime_ref_tax_branched.tar
-                .map {
-                    db ->
-                        def meta = [:]
-                        meta.id = val_qiime_ref_taxonomy
-                        [ meta, db ] } )
-        ch_qiime_db_dir = UNTAR.out.untar.map{ it[1] }
-        ch_qiime_db_dir = ch_qiime_db_dir.mix(ch_qiime_ref_tax_branched.dir)
+            GZIP_DECOMPRESS(ch_qiime_ref_tax_branched.gzip)
+            ch_qiime2_preptax_versions = ch_qiime2_preptax_versions.mix(GZIP_DECOMPRESS.out.versions)
 
-        ch_ref_database_fna = ch_qiime_db_dir.map{ dir ->
-            files = file(dir.resolve("*.fna"), checkIfExists: true)
-        } | filter {
-            if (it.size() > 1) log.warn "Found multiple fasta files for QIIME2 reference database."
-            it.size() == 1
-        }
-        ch_ref_database_tax = ch_qiime_db_dir.map{ dir ->
-            files = file(dir.resolve("*.tax"), checkIfExists: true)
-        } | filter {
-            if (it.size() > 1) log.warn "Found multiple tax files for QIIME2 reference database."
-            it.size() == 1
+            ch_qiime_db_files = GZIP_DECOMPRESS.out.ungzip
+            ch_qiime_db_files = ch_qiime_db_files.mix(ch_qiime_ref_tax_branched.decompressed)
+
+            ch_ref_database = ch_qiime_db_files.collate(2)
+        } else {
+            ch_qiime_ref_taxonomy
+                .branch {
+                    tar: it.isFile() && ( it.getName().endsWith(".tar.gz") || it.getName().endsWith (".tgz") )
+                    dir: it.isDirectory()
+                    failed: true
+                }.set { ch_qiime_ref_tax_branched }
+            ch_qiime_ref_tax_branched.failed.subscribe { error "$it is neither a directory nor a file that ends in '.tar.gz' or '.tgz'. Please review input." }
+
+            UNTAR (
+                ch_qiime_ref_tax_branched.tar
+                    .map {
+                        db ->
+                            def meta = [:]
+                            meta.id = val_qiime_ref_taxonomy
+                            [ meta, db ] } )
+            ch_qiime_db_dir = UNTAR.out.untar.map{ it[1] }
+            ch_qiime_db_dir = ch_qiime_db_dir.mix(ch_qiime_ref_tax_branched.dir)
+
+            ch_ref_database_fna = ch_qiime_db_dir.map{ dir ->
+                files = file(dir.resolve("*.fna"), checkIfExists: true)
+            } | filter {
+                if (it.size() > 1) log.warn "Found multiple fasta files for QIIME2 reference database."
+                it.size() == 1
+            }
+            ch_ref_database_tax = ch_qiime_db_dir.map{ dir ->
+                files = file(dir.resolve("*.tax"), checkIfExists: true)
+            } | filter {
+                if (it.size() > 1) log.warn "Found multiple tax files for QIIME2 reference database."
+                it.size() == 1
+            }
         }
 
         ch_ref_database = ch_ref_database_fna.combine(ch_ref_database_tax)

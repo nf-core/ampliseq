@@ -21,18 +21,19 @@ workflow QIIME2_PREPTAX {
     if (params.qiime_ref_tax_custom) {
         if ("${params.qiime_ref_tax_custom}".contains(",")) {
             ch_qiime_ref_taxonomy
-                .branch {
-                    gzip: it.isFile() && ( it.getName().endsWith(".gz") )
-                    decompressed: it.isFile() && ( it.getName().endsWith(".fna") || it.getName().endsWith (".tax") )
-                    failed: true
-                }.set { ch_qiime_ref_tax_branched }
-            ch_qiime_ref_tax_branched.failed.subscribe { error "$it is neither a compressed or decompressed sequence or taxonomy file. Please review input." }
+                .map { filepath ->
+                    candidate = file(filepath, checkIfExists: true)
+                    if (filepath.endsWith(".gz")) {
+                        GZIP_DECOMPRESS(ch_qiime_ref_tax_branched.gzip)
+                        ch_qiime2_preptax_versions = ch_qiime2_preptax_versions.mix(GZIP_DECOMPRESS.out.versions)
 
-            GZIP_DECOMPRESS(ch_qiime_ref_tax_branched.gzip)
-            ch_qiime2_preptax_versions = ch_qiime2_preptax_versions.mix(GZIP_DECOMPRESS.out.versions)
-
-            ch_qiime_db_files = GZIP_DECOMPRESS.out.ungzip
-            ch_qiime_db_files = ch_qiime_db_files.mix(ch_qiime_ref_tax_branched.decompressed)
+                        return GZIP_DECOMPRESS.out.ungzip
+                    } else if (filepath.endsWith(".fna") || filepath.endsWith(".tax")) {
+                        return candidate
+                    } else {
+                        error "$filepath is neither a compressed or decompressed sequence or taxonomy file. Please review input."
+                    }
+                }.set { ch_qiime_db_files }
 
             ch_ref_database = ch_qiime_db_files.collate(2)
         } else {

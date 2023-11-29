@@ -19,7 +19,7 @@ workflow QIIME2_PREPTAX {
     ch_qiime2_preptax_versions = Channel.empty()
 
     if (params.qiime_ref_tax_custom) {
-        if (ch_qiime_ref_taxonomy.size() == 2) {
+        if ("${params.qiime_ref_tax_custom}".contains(",")) {
             ch_qiime_ref_taxonomy
                 .branch {
                     gzip: it.isFile() && ( it.getName().endsWith(".gz") )

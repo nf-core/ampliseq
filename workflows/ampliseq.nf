@@ -61,7 +61,7 @@ if (params.dada_ref_tax_custom) {
 
 if (params.qiime_ref_tax_custom) {
     if ("${params.qiime_ref_tax_custom}".contains(",")) {
-        ch_qiime_ref_taxonomy = Channel.fromPath("${params.qiime_ref_tax_custom}".split(","), checkIfExists: true)
+        ch_qiime_ref_taxonomy = Channel.fromPath(Arrays.asList("${params.qiime_ref_tax_custom}".split(",")), checkIfExists: true)
     } else {
         ch_qiime_ref_taxonomy = Channel.fromPath("${params.qiime_ref_tax_custom}", checkIfExists: true)
     }
@@ -565,7 +565,7 @@ workflow AMPLISEQ {
     if ( run_qiime2 ) {
         if ((params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && !params.classifier) {
             QIIME2_PREPTAX (
-                ch_qiime_ref_taxonomy,
+                ch_qiime_ref_taxonomy.collect(),
                 val_qiime_ref_taxonomy,
                 params.FW_primer,
                 params.RV_primer

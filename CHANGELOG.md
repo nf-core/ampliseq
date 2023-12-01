@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-[]() - Added `--qiime_ref_tax_custom` to permit custom reference database for QIIME2 taxonomic classification.
+[#667](https://github.com/nf-core/ampliseq/pull/667) - Added `--qiime_ref_tax_custom` to permit custom reference database for QIIME2 taxonomic classification.
 
 ### `Changed`
 

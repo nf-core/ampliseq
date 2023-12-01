@@ -72,7 +72,7 @@ workflow QIIME2_PREPTAX {
             ch_ref_database = ch_ref_database_fna.combine(ch_ref_database_tax)
         }
     } else {
-        FORMAT_TAXONOMY_QIIME ( ch_qiime_ref_taxonomy.collect() )
+        FORMAT_TAXONOMY_QIIME ( ch_qiime_ref_taxonomy )
 
         ch_ref_database = FORMAT_TAXONOMY_QIIME.out.fasta.combine(FORMAT_TAXONOMY_QIIME.out.tax)
     }

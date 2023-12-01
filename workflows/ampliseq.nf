@@ -63,7 +63,7 @@ if (params.qiime_ref_tax_custom) {
     if ("${params.qiime_ref_tax_custom}".contains(",")) {
         qiime_ref_paths = "${params.qiime_ref_tax_custom}".split(",")
         if (qiime_ref_paths.length != 2) {
-            error "--qiime_ref_tax_custom accepts a single filepath to a directory or tarball, or two files paths separated by a comma. Please review input."
+            error "--qiime_ref_tax_custom accepts a single filepath to a directory or tarball, or two filepaths separated by a comma. Please review input."
         }
 
         ch_qiime_ref_taxonomy = Channel.fromPath(Arrays.asList(qiime_ref_paths), checkIfExists: true)

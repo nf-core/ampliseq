@@ -53,6 +53,8 @@ workflow QIIME2_PREPTAX {
                             def meta = [:]
                             meta.id = val_qiime_ref_taxonomy
                             [ meta, db ] } )
+            ch_qiime2_preptax_versions = ch_qiime2_preptax_versions.mix(UNTAR.out.versions)
+
             ch_qiime_db_dir = UNTAR.out.untar.map{ it[1] }
             ch_qiime_db_dir = ch_qiime_db_dir.mix(ch_qiime_ref_tax_branched.dir)
 
@@ -73,6 +75,7 @@ workflow QIIME2_PREPTAX {
         }
     } else {
         FORMAT_TAXONOMY_QIIME ( ch_qiime_ref_taxonomy )
+        ch_qiime2_preptax_versions(FORMAT_TAXONOMY_QIIME.out.versions)
 
         ch_ref_database = FORMAT_TAXONOMY_QIIME.out.fasta.combine(FORMAT_TAXONOMY_QIIME.out.tax)
     }
@@ -85,10 +88,14 @@ workflow QIIME2_PREPTAX {
                 meta.RV_primer = RV_primer
                 [ meta, db ] }
         .set { ch_ref_database }
+
     QIIME2_EXTRACT ( ch_ref_database )
+    ch_qiime2_preptax_versions = ch_qiime2_preptax_versions.mix(QIIME2_EXTRACT.out.versions)
+
     QIIME2_TRAIN ( QIIME2_EXTRACT.out.qza )
+    ch_qiime2_preptax_versions = ch_qiime2_preptax_versions.mix(QIIME2_TRAIN.out.versions)
 
     emit:
-    classifier      = QIIME2_TRAIN.out.qza
-    versions        = QIIME2_TRAIN.out.versions
+    classifier = QIIME2_TRAIN.out.qza
+    versions   = ch_qiime2_preptax_versions
 }

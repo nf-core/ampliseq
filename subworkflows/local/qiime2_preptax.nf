@@ -82,7 +82,7 @@ workflow QIIME2_PREPTAX {
         }
     } else {
         FORMAT_TAXONOMY_QIIME ( ch_qiime_ref_taxonomy )
-        ch_qiime2_preptax_versions(FORMAT_TAXONOMY_QIIME.out.versions)
+        ch_qiime2_preptax_versions = ch_qiime2_preptax_versions.mix(FORMAT_TAXONOMY_QIIME.out.versions)
 
         ch_ref_database = FORMAT_TAXONOMY_QIIME.out.fasta.combine(FORMAT_TAXONOMY_QIIME.out.tax)
     }

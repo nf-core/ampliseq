@@ -35,7 +35,14 @@ workflow QIIME2_PREPTAX {
             ch_qiime_db_files = GZIP_DECOMPRESS.out.ungzip
             ch_qiime_db_files = ch_qiime_db_files.mix(ch_qiime_ref_tax_branched.decompressed)
 
-            ch_ref_database = ch_qiime_db_files.collate(2)
+            ch_ref_database_fna = ch_qiime_db_dir.filter {
+                it.getName().endsWith(".fna")
+            }
+            ch_ref_database_tax = ch_qiime_db_dir.filter {
+                it.getName().endsWith(".tax")
+            }
+
+            ch_ref_database = ch_ref_database_fna.combine(ch_ref_database_tax)
         // Handle case we have been provided a single filepath (tarball or directory).
         } else {
             ch_qiime_ref_taxonomy.flatten()

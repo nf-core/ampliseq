@@ -44,16 +44,16 @@
     },
     "kraken2": {
         "content": [
-            "taxonomy/GTGYCAGCMGCCGCGGTAA-GGACTACNVGGGTWTCTAAT-classifier.qza:md5,e3d3758fb6fb6b1d8e43dd1be578979b",
-            "taxonomy/taxonomy.tsv:md5,ad6793c7689b0a5e40169d2799564645"
+            "ASV_tax.user.kraken2.classifiedreads.txt:md5,8a4693c37d5c24b342ef161b92567764",
+            "ASV_tax.user.kraken2.complete.tsv:md5,3613dac9ce1bf03f87b57d1523e705f1",
+            "ASV_tax.user.kraken2.tsv:md5,95c3f9daa5da8fe00159fb07d394c3ce"
         ],
         "timestamp": "2023-09-15T21:16:26+0000"
     },
     "qiime2": {
         "content": [
-            "ASV_tax.user.kraken2.classifiedreads.txt:md5,8a4693c37d5c24b342ef161b92567764",
-            "ASV_tax.user.kraken2.complete.tsv:md5,3613dac9ce1bf03f87b57d1523e705f1",
-            "ASV_tax.user.kraken2.tsv:md5,95c3f9daa5da8fe00159fb07d394c3ce"
+            "GTGYCAGCMGCCGCGGTAA-GGACTACNVGGGTWTCTAAT-classifier.qza:md5,e3d3758fb6fb6b1d8e43dd1be578979b",
+            "taxonomy.tsv:md5,ad6793c7689b0a5e40169d2799564645"
         ],
         "timestamp": "2023-12-07T21:28:32+0000"
     },

@@ -32,6 +32,13 @@
         ],
         "timestamp": "2023-05-28T21:18:54+0000"
     },
+    "qiime2": {
+        "content": [
+            "GTGYCAGCMGCCGCGGTAA-GGACTACNVGGGTWTCTAAT-classifier.qza:md5,b744a656dbd4e710697bf9ee47f26c87",
+            "taxonomy.tsv:md5,44585412583f0cf5f2b82a1337f16756"
+        ],
+        "timestamp": "2023-12-07T21:28:32+0000"
+    },
     "multiqc": {
         "content": [
             "multiqc_fastqc.txt:md5,147764e40079c3abf97a17cfe2275c52",

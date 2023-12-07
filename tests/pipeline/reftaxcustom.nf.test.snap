@@ -50,13 +50,6 @@
         ],
         "timestamp": "2023-09-15T21:16:26+0000"
     },
-    "qiime2": {
-        "content": [
-            "GTGYCAGCMGCCGCGGTAA-GGACTACNVGGGTWTCTAAT-classifier.qza:md5,e3d3758fb6fb6b1d8e43dd1be578979b",
-            "taxonomy.tsv:md5,ad6793c7689b0a5e40169d2799564645"
-        ],
-        "timestamp": "2023-12-07T21:28:32+0000"
-    },
     "multiqc": {
         "content": [
             "multiqc_fastqc.txt:md5,147764e40079c3abf97a17cfe2275c52",

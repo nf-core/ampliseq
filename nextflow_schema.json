@@ -434,7 +434,7 @@
                 },
                 "qiime_ref_tax_custom": {
                     "type": "string",
-                    "help_text": "Is preferred over `--qiime_ref_taxonomy`. A comma separated pair of (possibly gzipped) filepaths.",
+                    "help_text": "Is preferred over `--qiime_ref_taxonomy`. A comma separated pair of (possibly gzipped) filepaths (sequence, taxonomy).",
                     "description": "Path to files of a custom QIIME2 reference taxonomy database (files may be gzipped)"
                 },
                 "classifier": {

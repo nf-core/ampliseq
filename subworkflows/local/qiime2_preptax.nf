@@ -27,7 +27,7 @@ workflow QIIME2_PREPTAX {
                     decompressed: it.isFile() && ( it.getName().endsWith(".fna") || it.getName().endsWith(".tax") )
                     failed: true
                 }.set { ch_qiime_ref_tax_branched }
-            ch_qiime_ref_tax_branched.failed.subscribe { error "$it is neither a compressed or decompressed sequence or taxonomy file. Please review input." }
+            ch_qiime_ref_tax_branched.failed.subscribe { error "$it is neither a compressed (ends with `.gz`) or decompressed sequence (ends with `.fna`) or taxonomy file (ends with `.tax`). Please review input." }
 
             GZIP_DECOMPRESS(ch_qiime_ref_tax_branched.compressed)
             ch_qiime2_preptax_versions = ch_qiime2_preptax_versions.mix(GZIP_DECOMPRESS.out.versions)

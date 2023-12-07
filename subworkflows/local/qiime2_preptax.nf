@@ -35,10 +35,10 @@ workflow QIIME2_PREPTAX {
             ch_qiime_db_files = GZIP_DECOMPRESS.out.ungzip
             ch_qiime_db_files = ch_qiime_db_files.mix(ch_qiime_ref_tax_branched.decompressed)
 
-            ch_ref_database_fna = ch_qiime_db_dir.filter {
+            ch_ref_database_fna = ch_qiime_db_files.filter {
                 it.getName().endsWith(".fna")
             }
-            ch_ref_database_tax = ch_qiime_db_dir.filter {
+            ch_ref_database_tax = ch_qiime_db_files.filter {
                 it.getName().endsWith(".tax")
             }
 

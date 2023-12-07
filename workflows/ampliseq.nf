@@ -146,8 +146,15 @@ if ( params.dada_ref_taxonomy && !params.skip_dada_addspecies && !params.skip_da
     }
 }
 
-//only run QIIME2 when taxonomy is actually calculated and all required data is available
-if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) && !params.skip_taxonomy && !params.skip_qiime && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom) ) {
+// Only run QIIME2 taxonomy classification if needed parameters are passed and we are not skipping taxonomy or qiime steps.
+if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) && !params.skip_taxonomy && !params.skip_qiime && (params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier) ) {
+    run_qiime2_taxonomy = true
+} else {
+    run_qiime2_taxonomy = false
+}
+
+//only run QIIME2 downstream analysis when taxonomy is actually calculated and all required data is available
+if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) && !params.skip_taxonomy && !params.skip_qiime && !params.skip_qiime_downstream && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom) ) {
     run_qiime2 = true
 } else {
     run_qiime2 = false
@@ -567,7 +574,7 @@ workflow AMPLISEQ {
     }
 
     //QIIME2
-    if ( run_qiime2 ) {
+    if ( run_qiime2_taxonomy ) {
         if ((params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && !params.classifier) {
             QIIME2_PREPTAX (
                 ch_qiime_ref_taxonomy.collect(),

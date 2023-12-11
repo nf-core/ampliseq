@@ -365,7 +365,9 @@
                         "unite-fungi",
                         "unite-fungi=8.2",
                         "unite-fungi=8.3",
-                        "unite-fungi=9.0"
+                        "unite-fungi=9.0",
+                        "zehr-nifh",
+                        "zehr-nifh=2.5.0"
                     ]
                 },
                 "dada_ref_tax_custom": {

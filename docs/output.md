@@ -140,7 +140,7 @@ DADA2 reduces sequence errors and dereplicates sequences by quality filtering, d
   - `ASV_table.tsv`: Counts for each ASV sequence.
   - `DADA2_stats.tsv`: Tracking read numbers through DADA2 processing steps, for each sample.
   - `DADA2_table.rds`: DADA2 ASV table as R object.
-  - `DADA2_tables.tsv`: DADA2 ASV table.
+  - `DADA2_table.tsv`: DADA2 ASV table.
 - `dada2/args/`: Directory containing files with all parameters for DADA2 steps.
 - `dada2/log/`: Directory containing log files for DADA2 steps.
 - `dada2/QC/`

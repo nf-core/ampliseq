@@ -118,7 +118,7 @@ process SUMMARY_REPORT  {
         kraken2_tax ? "kraken2_taxonomy='$kraken2_tax',kraken2_confidence='$params.kraken2_confidence'" : "",
         kraken2_tax && !params.kraken2_ref_tax_custom ? "kraken2_ref_tax_title='${params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["title"]}',kraken2_ref_tax_file='${params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["file"]}',kraken2_ref_tax_citation='${params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["citation"]}'" : "",
         pplace_tax ? "pplace_taxonomy='$pplace_tax',pplace_heattree='$pplace_heattree'" : "",
-        qiime2_tax ? "qiime2_taxonomy='$qiime2_tax',qiime2_ref_tax_title='${params.qiime_ref_databases[params.qiime_ref_taxonomy]["title"]}',qiime2_ref_tax_file='${params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"]}',qiime2_ref_tax_citation='${params.qiime_ref_databases[params.qiime_ref_taxonomy]["citation"]}'" : "",
+        qiime2_tax && params.qiime_ref_taxonomy ? "qiime2_taxonomy='$qiime2_tax',qiime2_ref_tax_title='${params.qiime_ref_databases[params.qiime_ref_taxonomy]["title"]}',qiime2_ref_tax_file='${params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"]}',qiime2_ref_tax_citation='${params.qiime_ref_databases[params.qiime_ref_taxonomy]["citation"]}'" : qiime2_tax ? "qiime2_taxonomy='$qiime2_tax'" : "",
         run_qiime2 ? "val_used_taxonomy='$val_used_taxonomy'" : "",
         filter_stats_tsv ? "filter_stats_tsv='$filter_stats_tsv',qiime2_filtertaxa='$qiime2_filtertaxa',exclude_taxa='$params.exclude_taxa',min_frequency='$params.min_frequency',min_samples='$params.min_samples'" : "",
         barplot ? "barplot=TRUE" : "",

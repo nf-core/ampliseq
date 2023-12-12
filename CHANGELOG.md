@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
-- [#](https://github.com/nf-core/ampliseq/pull/) - Added cut_its information to SDBI export
+- [#677](https://github.com/nf-core/ampliseq/pull/677) - Added cut_its information to SDBI export
 
 ### `Fixed`
 

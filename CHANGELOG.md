@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#674](https://github.com/nf-core/ampliseq/pull/674) - Add PhytoRef database for DADA2 taxonomy assignment using `--dada_ref_taxonomy phytoref`
+- [#675](https://github.com/nf-core/ampliseq/pull/675) - Add the Zehr lab nifH database for DADA2 taxonomy assignment using `--dada_ref_taxonomy zehr-nifh`
+
 ### `Changed`
 
 - [#](https://github.com/nf-core/ampliseq/pull/) - Added cut_its information to SDBI export
@@ -14,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Fixed`
 
 - [#672](https://github.com/nf-core/ampliseq/pull/672) - Update output docs for collapsed abundance tables
+- [#673](https://github.com/nf-core/ampliseq/pull/673) - Fix logic relating to generation of qiime2 taxonomy part of summary report
+- [#676](https://github.com/nf-core/ampliseq/pull/676) - Phyloseq sometimes only produced one of multiple output files
 
 ### `Dependencies`
 

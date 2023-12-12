@@ -36,7 +36,7 @@ workflow PHYLOSEQ_WORKFLOW {
         ch_phyloseq_inasv = ch_tsv
     }
 
-    PHYLOSEQ ( ch_tax, ch_phyloseq_inasv.collect(), ch_phyloseq_inmeta, ch_phyloseq_intree )
+    PHYLOSEQ ( ch_tax.combine(ch_phyloseq_inasv), ch_phyloseq_inmeta, ch_phyloseq_intree )
 
     emit:
     rds     = PHYLOSEQ.out.rds

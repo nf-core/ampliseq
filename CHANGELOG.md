@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#677](https://github.com/nf-core/ampliseq/pull/677) - Added cut_its information to SDBI export
+
 ### `Fixed`
 
 - [#672](https://github.com/nf-core/ampliseq/pull/672) - Update output docs for collapsed abundance tables

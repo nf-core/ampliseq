@@ -390,6 +390,16 @@
                     "help_text": "Expected amplified sequences are extracted from the DADA2 reference taxonomy using the primer sequences, that might improve classification. This is not applied to species classification (assignSpecies) but only for lower taxonomic levels (assignTaxonomy).",
                     "description": "If the expected amplified sequences are extracted from the DADA2 reference taxonomy database"
                 },
+                "dada_addspecies_allowmultiple": {
+                    "type": "boolean",
+                    "help_text": "Defines the behavior when multiple exact matches against different species are returned. By default only unambiguous identifications are returned. If TRUE, a concatenated string of all exactly matched species is returned.",
+                    "description": "If multiple exact matches against different species are returned"
+                },
+                "dada_taxonomy_rc": {
+                    "type": "boolean",
+                    "help_text": "Reverse-complement of each sequences will be used for classification if it is a better match to the reference sequences than the forward sequence.",
+                    "description": "If reverse-complement of each sequences will be also tested for classification"
+                },
                 "pplace_tree": {
                     "type": "string",
                     "description": "Newick file with reference phylogenetic tree. Requires also `--pplace_aln` and `--pplace_model`."

@@ -980,9 +980,15 @@ cat("\n\nDADA2 taxonomy assignments can be found in folder [dada2](../dada2) in 
 # Header
 cat("## QIIME2\n")
 
-cat("The taxonomic classification was performed by [QIIME2](https://www.nature.com/articles/s41587-019-0209-9)
-    using the database: `", params$qiime2_ref_tax_title, "`.
-    More details about the reference taxonomy database can be found in the ['Methods section'](#methods).\n\n", sep = "")
+# indicate reference taxonomy
+if ( !isFALSE(params$qiime2_ref_tax_title) ) {
+    cat("The taxonomic classification was performed by [QIIME2](https://www.nature.com/articles/s41587-019-0209-9)
+        using the database: `", params$qiime2_ref_tax_title, "`.
+        More details about the reference taxonomy database can be found in the ['Methods section'](#methods).\n\n", sep = "")
+} else {
+    cat("The taxonomic classification was performed by [QIIME2](https://www.nature.com/articles/s41587-019-0209-9) using a custom database ",
+            "provided by the user.\n\n", sep = "")
+}
 
 # Read file and prepare table
 asv_tax <- read.table(params$qiime2_taxonomy, header = TRUE, sep = "\t")

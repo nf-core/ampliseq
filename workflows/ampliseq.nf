@@ -863,7 +863,7 @@ workflow AMPLISEQ {
             !params.skip_taxonomy && ( params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom ) ? KRAKEN2_TAXONOMY_WF.out.tax_tsv.ifEmpty( [] ) : [],
             !params.skip_taxonomy && params.pplace_tree ? ch_pplace_tax.ifEmpty( [] ) : [],
             !params.skip_taxonomy && params.pplace_tree ? FASTA_NEWICK_EPANG_GAPPA.out.heattree.ifEmpty( [[],[]] ) : [[],[]],
-            !params.skip_taxonomy && ( params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier ) && run_qiime2 ? QIIME2_TAXONOMY.out.tsv.ifEmpty( [] ) : [],
+            !params.skip_taxonomy && ( params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier ) && run_qiime2_taxonomy ? QIIME2_TAXONOMY.out.tsv.ifEmpty( [] ) : [],
             run_qiime2,
             run_qiime2 ? val_used_taxonomy : "",
             run_qiime2 && ( params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1 ) ? ch_dada2_asv.countLines()+","+QIIME2_FILTERTAXA.out.tsv.countLines() : "",

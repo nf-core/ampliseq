@@ -435,6 +435,11 @@
                         "greengenes85"
                     ]
                 },
+                "qiime_ref_tax_custom": {
+                    "type": "string",
+                    "help_text": "Is preferred over `--qiime_ref_taxonomy`. A comma separated pair of (possibly gzipped) filepaths (sequence, taxonomy).",
+                    "description": "Path to files of a custom QIIME2 reference taxonomy database (files may be gzipped)"
+                },
                 "classifier": {
                     "type": "string",
                     "description": "Path to QIIME2 trained classifier file (typically *-classifier.qza)",
@@ -653,6 +658,10 @@
                 "skip_qiime": {
                     "type": "boolean",
                     "description": "Skip all steps that are executed by QIIME2, including QIIME2 software download, taxonomy assignment by QIIME2, barplots, relative abundance tables, diversity analysis, differential abundance testing."
+                },
+                "skip_qiime_downstream": {
+                    "type": "boolean",
+                    "description": "Skip steps that are executed by QIIME2 except for taxonomic classification. Skip steps including barplots, relative abundance tables, diversity analysis, differential abundance testing."
                 },
                 "skip_taxonomy": {
                     "type": "boolean",

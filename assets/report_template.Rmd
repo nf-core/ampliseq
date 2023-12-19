@@ -181,17 +181,13 @@ supporting denoising of any amplicon and supports a variety of taxonomic databas
 
 ```{r, results='asis'}
 if ( !isFALSE(params$metadata) ) {
-    cat(paste0("
-# Data input and Metadata
-
-Pipeline input was saved to the [input](../input) directory.
-    "))
+    cat("# Data input and Metadata\n\n")
 } else {
-    cat(paste0("
-# Data input
+    cat("# Data input\n\n")
+}
 
-Pipeline input was saved in folder [input](../input).
-    "))
+if ( !isFALSE(params$metadata) || !isFALSE(params$input_samplesheet) ) {
+    cat("Pipeline input was saved in folder [input](../input).\n\n")
 }
 
 if ( !isFALSE(params$input_samplesheet) ) {
@@ -262,8 +258,7 @@ the denoising tool or sequences might be lost due to being labelled as PCR chime
 # import tsv
 cutadapt_summary <- read.table(file = params$cutadapt_summary, header = TRUE, sep = "\t")
 
-cutadapt_passed_col <- as.numeric(substr(
-        cutadapt_summary$cutadapt_passing_filters_percent, 1, 4))
+cutadapt_passed_col <- as.numeric( gsub("%","",cutadapt_summary$cutadapt_passing_filters_percent) )
 
 cutadapt_max_discarded <- round( 100 - min(cutadapt_passed_col), 1 )
 cutadapt_avg_passed <- round(mean(cutadapt_passed_col),1)

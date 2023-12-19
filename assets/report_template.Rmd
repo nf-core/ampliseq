@@ -181,17 +181,13 @@ supporting denoising of any amplicon and supports a variety of taxonomic databas
 
 ```{r, results='asis'}
 if ( !isFALSE(params$metadata) ) {
-    cat(paste0("
-# Data input and Metadata
-
-Pipeline input was saved to the [input](../input) directory.
-    "))
+    cat("# Data input and Metadata\n\n")
 } else {
-    cat(paste0("
-# Data input
+    cat("# Data input\n\n")
+}
 
-Pipeline input was saved in folder [input](../input).
-    "))
+if ( !isFALSE(params$metadata) || !isFALSE(params$input_samplesheet) ) {
+    cat("Pipeline input was saved in folder [input](../input).\n\n")
 }
 
 if ( !isFALSE(params$input_samplesheet) ) {

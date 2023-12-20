@@ -13,7 +13,7 @@
     },
     "software_versions": {
         "content": [
-            "{BARRNAP={barrnap=0.9}, CUSTOM_DUMPSOFTWAREVERSIONS={python=3.11.4, yaml=6.0}, CUTADAPT_BASIC={cutadapt=3.4}, DADA2_DENOISING={R=4.3.1, dada2=1.28.0}, DADA2_FILTNTRIM={R=4.3.1, dada2=1.28.0}, DADA2_QUALITY1={R=4.3.1, ShortRead=1.58.0, dada2=1.28.0}, FILTER_STATS={pandas=1.1.5, python=3.9.1}, KRAKEN2_KRAKEN2={kraken2=2.1.2, pigz=2.6}, PHYLOSEQ={R=4.3.0, phyloseq=1.44.0}, RENAME_RAW_DATA_FILES={sed=4.7}, TRUNCLEN={pandas=1.1.5, python=3.9.1}, Workflow={nf-core/ampliseq=2.8.0dev}}"
+            "{BARRNAP={barrnap=0.9}, CUSTOM_DUMPSOFTWAREVERSIONS={python=3.12.0, yaml=6.0.1}, CUTADAPT_BASIC={cutadapt=3.4}, DADA2_DENOISING={R=4.3.1, dada2=1.28.0}, DADA2_FILTNTRIM={R=4.3.1, dada2=1.28.0}, DADA2_QUALITY1={R=4.3.1, ShortRead=1.58.0, dada2=1.28.0}, FILTER_STATS={pandas=1.1.5, python=3.9.1}, KRAKEN2_KRAKEN2={kraken2=2.1.2, pigz=2.6}, PHYLOSEQ={R=4.3.0, phyloseq=1.44.0}, RENAME_RAW_DATA_FILES={sed=4.7}, TRUNCLEN={pandas=1.1.5, python=3.9.1}, Workflow={nf-core/ampliseq=2.8.0dev}}"
         ],
         "timestamp": "2023-07-27T13:49:03+0000"
     },
@@ -52,8 +52,8 @@
     },
     "multiqc": {
         "content": [
-            "multiqc_general_stats.txt:md5,8429be0a16adf09b6634bf31b430bfac",
-            "multiqc_cutadapt.txt:md5,e89359b4478ef5d10620709f651f26a2"
+            "multiqc_general_stats.txt:md5,bb1d98b03d4cd5091acfbef93cb38fc4",
+            "multiqc_cutadapt.txt:md5,0ef33b6eb4d202c34fcfa51a0dffadda"
         ],
         "timestamp": "2023-05-28T21:08:54+0000"
     }

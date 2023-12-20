@@ -221,18 +221,18 @@ Pre-configured reference taxonomy databases are:
 | Database key | DADA2 | SINTAX | Kraken2 | QIIME2 | Target genes                                  |
 | ------------ | ----- | ------ | ------- | ------ | --------------------------------------------- |
 | silva        | +     | -      | +       | +      | 16S rRNA                                      |
-| gtdb         | +     | -      | -       | -      | 16S rRNA                                      |
+| gtdb         | +¹    | -      | -       | -      | 16S rRNA                                      |
 | sbdi-gtdb    | +     | -      | -       | -      | 16S rRNA                                      |
 | rdp          | +     | -      | +       | -      | 16S rRNA                                      |
-| greengenes   | -     | -      | +       | (+)¹   | 16S rRNA                                      |
+| greengenes   | -     | -      | +       | (+)²   | 16S rRNA                                      |
 | pr2          | +     | -      | -       | -      | 18S rRNA                                      |
 | unite-fungi  | +     | +      | -       | +      | eukaryotic nuclear ribosomal ITS region       |
 | unite-alleuk | +     | +      | -       | +      | eukaryotic nuclear ribosomal ITS region       |
 | coidb        | +     | +      | -       | -      | eukaryotic Cytochrome Oxidase I (COI)         |
 | midori2-co1  | +     | -      | -       | -      | eukaryotic Cytochrome Oxidase I (COI)         |
-| standard     | -     | -      | +       | -      | any in genomes of archaea, bacteria, viruses² |
+| standard     | -     | -      | +       | -      | any in genomes of archaea, bacteria, viruses³ |
 
-¹: de-replicated at 85%, only for testing purposes; ²: quality of results might vary
+¹[`--dada_taxonomy_rc`](https://nf-co.re/ampliseq/parameters#dada_taxonomy_rc) is recommended; ²: de-replicated at 85%, only for testing purposes; ³: quality of results might vary
 
 Special features of taxonomic classification tools:
 

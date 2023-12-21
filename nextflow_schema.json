@@ -335,36 +335,39 @@
                     "description": "Name of supported database, and optionally also version number",
                     "default": "silva=138",
                     "enum": [
-                        "midori2-co1=gb250",
-                        "midori2-co1",
+                        "coidb",
+                        "coidb=221216",
+                        "gtdb",
                         "gtdb=R05-RS95",
                         "gtdb=R06-RS202",
                         "gtdb=R07-RS207",
                         "gtdb=R08-RS214",
-                        "gtdb",
-                        "coidb",
-                        "coidb=221216",
-                        "pr2=5.0.0",
-                        "pr2=4.14.0",
-                        "pr2=4.13.0",
+                        "midori2-co1",
+                        "midori2-co1=gb250",
+                        "phytoref",
                         "pr2",
-                        "rdp=18",
+                        "pr2=4.13.0",
+                        "pr2=4.14.0",
+                        "pr2=5.0.0",
                         "rdp",
+                        "rdp=18",
                         "sbdi-gtdb",
-                        "sbdi-gtdb=R07-RS207-1",
-                        "sbdi-gtdb=R06-RS202-3",
                         "sbdi-gtdb=R06-RS202-1",
+                        "sbdi-gtdb=R06-RS202-3",
+                        "sbdi-gtdb=R07-RS207-1",
+                        "silva",
                         "silva=132",
                         "silva=138",
-                        "silva",
-                        "unite-fungi=9.0",
-                        "unite-fungi=8.3",
-                        "unite-fungi=8.2",
-                        "unite-fungi",
-                        "unite-alleuk=9.0",
-                        "unite-alleuk=8.3",
+                        "unite-alleuk",
                         "unite-alleuk=8.2",
-                        "unite-alleuk"
+                        "unite-alleuk=8.3",
+                        "unite-alleuk=9.0",
+                        "unite-fungi",
+                        "unite-fungi=8.2",
+                        "unite-fungi=8.3",
+                        "unite-fungi=9.0",
+                        "zehr-nifh",
+                        "zehr-nifh=2.5.0"
                     ]
                 },
                 "dada_ref_tax_custom": {
@@ -386,6 +389,16 @@
                     "type": "boolean",
                     "help_text": "Expected amplified sequences are extracted from the DADA2 reference taxonomy using the primer sequences, that might improve classification. This is not applied to species classification (assignSpecies) but only for lower taxonomic levels (assignTaxonomy).",
                     "description": "If the expected amplified sequences are extracted from the DADA2 reference taxonomy database"
+                },
+                "dada_addspecies_allowmultiple": {
+                    "type": "boolean",
+                    "help_text": "Defines the behavior when multiple exact matches against different species are returned. By default only unambiguous identifications are returned. If TRUE, a concatenated string of all exactly matched species is returned.",
+                    "description": "If multiple exact matches against different species are returned"
+                },
+                "dada_taxonomy_rc": {
+                    "type": "boolean",
+                    "help_text": "Reverse-complement of each sequences will be used for classification if it is a better match to the reference sequences than the forward sequence.",
+                    "description": "If reverse-complement of each sequences will be also tested for classification"
                 },
                 "pplace_tree": {
                     "type": "string",
@@ -432,6 +445,11 @@
                         "greengenes85",
                         "greengenes2022"
                     ]
+                },
+                "qiime_ref_tax_custom": {
+                    "type": "string",
+                    "help_text": "Is preferred over `--qiime_ref_taxonomy`. A comma separated pair of (possibly gzipped) filepaths (sequence, taxonomy).",
+                    "description": "Path to files of a custom QIIME2 reference taxonomy database (files may be gzipped)"
                 },
                 "classifier": {
                     "type": "string",
@@ -651,6 +669,10 @@
                 "skip_qiime": {
                     "type": "boolean",
                     "description": "Skip all steps that are executed by QIIME2, including QIIME2 software download, taxonomy assignment by QIIME2, barplots, relative abundance tables, diversity analysis, differential abundance testing."
+                },
+                "skip_qiime_downstream": {
+                    "type": "boolean",
+                    "description": "Skip steps that are executed by QIIME2 except for taxonomic classification. Skip steps including barplots, relative abundance tables, diversity analysis, differential abundance testing."
                 },
                 "skip_taxonomy": {
                     "type": "boolean",

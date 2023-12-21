@@ -8,10 +8,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 - [#666](https://github.com/nf-core/ampliseq/pull/666) - Added Greengenes2 database, version 2022.10, support for QIIME2 taxonomic classification.
+- [#667](https://github.com/nf-core/ampliseq/pull/667) - Added `--qiime_ref_tax_custom` to permit custom reference database for QIIME2 taxonomic classification
+- [#674](https://github.com/nf-core/ampliseq/pull/674) - Add PhytoRef database for DADA2 taxonomy assignment using `--dada_ref_taxonomy phytoref`
+- [#675](https://github.com/nf-core/ampliseq/pull/675) - Add the Zehr lab nifH database for DADA2 taxonomy assignment using `--dada_ref_taxonomy zehr-nifh`
+- [#681](https://github.com/nf-core/ampliseq/pull/681) - For DADA2, with `--dada_addspecies_allowmultiple` multiple exact species matches are reported and with `--dada_taxonomy_rc` reverse-complement matches are also considered in taxonomic classification
 
 ### `Changed`
 
+- [#677](https://github.com/nf-core/ampliseq/pull/677) - Added cut_its information to SDBI export
+
 ### `Fixed`
+
+- [#672](https://github.com/nf-core/ampliseq/pull/672) - Update output docs for collapsed abundance tables
+- [#673](https://github.com/nf-core/ampliseq/pull/673) - Fix logic relating to generation of qiime2 taxonomy part of summary report
+- [#676](https://github.com/nf-core/ampliseq/pull/676) - Phyloseq sometimes only produced one of multiple output files
+- [#679](https://github.com/nf-core/ampliseq/pull/679) - Prevent masking low complexity regions by VSEARCH with lower case letters
+- [#680](https://github.com/nf-core/ampliseq/pull/680) - Improved pipeline summary report & error messages
+- [#683](https://github.com/nf-core/ampliseq/pull/683) - Template update for nf-core/tools version 2.11
 
 ### `Dependencies`
 

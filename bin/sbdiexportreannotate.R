@@ -18,7 +18,10 @@ dbversion       <- args[1]
 taxfile         <- args[2]
 taxmethod       <- args[3]
 wfversion       <- args[4]
-predfile        <- args[5]
+cut_its         <- args[5]
+predfile        <- args[6]
+
+cut_its = ifelse(cut_its == 'none', '', paste(' cut_its:', cut_its, sep=''))
 
 # Read taxonomy table
 taxonomy <- read.delim(taxfile, sep = '\t', stringsAsFactors = FALSE)
@@ -108,10 +111,10 @@ taxtable  <- taxonomy %>%
         date_identified = as.character(lubridate::today()),
         reference_db = dbversion,
         annotation_algorithm = case_when(
-            (taxmethod == 'sintax')                         ~ paste('Ampliseq',wfversion,'(https://nf-co.re/ampliseq) VSEARCH:sintax', sep=' '),
-            (!(is.na(otu) | otu == ''))                     ~ paste('Ampliseq',wfversion,'(https://nf-co.re/ampliseq) addsh', sep=' '),
-            (!(is.na(species_exact) | species_exact == '')) ~ paste('Ampliseq',wfversion,'(https://nf-co.re/ampliseq) DADA2:assignTaxonomy:addSpecies', sep=' '),
-            TRUE                                            ~ paste('Ampliseq',wfversion,'(https://nf-co.re/ampliseq) DADA2:assignTaxonomy', sep=' ')
+            (taxmethod == 'sintax')                         ~ paste('Ampliseq ',wfversion,' (https://nf-co.re/ampliseq) VSEARCH:sintax',cut_its, sep=' '),
+            (!(is.na(otu) | otu == ''))                     ~ paste('Ampliseq ',wfversion,' (https://nf-co.re/ampliseq) addsh',cut_its, sep=' '),
+            (!(is.na(species_exact) | species_exact == '')) ~ paste('Ampliseq ',wfversion,' (https://nf-co.re/ampliseq) DADA2:assignTaxonomy:addSpecies',cut_its, sep=' '),
+            TRUE                                            ~ paste('Ampliseq ',wfversion,' (https://nf-co.re/ampliseq) DADA2:assignTaxonomy',cut_its, sep='')
         ),
         identification_references = 'https://docs.biodiversitydata.se/analyse-data/molecular-tools/#taxonomy-annotation',
         taxon_remarks = ifelse(!(is.na(domain) | domain == ''), paste('Domain = \'',domain,'\'',sep=''),''),

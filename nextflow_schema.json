@@ -443,7 +443,8 @@
                         "unite-alleuk=8.2",
                         "unite-alleuk",
                         "greengenes85",
-                        "greengenes2022"
+                        "greengenes2",
+                        "greengenes2=2022.10"
                     ]
                 },
                 "qiime_ref_tax_custom": {

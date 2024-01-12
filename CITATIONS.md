@@ -67,7 +67,7 @@
 
 - [MIDORI2 - a collection of reference databases](https://doi.org/10.1002/edn3.303/)
 
-  > Leray, M., Knowlton, N., & Machida, R. J. (2022). MIDORI2: A collection of quality controlled, preformatted, and regularly updated reference databases for taxonomic assignment of eukaryotic mitochondrial sequences. Environmental DNA, 4, 894– 907. https://doi.org/10.1002/edn3.303.
+  > Leray, M., Knowlton, N., & Machida, R. J. (2022). MIDORI2: A collection of quality controlled, preformatted, and regularly updated reference databases for taxonomic assignment of eukaryotic mitochondrial sequences. Environmental DNA, 4, 894– 907. doi: https://doi.org/10.1002/edn3.303.
 
 - [COIDB - CO1 Taxonomy Database](https://doi.org/10.17044/scilifelab.20514192.v2)
 
@@ -79,7 +79,7 @@
 
 - [Zehr lab nifH database](http://doi.org/10.5281/zenodo.7996213)
 
-  > M. A. Moynihan & C. Furbo Reeder 2023. nifHdada2 GitHub repository, v2.0.5. Zenodo. http://doi.org/10.5281/zenodo.7996213
+  > M. A. Moynihan & C. Furbo Reeder 2023. nifHdada2 GitHub repository, v2.0.5. Zenodo. doi: http://doi.org/10.5281/zenodo.7996213
 
 ### Phylogenetic placement
 

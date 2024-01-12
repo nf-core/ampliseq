@@ -1,7 +1,5 @@
 process QIIME2_EXTRACT {
     tag "${meta.FW_primer}-${meta.RV_primer}"
-    label 'process_low'
-    label 'single_cpu'
 
     container "qiime2/core:2023.7"
 
@@ -20,6 +18,7 @@ process QIIME2_EXTRACT {
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
         error "QIIME2 does not support Conda. Please use Docker / Singularity / Podman instead."
     }
+    def args = task.ext.args ?: ''
     """
     export XDG_CONFIG_HOME="./xdgconfig"
     export MPLCONFIGDIR="./mplconfigdir"
@@ -37,9 +36,11 @@ process QIIME2_EXTRACT {
         --output-path ref-taxonomy.qza
     #Extract sequences based on primers
     qiime feature-classifier extract-reads \\
+        --p-n-jobs ${task.cpus} \\
         --i-sequences ref-seq.qza \\
         --p-f-primer ${meta.FW_primer} \\
         --p-r-primer ${meta.RV_primer} \\
+        $args \\
         --o-reads ${meta.FW_primer}-${meta.RV_primer}-ref-seq.qza \\
         --quiet
 

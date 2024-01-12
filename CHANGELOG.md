@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#666](https://github.com/nf-core/ampliseq/pull/666) - Added Greengenes2 database, version 2022.10, support for QIIME2 taxonomic classification.
 - [#667](https://github.com/nf-core/ampliseq/pull/667) - Added `--qiime_ref_tax_custom` to permit custom reference database for QIIME2 taxonomic classification
 - [#674](https://github.com/nf-core/ampliseq/pull/674) - Add PhytoRef database for DADA2 taxonomy assignment using `--dada_ref_taxonomy phytoref`
 - [#675](https://github.com/nf-core/ampliseq/pull/675) - Add the Zehr lab nifH database for DADA2 taxonomy assignment using `--dada_ref_taxonomy zehr-nifh`

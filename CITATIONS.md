@@ -41,6 +41,10 @@
 
   > Quast C, Pruesse E, Yilmaz P, Gerken J, Schweer T, Yarza P, Peplies J, Glöckner FO. The SILVA ribosomal RNA gene database project: improved data processing and web-based tools. Nucleic Acids Res. 2013 Jan;41(Database issue):D590-6. doi: 10.1093/nar/gks1219. Epub 2012 Nov 28. PMID: 23193283; PMCID: PMC3531112.
 
+- [Greengenes2](https://doi.org/10.1038/s41587-023-01845-1)
+
+  > McDonald, D., Jiang, Y., Balaban, M. et al. Greengenes2 unifies microbial data in a single reference tree. Nat Biotechnol (2023). https://doi.org/10.1038/s41587-023-01845-1
+
 - [PR2 - Protist Reference Ribosomal Database](https://pubmed.ncbi.nlm.nih.gov/23193267/)
 
   > Guillou L, Bachar D, Audic S, Bass D, Berney C, Bittner L, Boutte C, Burgaud G, de Vargas C, Decelle J, Del Campo J, Dolan JR, Dunthorn M, Edvardsen B, Holzmann M, Kooistra WH, Lara E, Le Bescot N, Logares R, Mahé F, Massana R, Montresor M, Morard R, Not F, Pawlowski J, Probert I, Sauvadet AL, Siano R, Stoeck T, Vaulot D, Zimmermann P, Christen R. The Protist Ribosomal Reference database (PR2): a catalog of unicellular eukaryote small sub-unit rRNA sequences with curated taxonomy. Nucleic Acids Res. 2013 Jan;41(Database issue):D597-604. doi: 10.1093/nar/gks1160. Epub 2012 Nov 27. PMID: 23193267; PMCID: PMC3531120.
@@ -61,13 +65,21 @@
 
   > Kõljalg U, Larsson KH, Abarenkov K, Nilsson RH, Alexander IJ, Eberhardt U, Erland S, Høiland K, Kjøller R, Larsson E, Pennanen T, Sen R, Taylor AF, Tedersoo L, Vrålstad T, Ursing BM. UNITE: a database providing web-based methods for the molecular identification of ectomycorrhizal fungi. New Phytol. 2005 Jun;166(3):1063-8. doi: 10.1111/j.1469-8137.2005.01376.x. PMID: 15869663.
 
-  - [MIDORI2 - a collection of reference databases](https://doi.org/10.1002/edn3.303/)
+- [MIDORI2 - a collection of reference databases](https://doi.org/10.1002/edn3.303/)
 
-    > Leray, M., Knowlton, N., & Machida, R. J. (2022). MIDORI2: A collection of quality controlled, preformatted, and regularly updated reference databases for taxonomic assignment of eukaryotic mitochondrial sequences. Environmental DNA, 4, 894– 907. https://doi.org/10.1002/edn3.303.
+  > Leray, M., Knowlton, N., & Machida, R. J. (2022). MIDORI2: A collection of quality controlled, preformatted, and regularly updated reference databases for taxonomic assignment of eukaryotic mitochondrial sequences. Environmental DNA, 4, 894– 907. https://doi.org/10.1002/edn3.303.
 
-  - [COIDB - CO1 Taxonomy Database](https://doi.org/10.17044/scilifelab.20514192.v2)
+- [COIDB - CO1 Taxonomy Database](https://doi.org/10.17044/scilifelab.20514192.v2)
 
-    > Sundh J, Manoharan L, Iwaszkiewicz-Eggebrecht E, Miraldo A, Andersson A, Ronquist F. COI reference sequences from BOLD DB. doi: https://doi.org/10.17044/scilifelab.20514192.v2.
+  > Sundh J, Manoharan L, Iwaszkiewicz-Eggebrecht E, Miraldo A, Andersson A, Ronquist F. COI reference sequences from BOLD DB. doi: https://doi.org/10.17044/scilifelab.20514192.v2.
+
+- [PhytoRef plastid 16S rRNA database for photosynthetic eukaryotes](https://pubmed.ncbi.nlm.nih.gov/25740460/)
+
+  > Decelle J, Romac S, Stern RF, Bendif el M, Zingone A, Audic S, Guiry MD, Guillou L, Tessier D, Le Gall F, Gourvil P, Dos Santos AL, Probert I, Vaulot D, de Vargas C, Christen R. PhytoREF: a reference database of the plastidial 16S rRNA gene of photosynthetic eukaryotes with curated taxonomy. Mol Ecol Resour. 2015 Nov;15(6):1435-45. doi: 10.1111/1755-0998.12401. Epub 2015 Apr 6. PMID: 25740460.
+
+- [Zehr lab nifH database](http://doi.org/10.5281/zenodo.7996213)
+
+  > M. A. Moynihan & C. Furbo Reeder 2023. nifHdada2 GitHub repository, v2.0.5. Zenodo. http://doi.org/10.5281/zenodo.7996213
 
 ### Phylogenetic placement
 

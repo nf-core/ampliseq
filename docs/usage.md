@@ -231,6 +231,8 @@ Pre-configured reference taxonomy databases are:
 | unite-alleuk | +     | +      | -       | +      | eukaryotic nuclear ribosomal ITS region       |
 | coidb        | +     | +      | -       | -      | eukaryotic Cytochrome Oxidase I (COI)         |
 | midori2-co1  | +     | -      | -       | -      | eukaryotic Cytochrome Oxidase I (COI)         |
+| phytoref     | +     | -      | -       | -      | eukaryotic plastid 16S rRNA                   |
+| zehr-nifh    | +     | -      | -       | -      | Nitrogenase iron protein NifH                 |
 | standard     | -     | -      | +       | -      | any in genomes of archaea, bacteria, viruses³ |
 
 ¹[`--dada_taxonomy_rc`](https://nf-co.re/ampliseq/parameters#dada_taxonomy_rc) is recommended; ²: de-replicated at 85%, only for testing purposes; ³: quality of results might vary
@@ -242,7 +244,7 @@ Special features of taxonomic classification tools:
 - QIIME2's reference taxonomy databases will have regions matching the amplicon extracted with primer sequences.
 - DADA2, Kraken2, and QIIME2 have specific parameters to accept custom databases (but theoretically possible with all classifiers)
 
-Parameter guidance is given in [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#taxonomic-database).
+Parameter guidance is given in [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#taxonomic-database). Citations are listed in [`CITATIONS.md`](CITATIONS.md).
 
 ### Metadata
 

@@ -50,6 +50,7 @@ jobs:
           - "test_failed"
           - "test_multi"
           - "test_reftaxcustom"
+          - "test_qiimecustom"
           - "test_doubleprimers"
           - "test_iontorrent"
           - "test_novaseq"
@@ -61,7 +62,7 @@ jobs:
 
     steps:
       - name: Check out pipeline code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Check out test data
         uses: actions/checkout@v3

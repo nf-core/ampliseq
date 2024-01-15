@@ -1,0 +1,51 @@
+nextflow_pipeline {
+
+    name "Test Workflow main.nf"
+    script "main.nf"
+    tag "test_qiimecustom"
+    tag "qiime2"
+    tag "pipeline"
+
+    test("Custom QIIME2 Reference Taxonomy Database") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(UTILS.removeNextflowVersion("$outputDir")).match("software_versions") },
+                { assert snapshot(path("$outputDir/overall_summary.tsv")).match("overall_summary_tsv") },
+                { assert snapshot(path("$outputDir/barrnap/rrna.arc.gff"),
+                                path("$outputDir/barrnap/rrna.bac.gff"),
+                                path("$outputDir/barrnap/rrna.euk.gff"),
+                                path("$outputDir/barrnap/rrna.mito.gff")).match("barrnap") },
+                { assert new File("$outputDir/barrnap/summary.tsv").exists() },
+                { assert snapshot(path("$outputDir/cutadapt/cutadapt_summary.tsv")).match("cutadapt") },
+                { assert snapshot(path("$outputDir/dada2/ASV_seqs.fasta"),
+                                path("$outputDir/dada2/ASV_table.tsv"),
+                                path("$outputDir/dada2/DADA2_stats.tsv"),
+                                path("$outputDir/dada2/DADA2_table.rds"),
+                                path("$outputDir/dada2/DADA2_table.tsv")).match("dada2") },
+                { assert new File("$outputDir/fastqc/sampleID_1_1_fastqc.html").exists() },
+                { assert new File("$outputDir/fastqc/sampleID_1_2_fastqc.html").exists() },
+                { assert new File("$outputDir/fastqc/sampleID_1a_1_fastqc.html").exists() },
+                { assert new File("$outputDir/fastqc/sampleID_1a_2_fastqc.html").exists() },
+                { assert new File("$outputDir/fastqc/sampleID_2_1_fastqc.html").exists() },
+                { assert new File("$outputDir/fastqc/sampleID_2_2_fastqc.html").exists() },
+                { assert new File("$outputDir/fastqc/sampleID_2a_1_fastqc.html").exists() },
+                { assert new File("$outputDir/fastqc/sampleID_2a_2_fastqc.html").exists() },
+                { assert snapshot(path("$outputDir/input/Samplesheet.tsv")).match("input") },
+                { assert new File("$outputDir/qiime2/taxonomy/taxonomy.tsv").exists() },
+                { assert new File("$outputDir/qiime2/taxonomy/GTGYCAGCMGCCGCGGTAA-GGACTACNVGGGTWTCTAAT-classifier.qza").exists() },
+                { assert snapshot(path("$outputDir/multiqc/multiqc_data/multiqc_fastqc.txt"),
+                                path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt"),
+                                path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt")).match("multiqc") },
+                { assert new File("$outputDir/summary_report/summary_report.html").exists() }
+            )
+        }
+    }
+}

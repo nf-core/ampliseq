@@ -1,0 +1,43 @@
+{
+    "input": {
+        "content": [
+            "Samplesheet.tsv:md5,dbf8d1a2b7933dab9e5a139f33c2b1f4"
+        ],
+        "timestamp": "2023-05-28T21:18:54+0000"
+    },
+    "cutadapt": {
+        "content": [
+            "cutadapt_summary.tsv:md5,5d02749984a811479e7d534fda75163f"
+        ],
+        "timestamp": "2023-05-28T21:18:54+0000"
+    },
+    "software_versions": {
+        "content": [
+            "{BARRNAP={barrnap=0.9}, CUSTOM_DUMPSOFTWAREVERSIONS={python=3.12.0, yaml=6.0.1}, CUTADAPT_BASIC={cutadapt=3.4}, DADA2_DENOISING={R=4.3.1, dada2=1.28.0}, DADA2_FILTNTRIM={R=4.3.1, dada2=1.28.0}, DADA2_QUALITY1={R=4.3.1, ShortRead=1.58.0, dada2=1.28.0}, FASTQC={fastqc=0.12.1}, PHYLOSEQ={R=4.3.0, phyloseq=1.44.0}, QIIME2_INSEQ={qiime2=2023.7.0}, RENAME_RAW_DATA_FILES={sed=4.7}, TRUNCLEN={pandas=1.1.5, python=3.9.1}, Workflow={nf-core/ampliseq=2.8.0}}"
+        ],
+        "timestamp": "2023-05-28T21:18:54+0000"
+    },
+    "overall_summary_tsv": {
+        "content": [
+            "overall_summary.tsv:md5,3231d6ee72b9a1e7742e5605caaff05a"
+        ],
+        "timestamp": "2023-05-28T21:18:54+0000"
+    },
+    "barrnap": {
+        "content": [
+            "rrna.arc.gff:md5,6dae470aace9293d5eb8c318584852dd",
+            "rrna.bac.gff:md5,439a9084f089120f700f938dfb58fa41",
+            "rrna.euk.gff:md5,c9bc1d9d8fb77dc19c95dee2d53840eb",
+            "rrna.mito.gff:md5,df19e1b84ba6f691d20c72b397c88abf"
+        ],
+        "timestamp": "2023-05-28T21:18:54+0000"
+    },
+    "multiqc": {
+        "content": [
+            "multiqc_fastqc.txt:md5,147764e40079c3abf97a17cfe2275c52",
+            "multiqc_general_stats.txt:md5,c6456e36c17e592f12f9a2f9069f24f8",
+            "multiqc_cutadapt.txt:md5,c640ad4fa88bc31b09fa353e606013a2"
+        ],
+        "timestamp": "2023-05-28T21:18:54+0000"
+    }
+}

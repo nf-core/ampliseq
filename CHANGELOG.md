@@ -3,6 +3,33 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## nf-core/ampliseq version 2.8.0 - 2024-01-16
+
+### `Added`
+
+- [#666](https://github.com/nf-core/ampliseq/pull/666) - Added Greengenes2 database, version 2022.10, support for QIIME2 taxonomic classification.
+- [#667](https://github.com/nf-core/ampliseq/pull/667),[#691](https://github.com/nf-core/ampliseq/pull/691) - Added `--qiime_ref_tax_custom` to permit custom reference database for QIIME2 taxonomic classification
+- [#674](https://github.com/nf-core/ampliseq/pull/674) - Add PhytoRef database for DADA2 taxonomy assignment using `--dada_ref_taxonomy phytoref`
+- [#675](https://github.com/nf-core/ampliseq/pull/675) - Add the Zehr lab nifH database for DADA2 taxonomy assignment using `--dada_ref_taxonomy zehr-nifh`
+- [#681](https://github.com/nf-core/ampliseq/pull/681) - For DADA2, with `--dada_addspecies_allowmultiple` multiple exact species matches are reported and with `--dada_taxonomy_rc` reverse-complement matches are also considered in taxonomic classification
+
+### `Changed`
+
+- [#677](https://github.com/nf-core/ampliseq/pull/677) - Added cut_its information to SDBI export
+
+### `Fixed`
+
+- [#672](https://github.com/nf-core/ampliseq/pull/672),[#688](https://github.com/nf-core/ampliseq/pull/688),[#691](https://github.com/nf-core/ampliseq/pull/691) - Updated documentation
+- [#676](https://github.com/nf-core/ampliseq/pull/676) - Phyloseq sometimes only produced one of multiple output files
+- [#679](https://github.com/nf-core/ampliseq/pull/679) - Prevent masking low complexity regions by VSEARCH with lower case letters
+- [#680](https://github.com/nf-core/ampliseq/pull/680),[#673](https://github.com/nf-core/ampliseq/pull/673) - Improved pipeline summary report & error messages
+- [#683](https://github.com/nf-core/ampliseq/pull/683) - Template update for nf-core/tools version 2.11
+- [#687](https://github.com/nf-core/ampliseq/pull/687) - Correct conda package for ASV SSU filtering
+
+### `Dependencies`
+
+### `Removed`
+
 ## nf-core/ampliseq version 2.7.1 - 2023-11-14
 
 ### `Added`

@@ -11,6 +11,7 @@ process SBDIEXPORTREANNOTATE {
     path taxonomytable
     val  taxonomymethod
     val  dbversion
+    val  cut_its
     path predictions
 
     output:
@@ -28,7 +29,7 @@ process SBDIEXPORTREANNOTATE {
         ampliseq_version="v$workflow.manifest.version"
     fi
 
-    sbdiexportreannotate.R \"$dbversion\" $taxonomytable $taxonomymethod \"\$ampliseq_version\" $predictions
+    sbdiexportreannotate.R \"$dbversion\" $taxonomytable $taxonomymethod \"\$ampliseq_version\" $cut_its $predictions
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

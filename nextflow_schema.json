@@ -16,7 +16,7 @@
                     "mimetype": "text/tsv",
                     "fa_icon": "fas fa-dna",
                     "description": "Path to tab-separated sample sheet",
-                    "help_text": "Path to sample sheet, either tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml), that points to compressed fastq files.\n\nThe sample sheet must have two to four tab-separated columns/entries with the following headers: \n- `sampleID` (required): Unique sample IDs, must start with a letter, and can only contain letters, numbers or underscores\n- `forwardReads` (required): Paths to (forward) reads zipped FastQ files\n- `reverseReads` (optional): Paths to reverse reads zipped FastQ files, required if the data is paired-end\n- `run` (optional): If the data was produced by multiple sequencing runs, any string\n\nRelated parameters are:\n- `--pacbio` and `--iontorrent` if the sequencing data is PacBio data or IonTorrent data (default expected: paired-end Illumina data)\n- `--single_end` if the sequencing data is single-ended Illumina data (default expected: paired-end Illumina data)\n- `--dada_ref_taxonomy`, `--qiime_ref_taxonomy`, and/or `--sintax_ref_taxonomy` to choose an appropriate reference taxonomy for the type of amplicon (16S/18S/ITS/CO1) (default: DADA2 assignTaxonomy and 16S rRNA sequence database)",
+                    "help_text": "Path to sample sheet, either tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml), that points to compressed fastq files.\n\nThe sample sheet must have two to four tab-separated columns/entries with the following headers: \n- `sampleID` (required): Unique sample IDs, must start with a letter, and can only contain letters, numbers or underscores\n- `forwardReads` (required): Paths to (forward) reads zipped FastQ files\n- `reverseReads` (optional): Paths to reverse reads zipped FastQ files, required if the data is paired-end\n- `run` (optional): If the data was produced by multiple sequencing runs, any string\n\nRelated parameters are:\n- `--pacbio` and `--iontorrent` if the sequencing data is PacBio data or IonTorrent data (default expected: paired-end Illumina data)\n- `--single_end` if the sequencing data is single-ended Illumina data (default expected: paired-end Illumina data)\n- Choose an appropriate reference taxonomy for the type of amplicon (16S/18S/ITS/CO1) (default: DADA2 assignTaxonomy and 16S rRNA sequence database)",
                     "schema": "assets/schema_input.json"
                 },
                 "input_fasta": {
@@ -24,14 +24,14 @@
                     "mimetype": "text/tsv",
                     "fa_icon": "fas fa-dna",
                     "description": "Path to ASV/OTU fasta file",
-                    "help_text": "Path to fasta format file with sequences that will be taxonomically classified. The fasta file input option can be used to taxonomically classify previously produced ASV/OTU sequences.\n\nThe fasta sequence header line may contain a description, that will be kept as part of the sequence name. However, tabs will be changed into spaces.\n\nRelated parameters are:\n- `--dada_ref_taxonomy`, `--qiime_ref_taxonomy`, and/or `--sintax_ref_taxonomy` to choose an appropriate reference taxonomy for the type of amplicon (16S/18S/ITS/CO1) (default: DADA2 assignTaxonomy and 16S rRNA sequence database)"
+                    "help_text": "Path to fasta format file with sequences that will be taxonomically classified. The fasta file input option can be used to taxonomically classify previously produced ASV/OTU sequences.\n\nThe fasta sequence header line may contain a description, that will be kept as part of the sequence name. However, tabs will be changed into spaces.\n\nRelated parameters are:\n- Choose an appropriate reference taxonomy for the type of amplicon (16S/18S/ITS/CO1) (default: DADA2 assignTaxonomy and 16S rRNA sequence database)"
                 },
                 "input_folder": {
                     "type": "string",
                     "mimetype": "text/tsv",
                     "fa_icon": "fas fa-dna",
                     "description": "Path to folder containing zipped FastQ files",
-                    "help_text": "Path to folder containing compressed fastq files.\n\nExample for input data organization from one sequencing run with two samples, paired-end data:\n\n```bash\ndata\n  \u251c\u2500sample1_1_L001_R1_001.fastq.gz\n  \u251c\u2500sample1_1_L001_R2_001.fastq.gz\n  \u251c\u2500sample2_1_L001_R1_001.fastq.gz\n  \u2514\u2500sample2_1_L001_R2_001.fastq.gz\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The folder must contain gzip compressed demultiplexed fastq files. If the file names do not follow the default (`\"/*_R{1,2}_001.fastq.gz\"`), please check `--extension`.\n3. Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique\n4. If your data is scattered, produce a sample sheet\n5. All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed. Sequencing data originating from multiple sequencing runs requires additionally the parameter `--multiple_sequencing_runs` and a specific folder structure.\n\nRelated parameters are:\n- `--pacbio` and `--iontorrent` if the sequencing data is PacBio data or IonTorrent data (default expected: paired-end Illumina data)\n- `--single_end` if the sequencing data is single-ended Illumina data (default expected: paired-end Illumina data)\n- `--multiple_sequencing_runs` if the sequencing data originates from multiple sequencing runs\n- `--extension` if the sequencing file names do not follow the default (`\"/*_R{1,2}_001.fastq.gz\"`)\n- `--dada_ref_taxonomy`, `--qiime_ref_taxonomy`, and/or `--sintax_ref_taxonomy` to choose an appropriate reference taxonomy for the type of amplicon (16S/18S/ITS/CO1) (default: DADA2 assignTaxonomy and 16S rRNA sequence database)"
+                    "help_text": "Path to folder containing compressed fastq files.\n\nExample for input data organization from one sequencing run with two samples, paired-end data:\n\n```bash\ndata\n  \u251c\u2500sample1_1_L001_R1_001.fastq.gz\n  \u251c\u2500sample1_1_L001_R2_001.fastq.gz\n  \u251c\u2500sample2_1_L001_R1_001.fastq.gz\n  \u2514\u2500sample2_1_L001_R2_001.fastq.gz\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The folder must contain gzip compressed demultiplexed fastq files. If the file names do not follow the default (`\"/*_R{1,2}_001.fastq.gz\"`), please check `--extension`.\n3. Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique\n4. If your data is scattered, produce a sample sheet\n5. All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed. Sequencing data originating from multiple sequencing runs requires additionally the parameter `--multiple_sequencing_runs` and a specific folder structure.\n\nRelated parameters are:\n- `--pacbio` and `--iontorrent` if the sequencing data is PacBio data or IonTorrent data (default expected: paired-end Illumina data)\n- `--single_end` if the sequencing data is single-ended Illumina data (default expected: paired-end Illumina data)\n- `--multiple_sequencing_runs` if the sequencing data originates from multiple sequencing runs\n- `--extension` if the sequencing file names do not follow the default (`\"/*_R{1,2}_001.fastq.gz\"`)\n- Choose an appropriate reference taxonomy for the type of amplicon (16S/18S/ITS/CO1) (default: DADA2 assignTaxonomy and 16S rRNA sequence database)"
                 },
                 "FW_primer": {
                     "type": "string",
@@ -335,41 +335,44 @@
                     "description": "Name of supported database, and optionally also version number",
                     "default": "silva=138",
                     "enum": [
-                        "midori2-co1=gb250",
-                        "midori2-co1",
+                        "coidb",
+                        "coidb=221216",
+                        "gtdb",
                         "gtdb=R05-RS95",
                         "gtdb=R06-RS202",
                         "gtdb=R07-RS207",
                         "gtdb=R08-RS214",
-                        "gtdb",
-                        "coidb",
-                        "coidb=221216",
-                        "pr2=5.0.0",
-                        "pr2=4.14.0",
-                        "pr2=4.13.0",
+                        "midori2-co1",
+                        "midori2-co1=gb250",
+                        "phytoref",
                         "pr2",
-                        "rdp=18",
+                        "pr2=4.13.0",
+                        "pr2=4.14.0",
+                        "pr2=5.0.0",
                         "rdp",
+                        "rdp=18",
                         "sbdi-gtdb",
-                        "sbdi-gtdb=R07-RS207-1",
-                        "sbdi-gtdb=R06-RS202-3",
                         "sbdi-gtdb=R06-RS202-1",
+                        "sbdi-gtdb=R06-RS202-3",
+                        "sbdi-gtdb=R07-RS207-1",
+                        "silva",
                         "silva=132",
                         "silva=138",
-                        "silva",
-                        "unite-fungi=9.0",
-                        "unite-fungi=8.3",
-                        "unite-fungi=8.2",
-                        "unite-fungi",
-                        "unite-alleuk=9.0",
-                        "unite-alleuk=8.3",
+                        "unite-alleuk",
                         "unite-alleuk=8.2",
-                        "unite-alleuk"
+                        "unite-alleuk=8.3",
+                        "unite-alleuk=9.0",
+                        "unite-fungi",
+                        "unite-fungi=8.2",
+                        "unite-fungi=8.3",
+                        "unite-fungi=9.0",
+                        "zehr-nifh",
+                        "zehr-nifh=2.5.0"
                     ]
                 },
                 "dada_ref_tax_custom": {
                     "type": "string",
-                    "help_text": "Is preferred over `--dada_ref_taxonomy`. Either `--skip_dada_addspecies` (no species annotation) or `--dada_ref_tax_custom_sp` (species annotation) is additionally required. Consider also setting `--dada_assign_taxlevels`.\n\nMust be compatible to DADA2's assignTaxonomy function: 'Can be compressed. This reference fasta file should be formatted so that the id lines correspond to the taxonomy (or classification) of the associated sequence, and each taxonomic level is separated by a semicolon.' See also https://rdrr.io/bioc/dada2/man/assignTaxonomy.html",
+                    "help_text": "Overwrites `--dada_ref_taxonomy`. Either `--skip_dada_addspecies` (no species annotation) or `--dada_ref_tax_custom_sp` (species annotation) is additionally required. Consider also setting `--dada_assign_taxlevels`.\n\nMust be compatible to DADA2's assignTaxonomy function: 'Can be compressed. This reference fasta file should be formatted so that the id lines correspond to the taxonomy (or classification) of the associated sequence, and each taxonomic level is separated by a semicolon.' See also https://rdrr.io/bioc/dada2/man/assignTaxonomy.html",
                     "description": "Path to a custom DADA2 reference taxonomy database"
                 },
                 "dada_ref_tax_custom_sp": {
@@ -386,6 +389,16 @@
                     "type": "boolean",
                     "help_text": "Expected amplified sequences are extracted from the DADA2 reference taxonomy using the primer sequences, that might improve classification. This is not applied to species classification (assignSpecies) but only for lower taxonomic levels (assignTaxonomy).",
                     "description": "If the expected amplified sequences are extracted from the DADA2 reference taxonomy database"
+                },
+                "dada_addspecies_allowmultiple": {
+                    "type": "boolean",
+                    "help_text": "Defines the behavior when multiple exact matches against different species are returned. By default only unambiguous identifications are returned. If TRUE, a concatenated string of all exactly matched species is returned.",
+                    "description": "If multiple exact matches against different species are returned"
+                },
+                "dada_taxonomy_rc": {
+                    "type": "boolean",
+                    "help_text": "Reverse-complement of each sequences will be used for classification if it is a better match to the reference sequences than the forward sequence.",
+                    "description": "If reverse-complement of each sequences will be also tested for classification"
                 },
                 "pplace_tree": {
                     "type": "string",
@@ -429,8 +442,15 @@
                         "unite-alleuk=8.3",
                         "unite-alleuk=8.2",
                         "unite-alleuk",
-                        "greengenes85"
+                        "greengenes85",
+                        "greengenes2",
+                        "greengenes2=2022.10"
                     ]
+                },
+                "qiime_ref_tax_custom": {
+                    "type": "string",
+                    "help_text": "Overwrites `--qiime_ref_taxonomy`. Either path to tarball (`*.tar.gz` or `*.tgz`) that contains sequence (`*.fna`) and taxonomy (`*.tax`) data, or alternatively a comma separated pair of filepaths to sequence (`*.fna`) and taxonomy (`*.tax`) data (possibly gzipped `*.gz`).",
+                    "description": "Path to files of a custom QIIME2 reference taxonomy database (tarball, or two comma-separated files)"
                 },
                 "classifier": {
                     "type": "string",
@@ -455,7 +475,7 @@
                 },
                 "kraken2_ref_tax_custom": {
                     "type": "string",
-                    "help_text": "Is preferred over `--kraken2_ref_taxonomy`. Consider also setting `--kraken2_assign_taxlevels`. Can be compressed tar archive (.tar.gz|.tgz) or folder containing the database. See also https://benlangmead.github.io/aws-indexes/k2.",
+                    "help_text": "Overwrites `--kraken2_ref_taxonomy`. Consider also setting `--kraken2_assign_taxlevels`. Can be compressed tar archive (.tar.gz|.tgz) or folder containing the database. See also https://benlangmead.github.io/aws-indexes/k2.",
                     "description": "Path to a custom Kraken2 reference taxonomy database (*.tar.gz|*.tgz archive or folder)"
                 },
                 "kraken2_assign_taxlevels": {
@@ -650,6 +670,10 @@
                 "skip_qiime": {
                     "type": "boolean",
                     "description": "Skip all steps that are executed by QIIME2, including QIIME2 software download, taxonomy assignment by QIIME2, barplots, relative abundance tables, diversity analysis, differential abundance testing."
+                },
+                "skip_qiime_downstream": {
+                    "type": "boolean",
+                    "description": "Skip steps that are executed by QIIME2 except for taxonomic classification. Skip steps including barplots, relative abundance tables, diversity analysis, differential abundance testing."
                 },
                 "skip_taxonomy": {
                     "type": "boolean",

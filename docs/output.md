@@ -140,7 +140,7 @@ DADA2 reduces sequence errors and dereplicates sequences by quality filtering, d
   - `ASV_table.tsv`: Counts for each ASV sequence.
   - `DADA2_stats.tsv`: Tracking read numbers through DADA2 processing steps, for each sample.
   - `DADA2_table.rds`: DADA2 ASV table as R object.
-  - `DADA2_tables.tsv`: DADA2 ASV table.
+  - `DADA2_table.tsv`: DADA2 ASV table.
 - `dada2/args/`: Directory containing files with all parameters for DADA2 steps.
 - `dada2/log/`: Directory containing log files for DADA2 steps.
 - `dada2/QC/`
@@ -407,7 +407,7 @@ All following analysis is based on these filtered tables.
   - `seven_number_summary.tsv`: Length of ASV sequences in different quantiles.
   - `filtered-sequences.qza`: QIIME2 fragment.
 - `qiime2/abundance_tables/`
-  - `abs-abund-table-*.tsv`: Tab-separated absolute abundance table at taxa level `*`, where `*` ranges by default from 2 to 6 or 7, depending on the used reference taxonomy database.
+  - `abs-abund-table-*.tsv`: Tab-separated absolute abundance table at taxa level `*`, where `*` ranges by default from 2 to 6, specified by the `--tax_agglom_min` and `--tax_agglom_max` parameters.
   - `count_table_filter_stats.tsv`: Tab-separated table with information on how much counts were filtered for each sample.
   - `feature-table.biom`: Abundance table in biom format for importing into downstream analysis tools.
   - `feature-table.tsv`: Tab-separated abundance table for each ASV and each sample.
@@ -423,7 +423,7 @@ Absolute abundance tables produced by the previous steps contain count data, but
 <summary>Output files</summary>
 
 - `qiime2/rel_abundance_tables/`
-  - `rel-table-*.tsv`: Tab-separated absolute abundance table at taxa level `*`, where `*` ranges by default from 2 to 6 or 7, depending on the used reference taxonomy database.
+  - `rel-table-*.tsv`: Tab-separated absolute abundance table at taxa level `*`, where `*` ranges by default from 2 to 6, specified by the `--tax_agglom_min` and `--tax_agglom_max` parameters.
   - `rel-table-ASV.tsv`: Tab-separated relative abundance table for all ASVs.
   - `rel-table-ASV_with-DADA2-tax.tsv`: Tab-separated table for all ASVs with DADA2 taxonomic classification, sequence and relative abundance.
   - `rel-table-ASV_with-QIIME2-tax.tsv`: Tab-separated table for all ASVs with QIIME2 taxonomic classification, sequence and relative abundance.

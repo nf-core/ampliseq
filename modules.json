@@ -81,6 +81,11 @@
                         "git_sha": "4ab13872435962dadc239979554d13709e20bf29",
                         "installed_by": ["modules"]
                     },
+                    "pigz/uncompress": {
+                        "branch": "master",
+                        "git_sha": "4ef7becf6a2bbc8df466885d10b4051d1f318a6a",
+                        "installed_by": ["modules"]
+                    },
                     "untar": {
                         "branch": "master",
                         "git_sha": "d0b4fc03af52a1cc8c6fb4493b921b57352b1dd8",

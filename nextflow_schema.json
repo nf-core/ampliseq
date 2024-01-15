@@ -449,8 +449,8 @@
                 },
                 "qiime_ref_tax_custom": {
                     "type": "string",
-                    "help_text": "Overwrites `--qiime_ref_taxonomy`. A comma separated pair of (possibly gzipped) filepaths (sequence, taxonomy).",
-                    "description": "Path to files of a custom QIIME2 reference taxonomy database (files may be gzipped)"
+                    "help_text": "Overwrites `--qiime_ref_taxonomy`. Either path to tarball (`*.tar.gz` or `*.tgz`) that contains sequence (`*.fna`) and taxonomy (`*.tax`) data, or alternatively a comma separated pair of filepaths to sequence (`*.fna`) and taxonomy (`*.tax`) data (possibly gzipped `*.gz`).",
+                    "description": "Path to files of a custom QIIME2 reference taxonomy database (tarball, or two comma-separated files)"
                 },
                 "classifier": {
                     "type": "string",

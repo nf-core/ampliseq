@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
-- [#672](https://github.com/nf-core/ampliseq/pull/672),[#688](https://github.com/nf-core/ampliseq/pull/6),[#691](https://github.com/nf-core/ampliseq/pull/691) - Updated documentation
+- [#672](https://github.com/nf-core/ampliseq/pull/672),[#688](https://github.com/nf-core/ampliseq/pull/688),[#691](https://github.com/nf-core/ampliseq/pull/691) - Updated documentation
 - [#676](https://github.com/nf-core/ampliseq/pull/676) - Phyloseq sometimes only produced one of multiple output files
 - [#679](https://github.com/nf-core/ampliseq/pull/679) - Prevent masking low complexity regions by VSEARCH with lower case letters
 - [#680](https://github.com/nf-core/ampliseq/pull/680),[#673](https://github.com/nf-core/ampliseq/pull/673) - Improved pipeline summary report & error messages

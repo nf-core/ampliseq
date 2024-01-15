@@ -3,7 +3,7 @@
  */
 
 include { UNTAR                 } from '../../modules/nf-core/untar/main'
-include { GZIP_DECOMPRESS       } from '../../modules/local/gzip_decompress.nf'
+include { PIGZ_UNCOMPRESS       } from '../../modules/nf-core/pigz/uncompress/main'
 include { FORMAT_TAXONOMY_QIIME } from '../../modules/local/format_taxonomy_qiime'
 include { QIIME2_EXTRACT        } from '../../modules/local/qiime2_extract'
 include { QIIME2_TRAIN          } from '../../modules/local/qiime2_train'
@@ -29,10 +29,10 @@ workflow QIIME2_PREPTAX {
                 }.set { ch_qiime_ref_tax_branched }
             ch_qiime_ref_tax_branched.failed.subscribe { error "$it is neither a compressed (ends with `.gz`) or decompressed sequence (ends with `.fna`) or taxonomy file (ends with `.tax`). Please review input." }
 
-            GZIP_DECOMPRESS(ch_qiime_ref_tax_branched.compressed)
-            ch_qiime2_preptax_versions = ch_qiime2_preptax_versions.mix(GZIP_DECOMPRESS.out.versions)
+            PIGZ_UNCOMPRESS(ch_qiime_ref_tax_branched.compressed)
+            ch_qiime2_preptax_versions = ch_qiime2_preptax_versions.mix(PIGZ_UNCOMPRESS.out.versions)
 
-            ch_qiime_db_files = GZIP_DECOMPRESS.out.ungzip
+            ch_qiime_db_files = PIGZ_UNCOMPRESS.out.file
             ch_qiime_db_files = ch_qiime_db_files.mix(ch_qiime_ref_tax_branched.decompressed)
 
             ch_ref_database_fna = ch_qiime_db_files.filter {

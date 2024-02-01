@@ -6,7 +6,7 @@ lint:
     - conf/igenomes.config
   nextflow_config:
     - config_defaults:
-      - params.report_template
-      - params.report_css
-      - params.report_logo
+        - params.report_template
+        - params.report_css
+        - params.report_logo
   actions_ci: False

@@ -10,3 +10,7 @@ lint:
         - params.report_css
         - params.report_logo
   actions_ci: False
+update:
+  https://github.com/nf-core/modules.git:
+    nf-core:
+      mafft: "feb29be775d9e41750180539e9a3bdce801d0609"

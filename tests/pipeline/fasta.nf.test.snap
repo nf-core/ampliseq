@@ -7,7 +7,7 @@
     },
     "software_versions": {
         "content": [
-            "{BARRNAP={barrnap=0.9}, CUSTOM_DUMPSOFTWAREVERSIONS={python=3.12.0, yaml=6.0.1}, DADA2_TAXONOMY={R=4.3.1, dada2=1.28.0}, FILTER_CODONS={pandas=1.1.5, python=3.9.1}, FILTER_LEN_ASV={Biostrings=2.58.0, R=4.0.3}, Workflow={nf-core/ampliseq=2.9.0dev}}"
+            "{BARRNAP={barrnap=0.9}, CUSTOM_DUMPSOFTWAREVERSIONS={python=3.11.7, yaml=5.4.1}, DADA2_TAXONOMY={R=4.3.1, dada2=1.28.0}, FILTER_CODONS={pandas=1.1.5, python=3.9.1}, FILTER_LEN_ASV={Biostrings=2.58.0, R=4.0.3}, Workflow={nf-core/ampliseq=2.9.0dev}}"
         ],
         "timestamp": "2023-05-28T21:06:17+0000"
     },

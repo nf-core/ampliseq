@@ -20,7 +20,7 @@ workflow QIIME2_BARPLOTAVG {
     QIIME2_INASV_BPAVG ( ch_rel_tsv )
 
     //group by metadata category (ch_metadata_category_barplot)
-    QIIME2_FEATURETABLE_GROUP ( 
+    QIIME2_FEATURETABLE_GROUP (
         QIIME2_INASV_BPAVG.out.qza
         .combine(ch_metadata)
         .combine(ch_metadata_category_barplot)

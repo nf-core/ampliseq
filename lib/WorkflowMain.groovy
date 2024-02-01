@@ -25,7 +25,7 @@ class WorkflowMain {
     //
     // Validate parameters and print summary to screen
     //
-    public static void initialise(workflow, params, log) {
+    public static void initialise(workflow, params, log, args) {
 
         // Check that keys for reference databases are valid
         if (params.dada_ref_taxonomy && !params.skip_taxonomy && !params.skip_dada_taxonomy) {
@@ -47,6 +47,8 @@ class WorkflowMain {
 
         // Check that a -profile or Nextflow config has been provided to run the pipeline
         NfcoreTemplate.checkConfigProvided(workflow, log)
+        // Check that the profile doesn't contain spaces and doesn't end with a trailing comma
+        checkProfile(workflow.profile, args, log)
 
         // Check that conda channels are set-up correctly
         if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
@@ -94,6 +96,18 @@ class WorkflowMain {
                 "  ${params.qiime_ref_databases.keySet().join(", ")}\n" +
                 "==================================================================================="
             Nextflow.error(error_string)
+        }
+    }
+
+    //
+    // Exit pipeline if --profile contains spaces
+    //
+    private static void checkProfile(profile, args, log) {
+        if (profile.endsWith(',')) {
+            Nextflow.error "Profile cannot end with a trailing comma. Please remove the comma from the end of the profile string.\nHint: A common mistake is to provide multiple values to `-profile` separated by spaces. Please use commas to separate profiles instead,e.g., `-profile docker,test`."
+        }
+        if (args[0]) {
+            log.warn "nf-core pipelines do not accept positional arguments. The positional argument `${args[0]}` has been detected.\n      Hint: A common mistake is to provide multiple values to `-profile` separated by spaces. Please use commas to separate profiles instead,e.g., `-profile docker,test`."
         }
     }
 }

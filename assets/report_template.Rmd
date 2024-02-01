@@ -134,7 +134,7 @@ htmltools::includeCSS(params$css)
 cat(paste0("
 <style>
 #TOC {
-   background-image: url(\"", knitr::image_uri(params$report_logo), "\");
+    background-image: url(\"", knitr::image_uri(params$report_logo), "\");
 }
 </style>
 "))
@@ -628,8 +628,8 @@ n_mito <- sum(grepl("mito", barrnap_sum$result))
 n_euk <- sum(grepl("euk", barrnap_sum$result))
 
 barrnap_df_sum <- data.frame(label=c('Bacteria','Archaea','Mitochondria','Eukaryotes','Unclassified'),
-                 count=c(n_bac,n_arc,n_mito,n_euk,n_asv_barrnap - n_classified),
-                 percent=c(round( (n_bac/n_asv_barrnap)*100, 2), round( (n_arc/n_asv_barrnap)*100, 2), round( (n_mito/n_asv_barrnap)*100, 2), round( (n_euk/n_asv_barrnap)*100, 2), round( ( (n_asv_barrnap - n_classified) /n_asv_barrnap)*100, 2) ) )
+    count=c(n_bac,n_arc,n_mito,n_euk,n_asv_barrnap - n_classified),
+    percent=c(round( (n_bac/n_asv_barrnap)*100, 2), round( (n_arc/n_asv_barrnap)*100, 2), round( (n_mito/n_asv_barrnap)*100, 2), round( (n_euk/n_asv_barrnap)*100, 2), round( ( (n_asv_barrnap - n_classified) /n_asv_barrnap)*100, 2) ) )
 
 # Build outputtext
 cat( "Barrnap classified ")
@@ -664,7 +664,7 @@ cat("\n\nrRNA classification results can be found in folder [barrnap](../barrnap
 filter_ssu_asv <- read.table( params$filter_ssu_asv, header = FALSE, sep = "\t", stringsAsFactors = FALSE)
 filter_ssu_asv_filtered <- nrow(filter_ssu_asv)/2
 
- # "n_asv_barrnap" is taken from the barrnap block above
+# "n_asv_barrnap" is taken from the barrnap block above
 cat(paste0("
 ASVs were filtered for `",params$filter_ssu,"` (`bac`: Bacteria, `arc`: Archaea, `mito`: Mitochondria, `euk`: Eukaryotes) using the above classification.
 The number of ASVs was reduced by ",n_asv_barrnap-filter_ssu_asv_filtered,
@@ -941,8 +941,8 @@ asv_classi_df <- data.frame(level, n_asv_classified, p_asv_classified)
 # Build output string
 outputstr <- "DADA2 classified "
 for (row in seq_len(nrow(asv_classi_df))) {
-        outputstr <- paste0(outputstr, asv_classi_df[row, ]$p_asv_classified,
-                         " % ASVs at ", asv_classi_df[row, ]$level, " level, ")
+    outputstr <- paste0(outputstr, asv_classi_df[row, ]$p_asv_classified,
+        " % ASVs at ", asv_classi_df[row, ]$level, " level, ")
 }
 outputstr <- substr(outputstr, 1, nchar(outputstr)-2)
 outputstr <- paste0(outputstr, ".\n\n")
@@ -982,7 +982,7 @@ if ( !isFALSE(params$qiime2_ref_tax_title) ) {
         More details about the reference taxonomy database can be found in the ['Methods section'](#methods).\n\n", sep = "")
 } else {
     cat("The taxonomic classification was performed by [QIIME2](https://www.nature.com/articles/s41587-019-0209-9) using a custom database ",
-            "provided by the user.\n\n", sep = "")
+        "provided by the user.\n\n", sep = "")
 }
 
 # Read file and prepare table
@@ -1018,8 +1018,8 @@ asv_classi_df <- data.frame(level, n_asv_classified, p_asv_classified)
 # Build output string
 outputstr <- "QIIME2 classified "
 for (row in seq_len(nrow(asv_classi_df))) {
-        outputstr <- paste0(outputstr, asv_classi_df[row, ]$p_asv_classified,
-                         " % ASVs at ", asv_classi_df[row, ]$level, " level, ")
+    outputstr <- paste0(outputstr, asv_classi_df[row, ]$p_asv_classified,
+        " % ASVs at ", asv_classi_df[row, ]$level, " level, ")
 }
 outputstr <- substr(outputstr, 1, nchar(outputstr)-2)
 outputstr <- paste0(outputstr, ".\n\n")
@@ -1075,8 +1075,8 @@ asv_classi_df <- data.frame(level, n_asv_classified, p_asv_classified)
 # Build output string
 outputstr <- "SINTAX classified "
 for (row in seq_len(nrow(asv_classi_df))) {
-        outputstr <- paste0(outputstr, asv_classi_df[row, ]$p_asv_classified,
-                         " % ASVs at ", asv_classi_df[row, ]$level, " level, ")
+    outputstr <- paste0(outputstr, asv_classi_df[row, ]$p_asv_classified,
+        " % ASVs at ", asv_classi_df[row, ]$level, " level, ")
 }
 outputstr <- substr(outputstr, 1, nchar(outputstr)-2)
 outputstr <- paste0(outputstr, ".\n\n")
@@ -1140,8 +1140,8 @@ asv_classi_df <- data.frame(level, n_asv_classified, p_asv_classified)
 # Build output string
 outputstr <- "Kraken2 classified "
 for (row in seq_len(nrow(asv_classi_df))) {
-        outputstr <- paste0(outputstr, asv_classi_df[row, ]$p_asv_classified,
-                         " % ASVs at ", asv_classi_df[row, ]$level, " level, ")
+    outputstr <- paste0(outputstr, asv_classi_df[row, ]$p_asv_classified,
+        " % ASVs at ", asv_classi_df[row, ]$level, " level, ")
 }
 outputstr <- substr(outputstr, 1, nchar(outputstr)-2)
 outputstr <- paste0(outputstr, ".\n\n")
@@ -1202,8 +1202,8 @@ asv_classi_df <- data.frame(level, n_asv_classified, p_asv_classified)
 # Build output string
 outputstr <- "Phylogenetic Placement classified "
 for (row in seq_len(nrow(asv_classi_df))) {
-        outputstr <- paste0(outputstr, asv_classi_df[row, ]$p_asv_classified,
-                         " % ASVs at taxonomic level ", asv_classi_df[row, ]$level, ", ")
+    outputstr <- paste0(outputstr, asv_classi_df[row, ]$p_asv_classified,
+        " % ASVs at taxonomic level ", asv_classi_df[row, ]$level, ", ")
 }
 outputstr <- substr(outputstr, 1, nchar(outputstr)-2)
 outputstr <- paste0(outputstr, ".\n\n")

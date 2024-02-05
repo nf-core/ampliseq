@@ -38,6 +38,8 @@ workflow DADA2_TAXONOMY_WF {
                     def meta = [:]
                     meta.single_end = true
                     meta.id = "assignTaxonomy"
+                    meta.fw_primer = params.FW_primer
+                    meta.rv_primer_revcomp = WorkflowAmpliseq.makeComplement ( "${params.RV_primer}".reverse() )
                     [ meta, db ] }
             .set { ch_assigntax }
         CUTADAPT_TAXONOMY ( ch_assigntax ).reads

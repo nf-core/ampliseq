@@ -25,6 +25,10 @@ workflow PARSE_INPUT {
                     def meta = [:]
                     meta.id           = read.baseName.toString().indexOf("_") != -1 ? read.baseName.toString().take(read.baseName.toString().indexOf("_")) : read.baseName
                     meta.single_end   = single_end.toBoolean()
+                    meta.fw_primer = params.FW_primer
+                    meta.rv_primer = params.RV_primer
+                    meta.fw_primer_revcomp = WorkflowAmpliseq.makeComplement ( "${params.FW_primer}".reverse() )
+                    meta.rv_primer_revcomp = WorkflowAmpliseq.makeComplement ( "${params.RV_primer}".reverse() )
                     meta.run          = multiple_sequencing_runs ? read.take(read.findLastIndexOf{"/"})[-1] : "1"
                     [ meta, read ] }
             .set { ch_reads }
@@ -37,6 +41,10 @@ workflow PARSE_INPUT {
                     def meta = [:]
                     meta.id           = name.toString().indexOf("_") != -1 ? name.toString().take(name.toString().indexOf("_")) : name
                     meta.single_end   = single_end.toBoolean()
+                    meta.fw_primer = params.FW_primer
+                    meta.rv_primer = params.RV_primer
+                    meta.fw_primer_revcomp = WorkflowAmpliseq.makeComplement ( "${params.FW_primer}".reverse() )
+                    meta.rv_primer_revcomp = WorkflowAmpliseq.makeComplement ( "${params.RV_primer}".reverse() )
                     meta.run          = multiple_sequencing_runs ? reads[0].take(reads[0].findLastIndexOf{"/"})[-1] : "1"
                     [ meta, reads ] }
             .set { ch_reads }

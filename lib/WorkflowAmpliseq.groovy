@@ -134,6 +134,15 @@ class WorkflowAmpliseq {
     }
 
     //
+    // Prepare complement sequence - ultimately to make reverse complement primers
+    // Complement table taken from http://arep.med.harvard.edu/labgc/adnan/projects/Utilities/revcomp.html
+    public static String makeComplement(seq) {
+        def complements = [ A:'T', T:'A', U:'A', G:'C', C:'G', Y:'R', R:'Y', S:'S', W:'W', K:'M', M:'K', B:'V', D:'H', H:'D', V:'B', N:'N' ]
+        def comp = seq.toUpperCase().collect { base -> complements[ base ] ?: 'X' }.join()
+        return comp
+    }
+
+    //
     // Get workflow summary for MultiQC
     //
     public static String paramsSummaryMultiqc(workflow, summary) {

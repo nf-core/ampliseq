@@ -59,7 +59,6 @@
                 },
                 "save_intermediates": {
                     "type": "boolean",
-                    "default": 100,
                     "description": "Save intermediate results such as QIIME2's qza and qzv files",
                     "fa_icon": "fas fa-folder-open"
                 },

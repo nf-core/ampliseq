@@ -7,11 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#700](https://github.com/nf-core/ampliseq/pull/700) - Optional `--save_intermediates` to publish QIIME2 data objects (.qza) and visualisation objects (.qzv)
+
 ### `Changed`
 
 ### `Fixed`
 
-- [#697](https://github.com/nf-core/ampliseq/pull/697) - Template update for nf-core/tools version 2.12
+- [#697](https://github.com/nf-core/ampliseq/pull/697),[#699](https://github.com/nf-core/ampliseq/pull/699) - Template update for nf-core/tools version 2.12
 
 ### `Dependencies`
 

@@ -65,6 +65,11 @@
                     "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
                     "fa_icon": "fas fa-folder-open"
                 },
+                "save_intermediates": {
+                    "type": "boolean",
+                    "description": "Save intermediate results such as QIIME2's qza and qzv files",
+                    "fa_icon": "fas fa-folder-open"
+                },
                 "email": {
                     "type": "string",
                     "description": "Email address for completion summary.",

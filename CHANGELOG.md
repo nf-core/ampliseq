@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#700](https://github.com/nf-core/ampliseq/pull/700) - Optional `--save_intermediates` to publish QIIME2 data objects (.qza) and visualisation objects (.qzv)
+
 ### `Changed`
 
 ### `Fixed`

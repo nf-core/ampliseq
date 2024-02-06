@@ -15,7 +15,7 @@ class WorkflowAmpliseq {
             Nextflow.error("Missing input declaration: One of `--input`, `--input_fasta`, `--input_folder` is required.")
         }
 
-        if ( !params.input_fasta && (!params.FW_primer || !params.RV_primer) && !params.skip_cutadapt ) {
+        if ( !params.input_multiregion && !params.input_fasta && (!params.FW_primer || !params.RV_primer) && !params.skip_cutadapt ) {
             Nextflow.error("Incompatible parameters: `--FW_primer` and `--RV_primer` are required for primer trimming. If primer trimming is not needed, use `--skip_cutadapt`.")
         }
 

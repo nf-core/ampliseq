@@ -272,29 +272,6 @@ workflow AMPLISEQ {
                 if ( !meta.single_end && ( readfw.getSimpleName() == meta.id || readrv.getSimpleName() == meta.id ) ) { error("Entry `sampleID` cannot be identical to simple name of `forwardReads` or `reverseReads`, please change `sampleID` in $params.input for sample $meta.id") } // sample name and any file name without extensions arent identical, because rename_raw_data_files.nf would forward 3 files (2 renamed +1 input) instead of 2 in that case
                 if ( meta.single_end && ( readfw.getSimpleName() == meta.id+"_1" || readfw.getSimpleName() == meta.id+"_2" ) ) { error("Entry `sampleID`+ `_1` or `_2` cannot be identical to simple name of `forwardReads`, please change `sampleID` in $params.input for sample $meta.id") } // sample name and file name without extensions arent identical, because rename_raw_data_files.nf would forward 2 files (1 renamed +1 input) instead of 1 in that case
                 return [meta, reads] }
-        if ( params.input_multiregion ) {
-            // is multiple region analysis
-            ch_input_reads
-                //make here: .combine( Channel.fromSamplesheet("input_multiregion") )
-                //then add the primer info to meta map
-                //then retain sample id as sample name, to combine samples later: meta.sample = meta.id
-                //then rename samples: meta.id = meta.id + "_" + meta.fw_primer + "_" + meta.rv_primer
-                .map{ meta, reads ->
-                    meta.fw_primer = params.FW_primer
-                    meta.rv_primer = params.RV_primer
-                    meta.fw_primer_revcomp = WorkflowAmpliseq.makeComplement ( "${params.FW_primer}".reverse() )
-                    meta.rv_primer_revcomp = WorkflowAmpliseq.makeComplement ( "${params.RV_primer}".reverse() )
-                    return [ meta, reads ] }
-        } else {
-            // is single region
-            ch_input_reads
-                .map{ meta, reads ->
-                    meta.fw_primer = params.FW_primer
-                    meta.rv_primer = params.RV_primer
-                    meta.fw_primer_revcomp = WorkflowAmpliseq.makeComplement ( "${params.FW_primer}".reverse() )
-                    meta.rv_primer_revcomp = WorkflowAmpliseq.makeComplement ( "${params.RV_primer}".reverse() )
-                    return [ meta, reads ] }
-        }
     } else if ( params.input_fasta ) {
         ch_input_fasta = Channel.fromPath(params.input_fasta, checkIfExists: true)
     } else if ( params.input_folder ) {
@@ -302,6 +279,37 @@ workflow AMPLISEQ {
         ch_input_reads = PARSE_INPUT.out.reads
     } else {
         error("One of `--input`, `--input_fasta`, `--input_folder` must be provided!")
+    }
+
+    //
+    // Add primer info to sequencing files
+    //
+    if ( params.input_multiregion ) {
+        // is multiple region analysis
+        ch_input_reads
+            .combine( Channel.fromSamplesheet("input_multiregion") )
+            .map{ info, reads, multi ->
+                def meta = info + multi
+                return [ meta, reads ] }
+            .map{ info, reads ->
+                def meta = info +
+                    [id: info.sample+"_"+info.fw_primer+"_"+info.rv_primer] +
+                    [fw_primer_revcomp: WorkflowAmpliseq.makeComplement(info.fw_primer.reverse())] +
+                    [rv_primer_revcomp: WorkflowAmpliseq.makeComplement(info.rv_primer.reverse())]
+                return [ meta, reads ] }
+            .set { ch_input_reads }
+    } else {
+        // is single region
+        ch_input_reads
+            .map{ info, reads ->
+                def meta = info +
+                    [region: null, region_length: null] +
+                    [fw_primer: params.FW_primer, rv_primer: params.RV_primer] +
+                    [id: info.sample] +
+                    [fw_primer_revcomp: WorkflowAmpliseq.makeComplement(params.FW_primer.reverse())] +
+                    [rv_primer_revcomp: WorkflowAmpliseq.makeComplement(params.RV_primer.reverse())]
+                return [ meta, reads ] }
+            .set { ch_input_reads }
     }
 
     //Filter empty files

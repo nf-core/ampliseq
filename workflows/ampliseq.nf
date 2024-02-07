@@ -178,6 +178,7 @@ include { DADA2_DENOISING               } from '../modules/local/dada2_denoising
 include { DADA2_RMCHIMERA               } from '../modules/local/dada2_rmchimera'
 include { DADA2_STATS                   } from '../modules/local/dada2_stats'
 include { DADA2_MERGE                   } from '../modules/local/dada2_merge'
+include { DADA2_SPLITREGIONS            } from '../modules/local/dada2_splitregions'
 include { BARRNAP                       } from '../modules/local/barrnap'
 include { BARRNAPSUMMARY                } from '../modules/local/barrnapsummary'
 include { FILTER_SSU                    } from '../modules/local/filter_ssu'
@@ -415,6 +416,20 @@ workflow AMPLISEQ {
         ch_stats = MERGE_STATS_STD.out.tsv
     } else {
         ch_stats = DADA2_MERGE.out.dada2stats
+    }
+
+    //separate sequences and abundances when several regions
+    if ( params.input_multiregion ) {
+        DADA2_SPLITREGIONS (
+            //DADA2_DENOISING per run & region -> per run
+            ch_reads
+                .map {
+                    info, reads ->
+                        def meta = info.subMap( info.keySet() - 'id' - 'sample' - 'run' ) //All of 'id', 'sample', 'run' must be removed to merge by region; downstream unused: 'single_end'
+                        [ meta, info ] }
+                .groupTuple(by: 0 ).dump(tag:'DADA2_SPLITREGIONS:meta'),
+            DADA2_MERGE.out.dada2asv.first() )
+        ch_versions = ch_versions.mix(DADA2_SPLITREGIONS.out.versions)
     }
 
     //

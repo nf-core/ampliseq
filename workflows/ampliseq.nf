@@ -306,8 +306,8 @@ workflow AMPLISEQ {
                     [region: null, region_length: null] +
                     [fw_primer: params.FW_primer, rv_primer: params.RV_primer] +
                     [id: info.sample] +
-                    [fw_primer_revcomp: WorkflowAmpliseq.makeComplement(params.FW_primer.reverse())] +
-                    [rv_primer_revcomp: WorkflowAmpliseq.makeComplement(params.RV_primer.reverse())]
+                    [fw_primer_revcomp: params.FW_primer ? WorkflowAmpliseq.makeComplement(params.FW_primer.reverse()) : null] +
+                    [rv_primer_revcomp: params.RV_primer ? WorkflowAmpliseq.makeComplement(params.RV_primer.reverse()) : null]
                 return [ meta, reads ] }
             .set { ch_input_reads }
     }

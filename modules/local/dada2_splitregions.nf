@@ -1,11 +1,10 @@
 process DADA2_SPLITREGIONS {
     label 'process_low'
 
-    // TODO: DADA2 not neccessary, R base sufficient!
-    conda "bioconda::bioconductor-dada2=1.22.0 conda-forge::r-digest=0.6.30"
+    conda "conda-forge::r-base=4.2.1"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.22.0--r41h399db7b_0' :
-        'biocontainers/bioconductor-dada2:1.22.0--r41h399db7b_0' }"
+        'https://depot.galaxyproject.org/singularity/r-base:4.2.1' :
+        'biocontainers/r-base:4.2.1' }"
 
     input:
     tuple val(meta), val(mapping)
@@ -21,7 +20,8 @@ process DADA2_SPLITREGIONS {
     task.ext.when == null || task.ext.when
 
     script:
-    //make groovy map to R list
+    // Make groovy map to R list
+    // Requirement: Values may not be false,true,null
     def mapping_r_list = mapping
         .toString()
         .replaceAll("':","=")
@@ -29,7 +29,6 @@ process DADA2_SPLITREGIONS {
         .replaceAll("\\['","list(")
         .replaceAll("\\[","list(")
         .replaceAll("\\]",")")
-        .replaceAll("false","'false'")
     def suffix = "region" + meta.region + "_" + meta.fw_primer + "_" + meta.rv_primer
     """
     #!/usr/bin/env Rscript
@@ -62,6 +61,6 @@ process DADA2_SPLITREGIONS {
     write.table(df, file = "ASV_table_${suffix}.tsv", sep="\\t", row.names = FALSE, quote = FALSE, na = '')
 
 
-    writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
+    writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = "."))), "versions.yml")
     """
 }

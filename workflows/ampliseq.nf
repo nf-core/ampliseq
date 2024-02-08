@@ -425,8 +425,9 @@ workflow AMPLISEQ {
             ch_reads
                 .map {
                     info, reads ->
-                        def meta = info.subMap( info.keySet() - 'id' - 'sample' - 'run' ) //All of 'id', 'sample', 'run' must be removed to merge by region; downstream unused: 'single_end'
-                        [ meta, info ] }
+                        def meta = info.subMap( info.keySet() - 'id' - 'sample' - 'run' ) // All of 'id', 'sample', 'run' must be removed to merge by region
+                        def inf2 = info.subMap( info.keySet() - 'single_end' )// May not contain false,true,null: remove 'single_end'
+                        [ meta, inf2 ] }
                 .groupTuple(by: 0 ).dump(tag:'DADA2_SPLITREGIONS:meta'),
             DADA2_MERGE.out.dada2asv.first() )
         ch_versions = ch_versions.mix(DADA2_SPLITREGIONS.out.versions)

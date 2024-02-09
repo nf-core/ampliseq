@@ -42,6 +42,28 @@ if (params.classifier) {
     ch_qiime_classifier = Channel.fromPath("${params.classifier}", checkIfExists: true)
 } else { ch_qiime_classifier = Channel.empty() }
 
+if (params.sidle_ref_tax_custom) {
+    if ("${params.sidle_ref_tax_custom}".contains(",")) {
+        sidle_ref_paths = "${params.sidle_ref_tax_custom}".split(",")
+        if (sidle_ref_paths.length != 3) {
+            error "--sidle_ref_tax_custom exately three filepaths separated by a comma (fasta, aligned fasta, taxonomy). Please review input."
+        }
+        ch_sidle_ref_taxonomy = Channel.fromPath( Arrays.asList(sidle_ref_paths), checkIfExists: true )
+    } else {
+        error "--sidle_ref_tax_custom accepts exately three filepaths separated by a comma. Please review input."
+    }
+    val_sidle_ref_taxonomy = "user"
+    ch_sidle_ref_taxonomy_tree = params.sidle_ref_tree_custom ? Channel.fromPath("${params.sidle_ref_tree_custom}", checkIfExists: true) : Channel.empty()
+} else if (params.sidle_ref_taxonomy) {
+    ch_sidle_ref_taxonomy = Channel.fromList( params.sidle_ref_databases[params.sidle_ref_taxonomy]["file"] ).map { file(it) }
+    ch_sidle_ref_taxonomy_tree = params.sidle_ref_tree_custom ? Channel.fromPath("${params.sidle_ref_tree_custom}", checkIfExists: true) : Channel.fromList( params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] ).map { file(it) }
+    val_sidle_ref_taxonomy = params.sidle_ref_taxonomy.replace('=','_').replace('.','_')
+} else {
+    ch_sidle_ref_taxonomy = Channel.empty()
+    ch_sidle_ref_taxonomy_tree = Channel.empty()
+    val_sidle_ref_taxonomy = "none"
+}
+
 if (params.dada_ref_tax_custom) {
     //custom ref taxonomy input from params.dada_ref_tax_custom & params.dada_ref_tax_custom_sp
     ch_assigntax = Channel.fromPath("${params.dada_ref_tax_custom}", checkIfExists: true)
@@ -439,10 +461,9 @@ workflow AMPLISEQ {
         // run q2-sidle
         SIDLE_WF (
             DADA2_SPLITREGIONS.out.for_sidle,
-            file( params.sidle_ref_sequences, checkIfExists: true ), //TODO: ch_sidle_ref_sequences // "gg_13_8_otus_rep_set_99_otus.fasta"
-            file( params.sidle_ref_alignedseq, checkIfExists: true ), //TODO: ch_sidle_ref_alignedseq // "gg_13_8_otus_taxonomy_99_otu_taxonomy.txt"
-            file( params.sidle_ref_taxonomy, checkIfExists: true ), //TODO: ch_sidle_ref_taxonomy // "gg_13_8_otus_taxonomy_99_otu_taxonomy.txt"
-            file( params.sidle_ref_tree, checkIfExists: true ) //TODO: ch_sidle_ref_tree // https://data.qiime2.org/2021.4/common/sepp-refs-gg-13-8.qza
+            ch_sidle_ref_taxonomy.collect(),
+            val_sidle_ref_taxonomy,
+            ch_sidle_ref_taxonomy_tree
         )
         ch_versions = ch_versions.mix(SIDLE_WF.out.versions)
     }

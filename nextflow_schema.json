@@ -504,24 +504,25 @@
                     "minimum": 0,
                     "maximum": 1
                 },
-                "sidle_ref_sequences": {
-                    "type": "string",
-                    "help_text": "",
-                    "description": "Path to SIDLE reference taxonomy sequences (*.fasta)"
-                },
-                "sidle_ref_alignedseq": {
-                    "type": "string",
-                    "help_text": "",
-                    "description": "Path to SIDLE aligned reference taxonomy sequences (*.fasta)"
-                },
                 "sidle_ref_taxonomy": {
                     "type": "string",
                     "help_text": "",
-                    "description": "Path to SIDLE reference taxonomy strings (*.txt)"
+                    "description": "Name of supported database, and optionally also version number",
+                    "enum": [
+                        "silva",
+                        "silva=128",
+                        "greengenes",
+                        "greengenes=13_8"
+                    ]
                 },
-                "sidle_ref_tree": {
+                "sidle_ref_tax_custom": {
                     "type": "string",
-                    "help_text": "",
+                    "help_text": "Consider also setting `--sidle_ref_tree_custom`. Example usage: `--sidle_ref_tax_custom 'rep_set_99.fasta,rep_set_aligned_99.fasta,taxonomy_99_taxonomy.txt'`",
+                    "description": "Comma separated paths to three files: reference taxonomy sequences (*.fasta), reference taxonomy strings (*.txt)"
+                },
+                "sidle_ref_tree_custom": {
+                    "type": "string",
+                    "help_text": "Overwrites tree chosen by `--sidle_ref_taxonomy`",
                     "description": "Path to SIDLE reference taxonomy tree (*.qza)"
                 },
                 "sintax_ref_taxonomy": {

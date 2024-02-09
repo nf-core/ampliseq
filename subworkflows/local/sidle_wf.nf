@@ -2,33 +2,44 @@
  * Training of a classifier with QIIME2
  */
 
-include { SIDLE_INDB        } from '../../modules/local/sidle_indb'
-include { SIDLE_INDBALIGNED } from '../../modules/local/sidle_indbaligned'
-include { SIDLE_DBFILT      } from '../../modules/local/sidle_dbfilt'
-include { SIDLE_IN          } from '../../modules/local/sidle_in'
-include { SIDLE_TRIM        } from '../../modules/local/sidle_trim'
-include { SIDLE_DBEXTRACT   } from '../../modules/local/sidle_dbextract'
-include { SIDLE_ALIGN       } from '../../modules/local/sidle_align'
-include { SIDLE_DBRECON     } from '../../modules/local/sidle_dbrecon'
-include { SIDLE_TABLERECON  } from '../../modules/local/sidle_tablerecon'
-include { SIDLE_TAXRECON    } from '../../modules/local/sidle_taxrecon'
-include { SIDLE_FILTTAX     } from '../../modules/local/sidle_filttax'
-include { SIDLE_SEQRECON    } from '../../modules/local/sidle_seqrecon'
-include { SIDLE_TREERECON   } from '../../modules/local/sidle_treerecon'
-
+include { FORMAT_TAXONOMY_SIDLE } from '../../modules/local/format_taxonomy_sidle'
+include { SIDLE_INDB            } from '../../modules/local/sidle_indb'
+include { SIDLE_INDBALIGNED     } from '../../modules/local/sidle_indbaligned'
+include { SIDLE_DBFILT          } from '../../modules/local/sidle_dbfilt'
+include { SIDLE_IN              } from '../../modules/local/sidle_in'
+include { SIDLE_TRIM            } from '../../modules/local/sidle_trim'
+include { SIDLE_DBEXTRACT       } from '../../modules/local/sidle_dbextract'
+include { SIDLE_ALIGN           } from '../../modules/local/sidle_align'
+include { SIDLE_DBRECON         } from '../../modules/local/sidle_dbrecon'
+include { SIDLE_TABLERECON      } from '../../modules/local/sidle_tablerecon'
+include { SIDLE_TAXRECON        } from '../../modules/local/sidle_taxrecon'
+include { SIDLE_FILTTAX         } from '../../modules/local/sidle_filttax'
+include { SIDLE_SEQRECON        } from '../../modules/local/sidle_seqrecon'
+include { SIDLE_TREERECON       } from '../../modules/local/sidle_treerecon'
 
 workflow SIDLE_WF {
     take:
     ch_asv_tables_sequences
-    ch_db_sequences
-    ch_db_alignedsequences
-    ch_db_taxonomy
+    ch_sidle_ref_taxonomy
+    val_sidle_ref_taxonomy
     ch_db_tree
 
     main:
     ch_sidle_versions = Channel.empty()
 
     // DB
+    if (!params.sidle_ref_tax_custom) {
+        //standard ref taxonomy input from conf/ref_databases.config, one tar.gz / tgz with all files
+        FORMAT_TAXONOMY_SIDLE ( ch_sidle_ref_taxonomy, val_sidle_ref_taxonomy )
+        ch_db_sequences = FORMAT_TAXONOMY_SIDLE.out.seqs
+        ch_db_alignedsequences = FORMAT_TAXONOMY_SIDLE.out.alnseq
+        ch_db_taxonomy = FORMAT_TAXONOMY_SIDLE.out.tax
+    } else {
+        //input from params.sidle_ref_tax_custom: it[0] = fasta = ch_db_sequences, it[1] = aligned fasta = ch_db_alignedsequences, it[2] = taxonomy txt = ch_db_taxonomy
+        ch_db_sequences = ch_sidle_ref_taxonomy.map{ it[0] }
+        ch_db_alignedsequences = ch_sidle_ref_taxonomy.map{ it[1] }
+        ch_db_taxonomy = ch_sidle_ref_taxonomy.map{ it[2] }
+    }
     SIDLE_INDB ( ch_db_sequences, ch_db_taxonomy )
     ch_sidle_versions = ch_sidle_versions.mix(SIDLE_INDB.out.versions)
     SIDLE_INDBALIGNED ( ch_db_alignedsequences )

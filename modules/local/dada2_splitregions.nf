@@ -11,10 +11,11 @@ process DADA2_SPLITREGIONS {
     path(table)
 
     output:
-    tuple val(meta), path( "DADA2_table_*.tsv" ), emit: dada2asv
-    tuple val(meta), path( "ASV_table_*.tsv" )  , emit: asv
-    tuple val(meta), path( "ASV_seqs_*.fasta" ) , emit: fasta
-    path "versions.yml"      , emit: versions
+    tuple val(meta), path( "DADA2_table_*.tsv" )                          , emit: dada2asv
+    //tuple val(meta), path( "ASV_table_*.tsv" )                            , emit: asv
+    //tuple val(meta), path( "ASV_seqs_*.fasta" )                           , emit: fasta
+    tuple val(meta), path( "ASV_table_*.tsv" ), path( "ASV_seqs_*.fasta" ), emit: for_sidle
+    path "versions.yml"                                                   , emit: versions
 
     when:
     task.ext.when == null || task.ext.when

@@ -179,6 +179,7 @@ include { DADA2_RMCHIMERA               } from '../modules/local/dada2_rmchimera
 include { DADA2_STATS                   } from '../modules/local/dada2_stats'
 include { DADA2_MERGE                   } from '../modules/local/dada2_merge'
 include { DADA2_SPLITREGIONS            } from '../modules/local/dada2_splitregions'
+include { SIDLE_WF                      } from '../subworkflows/local/sidle_wf'
 include { BARRNAP                       } from '../modules/local/barrnap'
 include { BARRNAPSUMMARY                } from '../modules/local/barrnapsummary'
 include { FILTER_SSU                    } from '../modules/local/filter_ssu'
@@ -418,19 +419,32 @@ workflow AMPLISEQ {
         ch_stats = DADA2_MERGE.out.dada2stats
     }
 
-    //separate sequences and abundances when several regions
+    //
+    // SUBWORKFLOW / MODULES : Taxonomic classification with DADA2, SINTAX and/or QIIME2
+    //
     if ( params.input_multiregion ) {
+        // separate sequences and abundances when several regions
         DADA2_SPLITREGIONS (
             //DADA2_DENOISING per run & region -> per run
             ch_reads
                 .map {
                     info, reads ->
                         def meta = info.subMap( info.keySet() - 'id' - 'sample' - 'run' ) // All of 'id', 'sample', 'run' must be removed to merge by region
-                        def inf2 = info.subMap( info.keySet() - 'single_end' )// May not contain false,true,null: remove 'single_end'
+                        def inf2 = info.subMap( 'id', 'sample' )// May not contain false,true,null; only 'id', 'sample' required
                         [ meta, inf2 ] }
                 .groupTuple(by: 0 ).dump(tag:'DADA2_SPLITREGIONS:meta'),
-            DADA2_MERGE.out.dada2asv.first() )
+            DADA2_MERGE.out.dada2asv )
         ch_versions = ch_versions.mix(DADA2_SPLITREGIONS.out.versions)
+
+        // run q2-sidle
+        SIDLE_WF (
+            DADA2_SPLITREGIONS.out.for_sidle,
+            file( params.sidle_ref_sequences, checkIfExists: true ), //TODO: ch_sidle_ref_sequences // "gg_13_8_otus_rep_set_99_otus.fasta"
+            file( params.sidle_ref_alignedseq, checkIfExists: true ), //TODO: ch_sidle_ref_alignedseq // "gg_13_8_otus_taxonomy_99_otu_taxonomy.txt"
+            file( params.sidle_ref_taxonomy, checkIfExists: true ), //TODO: ch_sidle_ref_taxonomy // "gg_13_8_otus_taxonomy_99_otu_taxonomy.txt"
+            file( params.sidle_ref_tree, checkIfExists: true ) //TODO: ch_sidle_ref_tree // https://data.qiime2.org/2021.4/common/sepp-refs-gg-13-8.qza
+        )
+        ch_versions = ch_versions.mix(SIDLE_WF.out.versions)
     }
 
     //

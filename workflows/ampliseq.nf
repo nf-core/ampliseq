@@ -176,7 +176,7 @@ if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1)
 }
 
 //only run QIIME2 downstream analysis when taxonomy is actually calculated and all required data is available
-if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) && !params.skip_taxonomy && !params.skip_qiime && !params.skip_qiime_downstream && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom) ) {
+if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) && !params.skip_taxonomy && !params.skip_qiime && !params.skip_qiime_downstream && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom || params.input_multiregion) ) {
     run_qiime2 = true
 } else {
     run_qiime2 = false
@@ -215,7 +215,8 @@ include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy
 include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
 include { MERGE_STATS as MERGE_STATS_STD} from '../modules/local/merge_stats'
 include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'
-include { QIIME2_FILTERTAXA             } from '../modules/local/qiime2_filtertaxa'
+include { QIIME2_TABLEFILTERTAXA        } from '../modules/local/qiime2_tablefiltertaxa'
+include { QIIME2_SEQFILTERTABLE         } from '../modules/local/qiime2_seqfiltertable'
 include { QIIME2_INASV                  } from '../modules/local/qiime2_inasv'
 include { QIIME2_INTREE                 } from '../modules/local/qiime2_intree'
 include { FORMAT_PPLACETAX              } from '../modules/local/format_pplacetax'
@@ -466,13 +467,23 @@ workflow AMPLISEQ {
             ch_sidle_ref_taxonomy_tree
         )
         ch_versions = ch_versions.mix(SIDLE_WF.out.versions)
+
+        // forward results to downstream analysis if multi region
+        ch_dada2_asv = SIDLE_WF.out.table_tsv
+        ch_dada2_fasta = Channel.empty()
+        // TODO Any ASV post-clustering param is not allowed: vsearch_cluster, filter_ssu, min_len_asv, max_len_asv, filter_codons, cut_its
+        // TODO Must have params: skip_dada_taxonomy, skip_report
+    } else {
+        // forward results to downstream analysis if single region
+        ch_dada2_fasta = DADA2_MERGE.out.fasta
+        ch_dada2_asv = DADA2_MERGE.out.asv
     }
 
     //
     // MODULE : ASV post-clustering with VSEARCH
     //
-    if (params.vsearch_cluster) {
-        ch_fasta_for_clustering = DADA2_MERGE.out.fasta
+    if (params.vsearch_cluster && !params.input_multiregion) {
+        ch_fasta_for_clustering = ch_dada2_fasta
             .map {
                 fasta ->
                     def meta = [:]
@@ -480,13 +491,10 @@ workflow AMPLISEQ {
                     [ meta, fasta ] }
         VSEARCH_CLUSTER ( ch_fasta_for_clustering )
         ch_versions = ch_versions.mix(VSEARCH_CLUSTER.out.versions.ifEmpty(null))
-        FILTER_CLUSTERS ( VSEARCH_CLUSTER.out.clusters, DADA2_MERGE.out.asv )
+        FILTER_CLUSTERS ( VSEARCH_CLUSTER.out.clusters, ch_dada2_asv )
         ch_versions = ch_versions.mix(FILTER_CLUSTERS.out.versions.ifEmpty(null))
         ch_dada2_fasta = FILTER_CLUSTERS.out.fasta
         ch_dada2_asv = FILTER_CLUSTERS.out.asv
-    } else {
-        ch_dada2_fasta = DADA2_MERGE.out.fasta
-        ch_dada2_asv = DADA2_MERGE.out.asv
     }
 
     //
@@ -502,7 +510,7 @@ workflow AMPLISEQ {
     //
     // Modules : Filter rRNA
     //
-    if (!params.skip_barrnap && params.filter_ssu) {
+    if ( !params.skip_barrnap && params.filter_ssu && !params.input_multiregion ) {
         BARRNAP ( ch_unfiltered_fasta )
         BARRNAPSUMMARY ( BARRNAP.out.gff.collect() )
         BARRNAPSUMMARY.out.warning.subscribe {
@@ -517,7 +525,7 @@ workflow AMPLISEQ {
         ch_stats = MERGE_STATS_FILTERSSU.out.tsv
         ch_dada2_fasta = FILTER_SSU.out.fasta
         ch_dada2_asv = FILTER_SSU.out.asv
-    } else if (!params.skip_barrnap && !params.filter_ssu) {
+    } else if ( !params.skip_barrnap && !params.filter_ssu && !params.input_multiregion ) {
         BARRNAP ( ch_unfiltered_fasta )
         BARRNAPSUMMARY ( BARRNAP.out.gff.collect() )
         BARRNAPSUMMARY.out.warning.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn "Barrnap could not identify any rRNA in the ASV sequences. We recommended to use the --skip_barrnap option for these sequences." }
@@ -532,7 +540,7 @@ workflow AMPLISEQ {
     //
     // Modules : amplicon length filtering
     //
-    if (params.min_len_asv || params.max_len_asv) {
+    if ( (params.min_len_asv || params.max_len_asv) && !params.input_multiregion ) {
         FILTER_LEN_ASV ( ch_dada2_fasta, ch_dada2_asv.ifEmpty( [] ) )
         ch_versions = ch_versions.mix(FILTER_LEN_ASV.out.versions.ifEmpty(null))
         MERGE_STATS_FILTERLENASV ( ch_stats, FILTER_LEN_ASV.out.stats )
@@ -546,7 +554,7 @@ workflow AMPLISEQ {
     //
     // Modules : Filtering based on codons in an open reading frame
     //
-    if (params.filter_codons ) {
+    if ( params.filter_codons && !params.input_multiregion ) {
         FILTER_CODONS ( ch_dada2_fasta, ch_dada2_asv.ifEmpty( [] ) )
         ch_versions = ch_versions.mix(FILTER_CODONS.out.versions.ifEmpty(null))
         MERGE_STATS_CODONS( ch_stats, FILTER_CODONS.out.stats )
@@ -688,6 +696,8 @@ workflow AMPLISEQ {
         // Import phylogenetic tree into QIIME2
         if ( params.pplace_tree ) {
             ch_tree = QIIME2_INTREE ( FASTA_NEWICK_EPANG_GAPPA.out.grafted_phylogeny ).qza
+        } else if (params.input_multiregion) {
+            ch_tree = SIDLE_WF.out.tree_qza
         } else { ch_tree = [] }
 
         // Import taxonomic classification into QIIME2, if available
@@ -697,6 +707,10 @@ workflow AMPLISEQ {
             ch_tax = Channel.empty()
             tax_agglom_min = 1
             tax_agglom_max = 2
+        } else if ( params.input_multiregion ) {
+            log.info "Use multi-region SIDLE taxonomy classification"
+            val_used_taxonomy = "SIDLE"
+            ch_tax = SIDLE_WF.out.tax_qza
         } else if ( params.pplace_tree && params.pplace_taxonomy) {
             log.info "Use EPA-NG / GAPPA taxonomy classification"
             val_used_taxonomy = "phylogenetic placement"
@@ -727,20 +741,20 @@ workflow AMPLISEQ {
 
         // Filtering ASVs by taxonomy & prevalence & counts
         if (params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1) {
-            QIIME2_FILTERTAXA (
+            QIIME2_TABLEFILTERTAXA (
                 QIIME2_INASV.out.qza,
-                QIIME2_INSEQ.out.qza,
                 ch_tax,
                 params.min_frequency,
                 params.min_samples,
                 params.exclude_taxa
             )
-            FILTER_STATS ( ch_dada2_asv, QIIME2_FILTERTAXA.out.tsv )
+            QIIME2_SEQFILTERTABLE ( QIIME2_TABLEFILTERTAXA.out.qza, QIIME2_INSEQ.out.qza )
+            FILTER_STATS ( ch_dada2_asv, QIIME2_TABLEFILTERTAXA.out.tsv )
             ch_versions = ch_versions.mix( FILTER_STATS.out.versions.ifEmpty(null) )
             MERGE_STATS_FILTERTAXA (ch_stats, FILTER_STATS.out.tsv)
-            ch_asv = QIIME2_FILTERTAXA.out.asv
-            ch_seq = QIIME2_FILTERTAXA.out.seq
-            ch_tsv = QIIME2_FILTERTAXA.out.tsv
+            ch_asv = QIIME2_TABLEFILTERTAXA.out.qza
+            ch_seq = QIIME2_SEQFILTERTABLE.out.qza
+            ch_tsv = QIIME2_TABLEFILTERTAXA.out.tsv
         } else {
             ch_asv = QIIME2_INASV.out.qza
             ch_seq = QIIME2_INSEQ.out.qza
@@ -948,7 +962,7 @@ workflow AMPLISEQ {
             !params.skip_taxonomy && ( params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier ) && run_qiime2_taxonomy ? QIIME2_TAXONOMY.out.tsv.ifEmpty( [] ) : [],
             run_qiime2,
             run_qiime2 ? val_used_taxonomy : "",
-            run_qiime2 && ( params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1 ) ? ch_dada2_asv.countLines()+","+QIIME2_FILTERTAXA.out.tsv.countLines() : "",
+            run_qiime2 && ( params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1 ) ? ch_dada2_asv.countLines()+","+QIIME2_TABLEFILTERTAXA.out.tsv.countLines() : "",
             run_qiime2 && ( params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1 ) ? FILTER_STATS.out.tsv.ifEmpty( [] ) : [],
             run_qiime2 && !params.skip_barplot ? QIIME2_BARPLOT.out.folder.ifEmpty( [] ) : [],
             run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.abs_tsv.ifEmpty( [] ) : [],

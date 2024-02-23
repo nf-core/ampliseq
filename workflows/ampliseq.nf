@@ -471,8 +471,12 @@ workflow AMPLISEQ {
         // forward results to downstream analysis if multi region
         ch_dada2_asv = SIDLE_WF.out.table_tsv
         ch_dada2_fasta = Channel.empty()
-        // TODO Any ASV post-clustering param is not allowed: vsearch_cluster, filter_ssu, min_len_asv, max_len_asv, filter_codons, cut_its
-        // TODO Must have params: skip_dada_taxonomy, skip_report
+        // TODO Any ASV post-clustering param is not allowed:
+        // - solved by '!params.input_multiregion' for vsearch_cluster, filter_ssu, min_len_asv, max_len_asv, filter_codons
+        // - not solved: cut_its
+        // TODO Must have params:
+        // solved by '!params.input_multiregion' for skip_report
+        // not solved: skip_dada_taxonomy
     } else {
         // forward results to downstream analysis if single region
         ch_dada2_fasta = DADA2_MERGE.out.fasta
@@ -911,7 +915,7 @@ workflow AMPLISEQ {
     //
     // MODULE: Summary Report
     //
-    if (!params.skip_report) {
+    if (!params.skip_report && !params.input_multiregion) {
         SUMMARY_REPORT (
             ch_report_template,
             ch_report_css,

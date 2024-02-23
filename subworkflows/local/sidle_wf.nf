@@ -31,7 +31,7 @@ workflow SIDLE_WF {
     if (!params.sidle_ref_tax_custom) {
         //standard ref taxonomy input from conf/ref_databases.config, one tar.gz / tgz with all files
         FORMAT_TAXONOMY_SIDLE ( ch_sidle_ref_taxonomy, val_sidle_ref_taxonomy )
-        ch_db_sequences = FORMAT_TAXONOMY_SIDLE.out.seqs
+        ch_db_sequences = FORMAT_TAXONOMY_SIDLE.out.seq
         ch_db_alignedsequences = FORMAT_TAXONOMY_SIDLE.out.alnseq
         ch_db_taxonomy = FORMAT_TAXONOMY_SIDLE.out.tax
     } else {

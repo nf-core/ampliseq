@@ -270,13 +270,13 @@ The region information file can be tab-separated (.tsv), comma-separated (.csv),
 
 For example, the tab-separated `regions_multiregion.tsv` may contain:
 
-| region   | FW_primer             | RV_primer            | region_length |
-| -------- | --------------------- | -------------------- | ------------- |
-| region1  | TGGCGAACGGGTGAGTAA    | CCGTGTCTCAGTCCCARTG  | 145           |
-| region2  | ACTCCTACGGGAGGCAGC    | GTATTACCGCGGCTGCTG	  | 135           |
-| region3  | GTGTAGCGGTGRAATGCG    | CCCGTCAATTCMTTTGAGTT | 200           |
-| region4  | GGAGCATGTGGWTTAATTCGA | CGTTGCGGGACTTAACCC   | 115           |
-| region5  | GGAGGAAGGTGGGGATGAC	 | AAGGCCCGGGAACGTATT   | 150           |
+| region  | FW_primer             | RV_primer            | region_length |
+| ------- | --------------------- | -------------------- | ------------- |
+| region1 | TGGCGAACGGGTGAGTAA    | CCGTGTCTCAGTCCCARTG  | 145           |
+| region2 | ACTCCTACGGGAGGCAGC    | GTATTACCGCGGCTGCTG   | 135           |
+| region3 | GTGTAGCGGTGRAATGCG    | CCCGTCAATTCMTTTGAGTT | 200           |
+| region4 | GGAGCATGTGGWTTAATTCGA | CGTTGCGGGACTTAACCC   | 115           |
+| region5 | GGAGGAAGGTGGGGATGAC   | AAGGCCCGGGAACGTATT   | 150           |
 
 ### Metadata
 

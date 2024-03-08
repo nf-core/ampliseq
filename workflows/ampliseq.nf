@@ -992,6 +992,10 @@ workflow AMPLISEQ {
         file("${params.outdir}/input").mkdir()
         file("${params.input_fasta}").copyTo("${params.outdir}/input")
     }
+    if ( params.input_multiregion ) {
+        file("${params.outdir}/input").mkdir()
+        file("${params.input_multiregion}").copyTo("${params.outdir}/input")
+    }
     //Save metadata in results folder
     if ( params.metadata ) {
         file("${params.outdir}/input").mkdir()

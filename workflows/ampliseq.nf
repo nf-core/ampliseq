@@ -56,7 +56,8 @@ if (params.sidle_ref_tax_custom) {
     ch_sidle_ref_taxonomy_tree = params.sidle_ref_tree_custom ? Channel.fromPath("${params.sidle_ref_tree_custom}", checkIfExists: true) : Channel.empty()
 } else if (params.sidle_ref_taxonomy) {
     ch_sidle_ref_taxonomy = Channel.fromList( params.sidle_ref_databases[params.sidle_ref_taxonomy]["file"] ).map { file(it) }
-    ch_sidle_ref_taxonomy_tree = params.sidle_ref_tree_custom ? Channel.fromPath("${params.sidle_ref_tree_custom}", checkIfExists: true) : Channel.fromList( params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] ).map { file(it) }
+    ch_sidle_ref_taxonomy_tree = params.sidle_ref_tree_custom ? Channel.fromPath("${params.sidle_ref_tree_custom}", checkIfExists: true) :
+        params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] ? Channel.fromList( params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] ).map { file(it) } : Channel.empty()
     val_sidle_ref_taxonomy = params.sidle_ref_taxonomy.replace('=','_').replace('.','_')
 } else {
     ch_sidle_ref_taxonomy = Channel.empty()

@@ -21,8 +21,9 @@ process FORMAT_TAXONOMY_SIDLE {
     task.ext.when == null || task.ext.when
 
     script:
+    def derep = params.sidle_ref_databases[params.sidle_ref_taxonomy]["derep"] ?: "99"
     """
-    ${params.sidle_ref_databases[params.sidle_ref_taxonomy]["fmtscript"]}
+    ${params.sidle_ref_databases[params.sidle_ref_taxonomy]["fmtscript"]} ${derep}
 
     #Giving out information
     echo -e "--sidle_ref_taxonomy: ${params.sidle_ref_taxonomy}\n" >ref_taxonomy.${suffix}.txt

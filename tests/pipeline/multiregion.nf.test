@@ -18,7 +18,7 @@ nextflow_pipeline {
                 { assert workflow.success },
                 { assert snapshot(path("$outputDir/input/samplesheet_multiregion.tsv"),
                                 path("$outputDir/input/metadata_multiregion.tsv"),
-                                path("$outputDir/input/samplesheet_multiregion.tsv")).match("input") },
+                                path("$outputDir/input/regions_multiregion.tsv")).match("input") },
                 { assert snapshot(path("$outputDir/overall_summary.tsv")).match("overall_summary_tsv") },
                 { assert snapshot(path("$outputDir/cutadapt/cutadapt_summary.tsv")).match("cutadapt") },
                 { assert snapshot(path("$outputDir/dada2/ASV_seqs.fasta"),

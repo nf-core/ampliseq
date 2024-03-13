@@ -1,5 +1,6 @@
 process SIDLE_SEQRECON {
-    label 'process_single'
+    label 'process_medium'
+    label 'single_cpu'
 
     container 'docker.io/d4straub/pipesidle:0.1.0-beta'
 

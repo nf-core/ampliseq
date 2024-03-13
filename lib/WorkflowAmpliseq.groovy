@@ -131,6 +131,19 @@ class WorkflowAmpliseq {
         if ( params.orf_end && ( ( ( params.orf_end + 1 ) - params.orf_start ) % 3 != 0 ) ) {
             Nextflow.error("Incompatible parameters: The difference of  `--orf_end` and `--orf_start` must be a multiple of 3.")
         }
+
+        // When multi-region analysis is used, some parameter combinations are required or not allowed:
+        if ( params.input_multiregion ) {
+            if ( (params.dada_ref_tax_custom || params.dada_ref_taxonomy) && !params.skip_dada_taxonomy ) {
+                Nextflow.error("Incompatible parameters: Multiple region analysis with `--input_multiregion` does not work with `--dada_ref_tax_custom`, `--dada_ref_taxonomy`")
+            }
+            if ( params.cut_its ) {
+                Nextflow.error("Incompatible parameters: Multiple region analysis with `--input_multiregion` does not work with `--cut_its`")
+            }
+            if ( params.vsearch_cluster || params.filter_ssu || params.min_len_asv || params.max_len_asv || params.filter_codons ) {
+                log.warn "Incompatible parameters: Multiple region analysis with `--input_multiregion` ignores any of `--vsearch_cluster`, `--filter_ssu`, `--min_len_asv`, `--max_len_asv`, `--filter_codons`, `--cut_its`"
+            }
+        }
     }
 
     //

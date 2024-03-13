@@ -137,7 +137,7 @@ class WorkflowAmpliseq {
             if ( (params.dada_ref_tax_custom || params.dada_ref_taxonomy) && !params.skip_dada_taxonomy ) {
                 Nextflow.error("Incompatible parameters: Multiple region analysis with `--input_multiregion` does not work with `--dada_ref_tax_custom`, `--dada_ref_taxonomy`")
             }
-            if ( params.cut_its ) {
+            if ( params.cut_its != "none" ) {
                 Nextflow.error("Incompatible parameters: Multiple region analysis with `--input_multiregion` does not work with `--cut_its`")
             }
             if ( params.vsearch_cluster || params.filter_ssu || params.min_len_asv || params.max_len_asv || params.filter_codons ) {

@@ -28,11 +28,11 @@ process SIDLE_TRIM {
     export NUMBA_CACHE_DIR="./numbacache"
 
     #CPU=1
-    qiime sidle trim-dada2-posthoc \
-        --i-table ${table} \
-        --i-representative-sequences ${seq} \
-        --p-trim-length $length \
-        --o-trimmed-table ${prefix}_${length}_table.qza \
+    qiime sidle trim-dada2-posthoc \\
+        --i-table ${table} \\
+        --i-representative-sequences ${seq} \\
+        --p-trim-length $length \\
+        --o-trimmed-table ${prefix}_${length}_table.qza \\
         --o-trimmed-representative-sequences ${prefix}_${length}_rep-seqs.qza
 
     cat <<-END_VERSIONS > versions.yml

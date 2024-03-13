@@ -32,8 +32,8 @@ process QIIME2_TABLEFILTERTAXA {
     if ! [ \"${exclude_taxa}\" = \"none\" ]; then
         qiime taxa filter-table \\
             --i-table ${table} \\
-            --i-taxonomy ${taxonomy} \
-            --p-exclude ${exclude_taxa} \\
+            --i-taxonomy ${taxonomy} \\
+            --p-exclude "${exclude_taxa}" \\
             --p-mode contains \\
             --o-filtered-table tax_filtered-table.qza
         filtered_table="tax_filtered-table.qza"

@@ -12,8 +12,6 @@ process DADA2_SPLITREGIONS {
 
     output:
     tuple val(meta), path( "DADA2_table_*.tsv" )                          , emit: dada2asv
-    //tuple val(meta), path( "ASV_table_*.tsv" )                            , emit: asv
-    //tuple val(meta), path( "ASV_seqs_*.fasta" )                           , emit: fasta
     tuple val(meta), path( "ASV_table_*.tsv" ), path( "ASV_seqs_*.fasta" ), emit: for_sidle
     path "versions.yml"                                                   , emit: versions
 
@@ -21,8 +19,7 @@ process DADA2_SPLITREGIONS {
     task.ext.when == null || task.ext.when
 
     script:
-    // Make groovy map to R list
-    // Requirement: Values may not be false,true,null
+    // Make groovy map to R list; requirement: Values may not be false,true,null
     def mapping_r_list = mapping
         .toString()
         .replaceAll("':","=")
@@ -60,7 +57,6 @@ process DADA2_SPLITREGIONS {
     # Write ASV file with ASV abundances to file
     df\$sequence <- NULL
     write.table(df, file = "ASV_table_${suffix}.tsv", sep="\\t", row.names = FALSE, quote = FALSE, na = '')
-
 
     writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = "."))), "versions.yml")
     """

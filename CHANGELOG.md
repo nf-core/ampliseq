@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Changed`
 
 - [#677](https://github.com/nf-core/ampliseq/pull/677) - Added cut_its information to SDBI export
+- [#711](https://github.com/nf-core/ampliseq/pull/711) - Changed code in taxref_reformat_gtdb.sh so it can take both bacteria and Archaea. Check issue [#708](https://github.com/nf-core/ampliseq/issues/708) for more info.
 
 ### `Fixed`
 

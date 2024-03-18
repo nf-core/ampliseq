@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#677](https://github.com/nf-core/ampliseq/pull/677) - Added cut_its information to SDBI export
 
+- [#710](https://github.com/nf-core/ampliseq/pull/710) - Removed Phyloref from DADA2 reference option
+
 ### `Fixed`
 
 - [#672](https://github.com/nf-core/ampliseq/pull/672),[#688](https://github.com/nf-core/ampliseq/pull/688),[#691](https://github.com/nf-core/ampliseq/pull/691) - Updated documentation

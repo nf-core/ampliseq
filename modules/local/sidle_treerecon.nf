@@ -17,6 +17,10 @@ process SIDLE_TREERECON {
     task.ext.when == null || task.ext.when
 
     script:
+    // Exit if running this module with -profile conda / -profile mamba
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
+        error "Sidle in QIIME2 does not support Conda. Please use Docker / Singularity / Podman instead."
+    }
     """
     # https://q2-sidle.readthedocs.io/en/latest/reconstruction.html#reconstructing-the-phylogenetic-tree
     # required: SEPP file https://forum.qiime2.org/t/sidle-tutorial-missing-aligned-sequence-file/20604/8

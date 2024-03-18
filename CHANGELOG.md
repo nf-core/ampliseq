@@ -46,6 +46,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Removed`
 
+- [#710](https://github.com/nf-core/ampliseq/pull/710) - Removed Phyloref from DADA2 reference option because it's part of PR2 5.0.0
+
 ## nf-core/ampliseq version 2.7.1 - 2023-11-14
 
 ### `Added`

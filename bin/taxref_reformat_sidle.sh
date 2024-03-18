@@ -21,8 +21,3 @@ elif [ -d "SILVA_128_QIIME_release" ]; then
 else
     echo "No expected directory detected"
 fi
-
-
-
-
-

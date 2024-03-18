@@ -23,6 +23,7 @@ process DADA2_ERR {
     task.ext.when == null || task.ext.when
 
     script:
+    def prefix = task.ext.prefix ?: "prefix"
     def args = task.ext.args ?: ''
     def seed = task.ext.seed ?: '100'
     if (!meta.single_end) {
@@ -34,32 +35,32 @@ process DADA2_ERR {
         fnFs <- sort(list.files(".", pattern = "_1.filt.fastq.gz", full.names = TRUE))
         fnRs <- sort(list.files(".", pattern = "_2.filt.fastq.gz", full.names = TRUE))
 
-        sink(file = "${meta.run}.err.log")
+        sink(file = "${prefix}.err.log")
         errF <- learnErrors(fnFs, $args, multithread = $task.cpus, verbose = TRUE)
-        saveRDS(errF, "${meta.run}_1.err.rds")
+        saveRDS(errF, "${prefix}_1.err.rds")
         errR <- learnErrors(fnRs, $args, multithread = $task.cpus, verbose = TRUE)
-        saveRDS(errR, "${meta.run}_2.err.rds")
+        saveRDS(errR, "${prefix}_2.err.rds")
         sink(file = NULL)
 
-        pdf("${meta.run}_1.err.pdf")
+        pdf("${prefix}_1.err.pdf")
         plotErrors(errF, nominalQ = TRUE)
         dev.off()
-        svg("${meta.run}_1.err.svg")
+        svg("${prefix}_1.err.svg")
         plotErrors(errF, nominalQ = TRUE)
         dev.off()
 
-        pdf("${meta.run}_2.err.pdf")
+        pdf("${prefix}_2.err.pdf")
         plotErrors(errR, nominalQ = TRUE)
         dev.off()
-        svg("${meta.run}_2.err.svg")
+        svg("${prefix}_2.err.svg")
         plotErrors(errR, nominalQ = TRUE)
         dev.off()
 
-        sink(file = "${meta.run}_1.err.convergence.txt")
+        sink(file = "${prefix}_1.err.convergence.txt")
         dada2:::checkConvergence(errF)
         sink(file = NULL)
 
-        sink(file = "${meta.run}_2.err.convergence.txt")
+        sink(file = "${prefix}_2.err.convergence.txt")
         dada2:::checkConvergence(errR)
         sink(file = NULL)
 
@@ -74,19 +75,19 @@ process DADA2_ERR {
 
         fnFs <- sort(list.files(".", pattern = ".filt.fastq.gz", full.names = TRUE))
 
-        sink(file = "${meta.run}.err.log")
+        sink(file = "${prefix}.err.log")
         errF <- learnErrors(fnFs, $args, multithread = $task.cpus, verbose = TRUE)
-        saveRDS(errF, "${meta.run}.err.rds")
+        saveRDS(errF, "${prefix}.err.rds")
         sink(file = NULL)
 
-        pdf("${meta.run}.err.pdf")
+        pdf("${prefix}.err.pdf")
         plotErrors(errF, nominalQ = TRUE)
         dev.off()
-        svg("${meta.run}.err.svg")
+        svg("${prefix}.err.svg")
         plotErrors(errF, nominalQ = TRUE)
         dev.off()
 
-        sink(file = "${meta.run}.err.convergence.txt")
+        sink(file = "${prefix}.err.convergence.txt")
         dada2:::checkConvergence(errF)
         sink(file = NULL)
 

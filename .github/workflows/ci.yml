@@ -57,6 +57,7 @@ jobs:
           - "test_pacbio_its"
           - "test_sintax"
           - "test_pplace"
+          - "test_multiregion"
         profile:
           - "docker"
 

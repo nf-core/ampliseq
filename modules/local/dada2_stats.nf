@@ -18,6 +18,7 @@ process DADA2_STATS {
     task.ext.when == null || task.ext.when
 
     script:
+    def prefix = task.ext.prefix ?: "prefix"
     if (!meta.single_end) {
         """
         #!/usr/bin/env Rscript
@@ -34,7 +35,7 @@ process DADA2_STATS {
         }
         rownames(filter_and_trim) <- filter_and_trim\$ID
         filter_and_trim["ID"] <- NULL
-        #write.table( filter_and_trim, file = "${meta.run}.filter_and_trim.tsv", sep = "\\t", row.names = TRUE, quote = FALSE, na = '')
+        #write.table( filter_and_trim, file = "${prefix}.filter_and_trim.tsv", sep = "\\t", row.names = TRUE, quote = FALSE, na = '')
 
         #read data
         dadaFs = readRDS("${denoised[0]}")
@@ -52,7 +53,7 @@ process DADA2_STATS {
         colnames(track) <- c("DADA2_input", "filtered", "denoisedF", "denoisedR", "merged", "nonchim")
         rownames(track) <- sub(pattern = "_1.fastq.gz\$", replacement = "", rownames(track)) #this is when cutadapt is skipped!
         track <- cbind(sample = sub(pattern = "(.*?)\\\\..*\$", replacement = "\\\\1", rownames(track)), track)
-        write.table( track, file = "${meta.run}.stats.tsv", sep = "\\t", row.names = FALSE, quote = FALSE, na = '')
+        write.table( track, file = "${prefix}.stats.tsv", sep = "\\t", row.names = FALSE, quote = FALSE, na = '')
 
         writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
         """
@@ -72,7 +73,7 @@ process DADA2_STATS {
         }
         rownames(filter_and_trim) <- filter_and_trim\$ID
         filter_and_trim["ID"] <- NULL
-        #write.table( filter_and_trim, file = "${meta.run}.filter_and_trim.tsv", sep = "\\t", row.names = TRUE, quote = FALSE, na = '')
+        #write.table( filter_and_trim, file = "${prefix}.filter_and_trim.tsv", sep = "\\t", row.names = TRUE, quote = FALSE, na = '')
 
         #read data
         dadaFs = readRDS("${denoised[0]}")
@@ -87,7 +88,7 @@ process DADA2_STATS {
         }
         colnames(track) <- c("DADA2_input", "filtered", "denoised", "nonchim")
         track <- cbind(sample = sub(pattern = "(.*?)\\\\..*\$", replacement = "\\\\1", rownames(track)), track)
-        write.table( track, file = "${meta.run}.stats.tsv", sep = "\\t", row.names = FALSE, quote = FALSE, na = '')
+        write.table( track, file = "${prefix}.stats.tsv", sep = "\\t", row.names = FALSE, quote = FALSE, na = '')
 
         writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
         """

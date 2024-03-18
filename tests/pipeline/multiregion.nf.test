@@ -1,0 +1,48 @@
+nextflow_pipeline {
+
+    name "Test Workflow main.nf"
+    script "main.nf"
+    tag "test_multiregion"
+    tag "pipeline"
+
+    test("Multiregion") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(path("$outputDir/input/samplesheet_multiregion.tsv"),
+                                path("$outputDir/input/metadata_multiregion.tsv"),
+                                path("$outputDir/input/regions_multiregion.tsv")).match("input") },
+                { assert snapshot(path("$outputDir/overall_summary.tsv")).match("overall_summary_tsv") },
+                { assert snapshot(path("$outputDir/cutadapt/cutadapt_summary.tsv")).match("cutadapt") },
+                { assert snapshot(path("$outputDir/dada2/ASV_seqs.fasta"),
+                                path("$outputDir/dada2/ASV_table.tsv"),
+                                path("$outputDir/dada2/DADA2_stats.tsv"),
+                                path("$outputDir/dada2/DADA2_table.rds"),
+                                path("$outputDir/dada2/DADA2_table.tsv")).match("dada2") },
+                { assert new File("$outputDir/sidle/per_region/ASV_seqs_region1_TGGCGAACGGGTGAGTAA_CCGTGTCTCAGTCCCARTG.fasta").exists() },
+                { assert new File("$outputDir/sidle/per_region/ASV_table_region1_TGGCGAACGGGTGAGTAA_CCGTGTCTCAGTCCCARTG.tsv").exists() },
+                { assert new File("$outputDir/sidle/reconstructed/reconstructed_feature-table.tsv").exists() },
+                { assert new File("$outputDir/sidle/reconstructed/reconstructed_merged.tsv").exists() },
+                { assert new File("$outputDir/sidle/reconstructed/reconstructed_taxonomy.tsv").exists() },
+                { assert new File("$outputDir/qiime2/input/table.qza").exists() },
+                { assert new File("$outputDir/qiime2/rel_abundance_tables/rel-table-2.tsv").exists() },
+                { assert new File("$outputDir/qiime2/rel_abundance_tables/rel-table-3.tsv").exists() },
+                { assert new File("$outputDir/qiime2/rel_abundance_tables/rel-table-ASV.tsv").exists() },
+                { assert new File("$outputDir/qiime2/abundance_tables/count_table_filter_stats.tsv").exists() },
+                { assert new File("$outputDir/qiime2/abundance_tables/filtered-table.qza").exists() },
+                { assert new File("$outputDir/qiime2/barplot/index.html").exists() },
+                { assert new File("$outputDir/qiime2/ancom/Category-treatment-ASV/index.html").exists() },
+                { assert snapshot(path("$outputDir/multiqc/multiqc_data/multiqc_fastqc.txt"),
+                                path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt"),
+                                path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt")).match("multiqc") }
+            )
+        }
+    }
+}

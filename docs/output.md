@@ -36,7 +36,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [Kraken2](#kraken2) - Taxonomic classification with Kraken2
   - [QIIME2](#qiime2) - Taxonomic classification with QIIME2
 - [Phlogenetic placement and taxonomic classification](#phylogenetic-placement-and-taxonomic-classification) - Placing ASVs into a phyloenetic tree
-- [QIIME2](#qiime2) - Secondary analysis
+- [Multiple region analysis with Sidle](#multiple-region-analysis-with-sidle) - Scaffolding multiple regions along a reference
+- [Secondary analysis with QIIME2](#secondary-analysis-with-qiime2) - Visualisations, diversity and differential abundance analysis with QIIME2
   - [Abundance tables](#abundance-tables) - Exported abundance tables
   - [Relative abundance tables](#relative-abundance-tables) - Exported relative abundance tables
   - [Barplot](#barplot) - Interactive barplot
@@ -374,7 +375,35 @@ Phylogenetic placement grafts sequences onto a phylogenetic reference tree and o
 
 </details>
 
-### QIIME2
+### Multiple region analysis with Sidle
+
+Instead of relying on one short amplicon, scaffolding multiple regions along a reference can improve resolution over a single region. This method applies [Sidle (SMURF Implementation Done to acceLerate Efficiency)](https://doi.org/10.1101/2021.03.23.436606) within [QIIME2](https://pubmed.ncbi.nlm.nih.gov/31341288/).
+
+Sidle reconstructs taxonomy profiles and abundances of several regions using a taxonomc database, therefore the previous sections about taxonomic classification are not applied.
+
+Additional output includes reconstruction of abundance table and taxonomic information from multiple regions and a phylogenetic tree that can be further analysed. Apart from region-specific sequences, no useful de-novo sequences are generated.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `sidle/per-region/`
+  - `ASV_seqs_region*_<FW_primer>_<RV_primer>.fasta`: ASV sequences per region
+  - `ASV_table_region*_<FW_primer>_<RV_primer>.fasta`: ASV abundances per region
+  - `DADA2_table_region*_<FW_primer>_<RV_primer>.fasta`: ASV abundances and sequences per region
+- `sidle/DB/3_reconstructed/reconstruction_summary/index.html`: Information about the reconstructed reference taxonomy database
+- `sidle/reconstructed/`
+  - `reconstructed_feature-table.biom`: Unified abundance table in biom format
+  - `reconstructed_feature-table.tsv`: Tab-separated unified abundance table
+  - `reconstructed_taxonomy.tsv`: Tab-separated unified taxonomy table
+  - `reconstructed_merged.tsv`: Tab-separated unified table with merged abundance and taxonomy information
+  - `reconstructed_tree.nwk`: Phylogenetic tree
+  - `reconstruction_table/index.html`: Information about the unified abundance table
+
+More intermediate output is populated into the results folder when using `--save_intermediates`.
+
+</details>
+
+### Secondary analysis with QIIME2
 
 **Quantitative Insights Into Microbial Ecology 2** ([QIIME2](https://qiime2.org/)) is a next-generation microbiome bioinformatics platform and the successor of the widely used [QIIME1](https://www.nature.com/articles/nmeth.f.303).
 

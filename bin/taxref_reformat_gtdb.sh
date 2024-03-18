@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Reads the ar122 and bac120 SSU fasta files from GTDB (after first untarring)
+# Reads the ar* and bac* SSU fasta files from GTDB (after first untarring)
 # and outputs two new fasta files, one suitable for DADA2's assignTaxonomy()
 # and addSpecies() functions.
 

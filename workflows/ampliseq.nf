@@ -6,14 +6,14 @@
 
 include { paramsSummaryLog; paramsSummaryMap; fromSamplesheet } from 'plugin/nf-validation'
 
-def logo = NfcoreTemplate.logo(workflow, params.monochrome_logs)
-def citation = '\n' + WorkflowMain.citation(workflow) + '\n'
+def logo = "" //NfcoreTemplate.logo(workflow, params.monochrome_logs)
+def citation = "" //'\n' + WorkflowMain.citation(workflow) + '\n'
 def summary_params = paramsSummaryMap(workflow)
 
 // Print parameter summary log to screen
 log.info logo + paramsSummaryLog(workflow) + citation
 
-WorkflowAmpliseq.initialise(params, log)
+// WorkflowAmpliseq.initialise(params, log)
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -893,10 +893,10 @@ workflow AMPLISEQ {
     // MODULE: MultiQC
     //
     if (!params.skip_multiqc) {
-        workflow_summary    = WorkflowAmpliseq.paramsSummaryMultiqc(workflow, summary_params)
+        workflow_summary    = ""//WorkflowAmpliseq.paramsSummaryMultiqc(workflow, summary_params)
         ch_workflow_summary = Channel.value(workflow_summary)
 
-        methods_description    = WorkflowAmpliseq.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description, params)
+        methods_description    = ""//WorkflowAmpliseq.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description, params)
         ch_methods_description = Channel.value(methods_description)
 
         ch_multiqc_files = Channel.empty()
@@ -1018,12 +1018,12 @@ workflow AMPLISEQ {
 
 workflow.onComplete {
     if (params.email || params.email_on_fail) {
-        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
+        ""//NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
     }
-    NfcoreTemplate.dump_parameters(workflow, params)
-    NfcoreTemplate.summary(workflow, params, log)
+    //NfcoreTemplate.dump_parameters(workflow, params)
+    //NfcoreTemplate.summary(workflow, params, log)
     if (params.hook_url) {
-        NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
+        ""//NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
     }
 }
 

@@ -253,6 +253,12 @@ include { QIIME2_DIVERSITY              } from '../subworkflows/local/qiime2_div
 include { QIIME2_ANCOM                  } from '../subworkflows/local/qiime2_ancom'
 include { PHYLOSEQ_WORKFLOW             } from '../subworkflows/local/phyloseq_workflow'
 
+//
+// CUSTOM FUNCTIONS
+//
+include { validateInputSamplesheet       } from '../subworkflows/local/utils_nfcore_ampliseq_pipeline'
+include { makeComplement                 } from '../subworkflows/local/utils_nfcore_ampliseq_pipeline'
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -320,8 +326,8 @@ workflow AMPLISEQ {
             .map{ info, reads ->
                 def meta = info +
                     [id: info.sample+"_"+info.fw_primer+"_"+info.rv_primer] +
-                    [fw_primer_revcomp: WorkflowAmpliseq.makeComplement(info.fw_primer.reverse())] +
-                    [rv_primer_revcomp: WorkflowAmpliseq.makeComplement(info.rv_primer.reverse())]
+                    [fw_primer_revcomp: makeComplement(info.fw_primer.reverse())] +
+                    [rv_primer_revcomp: makeComplement(info.rv_primer.reverse())]
                 return [ meta, reads ] }
             .set { ch_input_reads }
     } else {
@@ -332,8 +338,8 @@ workflow AMPLISEQ {
                     [region: null, region_length: null] +
                     [fw_primer: params.FW_primer, rv_primer: params.RV_primer] +
                     [id: info.sample] +
-                    [fw_primer_revcomp: params.FW_primer ? WorkflowAmpliseq.makeComplement(params.FW_primer.reverse()) : null] +
-                    [rv_primer_revcomp: params.RV_primer ? WorkflowAmpliseq.makeComplement(params.RV_primer.reverse()) : null]
+                    [fw_primer_revcomp: params.FW_primer ? makeComplement(params.FW_primer.reverse()) : null] +
+                    [rv_primer_revcomp: params.RV_primer ? makeComplement(params.RV_primer.reverse()) : null]
                 return [ meta, reads ] }
             .set { ch_input_reads }
     }

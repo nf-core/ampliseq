@@ -15,7 +15,7 @@ class WorkflowAmpliseq {
             Nextflow.error("Missing input declaration: One of `--input`, `--input_fasta`, `--input_folder` is required.")
         }
 
-        if ( !params.input_multiregion && !params.input_fasta && (!params.FW_primer || !params.RV_primer) && !params.skip_cutadapt ) {
+        if ( !params.multiregion && !params.input_fasta && (!params.FW_primer || !params.RV_primer) && !params.skip_cutadapt ) {
             Nextflow.error("Incompatible parameters: `--FW_primer` and `--RV_primer` are required for primer trimming. If primer trimming is not needed, use `--skip_cutadapt`.")
         }
 
@@ -133,15 +133,18 @@ class WorkflowAmpliseq {
         }
 
         // When multi-region analysis is used, some parameter combinations are required or not allowed:
-        if ( params.input_multiregion ) {
+        if ( params.multiregion ) {
+            if ( !params.sidle_ref_taxonomy && !params.sidle_ref_tree_custom ) {
+                log.warn "Missing parameter: Either use `--sidle_ref_taxonomy` or `--sidle_ref_tree_custom` to get (unified) taxonomic classifications"
+            }
             if ( (params.dada_ref_tax_custom || params.dada_ref_taxonomy) && !params.skip_dada_taxonomy ) {
-                Nextflow.error("Incompatible parameters: Multiple region analysis with `--input_multiregion` does not work with `--dada_ref_tax_custom`, `--dada_ref_taxonomy`")
+                Nextflow.error("Incompatible parameters: Multiple region analysis with `--multiregion` does not work with `--dada_ref_tax_custom`, `--dada_ref_taxonomy`")
             }
             if ( params.cut_its != "none" ) {
-                Nextflow.error("Incompatible parameters: Multiple region analysis with `--input_multiregion` does not work with `--cut_its`")
+                Nextflow.error("Incompatible parameters: Multiple region analysis with `--multiregion` does not work with `--cut_its`")
             }
             if ( params.vsearch_cluster || params.filter_ssu || params.min_len_asv || params.max_len_asv || params.filter_codons ) {
-                log.warn "Incompatible parameters: Multiple region analysis with `--input_multiregion` ignores any of `--vsearch_cluster`, `--filter_ssu`, `--min_len_asv`, `--max_len_asv`, `--filter_codons`, `--cut_its`"
+                log.warn "Incompatible parameters: Multiple region analysis with `--multiregion` ignores any of `--vsearch_cluster`, `--filter_ssu`, `--min_len_asv`, `--max_len_asv`, `--filter_codons`, `--cut_its`"
             }
         }
     }

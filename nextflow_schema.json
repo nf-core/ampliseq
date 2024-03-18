@@ -51,13 +51,13 @@
                     "help_text": "This is optional, but for performing downstream analysis such as barplots, diversity indices or differential abundance testing, a metadata file is essential.\n\nRelated parameter:\n- `--metadata_category` (optional) to choose columns that are used for testing significance\n\nFor example:\n\n```bash\n--metadata \"path/to/metadata.tsv\"\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The metadata file has to follow the QIIME2 specifications (https://docs.qiime2.org/2021.2/tutorials/metadata/)\n\nThe first column in the tab-separated metadata file is the sample identifier column (required header: `ID`) and defines the sample or feature IDs associated with your study. In addition to the sample identifier column, the metadata file is required to have at least one column with multiple different non-numeric values but not all unique.\n**NB**: without additional columns there might be no groupings for the downstream analyses.\n\nSample identifiers should be 36 characters long or less, and also contain only ASCII alphanumeric characters (i.e. in the range of [a-z], [A-Z], or [0-9]), or the dash (-) character. For downstream analysis, by default all numeric columns, blanks or NA are removed, and only columns with multiple different values but not all unique are selected.\n\nThe columns which are to be assessed can be specified by `--metadata_category`. If `--metadata_category` isn't specified than all columns that fit the specification are automatically chosen.",
                     "fa_icon": "fas fa-file-csv"
                 },
-                "input_multiregion": {
+                "multiregion": {
                     "type": "string",
                     "mimetype": "text/tsv",
                     "fa_icon": "fas fa-dna",
                     "description": "Path to tab-separated multi region sheet",
-                    "help_text": "Path to multi region sheet, either tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml).",
-                    "schema": "assets/schema_input_multiregion.json"
+                    "help_text": "Path to multi region sheet, either tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml).\n\nChoose a reerence taxonomy with `--sidle_ref_taxonomy` or use `--sidle_ref_tax_custom` and `--sidle_ref_tree_custom`.",
+                    "schema": "assets/schema_multiregion.json"
                 },
                 "outdir": {
                     "type": "string",
@@ -340,7 +340,7 @@
         "taxonomic_database": {
             "title": "Taxonomic database",
             "type": "object",
-            "default": "",
+            "default": "Choose a method and database for taxonomic assignments to single-region amplicons",
             "properties": {
                 "dada_ref_taxonomy": {
                     "type": "string",
@@ -504,22 +504,6 @@
                     "minimum": 0,
                     "maximum": 1
                 },
-                "sidle_ref_taxonomy": {
-                    "type": "string",
-                    "help_text": "",
-                    "description": "Name of supported database, and optionally also version number",
-                    "enum": ["silva", "silva=128", "greengenes", "greengenes=13_8", "greengenes88"]
-                },
-                "sidle_ref_tax_custom": {
-                    "type": "string",
-                    "help_text": "Consider also setting `--sidle_ref_tree_custom`. Example usage: `--sidle_ref_tax_custom 'rep_set_99.fasta,rep_set_aligned_99.fasta,taxonomy_99_taxonomy.txt'`",
-                    "description": "Comma separated paths to three files: reference taxonomy sequences (*.fasta), reference taxonomy strings (*.txt)"
-                },
-                "sidle_ref_tree_custom": {
-                    "type": "string",
-                    "help_text": "Overwrites tree chosen by `--sidle_ref_taxonomy`",
-                    "description": "Path to SIDLE reference taxonomy tree (*.qza)"
-                },
                 "sintax_ref_taxonomy": {
                     "type": "string",
                     "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `coidb=221216`) . This will download the desired database and initiate taxonomic classification with VSEARCH sintax and the chosen database, which if needed is formatted to produce a file that is compatible with VSEARCH sintax.\n\nThe following databases are supported:\n- COIDB - eukaryotic Cytochrome Oxidase I (COI) from The Barcode of Life Data System (BOLD) - COI\n- UNITE - eukaryotic nuclear ribosomal ITS region - ITS\n\nGenerally, using `coidb`, `unite-fungi`, or `unite-alleuk` will select the most recent supported version.",
@@ -556,6 +540,29 @@
                 }
             },
             "fa_icon": "fas fa-database"
+        },
+        "multiregion_taxonomic_database": {
+            "title": "Multi-region taxonomic database",
+            "type": "object",
+            "default": "Choose database for taxonomic assignments with multi-region amplicons using SIDLE",
+            "properties": {
+                "sidle_ref_taxonomy": {
+                    "type": "string",
+                    "help_text": "",
+                    "description": "Name of supported database, and optionally also version number",
+                    "enum": ["silva", "silva=128", "greengenes", "greengenes=13_8", "greengenes88"]
+                },
+                "sidle_ref_tax_custom": {
+                    "type": "string",
+                    "help_text": "Consider also setting `--sidle_ref_tree_custom`. Example usage: `--sidle_ref_tax_custom 'rep_set_99.fasta,rep_set_aligned_99.fasta,taxonomy_99_taxonomy.txt'`",
+                    "description": "Comma separated paths to three files: reference taxonomy sequences (*.fasta), reference taxonomy strings (*.txt)"
+                },
+                "sidle_ref_tree_custom": {
+                    "type": "string",
+                    "help_text": "Overwrites tree chosen by `--sidle_ref_taxonomy`",
+                    "description": "Path to SIDLE reference taxonomy tree (*.qza)"
+                }
+            }
         },
         "asv_filtering": {
             "title": "ASV filtering",

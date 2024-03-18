@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/nf-core/ampliseq/master/assets/schema_input_multiregion.json",
-    "title": "nf-core/ampliseq pipeline - params.input_multiregion schema",
-    "description": "Schema for the file provided with params.input_multiregion",
+    "$id": "https://raw.githubusercontent.com/nf-core/ampliseq/master/assets/schema_multiregion.json",
+    "title": "nf-core/ampliseq pipeline - params.multiregion schema",
+    "description": "Schema for the file provided with params.multiregion",
     "type": "array",
     "items": {
         "type": "object",

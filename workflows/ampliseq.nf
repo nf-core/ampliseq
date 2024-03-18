@@ -177,7 +177,7 @@ if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1)
 }
 
 //only run QIIME2 downstream analysis when taxonomy is actually calculated and all required data is available
-if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) && !params.skip_taxonomy && !params.skip_qiime && !params.skip_qiime_downstream && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom || params.input_multiregion) ) {
+if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) && !params.skip_taxonomy && !params.skip_qiime && !params.skip_qiime_downstream && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom || params.multiregion) ) {
     run_qiime2 = true
 } else {
     run_qiime2 = false
@@ -310,10 +310,10 @@ workflow AMPLISEQ {
     //
     // Add primer info to sequencing files
     //
-    if ( params.input_multiregion ) {
+    if ( params.multiregion ) {
         // is multiple region analysis
         ch_input_reads
-            .combine( Channel.fromSamplesheet("input_multiregion") )
+            .combine( Channel.fromSamplesheet("multiregion") )
             .map{ info, reads, multi ->
                 def meta = info + multi
                 return [ meta, reads ] }
@@ -446,7 +446,7 @@ workflow AMPLISEQ {
     //
     // SUBWORKFLOW / MODULES : Taxonomic classification with DADA2, SINTAX and/or QIIME2
     //
-    if ( params.input_multiregion ) {
+    if ( params.multiregion ) {
         // separate sequences and abundances when several regions
         DADA2_SPLITREGIONS (
             //DADA2_DENOISING per run & region -> per run
@@ -473,10 +473,10 @@ workflow AMPLISEQ {
         ch_dada2_asv = SIDLE_WF.out.table_tsv
         ch_dada2_fasta = Channel.empty()
         // Any ASV post-clustering param is not allowed:
-        // - solved by '!params.input_multiregion' for vsearch_cluster, filter_ssu, min_len_asv, max_len_asv, filter_codons
+        // - solved by '!params.multiregion' for vsearch_cluster, filter_ssu, min_len_asv, max_len_asv, filter_codons
         // - solved in 'lib/WorkflowAmpliseq.groovy': cut_its
         // Must have params:
-        // - solved by '!params.input_multiregion' for skip_report
+        // - solved by '!params.multiregion' for skip_report
         // - solved in 'lib/WorkflowAmpliseq.groovy': skip_dada_taxonomy
     } else {
         // forward results to downstream analysis if single region
@@ -487,7 +487,7 @@ workflow AMPLISEQ {
     //
     // MODULE : ASV post-clustering with VSEARCH
     //
-    if (params.vsearch_cluster && !params.input_multiregion) {
+    if (params.vsearch_cluster && !params.multiregion) {
         ch_fasta_for_clustering = ch_dada2_fasta
             .map {
                 fasta ->
@@ -515,7 +515,7 @@ workflow AMPLISEQ {
     //
     // Modules : Filter rRNA
     //
-    if ( !params.skip_barrnap && params.filter_ssu && !params.input_multiregion ) {
+    if ( !params.skip_barrnap && params.filter_ssu && !params.multiregion ) {
         BARRNAP ( ch_unfiltered_fasta )
         BARRNAPSUMMARY ( BARRNAP.out.gff.collect() )
         BARRNAPSUMMARY.out.warning.subscribe {
@@ -530,7 +530,7 @@ workflow AMPLISEQ {
         ch_stats = MERGE_STATS_FILTERSSU.out.tsv
         ch_dada2_fasta = FILTER_SSU.out.fasta
         ch_dada2_asv = FILTER_SSU.out.asv
-    } else if ( !params.skip_barrnap && !params.filter_ssu && !params.input_multiregion ) {
+    } else if ( !params.skip_barrnap && !params.filter_ssu && !params.multiregion ) {
         BARRNAP ( ch_unfiltered_fasta )
         BARRNAPSUMMARY ( BARRNAP.out.gff.collect() )
         BARRNAPSUMMARY.out.warning.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn "Barrnap could not identify any rRNA in the ASV sequences. We recommended to use the --skip_barrnap option for these sequences." }
@@ -545,7 +545,7 @@ workflow AMPLISEQ {
     //
     // Modules : amplicon length filtering
     //
-    if ( (params.min_len_asv || params.max_len_asv) && !params.input_multiregion ) {
+    if ( (params.min_len_asv || params.max_len_asv) && !params.multiregion ) {
         FILTER_LEN_ASV ( ch_dada2_fasta, ch_dada2_asv.ifEmpty( [] ) )
         ch_versions = ch_versions.mix(FILTER_LEN_ASV.out.versions.ifEmpty(null))
         MERGE_STATS_FILTERLENASV ( ch_stats, FILTER_LEN_ASV.out.stats )
@@ -559,7 +559,7 @@ workflow AMPLISEQ {
     //
     // Modules : Filtering based on codons in an open reading frame
     //
-    if ( params.filter_codons && !params.input_multiregion ) {
+    if ( params.filter_codons && !params.multiregion ) {
         FILTER_CODONS ( ch_dada2_fasta, ch_dada2_asv.ifEmpty( [] ) )
         ch_versions = ch_versions.mix(FILTER_CODONS.out.versions.ifEmpty(null))
         MERGE_STATS_CODONS( ch_stats, FILTER_CODONS.out.stats )
@@ -701,7 +701,7 @@ workflow AMPLISEQ {
         // Import phylogenetic tree into QIIME2
         if ( params.pplace_tree ) {
             ch_tree = QIIME2_INTREE ( FASTA_NEWICK_EPANG_GAPPA.out.grafted_phylogeny ).qza
-        } else if (params.input_multiregion) {
+        } else if (params.multiregion) {
             ch_tree = SIDLE_WF.out.tree_qza
         } else { ch_tree = [] }
 
@@ -712,7 +712,7 @@ workflow AMPLISEQ {
             ch_tax = Channel.empty()
             tax_agglom_min = 1
             tax_agglom_max = 2
-        } else if ( params.input_multiregion ) {
+        } else if ( params.multiregion ) {
             log.info "Use multi-region SIDLE taxonomy classification"
             val_used_taxonomy = "SIDLE"
             ch_tax = SIDLE_WF.out.tax_qza
@@ -916,7 +916,7 @@ workflow AMPLISEQ {
     //
     // MODULE: Summary Report
     //
-    if (!params.skip_report && !params.input_multiregion) {
+    if (!params.skip_report && !params.multiregion) {
         SUMMARY_REPORT (
             ch_report_template,
             ch_report_css,
@@ -993,9 +993,9 @@ workflow AMPLISEQ {
         file("${params.outdir}/input").mkdir()
         file("${params.input_fasta}").copyTo("${params.outdir}/input")
     }
-    if ( params.input_multiregion ) {
+    if ( params.multiregion ) {
         file("${params.outdir}/input").mkdir()
-        file("${params.input_multiregion}").copyTo("${params.outdir}/input")
+        file("${params.multiregion}").copyTo("${params.outdir}/input")
     }
     //Save metadata in results folder
     if ( params.metadata ) {

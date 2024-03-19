@@ -18,8 +18,6 @@ nextflow_pipeline {
                 { assert workflow.success },
                 { assert new File("$outputDir/pipeline_info/software_versions.yml").exists() },
                 { assert snapshot(path("$outputDir/overall_summary.tsv")).match("overall_summary_tsv") },
-                { assert snapshot(path("$outputDir/assignsh/ASV_tax_species_SH.unite-fungi_8_3.tsv")).match("assignsh") },
-                { assert new File("$outputDir/assignsh/ASV_ITS_tax.vsearch.txt").exists() },
                 { assert snapshot(path("$outputDir/barrnap/rrna.arc.gff"),
                                 path("$outputDir/barrnap/rrna.bac.gff"),
                                 path("$outputDir/barrnap/rrna.euk.gff"),

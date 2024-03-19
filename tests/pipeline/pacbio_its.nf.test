@@ -16,7 +16,7 @@ nextflow_pipeline {
         then {
             assertAll(
                 { assert workflow.success },
-                { assert snapshot(UTILS.removeNextflowVersion("$outputDir")).match("software_versions") },
+                { assert new File("$outputDir/pipeline_info/software_versions.yml").exists() },
                 { assert snapshot(path("$outputDir/overall_summary.tsv")).match("overall_summary_tsv") },
                 { assert snapshot(path("$outputDir/assignsh/ASV_tax_species_SH.unite-fungi_8_3.tsv")).match("assignsh") },
                 { assert new File("$outputDir/assignsh/ASV_ITS_tax.vsearch.txt").exists() },

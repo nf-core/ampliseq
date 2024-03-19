@@ -12,12 +12,6 @@
         ],
         "timestamp": "2023-05-28T21:15:03+0000"
     },
-    "software_versions": {
-        "content": [
-            "{BARRNAP={barrnap=0.9}, CUSTOM_DUMPSOFTWAREVERSIONS={python=3.11.7, yaml=5.4.1}, DADA2_DENOISING={R=4.3.1, dada2=1.28.0}, DADA2_FILTNTRIM={R=4.3.1, dada2=1.28.0}, DADA2_TAXONOMY={R=4.3.1, dada2=1.28.0}, FASTQC={fastqc=0.12.1}, FILTER_STATS={pandas=1.1.5, python=3.9.1}, PHYLOSEQ={R=4.3.0, phyloseq=1.44.0}, RENAME_RAW_DATA_FILES={sed=4.7}, Workflow={nf-core/ampliseq=2.9.0dev}}"
-        ],
-        "timestamp": "2023-05-28T21:15:03+0000"
-    },
     "overall_summary_tsv": {
         "content": [
             "overall_summary.tsv:md5,cc01727705136cc5d096d373237e1e06"

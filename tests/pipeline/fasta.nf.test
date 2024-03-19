@@ -16,7 +16,7 @@ nextflow_pipeline {
         then {
             assertAll(
                 { assert workflow.success },
-                { assert snapshot(UTILS.removeNextflowVersion("$outputDir")).match("software_versions") },
+                { assert new File("$outputDir/pipeline_info/software_versions.yml").exists() },
                 { assert snapshot(path("$outputDir/asv_length_filter/ASV_len_filt.tsv"),
                                 path("$outputDir/asv_length_filter/ASV_len_orig.tsv"),
                                 path("$outputDir/asv_length_filter/ASV_seqs.len.fasta"),

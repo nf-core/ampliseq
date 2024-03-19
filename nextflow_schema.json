@@ -5,7 +5,7 @@
     "description": "Amplicon sequencing analysis workflow using DADA2 and QIIME2",
     "type": "object",
     "definitions": {
-        "main_arguments": {
+        "input_output_options": {
             "title": "Main arguments",
             "type": "object",
             "description": "",
@@ -13,6 +13,7 @@
             "properties": {
                 "input": {
                     "type": "string",
+                    "format": "file-path",
                     "mimetype": "text/tsv",
                     "fa_icon": "fas fa-dna",
                     "description": "Path to tab-separated sample sheet",
@@ -21,6 +22,7 @@
                 },
                 "input_fasta": {
                     "type": "string",
+                    "format": "file-path",
                     "mimetype": "text/tsv",
                     "fa_icon": "fas fa-dna",
                     "description": "Path to ASV/OTU fasta file",
@@ -28,6 +30,7 @@
                 },
                 "input_folder": {
                     "type": "string",
+                    "format": "directory-path",
                     "mimetype": "text/tsv",
                     "fa_icon": "fas fa-dna",
                     "description": "Path to folder containing zipped FastQ files",
@@ -47,12 +50,14 @@
                 },
                 "metadata": {
                     "type": "string",
+                    "format": "file-path",
                     "description": "Path to metadata sheet, when missing most downstream analysis are skipped (barplots, PCoA plots, ...).",
                     "help_text": "This is optional, but for performing downstream analysis such as barplots, diversity indices or differential abundance testing, a metadata file is essential.\n\nRelated parameter:\n- `--metadata_category` (optional) to choose columns that are used for testing significance\n\nFor example:\n\n```bash\n--metadata \"path/to/metadata.tsv\"\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The metadata file has to follow the QIIME2 specifications (https://docs.qiime2.org/2021.2/tutorials/metadata/)\n\nThe first column in the tab-separated metadata file is the sample identifier column (required header: `ID`) and defines the sample or feature IDs associated with your study. In addition to the sample identifier column, the metadata file is required to have at least one column with multiple different non-numeric values but not all unique.\n**NB**: without additional columns there might be no groupings for the downstream analyses.\n\nSample identifiers should be 36 characters long or less, and also contain only ASCII alphanumeric characters (i.e. in the range of [a-z], [A-Z], or [0-9]), or the dash (-) character. For downstream analysis, by default all numeric columns, blanks or NA are removed, and only columns with multiple different values but not all unique are selected.\n\nThe columns which are to be assessed can be specified by `--metadata_category`. If `--metadata_category` isn't specified than all columns that fit the specification are automatically chosen.",
                     "fa_icon": "fas fa-file-csv"
                 },
                 "multiregion": {
                     "type": "string",
+                    "format": "file-path",
                     "mimetype": "text/tsv",
                     "fa_icon": "fas fa-dna",
                     "description": "Path to tab-separated multi region sheet",
@@ -958,7 +963,7 @@
     },
     "allOf": [
         {
-            "$ref": "#/definitions/main_arguments"
+            "$ref": "#/definitions/input_output_options"
         },
         {
             "$ref": "#/definitions/sequencing_input"
@@ -977,6 +982,9 @@
         },
         {
             "$ref": "#/definitions/taxonomic_database"
+        },
+        {
+            "$ref": "#/definitions/multiregion_taxonomic_database"
         },
         {
             "$ref": "#/definitions/asv_filtering"

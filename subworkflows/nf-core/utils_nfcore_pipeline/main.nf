@@ -66,8 +66,6 @@ def checkProfileProvided(nextflow_cli_args) {
 //
 def workflowCitation() {
     return "If you use ${workflow.manifest.name} for your analysis please cite:\n\n" +
-        "* The pipeline publication\n" +
-        "  https://doi.org/10.3389/fmicb.2020.550420\n\n" +
         "* The pipeline\n" +
         "  ${workflow.manifest.doi}\n\n" +
         "* The nf-core framework\n" +

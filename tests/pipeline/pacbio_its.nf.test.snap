@@ -43,7 +43,6 @@
         "content": [
             "ASV_seqs.fasta:md5,a2632b1cc533d290db19ceedaf350dcd",
             "ASV_table.tsv:md5,6de5507a0fcb0c9b03f8fec0270440be",
-            "ref_taxonomy.unite-fungi_8_3.txt:md5,0f0f24c6c937cfe315f7f490ecdf9af4",
             "DADA2_stats.tsv:md5,4bbde0bbf579f60e692bd32d14034f0d",
             "DADA2_table.rds:md5,a36558c04a7b21050bb6e479b09bd483",
             "DADA2_table.tsv:md5,7e7aab7ae9a3b20fb08f3fe7f8b0430c"

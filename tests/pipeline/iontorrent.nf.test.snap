@@ -22,7 +22,6 @@
             "ASV_seqs.fasta:md5,24a69ad674c0b99882d095f6e8afdc03",
             "ASV_table.tsv:md5,bd99a0696aa853c0d12c2870ec9fb987",
             "DADA2_stats.tsv:md5,f543f7445bbb3941138166615fcf4866",
-            "ref_taxonomy.unite-fungi_8_3.txt:md5,0f0f24c6c937cfe315f7f490ecdf9af4",
             "DADA2_table.rds:md5,bbbe293f2e03869cbe6b8f6b15ea0ed8",
             "DADA2_table.tsv:md5,d92684c4ac57c34341171f1dffccb4d6"
         ],

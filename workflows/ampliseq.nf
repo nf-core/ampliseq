@@ -255,9 +255,6 @@ include { makeComplement         } from '../subworkflows/local/utils_nfcore_ampl
 
 workflow AMPLISEQ {
 
-    take:
-    ch_samplesheet // channel: samplesheet read in from --input
-
     main:
 
     ch_versions = Channel.empty()
@@ -266,7 +263,6 @@ workflow AMPLISEQ {
     //
     // Create input channels
     //
-    //TODO: --input, --input_folder, --input_fasts, --metadata, --multiregion might need adjustments, because above under "tae:" it is supposed to be coming from!
     ch_input_fasta = Channel.empty()
     ch_input_reads = Channel.empty()
     if ( params.input ) {
@@ -905,7 +901,7 @@ workflow AMPLISEQ {
             ch_metadata.ifEmpty( [] ),
             params.input ? file(params.input) : [], // samplesheet input
             ch_input_fasta.ifEmpty( [] ), // fasta input
-            !params.input_fasta && !params.skip_fastqc && !params.skip_multiqc ? MULTIQC.out.plots : [], //.collect().flatten().collectFile(name: "mqc_fastqc_per_sequence_quality_scores_plot_1.svg")
+            !params.input_fasta && !params.skip_fastqc && !params.skip_multiqc ? MULTIQC.out.plots : [], //.collect().flatten().collectFile(name: "fastqc_per_sequence_quality_scores_plot.svg")
             !params.skip_cutadapt ? CUTADAPT_WORKFLOW.out.summary.collect().ifEmpty( [] ) : [],
             find_truncation_values,
             DADA2_PREPROCESSING.out.args.first().ifEmpty( [] ),

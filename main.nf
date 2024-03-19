@@ -32,17 +32,12 @@ include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_ampl
 //
 workflow NFCORE_AMPLISEQ {
 
-    take:
-    samplesheet // channel: samplesheet read in from --input
-
     main:
 
     //
     // WORKFLOW: Run pipeline
     //
-    AMPLISEQ (
-        samplesheet
-    )
+    AMPLISEQ ()
 
     emit:
     multiqc_report = AMPLISEQ.out.multiqc_report // channel: /path/to/multiqc_report.html
@@ -67,16 +62,13 @@ workflow {
         params.validate_params,
         params.monochrome_logs,
         args,
-        params.outdir,
-        params.input
+        params.outdir
     )
 
     //
     // WORKFLOW: Run main workflow
     //
-    NFCORE_AMPLISEQ (
-        PIPELINE_INITIALISATION.out.samplesheet
-    )
+    NFCORE_AMPLISEQ ()
 
     //
     // SUBWORKFLOW: Run completion tasks

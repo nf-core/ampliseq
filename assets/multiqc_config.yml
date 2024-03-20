@@ -11,3 +11,9 @@ report_section_order:
     order: -1002
 
 export_plots: true
+
+disable_version_detection: true
+
+# MultiQC version 1.20 & 1.21 need that flag to produce plots!
+# TODO: Remove with version greater than 1.21!
+plots_force_flat: true

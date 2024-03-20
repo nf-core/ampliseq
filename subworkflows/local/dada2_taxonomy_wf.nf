@@ -11,6 +11,7 @@ include { FORMAT_TAXRESULTS as FORMAT_TAXRESULTS_STD   } from '../../modules/loc
 include { FORMAT_TAXRESULTS as FORMAT_TAXRESULTS_ADDSP } from '../../modules/local/format_taxresults'
 include { ASSIGNSH                                     } from '../../modules/local/assignsh'
 
+include { makeComplement                 } from '../../subworkflows/local/utils_nfcore_ampliseq_pipeline'
 
 workflow DADA2_TAXONOMY_WF {
     take:
@@ -39,7 +40,7 @@ workflow DADA2_TAXONOMY_WF {
                     meta.single_end = true
                     meta.id = "assignTaxonomy"
                     meta.fw_primer = params.FW_primer
-                    meta.rv_primer_revcomp = WorkflowAmpliseq.makeComplement ( "${params.RV_primer}".reverse() )
+                    meta.rv_primer_revcomp = makeComplement ( "${params.RV_primer}".reverse() )
                     [ meta, db ] }
             .set { ch_assigntax }
         CUTADAPT_TAXONOMY ( ch_assigntax ).reads

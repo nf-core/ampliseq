@@ -11,12 +11,6 @@
         ],
         "timestamp": "2023-06-20T01:42:35+0000"
     },
-    "software_versions": {
-        "content": [
-            "{BARRNAP={barrnap=0.9}, CUSTOM_DUMPSOFTWAREVERSIONS={python=3.11.7, yaml=5.4.1}, CUTADAPT_BASIC={cutadapt=3.4}, DADA2_DENOISING={R=4.3.1, dada2=1.28.0}, DADA2_FILTNTRIM={R=4.3.1, dada2=1.28.0}, DADA2_QUALITY1={R=4.3.1, ShortRead=1.58.0, dada2=1.28.0}, DADA2_TAXONOMY={R=4.3.1, dada2=1.28.0}, FASTQC={fastqc=0.12.1}, PHYLOSEQ={R=4.3.0, phyloseq=1.44.0}, RENAME_RAW_DATA_FILES={sed=4.7}, Workflow={nf-core/ampliseq=2.9.0dev}}"
-        ],
-        "timestamp": "2023-06-20T01:42:35+0000"
-    },
     "overall_summary_tsv": {
         "content": [
             "overall_summary.tsv:md5,a7d1d93ad079ec0ea2479126dba0a607"
@@ -28,7 +22,6 @@
             "ASV_seqs.fasta:md5,24a69ad674c0b99882d095f6e8afdc03",
             "ASV_table.tsv:md5,bd99a0696aa853c0d12c2870ec9fb987",
             "DADA2_stats.tsv:md5,f543f7445bbb3941138166615fcf4866",
-            "ref_taxonomy.unite-fungi_8_3.txt:md5,0f0f24c6c937cfe315f7f490ecdf9af4",
             "DADA2_table.rds:md5,bbbe293f2e03869cbe6b8f6b15ea0ed8",
             "DADA2_table.tsv:md5,d92684c4ac57c34341171f1dffccb4d6"
         ],

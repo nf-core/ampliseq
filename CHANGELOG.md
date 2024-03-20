@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
-- [#697](https://github.com/nf-core/ampliseq/pull/697),[#699](https://github.com/nf-core/ampliseq/pull/699) - Template update for nf-core/tools version 2.12
+- [#697](https://github.com/nf-core/ampliseq/pull/697),[#699](https://github.com/nf-core/ampliseq/pull/699),[#713](https://github.com/nf-core/ampliseq/pull/713) - Template update for nf-core/tools version 2.13.1
 
 ### `Dependencies`
 

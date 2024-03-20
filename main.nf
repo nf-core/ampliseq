@@ -17,7 +17,7 @@ nextflow.enable.dsl = 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { AMPLISEQ  } from './workflows/ampliseq'
+include { AMPLISEQ                } from './workflows/ampliseq'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_ampliseq_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_ampliseq_pipeline'
 

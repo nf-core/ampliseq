@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#697](https://github.com/nf-core/ampliseq/pull/697),[#699](https://github.com/nf-core/ampliseq/pull/699),[#713](https://github.com/nf-core/ampliseq/pull/713) - Template update for nf-core/tools version 2.13.1
 - [#711](https://github.com/nf-core/ampliseq/pull/711) - From r207 and onwards Archaea sequences were omitted when parsing GTDB databases. (This did not affect `sbdi-gtdb` databases, only `gtdb`.)
 - [#715](https://github.com/nf-core/ampliseq/pull/715) - Fix filtering vsearch clusters for high number of clusters
+- [#717](https://github.com/nf-core/ampliseq/pull/717) - Fix edge case for sorting file names by using radix method
 
 ### `Dependencies`
 

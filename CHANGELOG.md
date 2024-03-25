@@ -15,10 +15,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Fixed`
 
 - [#697](https://github.com/nf-core/ampliseq/pull/697),[#699](https://github.com/nf-core/ampliseq/pull/699),[#713](https://github.com/nf-core/ampliseq/pull/713) - Template update for nf-core/tools version 2.13.1
+- [#711](https://github.com/nf-core/ampliseq/pull/711) - From r207 and onwards Archaea sequences were omitted when parsing GTDB databases. (This did not affect `sbdi-gtdb` databases, only `gtdb`.)
+- [#715](https://github.com/nf-core/ampliseq/pull/715) - Fix filtering vsearch clusters for high number of clusters
 
 ### `Dependencies`
 
 ### `Removed`
+
+- [#710](https://github.com/nf-core/ampliseq/pull/710) - Removed Phyloref from DADA2 reference option because it's part of PR2 5.0.0
 
 ## nf-core/ampliseq version 2.8.0 - 2024-01-16
 
@@ -33,7 +37,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Changed`
 
 - [#677](https://github.com/nf-core/ampliseq/pull/677) - Added cut_its information to SDBI export
-- [#711](https://github.com/nf-core/ampliseq/pull/711) - Changed code in taxref_reformat_gtdb.sh so it can take both bacteria and Archaea. Check issue [#708](https://github.com/nf-core/ampliseq/issues/708) for more info.
 
 ### `Fixed`
 
@@ -47,8 +50,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Dependencies`
 
 ### `Removed`
-
-- [#710](https://github.com/nf-core/ampliseq/pull/710) - Removed Phyloref from DADA2 reference option because it's part of PR2 5.0.0
 
 ## nf-core/ampliseq version 2.7.1 - 2023-11-14
 

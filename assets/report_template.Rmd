@@ -827,7 +827,8 @@ cat("# Taxonomic Classification\n")
 cat(paste0("
 ## ITS regions
 
-The ",params$cut_its," region was extracted from each ASV sequence using [ITSx](https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.12073).
+The ",params$cut_its," region was extracted from each ASV sequence using [ITSx](https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.12073)
+with a minimal sequence length of 50bp.
 Taxonomic classification should have improved performance based on extracted ITS sequence. ITSx results can be found in folder [itsx](../itsx).
 
 Taxonomies per extracted region was then transferred back to the full ASV sequence. No filtering was done based on whether the region was found or not.

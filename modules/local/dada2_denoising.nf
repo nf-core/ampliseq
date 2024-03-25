@@ -34,8 +34,8 @@ process DADA2_DENOISING {
         errF = readRDS("${errormodel[0]}")
         errR = readRDS("${errormodel[1]}")
 
-        filtFs <- sort(list.files("./filtered/", pattern = "_1.filt.fastq.gz", full.names = TRUE))
-        filtRs <- sort(list.files("./filtered/", pattern = "_2.filt.fastq.gz", full.names = TRUE))
+        filtFs <- sort(list.files("./filtered/", pattern = "_1.filt.fastq.gz", full.names = TRUE), method = "radix")
+        filtRs <- sort(list.files("./filtered/", pattern = "_2.filt.fastq.gz", full.names = TRUE), method = "radix")
 
         #denoising
         sink(file = "${prefix}.dada.log")

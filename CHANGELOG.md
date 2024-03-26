@@ -22,6 +22,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Dependencies`
 
+- [#720](https://github.com/nf-core/ampliseq/pull/720) - Updated nf-core modules, DADA2, and Phyloseq
+
+| software | previously | now    |
+| -------- | ---------- | ------ |
+| cutadapt | 3.4        | 4.6    |
+| DADA2    | 1.28.0     | 1.30.0 |
+| Phyloseq | 1.44.0     | 1.46.0 |
+
 ### `Removed`
 
 - [#710](https://github.com/nf-core/ampliseq/pull/710) - Removed Phyloref from DADA2 reference option because it's part of PR2 5.0.0

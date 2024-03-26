@@ -31,7 +31,6 @@ process FORMAT_TAXONOMY_QIIME {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        bash: \$(bash --version | sed -n 1p | sed 's/GNU bash, version //g')
-    END_VERSIONS
+        bash: \$(bash --version | sed -n 1p | grep -Eo 'version [[:alnum:].]+' | sed 's/version //')
     """
 }

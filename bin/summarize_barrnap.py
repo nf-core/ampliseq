@@ -28,7 +28,7 @@ for file in sys.argv[1:]:
         method[asv] = rowparts[1]
         if asv not in evalues:
             evalues[asv] = dict()
-        if (org not in evalues[asv]) or (float(evalues[asv][org]) > float(rowparts[5])) : 
+        if (org not in evalues[asv]) or (float(evalues[asv][org]) > float(rowparts[5])):
            evalues[asv][org] = rowparts[5]
     fh.close()
 

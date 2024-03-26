@@ -2,10 +2,10 @@ process PHYLOSEQ {
     tag "$prefix"
     label 'process_low'
 
-    conda "bioconda::bioconductor-phyloseq=1.44.0"
+    conda "bioconda::bioconductor-phyloseq=1.46.0"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/bioconductor-phyloseq:1.44.0--r43hdfd78af_0' :
-        'biocontainers/bioconductor-phyloseq:1.44.0--r43hdfd78af_0' }"
+        'https://depot.galaxyproject.org/singularity/bioconductor-phyloseq:1.46.0--r43hdfd78af_0' :
+        'biocontainers/bioconductor-phyloseq:1.46.0--r43hdfd78af_0' }"
 
     input:
     tuple val(prefix), path(tax_tsv), path(otu_tsv)

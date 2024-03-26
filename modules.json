@@ -7,7 +7,7 @@
                 "nf-core": {
                     "cutadapt": {
                         "branch": "master",
-                        "git_sha": "0efbaeb95c58da5a1096c99b5e919bc0c99cc952",
+                        "git_sha": "6618151ed69274863dc6fe6d2920afa90abaca1f",
                         "installed_by": ["modules"]
                     },
                     "epang/place": {
@@ -62,7 +62,7 @@
                     },
                     "kraken2/kraken2": {
                         "branch": "master",
-                        "git_sha": "603ecbd9f45300c9788f197d2a15a005685b4220",
+                        "git_sha": "653218e79ffa76fde20319e9062f8b8da5cf7555",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/kraken2/kraken2/kraken2-kraken2.diff"
                     },
@@ -84,22 +84,22 @@
                     },
                     "untar": {
                         "branch": "master",
-                        "git_sha": "d0b4fc03af52a1cc8c6fb4493b921b57352b1dd8",
+                        "git_sha": "5caf7640a9ef1d18d765d55339be751bb0969dfa",
                         "installed_by": ["modules"]
                     },
                     "vsearch/cluster": {
                         "branch": "master",
-                        "git_sha": "89945ea085b94d3413013b6c82e2633b5184f24d",
+                        "git_sha": "d97b335eb448073c1b680710303c02a55f40c77c",
                         "installed_by": ["modules"]
                     },
                     "vsearch/sintax": {
                         "branch": "master",
-                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
                         "installed_by": ["modules"]
                     },
                     "vsearch/usearchglobal": {
                         "branch": "master",
-                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
                         "installed_by": ["modules"]
                     }
                 }

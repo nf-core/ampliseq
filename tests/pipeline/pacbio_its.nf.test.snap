@@ -61,8 +61,8 @@
     "multiqc": {
         "content": [
             "multiqc_fastqc.txt:md5,e646906d896ac4514235ae263566a1a8",
-            "multiqc_general_stats.txt:md5,07a1affcf11214b293ea804eb560a2fb",
-            "multiqc_cutadapt.txt:md5,1b3b6833e78db31ab12e5c16b7fa1d73"
+            "multiqc_general_stats.txt:md5,adb8a2b3b0ac2de5d7d5fbfac81cbdaf",
+            "multiqc_cutadapt.txt:md5,ae5e5bf06cdbfa4d8305bbcb61c3ba04"
         ],
         "timestamp": "2023-06-20T02:07:02+0000"
     }

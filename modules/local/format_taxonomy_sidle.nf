@@ -23,16 +23,17 @@ process FORMAT_TAXONOMY_SIDLE {
     script:
     def derep = params.sidle_ref_databases[params.sidle_ref_taxonomy]["derep"] ?: "99"
     """
-    ${params.sidle_ref_databases[params.sidle_ref_taxonomy]["fmtscript"]} ${derep}
+    ${params.sidle_ref_databases[params.sidle_ref_taxonomy]["fmtscript"]} ${derep} \\
 
     #Giving out information
-    echo -e "--sidle_ref_taxonomy: ${params.sidle_ref_taxonomy}\n" >ref_taxonomy.${suffix}.txt
-    echo -e "Title: ${params.sidle_ref_databases[params.sidle_ref_taxonomy]["title"]}\n" >>ref_taxonomy.${suffix}.txt
-    echo -e "Citation: ${params.sidle_ref_databases[params.sidle_ref_taxonomy]["citation"]}\n" >>ref_taxonomy.${suffix}.txt
+    echo -e "--sidle_ref_taxonomy: ${params.sidle_ref_taxonomy}\\n" >ref_taxonomy.${suffix}.txt
+    echo -e "Title: ${params.sidle_ref_databases[params.sidle_ref_taxonomy]["title"]}\\n" >>ref_taxonomy.${suffix}.txt
+    echo -e "Citation: ${params.sidle_ref_databases[params.sidle_ref_taxonomy]["citation"]}\\n" >>ref_taxonomy.${suffix}.txt
     echo "All entries: ${params.sidle_ref_databases[params.sidle_ref_taxonomy]}" >>ref_taxonomy.${suffix}.txt
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         bash: \$(bash --version | sed -n 1p | grep -Eo 'version [[:alnum:].]+' | sed 's/version //')
+    END_VERSIONS
     """
 }

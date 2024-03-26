@@ -19,16 +19,17 @@ process FORMAT_TAXONOMY_SINTAX {
 
     script:
     """
-    ${params.sintax_ref_databases[params.sintax_ref_taxonomy]["fmtscript"]}
+    ${params.sintax_ref_databases[params.sintax_ref_taxonomy]["fmtscript"]} \\
 
     #Giving out information
-    echo -e "--sintax_ref_taxonomy: ${params.sintax_ref_taxonomy}\n" >ref_taxonomy_sintax.txt
-    echo -e "Title: ${params.sintax_ref_databases[params.sintax_ref_taxonomy]["title"]}\n" >>ref_taxonomy_sintax.txt
-    echo -e "Citation: ${params.sintax_ref_databases[params.sintax_ref_taxonomy]["citation"]}\n" >>ref_taxonomy_sintax.txt
+    echo -e "--sintax_ref_taxonomy: ${params.sintax_ref_taxonomy}\\n" >ref_taxonomy_sintax.txt
+    echo -e "Title: ${params.sintax_ref_databases[params.sintax_ref_taxonomy]["title"]}\\n" >>ref_taxonomy_sintax.txt
+    echo -e "Citation: ${params.sintax_ref_databases[params.sintax_ref_taxonomy]["citation"]}\\n" >>ref_taxonomy_sintax.txt
     echo "All entries: ${params.sintax_ref_databases[params.sintax_ref_taxonomy]}" >>ref_taxonomy_sintax.txt
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         bash: \$(bash --version | sed -n 1p | grep -Eo 'version [[:alnum:].]+' | sed 's/version //')
+    END_VERSIONS
     """
 }

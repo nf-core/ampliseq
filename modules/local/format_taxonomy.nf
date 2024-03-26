@@ -21,16 +21,17 @@ process FORMAT_TAXONOMY {
 
     script:
     """
-    ${params.dada_ref_databases[params.dada_ref_taxonomy]["fmtscript"]}
+    ${params.dada_ref_databases[params.dada_ref_taxonomy]["fmtscript"]} \\
 
     #Giving out information
-    echo -e "--dada_ref_taxonomy: ${params.dada_ref_taxonomy}\n" >ref_taxonomy.${suffix}.txt
-    echo -e "Title: ${params.dada_ref_databases[params.dada_ref_taxonomy]["title"]}\n" >>ref_taxonomy.${suffix}.txt
-    echo -e "Citation: ${params.dada_ref_databases[params.dada_ref_taxonomy]["citation"]}\n" >>ref_taxonomy.${suffix}.txt
+    echo -e "--dada_ref_taxonomy: ${params.dada_ref_taxonomy}\\n" >ref_taxonomy.${suffix}.txt
+    echo -e "Title: ${params.dada_ref_databases[params.dada_ref_taxonomy]["title"]}\\n" >>ref_taxonomy.${suffix}.txt
+    echo -e "Citation: ${params.dada_ref_databases[params.dada_ref_taxonomy]["citation"]}\\n" >>ref_taxonomy.${suffix}.txt
     echo "All entries: ${params.dada_ref_databases[params.dada_ref_taxonomy]}" >>ref_taxonomy.${suffix}.txt
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         bash: \$(bash --version | sed -n 1p | grep -Eo 'version [[:alnum:].]+' | sed 's/version //')
+    END_VERSIONS
     """
 }

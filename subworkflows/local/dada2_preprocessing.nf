@@ -132,6 +132,7 @@ workflow DADA2_PREPROCESSING {
     ch_DADA2_QUALITY2_SVG = Channel.empty()
     if ( !params.skip_dada_quality ) {
         DADA2_QUALITY2 ( ch_all_preprocessed_reads.dump(tag: 'into_dada2_quality2') )
+        ch_versions_dada2_preprocessing = ch_versions_dada2_preprocessing.mix(DADA2_QUALITY2.out.versions)
         DADA2_QUALITY2.out.warning.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","DADA2_QUALITY2: ") }
         ch_DADA2_QUALITY2_SVG = DADA2_QUALITY2.out.svg
     }

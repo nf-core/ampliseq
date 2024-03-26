@@ -3,7 +3,8 @@
 # Takes a list of files with barrnap predictions (rrna.arc.gff, rrna.bac.gff, etc)
 # for ASV sequences, extracts evalues for each prediction and summarize the results
 # in a new file "summary.gff". Assumes that the same program/barrnap version is
-# used for all predictions.
+# used for all predictions. If there is more than one gene for a given domain,
+# retains the lowest e-value (case of full rRNA operon sequences).
 
 # import pandas as pd
 import sys
@@ -27,7 +28,8 @@ for file in sys.argv[1:]:
         method[asv] = rowparts[1]
         if asv not in evalues:
             evalues[asv] = dict()
-        evalues[asv][org] = rowparts[5]
+        if (org not in evalues[asv]) or (float(evalues[asv][org]) > float(rowparts[5])) : 
+           evalues[asv][org] = rowparts[5]
     fh.close()
 
 # Write results

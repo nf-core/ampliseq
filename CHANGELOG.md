@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#717](https://github.com/nf-core/ampliseq/pull/717) - Fix edge case for sorting file names by using radix method
 - [#718](https://github.com/nf-core/ampliseq/pull/718) - Require a minimum sequence length of 50bp for taxonomic classifcation after using ITSx
 - [#721](https://github.com/nf-core/ampliseq/pull/721) - Fix error `unknown recognition error type: groovyjarjarantlr4.v4.runtime.LexerNoViableAltException` caused by a missing `\` in nf-core module `pigz/uncompress` (which had no consequences but was confusing)
+- [#722](https://github.com/nf-core/ampliseq/pull/722) - When barrnap detects several genes select the lowest e-value
 
 ### `Dependencies`
 

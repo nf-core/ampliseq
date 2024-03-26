@@ -8,98 +8,137 @@
                     "cutadapt": {
                         "branch": "master",
                         "git_sha": "0efbaeb95c58da5a1096c99b5e919bc0c99cc952",
-                        "installed_by": ["modules"]
+                        "installed_by": [
+                            "modules"
+                        ]
                     },
                     "epang/place": {
                         "branch": "master",
                         "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
-                        "installed_by": ["fasta_newick_epang_gappa"]
+                        "installed_by": [
+                            "fasta_newick_epang_gappa"
+                        ]
                     },
                     "epang/split": {
                         "branch": "master",
                         "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
-                        "installed_by": ["fasta_newick_epang_gappa"]
+                        "installed_by": [
+                            "fasta_newick_epang_gappa"
+                        ]
                     },
                     "fastqc": {
                         "branch": "master",
                         "git_sha": "f4ae1d942bd50c5c0b9bd2de1393ce38315ba57c",
-                        "installed_by": ["modules"]
+                        "installed_by": [
+                            "modules"
+                        ]
                     },
                     "gappa/examineassign": {
                         "branch": "master",
                         "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
-                        "installed_by": ["fasta_newick_epang_gappa"]
+                        "installed_by": [
+                            "fasta_newick_epang_gappa"
+                        ]
                     },
                     "gappa/examinegraft": {
                         "branch": "master",
                         "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
-                        "installed_by": ["fasta_newick_epang_gappa"]
+                        "installed_by": [
+                            "fasta_newick_epang_gappa"
+                        ]
                     },
                     "gappa/examineheattree": {
                         "branch": "master",
                         "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
-                        "installed_by": ["fasta_newick_epang_gappa"]
+                        "installed_by": [
+                            "fasta_newick_epang_gappa"
+                        ]
                     },
                     "hmmer/eslalimask": {
                         "branch": "master",
                         "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
-                        "installed_by": ["fasta_newick_epang_gappa"]
+                        "installed_by": [
+                            "fasta_newick_epang_gappa"
+                        ]
                     },
                     "hmmer/eslreformat": {
                         "branch": "master",
                         "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
-                        "installed_by": ["fasta_newick_epang_gappa"]
+                        "installed_by": [
+                            "fasta_newick_epang_gappa"
+                        ]
                     },
                     "hmmer/hmmalign": {
                         "branch": "master",
                         "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
-                        "installed_by": ["fasta_newick_epang_gappa"]
+                        "installed_by": [
+                            "fasta_newick_epang_gappa"
+                        ]
                     },
                     "hmmer/hmmbuild": {
                         "branch": "master",
                         "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
-                        "installed_by": ["fasta_newick_epang_gappa"]
+                        "installed_by": [
+                            "fasta_newick_epang_gappa"
+                        ]
                     },
                     "kraken2/kraken2": {
                         "branch": "master",
                         "git_sha": "603ecbd9f45300c9788f197d2a15a005685b4220",
-                        "installed_by": ["modules"],
+                        "installed_by": [
+                            "modules"
+                        ],
                         "patch": "modules/nf-core/kraken2/kraken2/kraken2-kraken2.diff"
                     },
                     "mafft": {
                         "branch": "master",
                         "git_sha": "feb29be775d9e41750180539e9a3bdce801d0609",
-                        "installed_by": ["fasta_newick_epang_gappa"]
+                        "installed_by": [
+                            "fasta_newick_epang_gappa"
+                        ]
                     },
                     "multiqc": {
                         "branch": "master",
                         "git_sha": "b7ebe95761cd389603f9cc0e0dc384c0f663815a",
-                        "installed_by": ["modules"]
+                        "installed_by": [
+                            "modules"
+                        ]
                     },
                     "pigz/uncompress": {
                         "branch": "master",
                         "git_sha": "4ef7becf6a2bbc8df466885d10b4051d1f318a6a",
-                        "installed_by": ["modules"]
+                        "installed_by": [
+                            "modules"
+                        ],
+                        "patch": "modules/nf-core/pigz/uncompress/pigz-uncompress.diff"
                     },
                     "untar": {
                         "branch": "master",
                         "git_sha": "d0b4fc03af52a1cc8c6fb4493b921b57352b1dd8",
-                        "installed_by": ["modules"]
+                        "installed_by": [
+                            "modules"
+                        ]
                     },
                     "vsearch/cluster": {
                         "branch": "master",
                         "git_sha": "89945ea085b94d3413013b6c82e2633b5184f24d",
-                        "installed_by": ["modules"]
+                        "installed_by": [
+                            "modules"
+                        ]
                     },
                     "vsearch/sintax": {
                         "branch": "master",
                         "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
-                        "installed_by": ["modules"]
+                        "installed_by": [
+                            "modules"
+                        ]
                     },
                     "vsearch/usearchglobal": {
                         "branch": "master",
                         "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
-                        "installed_by": ["modules"]
+                        "installed_by": [
+                            "modules"
+                        ]
                     }
                 }
             },
@@ -108,22 +147,30 @@
                     "fasta_newick_epang_gappa": {
                         "branch": "master",
                         "git_sha": "cfd937a668919d948f6fcbf4218e79de50c2f36f",
-                        "installed_by": ["subworkflows"]
+                        "installed_by": [
+                            "subworkflows"
+                        ]
                     },
                     "utils_nextflow_pipeline": {
                         "branch": "master",
                         "git_sha": "5caf7640a9ef1d18d765d55339be751bb0969dfa",
-                        "installed_by": ["subworkflows"]
+                        "installed_by": [
+                            "subworkflows"
+                        ]
                     },
                     "utils_nfcore_pipeline": {
                         "branch": "master",
                         "git_sha": "5caf7640a9ef1d18d765d55339be751bb0969dfa",
-                        "installed_by": ["subworkflows"]
+                        "installed_by": [
+                            "subworkflows"
+                        ]
                     },
                     "utils_nfvalidation_plugin": {
                         "branch": "master",
                         "git_sha": "5caf7640a9ef1d18d765d55339be751bb0969dfa",
-                        "installed_by": ["subworkflows"]
+                        "installed_by": [
+                            "subworkflows"
+                        ]
                     }
                 }
             }

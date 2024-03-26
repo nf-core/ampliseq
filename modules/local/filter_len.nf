@@ -1,4 +1,4 @@
-process FILTER_LEN_ASV {
+process FILTER_LEN {
     tag "${fasta}"
     label 'process_low'
 
@@ -23,8 +23,8 @@ process FILTER_LEN_ASV {
     task.ext.when == null || task.ext.when
 
     script:
-    def min_len_asv = params.min_len_asv ?: '1'
-    def max_len_asv = params.max_len_asv ?: '1000000'
+    def min_len_asv = task.ext.min_len_asv ?: '1'
+    def max_len_asv = task.ext.max_len_asv ?: '1000000'
 
     def read_table  = table ? "table <- read.table(file = '$table', sep = '\t', comment.char = '', header=TRUE)" : "table <- data.frame(matrix(ncol = 1, nrow = 0))"
     def asv_table_filtered  = table ? "ASV_table.len.tsv" : "empty_ASV_table.len.tsv"

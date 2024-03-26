@@ -191,7 +191,8 @@ include { SIDLE_WF                      } from '../subworkflows/local/sidle_wf'
 include { BARRNAP                       } from '../modules/local/barrnap'
 include { BARRNAPSUMMARY                } from '../modules/local/barrnapsummary'
 include { FILTER_SSU                    } from '../modules/local/filter_ssu'
-include { FILTER_LEN_ASV                } from '../modules/local/filter_len_asv'
+include { FILTER_LEN as FILTER_LEN_ASV  } from '../modules/local/filter_len'
+include { FILTER_LEN as FILTER_LEN_ITSX } from '../modules/local/filter_len'
 include { MERGE_STATS as MERGE_STATS_FILTERSSU    } from '../modules/local/merge_stats'
 include { MERGE_STATS as MERGE_STATS_FILTERLENASV } from '../modules/local/merge_stats'
 include { MERGE_STATS as MERGE_STATS_CODONS       } from '../modules/local/merge_stats'
@@ -567,7 +568,8 @@ workflow AMPLISEQ {
         }
         ITSX_CUTASV ( ch_full_fasta, outfile )
         ch_versions = ch_versions.mix(ITSX_CUTASV.out.versions.ifEmpty(null))
-        ch_fasta = ITSX_CUTASV.out.fasta
+        FILTER_LEN_ITSX ( ITSX_CUTASV.out.fasta, [] )
+        ch_fasta = FILTER_LEN_ITSX.out.fasta
     }
 
     //

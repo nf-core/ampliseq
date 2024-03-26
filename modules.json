@@ -79,7 +79,8 @@
                     "pigz/uncompress": {
                         "branch": "master",
                         "git_sha": "4ef7becf6a2bbc8df466885d10b4051d1f318a6a",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/pigz/uncompress/pigz-uncompress.diff"
                     },
                     "untar": {
                         "branch": "master",

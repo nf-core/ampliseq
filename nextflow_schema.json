@@ -59,8 +59,8 @@
                     "format": "file-path",
                     "mimetype": "text/tsv",
                     "fa_icon": "fas fa-dna",
-                    "description": "Path to tab-separated multi region sheet",
-                    "help_text": "Path to multi region sheet, either tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml).\n\nChoose a reerence taxonomy with `--sidle_ref_taxonomy` or use `--sidle_ref_tax_custom` and `--sidle_ref_tree_custom`.",
+                    "description": "Path to multi-region definition sheet, for multi-region analysis with Sidle",
+                    "help_text": "Path to file with information about sequenced regions, either tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml). This initiates scaffolding multiple regions along a reference.\n\nThe file must have four headers: \n- `region`: Unique region identifier\n- `region_length`: Minimal length of region\n- `FW_primer`: Forward primer sequence\n- `RV_primer`: Reverse primer sequence\n\nFor more details check the usage documentation.\n\nRelated parameters are:\n- `--sidle_ref_taxonomy` to select the reference taxonomic database\n- `--sidle_ref_tax_custom` for custom reference taxonomic database files\n- `--sidle_ref_tree_custom` for custom phylogenetic tree of reference taxonomic database",
                     "schema": "assets/schema_multiregion.json"
                 },
                 "outdir": {
@@ -344,7 +344,8 @@
         "taxonomic_database": {
             "title": "Taxonomic database",
             "type": "object",
-            "default": "Choose a method and database for taxonomic assignments to single-region amplicons",
+            "fa_icon": "fas fa-database",
+            "description": "Choose a method and database for taxonomic assignments to single-region amplicons",
             "properties": {
                 "dada_ref_taxonomy": {
                     "type": "string",
@@ -541,13 +542,13 @@
                     "description": "Cutoff for partial ITS sequences. Only full sequences by default.",
                     "default": 0
                 }
-            },
-            "fa_icon": "fas fa-database"
+            }
         },
         "multiregion_taxonomic_database": {
             "title": "Multi-region taxonomic database",
             "type": "object",
-            "default": "Choose database for taxonomic assignments with multi-region amplicons using SIDLE",
+            "fa_icon": "fas fa-database",
+            "description": "Choose database for taxonomic assignments with multi-region amplicons using SIDLE",
             "properties": {
                 "sidle_ref_taxonomy": {
                     "type": "string",

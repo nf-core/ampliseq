@@ -49,7 +49,7 @@ jobs:
         run: |
           echo "REPO_LOWERCASE=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
           echo "REPOTITLE_LOWERCASE=$(basename ${GITHUB_REPOSITORY,,})" >> ${GITHUB_ENV}
-          echo "{% raw %}REPO_BRANCH=${{ github.event.inputs.testbranch || 'dev' }}" >> ${GITHUB_ENV}
+          echo "REPO_BRANCH=${{ github.event.inputs.testbranch || 'dev' }}" >> ${GITHUB_ENV}
 
       - name: Download the pipeline
         env:
@@ -80,4 +80,4 @@ jobs:
         env:
           NXF_SINGULARITY_CACHEDIR: ./
           NXF_SINGULARITY_HOME_MOUNT: true
-        run: nextflow run ./${{ env.REPOTITLE_LOWERCASE }}/$( sed 's/\W/_/g' <<< ${{ env.REPO_BRANCH }}) -profile test,singularity --skip_qiime --outdir ./results{% endraw %}
+        run: nextflow run ./${{ env.REPOTITLE_LOWERCASE }}/$( sed 's/\W/_/g' <<< ${{ env.REPO_BRANCH }}) -profile test,singularity --skip_qiime --outdir ./results

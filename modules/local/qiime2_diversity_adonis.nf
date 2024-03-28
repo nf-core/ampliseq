@@ -9,6 +9,7 @@ process QIIME2_DIVERSITY_ADONIS {
 
     output:
     path("adonis/*")     , emit: html
+    path("*.qzv")        , emit: qzv
     path "versions.yml"  , emit: versions
 
     when:

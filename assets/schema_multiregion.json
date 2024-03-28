@@ -1,0 +1,37 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://raw.githubusercontent.com/nf-core/ampliseq/master/assets/schema_multiregion.json",
+    "title": "nf-core/ampliseq pipeline - params.multiregion schema",
+    "description": "Schema for the file provided with params.multiregion",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "region": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "unique": true,
+                "errorMessage": "Region name is mandatory, cannot contain spaces, and must be unique",
+                "meta": ["region"]
+            },
+            "region_length": {
+                "type": "integer",
+                "errorMessage": "Length of region must be an integer",
+                "meta": ["region_length"]
+            },
+            "FW_primer": {
+                "type": "string",
+                "pattern": "^[ATUGCYRSWKMBDHVN]*$",
+                "errorMessage": "FW_primer must be provided and may contain only uppercase nucleotide IUPAC code [ATUGCYRSWKMBDHVN]",
+                "meta": ["fw_primer"]
+            },
+            "RV_primer": {
+                "type": "string",
+                "pattern": "^[ATUGCYRSWKMBDHVN]*$",
+                "errorMessage": "RV_primer must be provided and may contain only uppercase nucleotide IUPAC code [ATUGCYRSWKMBDHVN]",
+                "meta": ["rv_primer"]
+            }
+        },
+        "required": ["region", "region_length", "FW_primer", "RV_primer"]
+    }
+}

@@ -11,26 +11,19 @@
         ],
         "timestamp": "2023-06-20T01:42:35+0000"
     },
-    "software_versions": {
-        "content": [
-            "{BARRNAP={barrnap=0.9}, CUSTOM_DUMPSOFTWAREVERSIONS={python=3.12.0, yaml=6.0.1}, CUTADAPT_BASIC={cutadapt=3.4}, DADA2_DENOISING={R=4.3.1, dada2=1.28.0}, DADA2_FILTNTRIM={R=4.3.1, dada2=1.28.0}, DADA2_QUALITY1={R=4.3.1, ShortRead=1.58.0, dada2=1.28.0}, DADA2_TAXONOMY={R=4.3.1, dada2=1.28.0}, FASTQC={fastqc=0.12.1}, PHYLOSEQ={R=4.3.0, phyloseq=1.44.0}, RENAME_RAW_DATA_FILES={sed=4.7}, Workflow={nf-core/ampliseq=2.8.0}}"
-        ],
-        "timestamp": "2023-06-20T01:42:35+0000"
-    },
     "overall_summary_tsv": {
         "content": [
-            "overall_summary.tsv:md5,a7d1d93ad079ec0ea2479126dba0a607"
+            "overall_summary.tsv:md5,713981de66c7cea8f95901b0cb07d2fa"
         ],
         "timestamp": "2023-06-20T01:42:35+0000"
     },
     "dada2": {
         "content": [
             "ASV_seqs.fasta:md5,24a69ad674c0b99882d095f6e8afdc03",
-            "ASV_table.tsv:md5,bd99a0696aa853c0d12c2870ec9fb987",
-            "DADA2_stats.tsv:md5,f543f7445bbb3941138166615fcf4866",
-            "ref_taxonomy.unite-fungi_8_3.txt:md5,0f0f24c6c937cfe315f7f490ecdf9af4",
-            "DADA2_table.rds:md5,bbbe293f2e03869cbe6b8f6b15ea0ed8",
-            "DADA2_table.tsv:md5,d92684c4ac57c34341171f1dffccb4d6"
+            "ASV_table.tsv:md5,444a501243cd14f9234aac10dfde704c",
+            "DADA2_stats.tsv:md5,259dae4928fe3d4d543d6886fd9da609",
+            "DADA2_table.rds:md5,e19dfd42ae0d68dbe9006b0c489e74ad",
+            "DADA2_table.tsv:md5,8f495e41be9eb0f40b9dc448cbc05fc6"
         ],
         "timestamp": "2023-06-20T01:42:35+0000"
     },
@@ -46,8 +39,8 @@
     "multiqc": {
         "content": [
             "multiqc_fastqc.txt:md5,6f1a5196d0840a35166b88e5b52bfcdd",
-            "multiqc_general_stats.txt:md5,8b11410948277038a1ba1a77bb30557f",
-            "multiqc_cutadapt.txt:md5,9315dca2bd7b5476e54a9ccd8b1f24d5"
+            "multiqc_general_stats.txt:md5,d01288c9cb7eb23d9d80c76594c5c70a",
+            "multiqc_cutadapt.txt:md5,fc0fd8f43a96692ad13b0f3ad32c7328"
         ],
         "timestamp": "2023-06-20T01:42:35+0000"
     }

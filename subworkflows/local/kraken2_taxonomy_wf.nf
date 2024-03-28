@@ -32,6 +32,7 @@ workflow KRAKEN2_TAXONOMY_WF {
                     def meta = [:]
                     meta.id = val_kraken2_ref_taxonomy
                     [ meta, db ] } )
+    ch_versions_kraken2_taxonomy = ch_versions_kraken2_taxonomy.mix(UNTAR.out.versions)
     ch_kraken2db = UNTAR.out.untar.map{ it[1] }
     ch_kraken2db = ch_kraken2db.mix(ch_kraken2_ref_taxonomy.dir)
 

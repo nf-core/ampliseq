@@ -14,6 +14,7 @@
     - [ASV/OTU fasta input](#asvotu-fasta-input)
     - [Direct FASTQ input](#direct-fastq-input)
   - [Taxonomic classification](#taxonomic-classification)
+  - [Multiple region analysis with Sidle](#multiple-region-analysis-with-sidle)
   - [Metadata](#metadata)
   - [Updating the pipeline](#updating-the-pipeline)
   - [Reproducibility](#reproducibility)
@@ -245,6 +246,37 @@ Special features of taxonomic classification tools:
 - DADA2, Kraken2, and QIIME2 have specific parameters to accept custom databases (but theoretically possible with all classifiers)
 
 Parameter guidance is given in [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#taxonomic-database). Citations are listed in [`CITATIONS.md`](CITATIONS.md).
+
+### Multiple region analysis with Sidle
+
+Instead of relying on one short amplicon, scaffolding multiple regions along a reference can improve resolution over a single region. This method applies [Sidle (SMURF Implementation Done to acceLerate Efficiency)](https://github.com/jwdebelius/q2-sidle) within [QIIME2](https://qiime2.org/) with [Silva](https://www.arb-silva.de/) (see [licence](https://www.arb-silva.de/silva-license-information/)) or [Greengenes](http://greengenes.microbio.me/greengenes_release/) database.
+
+For example, multiple variable regions of the 16S rRNA gene were sequenced with various primers and need to be unified. This leads to one unified abundance and taxonomy profile over all variable regions. However, ASV sequences are only available separately, there is no reconstruction of complete de-novo sequences feasible.
+
+Required is information about sequencing data via [`--input`](#samplesheet-input), region primers length information via [`--multiregion`](https://nf-co.re/ampliseq/parameters#multiregion), and a taxonomic database via [`--sidle_ref_taxonomy`](https://nf-co.re/ampliseq/parameters#sidle_ref_taxonomy) or [`--sidle_ref_tax_custom`](https://nf-co.re/ampliseq/parameters#sidle_ref_tax_custom).
+
+```bash
+--input "samplesheet_multiregion.tsv"  --multiregion "regions_multiregion.tsv" --sidle_ref_taxonomy "silva=128"
+```
+
+The region information file can be tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml) and can have two to four columns/entries with the following headers:
+
+| Column        | Description                                                               |
+| ------------- | ------------------------------------------------------------------------- |
+| region        | Unique region identifier                                                  |
+| region_length | Minimum region length, sequences are trimmed and shorter ones are omitted |
+| FW_primer     | Forward primer sequence                                                   |
+| RV_primer     | Reverse primer sequence                                                   |
+
+For example, the tab-separated `regions_multiregion.tsv` may contain:
+
+| region  | FW_primer             | RV_primer            | region_length |
+| ------- | --------------------- | -------------------- | ------------- |
+| region1 | TGGCGAACGGGTGAGTAA    | CCGTGTCTCAGTCCCARTG  | 145           |
+| region2 | ACTCCTACGGGAGGCAGC    | GTATTACCGCGGCTGCTG   | 135           |
+| region3 | GTGTAGCGGTGRAATGCG    | CCCGTCAATTCMTTTGAGTT | 200           |
+| region4 | GGAGCATGTGGWTTAATTCGA | CGTTGCGGGACTTAACCC   | 115           |
+| region5 | GGAGGAAGGTGGGGATGAC   | AAGGCCCGGGAACGTATT   | 150           |
 
 ### Metadata
 

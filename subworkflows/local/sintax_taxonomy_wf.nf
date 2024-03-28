@@ -20,6 +20,7 @@ workflow SINTAX_TAXONOMY_WF {
 
     //format taxonomy file
     FORMAT_TAXONOMY_SINTAX ( ch_sintax_ref_taxonomy )
+    ch_versions_sintax_taxonomy = ch_versions_sintax_taxonomy.mix(FORMAT_TAXONOMY_SINTAX.out.versions)
     ch_sintaxdb = FORMAT_TAXONOMY_SINTAX.out.db
 
     //set file prefix
@@ -44,6 +45,7 @@ workflow SINTAX_TAXONOMY_WF {
 
     //convert SINTAX output to DADA2 like taxonomy table
     FORMAT_TAXRESULTS_SINTAX( VSEARCH_SINTAX.out.tsv, ch_full_fasta, ASV_tax_name2 + '.tsv', sintax_taxlevels )
+    ch_versions_sintax_taxonomy = ch_versions_sintax_taxonomy.mix(FORMAT_TAXRESULTS_SINTAX.out.versions)
     ch_sintax_tax = FORMAT_TAXRESULTS_SINTAX.out.tsv
 
     emit:

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Reads the ar122 and bac120 SSU fasta files from GTDB (after first untarring)
+# Reads the ar* and bac* SSU fasta files from GTDB (after first untarring)
 # and outputs two new fasta files, one suitable for DADA2's assignTaxonomy()
 # and addSpecies() functions.
 
@@ -10,7 +10,7 @@ for f in *.tar.gz; do
 done
 
 # Write the assignTaxonomy() fasta file: assignTaxonomy.fna
-cat ar122*.fna bac120*.fna | sed '/^>/s/>[^ ]\+ \([^[]\+\) \[.*/>\1/' | sed '/^>/s/ \[.*//' | sed 's/[a-z]__//g' > assignTaxonomy.fna
+cat ar*.fna bac*.fna | sed '/^>/s/>[^ ]\+ \([^[]\+\) \[.*/>\1/' | sed '/^>/s/ \[.*//' | sed 's/[a-z]__//g' > assignTaxonomy.fna
 
 # Write the addSpecies() fasta file: addSpecies.fna
-cat ar122*.fna bac120*.fna | sed '/^>/s/>\([^ ]\+\) .*;s__\([^[]\+\) \[.*/>\1 \2/' > addSpecies.fna
+cat ar*.fna bac*.fna | sed '/^>/s/>\([^ ]\+\) .*;s__\([^[]\+\) \[.*/>\1 \2/' > addSpecies.fna

@@ -3,10 +3,10 @@ process DADA2_ADDSPECIES {
     label 'process_high'
     label 'single_cpu'
 
-    conda "bioconda::bioconductor-dada2=1.28.0"
+    conda "bioconda::bioconductor-dada2=1.30.0"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.28.0--r43hf17093f_0' :
-        'biocontainers/bioconductor-dada2:1.28.0--r43hf17093f_0' }"
+        'https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.30.0--r43hf17093f_0' :
+        'biocontainers/bioconductor-dada2:1.30.0--r43hf17093f_0' }"
 
     input:
     path(taxtable)

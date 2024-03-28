@@ -1,35 +1,7 @@
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    PRINT PARAMS SUMMARY
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-include { paramsSummaryLog; paramsSummaryMap; fromSamplesheet } from 'plugin/nf-validation'
-
-def logo = NfcoreTemplate.logo(workflow, params.monochrome_logs)
-def citation = '\n' + WorkflowMain.citation(workflow) + '\n'
-def summary_params = paramsSummaryMap(workflow)
-
-// Print parameter summary log to screen
-log.info logo + paramsSummaryLog(workflow) + citation
-
-WorkflowAmpliseq.initialise(params, log)
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    CONFIG FILES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-ch_multiqc_config          = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
-ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.multiqc_config, checkIfExists: true ) : Channel.empty()
-ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
-ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
-
-/*
-========================================================================================
     INPUT AND VARIABLES
-========================================================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
 // Input
@@ -41,6 +13,29 @@ if (params.metadata) {
 if (params.classifier) {
     ch_qiime_classifier = Channel.fromPath("${params.classifier}", checkIfExists: true)
 } else { ch_qiime_classifier = Channel.empty() }
+
+if (params.sidle_ref_tax_custom) {
+    if ("${params.sidle_ref_tax_custom}".contains(",")) {
+        sidle_ref_paths = "${params.sidle_ref_tax_custom}".split(",")
+        if (sidle_ref_paths.length != 3) {
+            error "--sidle_ref_tax_custom exately three filepaths separated by a comma (fasta, aligned fasta, taxonomy). Please review input."
+        }
+        ch_sidle_ref_taxonomy = Channel.fromPath( Arrays.asList(sidle_ref_paths), checkIfExists: true )
+    } else {
+        error "--sidle_ref_tax_custom accepts exately three filepaths separated by a comma. Please review input."
+    }
+    val_sidle_ref_taxonomy = "user"
+    ch_sidle_ref_taxonomy_tree = params.sidle_ref_tree_custom ? Channel.fromPath("${params.sidle_ref_tree_custom}", checkIfExists: true) : Channel.empty()
+} else if (params.sidle_ref_taxonomy) {
+    ch_sidle_ref_taxonomy = Channel.fromList( params.sidle_ref_databases[params.sidle_ref_taxonomy]["file"] ).map { file(it) }
+    ch_sidle_ref_taxonomy_tree = params.sidle_ref_tree_custom ? Channel.fromPath("${params.sidle_ref_tree_custom}", checkIfExists: true) :
+        params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] ? Channel.fromList( params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] ).map { file(it) } : Channel.empty()
+    val_sidle_ref_taxonomy = params.sidle_ref_taxonomy.replace('=','_').replace('.','_')
+} else {
+    ch_sidle_ref_taxonomy = Channel.empty()
+    ch_sidle_ref_taxonomy_tree = Channel.empty()
+    val_sidle_ref_taxonomy = "none"
+}
 
 if (params.dada_ref_tax_custom) {
     //custom ref taxonomy input from params.dada_ref_tax_custom & params.dada_ref_tax_custom_sp
@@ -154,7 +149,7 @@ if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1)
 }
 
 //only run QIIME2 downstream analysis when taxonomy is actually calculated and all required data is available
-if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) && !params.skip_taxonomy && !params.skip_qiime && !params.skip_qiime_downstream && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom) ) {
+if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) && !params.skip_taxonomy && !params.skip_qiime && !params.skip_qiime_downstream && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom || params.multiregion) ) {
     run_qiime2 = true
 } else {
     run_qiime2 = false
@@ -166,10 +161,23 @@ ch_tax_for_phyloseq = Channel.empty()
 
 
 /*
-========================================================================================
-    IMPORT LOCAL MODULES/SUBWORKFLOWS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+
+//
+// MODULE & SUBWORKFLOW: Installed directly from nf-core/modules & nf-core/subworkflows
+//
+
+include { FASTQC                            } from '../modules/nf-core/fastqc/main'
+include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
+include { VSEARCH_CLUSTER                   } from '../modules/nf-core/vsearch/cluster/main'
+include { FASTA_NEWICK_EPANG_GAPPA          } from '../subworkflows/nf-core/fasta_newick_epang_gappa/main'
+
+//
+// MODULE: Installed directly from nf-core/modules
+//
 
 include { RENAME_RAW_DATA_FILES         } from '../modules/local/rename_raw_data_files'
 include { DADA2_ERR                     } from '../modules/local/dada2_err'
@@ -178,10 +186,13 @@ include { DADA2_DENOISING               } from '../modules/local/dada2_denoising
 include { DADA2_RMCHIMERA               } from '../modules/local/dada2_rmchimera'
 include { DADA2_STATS                   } from '../modules/local/dada2_stats'
 include { DADA2_MERGE                   } from '../modules/local/dada2_merge'
+include { DADA2_SPLITREGIONS            } from '../modules/local/dada2_splitregions'
+include { SIDLE_WF                      } from '../subworkflows/local/sidle_wf'
 include { BARRNAP                       } from '../modules/local/barrnap'
 include { BARRNAPSUMMARY                } from '../modules/local/barrnapsummary'
 include { FILTER_SSU                    } from '../modules/local/filter_ssu'
-include { FILTER_LEN_ASV                } from '../modules/local/filter_len_asv'
+include { FILTER_LEN as FILTER_LEN_ASV  } from '../modules/local/filter_len'
+include { FILTER_LEN as FILTER_LEN_ITSX } from '../modules/local/filter_len'
 include { MERGE_STATS as MERGE_STATS_FILTERSSU    } from '../modules/local/merge_stats'
 include { MERGE_STATS as MERGE_STATS_FILTERLENASV } from '../modules/local/merge_stats'
 include { MERGE_STATS as MERGE_STATS_CODONS       } from '../modules/local/merge_stats'
@@ -191,7 +202,8 @@ include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy
 include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
 include { MERGE_STATS as MERGE_STATS_STD} from '../modules/local/merge_stats'
 include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'
-include { QIIME2_FILTERTAXA             } from '../modules/local/qiime2_filtertaxa'
+include { QIIME2_TABLEFILTERTAXA        } from '../modules/local/qiime2_tablefiltertaxa'
+include { QIIME2_SEQFILTERTABLE         } from '../modules/local/qiime2_seqfiltertable'
 include { QIIME2_INASV                  } from '../modules/local/qiime2_inasv'
 include { QIIME2_INTREE                 } from '../modules/local/qiime2_intree'
 include { FORMAT_PPLACETAX              } from '../modules/local/format_pplacetax'
@@ -227,22 +239,14 @@ include { QIIME2_DIVERSITY              } from '../subworkflows/local/qiime2_div
 include { QIIME2_ANCOM                  } from '../subworkflows/local/qiime2_ancom'
 include { PHYLOSEQ_WORKFLOW             } from '../subworkflows/local/phyloseq_workflow'
 
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    IMPORT NF-CORE MODULES/SUBWORKFLOWS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
 //
-// MODULE: Installed directly from nf-core/modules
+// FUNCTIONS
 //
-
-include { FASTQC                            } from '../modules/nf-core/fastqc/main'
-include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
-include { CUSTOM_DUMPSOFTWAREVERSIONS       } from '../modules/nf-core/custom/dumpsoftwareversions/main'
-include { VSEARCH_CLUSTER                   } from '../modules/nf-core/vsearch/cluster/main'
-include { FASTA_NEWICK_EPANG_GAPPA          } from '../subworkflows/nf-core/fasta_newick_epang_gappa/main'
-
+include { paramsSummaryMap       } from 'plugin/nf-validation'
+include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_ampliseq_pipeline'
+include { makeComplement         } from '../subworkflows/local/utils_nfcore_ampliseq_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -250,12 +254,12 @@ include { FASTA_NEWICK_EPANG_GAPPA          } from '../subworkflows/nf-core/fast
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-// Info required for completion email and summary
-def multiqc_report      = []
-
 workflow AMPLISEQ {
 
+    main:
+
     ch_versions = Channel.empty()
+    ch_multiqc_files = Channel.empty()
 
     //
     // Create input channels
@@ -279,6 +283,37 @@ workflow AMPLISEQ {
         ch_input_reads = PARSE_INPUT.out.reads
     } else {
         error("One of `--input`, `--input_fasta`, `--input_folder` must be provided!")
+    }
+
+    //
+    // Add primer info to sequencing files
+    //
+    if ( params.multiregion ) {
+        // is multiple region analysis
+        ch_input_reads
+            .combine( Channel.fromSamplesheet("multiregion") )
+            .map{ info, reads, multi ->
+                def meta = info + multi
+                return [ meta, reads ] }
+            .map{ info, reads ->
+                def meta = info +
+                    [id: info.sample+"_"+info.fw_primer+"_"+info.rv_primer] +
+                    [fw_primer_revcomp: makeComplement(info.fw_primer.reverse())] +
+                    [rv_primer_revcomp: makeComplement(info.rv_primer.reverse())]
+                return [ meta, reads ] }
+            .set { ch_input_reads }
+    } else {
+        // is single region
+        ch_input_reads
+            .map{ info, reads ->
+                def meta = info +
+                    [region: null, region_length: null] +
+                    [fw_primer: params.FW_primer, rv_primer: params.RV_primer] +
+                    [id: info.sample] +
+                    [fw_primer_revcomp: params.FW_primer ? makeComplement(params.FW_primer.reverse()) : null] +
+                    [rv_primer_revcomp: params.RV_primer ? makeComplement(params.RV_primer.reverse()) : null]
+                return [ meta, reads ] }
+            .set { ch_input_reads }
     }
 
     //Filter empty files
@@ -313,6 +348,7 @@ workflow AMPLISEQ {
     //
     if (!params.skip_fastqc) {
         FASTQC ( RENAME_RAW_DATA_FILES.out.fastq )
+        ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
         ch_versions = ch_versions.mix(FASTQC.out.versions.first())
     }
 
@@ -325,7 +361,8 @@ workflow AMPLISEQ {
             params.illumina_pe_its,
             params.double_primer
         ).reads.set { ch_trimmed_reads }
-        ch_versions = ch_versions.mix(CUTADAPT_WORKFLOW.out.versions.first())
+        ch_multiqc_files = ch_multiqc_files.mix(CUTADAPT_WORKFLOW.out.logs.collect{it[1]})
+        ch_versions = ch_versions.mix(CUTADAPT_WORKFLOW.out.versions)
     } else {
         ch_trimmed_reads = RENAME_RAW_DATA_FILES.out.fastq
     }
@@ -350,10 +387,12 @@ workflow AMPLISEQ {
     if ( !params.illumina_novaseq ) {
         DADA2_ERR ( ch_filt_reads )
         ch_errormodel = DADA2_ERR.out.errormodel
+        ch_versions = ch_versions.mix(DADA2_ERR.out.versions)
     } else {
         DADA2_ERR ( ch_filt_reads )
         NOVASEQ_ERR ( DADA2_ERR.out.errormodel )
         ch_errormodel = NOVASEQ_ERR.out.errormodel
+        ch_versions = ch_versions.mix(DADA2_ERR.out.versions)
     }
 
     //group by meta
@@ -361,9 +400,10 @@ workflow AMPLISEQ {
         .join( ch_errormodel )
         .set { ch_derep_errormodel }
     DADA2_DENOISING ( ch_derep_errormodel.dump(tag: 'into_denoising')  )
-    ch_versions = ch_versions.mix(DADA2_DENOISING.out.versions.first())
+    ch_versions = ch_versions.mix(DADA2_DENOISING.out.versions)
 
     DADA2_RMCHIMERA ( DADA2_DENOISING.out.seqtab )
+    ch_versions = ch_versions.mix(DADA2_RMCHIMERA.out.versions)
 
     //group by sequencing run & group by meta
     DADA2_PREPROCESSING.out.logs
@@ -372,39 +412,80 @@ workflow AMPLISEQ {
         .join( DADA2_RMCHIMERA.out.rds )
         .set { ch_track_numbers }
     DADA2_STATS ( ch_track_numbers )
+    ch_versions = ch_versions.mix(DADA2_STATS.out.versions)
 
     //merge if several runs, otherwise just publish
     DADA2_MERGE (
         DADA2_STATS.out.stats.map { meta, stats -> stats }.collect(),
         DADA2_RMCHIMERA.out.rds.map { meta, rds -> rds }.collect() )
+    ch_versions = ch_versions.mix(DADA2_MERGE.out.versions)
 
     //merge cutadapt_summary and dada_stats files
     if (!params.skip_cutadapt) {
         MERGE_STATS_STD (CUTADAPT_WORKFLOW.out.summary, DADA2_MERGE.out.dada2stats)
         ch_stats = MERGE_STATS_STD.out.tsv
+        ch_versions = ch_versions.mix(MERGE_STATS_STD.out.versions)
     } else {
         ch_stats = DADA2_MERGE.out.dada2stats
     }
 
     //
+    // SUBWORKFLOW / MODULES : Taxonomic classification with DADA2, SINTAX and/or QIIME2
+    //
+    if ( params.multiregion ) {
+        // separate sequences and abundances when several regions
+        DADA2_SPLITREGIONS (
+            //DADA2_DENOISING per run & region -> per run
+            ch_reads
+                .map {
+                    info, reads ->
+                        def meta = info.subMap( info.keySet() - 'id' - 'sample' - 'run' ) // All of 'id', 'sample', 'run' must be removed to merge by region
+                        def inf2 = info.subMap( 'id', 'sample' )// May not contain false,true,null; only 'id', 'sample' required
+                        [ meta, inf2 ] }
+                .groupTuple(by: 0 ).dump(tag:'DADA2_SPLITREGIONS:meta'),
+            DADA2_MERGE.out.dada2asv )
+        ch_versions = ch_versions.mix(DADA2_SPLITREGIONS.out.versions)
+
+        // run q2-sidle
+        SIDLE_WF (
+            DADA2_SPLITREGIONS.out.for_sidle,
+            ch_sidle_ref_taxonomy.collect(),
+            val_sidle_ref_taxonomy,
+            ch_sidle_ref_taxonomy_tree
+        )
+        ch_versions = ch_versions.mix(SIDLE_WF.out.versions)
+
+        // forward results to downstream analysis if multi region
+        ch_dada2_asv = SIDLE_WF.out.table_tsv
+        ch_dada2_fasta = Channel.empty()
+        // Any ASV post-clustering param is not allowed:
+        // - solved by '!params.multiregion' for vsearch_cluster, filter_ssu, min_len_asv, max_len_asv, filter_codons
+        // - solved in 'lib/WorkflowAmpliseq.groovy': cut_its
+        // Must have params:
+        // - solved by '!params.multiregion' for skip_report
+        // - solved in 'lib/WorkflowAmpliseq.groovy': skip_dada_taxonomy
+    } else {
+        // forward results to downstream analysis if single region
+        ch_dada2_fasta = DADA2_MERGE.out.fasta
+        ch_dada2_asv = DADA2_MERGE.out.asv
+    }
+
+    //
     // MODULE : ASV post-clustering with VSEARCH
     //
-    if (params.vsearch_cluster) {
-        ch_fasta_for_clustering = DADA2_MERGE.out.fasta
+    if (params.vsearch_cluster && !params.multiregion) {
+        ch_fasta_for_clustering = ch_dada2_fasta
             .map {
                 fasta ->
                     def meta = [:]
                     meta.id = "ASV_post_clustering"
                     [ meta, fasta ] }
         VSEARCH_CLUSTER ( ch_fasta_for_clustering )
-        ch_versions = ch_versions.mix(VSEARCH_CLUSTER.out.versions.ifEmpty(null))
-        FILTER_CLUSTERS ( VSEARCH_CLUSTER.out.clusters, DADA2_MERGE.out.asv )
-        ch_versions = ch_versions.mix(FILTER_CLUSTERS.out.versions.ifEmpty(null))
+        ch_versions = ch_versions.mix(VSEARCH_CLUSTER.out.versions)
+        FILTER_CLUSTERS ( VSEARCH_CLUSTER.out.clusters, ch_dada2_asv )
+        ch_versions = ch_versions.mix(FILTER_CLUSTERS.out.versions)
         ch_dada2_fasta = FILTER_CLUSTERS.out.fasta
         ch_dada2_asv = FILTER_CLUSTERS.out.asv
-    } else {
-        ch_dada2_fasta = DADA2_MERGE.out.fasta
-        ch_dada2_asv = DADA2_MERGE.out.asv
     }
 
     //
@@ -413,6 +494,7 @@ workflow AMPLISEQ {
     if ( params.input_fasta ) {
         FORMAT_FASTAINPUT( ch_input_fasta )
         ch_unfiltered_fasta = FORMAT_FASTAINPUT.out.fasta
+        ch_versions = ch_versions.mix(FORMAT_FASTAINPUT.out.versions)
     } else {
         ch_unfiltered_fasta = ch_dada2_fasta
     }
@@ -420,27 +502,31 @@ workflow AMPLISEQ {
     //
     // Modules : Filter rRNA
     //
-    if (!params.skip_barrnap && params.filter_ssu) {
+    if ( !params.skip_barrnap && params.filter_ssu && !params.multiregion ) {
         BARRNAP ( ch_unfiltered_fasta )
+        ch_versions = ch_versions.mix(BARRNAP.out.versions)
         BARRNAPSUMMARY ( BARRNAP.out.gff.collect() )
+        ch_versions = ch_versions.mix(BARRNAPSUMMARY.out.versions)
         BARRNAPSUMMARY.out.warning.subscribe {
             if ( it.baseName.toString().startsWith("WARNING") ) {
                 error("Barrnap could not identify any rRNA in the ASV sequences! This will result in all sequences being removed with SSU filtering.")
             }
         }
         ch_barrnapsummary = BARRNAPSUMMARY.out.summary
-        ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))
         FILTER_SSU ( ch_unfiltered_fasta, ch_dada2_asv.ifEmpty( [] ), BARRNAPSUMMARY.out.summary )
+        ch_versions = ch_versions.mix(FILTER_SSU.out.versions)
         MERGE_STATS_FILTERSSU ( ch_stats, FILTER_SSU.out.stats )
+        ch_versions = ch_versions.mix(MERGE_STATS_FILTERSSU.out.versions)
         ch_stats = MERGE_STATS_FILTERSSU.out.tsv
         ch_dada2_fasta = FILTER_SSU.out.fasta
         ch_dada2_asv = FILTER_SSU.out.asv
-    } else if (!params.skip_barrnap && !params.filter_ssu) {
+    } else if ( !params.skip_barrnap && !params.filter_ssu && !params.multiregion ) {
         BARRNAP ( ch_unfiltered_fasta )
         BARRNAPSUMMARY ( BARRNAP.out.gff.collect() )
         BARRNAPSUMMARY.out.warning.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn "Barrnap could not identify any rRNA in the ASV sequences. We recommended to use the --skip_barrnap option for these sequences." }
         ch_barrnapsummary = BARRNAPSUMMARY.out.summary
-        ch_versions = ch_versions.mix(BARRNAP.out.versions.ifEmpty(null))
+        ch_versions = ch_versions.mix(BARRNAP.out.versions)
+        ch_versions = ch_versions.mix(BARRNAPSUMMARY.out.versions)
         ch_dada2_fasta = ch_unfiltered_fasta
     } else {
         ch_barrnapsummary = Channel.empty()
@@ -450,9 +536,9 @@ workflow AMPLISEQ {
     //
     // Modules : amplicon length filtering
     //
-    if (params.min_len_asv || params.max_len_asv) {
+    if ( (params.min_len_asv || params.max_len_asv) && !params.multiregion ) {
         FILTER_LEN_ASV ( ch_dada2_fasta, ch_dada2_asv.ifEmpty( [] ) )
-        ch_versions = ch_versions.mix(FILTER_LEN_ASV.out.versions.ifEmpty(null))
+        ch_versions = ch_versions.mix(FILTER_LEN_ASV.out.versions)
         MERGE_STATS_FILTERLENASV ( ch_stats, FILTER_LEN_ASV.out.stats )
         ch_stats = MERGE_STATS_FILTERLENASV.out.tsv
         ch_dada2_fasta = FILTER_LEN_ASV.out.fasta
@@ -464,10 +550,11 @@ workflow AMPLISEQ {
     //
     // Modules : Filtering based on codons in an open reading frame
     //
-    if (params.filter_codons ) {
+    if ( params.filter_codons && !params.multiregion ) {
         FILTER_CODONS ( ch_dada2_fasta, ch_dada2_asv.ifEmpty( [] ) )
-        ch_versions = ch_versions.mix(FILTER_CODONS.out.versions.ifEmpty(null))
+        ch_versions = ch_versions.mix(FILTER_CODONS.out.versions)
         MERGE_STATS_CODONS( ch_stats, FILTER_CODONS.out.stats )
+        ch_versions = ch_versions.mix(MERGE_STATS_CODONS.out.versions)
         ch_stats = MERGE_STATS_CODONS.out.tsv
         ch_dada2_fasta = FILTER_CODONS.out.fasta
         ch_dada2_asv = FILTER_CODONS.out.asv
@@ -492,8 +579,9 @@ workflow AMPLISEQ {
             outfile =  params.its_partial ? "ASV_ITS_seqs.ITS2.full_and_partial.fasta" : "ASV_ITS_seqs.ITS2.fasta"
         }
         ITSX_CUTASV ( ch_full_fasta, outfile )
-        ch_versions = ch_versions.mix(ITSX_CUTASV.out.versions.ifEmpty(null))
-        ch_fasta = ITSX_CUTASV.out.fasta
+        ch_versions = ch_versions.mix(ITSX_CUTASV.out.versions)
+        FILTER_LEN_ITSX ( ITSX_CUTASV.out.fasta, [] )
+        ch_fasta = FILTER_LEN_ITSX.out.fasta
     }
 
     //
@@ -505,6 +593,7 @@ workflow AMPLISEQ {
         if (!params.dada_ref_tax_custom) {
             //standard ref taxonomy input from conf/ref_databases.config
             FORMAT_TAXONOMY ( ch_dada_ref_taxonomy.collect(), val_dada_ref_taxonomy )
+            ch_versions = ch_versions.mix(FORMAT_TAXONOMY.out.versions)
             ch_assigntax = FORMAT_TAXONOMY.out.assigntax
             ch_addspecies = FORMAT_TAXONOMY.out.addspecies
         }
@@ -588,7 +677,7 @@ workflow AMPLISEQ {
             ch_fasta,
             ch_qiime_classifier
         )
-        ch_versions = ch_versions.mix( QIIME2_TAXONOMY.out.versions.ifEmpty(null) ) //usually a .first() is here, dont know why this leads here to a warning
+        ch_versions = ch_versions.mix( QIIME2_TAXONOMY.out.versions )
         ch_qiime2_tax = QIIME2_TAXONOMY.out.tsv
         ch_tax_for_phyloseq = ch_tax_for_phyloseq.mix ( PHYLOSEQ_INTAX_QIIME2 ( ch_qiime2_tax ).tsv.map { it = [ "qiime2", file(it) ] } )
     } else {
@@ -601,11 +690,16 @@ workflow AMPLISEQ {
     if ( run_qiime2 ) {
         // Import ASV abundance table and sequences into QIIME2
         QIIME2_INASV ( ch_dada2_asv )
+        ch_versions = ch_versions.mix( QIIME2_INASV.out.versions )
         QIIME2_INSEQ ( ch_fasta )
+        ch_versions = ch_versions.mix( QIIME2_INSEQ.out.versions )
 
         // Import phylogenetic tree into QIIME2
         if ( params.pplace_tree ) {
             ch_tree = QIIME2_INTREE ( FASTA_NEWICK_EPANG_GAPPA.out.grafted_phylogeny ).qza
+            ch_versions = ch_versions.mix( QIIME2_INTREE.out.versions )
+        } else if (params.multiregion) {
+            ch_tree = SIDLE_WF.out.tree_qza
         } else { ch_tree = [] }
 
         // Import taxonomic classification into QIIME2, if available
@@ -615,6 +709,10 @@ workflow AMPLISEQ {
             ch_tax = Channel.empty()
             tax_agglom_min = 1
             tax_agglom_max = 2
+        } else if ( params.multiregion ) {
+            log.info "Use multi-region SIDLE taxonomy classification"
+            val_used_taxonomy = "SIDLE"
+            ch_tax = SIDLE_WF.out.tax_qza
         } else if ( params.pplace_tree && params.pplace_taxonomy) {
             log.info "Use EPA-NG / GAPPA taxonomy classification"
             val_used_taxonomy = "phylogenetic placement"
@@ -645,20 +743,23 @@ workflow AMPLISEQ {
 
         // Filtering ASVs by taxonomy & prevalence & counts
         if (params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1) {
-            QIIME2_FILTERTAXA (
+            QIIME2_TABLEFILTERTAXA (
                 QIIME2_INASV.out.qza,
-                QIIME2_INSEQ.out.qza,
                 ch_tax,
                 params.min_frequency,
                 params.min_samples,
                 params.exclude_taxa
             )
-            FILTER_STATS ( ch_dada2_asv, QIIME2_FILTERTAXA.out.tsv )
+            ch_versions = ch_versions.mix( QIIME2_TABLEFILTERTAXA.out.versions )
+            QIIME2_SEQFILTERTABLE ( QIIME2_TABLEFILTERTAXA.out.qza, QIIME2_INSEQ.out.qza )
+            ch_versions = ch_versions.mix( QIIME2_SEQFILTERTABLE.out.versions )
+            FILTER_STATS ( ch_dada2_asv, QIIME2_TABLEFILTERTAXA.out.tsv )
             ch_versions = ch_versions.mix( FILTER_STATS.out.versions.ifEmpty(null) )
             MERGE_STATS_FILTERTAXA (ch_stats, FILTER_STATS.out.tsv)
-            ch_asv = QIIME2_FILTERTAXA.out.asv
-            ch_seq = QIIME2_FILTERTAXA.out.seq
-            ch_tsv = QIIME2_FILTERTAXA.out.tsv
+            ch_versions = ch_versions.mix( MERGE_STATS_FILTERTAXA.out.versions )
+            ch_asv = QIIME2_TABLEFILTERTAXA.out.qza
+            ch_seq = QIIME2_SEQFILTERTABLE.out.qza
+            ch_tsv = QIIME2_TABLEFILTERTAXA.out.tsv
         } else {
             ch_asv = QIIME2_INASV.out.qza
             ch_seq = QIIME2_INSEQ.out.qza
@@ -667,29 +768,35 @@ workflow AMPLISEQ {
         //Export various ASV tables
         if (!params.skip_abundance_tables) {
             QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, ch_qiime2_tax, ch_dada2_tax, ch_pplace_tax, ch_sintax_tax, tax_agglom_min, tax_agglom_max )
+            ch_versions = ch_versions.mix( QIIME2_EXPORT.out.versions )
         }
 
         if (!params.skip_barplot) {
             QIIME2_BARPLOT ( ch_metadata, ch_asv, ch_tax, '' )
+            ch_versions = ch_versions.mix( QIIME2_BARPLOT.out.versions )
         }
 
         if (params.metadata_category_barplot) {
             QIIME2_BARPLOTAVG ( ch_metadata, QIIME2_EXPORT.out.rel_tsv, ch_tax, params.metadata_category_barplot )
+            ch_versions = ch_versions.mix( QIIME2_BARPLOTAVG.out.versions )
         }
 
         //Select metadata categories for diversity analysis & ancom
         if (params.metadata_category) {
             ch_metacolumn_all = Channel.fromList(params.metadata_category.tokenize(','))
             METADATA_PAIRWISE ( ch_metadata ).category.set { ch_metacolumn_pairwise }
+            ch_versions = ch_versions.mix( METADATA_PAIRWISE.out.versions )
             ch_metacolumn_pairwise = ch_metacolumn_pairwise.splitCsv().flatten()
             ch_metacolumn_pairwise = ch_metacolumn_all.join(ch_metacolumn_pairwise)
         } else if (!params.skip_ancom || !params.skip_diversity_indices) {
             METADATA_ALL ( ch_metadata ).category.set { ch_metacolumn_all }
+            ch_versions = ch_versions.mix( METADATA_ALL.out.versions )
             //return empty channel if no appropriate column was found
             ch_metacolumn_all.branch { passed: it != "" }.set { result }
             ch_metacolumn_all = result.passed
             ch_metacolumn_all = ch_metacolumn_all.splitCsv().flatten()
             METADATA_PAIRWISE ( ch_metadata ).category.set { ch_metacolumn_pairwise }
+            ch_versions = ch_versions.mix( METADATA_PAIRWISE.out.versions )
             ch_metacolumn_pairwise = ch_metacolumn_pairwise.splitCsv().flatten()
         } else {
             ch_metacolumn_all = Channel.empty()
@@ -710,6 +817,7 @@ workflow AMPLISEQ {
                 params.skip_diversity_indices,
                 params.diversity_rarefaction_depth
             )
+            ch_versions = ch_versions.mix( QIIME2_DIVERSITY.out.versions )
         }
 
         //Perform ANCOM tests
@@ -722,6 +830,7 @@ workflow AMPLISEQ {
                 tax_agglom_min,
                 tax_agglom_max
             )
+            ch_versions = ch_versions.mix( QIIME2_ANCOM.out.versions )
         }
     } else {
         ch_tsv = ch_dada2_asv
@@ -776,32 +885,26 @@ workflow AMPLISEQ {
     }
 
     //
-    // MODULE: Sortware versions
+    // Collate and save software versions
     //
-    CUSTOM_DUMPSOFTWAREVERSIONS (
-        ch_versions.unique().collectFile(name: 'collated_versions.yml')
-    )
+    softwareVersionsToYAML(ch_versions)
+        .collectFile(storeDir: "${params.outdir}/pipeline_info", name: 'software_versions.yml', sort: true, newLine: true)
+        .set { ch_collated_versions }
 
     //
     // MODULE: MultiQC
     //
     if (!params.skip_multiqc) {
-        workflow_summary    = WorkflowAmpliseq.paramsSummaryMultiqc(workflow, summary_params)
-        ch_workflow_summary = Channel.value(workflow_summary)
-
-        methods_description    = WorkflowAmpliseq.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description, params)
-        ch_methods_description = Channel.value(methods_description)
-
-        ch_multiqc_files = Channel.empty()
-        ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-        ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
-        ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
-        if (!params.skip_fastqc) {
-            ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
-        }
-        if (!params.skip_cutadapt) {
-            ch_multiqc_files = ch_multiqc_files.mix(CUTADAPT_WORKFLOW.out.logs.collect{it[1]}.ifEmpty([]))
-        }
+        ch_multiqc_config                     = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
+        ch_multiqc_custom_config              = params.multiqc_config ? Channel.fromPath(params.multiqc_config, checkIfExists: true) : Channel.empty()
+        ch_multiqc_logo                       = params.multiqc_logo ? Channel.fromPath(params.multiqc_logo, checkIfExists: true) : Channel.empty()
+        summary_params                        = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
+        ch_workflow_summary                   = Channel.value(paramsSummaryMultiqc(summary_params))
+        ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
+        ch_methods_description                = Channel.value(methodsDescriptionText(ch_multiqc_custom_methods_description))
+        ch_multiqc_files                      = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+        ch_multiqc_files                      = ch_multiqc_files.mix(ch_collated_versions)
+        ch_multiqc_files                      = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: false))
 
         MULTIQC (
             ch_multiqc_files.collect(),
@@ -809,13 +912,16 @@ workflow AMPLISEQ {
             ch_multiqc_custom_config.toList(),
             ch_multiqc_logo.toList()
         )
-        multiqc_report = MULTIQC.out.report.toList()
+
+        ch_multiqc_report_list = MULTIQC.out.report.toList()
+    } else {
+        ch_multiqc_report_list = Channel.empty()
     }
 
     //
     // MODULE: Summary Report
     //
-    if (!params.skip_report) {
+    if (!params.skip_report && !params.multiregion) {
         SUMMARY_REPORT (
             ch_report_template,
             ch_report_css,
@@ -824,7 +930,7 @@ workflow AMPLISEQ {
             ch_metadata.ifEmpty( [] ),
             params.input ? file(params.input) : [], // samplesheet input
             ch_input_fasta.ifEmpty( [] ), // fasta input
-            !params.input_fasta && !params.skip_fastqc && !params.skip_multiqc ? MULTIQC.out.plots : [], //.collect().flatten().collectFile(name: "mqc_fastqc_per_sequence_quality_scores_plot_1.svg")
+            !params.input_fasta && !params.skip_fastqc && !params.skip_multiqc ? MULTIQC.out.plots : [], //.collect().flatten().collectFile(name: "fastqc_per_sequence_quality_scores_plot.svg")
             !params.skip_cutadapt ? CUTADAPT_WORKFLOW.out.summary.collect().ifEmpty( [] ) : [],
             find_truncation_values,
             DADA2_PREPROCESSING.out.args.first().ifEmpty( [] ),
@@ -866,7 +972,7 @@ workflow AMPLISEQ {
             !params.skip_taxonomy && ( params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier ) && run_qiime2_taxonomy ? QIIME2_TAXONOMY.out.tsv.ifEmpty( [] ) : [],
             run_qiime2,
             run_qiime2 ? val_used_taxonomy : "",
-            run_qiime2 && ( params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1 ) ? ch_dada2_asv.countLines()+","+QIIME2_FILTERTAXA.out.tsv.countLines() : "",
+            run_qiime2 && ( params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1 ) ? ch_dada2_asv.countLines()+","+QIIME2_TABLEFILTERTAXA.out.tsv.countLines() : "",
             run_qiime2 && ( params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1 ) ? FILTER_STATS.out.tsv.ifEmpty( [] ) : [],
             run_qiime2 && !params.skip_barplot ? QIIME2_BARPLOT.out.folder.ifEmpty( [] ) : [],
             run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.abs_tsv.ifEmpty( [] ) : [],
@@ -883,7 +989,9 @@ workflow AMPLISEQ {
         ch_versions    = ch_versions.mix(SUMMARY_REPORT.out.versions)
     }
 
-    //Save input in results folder
+    //
+    // Save input files in results folder
+    //
     if ( params.input ) {
         file("${params.outdir}/input").mkdir()
         file("${params.input}").copyTo("${params.outdir}/input")
@@ -892,28 +1000,18 @@ workflow AMPLISEQ {
         file("${params.outdir}/input").mkdir()
         file("${params.input_fasta}").copyTo("${params.outdir}/input")
     }
-    //Save metadata in results folder
+    if ( params.multiregion ) {
+        file("${params.outdir}/input").mkdir()
+        file("${params.multiregion}").copyTo("${params.outdir}/input")
+    }
     if ( params.metadata ) {
         file("${params.outdir}/input").mkdir()
         file("${params.metadata}").copyTo("${params.outdir}/input")
     }
-}
 
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    COMPLETION EMAIL AND SUMMARY
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-workflow.onComplete {
-    if (params.email || params.email_on_fail) {
-        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
-    }
-    NfcoreTemplate.dump_parameters(workflow, params)
-    NfcoreTemplate.summary(workflow, params, log)
-    if (params.hook_url) {
-        NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
-    }
+    emit:
+    multiqc_report = ch_multiqc_report_list      // MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
+    versions       = ch_versions                 // channel: [ path(versions.yml) ]
 }
 
 /*

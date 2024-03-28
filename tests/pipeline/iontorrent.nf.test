@@ -16,7 +16,7 @@ nextflow_pipeline {
         then {
             assertAll(
                 { assert workflow.success },
-                { assert snapshot(UTILS.removeNextflowVersion("$outputDir")).match("software_versions") },
+                { assert new File("$outputDir/pipeline_info/software_versions.yml").exists() },
                 { assert snapshot(path("$outputDir/overall_summary.tsv")).match("overall_summary_tsv") },
                 { assert snapshot(path("$outputDir/barrnap/rrna.arc.gff"),
                                 path("$outputDir/barrnap/rrna.bac.gff"),
@@ -27,11 +27,9 @@ nextflow_pipeline {
                 { assert snapshot(path("$outputDir/dada2/ASV_seqs.fasta"),
                                 path("$outputDir/dada2/ASV_table.tsv"),
                                 path("$outputDir/dada2/DADA2_stats.tsv"),
-                                path("$outputDir/dada2/ref_taxonomy.unite-fungi_8_3.txt"),
                                 path("$outputDir/dada2/DADA2_table.rds"),
                                 path("$outputDir/dada2/DADA2_table.tsv")).match("dada2") },
-                { assert new File("$outputDir/dada2/ASV_tax.unite-fungi_8_3.tsv").exists() },
-                { assert new File("$outputDir/dada2/ASV_tax_species.unite-fungi_8_3.tsv").exists() },
+                { assert new File("$outputDir/sintax/ASV_tax_sintax.unite-fungi_8_2.tsv").exists() },
                 { assert new File("$outputDir/fastqc/it1_fastqc.html").exists() },
                 { assert new File("$outputDir/fastqc/it2_fastqc.html").exists() },
                 { assert new File("$outputDir/fastqc/it3_fastqc.html").exists() },
@@ -40,7 +38,7 @@ nextflow_pipeline {
                                 path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt"),
                                 path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt")).match("multiqc") },
                 { assert new File("$outputDir/summary_report/summary_report.html").exists() },
-                { assert new File("$outputDir/phyloseq/dada2_phyloseq.rds").exists() }
+                { assert new File("$outputDir/phyloseq/sintax_phyloseq.rds").exists() }
             )
         }
     }

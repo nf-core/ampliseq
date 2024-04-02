@@ -564,7 +564,8 @@
                 "sidle_ref_tree_custom": {
                     "type": "string",
                     "help_text": "Overwrites tree chosen by `--sidle_ref_taxonomy`",
-                    "description": "Path to SIDLE reference taxonomy tree (*.qza)"
+                    "description": "Path to SIDLE reference taxonomy tree (*.qza)",
+                    "pattern": "*.qza"
                 }
             }
         },

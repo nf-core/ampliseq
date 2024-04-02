@@ -2,7 +2,7 @@ process SIDLE_TRIM {
     tag "$meta.region,$meta.region_length"
     label 'process_single'
 
-    container 'docker.io/d4straub/pipesidle:0.1.0-beta'
+    container 'nf-core/pipesidle:0.1.0-beta'
 
     input:
     tuple val(meta), path(table), path(seq)

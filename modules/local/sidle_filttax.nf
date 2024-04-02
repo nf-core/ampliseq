@@ -2,7 +2,7 @@
 process SIDLE_FILTTAX {
     label 'process_single'
 
-    container 'docker.io/d4straub/pipesidle:0.1.0-beta'
+    container 'nf-core/pipesidle:0.1.0-beta'
 
     input:
     path(table_tofilter)

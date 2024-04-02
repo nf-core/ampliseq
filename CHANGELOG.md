@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 - [#700](https://github.com/nf-core/ampliseq/pull/700) - Optional `--save_intermediates` to publish QIIME2 data objects (.qza) and visualisation objects (.qzv)
-- [#702](https://github.com/nf-core/ampliseq/pull/702),[#723](https://github.com/nf-core/ampliseq/pull/723),[#728](https://github.com/nf-core/ampliseq/pull/728) - Add multiple regions analysis (including 5R / SMURF / q2-sidle)
+- [#702](https://github.com/nf-core/ampliseq/pull/702),[#723](https://github.com/nf-core/ampliseq/pull/723),[#728](https://github.com/nf-core/ampliseq/pull/728),[#729](https://github.com/nf-core/ampliseq/pull/729) - Add multiple regions analysis (including 5R / SMURF / q2-sidle)
 
 ### `Changed`
 

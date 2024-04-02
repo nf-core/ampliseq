@@ -1,7 +1,7 @@
 process SIDLE_TABLERECON {
     label 'process_medium'
 
-    container 'docker.io/d4straub/pipesidle:0.1.0-beta'
+    container 'nf-core/pipesidle:0.1.0-beta'
 
     input:
     val(metaid)

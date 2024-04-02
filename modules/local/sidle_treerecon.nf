@@ -1,7 +1,7 @@
 process SIDLE_TREERECON {
     label 'process_medium'
 
-    container 'docker.io/d4straub/pipesidle:0.1.0-beta'
+    container 'nf-core/pipesidle:0.1.0-beta'
 
     input:
     path(reconstruction_fragments)

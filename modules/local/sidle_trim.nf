@@ -31,7 +31,6 @@ process SIDLE_TRIM {
     export MPLCONFIGDIR="./mplconfigdir"
     export NUMBA_CACHE_DIR="./numbacache"
 
-    #CPU=1
     qiime sidle trim-dada2-posthoc \\
         --i-table ${table} \\
         --i-representative-sequences ${seq} \\

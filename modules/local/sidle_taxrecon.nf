@@ -29,7 +29,6 @@ process SIDLE_TAXRECON {
     export MPLCONFIGDIR="./mplconfigdir"
     export NUMBA_CACHE_DIR="./numbacache"
 
-    #CPU=1
     qiime sidle reconstruct-taxonomy \\
         --i-reconstruction-map ${reconstruction_map} \\
         --i-taxonomy ${tax} \\

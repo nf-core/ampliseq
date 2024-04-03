@@ -1,0 +1,40 @@
+{
+    "input": {
+        "content": [
+            "samplesheet_multiregion.tsv:md5,b5b34bd6bb19f5a130b2328811e03bb8",
+            "metadata_multiregion.tsv:md5,e2671821f0cf64f15a50d3ddac8f20d1",
+            "regions_multiregion.tsv:md5,d0ca51b297f896e7b397509497e8264c"
+        ],
+        "timestamp": "2024-02-23T00:00:00+0000"
+    },
+    "cutadapt": {
+        "content": [
+            "cutadapt_summary.tsv:md5,1ad83d6d36ac9177d89af4e5caa7dedc"
+        ],
+        "timestamp": "2024-02-23T00:00:00+0000"
+    },
+    "overall_summary_tsv": {
+        "content": [
+            "overall_summary.tsv:md5,38ffc548e8d7c0da5ed09c290131f0b5"
+        ],
+        "timestamp": "2024-02-23T00:00:00+0000"
+    },
+    "dada2": {
+        "content": [
+            "ASV_seqs.fasta:md5,485d6c6f8c82c17fbd679b2a9032a541",
+            "ASV_table.tsv:md5,336bd44a6ff10c638ab95f7488030baa",
+            "DADA2_stats.tsv:md5,e56236955a435abbfdc92d514c9c5443",
+            "DADA2_table.rds:md5,6358376bb6f42ed782cda2be1564d3d8",
+            "DADA2_table.tsv:md5,f14f4e62f9898e6a0755e2d1621bcc3b"
+        ],
+        "timestamp": "2024-02-23T00:00:00+0000"
+    },
+    "multiqc": {
+        "content": [
+            "multiqc_fastqc.txt:md5,9468ae91af1a841c5e1369f11f704604",
+            "multiqc_general_stats.txt:md5,92c968d218577d47c2364849c07f7ab6",
+            "multiqc_cutadapt.txt:md5,2ef3cbb36c9461cddf6c3f493d2ddbd4"
+        ],
+        "timestamp": "2024-02-23T00:00:00+0000"
+    }
+}

@@ -3,6 +3,7 @@
 import argparse
 import gzip
 import pandas as pd
+import sys
 
 usage = """This program filters ASVs that aren't centroids after post-clustering."""
 
@@ -30,23 +31,25 @@ parser.add_argument(
     "-c",
     "--cluster-fastas",
     dest="cluster_fastas",
-    type=str,
+    type=argparse.FileType('r'),
+    default=sys.stdin,
     help="Space separated list of fasta files of the clusters. First read of the cluster should be the centroid of that cluster.",
     required=True,
 )
 
-args = parser.parse_args()
+count = parser.parse_args().count
+prefix = parser.parse_args().prefix
 
 # This dictionary will store the centroid ASVs as keys, and the values will be the ASVs clustered to that centroid
 cluster_dict = {}
 
 # Loop though list of cluster fasta files to populate cluster_dict and to create centroid fasta file
-cluster_fastas = args.cluster_fastas.split(" ")
+cluster_fastas = parser.parse_args().cluster_fastas.read().rstrip().split(" ")
 for cluster_fasta in cluster_fastas:
     read_num = 0
 
     # Loop through each line of current fasta file and open output fasta file in append mode
-    with gzip.open(cluster_fasta, "rt") as in_fasta, open(args.prefix + "_filtered.fna", "a") as out_fasta:
+    with gzip.open(cluster_fasta, "rt") as in_fasta, open(prefix + "_filtered.fna", "a") as out_fasta:
         for line in in_fasta:
             line = line.rstrip("\n")
 
@@ -75,7 +78,7 @@ for cluster_fasta in cluster_fastas:
 sam_asv_counts = {}
 
 # This count_df will have ASVs as the index, and samples as the header
-count_df = pd.read_table(args.count, delimiter="\t", index_col=0, header=0)
+count_df = pd.read_table(count, delimiter="\t", index_col=0, header=0)
 
 # Get the number of ASVs per sample before clustering
 for sample in count_df.columns:
@@ -103,5 +106,5 @@ for sample in count_df.columns:
 stats_df["ASVs_after_clustering"] = list(sam_asv_counts.values())
 
 # Output filtered count tsv and stats tsv
-count_df.to_csv(args.prefix + "_filtered.table.tsv", sep="\t")
-stats_df.to_csv(args.prefix + "_filtered.stats.tsv", sep="\t", index=False)
+count_df.to_csv(prefix + "_filtered.table.tsv", sep="\t")
+stats_df.to_csv(prefix + "_filtered.stats.tsv", sep="\t", index=False)

@@ -9,6 +9,7 @@ process QIIME2_DIVERSITY_BETAORD {
 
     output:
     path("beta_diversity/*"), emit: beta
+    path("*.qzv")           , emit: qzv
     path "versions.yml"     , emit: versions
 
     when:

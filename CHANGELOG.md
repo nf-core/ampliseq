@@ -3,6 +3,42 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## nf-core/ampliseq version 2.9.0 - 2024-04-03
+
+### `Added`
+
+- [#700](https://github.com/nf-core/ampliseq/pull/700) - Optional `--save_intermediates` to publish QIIME2 data objects (.qza) and visualisation objects (.qzv)
+- [#702](https://github.com/nf-core/ampliseq/pull/702),[#723](https://github.com/nf-core/ampliseq/pull/723),[#728](https://github.com/nf-core/ampliseq/pull/728),[#729](https://github.com/nf-core/ampliseq/pull/729) - Add multiple regions analysis (including 5R / SMURF / q2-sidle)
+
+### `Changed`
+
+- [#719](https://github.com/nf-core/ampliseq/pull/719) - Versions of all (instead of selected) processes are now exported to `pipeline_info/software_versions.yml`
+
+### `Fixed`
+
+- [#697](https://github.com/nf-core/ampliseq/pull/697),[#699](https://github.com/nf-core/ampliseq/pull/699),[#713](https://github.com/nf-core/ampliseq/pull/713) - Template update for nf-core/tools version 2.13.1
+- [#711](https://github.com/nf-core/ampliseq/pull/711) - From r207 and onwards Archaea sequences were omitted when parsing GTDB databases. (This did not affect `sbdi-gtdb` databases, only `gtdb`.)
+- [#715](https://github.com/nf-core/ampliseq/pull/715) - Fix filtering vsearch clusters for high number of clusters
+- [#717](https://github.com/nf-core/ampliseq/pull/717) - Fix edge case for sorting file names by using radix method
+- [#718](https://github.com/nf-core/ampliseq/pull/718) - Require a minimum sequence length of 50bp for taxonomic classifcation after using ITSx
+- [#721](https://github.com/nf-core/ampliseq/pull/721) - Fix error `unknown recognition error type: groovyjarjarantlr4.v4.runtime.LexerNoViableAltException` caused by a missing `\` in nf-core module `pigz/uncompress` (which had no consequences but was confusing)
+- [#722](https://github.com/nf-core/ampliseq/pull/722) - When barrnap detects several genes select the lowest e-value
+- [#726](https://github.com/nf-core/ampliseq/pull/726) - Add fallback to `download_pipeline.yml` because the pipeline does not support stub runs ([#2846](https://github.com/nf-core/tools/pull/2846))
+
+### `Dependencies`
+
+- [#720](https://github.com/nf-core/ampliseq/pull/720) - Updated nf-core modules, DADA2, and Phyloseq
+
+| software | previously | now    |
+| -------- | ---------- | ------ |
+| cutadapt | 3.4        | 4.6    |
+| DADA2    | 1.28.0     | 1.30.0 |
+| Phyloseq | 1.44.0     | 1.46.0 |
+
+### `Removed`
+
+- [#710](https://github.com/nf-core/ampliseq/pull/710) - Removed Phyloref from DADA2 reference option because it's part of PR2 5.0.0
+
 ## nf-core/ampliseq version 2.8.0 - 2024-01-16
 
 ### `Added`

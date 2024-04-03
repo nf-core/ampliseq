@@ -103,6 +103,24 @@
 
   > Czech, Lucas, Pierre Barbera, and Alexandros Stamatakis. “Genesis and Gappa: Processing, Analyzing and Visualizing Phylogenetic (Placement) Data.” Bioinformatics 36, no. 10 (May 1, 2020): 3263–65. https://doi.org/10.1093/bioinformatics/btaa070.
 
+### Multi region analysis (also include Greengenes 13_8 or SILVA 128)
+
+- [q2-sidle](https://doi.org/10.1101/2021.03.23.436606)
+
+  > Debelius, J.W.; Robeson, M.; Lhugerth, L.W.; Boulund, F.; Ye, W.; Engstrand, L. "A comparison of approaches to scaffolding multiple regions along the 16S rRNA gene for improved resolution." Preprint in BioRxiv. doi: 10.1101/2021.03.23.436606
+
+- [SMURF](https://doi.org/10.1186/s40168-017-0396-x)
+
+  > Fuks, G.; Elgart, M.; Amir, A.; Zeisel, A.; Turnbaugh, P.J., Soen, Y.; and Shental, N. (2018). "Combining 16S rRNA gene variable regions enables high-resolution microbial community profiling." Microbiome. 6: 17. doi: 10.1186/s40168-017-0396-x
+
+- [RESCRIPt](https://doi.org/10.1371/journal.pcbi.1009581)
+
+  > Robeson MS 2nd, O'Rourke DR, Kaehler BD, Ziemski M, Dillon MR, Foster JT, Bokulich NA. RESCRIPt: Reproducible sequence taxonomy reference database management. PLoS Comput Biol. 2021 Nov 8;17(11):e1009581. doi: 10.1371/journal.pcbi.1009581. PMID: 34748542; PMCID: PMC8601625.
+
+- [SEPP](https://doi.org/10.1128/msystems.00021-18)
+
+  > Janssen S, McDonald D, Gonzalez A, Navas-Molina JA, Jiang L, Xu ZZ, Winker K, Kado DM, Orwoll E, Manary M, Mirarab S, Knight R. Phylogenetic Placement of Exact Amplicon Sequences Improves Associations with Clinical Information. mSystems. 2018 Apr 17;3(3):e00021-18. doi: 10.1128/mSystems.00021-18. PMID: 29719869; PMCID: PMC5904434.
+
 ### Downstream analysis
 
 - [QIIME2](https://pubmed.ncbi.nlm.nih.gov/31341288/)

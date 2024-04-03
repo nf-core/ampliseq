@@ -5,7 +5,7 @@
     "description": "Amplicon sequencing analysis workflow using DADA2 and QIIME2",
     "type": "object",
     "definitions": {
-        "main_arguments": {
+        "input_output_options": {
             "title": "Main arguments",
             "type": "object",
             "description": "",
@@ -13,6 +13,7 @@
             "properties": {
                 "input": {
                     "type": "string",
+                    "format": "file-path",
                     "mimetype": "text/tsv",
                     "fa_icon": "fas fa-dna",
                     "description": "Path to tab-separated sample sheet",
@@ -21,6 +22,7 @@
                 },
                 "input_fasta": {
                     "type": "string",
+                    "format": "file-path",
                     "mimetype": "text/tsv",
                     "fa_icon": "fas fa-dna",
                     "description": "Path to ASV/OTU fasta file",
@@ -28,7 +30,7 @@
                 },
                 "input_folder": {
                     "type": "string",
-                    "mimetype": "text/tsv",
+                    "format": "directory-path",
                     "fa_icon": "fas fa-dna",
                     "description": "Path to folder containing zipped FastQ files",
                     "help_text": "Path to folder containing compressed fastq files.\n\nExample for input data organization from one sequencing run with two samples, paired-end data:\n\n```bash\ndata\n  \u251c\u2500sample1_1_L001_R1_001.fastq.gz\n  \u251c\u2500sample1_1_L001_R2_001.fastq.gz\n  \u251c\u2500sample2_1_L001_R1_001.fastq.gz\n  \u2514\u2500sample2_1_L001_R2_001.fastq.gz\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The folder must contain gzip compressed demultiplexed fastq files. If the file names do not follow the default (`\"/*_R{1,2}_001.fastq.gz\"`), please check `--extension`.\n3. Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique\n4. If your data is scattered, produce a sample sheet\n5. All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed. Sequencing data originating from multiple sequencing runs requires additionally the parameter `--multiple_sequencing_runs` and a specific folder structure.\n\nRelated parameters are:\n- `--pacbio` and `--iontorrent` if the sequencing data is PacBio data or IonTorrent data (default expected: paired-end Illumina data)\n- `--single_end` if the sequencing data is single-ended Illumina data (default expected: paired-end Illumina data)\n- `--multiple_sequencing_runs` if the sequencing data originates from multiple sequencing runs\n- `--extension` if the sequencing file names do not follow the default (`\"/*_R{1,2}_001.fastq.gz\"`)\n- Choose an appropriate reference taxonomy for the type of amplicon (16S/18S/ITS/CO1) (default: DADA2 assignTaxonomy and 16S rRNA sequence database)"
@@ -47,14 +49,29 @@
                 },
                 "metadata": {
                     "type": "string",
+                    "format": "file-path",
                     "description": "Path to metadata sheet, when missing most downstream analysis are skipped (barplots, PCoA plots, ...).",
                     "help_text": "This is optional, but for performing downstream analysis such as barplots, diversity indices or differential abundance testing, a metadata file is essential.\n\nRelated parameter:\n- `--metadata_category` (optional) to choose columns that are used for testing significance\n\nFor example:\n\n```bash\n--metadata \"path/to/metadata.tsv\"\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The metadata file has to follow the QIIME2 specifications (https://docs.qiime2.org/2021.2/tutorials/metadata/)\n\nThe first column in the tab-separated metadata file is the sample identifier column (required header: `ID`) and defines the sample or feature IDs associated with your study. In addition to the sample identifier column, the metadata file is required to have at least one column with multiple different non-numeric values but not all unique.\n**NB**: without additional columns there might be no groupings for the downstream analyses.\n\nSample identifiers should be 36 characters long or less, and also contain only ASCII alphanumeric characters (i.e. in the range of [a-z], [A-Z], or [0-9]), or the dash (-) character. For downstream analysis, by default all numeric columns, blanks or NA are removed, and only columns with multiple different values but not all unique are selected.\n\nThe columns which are to be assessed can be specified by `--metadata_category`. If `--metadata_category` isn't specified than all columns that fit the specification are automatically chosen.",
                     "fa_icon": "fas fa-file-csv"
+                },
+                "multiregion": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/tsv",
+                    "fa_icon": "fas fa-dna",
+                    "description": "Path to multi-region definition sheet, for multi-region analysis with Sidle",
+                    "help_text": "Path to file with information about sequenced regions, either tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml). This initiates scaffolding multiple regions along a reference.\n\nThe file must have four headers: \n- `region`: Unique region identifier\n- `region_length`: Minimal length of region\n- `FW_primer`: Forward primer sequence\n- `RV_primer`: Reverse primer sequence\n\nFor more details check the usage documentation.\n\nRelated parameters are:\n- `--sidle_ref_taxonomy` to select the reference taxonomic database\n- `--sidle_ref_tax_custom` for custom reference taxonomic database files\n- `--sidle_ref_tree_custom` for custom phylogenetic tree of reference taxonomic database",
+                    "schema": "assets/schema_multiregion.json"
                 },
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",
                     "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "save_intermediates": {
+                    "type": "boolean",
+                    "description": "Save intermediate results such as QIIME2's qza and qzv files",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "email": {
@@ -327,7 +344,8 @@
         "taxonomic_database": {
             "title": "Taxonomic database",
             "type": "object",
-            "default": "",
+            "fa_icon": "fas fa-database",
+            "description": "Choose a method and database for taxonomic assignments to single-region amplicons",
             "properties": {
                 "dada_ref_taxonomy": {
                     "type": "string",
@@ -344,7 +362,6 @@
                         "gtdb=R08-RS214",
                         "midori2-co1",
                         "midori2-co1=gb250",
-                        "phytoref",
                         "pr2",
                         "pr2=4.13.0",
                         "pr2=4.14.0",
@@ -525,8 +542,32 @@
                     "description": "Cutoff for partial ITS sequences. Only full sequences by default.",
                     "default": 0
                 }
-            },
-            "fa_icon": "fas fa-database"
+            }
+        },
+        "multiregion_taxonomic_database": {
+            "title": "Multi-region taxonomic database",
+            "type": "object",
+            "fa_icon": "fas fa-database",
+            "description": "Choose database for taxonomic assignments with multi-region amplicons using SIDLE",
+            "properties": {
+                "sidle_ref_taxonomy": {
+                    "type": "string",
+                    "help_text": "",
+                    "description": "Name of supported database, and optionally also version number",
+                    "enum": ["silva", "silva=128", "greengenes", "greengenes=13_8", "greengenes88"]
+                },
+                "sidle_ref_tax_custom": {
+                    "type": "string",
+                    "help_text": "Consider also setting `--sidle_ref_tree_custom`. Example usage: `--sidle_ref_tax_custom 'rep_set_99.fasta,rep_set_aligned_99.fasta,taxonomy_99_taxonomy.txt'`",
+                    "description": "Comma separated paths to three files: reference taxonomy sequences (*.fasta), reference taxonomy strings (*.txt)"
+                },
+                "sidle_ref_tree_custom": {
+                    "type": "string",
+                    "help_text": "Overwrites tree chosen by `--sidle_ref_taxonomy`",
+                    "description": "Path to SIDLE reference taxonomy tree (*.qza)",
+                    "pattern": "^.*\\.qza$"
+                }
+            }
         },
         "asv_filtering": {
             "title": "ASV filtering",
@@ -923,7 +964,7 @@
     },
     "allOf": [
         {
-            "$ref": "#/definitions/main_arguments"
+            "$ref": "#/definitions/input_output_options"
         },
         {
             "$ref": "#/definitions/sequencing_input"
@@ -942,6 +983,9 @@
         },
         {
             "$ref": "#/definitions/taxonomic_database"
+        },
+        {
+            "$ref": "#/definitions/multiregion_taxonomic_database"
         },
         {
             "$ref": "#/definitions/asv_filtering"

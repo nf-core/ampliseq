@@ -16,10 +16,8 @@ nextflow_pipeline {
         then {
             assertAll(
                 { assert workflow.success },
-                { assert snapshot(UTILS.removeNextflowVersion("$outputDir")).match("software_versions") },
+                { assert new File("$outputDir/pipeline_info/software_versions.yml").exists() },
                 { assert snapshot(path("$outputDir/overall_summary.tsv")).match("overall_summary_tsv") },
-                { assert snapshot(path("$outputDir/assignsh/ASV_tax_species_SH.unite-fungi_8_3.tsv")).match("assignsh") },
-                { assert new File("$outputDir/assignsh/ASV_ITS_tax.vsearch.txt").exists() },
                 { assert snapshot(path("$outputDir/barrnap/rrna.arc.gff"),
                                 path("$outputDir/barrnap/rrna.bac.gff"),
                                 path("$outputDir/barrnap/rrna.euk.gff"),
@@ -31,12 +29,10 @@ nextflow_pipeline {
                 { assert new File("$outputDir/cutadapt/pb3.trimmed.cutadapt.log").exists() },
                 { assert snapshot(path("$outputDir/dada2/ASV_seqs.fasta"),
                                 path("$outputDir/dada2/ASV_table.tsv"),
-                                path("$outputDir/dada2/ref_taxonomy.unite-fungi_8_3.txt"),
                                 path("$outputDir/dada2/DADA2_stats.tsv"),
                                 path("$outputDir/dada2/DADA2_table.rds"),
                                 path("$outputDir/dada2/DADA2_table.tsv")).match("dada2") },
-                { assert new File("$outputDir/dada2/ASV_tax.unite-fungi_8_3.tsv").exists() },
-                { assert new File("$outputDir/dada2/ASV_tax_species.unite-fungi_8_3.tsv").exists() },
+                { assert new File("$outputDir/sintax/ASV_tax_sintax.unite-fungi_8_2.tsv").exists() },
                 { assert new File("$outputDir/fastqc/pb1_fastqc.html").exists() },
                 { assert new File("$outputDir/fastqc/pb2_fastqc.html").exists() },
                 { assert new File("$outputDir/fastqc/pb3_fastqc.html").exists() },
@@ -54,7 +50,7 @@ nextflow_pipeline {
                 { assert new File("$outputDir/SBDI/annotation.tsv").exists() },
                 { assert new File("$outputDir/SBDI/asv-table.tsv").exists() },
                 { assert new File("$outputDir/summary_report/summary_report.html").exists() },
-                { assert new File("$outputDir/phyloseq/dada2_phyloseq.rds").exists() }
+                { assert new File("$outputDir/phyloseq/sintax_phyloseq.rds").exists() }
             )
         }
     }

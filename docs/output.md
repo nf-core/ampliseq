@@ -27,8 +27,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [VSEARCH cluster](#vsearch-cluster) - Centroid fasta file, filtered asv table, and stats
   - [Barrnap](#barrnap) - Predict ribosomal RNA sequences and optional filtering
   - [Length filter](#length-filter) - Optionally, ASV can be filtered by length thresholds
-  - [ITSx](#itsx) - Optionally, the ITS region can be extracted
   - [Codons](#codons) - Optionally the ASVs can be filtered by presence of stop codons.
+  - [ITSx](#itsx) - Optionally, the ITS region can be extracted
 - [Taxonomic classification](#taxonomic-classification) - Taxonomic classification of (filtered) ASVs
   - [DADA2](#dada2) - Taxonomic classification with DADA2
   - [assignSH](#assignsh) - Optionally, a UNITE species hypothesis (SH) can be added to the DADA2 taxonomy
@@ -36,7 +36,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [Kraken2](#kraken2) - Taxonomic classification with Kraken2
   - [QIIME2](#qiime2) - Taxonomic classification with QIIME2
 - [Phlogenetic placement and taxonomic classification](#phylogenetic-placement-and-taxonomic-classification) - Placing ASVs into a phyloenetic tree
-- [QIIME2](#qiime2) - Secondary analysis
+- [Multiple region analysis with Sidle](#multiple-region-analysis-with-sidle) - Scaffolding multiple regions along a reference
+- [Secondary analysis with QIIME2](#secondary-analysis-with-qiime2) - Visualisations, diversity and differential abundance analysis with QIIME2
   - [Abundance tables](#abundance-tables) - Exported abundance tables
   - [Relative abundance tables](#relative-abundance-tables) - Exported relative abundance tables
   - [Barplot](#barplot) - Interactive barplot
@@ -215,23 +216,6 @@ The minimum ASV length threshold can be set by `--min_len_asv` and the maximum l
 
 </details>
 
-#### ITSx
-
-Optionally, the ITS region can be extracted from each ASV sequence using ITSx, and taxonomic classification is performed based on the ITS sequence.
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `itsx/`
-  - `ASV_ITS_seqs.full.fasta`: Fasta file with full ITS region from each ASV sequence.
-  - `ASV_ITS_seqs.ITS1.fasta` or `ASV_ITS_seqs.ITS2.fasta`: If using --cut_its "its1" or --cut_its "its2"; fasta file with ITS1 or ITS2 region from each ASV sequence.
-  - `ASV_ITS_seqs.full_and_partial.fasta`: If using --its_partial; fasta file with full and partial ITS regions from each ASV sequence.
-  - `ASV_ITS_seqs.ITS1.full_and_partial.fasta` or `ASV_ITS_seqs.ITS2.full_and_partial.fasta`: If using --cut_its "its1" or --cut_its "its2" and --its_partial; fasta file with complete and partial ITS1 or ITS2 regions from each ASV sequence.
-  - `ASV_ITS_seqs.summary.txt`: Summary information from ITSx.
-  - `ITSx.args.txt`: File with parameters passed to ITSx.
-
-</details>
-
 #### Codons
 
 Optionally, the ASVs can be filtered against the presence of stop codons in the specified open reading frame of the ASV. The filtering step can also filter out ASVs that are not multiple of 3 in length.
@@ -246,6 +230,26 @@ Codon filtering can be activated by `--filter_codons`. By default, the codons ar
   - `ASV_codon_filtered.table.tsv`: The count table of ASVs that successfully passed through the filter thresholds.
   - `ASV_codon_filtered.list`: List of ASV IDs that pass through the filter thresholds.
   - `codon.filtered.stats.tsv`: Tracking read numbers through filtering, for each sample.
+
+</details>
+
+#### ITSx
+
+Optionally, the ITS region can be extracted from each ASV sequence using ITSx, and taxonomic classification is performed based on the ITS sequence. Only sequences with at minimum 50bp in length are retained.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `itsx/`
+  - `ASV_ITS_seqs.full.fasta`: Fasta file with full ITS region from each ASV sequence.
+  - `ASV_ITS_seqs.ITS1.fasta` or `ASV_ITS_seqs.ITS2.fasta`: If using --cut_its "its1" or --cut_its "its2"; fasta file with ITS1 or ITS2 region from each ASV sequence.
+  - `ASV_ITS_seqs.full_and_partial.fasta`: If using --its_partial; fasta file with full and partial ITS regions from each ASV sequence.
+  - `ASV_ITS_seqs.ITS1.full_and_partial.fasta` or `ASV_ITS_seqs.ITS2.full_and_partial.fasta`: If using --cut_its "its1" or --cut_its "its2" and --its_partial; fasta file with complete and partial ITS1 or ITS2 regions from each ASV sequence.
+  - `ASV_ITS_seqs.summary.txt`: Summary information from ITSx.
+  - `ITSx.args.txt`: File with parameters passed to ITSx.
+  - `ASV_seqs.len.fasta`: Fasta file with filtered ASV sequences.
+  - `ASV_len_orig.tsv`: ASV length distribution before filtering.
+  - `ASV_len_filt.tsv`: ASV length distribution after filtering.
 
 </details>
 
@@ -374,7 +378,35 @@ Phylogenetic placement grafts sequences onto a phylogenetic reference tree and o
 
 </details>
 
-### QIIME2
+### Multiple region analysis with Sidle
+
+Instead of relying on one short amplicon, scaffolding multiple regions along a reference can improve resolution over a single region. This method applies [Sidle (SMURF Implementation Done to acceLerate Efficiency)](https://doi.org/10.1101/2021.03.23.436606) within [QIIME2](https://pubmed.ncbi.nlm.nih.gov/31341288/).
+
+Sidle reconstructs taxonomy profiles and abundances of several regions using a taxonomc database, therefore the previous sections about taxonomic classification are not applied.
+
+Additional output includes reconstruction of abundance table and taxonomic information from multiple regions and a phylogenetic tree that can be further analysed. Apart from region-specific sequences, no useful de-novo sequences are generated.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `sidle/per-region/`
+  - `ASV_seqs_region*_<FW_primer>_<RV_primer>.fasta`: ASV sequences per region
+  - `ASV_table_region*_<FW_primer>_<RV_primer>.fasta`: ASV abundances per region
+  - `DADA2_table_region*_<FW_primer>_<RV_primer>.fasta`: ASV abundances and sequences per region
+- `sidle/DB/3_reconstructed/reconstruction_summary/index.html`: Information about the reconstructed reference taxonomy database
+- `sidle/reconstructed/`
+  - `reconstructed_feature-table.biom`: Unified abundance table in biom format
+  - `reconstructed_feature-table.tsv`: Tab-separated unified abundance table
+  - `reconstructed_taxonomy.tsv`: Tab-separated unified taxonomy table
+  - `reconstructed_merged.tsv`: Tab-separated unified table with merged abundance and taxonomy information
+  - `reconstructed_tree.nwk`: Phylogenetic tree
+  - `reconstruction_table/index.html`: Information about the unified abundance table
+
+More intermediate output is populated into the results folder when using `--save_intermediates`.
+
+</details>
+
+### Secondary analysis with QIIME2
 
 **Quantitative Insights Into Microbial Ecology 2** ([QIIME2](https://qiime2.org/)) is a next-generation microbiome bioinformatics platform and the successor of the widely used [QIIME1](https://www.nature.com/articles/nmeth.f.303).
 

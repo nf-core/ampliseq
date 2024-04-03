@@ -11,6 +11,7 @@ process QIIME2_ALPHARAREFACTION {
 
     output:
     path("alpha-rarefaction/*"), emit: rarefaction
+    path("*.qzv")              , emit: qzv
     path "versions.yml"        , emit: versions
 
     when:

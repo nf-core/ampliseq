@@ -9,6 +9,7 @@ process QIIME2_DIVERSITY_ALPHA {
 
     output:
     path("alpha_diversity/*"), emit: alpha
+    path("*.qzv")            , emit: qzv
     path "versions.yml"      , emit: versions
 
     when:

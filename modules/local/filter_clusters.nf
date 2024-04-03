@@ -24,7 +24,8 @@ process FILTER_CLUSTERS {
     def prefix   = task.ext.prefix ?: "'$meta.id'"
     def clusters = "'$clusters'"
     """
-    filt_clusters.py -t ${asv} -p ${prefix} -c ${clusters}
+    ulimit -s unlimited
+    echo ${clusters} | filt_clusters.py -t ${asv} -p ${prefix} -c -
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -1,6 +1,6 @@
 process FORMAT_PPLACETAX {
     tag "${tax.baseName}"
-    label 'process_high'
+    label 'process_medium'
 
     conda "bioconda::bioconductor-dada2=1.30.0"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?

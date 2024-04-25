@@ -1,6 +1,6 @@
 process QIIME2_CLASSIFY {
     tag "${repseq},${trained_classifier}"
-    label 'process_high'
+    label 'process_medium'
 
     container "qiime2/core:2023.7"
 

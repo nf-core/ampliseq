@@ -1,6 +1,6 @@
 process DADA2_ADDSPECIES {
     tag "${taxtable},${database}"
-    label 'process_high'
+    label 'process_medium'
     label 'single_cpu'
 
     conda "bioconda::bioconductor-dada2=1.30.0"

@@ -2,7 +2,7 @@ process QIIME2_ANCOM_ASV {
     tag "${table.baseName}"
     label 'process_medium'
     label 'single_cpu'
-    label 'process_long'
+    label 'process_medium'
     label 'error_ignore'
 
     container "qiime2/core:2023.7"

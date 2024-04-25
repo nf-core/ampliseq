@@ -1,6 +1,6 @@
 process QIIME2_TRAIN {
     tag "${meta.FW_primer}-${meta.RV_primer}"
-    label 'process_high'
+    label 'process_medium'
     label 'single_cpu'
 
     container "qiime2/core:2023.7"

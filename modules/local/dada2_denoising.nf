@@ -1,7 +1,7 @@
 process DADA2_DENOISING {
     tag "$meta.run"
     label 'process_medium'
-    label 'process_long'
+    label 'process_medium'
 
     conda "bioconda::bioconductor-dada2=1.30.0"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?

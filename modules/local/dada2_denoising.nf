@@ -51,7 +51,7 @@ process DADA2_DENOISING {
             mergers <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, $args2, justConcatenate = FALSE, verbose=TRUE)
             concats <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, $args2, justConcatenate = TRUE, verbose=TRUE)
             for (x in names(mergers)) {
-                if (nrow(mergers[[x]]) >= 10){
+                if (nrow(mergers[[x]]) >= 1000){
                     min_overlap_obs <- mergers[[x]][["nmatch"]] + mergers[[x]][["nmismatch"]]
                     min_overlap_obs <- quantile(min_overlap_obs[mergers[[x]][["accept"]]], 0.001)
                     to_concat <- !mergers[[x]][["accept"]] & (mergers[[x]][["nmismatch"]] + mergers[[x]][["nmatch"]]) < min_overlap_obs

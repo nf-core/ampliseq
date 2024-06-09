@@ -48,8 +48,15 @@ process DADA2_DENOISING {
         #make table
 
         if ("${params.concatenate_reads}" == "consensus") {
+
             mergers <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, $args2, justConcatenate = FALSE, verbose=TRUE)
             concats <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, $args2, justConcatenate = TRUE, verbose=TRUE)
+
+            if (is.data.frame(mergers)) {
+                mergers <- list(sample = mergers)
+                concats <- list(sample = concats)
+            }
+
             for (x in names(mergers)) {
                 if (nrow(mergers[[x]]) >= 1000){
                     min_overlap_obs <- mergers[[x]][["nmatch"]] + mergers[[x]][["nmismatch"]]

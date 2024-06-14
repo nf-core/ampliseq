@@ -890,7 +890,7 @@ workflow AMPLISEQ {
     softwareVersionsToYAML(ch_versions)
         .collectFile(
             storeDir: "${params.outdir}/pipeline_info",
-            name: 'nf_core_pipeline_software_mqc_versions.yml',
+            name: 'software_versions.yml',
             sort: true,
             newLine: true
         ).set { ch_collated_versions }

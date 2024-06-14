@@ -28,6 +28,6 @@ indent_style = unset
 [/assets/email*]
 indent_size = unset
 
-# ignore python
+# ignore python and markdown
 [*.{py,md}]
 indent_style = unset

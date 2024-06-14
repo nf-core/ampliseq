@@ -14,3 +14,4 @@ update:
   https://github.com/nf-core/modules.git:
     nf-core:
       mafft: "feb29be775d9e41750180539e9a3bdce801d0609"
+nf_core_version: "2.14.1"

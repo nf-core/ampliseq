@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Fixed`
 
 - [#747](https://github.com/nf-core/ampliseq/pull/747) - Template update for nf-core/tools version 2.14.1
-- [#750](https://github.com/nf-core/ampliseq/pull/750) - Numbers in `overall_summary.tsv` were fix (sometimes misleading in 2.9.0 for columns "denoised[F/R]", "merged", and "nochim")
+- [#750](https://github.com/nf-core/ampliseq/pull/750) - Numbers in `overall_summary.tsv` were fixed (sometimes misleading in 2.9.0 for columns "denoised[F/R]", "merged", and "nochim")
 
 ### `Dependencies`
 

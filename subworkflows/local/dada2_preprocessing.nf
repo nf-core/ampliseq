@@ -90,7 +90,7 @@ workflow DADA2_PREPROCESSING {
             if (params.ignore_failed_filtering) {
                 log.warn "The following samples had too few reads (<$params.min_read_counts) after quality filtering with DADA2:\n$samples\nIgnoring failed samples and continue!\n"
             } else {
-                error("The following samples had too few reads (<$params.min_read_counts) after quality filtering with DADA2:\n$samples\nPlease check whether the correct primer sequences for trimming were supplied. Ignore that samples using `--ignore_failed_filtering` or adjust the threshold with `--min_read_counts`.")
+                error("The following samples had too few reads (<$params.min_read_counts) after quality filtering with DADA2:\n$samples\nPlease check settings related to quality filtering such as `--max_ee` (increase), `--trunc_qmin` (increase) or `--trunclenf`/`--trunclenr` (decrease). Ignore that samples using `--ignore_failed_filtering` or adjust the threshold with `--min_read_counts`.")
             }
         }
 

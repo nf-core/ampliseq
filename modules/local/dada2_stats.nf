@@ -41,14 +41,23 @@ process DADA2_STATS {
         dadaFs = readRDS("${denoised[0]}")
         dadaRs = readRDS("${denoised[1]}")
         mergers = readRDS("$mergers")
-        seqtab.nochim = readRDS("$seqtab_nochim")
+        nochim = readRDS("$seqtab_nochim")
 
         #track reads through pipeline
         getN <- function(x) sum(getUniques(x))
         if ( nrow(filter_and_trim) == 1 ) {
-            track <- cbind(filter_and_trim, getN(dadaFs), getN(dadaRs), getN(mergers), rowSums(seqtab.nochim))
+            track <- cbind(filter_and_trim, getN(dadaFs), getN(dadaRs), getN(mergers), rowSums(nochim))
         } else {
-            track <- cbind(filter_and_trim, sapply(dadaFs, getN), sapply(dadaRs, getN), sapply(mergers, getN), rowSums(seqtab.nochim))
+            dadaFs_getN <- data.frame( sapply(dadaFs, getN) )
+            dadaRs_getN <- data.frame( sapply(dadaRs, getN) )
+            mergers_getN <- data.frame( sapply(mergers, getN) )
+            nochim_rowSums <- data.frame( rowSums(nochim) )
+            track <- cbind(
+                filter_and_trim[order(rownames(filter_and_trim)), ],
+                dadaFs_getN[order(rownames(dadaFs_getN)), ],
+                dadaRs_getN[order(rownames(dadaRs_getN)), ],
+                mergers_getN[order(rownames(mergers_getN)), ],
+                nochim_rowSums[order(rownames(nochim_rowSums)), ] )
         }
         colnames(track) <- c("DADA2_input", "filtered", "denoisedF", "denoisedR", "merged", "nonchim")
         rownames(track) <- sub(pattern = "_1.fastq.gz\$", replacement = "", rownames(track)) #this is when cutadapt is skipped!
@@ -77,14 +86,19 @@ process DADA2_STATS {
 
         #read data
         dadaFs = readRDS("${denoised[0]}")
-        seqtab.nochim = readRDS("$seqtab_nochim")
+        nochim = readRDS("$seqtab_nochim")
 
         #track reads through pipeline
         getN <- function(x) sum(getUniques(x))
         if ( nrow(filter_and_trim) == 1 ) {
-            track <- cbind(filter_and_trim, getN(dadaFs), rowSums(seqtab.nochim))
+            track <- cbind(filter_and_trim, getN(dadaFs), rowSums(nochim))
         } else {
-            track <- cbind(filter_and_trim, sapply(dadaFs, getN), rowSums(seqtab.nochim))
+            dadaFs_getN <- data.frame( sapply(dadaFs, getN) )
+            nochim_rowSums <- data.frame( rowSums(nochim) )
+            track <- cbind(
+                filter_and_trim[order(rownames(filter_and_trim)), ],
+                dadaFs_getN[order(rownames(dadaFs_getN)), ],
+                nochim_rowSums[order(rownames(nochim_rowSums)), ] )
         }
         colnames(track) <- c("DADA2_input", "filtered", "denoised", "nonchim")
         track <- cbind(sample = sub(pattern = "(.*?)\\\\..*\$", replacement = "\\\\1", rownames(track)), track)

@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-- [#NN](https://github.com/nf-core/ampliseq/pull/NN) - Added version R08-RS214 of curated GTDB 16S taxonomy: `sbdi-gtdb=R08-RS214-1` or `sbdi-gtdb` as parameter to `--dada_ref_taxonomy`
+- [#751](https://github.com/nf-core/ampliseq/pull/751) - Added version R08-RS214 of curated GTDB 16S taxonomy: `sbdi-gtdb=R08-RS214-1` or `sbdi-gtdb` as parameter to `--dada_ref_taxonomy`
 
 ### `Changed`
 

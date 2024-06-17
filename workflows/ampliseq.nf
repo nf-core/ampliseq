@@ -772,7 +772,7 @@ workflow AMPLISEQ {
         }
 
         if (!params.skip_barplot) {
-            QIIME2_BARPLOT ( ch_metadata, ch_asv, ch_tax, '' )
+            QIIME2_BARPLOT ( ch_metadata.ifEmpty([]), ch_asv, ch_tax, '' )
             ch_versions = ch_versions.mix( QIIME2_BARPLOT.out.versions )
         }
 

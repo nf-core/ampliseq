@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#749](https://github.com/nf-core/ampliseq/pull/749) - Create barplot also when no metadata is given
+
 ### `Fixed`
 
 - [#747](https://github.com/nf-core/ampliseq/pull/747) - Template update for nf-core/tools version 2.14.1

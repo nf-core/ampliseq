@@ -455,11 +455,9 @@ Absolute abundance tables produced by the previous steps contain count data, but
 <summary>Output files</summary>
 
 - `qiime2/rel_abundance_tables/`
-  - `rel-table-*.tsv`: Tab-separated absolute abundance table at taxa level `*`, where `*` ranges by default from 2 to 6, specified by the `--tax_agglom_min` and `--tax_agglom_max` parameters.
+  - `rel-table-*.tsv`: Tab-separated relative abundance table at taxa level `*`, where `*` ranges by default from 2 to 6, specified by the `--tax_agglom_min` and `--tax_agglom_max` parameters.
   - `rel-table-ASV.tsv`: Tab-separated relative abundance table for all ASVs.
-  - `rel-table-ASV_with-DADA2-tax.tsv`: Tab-separated table for all ASVs with DADA2 taxonomic classification, sequence and relative abundance.
-  - `rel-table-ASV_with-QIIME2-tax.tsv`: Tab-separated table for all ASVs with QIIME2 taxonomic classification, sequence and relative abundance.
-  - `rel-table-ASV_with-PPLACE-tax.tsv`: Tab-separated table for all ASVs with EPA-NG - Gappa taxonomic classification, sequence and relative abundance.
+  - `rel-table-ASV_with-*-tax.tsv`: Tab-separated table for all ASVs with taxonomic classification, sequence and relative abundance. The star (\*) is replaced by the taxonomic classification method.
 
 </details>
 

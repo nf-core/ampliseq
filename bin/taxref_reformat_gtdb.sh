@@ -1,10 +1,15 @@
 #!/bin/sh
 
-# Reads the ar* and bac* SSU fasta files from GTDB (after first untarring)
+# Reads the ar* and bac* SSU fasta files from GTDB (after first untarring/unzipping)
 # and outputs two new fasta files, one suitable for DADA2's assignTaxonomy()
 # and addSpecies() functions.
 
-# Untar any tar file in the working directory
+# Unzip any tar file in the working directory - versions 220 and newer
+for f in *.fna.gz; do
+    gunzip -c $f > $(basename "$f" .gz)
+done
+
+# Untar any tar file in the working directory - versions 214.1 and older
 for f in *.tar.gz; do
     tar xzf $f
 done

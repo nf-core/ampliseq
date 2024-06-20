@@ -4,7 +4,7 @@
 # and outputs two new fasta files, one suitable for DADA2's assignTaxonomy()
 # and addSpecies() functions.
 
-# Unzip any tar file in the working directory - versions 220 and newer
+# Unzip any .fna.gz file in the working directory - versions 220 and newer
 for f in *.fna.gz; do
     gunzip -c $f > $(basename "$f" .gz)
 done

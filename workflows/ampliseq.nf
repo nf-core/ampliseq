@@ -829,8 +829,7 @@ workflow AMPLISEQ {
                 ch_tax,
                 tax_agglom_min,
                 tax_agglom_max,
-                params.ancombc_formula,
-                params.ancombc_args
+                params.ancombc_formula
             )
             ch_versions = ch_versions.mix( QIIME2_ANCOM.out.versions )
         }

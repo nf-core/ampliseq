@@ -19,7 +19,6 @@ workflow QIIME2_ANCOM {
     tax_agglom_min
     tax_agglom_max
     ancombc_formula
-    ancombc_args
 
     main:
     ch_versions_qiime2_ancom = Channel.empty()

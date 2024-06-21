@@ -88,6 +88,7 @@ workflow QIIME2_ANCOM {
 
     emit:
     ancom    = params.ancom ? QIIME2_ANCOM_ASV.out.ancom.mix(QIIME2_ANCOM_TAX.out.ancom) : Channel.empty()
-    //ancombc  = QIIME2_ANCOMBC_ASV.out.ancom.mix(QIIME2_ANCOMBC_TAX.out.ancom)
+    ancombc  = params.ancombc ? QIIME2_ANCOMBC_ASV.out.da_barplot.mix(QIIME2_ANCOMBC_TAX.out.da_barplot) : Channel.empty()
+    ancombc_formula = ancombc_formula ? ANCOMBC_FORMULA_ASV.out.da_barplot.mix(ANCOMBC_FORMULA_TAX.out.da_barplot) : Channel.empty()
     versions = ch_versions_qiime2_ancom
 }

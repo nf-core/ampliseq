@@ -30,7 +30,6 @@ params:
     barplot: FALSE
     abundance_tables: FALSE
     alpha_rarefaction: FALSE
-    ancom: FALSE
     trunclenf: ""
     trunclenr: ""
     max_ee: ""
@@ -102,6 +101,9 @@ params:
     diversity_indices_alpha: FALSE
     diversity_indices_beta: FALSE
     diversity_indices_adonis: ""
+    ancom: FALSE
+    ancombc: FALSE
+    ancombc_formula: FALSE
     picrust_pathways: FALSE
     sbdi: FALSE
     phyloseq: FALSE
@@ -1531,8 +1533,54 @@ Test results are in separate folders following the scheme `Category-{treatment}-
 
 ancom <- sort( unlist( strsplit( params$ancom,"," ) ) )
 for (folder in ancom) {
-    ancom_path <- paste0("qiime2/ancom/",folder)
+    ancom_path <- paste0("qiime2/",folder)
     cat("\n- [",ancom_path,"/index.html](../",ancom_path,"/index.html)\n", sep="")
+}
+```
+
+<!-- Subsection on ANCOMBC results -->
+
+```{r, results='asis'}
+any_ancombc <- !isFALSE(params$ancombc) || !isFALSE(params$ancombc_formula)
+```
+
+```{r, eval = !isFALSE(params$any_ancombc), results='asis'}
+cat(paste0("
+## ANCOM-BC
+
+[Analysis of Composition of Microbiomes with Bias Correction (ANCOM-BC)](https://www.ncbi.nlm.nih.gov/pubmed/32665548)
+is applied to identify features that are differentially
+abundant across sample groups.
+Comparisons between groups of samples is performed for specific metadata that can be found in folder
+"))
+
+if ( !isFALSE(params$ancombc) && !isFALSE(params$ancombc_formula) ) {
+    cat("[qiime2/ancombc/](../qiime2/ancombc/) and [qiime2/ancombc_formula/](../qiime2/ancombc_formula/)")
+} else if ( !isFALSE(params$ancombc) ) {
+    cat("[qiime2/ancombc/](../qiime2/ancombc/)")
+} else if ( !isFALSE(params$ancombc_formula) ) {
+    cat("[qiime2/ancombc_formula/](../qiime2/ancombc_formula/)")
+}
+cat(".")
+
+cat(paste0("
+Test results are in separate folders following the scheme `Category-{treatment}-{taxonomic level}`:
+"))
+```
+
+```{r, eval = !isFALSE(params$ancombc), results='asis'}
+ancombc <- sort( unlist( strsplit( params$ancombc,"," ) ) )
+for (folder in ancombc) {
+    ancombc_path <- paste0("qiime2/",folder)
+    cat("\n- [",ancombc_path,"/index.html](../",ancombc_path,"/index.html)\n", sep="")
+}
+```
+
+```{r, eval = !isFALSE(params$ancombc_formula), results='asis'}
+ancombc_formula <- sort( unlist( strsplit( params$ancombc_formula,"," ) ) )
+for (folder in ancombc_formula) {
+    ancombc_formula_path <- paste0("qiime2/",folder)
+    cat("\n- [",ancombc_formula_path,"/index.html](../",ancombc_formula_path,"/index.html)\n", sep="")
 }
 ```
 
@@ -1767,7 +1815,7 @@ if ( as.integer(qiime2_filtertaxa_rm) > 0 ) {
 }
 ```
 ```{r, eval = !isFALSE(params$val_used_taxonomy), results='asis'}
-if (!isFALSE(params$barplot) || !isFALSE(params$alpha_rarefaction) || !isFALSE(params$diversity_indices_beta) || !isFALSE(params$ancom)) {
+if (!isFALSE(params$barplot) || !isFALSE(params$alpha_rarefaction) || !isFALSE(params$diversity_indices_beta) || !isFALSE(params$ancom) || !isFALSE(any_ancombc)) {
     qiime_final <- c("Within QIIME2, the final microbial community data was")
     if (!isFALSE(params$barplot)) {
         qiime_final <- c(qiime_final,"visualized in a barplot")
@@ -1781,6 +1829,9 @@ if (!isFALSE(params$barplot) || !isFALSE(params$alpha_rarefaction) || !isFALSE(p
     }
     if (!isFALSE(params$ancom)) {
         qiime_final <- c(qiime_final,"used to find differential abundant taxa with ANCOM ([Mandal et al., 2015](https://pubmed.ncbi.nlm.nih.gov/26028277/))")
+    }
+    if (!isFALSE(any_ancombc)) {
+        qiime_final <- c(qiime_final,"used to find differential abundant taxa with ANCOM-BC ([Lin and Peddada, 2020](https://pubmed.ncbi.nlm.nih.gov/32665548/))")
     }
     cat(paste(qiime_final[1],qiime_final[2]))
     if (length(qiime_final) >= 3) {

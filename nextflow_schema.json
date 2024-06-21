@@ -633,6 +633,35 @@
                     "description": "Minimum rarefaction depth for diversity analysis. Any sample below that threshold will be removed.",
                     "fa_icon": "fas fa-greater-than-equal"
                 },
+                "tax_agglom_min": {
+                    "type": "integer",
+                    "default": 2,
+                    "description": "Minimum taxonomy agglomeration level for taxonomic classifications",
+                    "fa_icon": "fas fa-greater-than-equal",
+                    "help_text": "Depends on the reference taxonomy database used."
+                },
+                "tax_agglom_max": {
+                    "type": "integer",
+                    "default": 6,
+                    "description": "Maximum taxonomy agglomeration level for taxonomic classifications",
+                    "fa_icon": "fas fa-greater-than-equal",
+                    "help_text": "Depends on the reference taxonomy database used. Most default databases have genus level at 6."
+                }
+            }
+        },
+        "differential_abundance_testing": {
+            "title": "Differential abundance testing",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "fa_icon": "fas fa-bacteria",
+            "properties": {
+                "ancom_sample_min_count": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Minimum sample counts to retain a sample for ANCOM analysis. Any sample below that threshold will be removed.",
+                    "fa_icon": "fas fa-greater-than-equal"
+                },
                 "ancom": {
                     "type": "boolean",
                     "description": "Perform differential abundance testing with ANCOM",
@@ -655,26 +684,6 @@
                     "description": "Extra arguments when performing differential abundance testing with ANCOMBC",
                     "help_text": "Documentation of arguments can be found in https://docs.qiime2.org/2023.7/plugins/available/composition/ancombc/.",
                     "fa_icon": "fas fa-greater-than-equal"
-                },
-                "ancom_sample_min_count": {
-                    "type": "integer",
-                    "default": 1,
-                    "description": "Minimum sample counts to retain a sample for ANCOM analysis. Any sample below that threshold will be removed.",
-                    "fa_icon": "fas fa-greater-than-equal"
-                },
-                "tax_agglom_min": {
-                    "type": "integer",
-                    "default": 2,
-                    "description": "Minimum taxonomy agglomeration level for taxonomic classifications",
-                    "fa_icon": "fas fa-greater-than-equal",
-                    "help_text": "Depends on the reference taxonomy database used."
-                },
-                "tax_agglom_max": {
-                    "type": "integer",
-                    "default": 6,
-                    "description": "Maximum taxonomy agglomeration level for taxonomic classifications",
-                    "fa_icon": "fas fa-greater-than-equal",
-                    "help_text": "Depends on the reference taxonomy database used. Most default databases have genus level at 6."
                 }
             }
         },
@@ -1020,6 +1029,9 @@
         },
         {
             "$ref": "#/definitions/downstream_analysis"
+        },
+        {
+            "$ref": "#/definitions/differential_abundance_testing"
         },
         {
             "$ref": "#/definitions/pipeline_report"

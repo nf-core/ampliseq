@@ -572,10 +572,10 @@ On request (`--ancombc`), ANCOM-BC is applied to each suitable or specified meta
 <summary>Output files</summary>
 
 - `qiime2/ancombc/` or `qiime2/ancombc_formula/`
-  - `da_barplot/Category-<formula>-<taxonomic level>`
+  - `da_barplot/Category-<formula>-<taxonomic level>/`
     - `index.html`: Links to interactive plots.
     - `<formula><base value>-ancombc-barplot.html`: Interactive plots.
-  -`differentials/Category-<formula>-<taxonomic level>`
+  - `differentials/Category-<formula>-<taxonomic level>/`
     - `index.html`: Visualised table of statistical results.
     - `*.csv*`: Comma-separated tables of statistical results.
   - formula: metadata category / formula that was tested

@@ -574,13 +574,13 @@ On request (`--ancombc`), ANCOM-BC is applied to each suitable or specified meta
 - `qiime2/ancombc/` or `qiime2/ancombc_formula/`
   - `da_barplot/Category-<formula>-<taxonomic level>/`
     - `index.html`: Links to interactive plots.
-    - `<formula><reference>-ancombc-barplot.html`: Interactive plots.
+    - `<formula><treatment>-ancombc-barplot.html`: Interactive plots.
   - `differentials/Category-<formula>-<taxonomic level>/`
     - `index.html`: Visualised table of statistical results.
     - `*.csv*`: Comma-separated tables of statistical results.
   - formula: metadata category / formula that was tested
   - taxonomic level: level-2 (phylum), level-3 (class), level-4 (order), level-5 (family), level-6 (genus), ASV
-  - reference: The group that served as reference, i.e. changes are relative to that group
+  - treatment: Changes for that treatment group
 
 </details>
 

@@ -681,8 +681,8 @@
                 },
                 "ancombc_args": {
                     "type": "string",
-                    "description": "Extra arguments when performing differential abundance testing with ANCOMBC",
-                    "help_text": "Documentation of arguments can be found in https://docs.qiime2.org/2023.7/plugins/available/composition/ancombc/.",
+                    "description": "Optional extra arguments when performing differential abundance testing with ANCOMBC",
+                    "help_text": "Documentation of arguments can be found in https://docs.qiime2.org/2023.7/plugins/available/composition/ancombc/. For example, the group that serves as reference can be set with `--p-reference-levels`. Please make sure to set all relevant optional parameters that should deviate from the default.",
                     "fa_icon": "fas fa-greater-than-equal"
                 }
             }

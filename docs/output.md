@@ -566,7 +566,7 @@ On request (`--ancom`), ANCOM is applied to each suitable or specified metadata 
 
 Analysis of Composition of Microbiomes with Bias Correction ([ANCOM-BC](https://www.ncbi.nlm.nih.gov/pubmed/32665548)) is applied to identify features that are differentially abundant across sample groups. Parameter `--ancom_sample_min_count` sets the minimum sample counts to retain a sample for ANCOM-BC analysis.
 
-On request (`--ancombc`), ANCOM-BC is applied to each suitable or specified metadata column for 5 taxonomic levels (2-6). Independently, multiple comma separated formula can be submitted to ANCOM-BC by `--ancombc_formula`. Settings for ANCOM-BC can be modified with `--ancombc_args`.
+On request (`--ancombc`), ANCOM-BC is applied to each suitable or specified metadata column for 5 taxonomic levels (2-6). Independently, multiple comma separated formula can be submitted to ANCOM-BC by `--ancombc_formula`.
 
 <details markdown="1">
 <summary>Output files</summary>

@@ -670,19 +670,34 @@
                 "ancombc": {
                     "type": "boolean",
                     "description": "Perform differential abundance testing with ANCOMBC",
-                    "help_text": "ANCOMBC will be performed on all suitable columns in the metadata sheet. Empty values will be removed, therefore it is possible to perform tests on subsets. Formula for specific tests can be supplied with `--ancombc_formula`",
+                    "help_text": "ANCOMBC will be performed on all suitable columns in the metadata sheet. Empty values will be removed, therefore it is possible to perform tests on subsets. The reference level will default to highest alphanumeric group (e.g. in alphabetical or numeric order, as applicable) within each metadata column. Formula for specific tests can be supplied with `--ancombc_formula`.",
                     "fa_icon": "fas fa-greater-than-equal"
                 },
                 "ancombc_formula": {
                     "type": "string",
                     "description": "Formula to perform differential abundance testing with ANCOMBC",
-                    "help_text": "Comma separated list of model formula(s), e.g. \"treatment1,treatment2\". Model formula should contain only independent terms in the sample metadata. These can be continuous variables or factors, and they can have interactions as in a typical R formula. Essentially, columns in the metadata sheet can be chosen that have no empty values, not only unique values, or not only identical values.\nFor example, \"treatment1+treatment2\" tests whether the data partitions based on \"treatment1\" and \"treatment2\" sample metadata. \"treatment1*treatment2\" test both of those effects as well as their interaction.\nMore examples can be found in the R documentation, https://cran.r-project.org/doc/manuals/r-release/R-intro.html#Formulae-for-statistical-models",
+                    "help_text": "Comma separated list of model formula(s), e.g. \"treatment1,treatment2\". The reference level will default to highest alphanumeric group (e.g. in alphabetical or numeric order, as applicable) within each formula term. The reference level can be overwritten by `--ancombc_formula_reflvl`. Model formula should contain only independent terms in the sample metadata. These can be continuous variables or factors, and they can have interactions as in a typical R formula. Essentially, columns in the metadata sheet can be chosen that have no empty values, not only unique values, or not only identical values.\nFor example, \"treatment1+treatment2\" tests whether the data partitions based on \"treatment1\" and \"treatment2\" sample metadata. \"treatment1*treatment2\" test both of those effects as well as their interaction.\nMore examples can be found in the R documentation, https://cran.r-project.org/doc/manuals/r-release/R-intro.html#Formulae-for-statistical-models",
                     "fa_icon": "fas fa-greater-than-equal"
                 },
-                "ancombc_args": {
+                "ancombc_formula_reflvl": {
                     "type": "string",
-                    "description": "Optional extra arguments when performing differential abundance testing with ANCOMBC",
-                    "help_text": "Documentation of arguments can be found in https://docs.qiime2.org/2023.7/plugins/available/composition/ancombc/. For example, the group that serves as reference can be set with `--p-reference-levels`. Please make sure to set all relevant optional parameters that should deviate from the default.",
+                    "description": "Reference level for `--ancombc_formula`",
+                    "help_text": "This will only affect ANCOM-BC started by `--ancombc_formula`, but for all provided model formula, therefore it might be best to restrict `--ancombc_formula` to one formula. The syntax is as follows: 'column_name::column_value' or for multiple 'column_name1::column_value1 column_name2::column_value2'",
+                    "fa_icon": "fas fa-greater-than-equal"
+                },
+                "ancombc_effect_size": {
+                    "type": "number",
+                    "default": 1,
+                    "minimum": 0,
+                    "description": "Effect size threshold for differential abundance barplot for `--ancombc` and `--ancombc_formula`",
+                    "fa_icon": "fas fa-greater-than-equal"
+                },
+                "ancombc_significance": {
+                    "type": "number",
+                    "default": 0.05,
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Significance threshold for differential abundance barplot for `--ancombc` and `--ancombc_formula`",
                     "fa_icon": "fas fa-greater-than-equal"
                 }
             }

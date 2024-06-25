@@ -44,7 +44,6 @@ By default, the pipeline currently performs the following:
 - Phylogenetic placement ([EPA-NG](https://github.com/Pbdas/epa-ng))
 - Taxonomical classification using DADA2; alternatives are [SINTAX](https://doi.org/10.1101/074161), [Kraken2](https://doi.org/10.1186/s13059-019-1891-0), and [QIIME2](https://www.nature.com/articles/s41587-019-0209-9)
 - Excludes unwanted taxa, produces absolute and relative feature/taxa count tables and plots, plots alpha rarefaction curves, computes alpha and beta diversity indices and plots thereof ([QIIME2](https://www.nature.com/articles/s41587-019-0209-9))
-- Calls differentially abundant taxa ([ANCOM](https://www.ncbi.nlm.nih.gov/pubmed/26028277))
 - Creates phyloseq R objects ([Phyloseq](https://www.bioconductor.org/packages/release/bioc/html/phyloseq.html))
 - Pipeline QC summaries ([MultiQC](https://multiqc.info/))
 - Pipeline summary report ([R Markdown](https://github.com/rstudio/rmarkdown))
@@ -74,6 +73,7 @@ nextflow run nf-core/ampliseq \
 
 > [!TIP]
 > By default the taxonomic assignment will be performed with DADA2 on SILVA database, but there are various tools and databases readily available, see [taxonomic classification documentation](https://nf-co.re/ampliseq/usage#taxonomic-classification).
+> Differential abundance testing with ([ANCOM](https://www.ncbi.nlm.nih.gov/pubmed/26028277)) or ([ANCOM-BC](https://www.ncbi.nlm.nih.gov/pubmed/32665548)) when opting in.
 
 > [!WARNING]
 > Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;

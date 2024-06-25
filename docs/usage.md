@@ -16,6 +16,7 @@
   - [Taxonomic classification](#taxonomic-classification)
   - [Multiple region analysis with Sidle](#multiple-region-analysis-with-sidle)
   - [Metadata](#metadata)
+  - [Differential abundance analysis](#differential-abundance-analysis)
   - [Updating the pipeline](#updating-the-pipeline)
   - [Reproducibility](#reproducibility)
 - [Core Nextflow arguments](#core-nextflow-arguments)
@@ -305,6 +306,10 @@ The metadata file must be tab-separated with a header line. The first column in 
 Sample identifiers should be 36 characters long or less, and also contain only ASCII alphanumeric characters (i.e. in the range of [a-z], [A-Z], or [0-9]), or the dash (-) character. For downstream analysis, by default all numeric columns, blanks or NA are removed, and only columns with multiple different values but not all unique are selected.
 
 The columns which are to be assessed can be specified by `--metadata_category`. If `--metadata_category` isn't specified than all columns that fit the specification are automatically chosen.
+
+### Differential abundance analysis
+
+Differential abundance analysis for relative abundance from microbial community analysis are plagued by multiple issues that aren't fully solved yet. But some approaches seem promising, for example Analysis of Composition of Microbiomes with Bias Correction ([ANCOM-BC](https://pubmed.ncbi.nlm.nih.gov/32665548/)). [ANCOM](https://pubmed.ncbi.nlm.nih.gov/26028277/) and ANCOM-BC are integrated into the pipeline, but only executed on request via `--ancom` and `--ancombc`, more details in the [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#differential-abundance-analysis).
 
 ### Updating the pipeline
 

@@ -43,7 +43,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [Barplot](#barplot) - Interactive barplot
   - [Alpha diversity rarefaction curves](#alpha-diversity-rarefaction-curves) - Rarefaction curves for quality control
   - [Diversity analysis](#diversity-analysis) - High level overview with different diversity indices
-  - [ANCOM](#ancom) - Differential abundance analysis
+  - [Differential abundance analysis](#differential-abundance-analysis) - Calling differentially abundant features with ANCOM or ANCOM-BC
 - [PICRUSt2](#picrust2) - Predict the functional potential of a bacterial community
 - [SBDI export](#sbdi-export) - Swedish Biodiversity Infrastructure (SBDI) submission file
 - [Phyloseq](#phyloseq) - Phyloseq R objects
@@ -544,11 +544,13 @@ Furthermore, ADONIS permutation-based statistical test in vegan-R determine whet
 
 </details>
 
-#### ANCOM
+#### Differential abundance analysis
+
+##### ANCOM
 
 Analysis of Composition of Microbiomes ([ANCOM](https://www.ncbi.nlm.nih.gov/pubmed/26028277)) is applied to identify features that are differentially abundant across sample groups. A key assumption made by ANCOM is that few taxa (less than about 25%) will be differentially abundant between groups otherwise the method will be inaccurate. Parameter `--ancom_sample_min_count` sets the minimum sample counts to retain a sample for ANCOM analysis.
 
-ANCOM is applied to each suitable or specified metadata column for 5 taxonomic levels (2-6).
+On request (`--ancom`), ANCOM is applied to each suitable or specified metadata column for 5 taxonomic levels (2-6).
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -557,6 +559,28 @@ ANCOM is applied to each suitable or specified metadata column for 5 taxonomic l
   - `Category-<treatment>-<taxonomic level>/index.html`: Statistical results and interactive Volcano plot.
     - treatment: depends on your metadata sheet or what metadata categories you have specified
     - taxonomic level: level-2 (phylum), level-3 (class), level-4 (order), level-5 (family), level-6 (genus), ASV
+
+</details>
+
+##### ANCOM-BC
+
+Analysis of Composition of Microbiomes with Bias Correction ([ANCOM-BC](https://www.ncbi.nlm.nih.gov/pubmed/32665548)) is applied to identify features that are differentially abundant across sample groups. Parameter `--ancom_sample_min_count` sets the minimum sample counts to retain a sample for ANCOM-BC analysis.
+
+On request (`--ancombc`), ANCOM-BC is applied to each suitable or specified metadata column for 5 taxonomic levels (2-6). Independently, multiple comma separated formula can be submitted to ANCOM-BC by `--ancombc_formula`.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `qiime2/ancombc/` or `qiime2/ancombc_formula/`
+  - `da_barplot/Category-<formula>-<taxonomic level>/`
+    - `index.html`: Links to interactive plots.
+    - `<formula><treatment>-ancombc-barplot.html`: Interactive plots.
+  - `differentials/Category-<formula>-<taxonomic level>/`
+    - `index.html`: Visualised table of statistical results.
+    - `*.csv*`: Comma-separated tables of statistical results.
+  - formula: metadata category / formula that was tested
+  - taxonomic level: level-2 (phylum), level-3 (class), level-4 (order), level-5 (family), level-6 (genus), ASV
+  - treatment: Changes for that treatment group
 
 </details>
 

@@ -9,10 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#751](https://github.com/nf-core/ampliseq/pull/751) - Added version R08-RS214 of curated GTDB 16S taxonomy: `sbdi-gtdb=R08-RS214-1` or `sbdi-gtdb` as parameter to `--dada_ref_taxonomy`
 - [#752](https://github.com/nf-core/ampliseq/pull/752) - Added version R09-RS220 of GTDB 16S taxonomy: `gtdb=R09-RS220` or `gtdb` as parameter to `--dada_ref_taxonomy`
+- [#753](https://github.com/nf-core/ampliseq/pull/753) - ANCOM-BC via QIIME2 can be used with `--ancombc`, `--ancombc_formula`, and `--ancombc_formula_reflvl`, plotting can be modified with thresholds `--ancombc_effect_size` and `--ancombc_significance`
 
 ### `Changed`
 
 - [#749](https://github.com/nf-core/ampliseq/pull/749) - Create barplot also when no metadata is given
+- [#753](https://github.com/nf-core/ampliseq/pull/753) - ANCOM via QIIME2 is not run anymore by default but on request whith `--ancom`, therefore `--skip_ancom` was removed
 
 ### `Fixed`
 
@@ -23,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Dependencies`
 
 ### `Removed`
+
+- [#753](https://github.com/nf-core/ampliseq/pull/753) - `--skip_ancom` was removed
 
 ## nf-core/ampliseq version 2.9.0 - 2024-04-03
 

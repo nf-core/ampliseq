@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#751](https://github.com/nf-core/ampliseq/pull/751) - Added version R08-RS214 of curated GTDB 16S taxonomy: `sbdi-gtdb=R08-RS214-1` or `sbdi-gtdb` as parameter to `--dada_ref_taxonomy`
 - [#752](https://github.com/nf-core/ampliseq/pull/752) - Added version R09-RS220 of GTDB 16S taxonomy: `gtdb=R09-RS220` or `gtdb` as parameter to `--dada_ref_taxonomy`
-- [#753](https://github.com/nf-core/ampliseq/pull/753) - ANCOM-BC via QIIME2 can be used with `--ancombc`, `--ancombc_formula`, and `--ancombc_formula_reflvl`, plotting can be modified with thresholds `--ancombc_effect_size` and `--ancombc_significance`
+- [#753](https://github.com/nf-core/ampliseq/pull/753), [#756](https://github.com/nf-core/ampliseq/pull/756) - ANCOM-BC via QIIME2 can be used with `--ancombc`, `--ancombc_formula`, and `--ancombc_formula_reflvl`, plotting can be modified with thresholds `--ancombc_effect_size` and `--ancombc_significance`
 
 ### `Changed`
 

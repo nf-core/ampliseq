@@ -649,8 +649,8 @@
                 }
             }
         },
-        "differential_abundance_testing": {
-            "title": "Differential abundance testing",
+        "differential_abundance_analysis": {
+            "title": "Differential abundance analysis",
             "type": "object",
             "description": "",
             "default": "",
@@ -664,18 +664,18 @@
                 },
                 "ancom": {
                     "type": "boolean",
-                    "description": "Perform differential abundance testing with ANCOM",
+                    "description": "Perform differential abundance analysis with ANCOM",
                     "fa_icon": "fas fa-greater-than-equal"
                 },
                 "ancombc": {
                     "type": "boolean",
-                    "description": "Perform differential abundance testing with ANCOMBC",
+                    "description": "Perform differential abundance analysis with ANCOMBC",
                     "help_text": "ANCOMBC will be performed on all suitable columns in the metadata sheet. Empty values will be removed, therefore it is possible to perform tests on subsets. The reference level will default to highest alphanumeric group (e.g. in alphabetical or numeric order, as applicable) within each metadata column. Formula for specific tests can be supplied with `--ancombc_formula`.",
                     "fa_icon": "fas fa-greater-than-equal"
                 },
                 "ancombc_formula": {
                     "type": "string",
-                    "description": "Formula to perform differential abundance testing with ANCOMBC",
+                    "description": "Formula to perform differential abundance analysis with ANCOMBC",
                     "help_text": "Comma separated list of model formula(s), e.g. \"treatment1,treatment2\". The reference level will default to highest alphanumeric group (e.g. in alphabetical or numeric order, as applicable) within each formula term. The reference level can be overwritten by `--ancombc_formula_reflvl`. Model formula should contain only independent terms in the sample metadata. These can be continuous variables or factors, and they can have interactions as in a typical R formula. Essentially, columns in the metadata sheet can be chosen that have no empty values, not only unique values, or not only identical values.\nFor example, \"treatment1+treatment2\" tests whether the data partitions based on \"treatment1\" and \"treatment2\" sample metadata. \"treatment1*treatment2\" test both of those effects as well as their interaction.\nMore examples can be found in the R documentation, https://cran.r-project.org/doc/manuals/r-release/R-intro.html#Formulae-for-statistical-models",
                     "fa_icon": "fas fa-greater-than-equal"
                 },
@@ -1046,7 +1046,7 @@
             "$ref": "#/definitions/downstream_analysis"
         },
         {
-            "$ref": "#/definitions/differential_abundance_testing"
+            "$ref": "#/definitions/differential_abundance_analysis"
         },
         {
             "$ref": "#/definitions/pipeline_report"

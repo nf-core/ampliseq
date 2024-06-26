@@ -548,7 +548,7 @@ Furthermore, ADONIS permutation-based statistical test in vegan-R determine whet
 
 ##### ANCOM
 
-Analysis of Composition of Microbiomes ([ANCOM](https://www.ncbi.nlm.nih.gov/pubmed/26028277)) is applied to identify features that are differentially abundant across sample groups. A key assumption made by ANCOM is that few taxa (less than about 25%) will be differentially abundant between groups otherwise the method will be inaccurate. Parameter `--ancom_sample_min_count` sets the minimum sample counts to retain a sample for ANCOM analysis.
+Analysis of Composition of Microbiomes ([ANCOM](https://www.ncbi.nlm.nih.gov/pubmed/26028277)) is applied to identify features that are differentially abundant across sample groups. A key assumption made by ANCOM is that few taxa (less than about 25%) will be differentially abundant between groups otherwise the method will be inaccurate.
 
 On request (`--ancom`), ANCOM is applied to each suitable or specified metadata column for 5 taxonomic levels (2-6).
 
@@ -564,7 +564,7 @@ On request (`--ancom`), ANCOM is applied to each suitable or specified metadata 
 
 ##### ANCOM-BC
 
-Analysis of Composition of Microbiomes with Bias Correction ([ANCOM-BC](https://www.ncbi.nlm.nih.gov/pubmed/32665548)) is applied to identify features that are differentially abundant across sample groups. Parameter `--ancom_sample_min_count` sets the minimum sample counts to retain a sample for ANCOM-BC analysis.
+Analysis of Composition of Microbiomes with Bias Correction ([ANCOM-BC](https://www.ncbi.nlm.nih.gov/pubmed/32665548)) is applied to identify features that are differentially abundant across sample groups.
 
 On request (`--ancombc`), ANCOM-BC is applied to each suitable or specified metadata column for 5 taxonomic levels (2-6). Independently, multiple comma separated formula can be submitted to ANCOM-BC by `--ancombc_formula`.
 

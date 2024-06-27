@@ -3,6 +3,31 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## nf-core/ampliseq version 2.10.0 - 2024-06-27
+
+### `Added`
+
+- [#751](https://github.com/nf-core/ampliseq/pull/751) - Added version R08-RS214 of curated GTDB 16S taxonomy: `sbdi-gtdb=R08-RS214-1` or `sbdi-gtdb` as parameter to `--dada_ref_taxonomy`
+- [#752](https://github.com/nf-core/ampliseq/pull/752) - Added version R09-RS220 of GTDB 16S taxonomy: `gtdb=R09-RS220` or `gtdb` as parameter to `--dada_ref_taxonomy`
+- [#753](https://github.com/nf-core/ampliseq/pull/753), [#756](https://github.com/nf-core/ampliseq/pull/756), [#757](https://github.com/nf-core/ampliseq/pull/757) - ANCOM-BC via QIIME2 can be used with `--ancombc`, `--ancombc_formula`, and `--ancombc_formula_reflvl`, plotting can be modified with thresholds `--ancombc_effect_size` and `--ancombc_significance`
+
+### `Changed`
+
+- [#749](https://github.com/nf-core/ampliseq/pull/749) - Create barplot also when no metadata is given
+- [#753](https://github.com/nf-core/ampliseq/pull/753) - ANCOM via QIIME2 is not run anymore by default but on request whith `--ancom`, therefore `--skip_ancom` was removed
+
+### `Fixed`
+
+- [#747](https://github.com/nf-core/ampliseq/pull/747) - Template update for nf-core/tools version 2.14.1
+- [#748](https://github.com/nf-core/ampliseq/pull/748) - Updating misleading error message and documentation
+- [#750](https://github.com/nf-core/ampliseq/pull/750) - Numbers in `overall_summary.tsv` were fixed (sometimes misleading in 2.9.0 for columns "denoised[F/R]", "merged", and "nochim")
+
+### `Dependencies`
+
+### `Removed`
+
+- [#753](https://github.com/nf-core/ampliseq/pull/753) - `--skip_ancom` was removed
+
 ## nf-core/ampliseq version 2.9.0 - 2024-04-03
 
 ### `Added`

@@ -52,7 +52,9 @@ process SUMMARY_REPORT  {
     path(diversity_indices_alpha, stageAs: 'alpha_diversity/*') // prevent folder name collisons
     path(diversity_indices_beta, stageAs: 'beta_diversity/*') // prevent folder name collisons
     path(diversity_indices_adonis, stageAs: 'beta_diversity/adonis/*') // prevent folder name collisons
-    path(ancom)
+    path(ancom, stageAs: 'ancom/*')
+    path(ancombc, stageAs: 'ancombc/da_barplot/*')
+    path(ancombc_formula, stageAs: 'ancombc_formula/da_barplot/*')
     path(picrust_pathways)
     path(sbdi, stageAs: 'sbdi/*')
     path(phyloseq, stageAs: 'phyloseq/*')
@@ -131,6 +133,8 @@ process SUMMARY_REPORT  {
         diversity_indices_beta ? "diversity_indices_beta='"+ diversity_indices_beta.join(",") +"'" : "",
         diversity_indices_adonis ? "diversity_indices_adonis='"+ diversity_indices_adonis.join(",") +"',qiime_adonis_formula='$params.qiime_adonis_formula'" : "",
         ancom ? "ancom='"+ ancom.join(",") +"'" : "",
+        ancombc ? "ancombc='"+ ancombc.join(",") +"'" : "",
+        ancombc_formula ? "ancombc_formula='"+ ancombc_formula.join(",") +"'" : "",
         sbdi ? "sbdi='"+ sbdi.join(",") +"'" : "",
         phyloseq ? "phyloseq='"+ phyloseq.join(",") +"'" : "",
     ]

@@ -63,27 +63,10 @@ jobs:
 
     steps:
       - name: Check out pipeline code
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-
-      - name: Check out test data
-        uses: actions/checkout@v3
-        with:
-          repository: nf-core/test-datasets
-          ref: ampliseq
-          path: test-datasets/
-          fetch-depth: 1
-
-      - name: Replace remote paths in samplesheets
-        run: |
-          for f in ${{ github.workspace }}/test-datasets/samplesheets/*.tsv; do
-            sed -i "s=https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/=${{ github.workspace }}/test-datasets/=g" $f
-            echo "========== $f ============"
-            cat $f
-            echo "========================================"
-          done;
+        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4
 
       - name: Install Nextflow
-        uses: nf-core/setup-nextflow@v1
+        uses: nf-core/setup-nextflow@v2
         with:
           version: "${{ matrix.NXF_VER }}"
 

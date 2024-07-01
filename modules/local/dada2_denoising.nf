@@ -31,8 +31,8 @@ process DADA2_DENOISING {
         #!/usr/bin/env Rscript
         suppressPackageStartupMessages(library(dada2))
 
-        errF = readRDS("${errormodel[0]}")
-        errR = readRDS("${errormodel[1]}")
+        errF <- readRDS("${errormodel[0]}")
+        errR <- readRDS("${errormodel[1]}")
 
         filtFs <- sort(list.files("./filtered/", pattern = "_1.filt.fastq.gz", full.names = TRUE), method = "radix")
         filtRs <- sort(list.files("./filtered/", pattern = "_2.filt.fastq.gz", full.names = TRUE), method = "radix")
@@ -45,33 +45,56 @@ process DADA2_DENOISING {
         saveRDS(dadaRs, "${prefix}_2.dada.rds")
         sink(file = NULL)
 
-        #make table
+        # merge
 
         if ("${params.concatenate_reads}" == "consensus") {
 
             mergers <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, $args2, justConcatenate = FALSE, verbose=TRUE)
             concats <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, $args2, justConcatenate = TRUE, verbose=TRUE)
 
+            # in case there is only one sample in the entire run
             if (is.data.frame(mergers)) {
                 mergers <- list(sample = mergers)
                 concats <- list(sample = concats)
             }
 
+            # define the overlap threshold to decide if concatenation or not
+
+            min_overlap_obs <- lapply(mergers, function(X) {
+
+                mergers_accepted <- X[["accept"]]
+
+                if (sum(mergers_accepted) > 0) {
+                    min_overlap_obs <- X[["nmatch"]][mergers_accepted] + X[["nmismatch"]][mergers_accepted]
+                    rep(min_overlap_obs, X[["abundance"]][mergers_accepted])
+                } else {
+                    NA
+                }
+            })
+
+            min_overlap_obs <- Reduce(c, min_overlap_obs)
+            min_overlap_obs <- min_overlap_obs[!is.na(min_overlap_obs)]
+            min_overlap_obs <- quantile(min_overlap_obs, 0.001)
+
             for (x in names(mergers)) {
-                if (nrow(mergers[[x]]) >= 1000){
-                    min_overlap_obs <- mergers[[x]][["nmatch"]] + mergers[[x]][["nmismatch"]]
-                    min_overlap_obs <- quantile(min_overlap_obs[mergers[[x]][["accept"]]], 0.001)
-                    to_concat <- !mergers[[x]][["accept"]] & (mergers[[x]][["nmismatch"]] + mergers[[x]][["nmatch"]]) < min_overlap_obs
+                to_concat <- !mergers[[x]][["accept"]] & (mergers[[x]][["nmismatch"]] + mergers[[x]][["nmatch"]]) < min_overlap_obs
+
+                if (sum(to_concat) > 0) {
                     mergers[[x]][to_concat, ] <- concats[[x]][to_concat, ]
+                    # filter out unaccepted non concatenated sequences
                     mergers[[x]] <- mergers[[x]][mergers[[x]][["accept"]], ]
                 }
+
             }
+
         } else {
             mergers <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, $args2, verbose=TRUE)
         }
 
-        mergers <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, $args2, verbose=TRUE)
-        saveRDS(mergers, "${prefix}.mergers.rds")
+        saveRDS(mergers, "${meta.run}.mergers.rds")
+
+        # make table
+
         seqtab <- makeSequenceTable(mergers)
         saveRDS(seqtab, "${prefix}.seqtab.rds")
 

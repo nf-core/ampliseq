@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
+- [#761](https://github.com/nf-core/ampliseq/pull/761) - Some sample sheet checks were not applied due to changes in the metadata ["meta"] structure in version 2.9.0
+
 ### `Dependencies`
 
 ### `Removed`

@@ -6,8 +6,9 @@
 # Assumes only one (gzipped) file
 
 # Extract the fasta file without _dev in its name
-tar xzf *.tgz $(tar tfz *.tgz | grep -v '_dev')
+f=$(tar tfz *.tgz | grep fasta | grep -v '_dev')
+tar xzf *.tgz $f
 
 # Change the name and gzip
-mv *.fasta sintaxdb.fa
+mv $f sintaxdb.fa
 gzip sintaxdb.fa

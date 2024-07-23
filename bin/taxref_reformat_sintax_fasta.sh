@@ -5,4 +5,3 @@
 # Just rename the preformatted file
 # Assumes only one (gzipped) file
 mv * sintaxdb.fa.gz
-

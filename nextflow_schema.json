@@ -380,13 +380,13 @@
                         "silva=132",
                         "silva=138",
                         "unite-alleuk",
-                        "unite-alleuk=8.2",
-                        "unite-alleuk=8.3",
                         "unite-alleuk=9.0",
+                        "unite-alleuk=8.3",
+                        "unite-alleuk=8.2",
                         "unite-fungi",
-                        "unite-fungi=8.2",
-                        "unite-fungi=8.3",
                         "unite-fungi=9.0",
+                        "unite-fungi=8.3",
+                        "unite-fungi=8.2",
                         "zehr-nifh",
                         "zehr-nifh=2.5.0"
                     ]
@@ -519,14 +519,16 @@
                     "enum": [
                         "coidb",
                         "coidb=221216",
+                        "unite-fungi",
+                        "unite-fungi=10.0",
                         "unite-fungi=9.0",
                         "unite-fungi=8.3",
                         "unite-fungi=8.2",
-                        "unite-fungi",
+                        "unite-alleuk",
+                        "unite-alleuk=10.0",
                         "unite-alleuk=9.0",
                         "unite-alleuk=8.3",
-                        "unite-alleuk=8.2",
-                        "unite-alleuk"
+                        "unite-alleuk=8.2"
                     ]
                 },
                 "addsh": {

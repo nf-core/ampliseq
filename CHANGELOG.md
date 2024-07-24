@@ -8,14 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 - [#765](https://github.com/nf-core/ampliseq/pull/765) - Added version R09-RS220 of curated GTDB 16S taxonomy: `sbdi-gtdb=R09-RS220-1` or `sbdi-gtdb` as parameter to `--dada_ref_taxonomy`
+- [#766](https://github.com/nf-core/ampliseq/pull/766) - Added version 10 of Unite as options for `--sintax_ref_taxonomy`
 
 ### `Changed`
 
 - [#762](https://github.com/nf-core/ampliseq/pull/762) - Improved output documentation section "Optional ASV filtering" and parameter documentation
+- [#766](https://github.com/nf-core/ampliseq/pull/766) - Modified warning filenames from `QIIME2_ANCOM` to avoid collisions
+- [#766](https://github.com/nf-core/ampliseq/pull/766) - Disabled Unite databases from the `--qiime_ref_taxonomy` because of divergent results compared to the other classifiers
 
 ### `Fixed`
 
 - [#761](https://github.com/nf-core/ampliseq/pull/761) - Some sample sheet checks were not applied due to changes in the metadata ["meta"] structure in version 2.9.0
+- [#766](https://github.com/nf-core/ampliseq/pull/766) - Fixed broken urls for Unite databases (issue [#764](https://github.com/nf-core/ampliseq/issues/764))
 
 ### `Dependencies`
 

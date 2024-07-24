@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Changed`
 
 - [#762](https://github.com/nf-core/ampliseq/pull/762) - Improved output documentation section "Optional ASV filtering" and parameter documentation
+- [#766](https://github.com/nf-core/ampliseq/pull/766) - Modified warning filenames from `QIIME2_ANCOM` to avoid collisions
 
 ### `Fixed`
 

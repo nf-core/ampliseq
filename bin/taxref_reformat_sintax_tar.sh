@@ -1,9 +1,8 @@
 #!/bin/sh
 
-# Handles preformatted database files suitable for sintax
-
-# Just rename the preformatted file
-# Assumes only one (gzipped) file
+# Handles preformatted database tar files suitable for sintax
+#
+# This turned out to be a MISTAKE and is NOT USED, but I'm keeping the file for a while anyway.
 
 # Extract the fasta file without _dev in its name
 f=$(tar tfz *.tgz | grep fasta | grep -v '_dev')

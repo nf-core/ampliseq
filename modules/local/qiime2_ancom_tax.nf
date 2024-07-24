@@ -43,7 +43,7 @@ process QIIME2_ANCOM_TAX {
         --to-tsv
 
     if [ \$(grep -v '^#' -c ${table.baseName}-level-${taxlevel}.feature-table.tsv) -lt 2 ]; then
-        echo ${taxlevel} > ancom/\"WARNING Summing your data at taxonomic level ${taxlevel} produced less than two rows (taxa), ANCOM can't proceed -- did you specify a bad reference taxonomy?\".txt
+        echo ${taxlevel} > ancom/"${table.baseName}_WARNING_Summing_your_data_at_taxonomic_level_${taxlevel}_produced_less_than_two_rows_(taxa)_ANCOM_cant_proceed_--_did_you_specify_a_bad_reference_taxonomy.txt"
     else
         qiime composition add-pseudocount \\
                 --i-table lvl${taxlevel}-${table} \\

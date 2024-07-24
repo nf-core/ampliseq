@@ -454,13 +454,7 @@
                     "type": "string",
                     "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `silva=138`) . This will download the desired database and initiate taxonomic classification with QIIME2 and the chosen database.\n\nIf both, `--dada_ref_taxonomy` and `--qiime_ref_taxonomy` are used, DADA2 classification will be used for downstream analysis.\n\nThe following databases are supported:\n- SILVA ribosomal RNA gene database project - 16S rRNA\n- UNITE - eukaryotic nuclear ribosomal ITS region - ITS\n- Greengenes (only testing!)\n\nGenerally, using `silva`, `unite-fungi`, or `unite-alleuk` will select the most recent supported version. For testing purposes, the tiny database `greengenes85` (dereplicated at 85% sequence similarity) is available. For details on what values are valid, please either use an invalid value such as `x` (causing the pipeline to send an error message with all valid values) or see `conf/ref_databases.config`.",
                     "description": "Name of supported database, and optionally also version number",
-                    "enum": [
-                        "silva=138",
-                        "silva",
-                        "greengenes85",
-                        "greengenes2",
-                        "greengenes2=2022.10"
-                    ]
+                    "enum": ["silva=138", "silva", "greengenes85", "greengenes2", "greengenes2=2022.10"]
                 },
                 "qiime_ref_tax_custom": {
                     "type": "string",

@@ -122,16 +122,16 @@ tax_agglom_max = params.tax_agglom_max
 //use custom taxlevels from --dada_assign_taxlevels or database specific taxlevels if specified in conf/ref_databases.config
 if ( params.dada_ref_taxonomy ) {
     taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" :
-        params.dada_ref_databases.containsKey(params.dada_ref_taxonomy) && params.dada_ref_databases[params.dada_ref_taxonomy]["taxlevels"] ?: ""
+        params.dada_ref_databases.containsKey(params.dada_ref_taxonomy) && params.dada_ref_databases[params.dada_ref_taxonomy]["taxlevels"] ? params.dada_ref_databases[params.dada_ref_taxonomy]["taxlevels"] : ""
 } else { taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" : "" }
 if ( params.sintax_ref_taxonomy ) {
-    sintax_taxlevels = params.sintax_ref_databases.containsKey(params.sintax_ref_taxonomy) && params.sintax_ref_databases[params.sintax_ref_taxonomy]["taxlevels"] ?: ""
+    sintax_taxlevels = params.sintax_ref_databases.containsKey(params.sintax_ref_taxonomy) && params.sintax_ref_databases[params.sintax_ref_taxonomy]["taxlevels"] ? params.sintax_ref_databases[params.sintax_ref_taxonomy]["taxlevels"] : ""
 } else {
     sintax_taxlevels = ""
 }
 if ( params.kraken2_ref_taxonomy ) {
     kraken2_taxlevels = params.kraken2_assign_taxlevels ? "${params.kraken2_assign_taxlevels}" :
-        params.kraken2_ref_databases.containsKey(params.kraken2_ref_taxonomy) && params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["taxlevels"] ?: ""
+        params.kraken2_ref_databases.containsKey(params.kraken2_ref_taxonomy) && params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["taxlevels"] ? params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["taxlevels"] : ""
 } else { kraken2_taxlevels = params.kraken2_assign_taxlevels ? "${params.kraken2_assign_taxlevels}" : "" }
 
 //make sure that taxlevels adheres to requirements when mixed with addSpecies

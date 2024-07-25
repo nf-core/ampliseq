@@ -162,14 +162,6 @@ def validateInputParameters() {
         error("Invalid command: `--trunclenr` is set, but `--trunclenf` is not. Either both parameters `--trunclenf` and `--trunclenr` must be set or none.")
     }
 
-    if (!["pooled", "independent", "pseudo"].contains(params.sample_inference)) {
-        def error_string = "Please set `--sample_inference` to one of the following:\n" +
-            "\t-\"independent\" (lowest sensitivity and lowest resources),\n" +
-            "\t-\"pseudo\" (balance between required resources and sensitivity),\n" +
-            "\t-\"pooled\" (highest sensitivity and resources)."
-        error(error_string)
-    }
-
     if (params.double_primer && params.retain_untrimmed) {
         error("Incompatible parameters `--double_primer` and `--retain_untrimmed` cannot be set at the same time.")
     }

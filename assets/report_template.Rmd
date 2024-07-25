@@ -1544,7 +1544,7 @@ for (folder in ancom) {
 any_ancombc <- !isFALSE(params$ancombc) || !isFALSE(params$ancombc_formula)
 ```
 
-```{r, eval = !isFALSE(params$any_ancombc), results='asis'}
+```{r, eval = !isFALSE(any_ancombc), results='asis'}
 cat(paste0("
 ## ANCOM-BC
 

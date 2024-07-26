@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 - [#765](https://github.com/nf-core/ampliseq/pull/765) - Added version R09-RS220 of curated GTDB 16S taxonomy: `sbdi-gtdb=R09-RS220-1` or `sbdi-gtdb` as parameter to `--dada_ref_taxonomy`
-- [#766](https://github.com/nf-core/ampliseq/pull/766) - Added version 10 of Unite as options for `--sintax_ref_taxonomy`
+- [#766](https://github.com/nf-core/ampliseq/pull/766) - Added version 10 of Unite as parameter for `--sintax_ref_taxonomy`: `unite-fungi=10.0` and `unite-alleuk=10.0`
 
 ### `Changed`
 

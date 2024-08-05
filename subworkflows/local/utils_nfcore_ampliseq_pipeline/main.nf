@@ -162,14 +162,6 @@ def validateInputParameters() {
         error("Invalid command: `--trunclenr` is set, but `--trunclenf` is not. Either both parameters `--trunclenf` and `--trunclenr` must be set or none.")
     }
 
-    if (!["pooled", "independent", "pseudo"].contains(params.sample_inference)) {
-        def error_string = "Please set `--sample_inference` to one of the following:\n" +
-            "\t-\"independent\" (lowest sensitivity and lowest resources),\n" +
-            "\t-\"pseudo\" (balance between required resources and sensitivity),\n" +
-            "\t-\"pooled\" (highest sensitivity and resources)."
-        error(error_string)
-    }
-
     if (params.double_primer && params.retain_untrimmed) {
         error("Incompatible parameters `--double_primer` and `--retain_untrimmed` cannot be set at the same time.")
     }
@@ -237,7 +229,17 @@ def validateInputParameters() {
         error("Incompatible parameters: `--filter_ssu` cannot be used with `--skip_barrnap` because filtering for SSU's depends on barrnap.")
     }
 
-    String[] sbdi_compatible_databases = ["coidb","coidb=221216","gtdb","gtdb=R09-RS220","gtdb=R08-RS214","gtdb=R07-RS207","gtdb=R06-RS202","gtdb=R05-RS95","midori2-co1","midori2-co1=gb250","pr2","pr2=5.0.0","pr2=4.14.0","pr2=4.13.0","rdp","rdp=18","sbdi-gtdb","sbdi-gtdb=R08-RS214-1","sbdi-gtdb=R07-RS207-1","silva","silva=138","silva=132","unite-fungi","unite-fungi=9.0","unite-fungi=8.3","unite-fungi=8.2","unite-alleuk","unite-alleuk=9.0","unite-alleuk=8.3","unite-alleuk=8.2"]
+    String[] sbdi_compatible_databases = [
+        "coidb","coidb=221216",
+        "gtdb","gtdb=R09-RS220","gtdb=R08-RS214","gtdb=R07-RS207","gtdb=R06-RS202","gtdb=R05-RS95",
+        "midori2-co1","midori2-co1=gb250",
+        "pr2","pr2=5.0.0","pr2=4.14.0","pr2=4.13.0",
+        "rdp","rdp=18",
+        "sbdi-gtdb","sbdi-gtdb=R09-RS220-1","sbdi-gtdb=R08-RS214-1","sbdi-gtdb=R07-RS207-1",
+        "silva","silva=138","silva=132",
+        "unite-fungi","unite-fungi=10.0","unite-fungi=9.0","unite-fungi=8.3","unite-fungi=8.2",
+        "unite-alleuk","unite-alleuk=10.0","unite-alleuk=9.0","unite-alleuk=8.3","unite-alleuk=8.2"
+    ]
     if (params.sbdiexport){
         if (params.sintax_ref_taxonomy ) {
             if (!Arrays.stream(sbdi_compatible_databases).anyMatch(entry -> params.sintax_ref_taxonomy.toString().equals(entry)) ) {

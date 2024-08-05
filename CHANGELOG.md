@@ -3,6 +3,29 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## nf-core/ampliseq version 2.11.0 - 2024-08-06
+
+### `Added`
+
+- [#765](https://github.com/nf-core/ampliseq/pull/765) - Added version R09-RS220 of curated GTDB 16S taxonomy: `sbdi-gtdb=R09-RS220-1` or `sbdi-gtdb` as parameter to `--dada_ref_taxonomy`
+- [#766](https://github.com/nf-core/ampliseq/pull/766) - Added version 10 of Unite as parameter for `--sintax_ref_taxonomy`: `unite-fungi=10.0` and `unite-alleuk=10.0`
+
+### `Changed`
+
+- [#762](https://github.com/nf-core/ampliseq/pull/762) - Improved output documentation section "Optional ASV filtering" and parameter documentation
+- [#766](https://github.com/nf-core/ampliseq/pull/766) - Modified warning filenames from `QIIME2_ANCOM` to avoid collisions
+- [#766](https://github.com/nf-core/ampliseq/pull/766),[#769](https://github.com/nf-core/ampliseq/pull/769) - Disabled Unite databases from the `--qiime_ref_taxonomy` because of divergent results compared to the other classifiers
+
+### `Fixed`
+
+- [#761](https://github.com/nf-core/ampliseq/pull/761) - Some sample sheet checks were not applied due to changes in the metadata ["meta"] structure in version 2.9.0
+- [#766](https://github.com/nf-core/ampliseq/pull/766) - Fixed broken urls for Unite databases (issue [#764](https://github.com/nf-core/ampliseq/issues/764))
+- [#769](https://github.com/nf-core/ampliseq/pull/769) - Reference taxonomy database values were not properly validated in versions 2.9.0 and 2.10.0
+
+### `Dependencies`
+
+### `Removed`
+
 ## nf-core/ampliseq version 2.10.0 - 2024-06-27
 
 ### `Added`

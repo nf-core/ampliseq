@@ -23,7 +23,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [Cutadapt](#cutadapt) - Primer trimming
   - [MultiQC](#multiqc) - Aggregate report describing results
 - [ASV inferrence with DADA2](#asv-inferrence-with-dada2) - Infer Amplicon Sequence Variants (ASVs)
-- [Optional ASV filtering](#optional-asv-filtering) - Filter ASVs to optimize downstream analysis
+- [Optional ASV post processing](#optional-asv-post-processing) - Filter ASVs to optimize downstream analysis
   - [VSEARCH cluster](#vsearch-cluster) - Centroid fasta file, filtered asv table, and stats
   - [Barrnap](#barrnap) - Predict ribosomal RNA sequences and optional filtering
   - [Length filter](#length-filter) - Optionally, ASV can be filtered by length thresholds
@@ -163,7 +163,9 @@ For binned quality scores in NovaSeq data, monotonicity in the fitted error mode
 
 </details>
 
-### Optional ASV filtering
+### Optional ASV post processing
+
+ASV post-processing takes place after DADA2's ASV computation (i.e. after chimera removal, for example table `ASV_tax.tsv`) but _before_ taxonomic classification. Post-processing will affect all downstream files. Clustering and filters are applied sequentially, in the same sequence as shown here. All filters are off by default and can be enabled by setting thresholds as detailed in the parameter documentation.
 
 #### VSEARCH cluster
 
@@ -184,7 +186,7 @@ This directory will hold the centroid fasta file, the filtered asv count table (
 
 Barrnap predicts the location of ribosomal RNA genes in genomes, here it can be used to discriminate rRNA sequences from potential contamination. It supports bacteria (5S,23S,16S), archaea (5S,5.8S,23S,16S), metazoan mitochondria (12S,16S) and eukaryotes (5S,5.8S,28S,18S).
 
-Optionally, ASV sequences can be filtered for rRNA sequences identified by Barrnap with `--filter_ssu` that can take a list of abbreviations of the above supported categories (kingdoms), e.g. `bac,arc,mito,euk`. This filtering takes place after DADA2's ASV computation (i.e. after chimera removal) but _before_ taxonomic classification (also applies to above mentioned taxonomic classification with DADA2, i.e. files `ASV_tax.tsv` & `ASV_tax_species.tsv`).
+Optionally, ASV sequences can be filtered for rRNA sequences identified by Barrnap with `--filter_ssu` that can take a list of abbreviations of the above supported categories (kingdoms), e.g. `bac,arc,mito,euk`.
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -200,7 +202,7 @@ Optionally, ASV sequences can be filtered for rRNA sequences identified by Barrn
 
 #### Length filter
 
-Optionally, a length filter can be used to reduce potential contamination after ASV computation. For example with 515f and 806r primers the majority of 16S rRNA amplicon sequences should have a length of 253 bp and amplicons vary significantely are likely spurious.
+Optionally, a length filter can be used to reduce potential contamination after ASV computation. For example with 515f and 806r primers the majority of 16S rRNA amplicon sequences should have a length of 253 bp and amplicons that differ significantly from this are likely spurious.
 
 The minimum ASV length threshold can be set by `--min_len_asv` and the maximum length threshold with `--max_len_asv`. If no threshold is set, the filter (and output) is omitted.
 

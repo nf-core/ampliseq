@@ -47,7 +47,7 @@ if (params.dada_ref_tax_custom) {
     val_dada_ref_taxonomy = "user"
 } else if (params.dada_ref_taxonomy && !params.skip_dada_taxonomy && !params.skip_taxonomy) {
     //standard ref taxonomy input from params.dada_ref_taxonomy & conf/ref_databases.config
-    ch_dada_ref_taxonomy = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["file"]).map { file(it) }
+    ch_dada_ref_taxonomy = params.dada_ref_databases.containsKey(params.dada_ref_taxonomy) ? Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["file"]).map { file(it) } : Channel.empty()
     val_dada_ref_taxonomy = params.dada_ref_taxonomy.replace('=','_').replace('.','_')
 } else {
     ch_dada_ref_taxonomy = Channel.empty()
@@ -67,7 +67,7 @@ if (params.qiime_ref_tax_custom) {
     }
     val_qiime_ref_taxonomy = "user"
 } else if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
-    ch_qiime_ref_taxonomy = Channel.fromList(params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"]).map { file(it) }
+    ch_qiime_ref_taxonomy = params.qiime_ref_databases.containsKey(params.qiime_ref_taxonomy) ? Channel.fromList(params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"]).map { file(it) } : Channel.empty()
     val_qiime_ref_taxonomy = params.qiime_ref_taxonomy.replace('=','_').replace('.','_')
 } else {
     ch_qiime_ref_taxonomy = Channel.empty()
@@ -75,7 +75,7 @@ if (params.qiime_ref_tax_custom) {
 }
 
 if (params.sintax_ref_taxonomy && !params.skip_taxonomy) {
-    ch_sintax_ref_taxonomy = Channel.fromList(params.sintax_ref_databases[params.sintax_ref_taxonomy]["file"]).map { file(it) }
+    ch_sintax_ref_taxonomy = params.sintax_ref_databases.containsKey(params.sintax_ref_taxonomy) ? Channel.fromList(params.sintax_ref_databases[params.sintax_ref_taxonomy]["file"]).map { file(it) } : Channel.empty()
     val_sintax_ref_taxonomy = params.sintax_ref_taxonomy.replace('=','_').replace('.','_')
 } else {
     ch_sintax_ref_taxonomy = Channel.empty()
@@ -88,7 +88,7 @@ if (params.kraken2_ref_tax_custom) {
     val_kraken2_ref_taxonomy = "user"
 } else if (params.kraken2_ref_taxonomy && !params.skip_taxonomy) {
     //standard ref taxonomy input from params.dada_ref_taxonomy & conf/ref_databases.config
-    ch_kraken2_ref_taxonomy = Channel.fromList(params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["file"]).map { file(it) }
+    ch_kraken2_ref_taxonomy = params.kraken2_ref_databases.containsKey(params.kraken2_ref_taxonomy) ? Channel.fromList(params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["file"]).map { file(it) } : Channel.empty()
     val_kraken2_ref_taxonomy = params.kraken2_ref_taxonomy.replace('=','_').replace('.','_')
 } else {
     ch_kraken2_ref_taxonomy = Channel.empty()
@@ -122,16 +122,16 @@ tax_agglom_max = params.tax_agglom_max
 //use custom taxlevels from --dada_assign_taxlevels or database specific taxlevels if specified in conf/ref_databases.config
 if ( params.dada_ref_taxonomy ) {
     taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" :
-        params.dada_ref_databases[params.dada_ref_taxonomy]["taxlevels"] ?: ""
+        params.dada_ref_databases.containsKey(params.dada_ref_taxonomy) && params.dada_ref_databases[params.dada_ref_taxonomy]["taxlevels"] ? params.dada_ref_databases[params.dada_ref_taxonomy]["taxlevels"] : ""
 } else { taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" : "" }
 if ( params.sintax_ref_taxonomy ) {
-    sintax_taxlevels = params.sintax_ref_databases[params.sintax_ref_taxonomy]["taxlevels"] ?: ""
+    sintax_taxlevels = params.sintax_ref_databases.containsKey(params.sintax_ref_taxonomy) && params.sintax_ref_databases[params.sintax_ref_taxonomy]["taxlevels"] ? params.sintax_ref_databases[params.sintax_ref_taxonomy]["taxlevels"] : ""
 } else {
     sintax_taxlevels = ""
 }
 if ( params.kraken2_ref_taxonomy ) {
     kraken2_taxlevels = params.kraken2_assign_taxlevels ? "${params.kraken2_assign_taxlevels}" :
-        params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["taxlevels"] ?: ""
+        params.kraken2_ref_databases.containsKey(params.kraken2_ref_taxonomy) && params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["taxlevels"] ? params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["taxlevels"] : ""
 } else { kraken2_taxlevels = params.kraken2_assign_taxlevels ? "${params.kraken2_assign_taxlevels}" : "" }
 
 //make sure that taxlevels adheres to requirements when mixed with addSpecies
@@ -268,13 +268,13 @@ workflow AMPLISEQ {
     ch_input_reads = Channel.empty()
     if ( params.input ) {
         // See the documentation https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
-        ch_input_reads = Channel.fromSamplesheet("input")
+        ch_input_reads = Channel.fromSamplesheet("input") // meta: meta.sample, meta.run
             .map{ meta, readfw, readrv ->
                 meta.single_end = single_end.toBoolean()
                 def reads = single_end ? readfw : [readfw,readrv]
-                if ( !meta.single_end && !readrv ) { error("Entry `reverseReads` is missing in $params.input for $meta.id, either correct the samplesheet or use `--single_end`, `--pacbio`, or `--iontorrent`") } // make sure that reverse reads are present when single_end isnt specified
-                if ( !meta.single_end && ( readfw.getSimpleName() == meta.id || readrv.getSimpleName() == meta.id ) ) { error("Entry `sampleID` cannot be identical to simple name of `forwardReads` or `reverseReads`, please change `sampleID` in $params.input for sample $meta.id") } // sample name and any file name without extensions arent identical, because rename_raw_data_files.nf would forward 3 files (2 renamed +1 input) instead of 2 in that case
-                if ( meta.single_end && ( readfw.getSimpleName() == meta.id+"_1" || readfw.getSimpleName() == meta.id+"_2" ) ) { error("Entry `sampleID`+ `_1` or `_2` cannot be identical to simple name of `forwardReads`, please change `sampleID` in $params.input for sample $meta.id") } // sample name and file name without extensions arent identical, because rename_raw_data_files.nf would forward 2 files (1 renamed +1 input) instead of 1 in that case
+                if ( !meta.single_end && !readrv ) { error("Entry `reverseReads` is missing in $params.input for $meta.sample, either correct the samplesheet or use `--single_end`, `--pacbio`, or `--iontorrent`") } // make sure that reverse reads are present when single_end isn't specified
+                if ( !meta.single_end && ( readfw.getSimpleName() == meta.sample || readrv.getSimpleName() == meta.sample ) ) { error("Entry `sampleID` cannot be identical to simple name of `forwardReads` or `reverseReads`, please change `sampleID` in $params.input for sample $meta.sample") } // sample name and any file name without extensions aren't identical, because rename_raw_data_files.nf would forward 3 files (2 renamed +1 input) instead of 2 in that case
+                if ( meta.single_end && ( readfw.getSimpleName() == meta.sample+"_1" || readfw.getSimpleName() == meta.sample+"_2" ) ) { error("Entry `sampleID`+ `_1` or `_2` cannot be identical to simple name of `forwardReads`, please change `sampleID` in $params.input for sample $meta.sample") } // sample name and file name without extensions aren't identical, because rename_raw_data_files.nf would forward 2 files (1 renamed +1 input) instead of 1 in that case
                 return [meta, reads] }
     } else if ( params.input_fasta ) {
         ch_input_fasta = Channel.fromPath(params.input_fasta, checkIfExists: true)

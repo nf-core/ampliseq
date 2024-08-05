@@ -150,6 +150,7 @@
         "primer_removal": {
             "title": "Primer removal",
             "type": "object",
+            "description": "Spurious sequences sometimes lack primer sequences and primers introduce errors that can be removed in that step",
             "default": "",
             "properties": {
                 "retain_untrimmed": {
@@ -188,7 +189,7 @@
         "read_trimming_and_quality_filtering": {
             "title": "Read trimming and quality filtering",
             "type": "object",
-            "description": "",
+            "description": "Read trimming and quality filtering is supposed to reduce spurious results and aid error correction",
             "default": "",
             "properties": {
                 "trunclenf": {
@@ -271,6 +272,7 @@
         "asv_post_processing": {
             "title": "ASV post processing",
             "type": "object",
+            "description": "ASV post-processing takes place after ASV computation but before taxonomic assignment, it will affect all downstream processes",
             "default": "",
             "properties": {
                 "vsearch_cluster": {
@@ -370,21 +372,22 @@
                         "rdp",
                         "rdp=18",
                         "sbdi-gtdb",
-                        "sbdi-gtdb=R06-RS202-1",
-                        "sbdi-gtdb=R06-RS202-3",
-                        "sbdi-gtdb=R07-RS207-1",
+                        "sbdi-gtdb=R09-RS220-1",
                         "sbdi-gtdb=R08-RS214-1",
+                        "sbdi-gtdb=R07-RS207-1",
+                        "sbdi-gtdb=R06-RS202-3",
+                        "sbdi-gtdb=R06-RS202-1",
                         "silva",
                         "silva=132",
                         "silva=138",
                         "unite-alleuk",
-                        "unite-alleuk=8.2",
-                        "unite-alleuk=8.3",
                         "unite-alleuk=9.0",
+                        "unite-alleuk=8.3",
+                        "unite-alleuk=8.2",
                         "unite-fungi",
-                        "unite-fungi=8.2",
-                        "unite-fungi=8.3",
                         "unite-fungi=9.0",
+                        "unite-fungi=8.3",
+                        "unite-fungi=8.2",
                         "zehr-nifh",
                         "zehr-nifh=2.5.0"
                     ]
@@ -451,20 +454,7 @@
                     "type": "string",
                     "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `silva=138`) . This will download the desired database and initiate taxonomic classification with QIIME2 and the chosen database.\n\nIf both, `--dada_ref_taxonomy` and `--qiime_ref_taxonomy` are used, DADA2 classification will be used for downstream analysis.\n\nThe following databases are supported:\n- SILVA ribosomal RNA gene database project - 16S rRNA\n- UNITE - eukaryotic nuclear ribosomal ITS region - ITS\n- Greengenes (only testing!)\n\nGenerally, using `silva`, `unite-fungi`, or `unite-alleuk` will select the most recent supported version. For testing purposes, the tiny database `greengenes85` (dereplicated at 85% sequence similarity) is available. For details on what values are valid, please either use an invalid value such as `x` (causing the pipeline to send an error message with all valid values) or see `conf/ref_databases.config`.",
                     "description": "Name of supported database, and optionally also version number",
-                    "enum": [
-                        "silva=138",
-                        "silva",
-                        "unite-fungi=8.3",
-                        "unite-fungi=8.2",
-                        "unite-fungi",
-                        "unite-alleuk=9.0",
-                        "unite-alleuk=8.3",
-                        "unite-alleuk=8.2",
-                        "unite-alleuk",
-                        "greengenes85",
-                        "greengenes2",
-                        "greengenes2=2022.10"
-                    ]
+                    "enum": ["silva=138", "silva", "greengenes85", "greengenes2", "greengenes2=2022.10"]
                 },
                 "qiime_ref_tax_custom": {
                     "type": "string",
@@ -517,14 +507,16 @@
                     "enum": [
                         "coidb",
                         "coidb=221216",
+                        "unite-fungi",
+                        "unite-fungi=10.0",
                         "unite-fungi=9.0",
                         "unite-fungi=8.3",
                         "unite-fungi=8.2",
-                        "unite-fungi",
+                        "unite-alleuk",
+                        "unite-alleuk=10.0",
                         "unite-alleuk=9.0",
                         "unite-alleuk=8.3",
-                        "unite-alleuk=8.2",
-                        "unite-alleuk"
+                        "unite-alleuk=8.2"
                     ]
                 },
                 "addsh": {
@@ -575,6 +567,7 @@
             "title": "ASV filtering",
             "type": "object",
             "default": "",
+            "description": "Filtering by taxonomy or abundance will affect all downstream analysis",
             "fa_icon": "fas fa-filter",
             "properties": {
                 "exclude_taxa": {
@@ -600,7 +593,7 @@
         "downstream_analysis": {
             "title": "Downstream analysis",
             "type": "object",
-            "description": "",
+            "description": "Metadata is used here to visualize data either for quality control or publication ready figures",
             "default": "",
             "fa_icon": "fas fa-bacteria",
             "properties": {
@@ -652,7 +645,7 @@
         "differential_abundance_analysis": {
             "title": "Differential abundance analysis",
             "type": "object",
-            "description": "",
+            "description": "Differential abundance analysis relies on provided metadata",
             "default": "",
             "fa_icon": "fas fa-bacteria",
             "properties": {
@@ -705,7 +698,7 @@
         "pipeline_report": {
             "title": "Pipeline summary report",
             "type": "object",
-            "description": "",
+            "description": "Customization of the pipeline report",
             "default": "",
             "properties": {
                 "report_template": {

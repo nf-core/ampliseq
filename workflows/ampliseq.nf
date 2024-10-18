@@ -242,7 +242,8 @@ include { PHYLOSEQ_WORKFLOW             } from '../subworkflows/local/phyloseq_w
 //
 // FUNCTIONS
 //
-include { paramsSummaryMap       } from 'plugin/nf-validation'
+include { samplesheetToList      } from 'plugin/nf-schema'
+include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_ampliseq_pipeline'
@@ -260,7 +261,6 @@ workflow AMPLISEQ {
 
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
-
     //
     // Create input channels
     //
@@ -268,7 +268,7 @@ workflow AMPLISEQ {
     ch_input_reads = Channel.empty()
     if ( params.input ) {
         // See the documentation https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
-        ch_input_reads = Channel.fromSamplesheet("input") // meta: meta.sample, meta.run
+        ch_input_reads = Channel.fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json")) // meta: meta.sample, meta.run
             .map{ meta, readfw, readrv ->
                 meta.single_end = single_end.toBoolean()
                 def reads = single_end ? readfw : [readfw,readrv]
@@ -291,7 +291,7 @@ workflow AMPLISEQ {
     if ( params.multiregion ) {
         // is multiple region analysis
         ch_input_reads
-            .combine( Channel.fromSamplesheet("multiregion") )
+            .combine( Channel..fromList(samplesheetToList(params.multiregion, "${projectDir}/assets/schema_multiregion.json")) )
             .map{ info, reads, multi ->
                 def meta = info + multi
                 return [ meta, reads ] }
@@ -896,6 +896,7 @@ workflow AMPLISEQ {
             newLine: true
         ).set { ch_collated_versions }
 
+
     //
     // MODULE: MultiQC
     //
@@ -933,7 +934,9 @@ workflow AMPLISEQ {
             ch_multiqc_files.collect(),
             ch_multiqc_config.toList(),
             ch_multiqc_custom_config.toList(),
-            ch_multiqc_logo.toList()
+            ch_multiqc_logo.toList(),
+            [],
+            []
         )
 
         ch_multiqc_report_list = MULTIQC.out.report.toList()
@@ -1037,6 +1040,7 @@ workflow AMPLISEQ {
     emit:
     multiqc_report = ch_multiqc_report_list      // MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
     versions       = ch_versions                 // channel: [ path(versions.yml) ]
+
 }
 
 /*

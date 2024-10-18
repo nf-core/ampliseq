@@ -6,11 +6,4 @@ results/
 testing/
 testing*
 *.pyc
-.*.sw?
-.Rproj.user
-.Rhistory
-.screenrc
-ampliseq.Rproj
-results_test/*
-.nf-test/
-nf-test
+null/

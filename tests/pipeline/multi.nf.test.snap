@@ -40,7 +40,7 @@
     },
     "multiqc": {
         "content": [
-            "multiqc_general_stats.txt:md5,5692ee73c6933866807706d29b15c880",
+            "multiqc_general_stats.txt:md5,5cca03b6090ae25c5c3d4b5f49a7acb8",
             "multiqc_fastqc.txt:md5,7d23984b06e4251f17e1cfce7a04aaae"
         ],
         "timestamp": "2023-05-28T21:15:03+0000"

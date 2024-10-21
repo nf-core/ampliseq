@@ -9,41 +9,37 @@ on:
       - "dev"
       - "master"
   release:
-    types:
-      - "published"
+    types: [published]
+  workflow_dispatch:
 
 env:
   NXF_ANSI_LOG: false
   NFTEST_VER: "0.7.3"
+  NXF_SINGULARITY_CACHEDIR: ${{ github.workspace }}/.singularity
+  NXF_SINGULARITY_LIBRARYDIR: ${{ github.workspace }}/.singularity
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  define_nxf_versions:
-    name: Choose nextflow versions to test against depending on target branch
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.nxf_versions.outputs.matrix }}
-    steps:
-      - id: nxf_versions
-        run: |
-          if [[ "${{ github.event_name }}" == "pull_request" && "${{ github.base_ref }}" == "dev" && "${{ matrix.NXF_VER }}" != "latest-everything" ]]; then
-            echo matrix='["latest-everything"]' | tee -a $GITHUB_OUTPUT
-          else
-            echo matrix='["latest-everything", "23.04.0"]' | tee -a $GITHUB_OUTPUT
-          fi
-
   test:
     name: nf-test
-    needs: define_nxf_versions
+    # Only run on push if this is the nf-core dev branch (merged PRs)
+    if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/ampliseq') }}"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        NXF_VER: ${{ fromJson(needs.define_nxf_versions.outputs.matrix) }}
-        tags:
+        NXF_VER:
+          - "24.04.2"
+          - "latest-everything"
+        # Do not run conda because QIIME2 doesnt run with conda
+        profile:
+          #- "conda"
+          - "docker"
+          - "singularity"
+        test_name:
           - "test"
           - "test_single"
           - "test_fasta"
@@ -58,19 +54,50 @@ jobs:
           - "test_sintax"
           - "test_pplace"
           - "test_multiregion"
-        profile:
-          - "docker"
+        isMaster:
+          - ${{ github.base_ref == 'master' }}
+        # Exclude conda and singularity on dev
+        exclude:
+          #- isMaster: false
+          #  profile: "conda"
+          - isMaster: false
+            profile: "singularity"
 
     steps:
       - name: Check out pipeline code
         uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4
 
-      - name: Install Nextflow
+      - name: Set up Nextflow
         uses: nf-core/setup-nextflow@v2
         with:
           version: "${{ matrix.NXF_VER }}"
 
-      - name: Disk space cleanup
+      - name: Set up Apptainer
+        if: matrix.profile == 'singularity'
+        uses: eWaterCycle/setup-apptainer@main
+
+      - name: Set up Singularity
+        if: matrix.profile == 'singularity'
+        run: |
+          mkdir -p $NXF_SINGULARITY_CACHEDIR
+          mkdir -p $NXF_SINGULARITY_LIBRARYDIR
+
+      - name: Set up Miniconda
+        if: matrix.profile == 'conda'
+        uses: conda-incubator/setup-miniconda@a4260408e20b96e80095f42ff7f1a15b27dd94ca # v3
+        with:
+          miniconda-version: "latest"
+          auto-update-conda: true
+          conda-solver: libmamba
+          channels: conda-forge,bioconda
+
+      - name: Set up Conda
+        if: matrix.profile == 'conda'
+        run: |
+          echo $(realpath $CONDA)/condabin >> $GITHUB_PATH
+          echo $(realpath python) >> $GITHUB_PATH
+
+      - name: Clean up Disk space
         uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.1
 
       - name: Install nf-test
@@ -80,7 +107,7 @@ jobs:
 
       - name: Run nf-test
         run: |
-          nf-test test --tag ${{ matrix.tags }} --profile ${{ matrix.tags }},${{ matrix.profile }} --junitxml=test.xml
+          nf-test test --tag ${{ matrix.test_name }} --profile ${{ matrix.test_name }},${{ matrix.profile }} --junitxml=test.xml
 
       - name: Output log on failure
         if: failure()

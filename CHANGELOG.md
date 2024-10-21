@@ -9,9 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#785](https://github.com/nf-core/ampliseq/pull/785) - replaced https://data.ace.uq.edu.au/public/gtdb/data by https://data.gtdb.ecogenomic.org for GTDB versions via `--dada_ref_taxonomy`
+
 ### `Fixed`
 
+- [#785](https://github.com/nf-core/ampliseq/pull/785) - Template update for nf-core/tools version 3.0.2
+
 ### `Dependencies`
+
+- [#785](https://github.com/nf-core/ampliseq/pull/785) - Update MultiQC
+
+| software | previously | now    |
+| -------- | ---------- | ------ |
+| MultiQC  | 1.21       | 1.25.1 |
 
 ### `Removed`
 

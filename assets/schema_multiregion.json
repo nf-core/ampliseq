@@ -1,5 +1,5 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://raw.githubusercontent.com/nf-core/ampliseq/master/assets/schema_multiregion.json",
     "title": "nf-core/ampliseq pipeline - params.multiregion schema",
     "description": "Schema for the file provided with params.multiregion",
@@ -10,7 +10,6 @@
             "region": {
                 "type": "string",
                 "pattern": "^\\S+$",
-                "unique": true,
                 "errorMessage": "Region name is mandatory, cannot contain spaces, and must be unique",
                 "meta": ["region"]
             },
@@ -33,5 +32,6 @@
             }
         },
         "required": ["region", "region_length", "FW_primer", "RV_primer"]
-    }
+    },
+    "uniqueEntries": ["region"]
 }

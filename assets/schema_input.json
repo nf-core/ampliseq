@@ -10,7 +10,6 @@
             "sampleID": {
                 "type": "string",
                 "pattern": "^[a-zA-Z][a-zA-Z0-9_]+$",
-                "unique": true,
                 "errorMessage": "Unique sample ID must be provided: Must start with a letter, and can only contain letters, numbers or underscores; Regex: '^[a-zA-Z][a-zA-Z0-9_]+$'",
                 "meta": ["sample"]
             },
@@ -37,5 +36,6 @@
             }
         },
         "required": ["sampleID", "forwardReads"]
-    }
+    },
+    "uniqueEntries": ["sampleID"]
 }

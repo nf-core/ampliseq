@@ -7,9 +7,9 @@ lint:
     - .gitattributes
   nextflow_config:
     - config_defaults:
-      - params.report_template
-      - params.report_css
-      - params.report_logo
+        - params.report_template
+        - params.report_css
+        - params.report_logo
 nf_core_version: 3.0.2
 org_path: null
 repository_type: pipeline

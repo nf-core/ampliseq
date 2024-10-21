@@ -39,8 +39,8 @@
     },
     "multiqc": {
         "content": [
-            "multiqc_fastqc.txt:md5,ede83a16cac9730e6b961ed051c1de0e",
-            "multiqc_general_stats.txt:md5,a77f38a488f9d1bf0bdf32e3e4b01939",
+            "multiqc_fastqc.txt:md5,75d0463a8b94a5dec14c3fb5b82169cd",
+            "multiqc_general_stats.txt:md5,1662178e2c1ac6cb0880f95c1746ce81",
             "multiqc_cutadapt.txt:md5,15ff9f378c1d8fb01fdd40b8010862d4"
         ],
         "timestamp": "2024-03-26T20:35:33+0000"

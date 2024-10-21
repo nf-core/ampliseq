@@ -291,7 +291,7 @@ workflow AMPLISEQ {
     if ( params.multiregion ) {
         // is multiple region analysis
         ch_input_reads
-            .combine( Channel..fromList(samplesheetToList(params.multiregion, "${projectDir}/assets/schema_multiregion.json")) )
+            .combine( Channel.fromList(samplesheetToList(params.multiregion, "${projectDir}/assets/schema_multiregion.json")) )
             .map{ info, reads, multi ->
                 def meta = info + multi
                 return [ meta, reads ] }

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#786](https://github.com/nf-core/ampliseq/pull/786) - Added version 20240904 of Kraken2 standard taxonomy database: `standard=20240904` or `standard` as parameter to `--kraken2_ref_taxonomy`
+
 ### `Changed`
 
 - [#785](https://github.com/nf-core/ampliseq/pull/785) - replaced https://data.ace.uq.edu.au/public/gtdb/data by https://data.gtdb.ecogenomic.org for GTDB versions via `--dada_ref_taxonomy`
@@ -14,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Fixed`
 
 - [#785](https://github.com/nf-core/ampliseq/pull/785) - Template update for nf-core/tools version 3.0.2
+- [#786](https://github.com/nf-core/ampliseq/pull/786) - Creation of the summary report was failing with `--dada_ref_taxonomy silva=132`
 
 ### `Dependencies`
 

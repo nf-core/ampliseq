@@ -661,9 +661,31 @@ workflow AMPLISEQ {
         ch_pplace_tax = FORMAT_PPLACETAX ( FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query ).tsv
         ch_tax_for_phyloseq = ch_tax_for_phyloseq.mix ( PHYLOSEQ_INTAX_PPLACE ( ch_pplace_tax ).tsv.map { it = [ "pplace", file(it) ] } )
     } else if ( params.pplace_sheet ) {
-            // HMMSEARCH
+    // 1. Deal with entries in the ch_phylosearch_data channel, i.e. search, then add to the ch_phyloplace_data channel
+    // For search entries with a named hmm to extract, call extraction
+    Channel
+        .fromPath(params.pplace_sheet)
+        .splitCsv( sep: ',', header: true )
+        .set { ch_phylosearch_data}
 
-            // POPULATE ch_pp_data
+    ch_phylosearch_data
+         .filter { it.extract_hmm }
+         .map { [ it.meta, it.hmm, it.extract_hmm ] }
+         .set { ch_hmmextract }
+
+    ch_hmmextract.view()
+    // HMMER_HMMEXTRACT(ch_hmmextract)
+    // ch_versions = ch_versions.mix(HMMER_HMMEXTRACT.out.versions)
+
+    // // Create an input channel for FASTA_HMMSEARCH_RANK_FASTAS by adding the non-keyed entries from the original channel to the output of the extracted
+    // HMMER_HMMEXTRACT.out.hmm
+    //     .mix(
+    //         ch_phylosearch_data
+    //             .filter { ! it.data.extract_hmm }
+    //             .map { [ it.meta, it.data.hmm ] }
+    //     )
+    //     .set { ch_search_profiles }
+     ch_pplace_tax = Channel.empty()
     } else {
         ch_pplace_tax = Channel.empty()
     }

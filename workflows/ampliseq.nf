@@ -642,7 +642,8 @@ workflow AMPLISEQ {
     }
 
     // Phylo placement
-    if ( params.pplace_tree ) {
+    ch_pp_data = Channel.empty()
+    if ( params.pplace_aln && params.pplace_tree ) {
         ch_pp_data = ch_fasta.map { it ->
             [ meta: [ id: params.pplace_name ?: 'user_tree' ],
             data: [
@@ -659,6 +660,10 @@ workflow AMPLISEQ {
         ch_versions = ch_versions.mix( FASTA_NEWICK_EPANG_GAPPA.out.versions )
         ch_pplace_tax = FORMAT_PPLACETAX ( FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query ).tsv
         ch_tax_for_phyloseq = ch_tax_for_phyloseq.mix ( PHYLOSEQ_INTAX_PPLACE ( ch_pplace_tax ).tsv.map { it = [ "pplace", file(it) ] } )
+    } else if ( params.pplace_sheet ) {
+            // HMMSEARCH
+
+            // POPULATE ch_pp_data
     } else {
         ch_pplace_tax = Channel.empty()
     }

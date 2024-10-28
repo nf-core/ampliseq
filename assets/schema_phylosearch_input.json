@@ -1,8 +1,8 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/nf-core/phyloplace/master/assets/schema_input.json",
-    "title": "nf-core/phyloplace pipeline - params.phylosearch_input schema",
-    "description": "Schema for the file provided with params.phylosearch_input",
+    "$id": "https://raw.githubusercontent.com/nf-core/ampliseq/master/assets/schema_pplace_sheet.json",
+    "title": "nf-core/ampliseq pipeline - params.pplace_sheet schema",
+    "description": "Schema for the file provided with pplace_sheet",
     "type": "array",
     "items": {
         "type": "object",

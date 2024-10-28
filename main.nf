@@ -57,13 +57,16 @@ workflow {
         params.validate_params,
         params.monochrome_logs,
         args,
-        params.outdir
+        params.outdir,
+        params.pplace_sheet
     )
 
     //
     // WORKFLOW: Run main workflow
     //
-    NFCORE_AMPLISEQ ()
+    NFCORE_AMPLISEQ (
+        PIPELINE_INITIALISATION.out.phylosearch
+    )
 
     //
     // SUBWORKFLOW: Run completion tasks

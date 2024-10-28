@@ -174,6 +174,7 @@ include { FASTQC                            } from '../modules/nf-core/fastqc/ma
 include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
 include { VSEARCH_CLUSTER                   } from '../modules/nf-core/vsearch/cluster/main'
 include { FASTA_NEWICK_EPANG_GAPPA          } from '../subworkflows/nf-core/fasta_newick_epang_gappa/main'
+include { FASTA_HMMSEARCH_RANK_FASTAS       } from '../subworkflows/nf-core/fasta_hmmsearch_rank_fastas/main'
 
 //
 // MODULE: Installed directly from nf-core/modules
@@ -257,6 +258,9 @@ include { makeComplement         } from '../subworkflows/local/utils_nfcore_ampl
 */
 
 workflow AMPLISEQ {
+
+    take:
+    phylosearch
 
     main:
 
@@ -668,12 +672,11 @@ workflow AMPLISEQ {
         .splitCsv( sep: ',', header: true )
         .set { ch_phylosearch_data}
 
-    ch_phylosearch_data
-         .filter { it.extract_hmm }
-         .map { [ it.meta, it.hmm, it.extract_hmm ] }
-         .set { ch_hmmextract }
+    // ch_phylosearch_data
+    //      .filter { it.extract_hmm }
+    //      .map { [ it.meta, it.hmm, it.extract_hmm ] }
+    //      .set { ch_hmmextract }
 
-    ch_hmmextract.view()
     // HMMER_HMMEXTRACT(ch_hmmextract)
     // ch_versions = ch_versions.mix(HMMER_HMMEXTRACT.out.versions)
 

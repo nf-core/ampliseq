@@ -217,6 +217,7 @@ include { PICRUST                       } from '../modules/local/picrust'
 include { SBDIEXPORT                    } from '../modules/local/sbdiexport'
 include { SBDIEXPORTREANNOTATE          } from '../modules/local/sbdiexportreannotate'
 include { SUMMARY_REPORT                } from '../modules/local/summary_report'
+include { HMMER_HMMEXTRACT              } from '../modules/local/hmmextract'
 include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_PPLACE } from '../modules/local/phyloseq_intax'
 include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_QIIME2 } from '../modules/local/phyloseq_intax'
 include { FILTER_CLUSTERS               } from '../modules/local/filter_clusters'
@@ -641,7 +642,8 @@ workflow AMPLISEQ {
     }
 
     // Phylo placement
-    if ( params.pplace_tree ) {
+    ch_pp_data = Channel.empty()
+    if ( params.pplace_aln && params.pplace_tree ) {
         ch_pp_data = ch_fasta.map { it ->
             [ meta: [ id: params.pplace_name ?: 'user_tree' ],
             data: [
@@ -658,6 +660,32 @@ workflow AMPLISEQ {
         ch_versions = ch_versions.mix( FASTA_NEWICK_EPANG_GAPPA.out.versions )
         ch_pplace_tax = FORMAT_PPLACETAX ( FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query ).tsv
         ch_tax_for_phyloseq = ch_tax_for_phyloseq.mix ( PHYLOSEQ_INTAX_PPLACE ( ch_pplace_tax ).tsv.map { it = [ "pplace", file(it) ] } )
+    } else if ( params.pplace_sheet ) {
+    // 1. Deal with entries in the ch_phylosearch_data channel, i.e. search, then add to the ch_phyloplace_data channel
+    // For search entries with a named hmm to extract, call extraction
+    Channel
+        .fromPath(params.pplace_sheet)
+        .splitCsv( sep: ',', header: true )
+        .set { ch_phylosearch_data}
+
+    ch_phylosearch_data
+         .filter { it.extract_hmm }
+         .map { [ it.meta, it.hmm, it.extract_hmm ] }
+         .set { ch_hmmextract }
+
+    ch_hmmextract.view()
+    // HMMER_HMMEXTRACT(ch_hmmextract)
+    // ch_versions = ch_versions.mix(HMMER_HMMEXTRACT.out.versions)
+
+    // // Create an input channel for FASTA_HMMSEARCH_RANK_FASTAS by adding the non-keyed entries from the original channel to the output of the extracted
+    // HMMER_HMMEXTRACT.out.hmm
+    //     .mix(
+    //         ch_phylosearch_data
+    //             .filter { ! it.data.extract_hmm }
+    //             .map { [ it.meta, it.data.hmm ] }
+    //     )
+    //     .set { ch_search_profiles }
+     ch_pplace_tax = Channel.empty()
     } else {
         ch_pplace_tax = Channel.empty()
     }

@@ -31,7 +31,6 @@ workflow PIPELINE_INITIALISATION {
     monochrome_logs   // boolean: Do not use coloured log outputs
     nextflow_cli_args //   array: List of positional nextflow CLI args
     outdir            //  string: The output directory where the results will be saved
-    pplace_sheet
 
     main:
 
@@ -84,20 +83,8 @@ workflow PIPELINE_INITIALISATION {
         sidlereftaxonomyExistsError()
     }
 
-    if (params.pplace_sheet) {
-        //
-        // Create channel from phylosearch file provided through params.phylosearch
-        //
-        Channel
-            .fromList(samplesheetToList(params.pplace_sheet, "assets/schema_phylosearch_input.json"))
-            .set {ch_phyloplace_data}
-    } else {
-        ch_phyloplace_data = Channel.empty()
-    }
-
     emit:
     versions    = ch_versions
-    phylosearch = ch_phyloplace_data
 }
 
 /*

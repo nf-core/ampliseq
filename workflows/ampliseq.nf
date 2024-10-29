@@ -259,9 +259,6 @@ include { makeComplement         } from '../subworkflows/local/utils_nfcore_ampl
 
 workflow AMPLISEQ {
 
-    take:
-    phylosearch
-
     main:
 
     ch_versions = Channel.empty()
@@ -288,6 +285,34 @@ workflow AMPLISEQ {
         ch_input_reads = PARSE_INPUT.out.reads
     } else {
         error("One of `--input`, `--input_fasta`, `--input_folder` must be provided!")
+    }
+
+    if (params.pplace_sheet) {
+        //
+        // Create channel from phylosearch file provided through params.phylosearch
+        //
+        Channel
+            .fromList(samplesheetToList(params.pplace_sheet, "${projectDir}/assets/schema_phylosearch_input.json"))
+            .map {
+                [
+                    meta: [
+                        id: it.id[0],
+                        min_bitscore: it.min_bitscore[0]
+                    ],
+                    data: [
+                        alignmethod:    it.alignmethod  ? it.alignmethod[0]                             : 'hmmer',
+                        hmm:            file(it.hmm[0],  checkIfExists: true),
+                        extract_hmm:    it.extract_hmm[0],
+                        refseqfile:     it.refseqfile[0]   ? file(it.refseqfile[0],   checkIfExists: true) : [],
+                        refphylogeny:   it.refphylogeny[0] ? file(it.refphylogeny[0], checkIfExists: true) : [],
+                        model:          it.model[0],
+                        taxonomy:       it.taxonomy[0]     ? file(it.taxonomy[0],     checkIfExists: true) : []
+                    ]
+                ]
+            }
+            .set {ch_phyloplace_data}
+    } else {
+        ch_phyloplace_data = Channel.empty()
     }
 
     //
@@ -667,10 +692,6 @@ workflow AMPLISEQ {
     } else if ( params.pplace_sheet ) {
     // 1. Deal with entries in the ch_phylosearch_data channel, i.e. search, then add to the ch_phyloplace_data channel
     // For search entries with a named hmm to extract, call extraction
-    Channel
-        .fromPath(params.pplace_sheet)
-        .splitCsv( sep: ',', header: true )
-        .set { ch_phylosearch_data}
 
     // ch_phylosearch_data
     //      .filter { it.extract_hmm }

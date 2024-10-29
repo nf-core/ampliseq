@@ -29,13 +29,15 @@ include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_ampl
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
 workflow NFCORE_AMPLISEQ {
+    take:
+    phylosearch
 
     main:
 
     //
     // WORKFLOW: Run pipeline
     //
-    AMPLISEQ ()
+    AMPLISEQ (phylosearch)
 
     emit:
     multiqc_report = AMPLISEQ.out.multiqc_report // channel: /path/to/multiqc_report.html
@@ -64,9 +66,7 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    NFCORE_AMPLISEQ (
-        PIPELINE_INITIALISATION.out.phylosearch
-    )
+    NFCORE_AMPLISEQ (PIPELINE_INITIALISATION.out.phylosearch)
 
     //
     // SUBWORKFLOW: Run completion tasks

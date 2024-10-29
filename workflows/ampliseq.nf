@@ -310,9 +310,9 @@ workflow AMPLISEQ {
                     ]
                 ]
             }
-            .set {ch_phyloplace_data}
+            .set {ch_phylosearch_data}
     } else {
-        ch_phyloplace_data = Channel.empty()
+        ch_phylosearch_data = Channel.empty()
     }
 
     //
@@ -685,15 +685,16 @@ workflow AMPLISEQ {
                 taxonomy:     params.pplace_taxonomy ? file( params.pplace_taxonomy, checkIfExists: true ) : []
             ] ]
         }
-        FASTA_NEWICK_EPANG_GAPPA ( ch_pp_data )
-        ch_versions = ch_versions.mix( FASTA_NEWICK_EPANG_GAPPA.out.versions )
-        ch_pplace_tax = FORMAT_PPLACETAX ( FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query ).tsv
-        ch_tax_for_phyloseq = ch_tax_for_phyloseq.mix ( PHYLOSEQ_INTAX_PPLACE ( ch_pplace_tax ).tsv.map { it = [ "pplace", file(it) ] } )
+    FASTA_NEWICK_EPANG_GAPPA ( ch_pp_data )
+    ch_versions = ch_versions.mix( FASTA_NEWICK_EPANG_GAPPA.out.versions )
+    ch_pplace_tax = FORMAT_PPLACETAX ( FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query ).tsv
+    ch_tax_for_phyloseq = ch_tax_for_phyloseq.mix ( PHYLOSEQ_INTAX_PPLACE ( ch_pplace_tax ).tsv.map { it = [ "pplace", file(it) ] } )
+
     } else if ( params.pplace_sheet ) {
     // 1. Deal with entries in the ch_phyloplace_data channel, i.e. search, then add to the ch_phyloplace_data channel
     // For search entries with a named hmm to extract, call extraction
 
-    ch_phyloplace_data
+    ch_phylosearch_data
         .filter { it.data.extract_hmm }
         .map { [ it.meta, it.data.hmm, it.data.extract_hmm ] }
         .set { ch_hmmextract }
@@ -704,7 +705,7 @@ workflow AMPLISEQ {
     // Create an input channel for FASTA_HMMSEARCH_RANK_FASTAS by adding the non-keyed entries from the original channel to the output of the extracted
     HMMER_HMMEXTRACT.out.hmm
         .mix(
-            ch_phyloplace_data
+            ch_phylosearch_data
                 .filter { ! it.data.extract_hmm }
                 .map { [ it.meta, it.data.hmm ] }
         )
@@ -714,31 +715,33 @@ workflow AMPLISEQ {
     ch_versions = ch_versions.mix(FASTA_HMMSEARCH_RANK_FASTAS.out.versions)
 
     FASTA_HMMSEARCH_RANK_FASTAS.out.seqfastas
-        .merge(
+        .join(
             ch_phylosearch_data
                 .filter { it.data.alignmethod && it.data.refseqfile && it.data.refphylogeny }
                 .map { [ [ id: it.meta.id ], it ] }
         )
         .map { [
-            meta: it[3].meta,
+            meta: it[2].meta,
             data: [
-                alignmethod: it[3].data.alignmethod,
+                alignmethod: it[2].data.alignmethod,
                 queryseqfile: it[1],
-                refseqfile: it[3].data.refseqfile,
-                refphylogeny: it[3].data.refphylogeny,
-                model: it[3].data.model,
-                taxonomy: it[3].data.taxonomy
+                refseqfile: it[2].data.refseqfile,
+                refphylogeny: it[2].data.refphylogeny,
+                model: it[2].data.model,
+                taxonomy: it[2].data.taxonomy
             ]
         ] }
-        .mix(ch_phyloplace_data)
-        .set { ch_phyloplace_data }
+        .view{ "afteremap: $it"}
+        .set { ch_pp_data }
 
     //
     // SUBWORKFLOW: Run phylogenetic placement
     //
-    FASTA_NEWICK_EPANG_GAPPA(ch_phyloplace_data)
-    ch_versions = ch_versions.mix(FASTA_NEWICK_EPANG_GAPPA.out.versions)
-     ch_pplace_tax = Channel.empty()
+    FASTA_NEWICK_EPANG_GAPPA ( ch_pp_data )
+    ch_versions = ch_versions.mix( FASTA_NEWICK_EPANG_GAPPA.out.versions )
+    ch_pplace_tax = FORMAT_PPLACETAX ( FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query ).tsv
+    ch_tax_for_phyloseq = ch_tax_for_phyloseq.mix ( PHYLOSEQ_INTAX_PPLACE ( ch_pplace_tax ).tsv.map { it = [ "pplace", file(it) ] } )
+
     } else {
         ch_pplace_tax = Channel.empty()
     }
@@ -761,6 +764,7 @@ workflow AMPLISEQ {
         ch_versions = ch_versions.mix( QIIME2_TAXONOMY.out.versions )
         ch_qiime2_tax = QIIME2_TAXONOMY.out.tsv
         ch_tax_for_phyloseq = ch_tax_for_phyloseq.mix ( PHYLOSEQ_INTAX_QIIME2 ( ch_qiime2_tax ).tsv.map { it = [ "qiime2", file(it) ] } )
+
     } else {
         ch_qiime2_tax = Channel.empty()
     }

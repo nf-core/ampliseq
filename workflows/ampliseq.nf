@@ -738,7 +738,6 @@ workflow AMPLISEQ {
     //
     FASTA_NEWICK_EPANG_GAPPA(ch_phyloplace_data)
     ch_versions = ch_versions.mix(FASTA_NEWICK_EPANG_GAPPA.out.versions)
-s
      ch_pplace_tax = Channel.empty()
     } else {
         ch_pplace_tax = Channel.empty()

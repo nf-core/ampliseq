@@ -12,12 +12,12 @@
                     },
                     "epang/place": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
                         "installed_by": ["fasta_newick_epang_gappa"]
                     },
                     "epang/split": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
                         "installed_by": ["fasta_newick_epang_gappa"]
                     },
                     "fastqc": {
@@ -27,37 +27,37 @@
                     },
                     "gappa/examineassign": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
                         "installed_by": ["fasta_newick_epang_gappa"]
                     },
                     "gappa/examinegraft": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
                         "installed_by": ["fasta_newick_epang_gappa"]
                     },
                     "gappa/examineheattree": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
                         "installed_by": ["fasta_newick_epang_gappa"]
                     },
                     "hmmer/eslalimask": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
                         "installed_by": ["fasta_newick_epang_gappa"]
                     },
                     "hmmer/eslreformat": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
                         "installed_by": ["fasta_newick_epang_gappa"]
                     },
                     "hmmer/hmmalign": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
                         "installed_by": ["fasta_newick_epang_gappa"]
                     },
                     "hmmer/hmmbuild": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
                         "installed_by": ["fasta_newick_epang_gappa"]
                     },
                     "hmmer/hmmrank": {
@@ -75,11 +75,6 @@
                         "git_sha": "653218e79ffa76fde20319e9062f8b8da5cf7555",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/kraken2/kraken2/kraken2-kraken2.diff"
-                    },
-                    "mafft": {
-                        "branch": "master",
-                        "git_sha": "feb29be775d9e41750180539e9a3bdce801d0609",
-                        "installed_by": ["fasta_newick_epang_gappa"]
                     },
                     "multiqc": {
                         "branch": "master",
@@ -128,7 +123,7 @@
                     },
                     "fasta_newick_epang_gappa": {
                         "branch": "master",
-                        "git_sha": "cfd937a668919d948f6fcbf4218e79de50c2f36f",
+                        "git_sha": "06fa1219e57fe1b2154e5ec966ddbff3e1c7daba",
                         "installed_by": ["subworkflows"]
                     },
                     "utils_nextflow_pipeline": {

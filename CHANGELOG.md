@@ -15,17 +15,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
-- [#792](https://github.com/nf-core/ampliseq/pull/792) - Remove white spaces in process tags to avoid errors on some systems
 - [#785](https://github.com/nf-core/ampliseq/pull/785) - Template update for nf-core/tools version 3.0.2
 - [#786](https://github.com/nf-core/ampliseq/pull/786) - Creation of the summary report was failing with `--dada_ref_taxonomy silva=132`
+- [#792](https://github.com/nf-core/ampliseq/pull/792) - Remove white spaces in process tags to avoid errors on some systems
 
 ### `Dependencies`
 
 - [#785](https://github.com/nf-core/ampliseq/pull/785) - Update MultiQC
+- [#793](https://github.com/nf-core/ampliseq/pull/793) - Update Picrust2 and nf-core modules
 
 | software | previously | now    |
 | -------- | ---------- | ------ |
 | MultiQC  | 1.21       | 1.25.1 |
+| Picrust2 | 2.5.2      | 2.5.3  |
 
 ### `Removed`
 

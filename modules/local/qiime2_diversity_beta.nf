@@ -1,5 +1,5 @@
 process QIIME2_DIVERSITY_BETA {
-    tag "${core.baseName} - ${category}"
+    tag "${core.baseName}-${category}"
     label 'process_low'
 
     container "qiime2/core:2023.7"

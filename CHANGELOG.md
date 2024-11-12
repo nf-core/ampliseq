@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
+- [#792](https://github.com/nf-core/ampliseq/pull/792) - Remove white spaces in process tags to avoid errors on some systems
 - [#785](https://github.com/nf-core/ampliseq/pull/785) - Template update for nf-core/tools version 3.0.2
 - [#786](https://github.com/nf-core/ampliseq/pull/786) - Creation of the summary report was failing with `--dada_ref_taxonomy silva=132`
 

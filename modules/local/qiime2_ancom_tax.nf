@@ -1,5 +1,5 @@
 process QIIME2_ANCOM_TAX {
-    tag "${table.baseName} - taxonomic level: ${taxlevel}"
+    tag "${table.baseName}-taxonomic_level:${taxlevel}"
     label 'process_medium'
     label 'single_cpu'
 

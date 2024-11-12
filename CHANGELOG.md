@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | software | previously | now    |
 | -------- | ---------- | ------ |
 | MultiQC  | 1.21       | 1.25.1 |
+| Picrust2 | 2.5.2      | 2.5.3  |
 
 ### `Removed`
 

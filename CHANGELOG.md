@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## nf-core/ampliseq version 2.12.0dev
+## nf-core/ampliseq version 2.12.0
 
 ### `Added`
 
@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
-- [#785](https://github.com/nf-core/ampliseq/pull/785) - Template update for nf-core/tools version 3.0.2
+- [#785](https://github.com/nf-core/ampliseq/pull/785),[#795](https://github.com/nf-core/ampliseq/pull/795) - Template update for nf-core/tools version 3.0.2
 - [#786](https://github.com/nf-core/ampliseq/pull/786) - Creation of the summary report was failing with `--dada_ref_taxonomy silva=132`
 - [#792](https://github.com/nf-core/ampliseq/pull/792) - Remove white spaces in process tags to avoid errors on some systems
 

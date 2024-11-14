@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## nf-core/ampliseq version 2.12.0
+## nf-core/ampliseq version 2.12.0 - 2024-11-14
 
 ### `Added`
 
@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | software | previously | now    |
 | -------- | ---------- | ------ |
 | MultiQC  | 1.21       | 1.25.1 |
+| Kraken2  | 2.1.2      | 2.1.3  |
 | Picrust2 | 2.5.2      | 2.5.3  |
 
 ### `Removed`

@@ -233,7 +233,7 @@ def validateInputParameters() {
         "pr2","pr2=5.0.0","pr2=4.14.0","pr2=4.13.0",
         "rdp","rdp=18",
         "sbdi-gtdb","sbdi-gtdb=R09-RS220-1","sbdi-gtdb=R08-RS214-1","sbdi-gtdb=R07-RS207-1",
-        "silva","silva=138","silva=132",
+        "silva","silva=138.2","silva=138","silva=132",
         "unite-fungi","unite-fungi=10.0","unite-fungi=9.0","unite-fungi=8.3","unite-fungi=8.2",
         "unite-alleuk","unite-alleuk=10.0","unite-alleuk=9.0","unite-alleuk=8.3","unite-alleuk=8.2"
     ]

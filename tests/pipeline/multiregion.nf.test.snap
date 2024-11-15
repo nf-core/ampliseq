@@ -32,7 +32,7 @@
     "multiqc": {
         "content": [
             "multiqc_fastqc.txt:md5,9468ae91af1a841c5e1369f11f704604",
-            "multiqc_general_stats.txt:md5,92c968d218577d47c2364849c07f7ab6",
+            "multiqc_general_stats.txt:md5,68f2972dd2d44e499d5afac6cf8624c8",
             "multiqc_cutadapt.txt:md5,2ef3cbb36c9461cddf6c3f493d2ddbd4"
         ],
         "timestamp": "2024-02-23T00:00:00+0000"

@@ -1,5 +1,5 @@
 process QIIME2_ANCOMBC_ASV {
-    tag "${table.baseName} ${formula}"
+    tag "${table.baseName}-${formula}"
     label 'process_medium'
     label 'single_cpu'
     label 'process_long'

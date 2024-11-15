@@ -1,17 +1,30 @@
-repository_type: pipeline
+bump_version: null
 lint:
-  files_unchanged:
-    - .gitattributes
+  actions_ci: false
   files_exist:
     - conf/igenomes.config
+  files_unchanged:
+    - .gitattributes
   nextflow_config:
     - config_defaults:
         - params.report_template
         - params.report_css
         - params.report_logo
-  actions_ci: False
+nf_core_version: 3.0.2
+org_path: null
+repository_type: pipeline
+template:
+  author: Daniel Straub, Alexander Peltzer
+  description: Amplicon sequencing analysis workflow using DADA2 and QIIME2
+  force: false
+  is_nfcore: true
+  name: ampliseq
+  org: nf-core
+  outdir: .
+  skip_features:
+    - igenomes
+  version: 2.12.0
 update:
   https://github.com/nf-core/modules.git:
     nf-core:
-      mafft: "feb29be775d9e41750180539e9a3bdce801d0609"
-nf_core_version: "2.14.1"
+      mafft: feb29be775d9e41750180539e9a3bdce801d0609

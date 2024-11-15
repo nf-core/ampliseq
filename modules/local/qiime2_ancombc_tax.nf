@@ -1,5 +1,5 @@
 process QIIME2_ANCOMBC_TAX {
-    tag "${table.baseName} ${formula} - ${taxlevel}"
+    tag "${table.baseName}-${formula}-${taxlevel}"
     label 'process_medium'
     label 'single_cpu'
 

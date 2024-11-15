@@ -1,5 +1,5 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://raw.githubusercontent.com/nf-core/ampliseq/master/assets/schema_input.json",
     "title": "nf-core/ampliseq pipeline - params.input schema",
     "description": "Schema for the file provided with params.input",
@@ -10,7 +10,6 @@
             "sampleID": {
                 "type": "string",
                 "pattern": "^[a-zA-Z][a-zA-Z0-9_]+$",
-                "unique": true,
                 "errorMessage": "Unique sample ID must be provided: Must start with a letter, and can only contain letters, numbers or underscores; Regex: '^[a-zA-Z][a-zA-Z0-9_]+$'",
                 "meta": ["sample"]
             },
@@ -37,5 +36,6 @@
             }
         },
         "required": ["sampleID", "forwardReads"]
-    }
+    },
+    "uniqueEntries": ["sampleID"]
 }

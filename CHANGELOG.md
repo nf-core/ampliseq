@@ -3,6 +3,35 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## nf-core/ampliseq version 2.12.0 - 2024-11-14
+
+### `Added`
+
+- [#786](https://github.com/nf-core/ampliseq/pull/786) - Added version 20240904 of Kraken2 standard taxonomy database: `standard=20240904` or `standard` as parameter to `--kraken2_ref_taxonomy`
+
+### `Changed`
+
+- [#785](https://github.com/nf-core/ampliseq/pull/785) - replaced https://data.ace.uq.edu.au/public/gtdb/data by https://data.gtdb.ecogenomic.org for GTDB versions via `--dada_ref_taxonomy`
+
+### `Fixed`
+
+- [#785](https://github.com/nf-core/ampliseq/pull/785),[#795](https://github.com/nf-core/ampliseq/pull/795) - Template update for nf-core/tools version 3.0.2
+- [#786](https://github.com/nf-core/ampliseq/pull/786) - Creation of the summary report was failing with `--dada_ref_taxonomy silva=132`
+- [#792](https://github.com/nf-core/ampliseq/pull/792) - Remove white spaces in process tags to avoid errors on some systems
+
+### `Dependencies`
+
+- [#785](https://github.com/nf-core/ampliseq/pull/785) - Update MultiQC
+- [#793](https://github.com/nf-core/ampliseq/pull/793) - Update Picrust2 and nf-core modules
+
+| software | previously | now    |
+| -------- | ---------- | ------ |
+| MultiQC  | 1.21       | 1.25.1 |
+| Kraken2  | 2.1.2      | 2.1.3  |
+| Picrust2 | 2.5.2      | 2.5.3  |
+
+### `Removed`
+
 ## nf-core/ampliseq version 2.11.0 - 2024-08-06
 
 ### `Added`

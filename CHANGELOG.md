@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#801](https://github.com/nf-core/ampliseq/pull/801) - Parameter `--quality_type` allows specifying the type of quality scores in raw read data, by default `Auto` (i.e. default behavior did not change)
+
 ### `Changed`
 
 ### `Fixed`

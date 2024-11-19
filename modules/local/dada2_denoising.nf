@@ -24,6 +24,7 @@ process DADA2_DENOISING {
 
     script:
     def prefix = task.ext.prefix ?: "prefix"
+    def quality_type = task.ext.quality_type ?: "Auto"
     def args = task.ext.args ?: ''
     def args2 = task.ext.args2 ?: ''
     if (!meta.single_end) {
@@ -39,9 +40,17 @@ process DADA2_DENOISING {
 
         #denoising
         sink(file = "${prefix}.dada.log")
-        dadaFs <- dada(filtFs, err = errF, $args, multithread = $task.cpus)
+        if ("${quality_type}" == "Auto") {
+            # Avoid using memory-inefficient derepFastq() if not necessary
+            dadaFs <- dada(filtFs, err = errF, $args, multithread = $task.cpus)
+            dadaRs <- dada(filtRs, err = errR, $args, multithread = $task.cpus)
+        } else {
+            derepFs <- derepFastq(filtFs, qualityType="${quality_type}")
+            dadaFs <- dada(derepFs, err = errF, $args, multithread = $task.cpus)
+            derepRs <- derepFastq(filtRs, qualityType="${quality_type}")
+            dadaRs <- dada(derepRs, err = errR, $args, multithread = $task.cpus)
+        }
         saveRDS(dadaFs, "${prefix}_1.dada.rds")
-        dadaRs <- dada(filtRs, err = errR, $args, multithread = $task.cpus)
         saveRDS(dadaRs, "${prefix}_2.dada.rds")
         sink(file = NULL)
 
@@ -66,7 +75,13 @@ process DADA2_DENOISING {
 
         #denoising
         sink(file = "${prefix}.dada.log")
-        dadaFs <- dada(filtFs, err = errF, $args, multithread = $task.cpus)
+        if ("${quality_type}" == "Auto") {
+            # Avoid using memory-inefficient derepFastq() if not necessary
+            dadaFs <- dada(filtFs, err = errF, $args, multithread = $task.cpus)
+        } else {
+            derepFs <- derepFastq(filtFs, qualityType="${quality_type}")
+            dadaFs <- dada(derepFs, err = errF, $args, multithread = $task.cpus)
+        }
         saveRDS(dadaFs, "${prefix}.dada.rds")
         sink(file = NULL)
 

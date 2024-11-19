@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
+- [#800](https://github.com/nf-core/ampliseq/pull/800) - Fixed SH files for UNITE9.0 that were missing entries after API update in PlutoF
+
 ### `Dependencies`
 
 ### `Removed`

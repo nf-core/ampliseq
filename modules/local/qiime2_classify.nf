@@ -2,7 +2,7 @@ process QIIME2_CLASSIFY {
     tag "${repseq},${trained_classifier}"
     label 'process_high'
 
-    container "qiime2/core:2023.7"
+    container "qiime2/amplicon:2024.10"
 
     input:
     path(trained_classifier)

@@ -26,7 +26,7 @@ process DADA2_DENOISING {
     def prefix = task.ext.prefix ?: "prefix"
     def args = task.ext.args ?: ''
     def args2 = task.ext.args2 ?: ''
-    def args3 = task.ext.args3 ?: '0.001'
+    def quantile = task.ext.quantile ?: 0.001
     if (!meta.single_end) {
         """
         #!/usr/bin/env Rscript
@@ -47,7 +47,7 @@ process DADA2_DENOISING {
         sink(file = NULL)
 
         # merge
-        if ("${params.concatenate_reads}" == "consensus") {
+        if ("${params.asv_concatenate_reads}" == "consensus") {
             mergers <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, $args2, justConcatenate = FALSE, verbose=TRUE)
             concats <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, $args2, justConcatenate = TRUE, verbose=TRUE)
 
@@ -70,7 +70,7 @@ process DADA2_DENOISING {
 
             min_overlap_obs <- Reduce(c, min_overlap_obs)
             min_overlap_obs <- min_overlap_obs[!is.na(min_overlap_obs)]
-            min_overlap_obs <- quantile(min_overlap_obs, $args3)
+            min_overlap_obs <- quantile(min_overlap_obs, $quantile)
 
             for (x in names(mergers)) {
                 to_concat <- !mergers[[x]][["accept"]] & (mergers[[x]][["nmismatch"]] + mergers[[x]][["nmatch"]]) < min_overlap_obs

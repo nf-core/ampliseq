@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-- []() - New parameters introduced related to `--concatenate_reads consensus`
+- [#803](https://github.com/nf-core/ampliseq/pull/803) - New parameters introduced related to `--asv_concatenate_reads consensus`
 
 | **Parameter**             | **Description**                                                                           | **Default Value** |
 | ------------------------- | ----------------------------------------------------------------------------------------- | ----------------- |
@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
-- []() - Changed DADA2_DENOISING to support new method named "consensus", by setting `--concatenate_reads consensus`.
+- [#803](https://github.com/nf-core/ampliseq/pull/803) - Changed DADA2_DENOISING : `--concatenate_reads` renaming to `--asv_concatenate_reads` ;  support new method named "consensus" by setting `--asv_concatenate_reads consensus` ; changed options of `--asv_concatenate_reads` from TRUE/FALSE (boolean) to ["merge", "concatenate", "consensus"].
 
 ### `Fixed`
 

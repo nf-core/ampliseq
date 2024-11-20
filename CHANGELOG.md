@@ -7,7 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- []() - New parameters introduced related to `--concatenate_reads consensus`
+
+| **Parameter**             | **Description**                                                                           | **Default Value** |
+| ------------------------- | ----------------------------------------------------------------------------------------- | ----------------- |
+| **asv_match**             | The score assigned for each matching base pair during sequence alignment.                 | 1                 |
+| **asv_mismatch**          | The penalty score assigned for each mismatched base pair during sequence alignment.       | 0                 |
+| **asv_gap**               | The penalty score assigned for each gap introduced during sequence alignment.             | -64               |
+| **asv_minoverlap**        | The minimum number of overlapping base pairs required to merge forward and reverse reads. | 12                |
+| **asv_maxmismatch**       | The maximum number of mismatches allowed within the overlapping region for merging reads. | 0                 |
+| **asv_percentile_cutoff** | The percentile cutoff determining the minimum observed overlap in the dataset.            | 0.001             |
+
 ### `Changed`
+
+- []() - Changed DADA2_DENOISING to support new method named "consensus", by setting `--concatenate_reads consensus`.
 
 ### `Fixed`
 

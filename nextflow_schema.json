@@ -286,7 +286,7 @@
                 },
                 "asv_mismatch": {
                     "type": "integer",
-                    "default": 0,
+                    "default": -64,
                     "description": "The penalty score assigned for each mismatched base pair during sequence alignment.",
                     "help_text": "This parameter defines the numerical penalty subtracted from the alignment score for each base pair mismatch between the forward and reverse reads. A higher penalty reduces the likelihood of accepting alignments with mismatches."
                 },

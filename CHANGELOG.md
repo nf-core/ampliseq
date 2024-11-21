@@ -7,20 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-- [#803](https://github.com/nf-core/ampliseq/pull/803) - New parameters introduced related to `--asv_concatenate_reads consensus`
+- [#803](https://github.com/nf-core/ampliseq/pull/803) - New parameters introduced related to `--mergepairs_strategy`. These parameters would only be effective if `--mergepairs_strategy consensus` is set.
 
-| **Parameter**             | **Description**                                                                           | **Default Value** |
-| ------------------------- | ----------------------------------------------------------------------------------------- | ----------------- |
-| **asv_match**             | The score assigned for each matching base pair during sequence alignment.                 | 1                 |
-| **asv_mismatch**          | The penalty score assigned for each mismatched base pair during sequence alignment.       | 0                 |
-| **asv_gap**               | The penalty score assigned for each gap introduced during sequence alignment.             | -64               |
-| **asv_minoverlap**        | The minimum number of overlapping base pairs required to merge forward and reverse reads. | 12                |
-| **asv_maxmismatch**       | The maximum number of mismatches allowed within the overlapping region for merging reads. | 0                 |
-| **asv_percentile_cutoff** | The percentile cutoff determining the minimum observed overlap in the dataset.            | 0.001             |
+| **Parameter**                              | **Description**                                                                           | **Default Value** |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------- | ----------------- |
+| **mergepairs_consensus_match**             | The score assigned for each matching base pair during sequence alignment.                 | 5                 |
+| **mergepairs_consensus_mismatch**          | The penalty score assigned for each mismatched base pair during sequence alignment.       | -6                |
+| **mergepairs_consensus_gap**               | The penalty score assigned for each gap introduced during sequence alignment.             | -64               |
+| **mergepairs_consensus_minoverlap**        | The minimum number of overlapping base pairs required to merge forward and reverse reads. | 12                |
+| **mergepairs_consensus_maxmismatch**       | The maximum number of mismatches allowed within the overlapping region for merging reads. | 0                 |
+| **mergepairs_consensus_percentile_cutoff** | The percentile cutoff determining the minimum observed overlap in the dataset.            | 0.001             |
 
 ### `Changed`
 
-- [#803](https://github.com/nf-core/ampliseq/pull/803) - Changed DADA2_DENOISING : `--concatenate_reads` renaming to `--asv_concatenate_reads` ;  support new method named "consensus" by setting `--asv_concatenate_reads consensus` ; changed options of `--asv_concatenate_reads` from TRUE/FALSE (boolean) to ["merge", "concatenate", "consensus"].
+- [#803](https://github.com/nf-core/ampliseq/pull/803) - Changed DADA2_DENOISING : `--concatenate_reads` renaming to `--mergepairs_strategy` ; support new method named "consensus" by setting `--mergepairs_strategy consensus` ; changed options of `--mergepairs_strategy` from TRUE/FALSE (boolean) to ["merge", "concatenate", "consensus"].
 
 ### `Fixed`
 

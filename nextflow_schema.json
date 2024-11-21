@@ -267,7 +267,7 @@
                         "pseudo"
                     ]
                 },
-                "asv_concatenate_reads": {
+                "mergepairs_strategy": {
                     "type": "string",
                     "default": "merge",
                     "description": "Strategy to merge paired end reads. When paired end reads are not sufficiently overlapping for merging, you can use \"concatenate\" (not recommended). When you have a mix of overlapping and non overlapping reads use \"consensus\"",
@@ -278,37 +278,37 @@
                         "consensus"
                     ]
                 },
-                "asv_match": {
+                "mergepairs_consensus_match": {
                     "type": "integer",
                     "default": 1,
                     "description": "The score assigned for each matching base pair during sequence alignment.",
                     "help_text": "This parameter specifies the numerical value added to the alignment score for every pair of bases that match between the forward and reverse reads. A higher value increases the preference for alignments with more matching bases."
                 },
-                "asv_mismatch": {
+                "mergepairs_consensus_mismatch": {
                     "type": "integer",
                     "default": -64,
                     "description": "The penalty score assigned for each mismatched base pair during sequence alignment.",
                     "help_text": "This parameter defines the numerical penalty subtracted from the alignment score for each base pair mismatch between the forward and reverse reads. A higher penalty reduces the likelihood of accepting alignments with mismatches."
                 },
-                "asv_gap": {
+                "mergepairs_consensus_gap": {
                     "type": "integer",
                     "default": -64,
                     "description": "The penalty score assigned for each gap introduced during sequence alignment.",
                     "help_text": "This parameter sets the numerical penalty subtracted from the alignment score for each gap (insertion or deletion) introduced to align the forward and reverse reads. A higher penalty discourages alignments that require gaps."
                 },
-                "asv_minoverlap": {
+                "mergepairs_consensus_minoverlap": {
                     "type": "integer",
                     "default": 12,
                     "description": "The minimum number of overlapping base pairs required to merge forward and reverse reads.",
                     "help_text": "This parameter specifies the smallest number of consecutive base pairs that must overlap between the forward and reverse reads for them to be merged. Ensuring sufficient overlap is crucial for accurate merging."
                 },
-                "asv_maxmismatch": {
+                "mergepairs_consensus_maxmismatch": {
                     "type": "integer",
                     "default": 0,
                     "description": "The maximum number of mismatches allowed within the overlapping region for merging reads.",
                     "help_text": "This parameter defines the highest number of mismatched base pairs permitted in the overlap region between forward and reverse reads for a successful merge. Setting this value helps control the stringency of read merging, balancing between sensitivity and accuracy."
                 },
-                "asv_percentile_cutoff": {
+                "mergepairs_consensus_percentile_cutoff": {
                     "type": "number",
                     "default": 0.001,
                     "description": "The percentile used to determine a stringent cutoff which will correspond to the minimum observed overlap in the dataset. This ensures that only read pairs with high overlap are merged into consensus sequences. Those with insufficient overlap are concatenated."

@@ -2,7 +2,7 @@ process QIIME2_INTAX {
     tag "${tax}"
     label 'process_low'
 
-    container "qiime2/core:2023.7"
+    container "qiime2/amplicon:2024.10"
 
     input:
     path(tax) //ASV_tax_species.tsv

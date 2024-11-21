@@ -2,7 +2,7 @@ process QIIME2_TABLEFILTERTAXA {
     tag "taxa:${exclude_taxa};min-freq:${min_frequency};min-samples:${min_samples}"
     label 'process_low'
 
-    container "qiime2/core:2023.7"
+    container "qiime2/amplicon:2024.10"
 
     input:
     path(table)

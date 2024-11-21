@@ -3,7 +3,7 @@ process QIIME2_TRAIN {
     label 'process_high'
     label 'single_cpu'
 
-    container "qiime2/core:2023.7"
+    container "qiime2/amplicon:2024.10"
 
     input:
     tuple val(meta), path(qza)

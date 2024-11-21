@@ -11,7 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
+- [#800](https://github.com/nf-core/ampliseq/pull/800) - Fixed SH files for UNITE9.0, they were missing some entries due to a bug caused by API update in PlutoF
+
 ### `Dependencies`
+
+- [#797](https://github.com/nf-core/ampliseq/pull/797) - Update QIIME2
+
+| software | previously | now     |
+| -------- | ---------- | ------- |
+| QIIME2   | 2023.7     | 2024.10 |
 
 ### `Removed`
 

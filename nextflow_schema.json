@@ -269,7 +269,7 @@
                 },
                 "asv_concatenate_reads": {
                     "type": "string",
-                    "default": "false",
+                    "default": "merge",
                     "description": "Strategy to merge paired end reads. When paired end reads are not sufficiently overlapping for merging, you can use \"concatenate\" (not recommended). When you have a mix of overlapping and non overlapping reads use \"consensus\"",
                     "help_text": "This parameters specifies that paired-end reads are not merged after denoising but concatenated (separated by 10 N's). This is of advantage when an amplicon was sequenced that is too long for merging (i.e. bad experimental design). This is an alternative to only analyzing the forward or reverse read in case of non-overlapping paired-end sequencing data.\n\n**This parameter is not recommended! Only if all other options fail.**",
                     "enum": [

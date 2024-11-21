@@ -214,7 +214,7 @@ Please note the following additional requirements:
 
 Taxonomic classification of ASVs can be performed with tools DADA2, SINTAX, Kraken2 or QIIME2. Multiple taxonomic reference databases are pre-configured for those tools, but user supplied databases are also supported for some tools. Alternatively (or in addition), phylogenetic placement can be used to extract taxonomic classifications.
 
-In case multiple tools for taxonomic classification are executed in one pipeline run, only the taxonomic classification result of one tool is forwarded to downstream analysis with QIIME2. The priority is `phylogenetic placement` > `DADA2` > `SINTAX` > `Kraken2` > `QIIME2`.
+In case multiple tools for taxonomic classification are executed in one pipeline run, only the taxonomic classification result of one tool is forwarded to downstream analysis with QIIME2. The priority is `phylogenetic placement` > `DADA2` > `SINTAX` > `Kraken2` > `QIIME2`, that is by no means a recommendation for a specific tool but a technical limitation.
 
 Default setting for taxonomic classification is DADA2 with the SILVA reference taxonomy database.
 
@@ -222,11 +222,11 @@ Pre-configured reference taxonomy databases are:
 
 | Database key | DADA2 | SINTAX | Kraken2 | QIIME2 | Target genes                                  |
 | ------------ | ----- | ------ | ------- | ------ | --------------------------------------------- |
-| silva        | +     | -      | +       | +      | 16S rRNA                                      |
-| gtdb         | +¹    | -      | -       | -      | 16S rRNA                                      |
+| silva        | +¹    | -      | +       | +      | 16S rRNA                                      |
+| gtdb         | +²    | -      | -       | -      | 16S rRNA                                      |
 | sbdi-gtdb    | +     | -      | -       | -      | 16S rRNA                                      |
 | rdp          | +     | -      | +       | -      | 16S rRNA                                      |
-| greengenes   | -     | -      | +       | (+)²   | 16S rRNA                                      |
+| greengenes   | -     | -      | +       | (+)³   | 16S rRNA                                      |
 | greengenes2  | -     | -      | -       | +      | 16S rRNA                                      |
 | pr2          | +     | -      | -       | -      | 18S rRNA                                      |
 | unite-fungi  | +     | +      | -       | -      | eukaryotic nuclear ribosomal ITS region       |
@@ -235,9 +235,9 @@ Pre-configured reference taxonomy databases are:
 | midori2-co1  | +     | -      | -       | -      | eukaryotic Cytochrome Oxidase I (COI)         |
 | phytoref     | +     | -      | -       | -      | eukaryotic plastid 16S rRNA                   |
 | zehr-nifh    | +     | -      | -       | -      | Nitrogenase iron protein NifH                 |
-| standard     | -     | -      | +       | -      | any in genomes of archaea, bacteria, viruses³ |
+| standard     | -     | -      | +       | -      | any in genomes of archaea, bacteria, viruses⁴ |
 
-¹[`--dada_taxonomy_rc`](https://nf-co.re/ampliseq/parameters#dada_taxonomy_rc) is recommended; ²: de-replicated at 85%, only for testing purposes; ³: quality of results might vary
+¹: As of Silva version 138 optimized for classification of Bacteria and Archaea, not suitable for Eukaryotes; ²[`--dada_taxonomy_rc`](https://nf-co.re/ampliseq/parameters#dada_taxonomy_rc) is recommended; ³: de-replicated at 85%, only for testing purposes; ⁴: quality of results might vary
 
 Special features of taxonomic classification tools:
 

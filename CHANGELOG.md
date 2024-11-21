@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#798](https://github.com/nf-core/ampliseq/pull/798) - Added SILVA version 138.2 of DADA2 taxonomy database: `silva=138.2` or `silva` as parameter to `--dada2_ref_taxonomy`
 - [#804](https://github.com/nf-core/ampliseq/pull/804) - Added version 10 of Unite as parameter for `--dada_ref_taxonomy` (issue [#768](https://github.com/nf-core/ampliseq/issues/768))
 
 ### `Changed`

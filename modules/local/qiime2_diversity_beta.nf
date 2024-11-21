@@ -2,7 +2,7 @@ process QIIME2_DIVERSITY_BETA {
     tag "${core.baseName}-${category}"
     label 'process_low'
 
-    container "qiime2/core:2023.7"
+    container "qiime2/amplicon:2024.10"
 
     input:
     tuple path(metadata), path(core), val(category)

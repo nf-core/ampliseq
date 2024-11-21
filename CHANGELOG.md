@@ -8,12 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 - [#798](https://github.com/nf-core/ampliseq/pull/798) - Added SILVA version 138.2 of DADA2 taxonomy database: `silva=138.2` or `silva` as parameter to `--dada2_ref_taxonomy`
+- [#804](https://github.com/nf-core/ampliseq/pull/804) - Added version 10 of Unite as parameter for `--dada_ref_taxonomy` (issue [#768](https://github.com/nf-core/ampliseq/issues/768))
 
 ### `Changed`
 
 ### `Fixed`
 
+- [#800](https://github.com/nf-core/ampliseq/pull/800) - Fixed SH files for UNITE9.0, they were missing some entries due to a bug caused by API update in PlutoF
+
 ### `Dependencies`
+
+- [#797](https://github.com/nf-core/ampliseq/pull/797) - Update QIIME2
+
+| software | previously | now     |
+| -------- | ---------- | ------- |
+| QIIME2   | 2023.7     | 2024.10 |
 
 ### `Removed`
 

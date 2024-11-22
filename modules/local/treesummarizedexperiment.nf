@@ -30,7 +30,8 @@ process TREESUMMARIZEDEXPERIMENT {
 
     suppressPackageStartupMessages(library(TreeSummarizedExperiment))
 
-    # Read otu table. It must be in a list as a matrix.
+    # Read otu table. It must be in a SimpleList as a matrix where rows
+    # represent taxa and columns samples.
     otu_mat  <- read.table($otu_tsv, sep="\\t", header=TRUE, row.names=1)
     otu_mat <- as.matrix(otu_mat)
     assays <- SimpleList(counts = otu_mat)

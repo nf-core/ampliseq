@@ -60,7 +60,7 @@ process TREESUMMARIZEDEXPERIMENT {
     # If provided, we add phylogeny. The rownames in abundance matrix must match
     # with node labels in phylogeny.
     if (file.exists($tree)) {
-        phylogeny <- read_tree($tree)
+        phylogeny <- ape::read.tree($tree)
         rowTree(tse) <- phylogeny
     }
 

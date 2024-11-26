@@ -40,7 +40,7 @@ process TREESUMMARIZEDEXPERIMENT {
     taxonomy_table <- DataFrame(taxonomy_table)
 
     # Match rownames between taxonomy table and abundance matrix.
-    taxonomy_table <- taxonomy_table[rownames(taxonomy_table) %in% rownames(otu_mat), ]
+    taxonomy_table <- taxonomy_table[match(rownames(otu_mat), rownames(taxonomy_table)), ]
 
     # Create TreeSE object.
     tse <- TreeSummarizedExperiment(
@@ -52,6 +52,7 @@ process TREESUMMARIZEDEXPERIMENT {
     # sample metadata must match with colnames of abundance matrix.
     if (file.exists($sam_tsv)) {
         sample_meta  <- read.table($sam_tsv, sep="\\t", header=TRUE, row.names=1)
+        sample_meta <- sample_meta[match(colnames(tse), rownames(sample_meta)), ]
         sample_meta  <- DataFrame(sample_meta)
         colData(tse) <- sample_meta
     }

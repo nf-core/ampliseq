@@ -4,8 +4,8 @@ process TREESUMMARIZEDEXPERIMENT {
 
     conda "bioconda::bioconductor-treesummarizedexperiment=2.10.0"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/bioconductor-treesummarizedexperiment%3A2.10.0--r43hdfd78af_0' :
-        'bioconductor-treesummarizedexperiment%3A2.10.0--r43hdfd78af_0' }"
+        'https://depot.galaxyproject.org/singularity/bioconductor-treesummarizedexperiment%3a2.10.0--r43hdfd78af_0' :
+        'bioconductor-treesummarizedexperiment%3a2.10.0--r43hdfd78af_0' }"
 
     input:
     tuple val(prefix), path(tax_tsv), path(otu_tsv)

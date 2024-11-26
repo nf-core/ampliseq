@@ -732,23 +732,6 @@
             },
             "fa_icon": "fas fa-book-open"
         },
-        "exporting_results": {
-            "title": "Exporting objects for downstream analysis",
-            "type": "object",
-            "description": "Opt-in to create R objects",
-            "default": "",
-            "properties": {
-                "phyloseq": {
-                    "type": "boolean",
-                    "description": "Export phyloseq rds object(s)"
-                },
-                "treesummarizedexperiment": {
-                    "type": "boolean",
-                    "description": "Export TreeSummarizedExperiment rds object(s)"
-                }
-            },
-            "fa_icon": "fas fa-book-open"
-        },
         "skipping_specific_steps": {
             "title": "Skipping specific steps",
             "type": "object",
@@ -806,6 +789,14 @@
                 "skip_diversity_indices": {
                     "type": "boolean",
                     "description": "Skip alpha and beta diversity analysis"
+                },
+                "skip_phyloseq": {
+                    "type": "boolean",
+                    "description": "Skip exporting phyloseq rds object(s)"
+                },
+                "skip_tse": {
+                    "type": "boolean",
+                    "description": "Skip exporting TreeSummarizedExperiment rds object(s)"
                 },
                 "skip_multiqc": {
                     "type": "boolean",
@@ -1005,9 +996,6 @@
         },
         {
             "$ref": "#/$defs/pipeline_report"
-        },
-        {
-            "$ref": "#/$defs/exporting_results"
         },
         {
             "$ref": "#/$defs/skipping_specific_steps"

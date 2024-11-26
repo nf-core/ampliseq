@@ -39,18 +39,18 @@ workflow ROBJECT_WORKFLOW {
         ch_robject_inasv = ch_tsv
     }
 
-    if ( params.phyloseq ) {
+    if ( !params.skip_phyloseq ) {
         PHYLOSEQ ( ch_tax.combine(ch_robject_inasv), ch_robject_inmeta, ch_robject_intree )
         ch_versions_robject_workflow = ch_versions_robject_workflow.mix(PHYLOSEQ.out.versions)
     }
 
-    if ( params.treesummarizedexperiment ) {
+    if ( !params.skip_tse ) {
         TREESUMMARIZEDEXPERIMENT ( ch_tax.combine(ch_robject_inasv), ch_robject_inmeta, ch_robject_intree )
         ch_versions_robject_workflow = ch_versions_robject_workflow.mix(TREESUMMARIZEDEXPERIMENT.out.versions)
     }
 
     emit:
-    phyloseq                 = params.phyloseq ? PHYLOSEQ.out.rds : []
-    treesummarizedexperiment = params.treesummarizedexperiment ? TREESUMMARIZEDEXPERIMENT.out.rds : []
-    versions                 = ch_versions_robject_workflow
+    phyloseq = !params.skip_phyloseq ? PHYLOSEQ.out.rds : []
+    tse      = !params.skip_tse ? TREESUMMARIZEDEXPERIMENT.out.rds : []
+    versions = ch_versions_robject_workflow
 }

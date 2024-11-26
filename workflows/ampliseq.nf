@@ -868,7 +868,7 @@ workflow AMPLISEQ {
     //
     // SUBWORKFLOW: Create R objects
     //
-    if ( !params.skip_taxonomy && ( params.phyloseq || params.treesummarizedexperiment ) ) {
+    if ( !params.skip_taxonomy && ( !params.skip_phyloseq || !params.skip_tse ) ) {
         if ( params.pplace_tree ) {
             ch_tree_for_robject = FASTA_NEWICK_EPANG_GAPPA.out.grafted_phylogeny
         } else {
@@ -1012,7 +1012,7 @@ workflow AMPLISEQ {
             run_qiime2 && params.ancombc_formula && params.metadata ? QIIME2_ANCOM.out.ancombc_formula.collect().ifEmpty( [] ) : [],
             params.picrust ? PICRUST.out.pathways.ifEmpty( [] ) : [],
             params.sbdiexport ? SBDIEXPORT.out.sbditables.mix(SBDIEXPORTREANNOTATE.out.sbdiannottables).collect().ifEmpty( [] ) : [],
-            !params.skip_taxonomy && params.phyloseq ? ROBJECT_WORKFLOW.out.phyloseq.map{info,rds -> [rds]}.collect().ifEmpty( [] ) : []
+            !params.skip_taxonomy && !params.skip_phyloseq ? ROBJECT_WORKFLOW.out.phyloseq.map{info,rds -> [rds]}.collect().ifEmpty( [] ) : []
             //TODO: add treesummarizedexperiment
         )
         ch_versions    = ch_versions.mix(SUMMARY_REPORT.out.versions)

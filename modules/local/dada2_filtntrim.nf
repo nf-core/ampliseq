@@ -2,7 +2,6 @@ process DADA2_FILTNTRIM {
     tag "$meta.id"
     label 'process_medium'
     errorStrategy 'retry'
-    maxRetries 3
 
     conda "bioconda::bioconductor-dada2=1.30.0"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?

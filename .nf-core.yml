@@ -1,4 +1,3 @@
-bump_version: null
 lint:
   actions_ci: false
   files_exist:
@@ -10,8 +9,7 @@ lint:
         - params.report_template
         - params.report_css
         - params.report_logo
-nf_core_version: 3.0.2
-org_path: null
+nf_core_version: 3.1.0
 repository_type: pipeline
 template:
   author: Daniel Straub, Alexander Peltzer
@@ -21,8 +19,9 @@ template:
   name: ampliseq
   org: nf-core
   outdir: .
-  skip_features: null
-  version: 2.12.0dev
+  skip_features:
+    - igenomes
+  version: 2.13.0dev
 update:
   https://github.com/nf-core/modules.git:
     nf-core:

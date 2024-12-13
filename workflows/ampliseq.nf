@@ -174,6 +174,7 @@ include { FASTQC                            } from '../modules/nf-core/fastqc/ma
 include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
 include { VSEARCH_CLUSTER                   } from '../modules/nf-core/vsearch/cluster/main'
 include { FASTA_NEWICK_EPANG_GAPPA          } from '../subworkflows/nf-core/fasta_newick_epang_gappa/main'
+include { FASTA_HMMSEARCH_RANK_FASTAS       } from '../subworkflows/nf-core/fasta_hmmsearch_rank_fastas/main'
 
 //
 // MODULE: Installed directly from nf-core/modules
@@ -217,6 +218,7 @@ include { PICRUST                       } from '../modules/local/picrust'
 include { SBDIEXPORT                    } from '../modules/local/sbdiexport'
 include { SBDIEXPORTREANNOTATE          } from '../modules/local/sbdiexportreannotate'
 include { SUMMARY_REPORT                } from '../modules/local/summary_report'
+include { HMMER_HMMEXTRACT              } from '../modules/local/hmmextract'
 include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_PPLACE } from '../modules/local/phyloseq_intax'
 include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_QIIME2 } from '../modules/local/phyloseq_intax'
 include { FILTER_CLUSTERS               } from '../modules/local/filter_clusters'
@@ -283,6 +285,34 @@ workflow AMPLISEQ {
         ch_input_reads = PARSE_INPUT.out.reads
     } else {
         error("One of `--input`, `--input_fasta`, `--input_folder` must be provided!")
+    }
+
+    if (params.pplace_sheet) {
+        //
+        // Create channel from phylosearch file provided through params.phylosearch
+        //
+        Channel
+            .fromList(samplesheetToList(params.pplace_sheet, "${projectDir}/assets/schema_phylosearch_input.json"))
+            .map {
+                [
+                    meta: [
+                        id: it.id[0],
+                        min_bitscore: it.min_bitscore[0]
+                    ],
+                    data: [
+                        alignmethod:    it.alignmethod  ? it.alignmethod[0]                             : 'hmmer',
+                        hmm:            file(it.hmm[0],  checkIfExists: true),
+                        extract_hmm:    it.extract_hmm[0],
+                        refseqfile:     it.refseqfile[0]   ? file(it.refseqfile[0],   checkIfExists: true) : [],
+                        refphylogeny:   it.refphylogeny[0] ? file(it.refphylogeny[0], checkIfExists: true) : [],
+                        model:          it.model[0],
+                        taxonomy:       it.taxonomy[0]     ? file(it.taxonomy[0],     checkIfExists: true) : []
+                    ]
+                ]
+            }
+            .set {ch_phylosearch_data}
+    } else {
+        ch_phylosearch_data = Channel.empty()
     }
 
     //
@@ -641,7 +671,8 @@ workflow AMPLISEQ {
     }
 
     // Phylo placement
-    if ( params.pplace_tree ) {
+    ch_pp_data = Channel.empty()
+    if ( params.pplace_aln && params.pplace_tree ) {
         ch_pp_data = ch_fasta.map { it ->
             [ meta: [ id: params.pplace_name ?: 'user_tree' ],
             data: [
@@ -654,10 +685,63 @@ workflow AMPLISEQ {
                 taxonomy:     params.pplace_taxonomy ? file( params.pplace_taxonomy, checkIfExists: true ) : []
             ] ]
         }
-        FASTA_NEWICK_EPANG_GAPPA ( ch_pp_data )
-        ch_versions = ch_versions.mix( FASTA_NEWICK_EPANG_GAPPA.out.versions )
-        ch_pplace_tax = FORMAT_PPLACETAX ( FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query ).tsv
-        ch_tax_for_phyloseq = ch_tax_for_phyloseq.mix ( PHYLOSEQ_INTAX_PPLACE ( ch_pplace_tax ).tsv.map { it = [ "pplace", file(it) ] } )
+    FASTA_NEWICK_EPANG_GAPPA ( ch_pp_data )
+    ch_versions = ch_versions.mix( FASTA_NEWICK_EPANG_GAPPA.out.versions )
+    ch_pplace_tax = FORMAT_PPLACETAX ( FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query ).tsv
+    ch_tax_for_phyloseq = ch_tax_for_phyloseq.mix ( PHYLOSEQ_INTAX_PPLACE ( ch_pplace_tax ).tsv.map { it = [ "pplace", file(it) ] } )
+
+    } else if ( params.pplace_sheet ) {
+    // 1. Deal with entries in the ch_phyloplace_data channel, i.e. search, then add to the ch_phyloplace_data channel
+    // For search entries with a named hmm to extract, call extraction
+
+    ch_phylosearch_data
+        .filter { it.data.extract_hmm }
+        .map { [ it.meta, it.data.hmm, it.data.extract_hmm ] }
+        .set { ch_hmmextract }
+
+    HMMER_HMMEXTRACT(ch_hmmextract)
+    ch_versions = ch_versions.mix(HMMER_HMMEXTRACT.out.versions)
+
+    // Create an input channel for FASTA_HMMSEARCH_RANK_FASTAS by adding the non-keyed entries from the original channel to the output of the extracted
+    HMMER_HMMEXTRACT.out.hmm
+        .mix(
+            ch_phylosearch_data
+                .filter { ! it.data.extract_hmm }
+                .map { [ it.meta, it.data.hmm ] }
+        )
+        .set { ch_search_profiles }
+
+    FASTA_HMMSEARCH_RANK_FASTAS(ch_search_profiles, ch_fasta)
+    ch_versions = ch_versions.mix(FASTA_HMMSEARCH_RANK_FASTAS.out.versions)
+
+    FASTA_HMMSEARCH_RANK_FASTAS.out.seqfastas
+        .join(
+            ch_phylosearch_data
+                .filter { it.data.alignmethod && it.data.refseqfile && it.data.refphylogeny }
+                .map { [ [ id: it.meta.id ], it ] }
+        )
+        .map { [
+            meta: it[2].meta,
+            data: [
+                alignmethod: it[2].data.alignmethod,
+                queryseqfile: it[1],
+                refseqfile: it[2].data.refseqfile,
+                refphylogeny: it[2].data.refphylogeny,
+                model: it[2].data.model,
+                taxonomy: it[2].data.taxonomy
+            ]
+        ] 
+        }
+        .set { ch_pp_data }
+
+    //
+    // SUBWORKFLOW: Run phylogenetic placement
+    //
+    FASTA_NEWICK_EPANG_GAPPA ( ch_pp_data )
+    ch_versions = ch_versions.mix( FASTA_NEWICK_EPANG_GAPPA.out.versions )
+    ch_pplace_tax = FORMAT_PPLACETAX ( FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query ).tsv
+    ch_tax_for_phyloseq = ch_tax_for_phyloseq.mix ( PHYLOSEQ_INTAX_PPLACE ( ch_pplace_tax ).tsv.map { it = [ "pplace", file(it) ] } )
+
     } else {
         ch_pplace_tax = Channel.empty()
     }
@@ -680,6 +764,7 @@ workflow AMPLISEQ {
         ch_versions = ch_versions.mix( QIIME2_TAXONOMY.out.versions )
         ch_qiime2_tax = QIIME2_TAXONOMY.out.tsv
         ch_tax_for_phyloseq = ch_tax_for_phyloseq.mix ( PHYLOSEQ_INTAX_QIIME2 ( ch_qiime2_tax ).tsv.map { it = [ "qiime2", file(it) ] } )
+
     } else {
         ch_qiime2_tax = Channel.empty()
     }

@@ -591,6 +591,13 @@
                     "default": 1,
                     "description": "Prevalence filtering",
                     "help_text": "Filtering low prevalent features from the feature table, e.g. keeping only features that are present in at least two samples can be achived by choosing a value of 2 (default: 1, meaning filter is disabled). Typically only used when having replicates for all samples.\n\nFor example to retain features that are present in at least two sample:\n\n```bash\n--min_samples 2\n```\n\nPlease note this is independent of abundance."
+                },
+                "raise_filter_stacksize": {
+                    "type": "boolean",
+                    "default": true,
+                    "fa_icon": "fas fa-angle-double-up",
+                    "description": "Raise stack size when filtering VSEARCH clusters",
+                    "help_text": "Setting to true adds 'ulimit -s unlimited' to the beginning of the filt_clusters.py command."
                 }
             }
         },

@@ -1,0 +1,135 @@
+Oct-30 10:38:43.661 [main] DEBUG nextflow.cli.Launcher - $> nextflow -quiet -log /Users/dadiaa/projects/dev/ampliseq/.nf-test/tests/914d5a2c62a8a1882ea677808c544056/meta/nextflow.log run /Users/dadiaa/projects/dev/ampliseq/main.nf -c /Users/dadiaa/projects/dev/ampliseq/nextflow.config -c /Users/dadiaa/projects/dev/ampliseq/nextflow.config -params-file /Users/dadiaa/projects/dev/ampliseq/.nf-test/tests/914d5a2c62a8a1882ea677808c544056/meta/params.json -ansi-log false -profile singularity -with-trace /Users/dadiaa/projects/dev/ampliseq/.nf-test/tests/914d5a2c62a8a1882ea677808c544056/meta/trace.csv -w /Users/dadiaa/projects/dev/ampliseq/.nf-test/tests/914d5a2c62a8a1882ea677808c544056/work
+Oct-30 10:38:43.868 [main] INFO  nextflow.cli.CmdRun - N E X T F L O W  ~  version 24.04.4
+Oct-30 10:38:43.931 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; embedded=false; plugins-dir=/Users/dadiaa/.nextflow/plugins; core-plugins: nf-amazon@2.5.3,nf-azure@1.6.1,nf-cloudcache@0.4.1,nf-codecommit@0.2.1,nf-console@1.1.3,nf-ga4gh@1.3.0,nf-google@1.13.2-patch1,nf-tower@1.9.1,nf-wave@1.4.2-patch1
+Oct-30 10:38:43.952 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+Oct-30 10:38:43.953 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+Oct-30 10:38:43.959 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.12.0 in 'deployment' mode
+Oct-30 10:38:43.999 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+Oct-30 10:38:44.079 [main] DEBUG nextflow.config.ConfigBuilder - Found config base: /Users/dadiaa/projects/dev/ampliseq/nextflow.config
+Oct-30 10:38:44.103 [main] DEBUG nextflow.config.ConfigBuilder - User config file: /Users/dadiaa/projects/dev/ampliseq/nextflow.config
+Oct-30 10:38:44.104 [main] DEBUG nextflow.config.ConfigBuilder - User config file: /Users/dadiaa/projects/dev/ampliseq/nextflow.config
+Oct-30 10:38:44.106 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /Users/dadiaa/projects/dev/ampliseq/nextflow.config
+Oct-30 10:38:44.106 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /Users/dadiaa/projects/dev/ampliseq/nextflow.config
+Oct-30 10:38:44.107 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /Users/dadiaa/projects/dev/ampliseq/nextflow.config
+Oct-30 10:38:44.224 [main] DEBUG n.secret.LocalSecretsProvider - Secrets store: /Users/dadiaa/.nextflow/secrets/store.json
+Oct-30 10:38:44.233 [main] DEBUG nextflow.secret.SecretsLoader - Discovered secrets providers: [nextflow.secret.LocalSecretsProvider@7a2e0858] - activable => nextflow.secret.LocalSecretsProvider@7a2e0858
+Oct-30 10:38:44.373 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `singularity`
+Oct-30 10:38:50.926 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `singularity`
+Oct-30 10:38:53.209 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `singularity`
+Oct-30 10:38:54.528 [main] DEBUG nextflow.config.ConfigBuilder - Available config profiles: [bih, cfc_dev, uzl_omics, ifb_core, embl_hd, denbi_qbic, test_doubleprimers, alice, mjolnir_globe, uppmax, giga, test_pacbio_its, incliva, ilifu, uge, rosalind_uge, lugh, mccleary, unibe_ibu, vai, czbiohub_aws, jax, roslin, ccga_med, tes, scw, unc_longleaf, test_sintax, tigem, tubingen_apg, google, test_qiimecustom, apollo, ipop_up, vsc_calcua, test_fasta, pdc_kth, googlels, ceci_nic5, stjude, daisybio, test_iontorrent, eddie, medair, biowulf, apptainer, bi, bigpurple, adcra, test_novaseq, cedars, pawsey_setonix, vsc_kul_uhasselt, pawsey_nimbus, ucl_myriad, utd_ganymede, charliecloud, test_multi, icr_davros, ceres, arm, munin, rosalind, hasta, cfc, uzh, test_multiregion, shu_bmrc, ebi_codon_slurm, ebc, ccga_dx, crick, ku_sund_danhead, marvin, shifter, biohpc_gen, test_its_dada_taxonomy, mana, mamba, york_viking, unc_lccc, wehi, awsbatch, wustl_htcf, arcc, ceci_dragon2, imperial, maestro, software_license, genotoul, nci_gadi, abims, janelia, nu_genomics, googlebatch, oist, sahmri, test_reftaxcustom, mpcdf, leicester, vsc_ugent, create, sage, cambridge, test_single, jex, podman, ebi_codon, cheaha, xanadu, nyu_hpc, test, marjorie, test_pplace, test_pplace_hmmsearch, computerome, ucd_sonic, seg_globe, sanger, dkfz, bluebear, pasteur, einstein, ethz_euler, m3c, test_full, imb, ucl_cscluster, tuos_stanage, azurebatch, hki, crukmi, csiro_petrichor, qmul_apocrita, wave, docker, engaging, gis, hypatia, psmn, eva, nygc, fgcz, conda, crg, singularity, mpcdf_viper, pe2, self_hosted_runner, tufts, uw_hyak_pedslabs, debug, genouest, cbe, test_failed, gitpod, phoenix, seawulf, uod_hpc, fub_curta, uct_hpc, aws_tower, binac]
+Oct-30 10:38:54.726 [main] DEBUG nextflow.cli.CmdRun - Applied DSL=2 by global default
+Oct-30 10:38:54.760 [main] INFO  nextflow.cli.CmdRun - Launching `/Users/dadiaa/projects/dev/ampliseq/main.nf` [reverent_agnesi] DSL2 - revision: bf04a499cc
+Oct-30 10:38:54.763 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins declared=[nf-schema@2.1.2]
+Oct-30 10:38:54.766 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+Oct-30 10:38:54.767 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins resolved requirement=[nf-schema@2.1.2]
+Oct-30 10:38:54.767 [main] DEBUG nextflow.plugin.PluginUpdater - Installing plugin nf-schema version: 2.1.2
+Oct-30 10:38:54.790 [main] INFO  org.pf4j.AbstractPluginManager - Plugin 'nf-schema@2.1.2' resolved
+Oct-30 10:38:54.790 [main] INFO  org.pf4j.AbstractPluginManager - Start plugin 'nf-schema@2.1.2'
+Oct-30 10:38:54.826 [main] DEBUG nextflow.plugin.BasePlugin - Plugin started nf-schema@2.1.2
+Oct-30 10:38:54.932 [main] DEBUG nextflow.Session - Session UUID: 0d67be1f-a955-440e-8cf2-f18f8f3e9bfc
+Oct-30 10:38:54.932 [main] DEBUG nextflow.Session - Run name: reverent_agnesi
+Oct-30 10:38:54.933 [main] DEBUG nextflow.Session - Executor pool size: 8
+Oct-30 10:38:54.956 [main] DEBUG nextflow.file.FilePorter - File porter settings maxRetries=3; maxTransfers=50; pollTimeout=null
+Oct-30 10:38:54.965 [main] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'FileTransfer' minSize=10; maxSize=24; workQueue=LinkedBlockingQueue[10000]; allowCoreThreadTimeout=false
+Oct-30 10:38:55.010 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 24.04.4 build 5917
+  Created: 01-08-2024 07:05 UTC (09:05 CEST)
+  System: Mac OS X 10.16
+  Runtime: Groovy 4.0.21 on OpenJDK 64-Bit Server VM 11.0.1+13-LTS
+  Encoding: UTF-8 (UTF-8)
+  Process: 63499@mb-01013 [172.20.10.5]
+  CPUs: 8 - Mem: 16 GB (26.6 MB) - Swap: 5 GB (1.3 GB)
+Oct-30 10:38:55.062 [main] DEBUG nextflow.Session - Work-dir: /Users/dadiaa/projects/dev/ampliseq/.nf-test/tests/914d5a2c62a8a1882ea677808c544056/work [Mac OS X]
+Oct-30 10:38:55.150 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+Oct-30 10:38:55.177 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+Oct-30 10:38:55.349 [main] DEBUG nextflow.cache.CacheFactory - Using Nextflow cache factory: nextflow.cache.DefaultCacheFactory
+Oct-30 10:38:55.430 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 9; maxThreads: 1000
+Oct-30 10:38:55.555 [main] DEBUG nextflow.Session - Session start
+Oct-30 10:38:55.569 [main] DEBUG nextflow.trace.TraceFileObserver - Workflow started -- trace file: /Users/dadiaa/projects/dev/ampliseq/.nf-test/tests/914d5a2c62a8a1882ea677808c544056/meta/trace.csv
+Oct-30 10:38:56.056 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+Oct-30 10:38:58.839 [main] WARN  nextflow.Nextflow - No DADA2 cutoffs were specified (`--trunclenf` & `--trunclenr`), therefore reads will be truncated where median quality drops below 25 (defined by `--trunc_qmin`) but at least a fraction of 0.75 (defined by `--trunc_rmin`) of the reads will be retained.
+The chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.
+
+Oct-30 10:39:00.964 [main] DEBUG nextflow.script.ScriptRunner - Parsed script files:
+  Script_c410879273395524: /Users/dadiaa/projects/dev/ampliseq/./workflows/../subworkflows/nf-core/fasta_newick_epang_gappa/../../../modules/nf-core/hmmer/hmmbuild/main.nf
+  Script_f4d9073e92ea9baf: /Users/dadiaa/projects/dev/ampliseq/./workflows/../subworkflows/nf-core/fasta_newick_epang_gappa/main.nf
+  Script_4955288afd8ca61e: /Users/dadiaa/projects/dev/ampliseq/./workflows/../modules/nf-core/multiqc/main.nf
+  Script_f289bdfe26d7f1cf: /Users/dadiaa/projects/dev/ampliseq/./workflows/../modules/nf-core/fastqc/main.nf
+  Script_7780b14094823a21: /Users/dadiaa/projects/dev/ampliseq/./workflows/../subworkflows/nf-core/fasta_newick_epang_gappa/../../../modules/nf-core/hmmer/eslreformat/main.nf
+  Script_8eb57d93e443a72c: /Users/dadiaa/projects/dev/ampliseq/./workflows/ampliseq.nf
+  Script_df54fe6a0a83a45d: /Users/dadiaa/projects/dev/ampliseq/./workflows/../subworkflows/nf-core/fasta_newick_epang_gappa/../../../modules/nf-core/hmmer/hmmalign/main.nf
+  Script_3e1b64ac681f83ec: /Users/dadiaa/projects/dev/ampliseq/./workflows/../modules/nf-core/vsearch/cluster/main.nf
+  Script_a8d8dd8dd41d074f: /Users/dadiaa/projects/dev/ampliseq/main.nf
+  Script_995a7cb3ac639633: /Users/dadiaa/projects/dev/ampliseq/./workflows/../subworkflows/nf-core/fasta_newick_epang_gappa/../../../modules/nf-core/hmmer/eslalimask/main.nf
+Oct-30 10:39:00.965 [main] DEBUG nextflow.Session - Session aborted -- Cause: Can't find a matching module file for include: ../../../modules/nf-core/mafft/main
+Oct-30 10:39:01.065 [main] DEBUG nextflow.Session - The following nodes are still active:
+  [operator] map
+
+Oct-30 10:39:01.098 [main] ERROR nextflow.cli.Launcher - Can't find a matching module file for include: ../../../modules/nf-core/mafft/main
+java.nio.file.NoSuchFileException: Can't find a matching module file for include: ../../../modules/nf-core/mafft/main
+	at nextflow.script.IncludeDef.realModulePath(IncludeDef.groovy:182)
+	at nextflow.script.IncludeDef.load0(IncludeDef.groovy:110)
+	at org.codehaus.groovy.vmplugin.v8.IndyInterface.fromCache(IndyInterface.java:321)
+	at Script_f4d9073e92ea9baf.runScript(Script_f4d9073e92ea9baf:9)
+	at org.codehaus.groovy.vmplugin.v8.IndyInterface.fromCache(IndyInterface.java:321)
+	at nextflow.script.BaseScript.run0(BaseScript.groovy:159)
+	at org.codehaus.groovy.vmplugin.v8.IndyInterface.fromCache(IndyInterface.java:321)
+	at nextflow.script.BaseScript.run(BaseScript.groovy:209)
+	at nextflow.script.ScriptParser.runScript(ScriptParser.groovy:236)
+	at nextflow.script.ScriptParser.runScript(ScriptParser.groovy:222)
+	at nextflow.script.IncludeDef.memoizedMethodPriv$loadModule0PathMapSession(IncludeDef.groovy:140)
+	at nextflow.script.IncludeDef.access$0(IncludeDef.groovy)
+	at nextflow.script.IncludeDef$__clinit__closure2.doCall(IncludeDef.groovy)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:343)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:328)
+	at org.codehaus.groovy.runtime.metaclass.ClosureMetaClass.invokeMethod(ClosureMetaClass.java:279)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1007)
+	at groovy.lang.Closure.call(Closure.java:433)
+	at org.codehaus.groovy.runtime.memoize.Memoize$MemoizeFunction.lambda$call$0(Memoize.java:137)
+	at org.codehaus.groovy.runtime.memoize.ConcurrentCommonCache.getAndPut(ConcurrentCommonCache.java:137)
+	at org.codehaus.groovy.runtime.memoize.ConcurrentCommonCache.getAndPut(ConcurrentCommonCache.java:113)
+	at org.codehaus.groovy.runtime.memoize.Memoize$MemoizeFunction.call(Memoize.java:136)
+	at nextflow.script.IncludeDef.loadModule0(IncludeDef.groovy)
+	at nextflow.script.IncludeDef.load0(IncludeDef.groovy:112)
+	at org.codehaus.groovy.vmplugin.v8.IndyInterface.fromCache(IndyInterface.java:321)
+	at Script_8eb57d93e443a72c.runScript(Script_8eb57d93e443a72c:176)
+	at org.codehaus.groovy.vmplugin.v8.IndyInterface.fromCache(IndyInterface.java:321)
+	at nextflow.script.BaseScript.run0(BaseScript.groovy:159)
+	at org.codehaus.groovy.vmplugin.v8.IndyInterface.fromCache(IndyInterface.java:321)
+	at nextflow.script.BaseScript.run(BaseScript.groovy:209)
+	at nextflow.script.ScriptParser.runScript(ScriptParser.groovy:236)
+	at nextflow.script.ScriptParser.runScript(ScriptParser.groovy:222)
+	at nextflow.script.IncludeDef.memoizedMethodPriv$loadModule0PathMapSession(IncludeDef.groovy:140)
+	at nextflow.script.IncludeDef.access$0(IncludeDef.groovy)
+	at nextflow.script.IncludeDef$__clinit__closure2.doCall(IncludeDef.groovy)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:343)
+	at groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:328)
+	at org.codehaus.groovy.runtime.metaclass.ClosureMetaClass.invokeMethod(ClosureMetaClass.java:279)
+	at groovy.lang.MetaClassImpl.invokeMethod(MetaClassImpl.java:1007)
+	at groovy.lang.Closure.call(Closure.java:433)
+	at org.codehaus.groovy.runtime.memoize.Memoize$MemoizeFunction.lambda$call$0(Memoize.java:137)
+	at org.codehaus.groovy.runtime.memoize.ConcurrentCommonCache.getAndPut(ConcurrentCommonCache.java:137)
+	at org.codehaus.groovy.runtime.memoize.ConcurrentCommonCache.getAndPut(ConcurrentCommonCache.java:113)
+	at org.codehaus.groovy.runtime.memoize.Memoize$MemoizeFunction.call(Memoize.java:136)
+	at nextflow.script.IncludeDef.loadModule0(IncludeDef.groovy)
+	at nextflow.script.IncludeDef.load0(IncludeDef.groovy:112)
+	at org.codehaus.groovy.vmplugin.v8.IndyInterface.fromCache(IndyInterface.java:321)
+	at Script_a8d8dd8dd41d074f.runScript(Script_a8d8dd8dd41d074f:18)
+	at org.codehaus.groovy.vmplugin.v8.IndyInterface.fromCache(IndyInterface.java:321)
+	at nextflow.script.BaseScript.run0(BaseScript.groovy:159)
+	at org.codehaus.groovy.vmplugin.v8.IndyInterface.fromCache(IndyInterface.java:321)
+	at nextflow.script.BaseScript.run(BaseScript.groovy:209)
+	at nextflow.script.ScriptParser.runScript(ScriptParser.groovy:236)
+	at nextflow.script.ScriptRunner.run(ScriptRunner.groovy:243)
+	at nextflow.script.ScriptRunner.execute(ScriptRunner.groovy:138)
+	at nextflow.cli.CmdRun.run(CmdRun.groovy:372)
+	at nextflow.cli.Launcher.run(Launcher.groovy:503)
+	at nextflow.cli.Launcher.main(Launcher.groovy:657)

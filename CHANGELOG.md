@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#804](https://github.com/nf-core/ampliseq/pull/804) - Added version 10 of Unite as parameter for `--dada_ref_taxonomy` (issue [#768](https://github.com/nf-core/ampliseq/issues/768))
 
 ### `Changed`
+- [#818](https://github.com/nf-core/ampliseq/pull/818) - Provide users the ability to not bump stack size in vsearch clustering.
 
 ### `Fixed`
 

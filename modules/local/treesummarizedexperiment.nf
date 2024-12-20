@@ -48,6 +48,12 @@ process TREESUMMARIZEDEXPERIMENT {
         rowData = taxonomy_table
     )
 
+    # If taxonomy table contains sequences, move them to referenceSeq slot
+    if (!is.null(rowData(tse)[["sequence"]])) {
+        referenceSeq(tse) <- DNAStringSet( rowData(tse)[["sequence"]] )
+        rowData(tse)[["sequence"]] <- NULL
+    }
+
     # If provided, we add sample metadata as DataFrame object. rownames of
     # sample metadata must match with colnames of abundance matrix.
     if (file.exists($sam_tsv)) {

@@ -50,7 +50,7 @@ nextflow_pipeline {
                 { assert new File("$outputDir/SBDI/annotation.tsv").exists() },
                 { assert new File("$outputDir/SBDI/asv-table.tsv").exists() },
                 { assert new File("$outputDir/summary_report/summary_report.html").exists() },
-                { assert new File("$outputDir/phyloseq/sintax_phyloseq.rds").exists() }
+                { assert new File("$outputDir/treesummarizedexperiment/sintax_TreeSummarizedExperiment.rds").exists() }
             )
         }
     }

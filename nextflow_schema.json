@@ -82,9 +82,7 @@
                     "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
                 }
             },
-            "required": [
-                "outdir"
-            ],
+            "required": ["outdir"],
             "fa_icon": "fas fa-terminal"
         },
         "sequencing_input": {
@@ -261,22 +259,14 @@
                     "default": "independent",
                     "help_text": "If samples are treated independent (lowest sensitivity and lowest resources), pooled (highest sensitivity and resources) or pseudo-pooled (balance between required resources and sensitivity).",
                     "description": "Mode of sample inference: \"independent\", \"pooled\" or \"pseudo\"",
-                    "enum": [
-                        "independent",
-                        "pooled",
-                        "pseudo"
-                    ]
+                    "enum": ["independent", "pooled", "pseudo"]
                 },
                 "mergepairs_strategy": {
                     "type": "string",
                     "default": "merge",
                     "description": "Strategy to merge paired end reads. When paired end reads are not sufficiently overlapping for merging, you can use \"concatenate\" (not recommended). When you have a mix of overlapping and non overlapping reads use \"consensus\"",
                     "help_text": "This parameters specifies that paired-end reads are not merged after denoising but concatenated (separated by 10 N's). This is of advantage when an amplicon was sequenced that is too long for merging (i.e. bad experimental design). This is an alternative to only analyzing the forward or reverse read in case of non-overlapping paired-end sequencing data.\n\n**This parameter is not recommended! Only if all other options fail.**",
-                    "enum": [
-                        "merge",
-                        "concatenate",
-                        "consensus"
-                    ]
+                    "enum": ["merge", "concatenate", "consensus"]
                 },
                 "mergepairs_consensus_match": {
                     "type": "integer",
@@ -495,10 +485,7 @@
                     "type": "string",
                     "description": "Method used for alignment, \"hmmer\" or \"mafft\"",
                     "default": "hmmer",
-                    "enum": [
-                        "hmmer",
-                        "mafft"
-                    ]
+                    "enum": ["hmmer", "mafft"]
                 },
                 "pplace_taxonomy": {
                     "type": "string",
@@ -514,13 +501,7 @@
                     "type": "string",
                     "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `silva=138`) . This will download the desired database and initiate taxonomic classification with QIIME2 and the chosen database.\n\nIf both, `--dada_ref_taxonomy` and `--qiime_ref_taxonomy` are used, DADA2 classification will be used for downstream analysis.\n\nThe following databases are supported:\n- SILVA ribosomal RNA gene database project - 16S rRNA\n- UNITE - eukaryotic nuclear ribosomal ITS region - ITS\n- Greengenes (only testing!)\n\nGenerally, using `silva`, `unite-fungi`, or `unite-alleuk` will select the most recent supported version. For testing purposes, the tiny database `greengenes85` (dereplicated at 85% sequence similarity) is available. For details on what values are valid, please either use an invalid value such as `x` (causing the pipeline to send an error message with all valid values) or see `conf/ref_databases.config`.",
                     "description": "Name of supported database, and optionally also version number",
-                    "enum": [
-                        "silva=138",
-                        "silva",
-                        "greengenes85",
-                        "greengenes2",
-                        "greengenes2=2022.10"
-                    ]
+                    "enum": ["silva=138", "silva", "greengenes85", "greengenes2", "greengenes2=2022.10"]
                 },
                 "qiime_ref_tax_custom": {
                     "type": "string",
@@ -595,12 +576,7 @@
                     "help_text": "If data is long read ITS sequences, that need to be cut to ITS region (full ITS, only ITS1, or only ITS2) for taxonomy assignment.",
                     "description": "Part of ITS region to use for taxonomy assignment: \"full\", \"its1\", or \"its2\"",
                     "default": "none",
-                    "enum": [
-                        "none",
-                        "full",
-                        "its1",
-                        "its2"
-                    ]
+                    "enum": ["none", "full", "its1", "its2"]
                 },
                 "its_partial": {
                     "type": "integer",
@@ -620,13 +596,7 @@
                     "type": "string",
                     "help_text": "",
                     "description": "Name of supported database, and optionally also version number",
-                    "enum": [
-                        "silva",
-                        "silva=128",
-                        "greengenes",
-                        "greengenes=13_8",
-                        "greengenes88"
-                    ]
+                    "enum": ["silva", "silva=128", "greengenes", "greengenes=13_8", "greengenes88"]
                 },
                 "sidle_ref_tax_custom": {
                     "type": "string",
@@ -899,14 +869,7 @@
                     "description": "Method used to save pipeline results to output directory.",
                     "help_text": "The Nextflow `publishDir` option specifies which intermediate files should be saved to the output directory. This option tells the pipeline what method should be used to move these files. See [Nextflow docs](https://www.nextflow.io/docs/latest/process.html#publishdir) for details.",
                     "fa_icon": "fas fa-copy",
-                    "enum": [
-                        "symlink",
-                        "rellink",
-                        "link",
-                        "copy",
-                        "copyNoFollow",
-                        "move"
-                    ],
+                    "enum": ["symlink", "rellink", "link", "copy", "copyNoFollow", "move"],
                     "hidden": true
                 },
                 "email_on_fail": {

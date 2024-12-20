@@ -107,6 +107,7 @@ params:
     picrust_pathways: FALSE
     sbdi: FALSE
     phyloseq: FALSE
+    tse: FALSE
 ---
 
 <!-- Load libraries -->
@@ -1615,19 +1616,37 @@ but if you run nf-core/ampliseq with a sample metadata table (`--metadata`) any 
 "))
 ```
 
-<!-- Section on PHYLOSEQ results -->
+<!-- Section on exported R objects -->
 
-```{r, eval = !isFALSE(params$phyloseq), results='asis'}
+```{r, results='asis'}
+any_robject <- !isFALSE(params$phyloseq) || !isFALSE(params$tse)
+```
+
+```{r, eval = !isFALSE(params$any_robject), results='asis'}
 cat(paste0("
-# Phyloseq
+# R objects
 
-[Phyloseq](https://doi.org/10.1371/journal.pone.0061217)
-is a popular R package to analyse and visualize microbiom data.
-The produced RDS files contain phyloseq objects and can be loaded directely into R and phyloseq.
+Microbiome data can be analysed and visualized with certain R packages. For convenience, R objects in RDS format are provided.
+"))
+
+if ( !isFALSE(params$phyloseq) ) {
+    cat(paste0("
+[Phyloseq](https://doi.org/10.1371/journal.pone.0061217) objects and can be loaded directely into R with package 'phyloseq'.
 The objects contain an ASV abundance table and a taxonomy table.
 If available, metadata and phylogenetic tree will also be included in the phyloseq object.
 The files can be found in folder [phyloseq](../phyloseq/).
-"))
+    "))
+}
+
+if ( !isFALSE(params$tse) ) {
+    cat(paste0("
+[TreeSummarizedExperiment](https://doi.org/10.12688/f1000research.26669.2) (TreeSE, TSE)
+objects can be loaded into R with package 'TreeSummarizedExperiment'. and contain an ASV abundance table,
+a taxonomy table, and sequences.
+If available, metadata and phylogenetic tree will also be included in the object.
+The files can be found in folder [treesummarizedexperiment](../treesummarizedexperiment/).
+    "))
+}
 ```
 
 <!-- Section on methods -->

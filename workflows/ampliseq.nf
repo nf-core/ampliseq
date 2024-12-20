@@ -1016,8 +1016,8 @@ workflow AMPLISEQ {
             run_qiime2 && params.ancombc_formula && params.metadata ? QIIME2_ANCOM.out.ancombc_formula.collect().ifEmpty( [] ) : [],
             params.picrust ? PICRUST.out.pathways.ifEmpty( [] ) : [],
             params.sbdiexport ? SBDIEXPORT.out.sbditables.mix(SBDIEXPORTREANNOTATE.out.sbdiannottables).collect().ifEmpty( [] ) : [],
-            !params.skip_taxonomy && !params.skip_phyloseq ? ROBJECT_WORKFLOW.out.phyloseq.map{info,rds -> [rds]}.collect().ifEmpty( [] ) : []
-            //TODO: add treesummarizedexperiment
+            !params.skip_taxonomy && !params.skip_phyloseq ? ROBJECT_WORKFLOW.out.phyloseq.map{info,rds -> [rds]}.collect().ifEmpty( [] ) : [],
+            !params.skip_taxonomy && !params.skip_tse ? ROBJECT_WORKFLOW.out.tse.map{info,rds -> [rds]}.collect().ifEmpty( [] ) : []
         )
         ch_versions    = ch_versions.mix(SUMMARY_REPORT.out.versions)
     }

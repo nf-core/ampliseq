@@ -1622,7 +1622,7 @@ but if you run nf-core/ampliseq with a sample metadata table (`--metadata`) any 
 any_robject <- !isFALSE(params$phyloseq) || !isFALSE(params$tse)
 ```
 
-```{r, eval = !isFALSE(params$any_robject), results='asis'}
+```{r, eval = !isFALSE(any_robject), results='asis'}
 cat(paste0("
 # R objects
 

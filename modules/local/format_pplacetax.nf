@@ -59,7 +59,7 @@ process FORMAT_PPLACETAX {
                 # then, check if reduced entries are identical > if yes, choose any row, if no, repeat
                 # at that step the taxonomies have same length
                 print( paste ( asvid,"enters STEP 3" ) )
-                list_taxonpath <- str_split( temp\$taxopath, ";")
+                list_taxonpath <- stringr::str_split( temp\$taxopath, ";")
                 df_taxonpath <- as.data.frame(do.call(rbind, list_taxonpath))
                 for (i in ncol(df_taxonpath):0) {
                     # choose first column and change taxon to reduced overlap

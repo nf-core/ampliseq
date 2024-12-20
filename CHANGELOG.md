@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#798](https://github.com/nf-core/ampliseq/pull/798) - Added SILVA version 138.2 of DADA2 taxonomy database: `silva=138.2` or `silva` as parameter to `--dada2_ref_taxonomy`
 - [#804](https://github.com/nf-core/ampliseq/pull/804) - Added version 10 of Unite as parameter for `--dada_ref_taxonomy` (issue [#768](https://github.com/nf-core/ampliseq/issues/768))
 - [#803](https://github.com/nf-core/ampliseq/pull/803) - New parameters introduced related to `--mergepairs_strategy`. These parameters would only be effective if `--mergepairs_strategy consensus` is set.
 
@@ -18,15 +19,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | **mergepairs_consensus_minoverlap**        | The minimum number of overlapping base pairs required to merge forward and reverse reads. | 12                |
 | **mergepairs_consensus_maxmismatch**       | The maximum number of mismatches allowed within the overlapping region for merging reads. | 0                 |
 | **mergepairs_consensus_percentile_cutoff** | The percentile cutoff determining the minimum observed overlap in the dataset.            | 0.001             |
-=======
 
 ### `Changed`
 
 - [#803](https://github.com/nf-core/ampliseq/pull/803) - Changed DADA2_DENOISING : `--concatenate_reads` renaming to `--mergepairs_strategy` ; support new method named "consensus" by setting `--mergepairs_strategy consensus` ; changed options of `--mergepairs_strategy` from TRUE/FALSE (boolean) to ["merge", "concatenate", "consensus"].
+- [#818](https://github.com/nf-core/ampliseq/pull/818) - Provide users the ability to not bump stack size in vsearch clustering.
 
 ### `Fixed`
 
 - [#800](https://github.com/nf-core/ampliseq/pull/800) - Fixed SH files for UNITE9.0, they were missing some entries due to a bug caused by API update in PlutoF
+- [#808](https://github.com/nf-core/ampliseq/pull/808) - Add missing library declaration in R script.
 
 ### `Dependencies`
 

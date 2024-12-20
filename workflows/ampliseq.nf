@@ -870,7 +870,11 @@ workflow AMPLISEQ {
     //
     if ( !params.skip_taxonomy && ( !params.skip_phyloseq || !params.skip_tse ) ) {
         if ( params.pplace_tree ) {
-            ch_tree_for_robject = FASTA_NEWICK_EPANG_GAPPA.out.grafted_phylogeny
+            ch_tree_for_robject = FASTA_NEWICK_EPANG_GAPPA.out.grafted_phylogeny.map { it = it[1] }.first()
+        } else if (params.multiregion) {
+            ch_tree_for_robject = SIDLE_WF.out.tree_nwk
+        } else if ( params.metadata && (!params.skip_alpha_rarefaction || !params.skip_diversity_indices) ) {
+            ch_tree_for_robject = QIIME2_DIVERSITY.out.tree_nwk
         } else {
             ch_tree_for_robject = []
         }

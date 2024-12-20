@@ -11,7 +11,7 @@ workflow ROBJECT_WORKFLOW {
     ch_tax
     ch_tsv
     ch_meta
-    ch_tree
+    ch_robject_intree
     run_qiime2
 
     main:
@@ -21,12 +21,6 @@ workflow ROBJECT_WORKFLOW {
         ch_robject_inmeta = ch_meta.first() // The .first() is to make sure it's a value channel
     } else {
         ch_robject_inmeta = []
-    }
-
-    if ( params.pplace_tree ) {
-        ch_robject_intree = ch_tree.map { it = it[1] }.first()
-    } else {
-        ch_robject_intree = []
     }
 
     if ( run_qiime2 ) {

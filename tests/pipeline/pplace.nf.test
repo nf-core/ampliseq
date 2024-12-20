@@ -58,7 +58,9 @@ nextflow_pipeline {
                                 path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt")).match("multiqc") },
                 { assert new File("$outputDir/summary_report/summary_report.html").exists() },
                 { assert new File("$outputDir/phyloseq/qiime2_phyloseq.rds").exists() },
-                { assert new File("$outputDir/phyloseq/pplace_phyloseq.rds").exists() }
+                { assert new File("$outputDir/phyloseq/pplace_phyloseq.rds").exists() },
+                { assert new File("$outputDir/treesummarizedexperiment/qiime2_TreeSummarizedExperiment.rds").exists() },
+                { assert new File("$outputDir/treesummarizedexperiment/pplace_TreeSummarizedExperiment.rds").exists() }
             )
         }
     }

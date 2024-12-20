@@ -149,6 +149,10 @@
 
   > McMurdie PJ, Holmes S (2013). “phyloseq: An R package for reproducible interactive analysis and graphics of microbiome census data.” PLoS ONE, 8(4), e61217.
 
+- [TreeSummarizedExperiment](https://doi.org/10.12688/f1000research.26669.2)
+
+  > Huang R, Soneson C, Ernst FGM et al. TreeSummarizedExperiment: a S4 class for data with hierarchical structure [version 2; peer review: 3 approved]. F1000Research 2021, 9:1246.
+
 ### Non-default tools
 
 - [ITSx](https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.12073)

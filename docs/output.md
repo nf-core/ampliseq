@@ -46,7 +46,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [Differential abundance analysis](#differential-abundance-analysis) - Calling differentially abundant features with ANCOM or ANCOM-BC
 - [PICRUSt2](#picrust2) - Predict the functional potential of a bacterial community
 - [SBDI export](#sbdi-export) - Swedish Biodiversity Infrastructure (SBDI) submission file
-- [Phyloseq](#phyloseq) - Phyloseq R objects
+- [R object](#r-objects) - Phyloseq and TreeSummarizedExperiment R objects
 - [Read count report](#read-count-report) - Report of read counts during various steps of the pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
@@ -629,15 +629,17 @@ Most of the fields in the template will not be populated by the export process, 
 
 </details>
 
-### Phyloseq
+### R objects
 
-This directory will hold phyloseq objects for each taxonomy table produced by this pipeline. The objects will contain an ASV abundance table and a taxonomy table. If the pipeline is provided with metadata, that metadata will also be included in the phyloseq object. A phylogenetic tree will also be included if the pipeline produces a tree.
+Pipeline results are stored in phyloseq and TreeSummarizedExperiment R objects for each taxonomy table produced by this pipeline. The R objects will contain an ASV abundance table and a taxonomy table, and optionally sequences, metadata and a phylogenetic tree.
 
 <details markdown="1">
 <summary>Output files</summary>
 
 - `phyloseq/`
   - `<taxonomy>_phyloseq.rds`: Phyloseq R object.
+- `treesummarizedexperiment/`
+  - `<taxonomy>_TreeSummarizedExperiment.rds`: TreeSummarizedExperiment R object.
 
 </details>
 

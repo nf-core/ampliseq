@@ -47,7 +47,7 @@ process DADA2_DENOISING {
         sink(file = NULL)
 
         # merge
-        if ("${params.asv_concatenate_reads}" == "consensus") {
+        if ("${params.mergepairs_strategy}" == "consensus") {
             mergers <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, $args2, justConcatenate = FALSE, verbose=TRUE)
             concats <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, $args2, justConcatenate = TRUE, verbose=TRUE)
 

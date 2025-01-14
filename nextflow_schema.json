@@ -276,13 +276,13 @@
                 },
                 "mergepairs_consensus_mismatch": {
                     "type": "integer",
-                    "default": -6,
+                    "default": -2,
                     "description": "The penalty score assigned for each mismatched base pair during sequence alignment.",
                     "help_text": "This parameter defines the numerical penalty subtracted from the alignment score for each base pair mismatch between the forward and reverse reads. A higher penalty reduces the likelihood of accepting alignments with mismatches."
                 },
                 "mergepairs_consensus_gap": {
                     "type": "integer",
-                    "default": -64,
+                    "default": -4,
                     "description": "The penalty score assigned for each gap introduced during sequence alignment.",
                     "help_text": "This parameter sets the numerical penalty subtracted from the alignment score for each gap (insertion or deletion) introduced to align the forward and reverse reads. A higher penalty discourages alignments that require gaps."
                 },

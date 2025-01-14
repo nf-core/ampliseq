@@ -14,9 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | **Parameter**                              | **Description**                                                                           | **Default Value** |
 | ------------------------------------------ | ----------------------------------------------------------------------------------------- | ----------------- |
-| **mergepairs_consensus_match**             | The score assigned for each matching base pair during sequence alignment.                 | 5                 |
-| **mergepairs_consensus_mismatch**          | The penalty score assigned for each mismatched base pair during sequence alignment.       | -6                |
-| **mergepairs_consensus_gap**               | The penalty score assigned for each gap introduced during sequence alignment.             | -64               |
+| **mergepairs_consensus_match**             | The score assigned for each matching base pair during sequence alignment.                 | 1                 |
+| **mergepairs_consensus_mismatch**          | The penalty score assigned for each mismatched base pair during sequence alignment.       | -2                |
+| **mergepairs_consensus_gap**               | The penalty score assigned for each gap introduced during sequence alignment.             | -4                |
 | **mergepairs_consensus_minoverlap**        | The minimum number of overlapping base pairs required to merge forward and reverse reads. | 12                |
 | **mergepairs_consensus_maxmismatch**       | The maximum number of mismatches allowed within the overlapping region for merging reads. | 0                 |
 | **mergepairs_consensus_percentile_cutoff** | The percentile cutoff determining the minimum observed overlap in the dataset.            | 0.001             |

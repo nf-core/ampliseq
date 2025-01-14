@@ -270,7 +270,7 @@
                 },
                 "mergepairs_consensus_match": {
                     "type": "integer",
-                    "default": 5,
+                    "default": 1,
                     "description": "The score assigned for each matching base pair during sequence alignment.",
                     "help_text": "This parameter specifies the numerical value added to the alignment score for every pair of bases that match between the forward and reverse reads. A higher value increases the preference for alignments with more matching bases."
                 },

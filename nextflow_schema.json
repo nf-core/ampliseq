@@ -797,6 +797,14 @@
                     "type": "boolean",
                     "description": "Skip alpha and beta diversity analysis"
                 },
+                "skip_phyloseq": {
+                    "type": "boolean",
+                    "description": "Skip exporting phyloseq rds object(s)"
+                },
+                "skip_tse": {
+                    "type": "boolean",
+                    "description": "Skip exporting TreeSummarizedExperiment rds object(s)"
+                },
                 "skip_multiqc": {
                     "type": "boolean",
                     "description": "Skip MultiQC reporting"

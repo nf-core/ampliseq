@@ -32,6 +32,7 @@ nextflow_pipeline {
                 { assert snapshot(path("$outputDir/input/Samplesheet_double_primer.tsv")).match("input") },
                 { assert new File("$outputDir/qiime2/abundance_tables/feature-table.tsv").exists() },
                 { assert new File("$outputDir/phyloseq/kraken2_phyloseq.rds").exists() },
+                { assert new File("$outputDir/treesummarizedexperiment/kraken2_TreeSummarizedExperiment.rds").exists() },
                 { assert snapshot(path("$outputDir/kraken2/ASV_tax.greengenes.kraken2.classifiedreads.txt"),
                                 path("$outputDir/kraken2/ASV_tax.greengenes.kraken2.complete.tsv"),
                                 path("$outputDir/kraken2/ASV_tax.greengenes.kraken2.tsv")).match("kraken2") },

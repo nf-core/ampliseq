@@ -672,6 +672,7 @@ workflow AMPLISEQ {
 
     // Phylo placement
     ch_pp_data = Channel.empty()
+    ch_tax_for_phyloseq = Channel.empty()
     if ( params.pplace_aln && params.pplace_tree ) {
         ch_pp_data = ch_fasta.map { it ->
             [ meta: [ id: params.pplace_name ?: 'user_tree' ],
@@ -737,6 +738,7 @@ workflow AMPLISEQ {
     //
     // SUBWORKFLOW: Run phylogenetic placement
     //
+    ch_pp_data.view()
     FASTA_NEWICK_EPANG_GAPPA ( ch_pp_data )
     ch_versions = ch_versions.mix( FASTA_NEWICK_EPANG_GAPPA.out.versions )
     ch_pplace_tax = FORMAT_PPLACETAX ( FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query ).tsv

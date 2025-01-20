@@ -9,8 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#798](https://github.com/nf-core/ampliseq/pull/798) - Added SILVA version 138.2 of DADA2 taxonomy database: `silva=138.2` or `silva` as parameter to `--dada2_ref_taxonomy`
 - [#804](https://github.com/nf-core/ampliseq/pull/804) - Added version 10 of Unite as parameter for `--dada_ref_taxonomy` (issue [#768](https://github.com/nf-core/ampliseq/issues/768))
+- [#807](https://github.com/nf-core/ampliseq/pull/807) - Export of TreeSummarizedExperiment R object by default, can be omitted with `--skip_tse`, also added ability to skip phyloseq R object generation with `--skip_phyloseq`
 
 ### `Changed`
+
+- [#818](https://github.com/nf-core/ampliseq/pull/818) - Provide users the ability to not bump stack size in vsearch clustering.
 
 ### `Fixed`
 

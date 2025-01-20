@@ -29,7 +29,8 @@ nextflow_pipeline {
                 { assert new File("$outputDir/qiime2/diversity/alpha_diversity/shannon_vector/kruskal-wallis-pairwise-treatment1.csv").exists() },
                 { assert new File("$outputDir/qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA/index.html").exists() },
                 { assert new File("$outputDir/summary_report/summary_report.html").exists() },
-                { assert new File("$outputDir/phyloseq/dada2_phyloseq.rds").exists() }
+                { assert new File("$outputDir/phyloseq/dada2_phyloseq.rds").exists() },
+                { assert new File("$outputDir/treesummarizedexperiment/dada2_TreeSummarizedExperiment.rds").exists() }
             )
         }
     }

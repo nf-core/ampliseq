@@ -1,0 +1,852 @@
+Jan-21 15:44:24.306 [main] DEBUG nextflow.cli.Launcher - $> nextflow -quiet -log /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/meta/nextflow.log run /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/main.nf -c /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/nextflow.config -c /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/nextflow.config -params-file /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/meta/params.json -ansi-log false -profile test_pplace_hmmsearch,singularity -with-trace /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/meta/trace.csv -w /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work
+Jan-21 15:44:24.431 [main] INFO  nextflow.cli.CmdRun - N E X T F L O W  ~  version 24.10.3
+Jan-21 15:44:24.467 [main] DEBUG nextflow.plugin.PluginsFacade - Setting up plugin manager > mode=prod; embedded=false; plugins-dir=/cfs/klemming/home/d/ddl/.nextflow/plugins; core-plugins: nf-amazon@2.9.2,nf-azure@1.10.2,nf-cloudcache@0.4.2,nf-codecommit@0.2.2,nf-console@1.1.4,nf-google@1.15.3,nf-tower@1.9.3,nf-wave@1.7.4
+Jan-21 15:44:24.498 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Enabled plugins: []
+Jan-21 15:44:24.500 [main] INFO  o.pf4j.DefaultPluginStatusProvider - Disabled plugins: []
+Jan-21 15:44:24.506 [main] INFO  org.pf4j.DefaultPluginManager - PF4J version 3.12.0 in 'deployment' mode
+Jan-21 15:44:24.531 [main] INFO  org.pf4j.AbstractPluginManager - No plugins
+Jan-21 15:44:24.575 [main] DEBUG nextflow.config.ConfigBuilder - Found config base: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/nextflow.config
+Jan-21 15:44:24.583 [main] DEBUG nextflow.config.ConfigBuilder - User config file: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/nextflow.config
+Jan-21 15:44:24.584 [main] DEBUG nextflow.config.ConfigBuilder - User config file: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/nextflow.config
+Jan-21 15:44:24.587 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/nextflow.config
+Jan-21 15:44:24.588 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/nextflow.config
+Jan-21 15:44:24.588 [main] DEBUG nextflow.config.ConfigBuilder - Parsing config file: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/nextflow.config
+Jan-21 15:44:24.716 [main] DEBUG n.secret.LocalSecretsProvider - Secrets store: /cfs/klemming/home/d/ddl/.nextflow/secrets/store.json
+Jan-21 15:44:24.731 [main] DEBUG nextflow.secret.SecretsLoader - Discovered secrets providers: [nextflow.secret.LocalSecretsProvider@52b6319f] - activable => nextflow.secret.LocalSecretsProvider@52b6319f
+Jan-21 15:44:24.857 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `test_pplace_hmmsearch,singularity`
+Jan-21 15:44:30.009 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `test_pplace_hmmsearch,singularity`
+Jan-21 15:44:31.128 [main] DEBUG nextflow.config.ConfigBuilder - Applying config profile: `test_pplace_hmmsearch,singularity`
+Jan-21 15:44:32.033 [main] DEBUG nextflow.config.ConfigBuilder - Available config profiles: [bih, cfc_dev, uzl_omics, ifb_core, embl_hd, denbi_qbic, test_doubleprimers, alice, mjolnir_globe, uppmax, giga, test_pacbio_its, incliva, ilifu, ki_luria, uge, rosalind_uge, lugh, mccleary, unibe_ibu, vai, czbiohub_aws, jax, roslin, ccga_med, tes, scw, unc_longleaf, test_sintax, tigem, tubingen_apg, google, test_qiimecustom, apollo, ipop_up, vsc_calcua, test_fasta, pdc_kth, googlels, ceci_nic5, stjude, daisybio, test_iontorrent, eddie, medair, biowulf, apptainer, bi, bigpurple, adcra, test_novaseq, cedars, pawsey_setonix, vsc_kul_uhasselt, pawsey_nimbus, ucl_myriad, utd_ganymede, charliecloud, test_multi, icr_davros, ceres, arm, munin, rosalind, hasta, cfc, uzh, test_multiregion, shu_bmrc, ebi_codon_slurm, ebc, ccga_dx, crick, ku_sund_danhead, marvin, shifter, biohpc_gen, test_its_dada_taxonomy, mana, mamba, york_viking, unc_lccc, wehi, awsbatch, wustl_htcf, arcc, ceci_dragon2, imperial, maestro, software_license, genotoul, nci_gadi, abims, janelia, nu_genomics, googlebatch, oist, sahmri, kaust, test_reftaxcustom, mpcdf, leicester, vsc_ugent, create, sage, cambridge, test_single, jex, podman, ebi_codon, cheaha, xanadu, nyu_hpc, test, marjorie, test_pplace, test_pplace_hmmsearch, computerome, ucd_sonic, seg_globe, sanger, dkfz, bluebear, pasteur, einstein, ethz_euler, m3c, test_full, imb, ucl_cscluster, tuos_stanage, azurebatch, hki, crukmi, csiro_petrichor, qmul_apocrita, wave, docker, engaging, gis, hypatia, psmn, eva, unity, nygc, fgcz, conda, crg, singularity, mpcdf_viper, pe2, self_hosted_runner, tufts, uw_hyak_pedslabs, debug, genouest, cbe, unsw_katana, test_failed, gitpod, phoenix, seawulf, uod_hpc, fub_curta, uct_hpc, aws_tower, binac]
+Jan-21 15:44:32.145 [main] DEBUG nextflow.cli.CmdRun - Applied DSL=2 by global default
+Jan-21 15:44:32.202 [main] INFO  nextflow.cli.CmdRun - Launching `/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/main.nf` [mighty_gates] DSL2 - revision: bf04a499cc
+Jan-21 15:44:32.203 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins declared=[nf-schema@2.1.2]
+Jan-21 15:44:32.204 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins default=[]
+Jan-21 15:44:32.204 [main] DEBUG nextflow.plugin.PluginsFacade - Plugins resolved requirement=[nf-schema@2.1.2]
+Jan-21 15:44:32.204 [main] DEBUG nextflow.plugin.PluginUpdater - Installing plugin nf-schema version: 2.1.2
+Jan-21 15:44:32.243 [main] INFO  org.pf4j.AbstractPluginManager - Plugin 'nf-schema@2.1.2' resolved
+Jan-21 15:44:32.243 [main] INFO  org.pf4j.AbstractPluginManager - Start plugin 'nf-schema@2.1.2'
+Jan-21 15:44:32.305 [main] DEBUG nextflow.plugin.BasePlugin - Plugin started nf-schema@2.1.2
+Jan-21 15:44:32.706 [main] DEBUG nextflow.Session - Session UUID: 10399877-f300-421a-ac1d-0e2feb882f47
+Jan-21 15:44:32.706 [main] DEBUG nextflow.Session - Run name: mighty_gates
+Jan-21 15:44:32.707 [main] DEBUG nextflow.Session - Executor pool size: 256
+Jan-21 15:44:32.782 [main] DEBUG nextflow.file.FilePorter - File porter settings maxRetries=3; maxTransfers=50; pollTimeout=null
+Jan-21 15:44:32.792 [main] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'FileTransfer' minSize=10; maxSize=768; workQueue=LinkedBlockingQueue[10000]; allowCoreThreadTimeout=false
+Jan-21 15:44:32.826 [main] DEBUG nextflow.cli.CmdRun - 
+  Version: 24.10.3 build 5933
+  Created: 16-12-2024 15:34 UTC (16:34 CEST)
+  System: Linux 5.14.21-150500.55.31_13.0.53-cray_shasta_c
+  Runtime: Groovy 4.0.23 on OpenJDK 64-Bit Server VM 11.0.13+7-b1751.21
+  Encoding: UTF-8 (UTF-8)
+  Process: 3716643@login1 [10.253.0.5]
+  CPUs: 256 - Mem: 503.5 GB (206.8 GB) - Swap: 0 (0)
+Jan-21 15:44:32.890 [main] DEBUG nextflow.Session - Work-dir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work [lustre]
+Jan-21 15:44:33.009 [main] DEBUG nextflow.executor.ExecutorFactory - Extension executors providers=[]
+Jan-21 15:44:33.058 [main] DEBUG nextflow.Session - Observer factory: DefaultObserverFactory
+Jan-21 15:44:33.128 [main] DEBUG nextflow.cache.CacheFactory - Using Nextflow cache factory: nextflow.cache.DefaultCacheFactory
+Jan-21 15:44:33.175 [main] DEBUG nextflow.util.CustomThreadPool - Creating default thread pool > poolSize: 257; maxThreads: 1000
+Jan-21 15:44:33.392 [main] DEBUG nextflow.Session - Session start
+Jan-21 15:44:33.400 [main] DEBUG nextflow.trace.TraceFileObserver - Workflow started -- trace file: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/meta/trace.csv
+Jan-21 15:44:33.592 [main] DEBUG nextflow.script.ScriptRunner - > Launching execution
+Jan-21 15:44:35.930 [main] WARN  nextflow.Nextflow - No DADA2 cutoffs were specified (`--trunclenf` & `--trunclenr`), therefore reads will be truncated where median quality drops below 25 (defined by `--trunc_qmin`) but at least a fraction of 0.75 (defined by `--trunc_rmin`) of the reads will be retained.
+The chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.
+
+Jan-21 15:44:43.161 [main] DEBUG nextflow.script.IncludeDef - Loading included plugin extensions with names: [paramsSummaryLog:paramsSummaryLog]; plugin Id: nf-schema
+Jan-21 15:44:43.370 [main] DEBUG nextflow.script.IncludeDef - Loading included plugin extensions with names: [validateParameters:validateParameters]; plugin Id: nf-schema
+Jan-21 15:44:43.373 [main] DEBUG nextflow.script.IncludeDef - Loading included plugin extensions with names: [paramsSummaryMap:paramsSummaryMap]; plugin Id: nf-schema
+Jan-21 15:44:43.374 [main] DEBUG nextflow.script.IncludeDef - Loading included plugin extensions with names: [samplesheetToList:samplesheetToList]; plugin Id: nf-schema
+Jan-21 15:44:45.687 [main] DEBUG nextflow.script.IncludeDef - Loading included plugin extensions with names: [samplesheetToList:samplesheetToList]; plugin Id: nf-schema
+Jan-21 15:44:45.688 [main] DEBUG nextflow.script.IncludeDef - Loading included plugin extensions with names: [paramsSummaryMap:paramsSummaryMap]; plugin Id: nf-schema
+Jan-21 15:44:46.012 [main] DEBUG nextflow.script.IncludeDef - Loading included plugin extensions with names: [paramsSummaryLog:paramsSummaryLog]; plugin Id: nf-schema
+Jan-21 15:44:46.013 [main] DEBUG nextflow.script.IncludeDef - Loading included plugin extensions with names: [validateParameters:validateParameters]; plugin Id: nf-schema
+Jan-21 15:44:46.015 [main] DEBUG nextflow.script.IncludeDef - Loading included plugin extensions with names: [paramsSummaryMap:paramsSummaryMap]; plugin Id: nf-schema
+Jan-21 15:44:46.016 [main] DEBUG nextflow.script.IncludeDef - Loading included plugin extensions with names: [samplesheetToList:samplesheetToList]; plugin Id: nf-schema
+Jan-21 15:44:46.268 [main] DEBUG nextflow.script.IncludeDef - Loading included plugin extensions with names: [paramsSummaryLog:paramsSummaryLog]; plugin Id: nf-schema
+Jan-21 15:44:46.269 [main] DEBUG nextflow.script.IncludeDef - Loading included plugin extensions with names: [validateParameters:validateParameters]; plugin Id: nf-schema
+Jan-21 15:44:46.271 [main] DEBUG nextflow.script.IncludeDef - Loading included plugin extensions with names: [paramsSummaryMap:paramsSummaryMap]; plugin Id: nf-schema
+Jan-21 15:44:46.272 [main] DEBUG nextflow.script.IncludeDef - Loading included plugin extensions with names: [samplesheetToList:samplesheetToList]; plugin Id: nf-schema
+Jan-21 15:44:46.621 [main] INFO  nextflow.Nextflow - 
+-[2m----------------------------------------------------[0m-
+                                        [0;32m,--.[0;30m/[0;32m,-.[0m
+[0;34m        ___     __   __   __   ___     [0;32m/,-._.--~'[0m
+[0;34m  |\ | |__  __ /  ` /  \ |__) |__         [0;33m}  {[0m
+[0;34m  | \| |       \__, \__/ |  \ |___     [0;32m\`-._,-`-,[0m
+                                        [0;32m`._,._,'[0m
+[0;35m  nf-core/ampliseq 2.13.0dev[0m
+-[2m----------------------------------------------------[0m-
+[1mMain arguments[0m
+  [0;34minput                     : [0;32mhttps://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/samplesheets/Samplesheet.tsv[0m
+  [0;34mFW_primer                 : [0;32mGTGYCAGCMGCCGCGGTAA[0m
+  [0;34mRV_primer                 : [0;32mGGACTACNVGGGTWTCTAAT[0m
+  [0;34mmetadata                  : [0;32mhttps://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/samplesheets/Metadata.tsv[0m
+  [0;34moutdir                    : [0;32m/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/output[0m
+
+[1mASV post processing[0m
+  [0;34mfilter_ssu                : [0;32mbac[0m
+
+[1mTaxonomic database[0m
+  [0;34mqiime_ref_taxonomy        : [0;32mgreengenes85[0m
+
+[1mASV filtering[0m
+  [0;34mmin_frequency             : [0;32m10[0m
+  [0;34mmin_samples               : [0;32m2[0m
+
+[1mDownstream analysis[0m
+  [0;34mtax_agglom_min            : [0;32m1[0m
+  [0;34mtax_agglom_max            : [0;32m3[0m
+
+[1mDifferential abundance analysis[0m
+  [0;34mancombc_effect_size       : [0;32m1[0m
+
+[1mPipeline summary report[0m
+  [0;34mreport_template           : [0;32m/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/assets/report_template.Rmd[0m
+  [0;34mreport_css                : [0;32m/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/assets/nf-core_style.css[0m
+  [0;34mreport_logo               : [0;32m/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/assets/nf-core-ampliseq_logo_light_long.png[0m
+
+[1mSkipping specific steps[0m
+  [0;34mskip_fastqc               : [0;32mtrue[0m
+  [0;34mskip_qiime                : [0;32mtrue[0m
+  [0;34mskip_dada_taxonomy        : [0;32mtrue[0m
+  [0;34mskip_alpha_rarefaction    : [0;32mtrue[0m
+
+[1mInstitutional config options[0m
+  [0;34mconfig_profile_name       : [0;32mTest profile[0m
+  [0;34mconfig_profile_description: [0;32mMinimal test dataset to check pipeline function[0m
+
+[1mOther parameters[0m
+  [0;34mpplace_sheet              : [0;32mhttps://raw.githubusercontent.com/erikrikarddaniel/test-datasets/phyloplace/testdata/phylosearch_input.csv[0m
+
+[1mCore Nextflow options[0m
+  [0;34mrunName                   : [0;32mmighty_gates[0m
+  [0;34mcontainerEngine           : [0;32msingularity[0m
+  [0;34mlaunchDir                 : [0;32m/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a[0m
+  [0;34mworkDir                   : [0;32m/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work[0m
+  [0;34mprojectDir                : [0;32m/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq[0m
+  [0;34muserName                  : [0;32mddl[0m
+  [0;34mprofile                   : [0;32mtest_pplace_hmmsearch,singularity[0m
+  [0;34mconfigFiles               : [0;32m[0m
+
+!! Only displaying parameters that differ from the pipeline defaults !!
+-[2m----------------------------------------------------[0m-* The pipeline
+  https://doi.org/10.5281/zenodo.1493841
+  https://doi.org/10.3389/fmicb.2020.550420
+
+* The nf-core framework
+    https://doi.org/10.1038/s41587-020-0439-x
+
+* Software dependencies
+    https://github.com/nf-core/ampliseq/blob/master/CITATIONS.md
+
+Jan-21 15:44:46.623 [main] DEBUG nextflow.validation.SchemaValidator - Starting parameters validation
+Jan-21 15:44:47.426 [main] DEBUG nextflow.validation.SchemaEvaluator - Started validating /nf-core/test-datasets/ampliseq/samplesheets/Samplesheet.tsv
+Jan-21 15:44:47.925 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1a_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:48.172 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1a_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:48.242 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1a_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:48.297 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1a_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:48.485 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1a_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:48.657 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1a_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:48.682 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1a_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:48.711 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1a_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:48.928 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:49.103 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:49.131 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:49.154 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:49.333 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:49.507 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:49.538 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:49.557 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:49.743 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2a_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:49.928 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2a_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:49.949 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2a_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:49.970 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2a_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:50.176 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2a_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:50.356 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2a_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:50.379 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2a_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:50.402 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2a_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:50.627 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:50.806 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:50.827 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:50.846 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:51.024 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:51.185 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:51.209 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:51.227 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:51.248 [main] DEBUG nextflow.validation.SchemaEvaluator - Validation of file 'https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/samplesheets/Samplesheet.tsv' passed!
+Jan-21 15:44:51.284 [main] DEBUG nextflow.validation.SchemaValidator - Finishing parameters validation
+Jan-21 15:44:51.377 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1a_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:51.386 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1a_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:51.405 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1a_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:51.426 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1a_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:51.446 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1a_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:51.573 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1a_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:51.591 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1a_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:51.609 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1a_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:51.631 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:51.649 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:51.667 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:51.683 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:51.700 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:51.716 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:51.732 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:51.749 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:51.777 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2a_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:51.793 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2a_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:51.810 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2a_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:51.840 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2a_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:51.858 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2a_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:51.875 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2a_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:51.891 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2a_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:51.912 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2a_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:51.932 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:51.950 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:51.970 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:51.990 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:52.011 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:52.030 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:52.048 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:52.065 [main] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:52.325 [main] WARN  n.validation.SamplesheetConverter - Found the following unidentified headers in /erikrikarddaniel/test-datasets/phyloplace/testdata/phylosearch_input.csv:
+	- align_hmm
+	- align_extract_hmm
+Jan-21 15:44:52.631 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name NFCORE_AMPLISEQ:AMPLISEQ:RENAME_RAW_DATA_FILES
+Jan-21 15:44:52.638 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:RENAME_RAW_DATA_FILES` matches process NFCORE_AMPLISEQ:AMPLISEQ:RENAME_RAW_DATA_FILES
+Jan-21 15:44:52.661 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:52.661 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:52.701 [main] DEBUG nextflow.executor.Executor - [warm up] executor > local
+Jan-21 15:44:52.775 [main] DEBUG n.processor.LocalPollingMonitor - Creating local task monitor for executor 'local' > cpus=256; memory=503.5 GB; capacity=256; pollInterval=100ms; dumpInterval=5m
+Jan-21 15:44:52.782 [main] DEBUG n.processor.TaskPollingMonitor - >>> barrier register (monitor: local)
+Jan-21 15:44:52.997 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_medium` matches labels `process_medium` for process with name NFCORE_AMPLISEQ:AMPLISEQ:CUTADAPT_WORKFLOW:CUTADAPT_BASIC
+Jan-21 15:44:53.002 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:CUTADAPT_BASIC` matches process NFCORE_AMPLISEQ:AMPLISEQ:CUTADAPT_WORKFLOW:CUTADAPT_BASIC
+Jan-21 15:44:53.013 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:53.013 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:53.066 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name NFCORE_AMPLISEQ:AMPLISEQ:CUTADAPT_WORKFLOW:CUTADAPT_SUMMARY_STD
+Jan-21 15:44:53.077 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:53.077 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:53.094 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name NFCORE_AMPLISEQ:AMPLISEQ:CUTADAPT_WORKFLOW:CUTADAPT_SUMMARY_MERGE
+Jan-21 15:44:53.096 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:CUTADAPT_SUMMARY_MERGE` matches process NFCORE_AMPLISEQ:AMPLISEQ:CUTADAPT_WORKFLOW:CUTADAPT_SUMMARY_MERGE
+Jan-21 15:44:53.104 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:53.104 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:53.163 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:DADA2_QUALITY1
+Jan-21 15:44:53.166 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:DADA2_QUALITY1` matches process NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:DADA2_QUALITY1
+Jan-21 15:44:53.173 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:53.173 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:53.317 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:TRUNCLEN
+Jan-21 15:44:53.319 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:TRUNCLEN` matches process NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:TRUNCLEN
+Jan-21 15:44:53.335 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:53.336 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:53.417 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_medium` matches labels `process_medium` for process with name NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:DADA2_FILTNTRIM
+Jan-21 15:44:53.418 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:DADA2_FILTNTRIM` matches process NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:DADA2_FILTNTRIM
+Jan-21 15:44:53.427 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:53.427 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:53.486 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:DADA2_QUALITY2
+Jan-21 15:44:53.489 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:DADA2_QUALITY2` matches process NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:DADA2_QUALITY2
+Jan-21 15:44:53.495 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:53.495 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:53.538 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_medium` matches labels `process_medium` for process with name NFCORE_AMPLISEQ:AMPLISEQ:DADA2_ERR
+Jan-21 15:44:53.540 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:DADA2_ERR` matches process NFCORE_AMPLISEQ:AMPLISEQ:DADA2_ERR
+Jan-21 15:44:53.548 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:53.548 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:53.601 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_medium` matches labels `process_medium,process_long` for process with name NFCORE_AMPLISEQ:AMPLISEQ:DADA2_DENOISING
+Jan-21 15:44:53.602 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_long` matches labels `process_medium,process_long` for process with name NFCORE_AMPLISEQ:AMPLISEQ:DADA2_DENOISING
+Jan-21 15:44:53.603 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:DADA2_DENOISING` matches process NFCORE_AMPLISEQ:AMPLISEQ:DADA2_DENOISING
+Jan-21 15:44:53.609 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:53.609 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:53.624 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_medium` matches labels `process_medium` for process with name NFCORE_AMPLISEQ:AMPLISEQ:DADA2_RMCHIMERA
+Jan-21 15:44:53.626 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:DADA2_RMCHIMERA` matches process NFCORE_AMPLISEQ:AMPLISEQ:DADA2_RMCHIMERA
+Jan-21 15:44:53.632 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:53.632 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:53.660 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name NFCORE_AMPLISEQ:AMPLISEQ:DADA2_STATS
+Jan-21 15:44:53.661 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:DADA2_STATS` matches process NFCORE_AMPLISEQ:AMPLISEQ:DADA2_STATS
+Jan-21 15:44:53.666 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:53.667 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:53.688 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name NFCORE_AMPLISEQ:AMPLISEQ:DADA2_MERGE
+Jan-21 15:44:53.689 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:DADA2_MERGE` matches process NFCORE_AMPLISEQ:AMPLISEQ:DADA2_MERGE
+Jan-21 15:44:53.695 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:53.695 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:53.709 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name NFCORE_AMPLISEQ:AMPLISEQ:MERGE_STATS_STD
+Jan-21 15:44:53.712 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:MERGE_STATS_STD|MERGE_STATS_FILTERSSU|MERGE_STATS_FILTERTAXA|MERGE_STATS_CODONS` matches process NFCORE_AMPLISEQ:AMPLISEQ:MERGE_STATS_STD
+Jan-21 15:44:53.716 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:53.716 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:53.731 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name NFCORE_AMPLISEQ:AMPLISEQ:BARRNAP
+Jan-21 15:44:53.732 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:BARRNAP` matches process NFCORE_AMPLISEQ:AMPLISEQ:BARRNAP
+Jan-21 15:44:53.737 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:53.737 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:53.751 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_single` matches labels `process_single` for process with name NFCORE_AMPLISEQ:AMPLISEQ:BARRNAPSUMMARY
+Jan-21 15:44:53.752 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:BARRNAPSUMMARY` matches process NFCORE_AMPLISEQ:AMPLISEQ:BARRNAPSUMMARY
+Jan-21 15:44:53.757 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:53.757 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:53.775 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name NFCORE_AMPLISEQ:AMPLISEQ:FILTER_SSU
+Jan-21 15:44:53.776 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:FILTER_SSU` matches process NFCORE_AMPLISEQ:AMPLISEQ:FILTER_SSU
+Jan-21 15:44:53.780 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:53.780 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:53.790 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name NFCORE_AMPLISEQ:AMPLISEQ:MERGE_STATS_FILTERSSU
+Jan-21 15:44:53.793 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:MERGE_STATS_STD|MERGE_STATS_FILTERSSU|MERGE_STATS_FILTERTAXA|MERGE_STATS_CODONS` matches process NFCORE_AMPLISEQ:AMPLISEQ:MERGE_STATS_FILTERSSU
+Jan-21 15:44:53.797 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:53.797 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:53.826 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_single` matches labels `process_single` for process with name NFCORE_AMPLISEQ:AMPLISEQ:HMMER_HMMEXTRACT
+Jan-21 15:44:53.832 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:53.832 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:53.863 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_medium` matches labels `process_medium` for process with name NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMSEARCH
+Jan-21 15:44:53.864 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:HMMER_HMMSEARCH` matches process NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMSEARCH
+Jan-21 15:44:53.869 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:53.870 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:53.891 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_medium` matches labels `process_medium` for process with name NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMRANK
+Jan-21 15:44:53.897 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:53.897 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:53.903 [main] WARN  nextflow.extension.OperatorImpl - The operator `first` is useless when applied to a value channel which returns a single value by definition
+Jan-21 15:44:54.040 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_single` matches labels `process_single` for process with name NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:SEQTK_SUBSEQ
+Jan-21 15:44:54.046 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:54.046 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:54.085 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:HMMER_HMMBUILD
+Jan-21 15:44:54.086 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:HMMER_HMMBUILD` matches process NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:HMMER_HMMBUILD
+Jan-21 15:44:54.091 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:54.091 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:54.124 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_single` matches labels `process_single` for process with name NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:HMMER_UNALIGNREF
+Jan-21 15:44:54.126 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:HMMER_UNALIGNREF` matches process NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:HMMER_UNALIGNREF
+Jan-21 15:44:54.130 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:54.130 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:54.167 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_single` matches labels `process_single` for process with name NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:HMMER_HMMALIGNREF
+Jan-21 15:44:54.169 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:HMMER_HMMALIGNREF` matches process NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:HMMER_HMMALIGNREF
+Jan-21 15:44:54.174 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:54.174 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:54.199 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_single` matches labels `process_single` for process with name NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:HMMER_HMMALIGNQUERY
+Jan-21 15:44:54.202 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:HMMER_HMMALIGNQUERY` matches process NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:HMMER_HMMALIGNQUERY
+Jan-21 15:44:54.206 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:54.206 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:54.228 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_single` matches labels `process_single` for process with name NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:HMMER_MASKREF
+Jan-21 15:44:54.230 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:HMMER_MASK.*` matches process NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:HMMER_MASKREF
+Jan-21 15:44:54.231 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:HMMER_MASKREF.*` matches process NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:HMMER_MASKREF
+Jan-21 15:44:54.235 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:54.235 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:54.253 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_single` matches labels `process_single` for process with name NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:HMMER_MASKQUERY
+Jan-21 15:44:54.255 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:HMMER_MASK.*` matches process NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:HMMER_MASKQUERY
+Jan-21 15:44:54.256 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:HMMER_MASKQUERY.*` matches process NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:HMMER_MASKQUERY
+Jan-21 15:44:54.262 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:54.262 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:54.274 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_single` matches labels `process_single` for process with name NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:HMMER_AFAFORMATREF
+Jan-21 15:44:54.276 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:HMMER_AFAFORMATREF.*` matches process NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:HMMER_AFAFORMATREF
+Jan-21 15:44:54.279 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:54.280 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:54.288 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_single` matches labels `process_single` for process with name NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:HMMER_AFAFORMATQUERY
+Jan-21 15:44:54.290 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:HMMER_AFAFORMATQUERY.*` matches process NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:HMMER_AFAFORMATQUERY
+Jan-21 15:44:54.293 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:54.293 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:54.319 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_medium` matches labels `process_medium` for process with name NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:CLUSTALO_ALIGN
+Jan-21 15:44:54.325 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:54.325 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:54.350 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_single` matches labels `process_single` for process with name NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:EPANG_SPLIT_CLUSTALO
+Jan-21 15:44:54.355 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:54.355 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:54.376 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_high` matches labels `process_high` for process with name NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:MAFFT_ALIGN
+Jan-21 15:44:54.381 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:54.381 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:54.404 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_single` matches labels `process_single` for process with name NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:EPANG_SPLIT_MAFFT
+Jan-21 15:44:54.408 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:54.408 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:54.447 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_high` matches labels `process_high` for process with name NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:EPANG_PLACE
+Jan-21 15:44:54.448 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:EPANG_PLACE` matches process NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:EPANG_PLACE
+Jan-21 15:44:54.452 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:54.452 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:54.469 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:GAPPA_GRAFT
+Jan-21 15:44:54.470 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:GAPPA_GRAFT` matches process NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:GAPPA_GRAFT
+Jan-21 15:44:54.473 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:54.474 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:54.497 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_medium` matches labels `process_medium` for process with name NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:GAPPA_ASSIGN
+Jan-21 15:44:54.498 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:GAPPA_ASSIGN` matches process NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:GAPPA_ASSIGN
+Jan-21 15:44:54.503 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:54.503 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:54.527 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:GAPPA_HEATTREE
+Jan-21 15:44:54.529 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:GAPPA_HEATTREE` matches process NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:GAPPA_HEATTREE
+Jan-21 15:44:54.534 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:54.534 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:54.551 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_high` matches labels `process_high` for process with name NFCORE_AMPLISEQ:AMPLISEQ:FORMAT_PPLACETAX
+Jan-21 15:44:54.552 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:FORMAT_PPLACETAX` matches process NFCORE_AMPLISEQ:AMPLISEQ:FORMAT_PPLACETAX
+Jan-21 15:44:54.555 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:54.555 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:54.562 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name NFCORE_AMPLISEQ:AMPLISEQ:PHYLOSEQ_INTAX_PPLACE
+Jan-21 15:44:54.566 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:54.566 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:54.590 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name NFCORE_AMPLISEQ:AMPLISEQ:ROBJECT_WORKFLOW:PHYLOSEQ
+Jan-21 15:44:54.592 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:PHYLOSEQ` matches process NFCORE_AMPLISEQ:AMPLISEQ:ROBJECT_WORKFLOW:PHYLOSEQ
+Jan-21 15:44:54.595 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:54.595 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:54.615 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name NFCORE_AMPLISEQ:AMPLISEQ:ROBJECT_WORKFLOW:TREESUMMARIZEDEXPERIMENT
+Jan-21 15:44:54.617 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:TREESUMMARIZEDEXPERIMENT` matches process NFCORE_AMPLISEQ:AMPLISEQ:ROBJECT_WORKFLOW:TREESUMMARIZEDEXPERIMENT
+Jan-21 15:44:54.619 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:54.620 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:54.773 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_single` matches labels `process_single` for process with name NFCORE_AMPLISEQ:AMPLISEQ:MULTIQC
+Jan-21 15:44:54.775 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:MULTIQC` matches process NFCORE_AMPLISEQ:AMPLISEQ:MULTIQC
+Jan-21 15:44:54.778 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:54.779 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:54.877 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withLabel:process_low` matches labels `process_low` for process with name NFCORE_AMPLISEQ:AMPLISEQ:SUMMARY_REPORT
+Jan-21 15:44:54.879 [main] DEBUG nextflow.script.ProcessConfig - Config settings `withName:SUMMARY_REPORT` matches process NFCORE_AMPLISEQ:AMPLISEQ:SUMMARY_REPORT
+Jan-21 15:44:54.884 [main] DEBUG nextflow.executor.ExecutorFactory - << taskConfig executor: null
+Jan-21 15:44:54.884 [main] DEBUG nextflow.executor.ExecutorFactory - >> processorType: 'local'
+Jan-21 15:44:55.031 [main] DEBUG nextflow.Session - Config process names validation disabled as requested
+Jan-21 15:44:55.033 [main] DEBUG nextflow.Session - Igniting dataflow network (85)
+Jan-21 15:44:55.125 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:RENAME_RAW_DATA_FILES
+Jan-21 15:44:55.127 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:CUTADAPT_WORKFLOW:CUTADAPT_BASIC
+Jan-21 15:44:55.127 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:CUTADAPT_WORKFLOW:CUTADAPT_SUMMARY_STD
+Jan-21 15:44:55.128 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:CUTADAPT_WORKFLOW:CUTADAPT_SUMMARY_MERGE
+Jan-21 15:44:55.130 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:DADA2_QUALITY1
+Jan-21 15:44:55.130 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:TRUNCLEN
+Jan-21 15:44:55.130 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:DADA2_FILTNTRIM
+Jan-21 15:44:55.130 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:DADA2_QUALITY2
+Jan-21 15:44:55.130 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:DADA2_ERR
+Jan-21 15:44:55.130 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:DADA2_DENOISING
+Jan-21 15:44:55.141 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:DADA2_RMCHIMERA
+Jan-21 15:44:55.142 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:DADA2_STATS
+Jan-21 15:44:55.142 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:DADA2_MERGE
+Jan-21 15:44:55.146 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:MERGE_STATS_STD
+Jan-21 15:44:55.147 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:BARRNAP
+Jan-21 15:44:55.153 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:BARRNAPSUMMARY
+Jan-21 15:44:55.155 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:FILTER_SSU
+Jan-21 15:44:55.157 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:MERGE_STATS_FILTERSSU
+Jan-21 15:44:55.162 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:HMMER_HMMEXTRACT
+Jan-21 15:44:55.163 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMSEARCH
+Jan-21 15:44:55.166 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMRANK
+Jan-21 15:44:55.167 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:SEQTK_SUBSEQ
+Jan-21 15:44:55.167 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:HMMER_HMMBUILD
+Jan-21 15:44:55.167 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:HMMER_UNALIGNREF
+Jan-21 15:44:55.167 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:HMMER_HMMALIGNREF
+Jan-21 15:44:55.167 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:HMMER_HMMALIGNQUERY
+Jan-21 15:44:55.167 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:HMMER_MASKREF
+Jan-21 15:44:55.167 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:HMMER_MASKQUERY
+Jan-21 15:44:55.168 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:HMMER_AFAFORMATREF
+Jan-21 15:44:55.168 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:HMMER_AFAFORMATQUERY
+Jan-21 15:44:55.168 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:CLUSTALO_ALIGN
+Jan-21 15:44:55.168 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:EPANG_SPLIT_CLUSTALO
+Jan-21 15:44:55.169 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:MAFFT_ALIGN
+Jan-21 15:44:55.169 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:EPANG_SPLIT_MAFFT
+Jan-21 15:44:55.169 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:EPANG_PLACE
+Jan-21 15:44:55.169 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:GAPPA_GRAFT
+Jan-21 15:44:55.170 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:GAPPA_ASSIGN
+Jan-21 15:44:55.170 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:GAPPA_HEATTREE
+Jan-21 15:44:55.170 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:FORMAT_PPLACETAX
+Jan-21 15:44:55.170 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:PHYLOSEQ_INTAX_PPLACE
+Jan-21 15:44:55.170 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:ROBJECT_WORKFLOW:PHYLOSEQ
+Jan-21 15:44:55.170 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:ROBJECT_WORKFLOW:TREESUMMARIZEDEXPERIMENT
+Jan-21 15:44:55.172 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:MULTIQC
+Jan-21 15:44:55.175 [main] DEBUG nextflow.processor.TaskProcessor - Starting process > NFCORE_AMPLISEQ:AMPLISEQ:SUMMARY_REPORT
+Jan-21 15:44:55.191 [main] DEBUG nextflow.script.ScriptRunner - Parsed script files:
+  Script_99481774c13d9aeb: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/dada2_denoising.nf
+  Script_90f6d581541b4fd7: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/sidle_seqrecon.nf
+  Script_f289bdfe26d7f1cf: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/nf-core/fastqc/main.nf
+  Script_f1a7b5136d3a5deb: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/nf-core/fasta_newick_epang_gappa/../../../modules/nf-core/gappa/examinegraft/main.nf
+  Script_0b121547bd4877e8: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/qiime2_barplot.nf
+  Script_8d6e3326db3d9a13: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/nf-core/fasta_newick_epang_gappa/../../../modules/nf-core/gappa/examineassign/main.nf
+  Script_36a52a13b215bb20: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/nf-core/fasta_newick_epang_gappa/../../../modules/nf-core/epang/place/main.nf
+  Script_21f45535e68e9591: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/parse_input.nf
+  Script_611c8ac139105260: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/nf-core/fasta_newick_epang_gappa/main.nf
+  Script_1ca195df20024253: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/sidle_treerecon.nf
+  Script_42447513ede49365: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/sidle_indbaligned.nf
+  Script_5729c854db3bca08: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/nf-core/fasta_newick_epang_gappa/../../../modules/nf-core/mafft/align/main.nf
+  Script_9a7ddd92b14d6a45: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/filter_len.nf
+  Script_4955288afd8ca61e: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/nf-core/multiqc/main.nf
+  Script_6fbcf8477f9d7d4c: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../subworkflows/local/utils_nfcore_ampliseq_pipeline/../../nf-core/utils_nfcore_pipeline/main.nf
+  Script_a905a6ee23f4721e: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/sbdiexport.nf
+  Script_0cff471a1f7e36e7: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/dada2_stats.nf
+  Script_d04b39f6190c52fd: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./subworkflows/local/utils_nfcore_ampliseq_pipeline/main.nf
+  Script_569f02526d6d49eb: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/cutadapt_workflow.nf
+  Script_0e4e3952b8aab3db: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/metadata_pairwise.nf
+  Script_d1832e11b9029ac2: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/format_taxresults_sintax.nf
+  Script_4535271fac46f9d8: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/qiime2_filtersamples.nf
+  Script_bc377a5eab4d07dc: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/sidle_indb.nf
+  Script_57b024c7a3da6a5e: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/summary_report.nf
+  Script_7ca044612585a3ee: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/sidle_taxrecon.nf
+  Script_5a7a67a92ad637b6: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/filter_stats.nf
+  Script_a580e4f1dd855151: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/merge_stats.nf
+  Script_5394932f46545993: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/qiime2_alphararefaction.nf
+  Script_7d6dde484d205a2d: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/qiime2_taxonomy.nf
+  Script_2388659803e1fbf6: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/nf-core/fasta_newick_epang_gappa/../../../modules/nf-core/clustalo/align/main.nf
+  Script_ae20b6a01f696302: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/sidle_dbextract.nf
+  Script_23db7d3b1a99bdb8: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/nf-core/fasta_newick_epang_gappa/../../../modules/nf-core/hmmer/hmmalign/main.nf
+  Script_0ce72e734ad77725: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./subworkflows/local/utils_nfcore_ampliseq_pipeline/../../nf-core/utils_nextflow_pipeline/main.nf
+  Script_6c172a154832c9db: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/qiime2_diversity.nf
+  Script_3118a7a5113b8fe3: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/qiime2_inasv.nf
+  Script_bd449ab9b1ea529b: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/phyloseq.nf
+  Script_601806ab66c19f62: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/format_taxonomy_qiime.nf
+  Script_746e118874a1cd9f: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/sidle_trim.nf
+  Script_16ef001ff5d07562: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/dada2_rmchimera.nf
+  Script_e644fb6da94d4bab: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/nf-core/untar/main.nf
+  Script_a8d8dd8dd41d074f: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/main.nf
+  Script_995a7cb3ac639633: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/nf-core/fasta_newick_epang_gappa/../../../modules/nf-core/hmmer/eslalimask/main.nf
+  Script_4068d0a3b5f17a23: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/dada2_filtntrim.nf
+  Script_37dd05118c905307: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/nf-core/cutadapt/main.nf
+  Script_23204ac6318f21a6: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/qiime2_ancombc_tax.nf
+  Script_4e7b002b5885eea9: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/phyloseq_inasv.nf
+  Script_80c31cb1ff3bd881: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/combine_table.nf
+  Script_ea058edbf079a39a: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/qiime2_diversity_core.nf
+  Script_0afb368009892724: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/qiime2_extract.nf
+  Script_d2c3aa9d408cd884: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/dada2_merge.nf
+  Script_c83a536e5ec8de8d: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/assignsh.nf
+  Script_5afb844b21788bab: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/picrust.nf
+  Script_042518d1a5640704: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/rename_raw_data_files.nf
+  Script_551db35f7a71c2c5: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/nf-core/vsearch/usearchglobal/main.nf
+  Script_77090ceba634ea38: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/itsx_cutasv.nf
+  Script_d446d6c3db1d9dbb: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/qiime2_featuretable_group.nf
+  Script_f2f280fbe822b7b3: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/format_taxonomy_sidle.nf
+  Script_7325837df6d21313: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/sidle_dbrecon.nf
+  Script_a2bc5c2c038216c2: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/sidle_dbfilt.nf
+  Script_f9df62d5ad0ac7f2: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/sidle_filttax.nf
+  Script_28db566cd9059922: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/nf-core/fasta_hmmsearch_rank_fastas/../../../modules/nf-core/seqtk/subseq/main.nf
+  Script_7791a0a7ea2bb0f9: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/qiime2_export_reltax.nf
+  Script_b898e4d412a95805: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/barrnapsummary.nf
+  Script_47c786cf43a64627: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/kraken2_taxonomy_wf.nf
+  Script_1a8cad150617c945: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/qiime2_diversity_adonis.nf
+  Script_6ae74f8ca422bc5d: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/robject_workflow.nf
+  Script_2729cc7527098759: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/metadata_all.nf
+  Script_98df39410de3958e: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/qiime2_inseq.nf
+  Script_ecde45584081a12d: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/format_taxresults.nf
+  Script_48e4afc7fa89795f: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/dada2_splitregions.nf
+  Script_dce39c57d746e873: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/dada2_taxonomy.nf
+  Script_cd133ca901baca08: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/qiime2_intree.nf
+  Script_0eb3912402269429: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/format_fastainput.nf
+  Script_7934d6fe061ca221: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/hmmextract.nf
+  Script_4c38d5d2d55fa2d0: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/qiime2_export_relasv.nf
+  Script_d99edd86ec5fd463: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/qiime2_seqfiltertable.nf
+  Script_3e1b64ac681f83ec: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/nf-core/vsearch/cluster/main.nf
+  Script_9363bec0c1ee940a: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/qiime2_diversity_beta.nf
+  Script_2538333b06911a18: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/qiime2_barplotavg.nf
+  Script_0fe55e5f17be85b4: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/filter_clusters.nf
+  Script_9281ff873b757730: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/treesummarizedexperiment.nf
+  Script_152e9906f4dc5cef: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/dada2_quality.nf
+  Script_c31751ec1b896950: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/cutadapt_summary_merge.nf
+  Script_891440a68088119a: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/nf-core/vsearch/sintax/main.nf
+  Script_f0051164a3c606a5: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/dada2_taxonomy_wf.nf
+  Script_2df6c23d3841faaa: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/qiime2_classify.nf
+  Script_88893ca43d546e06: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/nf-core/fasta_newick_epang_gappa/../../../modules/nf-core/epang/split/main.nf
+  Script_5379148f9afa3d4f: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/sintax_taxonomy_wf.nf
+  Script_3c1d4f49752899c0: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/phyloseq_intax.nf
+  Script_1055903c13160407: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/sidle_wf.nf
+  Script_cc3922f216d60538: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/filter_codons.nf
+  Script_6f8ff749f0866f00: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/novaseq_err.nf
+  Script_4eed20cd24035285: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/filter_ssu.nf
+  Script_9cba29e589285315: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/qiime2_ancombc_asv.nf
+  Script_755923d8f4af9c97: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/nf-core/fasta_hmmsearch_rank_fastas/main.nf
+  Script_cd515528f6089023: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/qiime2_preptax.nf
+  Script_68291a26eaaeed4d: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/format_taxonomy.nf
+  Script_b4f46c577a80128e: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/barrnap.nf
+  Script_215a636da7ab24a2: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/utils_nfcore_ampliseq_pipeline/../../nf-core/utils_nfschema_plugin/main.nf
+  Script_7780b14094823a21: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/nf-core/fasta_newick_epang_gappa/../../../modules/nf-core/hmmer/eslreformat/main.nf
+  Script_149c8f1a0a39b8b6: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/nf-core/kraken2/kraken2/main.nf
+  Script_e010b1481c750284: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/qiime2_ancom_asv.nf
+  Script_e7aea716964b5096: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/qiime2_export.nf
+  Script_323a05875ca0e144: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/dada2_preprocessing.nf
+  Script_0d70a182c4fbc2b1: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/ampliseq.nf
+  Script_2dea1cb9802c1091: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/dada2_addspecies.nf
+  Script_3412a3d86d51e8f0: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/sidle_align.nf
+  Script_de0574a490c24f02: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/format_taxonomy_sintax.nf
+  Script_0a0b96046a612566: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/qiime2_diversity_betaord.nf
+  Script_51ae3089998d3861: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/format_pplacetax.nf
+  Script_10b347658d044afc: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/cutadapt_summary.nf
+  Script_efe7bead49eba84c: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/qiime2_intax.nf
+  Script_bccdacc34e930bc6: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/nf-core/fasta_hmmsearch_rank_fastas/../../../modules/nf-core/hmmer/hmmsearch/main.nf
+  Script_685ab1e6b263cd07: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/sbdiexportreannotate.nf
+  Script_65d051ae79bf4800: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/qiime2_tree.nf
+  Script_c632a033e6d0d054: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/qiime2_export_absolute.nf
+  Script_3f1cc491c25fbe1b: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/format_taxresults_kraken2.nf
+  Script_e67541561a418848: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/trunclen.nf
+  Script_fca592e825ea5b92: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/qiime2_diversity_alpha.nf
+  Script_da6fe42db12cdb4b: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/sidle_in.nf
+  Script_810a971f4dfff0ad: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/nf-core/pigz/uncompress/main.nf
+  Script_04cb707c92307a81: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/nf-core/fasta_hmmsearch_rank_fastas/../../../modules/nf-core/hmmer/hmmrank/main.nf
+  Script_4d4292b3012f97f9: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/qiime2_tablefiltertaxa.nf
+  Script_670e1c1c49e27b81: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/nf-core/fasta_newick_epang_gappa/../../../modules/nf-core/hmmer/hmmbuild/main.nf
+  Script_52e7459e43e3c947: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../modules/local/dada2_err.nf
+  Script_2eda619f1b6b78f7: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/nf-core/fasta_newick_epang_gappa/../../../modules/nf-core/gappa/examineheattree/main.nf
+  Script_0d723031e9ddd1e1: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/qiime2_ancom_tax.nf
+  Script_f6e9864305d715f6: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/qiime2_train.nf
+  Script_256a109a311abd53: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/../../modules/local/sidle_tablerecon.nf
+  Script_a5fb8670e550bd8e: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/./workflows/../subworkflows/local/qiime2_ancom.nf
+Jan-21 15:44:55.193 [main] DEBUG nextflow.script.ScriptRunner - > Awaiting termination 
+Jan-21 15:44:55.193 [main] DEBUG nextflow.Session - Session await
+Jan-21 15:44:55.211 [Actor Thread 250] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1a_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:55.227 [Actor Thread 250] DEBUG nextflow.splitter.AbstractSplitter - Creating gzip splitter for: /nf-core/test-datasets/raw/ampliseq/testdata/1a_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:55.306 [Actor Thread 250] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1a_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:55.309 [Actor Thread 250] DEBUG nextflow.splitter.AbstractSplitter - Creating gzip splitter for: /nf-core/test-datasets/raw/ampliseq/testdata/1a_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:55.379 [Actor Thread 250] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:55.385 [Actor Thread 250] DEBUG nextflow.splitter.AbstractSplitter - Creating gzip splitter for: /nf-core/test-datasets/raw/ampliseq/testdata/1_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:55.454 [Actor Thread 250] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:55.460 [Actor Thread 250] DEBUG nextflow.splitter.AbstractSplitter - Creating gzip splitter for: /nf-core/test-datasets/raw/ampliseq/testdata/1_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:55.527 [Actor Thread 250] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2a_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:55.531 [Actor Thread 250] DEBUG nextflow.splitter.AbstractSplitter - Creating gzip splitter for: /nf-core/test-datasets/raw/ampliseq/testdata/2a_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:55.574 [Actor Thread 243] DEBUG nextflow.sort.BigSort - Sort completed -- entries: 1; slices: 1; internal sort time: 0.007 s; external sort time: 0.104 s; total time: 0.111 s
+Jan-21 15:44:55.574 [Actor Thread 257] DEBUG nextflow.sort.BigSort - Sort completed -- entries: 1; slices: 1; internal sort time: 0.007 s; external sort time: 0.104 s; total time: 0.111 s
+Jan-21 15:44:55.581 [Actor Thread 242] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1a_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:55.585 [Actor Thread 257] DEBUG nextflow.file.FileCollector - Saved collect-files list to: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/collect-file/e98065cb750108ee118732dadb3c4d13
+Jan-21 15:44:55.585 [Actor Thread 243] DEBUG nextflow.file.FileCollector - Saved collect-files list to: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/collect-file/f85ec12d3cdecc809821670bd73c859c
+Jan-21 15:44:55.611 [Actor Thread 257] DEBUG nextflow.file.FileCollector - Deleting file collector temp dir: /tmp/nxf-14681597762526020336
+Jan-21 15:44:55.611 [Actor Thread 243] DEBUG nextflow.file.FileCollector - Deleting file collector temp dir: /tmp/nxf-6373511875537732768
+Jan-21 15:44:55.621 [Actor Thread 241] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:55.634 [Actor Thread 250] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2a_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:55.637 [Actor Thread 250] DEBUG nextflow.splitter.AbstractSplitter - Creating gzip splitter for: /nf-core/test-datasets/raw/ampliseq/testdata/2a_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:55.640 [Actor Thread 251] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://presigned.s3.cloud.kth.se/scilifelab-datacentre-figshare1/47244067/sbdigtdbsativa.r09rs220.ar53.sprepr.alnfna?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=KMHK4V98D2R29HDPFASC/20250121/us-east-1/s3/aws4_request&X-Amz-Date=20250121T144455Z&X-Amz-Expires=10&X-Amz-SignedHeaders=host&X-Amz-Signature=b5c4e607670f8d1543708d9d9ee744e9cd7322ecbd151b9f0c536fce6ab4a55c
+Jan-21 15:44:55.676 [Actor Thread 242] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1a_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:55.701 [Actor Thread 250] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:55.703 [Actor Thread 241] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:55.704 [Actor Thread 250] DEBUG nextflow.splitter.AbstractSplitter - Creating gzip splitter for: /nf-core/test-datasets/raw/ampliseq/testdata/2_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:55.725 [Actor Thread 248] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2a_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:55.746 [Actor Thread 250] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:55.748 [FileTransfer-2] DEBUG nextflow.file.FilePorter - Copying foreign file https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/1_S103_L001_R1_001.fastq.gz to work dir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/stage-10399877-f300-421a-ac1d-0e2feb882f47/99/b26dcec19e5fd8e334e1ddcb17c496/1_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:55.748 [FileTransfer-1] DEBUG nextflow.file.FilePorter - Copying foreign file https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/1a_S103_L001_R1_001.fastq.gz to work dir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/stage-10399877-f300-421a-ac1d-0e2feb882f47/9f/85b28d3f40315e746ad28532807b85/1a_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:55.749 [Actor Thread 250] DEBUG nextflow.splitter.AbstractSplitter - Creating gzip splitter for: /nf-core/test-datasets/raw/ampliseq/testdata/2_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:55.749 [FileTransfer-3] DEBUG nextflow.file.FilePorter - Copying foreign file https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/1_S103_L001_R2_001.fastq.gz to work dir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/stage-10399877-f300-421a-ac1d-0e2feb882f47/1d/7178b3c6329a94ff2196b2868c9e5e/1_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:55.754 [Actor Thread 248] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2a_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:55.755 [FileTransfer-2] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:55.777 [FileTransfer-4] DEBUG nextflow.file.FilePorter - Copying foreign file https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/1a_S103_L001_R2_001.fastq.gz to work dir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/stage-10399877-f300-421a-ac1d-0e2feb882f47/b1/5dbda2c9595424932d0c0c7854d2ab/1a_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:55.779 [FileTransfer-3] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:55.780 [FileTransfer-6] DEBUG nextflow.file.FilePorter - Copying foreign file https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/2a_S115_L001_R2_001.fastq.gz to work dir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/stage-10399877-f300-421a-ac1d-0e2feb882f47/00/ab2c5d8063196ad27b22740277f808/2a_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:55.780 [FileTransfer-5] DEBUG nextflow.file.FilePorter - Copying foreign file https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/2a_S115_L001_R1_001.fastq.gz to work dir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/stage-10399877-f300-421a-ac1d-0e2feb882f47/bf/2d70ad71d94944bc3a96315bad0d82/2a_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:55.787 [FileTransfer-4] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1a_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:55.787 [FileTransfer-1] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1a_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:55.790 [FileTransfer-6] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2a_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:55.798 [FileTransfer-5] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2a_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:55.804 [FileTransfer-6] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2a_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:55.808 [Actor Thread 255] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:55.812 [FileTransfer-3] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:55.816 [FileTransfer-1] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1a_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:55.817 [FileTransfer-2] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1_S103_L001_R1_001.fastq.gz
+Jan-21 15:44:55.820 [FileTransfer-5] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2a_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:55.840 [FileTransfer-4] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/1a_S103_L001_R2_001.fastq.gz
+Jan-21 15:44:55.843 [Actor Thread 255] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:55.882 [FileTransfer-8] DEBUG nextflow.file.FilePorter - Copying foreign file https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/2_S115_L001_R2_001.fastq.gz to work dir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/stage-10399877-f300-421a-ac1d-0e2feb882f47/1e/c53c1fa5b8ee6c1c705edfddfdb045/2_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:55.882 [FileTransfer-7] DEBUG nextflow.file.FilePorter - Copying foreign file https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/2_S115_L001_R1_001.fastq.gz to work dir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/stage-10399877-f300-421a-ac1d-0e2feb882f47/47/2d4d7afa0f0f28635fa11a75ee96b6/2_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:55.888 [FileTransfer-8] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:55.893 [FileTransfer-7] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:55.905 [FileTransfer-8] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2_S115_L001_R2_001.fastq.gz
+Jan-21 15:44:55.916 [Actor Thread 251] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://presigned.s3.cloud.kth.se/scilifelab-datacentre-figshare1/47244070/sbdigtdbsativa.r09rs220.ar53.sprepr.brlenopt.newick?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=KMHK4V98D2R29HDPFASC/20250121/us-east-1/s3/aws4_request&X-Amz-Date=20250121T144455Z&X-Amz-Expires=10&X-Amz-SignedHeaders=host&X-Amz-Signature=a88fe11a42eda582cb73b535aba3aa62ede995cd3f12f66d83b54df5864e2a50
+Jan-21 15:44:55.916 [FileTransfer-7] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/testdata/2_S115_L001_R1_001.fastq.gz
+Jan-21 15:44:55.947 [Actor Thread 243] DEBUG nextflow.container.SingularityCache - Singularity found local store for image=https://depot.galaxyproject.org/singularity/ubuntu:20.04; path=/cfs/klemming/projects/snic/snic2020-16-76/data/singularity/depot.galaxyproject.org-singularity-ubuntu-20.04.img
+Jan-21 15:44:56.157 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:44:56.159 [Task submitter] INFO  nextflow.Session - [bd/68bf22] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:RENAME_RAW_DATA_FILES (sampleID_1)
+Jan-21 15:44:56.176 [Actor Thread 251] DEBUG n.file.http.XFileSystemProvider - Remote redirect location: https://presigned.s3.cloud.kth.se/scilifelab-datacentre-figshare1/47244058/sbdigtdbsativa.r09rs220.ar53.sprep.taxonomy.tsv?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=KMHK4V98D2R29HDPFASC/20250121/us-east-1/s3/aws4_request&X-Amz-Date=20250121T144456Z&X-Amz-Expires=10&X-Amz-SignedHeaders=host&X-Amz-Signature=d627e7a162792900c66fa9be131d5f1f14bac7521c8d7456437f4d9c71fbdd2a
+Jan-21 15:44:56.178 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:44:56.178 [Task submitter] INFO  nextflow.Session - [90/a4127e] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:RENAME_RAW_DATA_FILES (sampleID_1a)
+Jan-21 15:44:56.189 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:44:56.190 [Task submitter] INFO  nextflow.Session - [0b/e32264] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:RENAME_RAW_DATA_FILES (sampleID_2)
+Jan-21 15:44:56.199 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:44:56.200 [Task submitter] INFO  nextflow.Session - [b7/6293c2] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:RENAME_RAW_DATA_FILES (sampleID_2a)
+Jan-21 15:44:56.327 [FileTransfer-9] DEBUG nextflow.file.FilePorter - Copying foreign file https://raw.githubusercontent.com/tseemann/barrnap/master/db/arc.hmm to work dir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/stage-10399877-f300-421a-ac1d-0e2feb882f47/c8/29df41d0f8c7b8c92c3e13c4018355/arc.hmm
+Jan-21 15:44:56.359 [Actor Thread 255] DEBUG nextflow.container.SingularityCache - Singularity found local store for image=https://depot.galaxyproject.org/singularity/hmmer:3.3.2--h87f3376_2; path=/cfs/klemming/projects/snic/snic2020-16-76/data/singularity/depot.galaxyproject.org-singularity-hmmer-3.3.2--h87f3376_2.img
+Jan-21 15:44:56.378 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:44:56.379 [Task submitter] INFO  nextflow.Session - [70/3aa798] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:HMMER_HMMEXTRACT (arc)
+Jan-21 15:44:57.261 [FileTransfer-10] DEBUG nextflow.file.FilePorter - Copying foreign file https://raw.githubusercontent.com/tseemann/barrnap/master/db/bac.hmm to work dir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/stage-10399877-f300-421a-ac1d-0e2feb882f47/fa/10c17f6b0ad246d752725449a7c0b1/bac.hmm
+Jan-21 15:44:57.347 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:44:57.348 [Task submitter] INFO  nextflow.Session - [fe/204864] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:HMMER_HMMEXTRACT (bac16s)
+Jan-21 15:44:57.550 [FileTransfer-1] DEBUG nextflow.file.FilePorter - Copying foreign file https://raw.githubusercontent.com/tseemann/barrnap/master/db/euk.hmm to work dir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/stage-10399877-f300-421a-ac1d-0e2feb882f47/63/d6cc05f3ffc7152f0194a99cf4affd/euk.hmm
+Jan-21 15:44:57.635 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:44:57.636 [Task submitter] INFO  nextflow.Session - [2a/7fe29f] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:HMMER_HMMEXTRACT (euk18s)
+Jan-21 15:44:57.646 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:44:57.646 [Task submitter] INFO  nextflow.Session - [35/b5b4a4] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:HMMER_HMMEXTRACT (euk28s)
+Jan-21 15:44:58.880 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 6; name: NFCORE_AMPLISEQ:AMPLISEQ:HMMER_HMMEXTRACT (bac16s); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/fe/2048641c8458aafc1554deaa7e68f5]
+Jan-21 15:44:58.881 [Task monitor] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'TaskFinalizer' minSize=10; maxSize=768; workQueue=LinkedBlockingQueue[10000]; allowCoreThreadTimeout=false
+Jan-21 15:44:58.974 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 5; name: NFCORE_AMPLISEQ:AMPLISEQ:HMMER_HMMEXTRACT (arc); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/70/3aa79835115c865879056a0a506888]
+Jan-21 15:44:59.003 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 4; name: NFCORE_AMPLISEQ:AMPLISEQ:RENAME_RAW_DATA_FILES (sampleID_2); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/0b/e322646e83b0f8ea06d7770e6fc375]
+Jan-21 15:44:59.034 [Actor Thread 255] DEBUG nextflow.container.SingularityCache - Singularity found local store for image=https://depot.galaxyproject.org/singularity/cutadapt:4.6--py39hf95cd2a_1; path=/cfs/klemming/projects/snic/snic2020-16-76/data/singularity/depot.galaxyproject.org-singularity-cutadapt-4.6--py39hf95cd2a_1.img
+Jan-21 15:44:59.041 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 2; name: NFCORE_AMPLISEQ:AMPLISEQ:RENAME_RAW_DATA_FILES (sampleID_1); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/bd/68bf2241c1fe89845e0b4e38c126ba]
+Jan-21 15:44:59.057 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 7; name: NFCORE_AMPLISEQ:AMPLISEQ:HMMER_HMMEXTRACT (euk18s); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/2a/7fe29f8f3b288c0c26332372fedf54]
+Jan-21 15:44:59.070 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:44:59.071 [Task submitter] INFO  nextflow.Session - [c6/206aa4] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:CUTADAPT_WORKFLOW:CUTADAPT_BASIC (sampleID_2)
+Jan-21 15:44:59.093 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 8; name: NFCORE_AMPLISEQ:AMPLISEQ:HMMER_HMMEXTRACT (euk28s); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/35/b5b4a4973cf718c60e5e81502de89f]
+Jan-21 15:44:59.100 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:44:59.101 [Task submitter] INFO  nextflow.Session - [08/3382ba] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:CUTADAPT_WORKFLOW:CUTADAPT_BASIC (sampleID_1)
+Jan-21 15:44:59.154 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 1; name: NFCORE_AMPLISEQ:AMPLISEQ:RENAME_RAW_DATA_FILES (sampleID_1a); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/90/a4127eab4b3e41b776ffed2abc11c0]
+Jan-21 15:44:59.156 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 3; name: NFCORE_AMPLISEQ:AMPLISEQ:RENAME_RAW_DATA_FILES (sampleID_2a); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/b7/6293c2b092a9aab8e5818fb8895109]
+Jan-21 15:44:59.197 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:44:59.198 [Task submitter] INFO  nextflow.Session - [4c/f47f15] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:CUTADAPT_WORKFLOW:CUTADAPT_BASIC (sampleID_1a)
+Jan-21 15:44:59.207 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:44:59.207 [Task submitter] INFO  nextflow.Session - [c8/667f6b] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:CUTADAPT_WORKFLOW:CUTADAPT_BASIC (sampleID_2a)
+Jan-21 15:45:02.400 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 11; name: NFCORE_AMPLISEQ:AMPLISEQ:CUTADAPT_WORKFLOW:CUTADAPT_BASIC (sampleID_1a); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/4c/f47f15545843472040e129d2b674bf]
+Jan-21 15:45:02.413 [Actor Thread 242] DEBUG nextflow.splitter.AbstractSplitter - Creating gzip splitter for: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/4c/f47f15545843472040e129d2b674bf/sampleID_1a.trimmed_1.trim.fastq.gz
+Jan-21 15:45:02.420 [TaskFinalizer-9] DEBUG nextflow.util.ThreadPoolBuilder - Creating thread pool 'PublishDir' minSize=10; maxSize=768; workQueue=LinkedBlockingQueue[10000]; allowCoreThreadTimeout=false
+Jan-21 15:45:02.438 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 12; name: NFCORE_AMPLISEQ:AMPLISEQ:CUTADAPT_WORKFLOW:CUTADAPT_BASIC (sampleID_2a); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/c8/667f6b0f5fa2bd01e3f265b36ea3c6]
+Jan-21 15:45:02.442 [Actor Thread 242] DEBUG nextflow.splitter.AbstractSplitter - Creating gzip splitter for: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/4c/f47f15545843472040e129d2b674bf/sampleID_1a.trimmed_2.trim.fastq.gz
+Jan-21 15:45:02.462 [Actor Thread 242] DEBUG nextflow.splitter.AbstractSplitter - Creating gzip splitter for: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/c8/667f6b0f5fa2bd01e3f265b36ea3c6/sampleID_2a.trimmed_1.trim.fastq.gz
+Jan-21 15:45:02.479 [Actor Thread 242] DEBUG nextflow.splitter.AbstractSplitter - Creating gzip splitter for: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/c8/667f6b0f5fa2bd01e3f265b36ea3c6/sampleID_2a.trimmed_2.trim.fastq.gz
+Jan-21 15:45:02.547 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 9; name: NFCORE_AMPLISEQ:AMPLISEQ:CUTADAPT_WORKFLOW:CUTADAPT_BASIC (sampleID_2); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/c6/206aa416323e4069eaa459fec01c36]
+Jan-21 15:45:02.558 [Actor Thread 257] DEBUG nextflow.splitter.AbstractSplitter - Creating gzip splitter for: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/c6/206aa416323e4069eaa459fec01c36/sampleID_2.trimmed_1.trim.fastq.gz
+Jan-21 15:45:02.575 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 10; name: NFCORE_AMPLISEQ:AMPLISEQ:CUTADAPT_WORKFLOW:CUTADAPT_BASIC (sampleID_1); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/08/3382baa8dd1d0a424a452c412768b7]
+Jan-21 15:45:02.579 [Actor Thread 257] DEBUG nextflow.splitter.AbstractSplitter - Creating gzip splitter for: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/c6/206aa416323e4069eaa459fec01c36/sampleID_2.trimmed_2.trim.fastq.gz
+Jan-21 15:45:02.609 [Actor Thread 257] DEBUG nextflow.splitter.AbstractSplitter - Creating gzip splitter for: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/08/3382baa8dd1d0a424a452c412768b7/sampleID_1.trimmed_1.trim.fastq.gz
+Jan-21 15:45:02.610 [Actor Thread 250] DEBUG nextflow.container.SingularityCache - Singularity found local store for image=https://depot.galaxyproject.org/singularity/python:3.8.3; path=/cfs/klemming/projects/snic/snic2020-16-76/data/singularity/depot.galaxyproject.org-singularity-python-3.8.3.img
+Jan-21 15:45:02.624 [Actor Thread 257] DEBUG nextflow.splitter.AbstractSplitter - Creating gzip splitter for: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/08/3382baa8dd1d0a424a452c412768b7/sampleID_1.trimmed_2.trim.fastq.gz
+Jan-21 15:45:02.627 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:45:02.627 [Task submitter] INFO  nextflow.Session - [58/d6a089] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:CUTADAPT_WORKFLOW:CUTADAPT_SUMMARY_STD (cutadapt_standard)
+Jan-21 15:45:02.652 [Actor Thread 255] DEBUG nextflow.container.SingularityCache - Singularity found local store for image=https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.30.0--r43hf17093f_0; path=/cfs/klemming/projects/snic/snic2020-16-76/data/singularity/depot.galaxyproject.org-singularity-bioconductor-dada2-1.30.0--r43hf17093f_0.img
+Jan-21 15:45:02.671 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:45:02.671 [Task submitter] INFO  nextflow.Session - [53/0cf296] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:DADA2_QUALITY1 (FW)
+Jan-21 15:45:02.680 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:45:02.680 [Task submitter] INFO  nextflow.Session - [0f/407881] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:DADA2_QUALITY1 (RV)
+Jan-21 15:45:08.092 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 13; name: NFCORE_AMPLISEQ:AMPLISEQ:CUTADAPT_WORKFLOW:CUTADAPT_SUMMARY_STD (cutadapt_standard); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/58/d6a089ec891ff8923ad3bb3ff67c32]
+Jan-21 15:45:08.140 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:45:08.149 [Task submitter] INFO  nextflow.Session - [57/f5bd5a] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:CUTADAPT_WORKFLOW:CUTADAPT_SUMMARY_MERGE (cutadapt_standard_summary.tsv)
+Jan-21 15:45:13.254 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 16; name: NFCORE_AMPLISEQ:AMPLISEQ:CUTADAPT_WORKFLOW:CUTADAPT_SUMMARY_MERGE (cutadapt_standard_summary.tsv); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/57/f5bd5aa994cf6b1c908f884214648e]
+Jan-21 15:45:13.257 [TaskFinalizer-4] DEBUG nextflow.processor.TaskProcessor - Process `NFCORE_AMPLISEQ:AMPLISEQ:CUTADAPT_WORKFLOW:CUTADAPT_SUMMARY_MERGE (cutadapt_standard_summary.tsv)` is unable to find [UnixPath]: `/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/57/f5bd5aa994cf6b1c908f884214648e/versions.yml` (pattern: `versions.yml`)
+Jan-21 15:45:13.582 [TaskFinalizer-4] DEBUG nextflow.processor.TaskProcessor - Process NFCORE_AMPLISEQ:AMPLISEQ:CUTADAPT_WORKFLOW:CUTADAPT_SUMMARY_MERGE > Skipping output binding because one or more optional files are missing: fileoutparam<1>
+Jan-21 15:45:33.517 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 15; name: NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:DADA2_QUALITY1 (FW); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/53/0cf2968a9acd6fae7ee7ace9ab26bb]
+Jan-21 15:45:33.622 [Actor Thread 250] DEBUG nextflow.container.SingularityCache - Singularity found local store for image=https://depot.galaxyproject.org/singularity/pandas:1.1.5; path=/cfs/klemming/projects/snic/snic2020-16-76/data/singularity/depot.galaxyproject.org-singularity-pandas-1.1.5.img
+Jan-21 15:45:33.729 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:45:33.730 [Task submitter] INFO  nextflow.Session - [3d/77a814] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:TRUNCLEN (FW)
+Jan-21 15:45:33.961 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 14; name: NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:DADA2_QUALITY1 (RV); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/0f/407881c04b60de989ad5663c12b202]
+Jan-21 15:45:34.005 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:45:34.006 [Task submitter] INFO  nextflow.Session - [0d/6e66e7] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:TRUNCLEN (RV)
+Jan-21 15:45:39.666 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 18; name: NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:TRUNCLEN (RV); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/0d/6e66e74a039b7378d00560c795e5bb]
+Jan-21 15:45:40.726 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 17; name: NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:TRUNCLEN (FW); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/3d/77a8146b9881c11a7f823331c7ea96]
+Jan-21 15:45:40.917 [Actor Thread 242] WARN  nextflow.Nextflow - Probably everything is fine, but this is a reminder that `--trunclenf` was set automatically to 230 and `--trunclenr` to 229. If this doesnt seem reasonable, then please change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr` directly.
+Jan-21 15:45:40.943 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:45:40.944 [Task submitter] INFO  nextflow.Session - [4c/828f96] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:DADA2_FILTNTRIM (sampleID_1a)
+Jan-21 15:45:40.964 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:45:40.965 [Task submitter] INFO  nextflow.Session - [60/44de44] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:DADA2_FILTNTRIM (sampleID_2a)
+Jan-21 15:45:40.979 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:45:40.980 [Task submitter] INFO  nextflow.Session - [47/05ca57] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:DADA2_FILTNTRIM (sampleID_2)
+Jan-21 15:45:40.991 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:45:40.992 [Task submitter] INFO  nextflow.Session - [91/77b07a] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:DADA2_FILTNTRIM (sampleID_1)
+Jan-21 15:46:00.454 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 22; name: NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:DADA2_FILTNTRIM (sampleID_1); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/91/77b07a6c0ef4c7b98fa0e49fb0cb10]
+Jan-21 15:46:00.468 [Actor Thread 255] DEBUG nextflow.splitter.AbstractSplitter - Creating gzip splitter for: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/91/77b07a6c0ef4c7b98fa0e49fb0cb10/sampleID_1_1.filt.fastq.gz
+Jan-21 15:46:00.568 [Actor Thread 255] DEBUG nextflow.splitter.AbstractSplitter - Creating gzip splitter for: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/91/77b07a6c0ef4c7b98fa0e49fb0cb10/sampleID_1_2.filt.fastq.gz
+Jan-21 15:46:00.604 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 20; name: NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:DADA2_FILTNTRIM (sampleID_2a); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/60/44de446272372d1921328b82fc5b62]
+Jan-21 15:46:00.658 [Actor Thread 255] DEBUG nextflow.splitter.AbstractSplitter - Creating gzip splitter for: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/60/44de446272372d1921328b82fc5b62/sampleID_2a_1.filt.fastq.gz
+Jan-21 15:46:00.756 [Actor Thread 255] DEBUG nextflow.splitter.AbstractSplitter - Creating gzip splitter for: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/60/44de446272372d1921328b82fc5b62/sampleID_2a_2.filt.fastq.gz
+Jan-21 15:46:02.055 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 21; name: NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:DADA2_FILTNTRIM (sampleID_2); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/47/05ca57b44acad6b46477b57c0f867d]
+Jan-21 15:46:02.068 [Actor Thread 248] DEBUG nextflow.splitter.AbstractSplitter - Creating gzip splitter for: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/47/05ca57b44acad6b46477b57c0f867d/sampleID_2_1.filt.fastq.gz
+Jan-21 15:46:02.164 [Actor Thread 248] DEBUG nextflow.splitter.AbstractSplitter - Creating gzip splitter for: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/47/05ca57b44acad6b46477b57c0f867d/sampleID_2_2.filt.fastq.gz
+Jan-21 15:46:03.090 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 19; name: NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:DADA2_FILTNTRIM (sampleID_1a); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/4c/828f968851ada00c1cc2777f8479c1]
+Jan-21 15:46:03.105 [Actor Thread 242] DEBUG nextflow.splitter.AbstractSplitter - Creating gzip splitter for: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/4c/828f968851ada00c1cc2777f8479c1/sampleID_1a_1.filt.fastq.gz
+Jan-21 15:46:03.132 [Actor Thread 242] DEBUG nextflow.splitter.AbstractSplitter - Creating gzip splitter for: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/4c/828f968851ada00c1cc2777f8479c1/sampleID_1a_2.filt.fastq.gz
+Jan-21 15:46:03.187 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:46:03.188 [Task submitter] INFO  nextflow.Session - [67/9fc0c0] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:DADA2_QUALITY2 (FW)
+Jan-21 15:46:03.197 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:46:03.198 [Task submitter] INFO  nextflow.Session - [e0/2ece52] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:DADA2_QUALITY2 (RV)
+Jan-21 15:46:03.206 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:46:03.206 [Task submitter] INFO  nextflow.Session - [ff/b4f4be] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:DADA2_ERR (1)
+Jan-21 15:46:30.747 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 23; name: NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:DADA2_QUALITY2 (RV); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/e0/2ece5211b4598b527f100cfd2a69da]
+Jan-21 15:46:30.846 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 24; name: NFCORE_AMPLISEQ:AMPLISEQ:DADA2_PREPROCESSING:DADA2_QUALITY2 (FW); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/67/9fc0c066f325c269222f479dcb3be0]
+Jan-21 15:46:32.488 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 25; name: NFCORE_AMPLISEQ:AMPLISEQ:DADA2_ERR (1); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/ff/b4f4becf25950fc8e23170b9ea93a3]
+Jan-21 15:46:32.571 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:46:32.572 [Task submitter] INFO  nextflow.Session - [2b/e5967d] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:DADA2_DENOISING (1)
+Jan-21 15:46:52.364 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 26; name: NFCORE_AMPLISEQ:AMPLISEQ:DADA2_DENOISING (1); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/2b/e5967da72d30236957b3fd853414a9]
+Jan-21 15:46:52.412 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:46:52.412 [Task submitter] INFO  nextflow.Session - [a9/8e6aa1] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:DADA2_RMCHIMERA (1)
+Jan-21 15:47:08.015 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 27; name: NFCORE_AMPLISEQ:AMPLISEQ:DADA2_RMCHIMERA (1); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/a9/8e6aa1be9bbef47d4c10c316bbd4f8]
+Jan-21 15:47:08.185 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:47:08.186 [Task submitter] INFO  nextflow.Session - [95/749e61] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:DADA2_STATS (1)
+Jan-21 15:47:23.918 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 28; name: NFCORE_AMPLISEQ:AMPLISEQ:DADA2_STATS (1); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/95/749e611ef1030dde179cb6d60e898a]
+Jan-21 15:47:24.039 [Actor Thread 241] DEBUG nextflow.container.SingularityCache - Singularity found local store for image=https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.22.0--r41h399db7b_0; path=/cfs/klemming/projects/snic/snic2020-16-76/data/singularity/depot.galaxyproject.org-singularity-bioconductor-dada2-1.22.0--r41h399db7b_0.img
+Jan-21 15:47:24.060 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:47:24.061 [Task submitter] INFO  nextflow.Session - [3d/d15da0] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:DADA2_MERGE
+Jan-21 15:47:37.966 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 29; name: NFCORE_AMPLISEQ:AMPLISEQ:DADA2_MERGE; status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/3d/d15da06574f9c7ebfbeef6009eed6d]
+Jan-21 15:47:37.977 [Actor Thread 257] DEBUG nextflow.container.SingularityCache - Singularity found local store for image=https://depot.galaxyproject.org/singularity/barrnap:0.9--hdfd78af_4; path=/cfs/klemming/projects/snic/snic2020-16-76/data/singularity/depot.galaxyproject.org-singularity-barrnap-0.9--hdfd78af_4.img
+Jan-21 15:47:37.995 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:47:37.995 [Task submitter] INFO  nextflow.Session - [44/cf582b] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:BARRNAP (ASV_seqs.fasta)
+Jan-21 15:47:38.002 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:47:38.003 [Task submitter] INFO  nextflow.Session - [c9/2315a1] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:MERGE_STATS_STD (1)
+Jan-21 15:47:43.393 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 30; name: NFCORE_AMPLISEQ:AMPLISEQ:MERGE_STATS_STD (1); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/c9/2315a1e000b82e8bfc0e1e63a0f05f]
+Jan-21 15:47:52.138 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 31; name: NFCORE_AMPLISEQ:AMPLISEQ:BARRNAP (ASV_seqs.fasta); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/44/cf582b4b6d4e87e4e2f9e21ae29ba5]
+Jan-21 15:47:52.162 [Actor Thread 251] DEBUG nextflow.container.SingularityCache - Singularity found local store for image=https://depot.galaxyproject.org/singularity/python:3.9; path=/cfs/klemming/projects/snic/snic2020-16-76/data/singularity/depot.galaxyproject.org-singularity-python-3.9.img
+Jan-21 15:47:52.177 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:47:52.178 [Task submitter] INFO  nextflow.Session - [8d/4e5544] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:BARRNAPSUMMARY
+Jan-21 15:48:01.768 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 32; name: NFCORE_AMPLISEQ:AMPLISEQ:BARRNAPSUMMARY; status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/8d/4e5544faa941ba31c74411b479f68c]
+Jan-21 15:48:01.792 [Actor Thread 248] DEBUG nextflow.container.SingularityCache - Singularity found local store for image=https://depot.galaxyproject.org/singularity/bioconductor-biostrings:2.58.0--r40h037d062_0; path=/cfs/klemming/projects/snic/snic2020-16-76/data/singularity/depot.galaxyproject.org-singularity-bioconductor-biostrings-2.58.0--r40h037d062_0.img
+Jan-21 15:48:01.870 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:48:01.871 [Task submitter] INFO  nextflow.Session - [9c/4bd755] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:FILTER_SSU (ASV_seqs.fasta)
+Jan-21 15:48:10.166 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 33; name: NFCORE_AMPLISEQ:AMPLISEQ:FILTER_SSU (ASV_seqs.fasta); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/9c/4bd75592a2637e01482aac6efe8dec]
+Jan-21 15:48:10.204 [Actor Thread 250] DEBUG nextflow.container.SingularityCache - Singularity found local store for image=https://depot.galaxyproject.org/singularity/hmmer:3.4--hdbdd923_1; path=/cfs/klemming/projects/snic/snic2020-16-76/data/singularity/depot.galaxyproject.org-singularity-hmmer-3.4--hdbdd923_1.img
+Jan-21 15:48:10.213 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:48:10.214 [Task submitter] INFO  nextflow.Session - [b5/ae3ca8] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:MERGE_STATS_FILTERSSU (1)
+Jan-21 15:48:10.229 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:48:10.229 [FileTransfer-3] DEBUG nextflow.file.FilePorter - Copying foreign file https://raw.githubusercontent.com/nf-core/test-datasets/phyloplace/testdata/mito_16S.hmm to work dir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/stage-10399877-f300-421a-ac1d-0e2feb882f47/0e/53a200d87739c94df27223c45d0b46/mito_16S.hmm
+Jan-21 15:48:10.230 [Task submitter] INFO  nextflow.Session - [3d/ae5f89] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMSEARCH (euk28s)
+Jan-21 15:48:10.239 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:48:10.239 [Task submitter] INFO  nextflow.Session - [0b/40ff0a] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMSEARCH (arc)
+Jan-21 15:48:10.248 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:48:10.248 [Task submitter] INFO  nextflow.Session - [6c/cda160] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMSEARCH (euk18s)
+Jan-21 15:48:10.257 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:48:10.257 [Task submitter] INFO  nextflow.Session - [d6/f17d34] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMSEARCH (bac16s)
+Jan-21 15:48:10.266 [FileTransfer-6] DEBUG nextflow.file.FilePorter - Copying foreign file https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/samplesheets/Metadata.tsv to work dir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/stage-10399877-f300-421a-ac1d-0e2feb882f47/d7/32153bd7bfc695555778e5ce092496/Metadata.tsv
+Jan-21 15:48:10.266 [FileTransfer-2] DEBUG nextflow.file.FilePorter - Copying foreign file https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/samplesheets/Samplesheet.tsv to work dir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/stage-10399877-f300-421a-ac1d-0e2feb882f47/6a/e5089d60ac3671d7637b1ec9822285/Samplesheet.tsv
+Jan-21 15:48:10.314 [Actor Thread 240] DEBUG nextflow.container.SingularityCache - Singularity found local store for image=https://depot.galaxyproject.org/singularity/mulled-v2-b2ec1fea5791d428eebb8c8ea7409c350d31dada:a447f6b7a6afde38352b24c30ae9cd6e39df95c4-1; path=/cfs/klemming/projects/snic/snic2020-16-76/data/singularity/depot.galaxyproject.org-singularity-mulled-v2-b2ec1fea5791d428eebb8c8ea7409c350d31dada-a447f6b7a6afde38352b24c30ae9cd6e39df95c4-1.img
+Jan-21 15:48:10.352 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:48:10.353 [Task submitter] INFO  nextflow.Session - [c8/c3ddf0] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMSEARCH (mito16s)
+Jan-21 15:48:10.656 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:48:10.657 [Task submitter] INFO  nextflow.Session - [1e/42eb11] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:SUMMARY_REPORT (1)
+Jan-21 15:48:12.855 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 35; name: NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMSEARCH (mito16s); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/c8/c3ddf0bf8e86e4b262a206bbb31133]
+Jan-21 15:48:12.871 [TaskFinalizer-4] DEBUG nextflow.processor.TaskProcessor - Process NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMSEARCH > Skipping output binding because one or more optional files are missing: fileoutparam<1:1>
+Jan-21 15:48:12.872 [TaskFinalizer-4] DEBUG nextflow.processor.TaskProcessor - Process NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMSEARCH > Skipping output binding because one or more optional files are missing: fileoutparam<3:1>
+Jan-21 15:48:12.903 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 39; name: NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMSEARCH (euk28s); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/3d/ae5f8964cd52fbd6c0556c583c27b1]
+Jan-21 15:48:12.916 [TaskFinalizer-5] DEBUG nextflow.processor.TaskProcessor - Process NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMSEARCH > Skipping output binding because one or more optional files are missing: fileoutparam<1:1>
+Jan-21 15:48:12.917 [TaskFinalizer-5] DEBUG nextflow.processor.TaskProcessor - Process NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMSEARCH > Skipping output binding because one or more optional files are missing: fileoutparam<3:1>
+Jan-21 15:48:14.955 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 37; name: NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMSEARCH (arc); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/0b/40ff0add9dfbc7bffb507911b5beb6]
+Jan-21 15:48:14.972 [TaskFinalizer-6] DEBUG nextflow.processor.TaskProcessor - Process NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMSEARCH > Skipping output binding because one or more optional files are missing: fileoutparam<1:1>
+Jan-21 15:48:14.972 [TaskFinalizer-6] DEBUG nextflow.processor.TaskProcessor - Process NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMSEARCH > Skipping output binding because one or more optional files are missing: fileoutparam<3:1>
+Jan-21 15:48:15.053 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 36; name: NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMSEARCH (bac16s); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/d6/f17d345690b5f40252a1ad405045ec]
+Jan-21 15:48:15.069 [TaskFinalizer-7] DEBUG nextflow.processor.TaskProcessor - Process NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMSEARCH > Skipping output binding because one or more optional files are missing: fileoutparam<1:1>
+Jan-21 15:48:15.070 [TaskFinalizer-7] DEBUG nextflow.processor.TaskProcessor - Process NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMSEARCH > Skipping output binding because one or more optional files are missing: fileoutparam<3:1>
+Jan-21 15:48:15.476 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 38; name: NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMSEARCH (euk18s); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/6c/cda160f9a6b6371776a7af1c2ee004]
+Jan-21 15:48:15.491 [TaskFinalizer-8] DEBUG nextflow.processor.TaskProcessor - Process NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMSEARCH > Skipping output binding because one or more optional files are missing: fileoutparam<1:1>
+Jan-21 15:48:15.491 [TaskFinalizer-8] DEBUG nextflow.processor.TaskProcessor - Process NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMSEARCH > Skipping output binding because one or more optional files are missing: fileoutparam<3:1>
+Jan-21 15:48:15.691 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:48:15.698 [Task submitter] INFO  nextflow.Session - [83/42bd46] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMRANK (rank)
+Jan-21 15:48:16.196 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 34; name: NFCORE_AMPLISEQ:AMPLISEQ:MERGE_STATS_FILTERSSU (1); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/b5/ae3ca87e962ed5c11c56d3fbc310a1]
+Jan-21 15:48:21.954 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 40; name: NFCORE_AMPLISEQ:AMPLISEQ:SUMMARY_REPORT (1); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/1e/42eb11a080b8c16b48663edf4eb79e]
+Jan-21 15:48:22.140 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 41; name: NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:HMMER_HMMRANK (rank); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/83/42bd460afbad296bb25c3de717bea7]
+Jan-21 15:48:22.150 [Actor Thread 241] DEBUG nextflow.splitter.AbstractSplitter - Creating gzip splitter for: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/83/42bd460afbad296bb25c3de717bea7/rank.hmmrank.tsv.gz
+Jan-21 15:48:22.463 [Actor Thread 240] DEBUG nextflow.sort.BigSort - Sort completed -- entries: 275; slices: 1; internal sort time: 0.187 s; external sort time: 0.021 s; total time: 0.208 s
+Jan-21 15:48:22.484 [Actor Thread 240] DEBUG nextflow.file.FileCollector - Saved collect-files list to: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/collect-file/202a59423b60d936a04f24c8a818c4bb
+Jan-21 15:48:22.486 [Actor Thread 240] DEBUG nextflow.file.FileCollector - Deleting file collector temp dir: /tmp/nxf-15180353211013830012
+Jan-21 15:48:22.503 [Actor Thread 241] DEBUG nextflow.container.SingularityCache - Singularity found local store for image=https://depot.galaxyproject.org/singularity/seqtk:1.4--he4a0461_1; path=/cfs/klemming/projects/snic/snic2020-16-76/data/singularity/depot.galaxyproject.org-singularity-seqtk-1.4--he4a0461_1.img
+Jan-21 15:48:22.519 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:48:22.520 [Task submitter] INFO  nextflow.Session - [c4/d6a1b8] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:SEQTK_SUBSEQ (ASV_seqs.ssu.fasta)
+Jan-21 15:48:23.704 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 42; name: NFCORE_AMPLISEQ:AMPLISEQ:FASTA_HMMSEARCH_RANK_FASTAS:SEQTK_SUBSEQ (ASV_seqs.ssu.fasta); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/c4/d6a1b8c9e22c2890126c2157d14056]
+Jan-21 15:48:23.744 [FileTransfer-5] DEBUG nextflow.file.FilePorter - Copying foreign file https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/phyloplace/testdata/bac120.alnfna to work dir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/stage-10399877-f300-421a-ac1d-0e2feb882f47/ac/fb0999944a342ffc0cec741a488598/bac120.alnfna
+Jan-21 15:48:23.786 [Actor Thread 240] DEBUG nextflow.container.SingularityCache - Singularity found local store for image=https://depot.galaxyproject.org/singularity/mulled-v2-4cefc38542f86c17596c29b35a059de10387c6a7:adbe4fbad680f9beb083956d79128039a727e7b3-0; path=/cfs/klemming/projects/snic/snic2020-16-76/data/singularity/depot.galaxyproject.org-singularity-mulled-v2-4cefc38542f86c17596c29b35a059de10387c6a7-adbe4fbad680f9beb083956d79128039a727e7b3-0.img
+Jan-21 15:48:23.802 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:48:23.802 [Task submitter] INFO  nextflow.Session - [ed/6c14b7] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:CLUSTALO_ALIGN (bac16s)
+Jan-21 15:48:53.039 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 43; name: NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:CLUSTALO_ALIGN (bac16s); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/ed/6c14b70ed33f3e06591fc1c6fe9a0d]
+Jan-21 15:48:53.253 [Actor Thread 240] DEBUG nextflow.container.SingularityCache - Singularity found local store for image=https://depot.galaxyproject.org/singularity/epa-ng:0.3.8--h9a82719_1; path=/cfs/klemming/projects/snic/snic2020-16-76/data/singularity/depot.galaxyproject.org-singularity-epa-ng-0.3.8--h9a82719_1.img
+Jan-21 15:48:53.334 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:48:53.335 [Task submitter] INFO  nextflow.Session - [ea/2d0b7f] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:EPANG_SPLIT_CLUSTALO (bac16s)
+Jan-21 15:48:54.992 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 44; name: NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:EPANG_SPLIT_CLUSTALO (bac16s); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/ea/2d0b7fac7a785ee5068134356132fb]
+Jan-21 15:48:55.034 [FileTransfer-4] DEBUG nextflow.file.FilePorter - Copying foreign file https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/phyloplace/testdata/bac120.newick to work dir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/stage-10399877-f300-421a-ac1d-0e2feb882f47/fa/6ac73edfd4b61ff5ccb52a8aaedcc9/bac120.newick
+Jan-21 15:48:55.090 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:48:55.091 [Task submitter] INFO  nextflow.Session - [c3/2c8b56] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:EPANG_PLACE (bac16s)
+Jan-21 15:48:56.992 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 45; name: NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:EPANG_PLACE (bac16s); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/c3/2c8b566bf009f4a23712579d272d33]
+Jan-21 15:48:57.030 [Actor Thread 257] DEBUG nextflow.container.SingularityCache - Singularity found local store for image=https://depot.galaxyproject.org/singularity/gappa:0.8.0--h9a82719_0; path=/cfs/klemming/projects/snic/snic2020-16-76/data/singularity/depot.galaxyproject.org-singularity-gappa-0.8.0--h9a82719_0.img
+Jan-21 15:48:57.033 [FileTransfer-8] DEBUG nextflow.file.FilePorter - Copying foreign file https://raw.githubusercontent.com/nf-core/test-datasets/refs/heads/phyloplace/testdata/bac120.taxonomy.tsv to work dir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/stage-10399877-f300-421a-ac1d-0e2feb882f47/dd/894df71fd8722bc9726a3d24d160c5/bac120.taxonomy.tsv
+Jan-21 15:48:57.053 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:48:57.054 [Task submitter] INFO  nextflow.Session - [88/cd36d6] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:GAPPA_HEATTREE (bac16s)
+Jan-21 15:48:57.065 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:48:57.066 [Task submitter] INFO  nextflow.Session - [6b/2a864a] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:GAPPA_GRAFT (bac16s)
+Jan-21 15:48:57.129 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:48:57.130 [Task submitter] INFO  nextflow.Session - [21/d61308] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:GAPPA_ASSIGN (bac16s)
+Jan-21 15:48:58.477 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 47; name: NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:GAPPA_GRAFT (bac16s); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/6b/2a864a6c3f236557e44293a63d3765]
+Jan-21 15:48:58.578 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 48; name: NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:GAPPA_ASSIGN (bac16s); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/21/d613080b78ea25cd29b8e83785bb9f]
+Jan-21 15:48:58.600 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 46; name: NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:GAPPA_HEATTREE (bac16s); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/88/cd36d6f01f67090728fca1a38a02ad]
+Jan-21 15:48:58.621 [TaskFinalizer-8] DEBUG nextflow.processor.TaskProcessor - Process NFCORE_AMPLISEQ:AMPLISEQ:FASTA_NEWICK_EPANG_GAPPA:GAPPA_HEATTREE > Skipping output binding because one or more optional files are missing: fileoutparam<0:1>
+Jan-21 15:48:58.632 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:48:58.633 [Task submitter] INFO  nextflow.Session - [04/d1061a] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:FORMAT_PPLACETAX (bac16s.taxonomy.per_query)
+Jan-21 15:48:58.639 [Actor Thread 240] DEBUG nextflow.sort.BigSort - Sort completed -- entries: 28; slices: 1; internal sort time: 0.005 s; external sort time: 0.002 s; total time: 0.007 s
+Jan-21 15:48:58.643 [Actor Thread 240] DEBUG nextflow.file.FileCollector - Saved collect-files list to: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/collect-file/8c5c6968e43f2ef739586c79ca042cbe
+Jan-21 15:48:58.667 [Actor Thread 240] DEBUG nextflow.file.FileCollector - Deleting file collector temp dir: /tmp/nxf-1347932117868127199
+Jan-21 15:48:58.685 [Actor Thread 240] DEBUG nextflow.container.SingularityCache - Singularity found local store for image=https://depot.galaxyproject.org/singularity/multiqc:1.25.1--pyhdfd78af_0; path=/cfs/klemming/projects/snic/snic2020-16-76/data/singularity/depot.galaxyproject.org-singularity-multiqc-1.25.1--pyhdfd78af_0.img
+Jan-21 15:48:58.705 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:48:58.706 [Task submitter] INFO  nextflow.Session - [f8/db336f] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:MULTIQC
+Jan-21 15:49:04.408 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 49; name: NFCORE_AMPLISEQ:AMPLISEQ:FORMAT_PPLACETAX (bac16s.taxonomy.per_query); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/04/d1061aef35fa331300860629505a07]
+Jan-21 15:49:04.453 [Task submitter] DEBUG n.executor.local.LocalTaskHandler - Launch cmd line: /bin/bash -ue .command.run
+Jan-21 15:49:04.454 [Task submitter] INFO  nextflow.Session - [2b/472e45] Submitted process > NFCORE_AMPLISEQ:AMPLISEQ:PHYLOSEQ_INTAX_PPLACE (1)
+Jan-21 15:49:09.944 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 51; name: NFCORE_AMPLISEQ:AMPLISEQ:PHYLOSEQ_INTAX_PPLACE (1); status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/2b/472e45a0bad9b65a6dbd86dd41c555]
+Jan-21 15:49:15.339 [Task monitor] DEBUG n.processor.TaskPollingMonitor - Task completed > TaskHandler[id: 50; name: NFCORE_AMPLISEQ:AMPLISEQ:MULTIQC; status: COMPLETED; exit: 0; error: -; workDir: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/f8/db336f000bc9a1e31493199e593079]
+Jan-21 15:49:15.360 [main] DEBUG nextflow.Session - Session await > all processes finished
+Jan-21 15:49:15.436 [Task monitor] DEBUG n.processor.TaskPollingMonitor - <<< barrier arrives (monitor: local) - terminating tasks monitor poll loop
+Jan-21 15:49:15.436 [main] DEBUG nextflow.Session - Session await > all barriers passed
+Jan-21 15:49:15.534 [main] DEBUG nextflow.util.ThreadPoolManager - Thread pool 'TaskFinalizer' shutdown completed (hard=false)
+Jan-21 15:49:15.535 [main] DEBUG nextflow.util.ThreadPoolManager - Thread pool 'PublishDir' shutdown completed (hard=false)
+Jan-21 15:49:15.620 [main] INFO  nextflow.Nextflow - -[0;35m[nf-core/ampliseq][0;32m Pipeline completed successfully[0m-
+Jan-21 15:49:15.675 [main] DEBUG n.trace.WorkflowStatsObserver - Workflow completed > WorkflowStats[succeededCount=51; failedCount=0; ignoredCount=0; cachedCount=0; pendingCount=0; submittedCount=0; runningCount=0; retriesCount=0; abortedCount=0; succeedDuration=19m 19s; failedDuration=0ms; cachedDuration=0ms;loadCpus=0; loadMemory=0; peakRunning=8; peakCpus=34; peakMemory=104 GB; ]
+Jan-21 15:49:15.676 [main] DEBUG nextflow.trace.TraceFileObserver - Workflow completed -- saving trace file
+Jan-21 15:49:15.681 [main] DEBUG nextflow.trace.ReportObserver - Workflow completed -- rendering execution report
+Jan-21 15:49:17.395 [main] DEBUG nextflow.trace.TimelineObserver - Workflow completed -- rendering execution timeline
+Jan-21 15:49:17.801 [main] DEBUG nextflow.cache.CacheDB - Closing CacheDB done
+Jan-21 15:49:17.865 [main] INFO  org.pf4j.AbstractPluginManager - Stop plugin 'nf-schema@2.1.2'
+Jan-21 15:49:17.865 [main] DEBUG nextflow.plugin.BasePlugin - Plugin stopped nf-schema
+Jan-21 15:49:17.869 [main] DEBUG nextflow.util.ThreadPoolManager - Thread pool 'FileTransfer' shutdown completed (hard=false)
+Jan-21 15:49:17.889 [main] DEBUG nextflow.script.ScriptRunner - > Execution complete -- Goodbye

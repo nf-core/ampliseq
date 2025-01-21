@@ -1,0 +1,5 @@
+Module	Section	Sample Name	Source
+Cutadapt	all_sections	sampleID_1a	/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/f8/db336f000bc9a1e31493199e593079/3/sampleID_1a.trimmed.cutadapt.log
+Cutadapt	all_sections	sampleID_2	/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/f8/db336f000bc9a1e31493199e593079/5/sampleID_2.trimmed.cutadapt.log
+Cutadapt	all_sections	sampleID_1	/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/f8/db336f000bc9a1e31493199e593079/6/sampleID_1.trimmed.cutadapt.log
+Cutadapt	all_sections	sampleID_2a	/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/f8/db336f000bc9a1e31493199e593079/4/sampleID_2a.trimmed.cutadapt.log

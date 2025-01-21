@@ -1,0 +1,521 @@
+LWR	fract	aLWR	afract	taxopath
+0	0	238.7	1	d__Bacteria
+0	0	238.7	1	d__Bacteria;p__Pseudomonadota
+38.73	0.1622	238.7	1	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria
+0.03065	0.0001284	7.771	0.03255	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Chromatiales
+3.689	0.01545	7.249	0.03036	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Chromatiales;f__Chromatiaceae
+0	0	2.749	0.01151	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Chromatiales;f__Chromatiaceae;g__JALSSC01
+2.749	0.01151	2.749	0.01151	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Chromatiales;f__Chromatiaceae;g__JALSSC01;s__JALSSC01 sp026984455
+0	0	0.1622	0.0006793	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Chromatiales;f__Chromatiaceae;g__Lamprobacter
+0.1622	0.0006793	0.1622	0.0006793	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Chromatiales;f__Chromatiaceae;g__Lamprobacter;s__Lamprobacter salexigens
+0	0	2.993e-05	1.254e-07	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Chromatiales;f__Chromatiaceae;g__Thiocapsa
+2.993e-05	1.254e-07	2.993e-05	1.254e-07	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Chromatiales;f__Chromatiaceae;g__Thiocapsa;s__Thiocapsa marina
+0	0	0.241	0.00101	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Chromatiales;f__Chromatiaceae;g__Thiocystis
+0.241	0.00101	0.241	0.00101	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Chromatiales;f__Chromatiaceae;g__Thiocystis;s__Thiocystis violacea
+0	0	0.408	0.001709	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Chromatiales;f__Chromatiaceae;g__Thermochromatium
+0.408	0.001709	0.408	0.001709	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Chromatiales;f__Chromatiaceae;g__Thermochromatium;s__Thermochromatium tepidum
+0.4401	0.001844	0.4917	0.00206	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Chromatiales;f__Sedimenticolaceae
+0	0	0.03387	0.0001419	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Chromatiales;f__Sedimenticolaceae;g__Thiodiazotropha
+0.03387	0.0001419	0.03387	0.0001419	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Chromatiales;f__Sedimenticolaceae;g__Thiodiazotropha;s__Thiodiazotropha sp025656435
+0	0	2.662e-06	1.115e-08	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Chromatiales;f__Sedimenticolaceae;g__JABBTK01
+2.662e-06	1.115e-08	2.662e-06	1.115e-08	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Chromatiales;f__Sedimenticolaceae;g__JABBTK01;s__JABBTK01 sp011389885
+0	0	0.01774	7.431e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Chromatiales;f__Sedimenticolaceae;g__41T-STBD-0c-01a
+0.01774	7.431e-05	0.01774	7.431e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Chromatiales;f__Sedimenticolaceae;g__41T-STBD-0c-01a;s__41T-STBD-0c-01a sp002009425
+1.011	0.004236	11.09	0.04644	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales
+0.2289	0.0009588	1.008	0.004222	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Kangiellaceae
+0	0	0.7791	0.003263	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Kangiellaceae;g__Kangiella
+0.7791	0.003263	0.7791	0.003263	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Kangiellaceae;g__Kangiella;s__Kangiella sp947498625
+0.02602	0.000109	0.9748	0.004083	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Enterobacteriaceae
+0	0	0.3703	0.001551	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Enterobacteriaceae;g__Morganella
+0.3703	0.001551	0.3703	0.001551	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Enterobacteriaceae;g__Morganella;s__Morganella psychrotolerans_B
+0	0	0.4259	0.001784	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Enterobacteriaceae;g__Izhakiella
+0.4259	0.001784	0.4259	0.001784	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Enterobacteriaceae;g__Izhakiella;s__Izhakiella australiensis
+0	0	0.007902	3.31e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Enterobacteriaceae;g__Tatumella
+0.007902	3.31e-05	0.007902	3.31e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Enterobacteriaceae;g__Tatumella;s__Tatumella morbirosei
+0	0	0.01157	4.846e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Enterobacteriaceae;g__Doolittlea
+0.01157	4.846e-05	0.01157	4.846e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Enterobacteriaceae;g__Doolittlea;s__Doolittlea endobia
+0.06522	0.0002732	0.133	0.0005573	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Enterobacteriaceae;g__Gilliamella
+0.06782	0.0002841	0.06782	0.0002841	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Enterobacteriaceae;g__Gilliamella;s__Gilliamella sp009795805
+0	0	0.02957	0.0001239	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Gallaecimonadaceae
+0	0	0.02957	0.0001239	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Gallaecimonadaceae;g__Gallaecimonas
+0.02957	0.0001239	0.02957	0.0001239	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Gallaecimonadaceae;g__Gallaecimonas;s__Gallaecimonas xiamenensis
+0.03208	0.0001344	0.2936	0.00123	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Alteromonadaceae
+0	0	0.01305	5.464e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Alteromonadaceae;g__Arsukibacterium
+0.01305	5.464e-05	0.01305	5.464e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Alteromonadaceae;g__Arsukibacterium;s__Arsukibacterium tuosuense
+0	0	0.04024	0.0001685	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Alteromonadaceae;g__M269
+0.04024	0.0001685	0.04024	0.0001685	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Alteromonadaceae;g__M269;s__M269 sp004353515
+0	0	0.03407	0.0001427	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Alteromonadaceae;g__JAUHQD01
+0.03407	0.0001427	0.03407	0.0001427	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Alteromonadaceae;g__JAUHQD01;s__JAUHQD01 sp030418115
+0	0	0.03361	0.0001408	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Alteromonadaceae;g__Alteromonas_E
+0.03361	0.0001408	0.03361	0.0001408	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Alteromonadaceae;g__Alteromonas_E;s__Alteromonas_E oceanisediminis
+0	0	0.03358	0.0001407	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Alteromonadaceae;g__Glaciecola
+0.03358	0.0001407	0.03358	0.0001407	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Alteromonadaceae;g__Glaciecola;s__Glaciecola ruwaisensis
+0.06427	0.0002692	0.06428	0.0002692	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Alteromonadaceae;g__Paraglaciecola
+4.263e-06	1.786e-08	4.263e-06	1.786e-08	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Alteromonadaceae;g__Paraglaciecola;s__Paraglaciecola mesophila_A
+0	0	0.04273	0.000179	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Alteromonadaceae;g__Thalassotalea_A
+0.04273	0.000179	0.04273	0.000179	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Alteromonadaceae;g__Thalassotalea_A;s__Thalassotalea_A crassostreae
+1.071	0.004488	2.944	0.01233	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Enterobacteriaceae_A
+0.6406	0.002683	1.282	0.005371	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Enterobacteriaceae_A;g__GCA-012562765
+0.111	0.000465	0.111	0.000465	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Enterobacteriaceae_A;g__GCA-012562765;s__GCA-012562765 sp012563145
+0.5307	0.002223	0.5307	0.002223	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Enterobacteriaceae_A;g__GCA-012562765;s__GCA-012562765 sp012569285
+0.102	0.0004272	0.2432	0.001019	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Enterobacteriaceae_A;g__Blochmannia
+0.1412	0.0005915	0.1412	0.0005915	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Enterobacteriaceae_A;g__Blochmannia;s__Blochmannia vicinus
+0.01164	4.874e-05	0.01164	4.874e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Enterobacteriaceae_A;g__Buchnera
+0	0	0.01418	5.941e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Enterobacteriaceae_A;g__G030849185
+0.01418	5.941e-05	0.01418	5.941e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Enterobacteriaceae_A;g__G030849185;s__G030849185 sp030849285
+0.08679	0.0003635	0.08679	0.0003635	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Enterobacteriaceae_A;g__Stammera
+0	0	0.2344	0.0009816	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Enterobacteriaceae_A;g__Riesia
+0.2344	0.0009816	0.2344	0.0009816	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Enterobacteriaceae_A;g__Riesia;s__Riesia pediculicola
+3.596	0.01506	4.096	0.01716	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Succinivibrionaceae
+0	0	0.5001	0.002095	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Succinivibrionaceae;g__Succinivibrio
+0.5001	0.002095	0.5001	0.002095	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Succinivibrionaceae;g__Succinivibrio;s__Succinivibrio sp905186145
+0	0	0.4876	0.002042	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Psychromonadaceae
+0.2829	0.001185	0.4876	0.002042	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Psychromonadaceae;g__Psychromonas
+0.1773	0.0007425	0.1773	0.0007425	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Psychromonadaceae;g__Psychromonas;s__Psychromonas ingrahamii
+0.02737	0.0001147	0.02737	0.0001147	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Psychromonadaceae;g__Psychromonas;s__Psychromonas sp000153405
+2.321e-05	9.721e-08	0.04339	0.0001818	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Shewanellaceae
+0	0	0.04337	0.0001817	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Shewanellaceae;g__SM1919
+0.04337	0.0001817	0.04337	0.0001817	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Shewanellaceae;g__SM1919;s__SM1919 sp010993985
+0	0	0.1587	0.0006649	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Moritellaceae
+0	0	0.1587	0.0006649	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Moritellaceae;g__Moritella
+0.1587	0.0006649	0.1587	0.0006649	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Moritellaceae;g__Moritella;s__Moritella sp018219155
+0	0	0.03962	0.000166	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Vibrionaceae
+2.039e-05	8.542e-08	0.03962	0.000166	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Vibrionaceae;g__Vibrio
+0.0396	0.0001659	0.0396	0.0001659	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Vibrionaceae;g__Vibrio;s__Vibrio porteresiae
+0.7959	0.003334	12.16	0.05093	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales
+0	0	2.78	0.01165	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Pseudomonadaceae
+0.6463	0.002707	2.78	0.01165	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Pseudomonadaceae;g__Pseudomonas_E
+0.05649	0.0002366	0.05649	0.0002366	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Pseudomonadaceae;g__Pseudomonas_E;s__Pseudomonas_E segetis
+0.05273	0.0002209	0.05273	0.0002209	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Pseudomonadaceae;g__Pseudomonas_E;s__Pseudomonas_E sp000282335
+0.0526	0.0002203	0.0526	0.0002203	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Pseudomonadaceae;g__Pseudomonas_E;s__Pseudomonas_E sp013359595
+0.05183	0.0002171	0.05183	0.0002171	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Pseudomonadaceae;g__Pseudomonas_E;s__Pseudomonas_E sp001269805
+0.297	0.001244	0.297	0.001244	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Pseudomonadaceae;g__Pseudomonas_E;s__Pseudomonas_E fluorescens_AN
+0.08787	0.0003681	0.08787	0.0003681	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Pseudomonadaceae;g__Pseudomonas_E;s__Pseudomonas_E frederiksbergensis_D
+2.985e-05	1.25e-07	2.985e-05	1.25e-07	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Pseudomonadaceae;g__Pseudomonas_E;s__Pseudomonas_E sp012935695
+0.07665	0.0003211	0.07665	0.0003211	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Pseudomonadaceae;g__Pseudomonas_E;s__Pseudomonas_E mandelii_F
+0.07644	0.0003202	0.07644	0.0003202	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Pseudomonadaceae;g__Pseudomonas_E;s__Pseudomonas_E sp009834515
+0.07639	0.00032	0.07639	0.00032	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Pseudomonadaceae;g__Pseudomonas_E;s__Pseudomonas_E chlororaphis_H
+0.07523	0.0003151	0.07523	0.0003151	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Pseudomonadaceae;g__Pseudomonas_E;s__Pseudomonas_E sp016650695
+0.07669	0.0003212	0.07669	0.0003212	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Pseudomonadaceae;g__Pseudomonas_E;s__Pseudomonas_E sp030687895
+0.05165	0.0002164	0.05165	0.0002164	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Pseudomonadaceae;g__Pseudomonas_E;s__Pseudomonas_E bohemica
+0.05153	0.0002158	0.05153	0.0002158	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Pseudomonadaceae;g__Pseudomonas_E;s__Pseudomonas_E alkylphenolica_B
+0.05152	0.0002158	0.05152	0.0002158	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Pseudomonadaceae;g__Pseudomonas_E;s__Pseudomonas_E sp028656955
+0.9991	0.004185	0.9991	0.004185	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Pseudomonadaceae;g__Pseudomonas_E;s__Pseudomonas_E sp024655605
+0.2195	0.0009194	0.5707	0.002391	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Halieaceae
+0	0	0.3512	0.001471	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Halieaceae;g__Luminiphilus
+0.3512	0.001471	0.3512	0.001471	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Halieaceae;g__Luminiphilus;s__Luminiphilus aquimaris
+0.07881	0.0003301	5.098	0.02135	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Moraxellaceae
+1.634	0.006843	5.019	0.02102	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Moraxellaceae;g__Acinetobacter
+0.2542	0.001065	0.2542	0.001065	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Moraxellaceae;g__Acinetobacter;s__Acinetobacter sp000369405
+0.4991	0.002091	0.4991	0.002091	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Moraxellaceae;g__Acinetobacter;s__Acinetobacter sp003987695
+0.4969	0.002081	0.4969	0.002081	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Moraxellaceae;g__Acinetobacter;s__Acinetobacter sp004331035
+0.2988	0.001251	0.2988	0.001251	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Moraxellaceae;g__Acinetobacter;s__Acinetobacter calcoaceticus_D
+1.102	0.004614	1.102	0.004614	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Moraxellaceae;g__Acinetobacter;s__Acinetobacter lwoffii
+5.883e-06	2.464e-08	5.883e-06	2.464e-08	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Moraxellaceae;g__Acinetobacter;s__Acinetobacter pragensis
+0.669	0.002802	0.669	0.002802	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Moraxellaceae;g__Acinetobacter;s__Acinetobacter sp004336635
+0.06583	0.0002757	0.06583	0.0002757	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Moraxellaceae;g__Acinetobacter;s__Acinetobacter defluvii
+0.1429	0.0005986	0.4298	0.0018	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Alcanivoracaceae
+0	0	0.1863	0.0007806	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Alcanivoracaceae;g__Alloalcanivorax
+0.1863	0.0007806	0.1863	0.0007806	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Alcanivoracaceae;g__Alloalcanivorax;s__Alloalcanivorax xiamenensis
+0	0	0.1006	0.0004212	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Alcanivoracaceae;g__Isoalcanivorax
+0.1006	0.0004212	0.1006	0.0004212	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Alcanivoracaceae;g__Isoalcanivorax;s__Isoalcanivorax indicus
+0.008423	3.528e-05	0.1082	0.0004531	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Nitrincolaceae
+0	0	0.07904	0.0003311	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Nitrincolaceae;g__Marinobacterium
+0.07904	0.0003311	0.07904	0.0003311	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Nitrincolaceae;g__Marinobacterium;s__Marinobacterium sp019061305
+0	0	0.02071	8.674e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Nitrincolaceae;g__Neptuniibacter
+0.02071	8.674e-05	0.02071	8.674e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Nitrincolaceae;g__Neptuniibacter;s__Neptuniibacter sp947498015
+0	0	0.2165	0.0009067	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Litorivicinaceae
+0	0	0.2165	0.0009067	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Litorivicinaceae;g__HIMB30
+0.2165	0.0009067	0.2165	0.0009067	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Litorivicinaceae;g__HIMB30;s__HIMB30 sp902536515
+3.442e-06	1.442e-08	3.442e-06	1.442e-08	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Cellvibrionaceae
+2.043e-06	8.556e-09	2.043e-06	8.556e-09	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Porticoccaceae
+0.6647	0.002784	1.886	0.007899	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Halomonadaceae
+0	0	1.096	0.004593	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Halomonadaceae;g__Kushneria
+1.096	0.004593	1.096	0.004593	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Halomonadaceae;g__Kushneria;s__Kushneria avicenniae
+0.02517	0.0001054	0.1247	0.0005224	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Halomonadaceae;g__Vreelandella
+0.04977	0.0002085	0.04977	0.0002085	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Halomonadaceae;g__Vreelandella;s__Vreelandella olivaria_A
+0.04978	0.0002085	0.04978	0.0002085	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Halomonadaceae;g__Vreelandella;s__Vreelandella maris
+0	0	1.152e-05	4.824e-08	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Halomonadaceae;g__Pseudospirillum
+1.152e-05	4.824e-08	1.152e-05	4.824e-08	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Halomonadaceae;g__Pseudospirillum;s__Pseudospirillum japonicum
+0	0	0.2175	0.0009111	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Natronospirillaceae
+0	0	0.2175	0.0009111	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Natronospirillaceae;g__Reinekea
+0.2175	0.0009111	0.2175	0.0009111	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Natronospirillaceae;g__Reinekea;s__Reinekea forsetii
+0	0	0.01687	7.065e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Marinomonadaceae
+0.01687	7.065e-05	0.01687	7.065e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Marinomonadaceae;g__Marinomonas
+0	0	0.04041	0.0001693	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Endozoicomonadaceae
+0.03643	0.0001526	0.04041	0.0001693	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Endozoicomonadaceae;g__Endozoicomonas
+0.003975	1.665e-05	0.003975	1.665e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Endozoicomonadaceae;g__Endozoicomonas;s__Endozoicomonas atrinae
+1.486e-06	6.222e-09	1.486e-06	6.222e-09	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales;f__Endozoicomonadaceae;g__Endozoicomonas;s__Endozoicomonas sp023822025
+0	0	6.584	0.02758	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Thiomicrospirales
+4.384	0.01837	6.584	0.02758	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Thiomicrospirales;f__Thiomicrospiraceae
+0	0	0.8024	0.003361	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Thiomicrospirales;f__Thiomicrospiraceae;g__Hydrogenovibrio
+0.8024	0.003361	0.8024	0.003361	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Thiomicrospirales;f__Thiomicrospiraceae;g__Hydrogenovibrio;s__Hydrogenovibrio sp002848135
+0	0	0.1803	0.0007552	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Thiomicrospirales;f__Thiomicrospiraceae;g__Thiomicrospira
+0.1803	0.0007552	0.1803	0.0007552	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Thiomicrospirales;f__Thiomicrospiraceae;g__Thiomicrospira;s__Thiomicrospira microaerophila_A
+0.6017	0.00252	1.217	0.005098	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Thiomicrospirales;f__Thiomicrospiraceae;g__Thiomicrorhabdus
+0.5599	0.002345	0.5599	0.002345	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Thiomicrospirales;f__Thiomicrospiraceae;g__Thiomicrorhabdus;s__Thiomicrorhabdus immobilis
+0.05552	0.0002325	0.05552	0.0002325	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Thiomicrospirales;f__Thiomicrospiraceae;g__Thiomicrorhabdus;s__Thiomicrorhabdus sp029767005
+0.3626	0.001519	3.36	0.01408	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Methylococcales
+0.1689	0.0007074	0.3349	0.001403	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Methylococcales;f__Methylococcaceae
+0	0	0.1097	0.0004597	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Methylococcales;f__Methylococcaceae;g__Methylomagnum
+0.1097	0.0004597	0.1097	0.0004597	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Methylococcales;f__Methylococcaceae;g__Methylomagnum;s__Methylomagnum ishizawai
+0	0	0.05623	0.0002355	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Methylococcales;f__Methylococcaceae;g__Methylospira
+0.05623	0.0002355	0.05623	0.0002355	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Methylococcales;f__Methylococcaceae;g__Methylospira;s__Methylospira mobilis
+0.266	0.001114	1.751	0.007335	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Methylococcales;f__Methylomonadaceae
+0	0	0.3137	0.001314	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Methylococcales;f__Methylomonadaceae;g__Methylobacter_C
+0.3137	0.001314	0.3137	0.001314	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Methylococcales;f__Methylomonadaceae;g__Methylobacter_C;s__Methylobacter_C sp002862125
+0.2009	0.0008413	1.019	0.00427	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Methylococcales;f__Methylomonadaceae;g__Methylomonas
+0.6741	0.002824	0.6741	0.002824	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Methylococcales;f__Methylomonadaceae;g__Methylomonas;s__Methylomonas sp018335995
+0.1445	0.0006053	0.1445	0.0006053	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Methylococcales;f__Methylomonadaceae;g__Methylomonas;s__Methylomonas sp000702925
+0	0	0.02414	0.0001011	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Methylococcales;f__Methylomonadaceae;g__Methylicorpusculum
+0.02414	0.0001011	0.02414	0.0001011	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Methylococcales;f__Methylomonadaceae;g__Methylicorpusculum;s__Methylicorpusculum sp030651835
+0	0	0.1278	0.0005352	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Methylococcales;f__Methylomonadaceae;g__Methylobacter_A
+0.1278	0.0005352	0.1278	0.0005352	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Methylococcales;f__Methylomonadaceae;g__Methylobacter_A;s__Methylobacter_A titanis
+0	0	0.912	0.00382	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Methylococcales;f__Cycloclasticaceae
+0	0	0.912	0.00382	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Methylococcales;f__Cycloclasticaceae;g__Cycloclasticus
+0.912	0.00382	0.912	0.00382	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Methylococcales;f__Cycloclasticaceae;g__Cycloclasticus;s__Cycloclasticus pugetii
+0	0	10.15	0.04251	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Ectothiorhodospirales
+2.894	0.01212	10.15	0.04251	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Ectothiorhodospirales;f__Ectothiorhodospiraceae
+0	0	0.5558	0.002328	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Ectothiorhodospirales;f__Ectothiorhodospiraceae;g__Ectothiorhodosinus
+0.5558	0.002328	0.5558	0.002328	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Ectothiorhodospirales;f__Ectothiorhodospiraceae;g__Ectothiorhodosinus;s__Ectothiorhodosinus mongolicus
+4.431	0.01856	6.698	0.02806	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Ectothiorhodospirales;f__Ectothiorhodospiraceae;g__Thioalkalivibrio
+2.267	0.009497	2.267	0.009497	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Ectothiorhodospirales;f__Ectothiorhodospiraceae;g__Thioalkalivibrio;s__Thioalkalivibrio nitratireducens_A
+0.0002167	9.078e-07	0.0002167	9.078e-07	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Ectothiorhodospirales;f__Ectothiorhodospiraceae;g__Thioalkalivibrio;s__Thioalkalivibrio sp000378605
+0	0	1.051	0.004404	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Thiotrichales
+0.0232	9.719e-05	1.051	0.004404	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Thiotrichales;f__Thiotrichaceae
+0.8176	0.003425	1.028	0.004307	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Thiotrichales;f__Thiotrichaceae;g__Thiothrix
+0.1271	0.0005325	0.1271	0.0005325	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Thiotrichales;f__Thiotrichaceae;g__Thiothrix;s__Thiothrix unzii
+0.08343	0.0003495	0.08343	0.0003495	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Thiotrichales;f__Thiotrichaceae;g__Thiothrix;s__Thiothrix nivea
+0	0	11.97	0.05016	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Acidiferrobacterales
+0	0	11.97	0.05016	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Acidiferrobacterales;f__Sulfurifustaceae
+0	0	11.97	0.05016	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Acidiferrobacterales;f__Sulfurifustaceae;g__Sulfuricaulis
+11.97	0.05016	11.97	0.05016	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Acidiferrobacterales;f__Sulfurifustaceae;g__Sulfuricaulis;s__Sulfuricaulis sp029863005
+5.084	0.0213	17.45	0.07309	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales
+0	0	1.908	0.007992	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Marinicellaceae
+0	0	1.908	0.007992	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Marinicellaceae;g__Marinicella
+1.908	0.007992	1.908	0.007992	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Marinicellaceae;g__Marinicella;s__Marinicella sediminis
+1.612	0.00675	8.501	0.03561	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae
+0	0	0.01765	7.391e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Chiayiivirga
+0.01765	7.391e-05	0.01765	7.391e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Chiayiivirga;s__Chiayiivirga sp022647565
+0	0	1.98	0.008292	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Arenimonas
+1.98	0.008292	1.98	0.008292	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Arenimonas;s__Arenimonas maotaiensis
+0	0	0.03777	0.0001582	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Lysobacter_H
+0.03777	0.0001582	0.03777	0.0001582	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Lysobacter_H;s__Lysobacter_H penaei
+0	0	0.1591	0.0006663	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Lysobacter_C
+0.1591	0.0006663	0.1591	0.0006663	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Lysobacter_C;s__Lysobacter_C concretionis
+0.05957	0.0002495	0.1253	0.0005249	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Lysobacter
+0.06575	0.0002754	0.06575	0.0002754	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Lysobacter;s__Lysobacter antibioticus_A
+0	0	1.2	0.005025	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Thermomonas
+1.2	0.005025	1.2	0.005025	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Thermomonas;s__Thermomonas alba
+1.919	0.008037	3.139	0.01315	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Stenotrophomonas
+0.5525	0.002314	0.5525	0.002314	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Stenotrophomonas;s__Stenotrophomonas rhizophila_C
+0.6671	0.002794	0.6671	0.002794	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Stenotrophomonas;s__Stenotrophomonas pennii
+2.708e-05	1.134e-07	2.708e-05	1.134e-07	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Stenotrophomonas;s__Stenotrophomonas terrae
+0.0001859	7.788e-07	0.0001859	7.788e-07	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Stenotrophomonas;s__Stenotrophomonas maltophilia_K
+0	0	0.08272	0.0003465	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Xanthomonas
+0.08272	0.0003465	0.08272	0.0003465	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Xanthomonas;s__Xanthomonas prunicola
+0	0	0.01468	6.151e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Silanimonas
+0.01468	6.151e-05	0.01468	6.151e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Silanimonas;s__Silanimonas sp026005095
+0.05152	0.0002158	0.05152	0.0002158	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Luteimonas_D
+3.666e-06	1.536e-08	3.666e-06	1.536e-08	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Luteimonas_D;s__Luteimonas_D terrae
+1.629e-06	6.824e-09	1.629e-06	6.824e-09	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Luteimonas_D;s__Luteimonas_D sp029887935
+0	0	0.02004	8.393e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Lysobacter_B
+0.02004	8.393e-05	0.02004	8.393e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Lysobacter_B;s__Lysobacter_B oculi
+0.05221	0.0002187	0.06253	0.0002619	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Pseudoxanthomonas_A
+0.01032	4.324e-05	0.01032	4.324e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Pseudoxanthomonas_A;s__Pseudoxanthomonas_A composti
+3.089e-06	1.294e-08	3.089e-06	1.294e-08	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Pseudoxanthomonas_A;s__Pseudoxanthomonas_A sp900116385
+0	0	2.267e-06	9.495e-09	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Xanthomonas_A
+2.267e-06	9.495e-09	2.267e-06	9.495e-09	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Xanthomonadaceae;g__Xanthomonas_A;s__Xanthomonas_A albilineans
+0.1448	0.0006064	1.623	0.0068	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Rhodanobacteraceae
+0	0	1.148	0.004809	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Rhodanobacteraceae;g__Tahibacter
+1.148	0.004809	1.148	0.004809	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Rhodanobacteraceae;g__Tahibacter;s__Tahibacter caeni
+0	0	0.1507	0.0006312	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Rhodanobacteraceae;g__Dokdonella
+0.1507	0.0006312	0.1507	0.0006312	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Rhodanobacteraceae;g__Dokdonella;s__Dokdonella sp016712865
+0.06013	0.0002519	0.18	0.000754	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Rhodanobacteraceae;g__Rhodanobacter
+0.0599	0.0002509	0.0599	0.0002509	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Rhodanobacteraceae;g__Rhodanobacter;s__Rhodanobacter fulvus
+0.05997	0.0002512	0.05997	0.0002512	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Rhodanobacteraceae;g__Rhodanobacter;s__Rhodanobacter panaciterrae
+0	0	0.01185	4.965e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__BPKI01
+0	0	0.01185	4.965e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__BPKI01;g__BPKI01
+0.01185	4.965e-05	0.01185	4.965e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__BPKI01;g__BPKI01;s__BPKI01 sp026005055
+0	0	0.00857	3.59e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Ahniellaceae
+0	0	0.00857	3.59e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Ahniellaceae;g__UDEA-SF1
+0.00857	3.59e-05	0.00857	3.59e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Ahniellaceae;g__UDEA-SF1;s__UDEA-SF1 sp002995625
+0	0	0.3131	0.001311	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Wenzhouxiangellaceae
+0	0	0.3131	0.001311	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Wenzhouxiangellaceae;g__Wenzhouxiangella
+0.3131	0.001311	0.3131	0.001311	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Xanthomonadales;f__Wenzhouxiangellaceae;g__Wenzhouxiangella;s__Wenzhouxiangella sp003417465
+13.86	0.05807	47.75	0.2	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Nevskiales
+30.33	0.127	33.22	0.1391	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Nevskiales;f__Nevskiaceae
+0	0	1.279	0.005359	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Nevskiales;f__Nevskiaceae;g__SCRT01
+1.279	0.005359	1.279	0.005359	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Nevskiales;f__Nevskiaceae;g__SCRT01;s__SCRT01 sp004298465
+0	0	0.9686	0.004057	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Nevskiales;f__Nevskiaceae;g__Stenotrophobium
+0.9686	0.004057	0.9686	0.004057	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Nevskiales;f__Nevskiaceae;g__Stenotrophobium;s__Stenotrophobium sp008012115
+0	0	0.6393	0.002678	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Nevskiales;f__Nevskiaceae;g__CAU-1509
+0.6393	0.002678	0.6393	0.002678	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Nevskiales;f__Nevskiaceae;g__CAU-1509;s__CAU-1509 sp005047655
+0	0	0.6671	0.002794	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Nevskiales;f__Oceanococcaceae
+0	0	0.6671	0.002794	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Nevskiales;f__Oceanococcaceae;g__Oceanococcus
+0.6671	0.002794	0.6671	0.002794	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Nevskiales;f__Oceanococcaceae;g__Oceanococcus;s__Oceanococcus atlanticus
+0	0	1.288	0.005396	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__UBA6186
+0	0	1.288	0.005396	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__UBA6186;f__UBA6186
+0	0	1.288	0.005396	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__UBA6186;f__UBA6186;g__JAGOUJ01
+1.288	0.005396	1.288	0.005396	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__UBA6186;f__UBA6186;g__JAGOUJ01;s__JAGOUJ01 sp945878715
+0	0	4.499	0.01884	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Comchoanobacterales
+0	0	4.499	0.01884	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Comchoanobacterales;f__Comchoanobacteraceae
+0	0	4.499	0.01884	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Comchoanobacterales;f__Comchoanobacteraceae;g__Synchoanobacter
+4.499	0.01884	4.499	0.01884	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Comchoanobacterales;f__Comchoanobacteraceae;g__Synchoanobacter;s__Synchoanobacter obligatus
+0	0	0.2795	0.001171	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Woeseiales
+0	0	0.2795	0.001171	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Woeseiales;f__Woeseiaceae
+0	0	0.2795	0.001171	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Woeseiales;f__Woeseiaceae;g__Woeseia
+0.2795	0.001171	0.2795	0.001171	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Woeseiales;f__Woeseiaceae;g__Woeseia;s__Woeseia oceani
+0	0	0.4381	0.001835	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__21-64-14
+0	0	0.4381	0.001835	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__21-64-14;f__21-64-14
+0	0	0.4381	0.001835	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__21-64-14;f__21-64-14;g__BMS3Abin12
+0.4381	0.001835	0.4381	0.001835	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__21-64-14;f__21-64-14;g__BMS3Abin12;s__BMS3Abin12 sp002897735
+0	0	2.446	0.01025	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__JAKAQQ01
+0	0	2.446	0.01025	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__JAKAQQ01;f__JAKAQQ01
+0	0	2.446	0.01025	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__JAKAQQ01;f__JAKAQQ01;g__JAJZNM01
+2.446	0.01025	2.446	0.01025	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__JAKAQQ01;f__JAKAQQ01;g__JAJZNM01;s__JAJZNM01 sp027365475
+3.073	0.01287	9.054	0.03792	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__SAR86
+0.5784	0.002423	0.8658	0.003626	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__SAR86;f__SAR86
+0	0	0.2751	0.001152	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__SAR86;f__SAR86;g__GCA-2730855
+0.2751	0.001152	0.2751	0.001152	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__SAR86;f__SAR86;g__GCA-2730855;s__GCA-2730855 sp902554355
+0	0	0.0123	5.153e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__SAR86;f__SAR86;g__GCA-2707915
+0.0123	5.153e-05	0.0123	5.153e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__SAR86;f__SAR86;g__GCA-2707915;s__GCA-2707915 sp902611645
+0	0	0.1373	0.000575	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__SAR86;f__TMED112
+0	0	0.1373	0.000575	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__SAR86;f__TMED112;g__TMED112
+0.1373	0.000575	0.1373	0.000575	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__SAR86;f__TMED112;g__TMED112;s__TMED112 sp902579195
+4.969	0.02081	4.969	0.02081	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__SAR86;f__AG-339-G14
+0	0	9.607e-05	4.024e-07	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__SAR86;f__AG-339-G14;g__AG-339-G14
+9.607e-05	4.024e-07	9.607e-05	4.024e-07	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__SAR86;f__AG-339-G14;g__AG-339-G14;s__AG-339-G14 sp902527995
+0	0	9.016e-05	3.777e-07	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__SAR86;f__AG-339-G14;g__MEDG-81
+9.016e-05	3.777e-07	9.016e-05	3.777e-07	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__SAR86;f__AG-339-G14;g__MEDG-81;s__MEDG-81 sp902514645
+0.008698	3.643e-05	0.008698	3.643e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__SAR86;f__D2472
+0	0	0.5278	0.002211	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Acidithiobacillales
+0	0	0.5278	0.002211	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Acidithiobacillales;f__Acidithiobacillaceae
+0	0	0.5278	0.002211	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Acidithiobacillales;f__Acidithiobacillaceae;g__Acidithiobacillus
+0.5278	0.002211	0.5278	0.002211	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Acidithiobacillales;f__Acidithiobacillaceae;g__Acidithiobacillus;s__Acidithiobacillus ferrianus
+1.482	0.006209	18.4	0.07708	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales
+2.382	0.009977	7.789	0.03263	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae
+0	0	0.3243	0.001358	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Parasutterella
+0.3243	0.001358	0.3243	0.001358	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Parasutterella;s__Parasutterella muris
+0	0	0.03604	0.000151	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Mesosutterella
+0.03604	0.000151	0.03604	0.000151	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Mesosutterella;s__Mesosutterella massiliensis
+0.1055	0.000442	0.36	0.001508	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Telluria
+0.173	0.0007248	0.173	0.0007248	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Telluria;s__Telluria psychrophila
+0.08146	0.0003412	0.08146	0.0003412	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Telluria;s__Telluria sp001424165
+0.0002123	8.891e-07	0.1817	0.0007612	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Comamonas
+0.09372	0.0003926	0.09372	0.0003926	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Comamonas;s__Comamonas fluminis
+0.08778	0.0003677	0.08778	0.0003677	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Comamonas;s__Comamonas sp030162935
+0.08065	0.0003378	0.2311	0.000968	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Rubrivivax
+0.107	0.0004481	0.107	0.0004481	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Rubrivivax;s__Rubrivivax sp026932425
+0.04347	0.0001821	0.04347	0.0001821	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Rubrivivax;s__Rubrivivax gelatinosus
+0	0	0.1418	0.0005939	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Rhizobacter
+0.1418	0.0005939	0.1418	0.0005939	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Rhizobacter;s__Rhizobacter sp900142965
+0	0	0.04224	0.0001769	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Paucibacter_A
+0.04224	0.0001769	0.04224	0.0001769	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Paucibacter_A;s__Paucibacter_A sp001477625
+0	0	0.1168	0.0004894	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Piscinibacter
+0.1168	0.0004894	0.1168	0.0004894	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Piscinibacter;s__Piscinibacter sp029779845
+0	0	0.3539	0.001482	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Methylibium
+0.3539	0.001482	0.3539	0.001482	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Methylibium;s__Methylibium sp013817345
+0	0	0.007736	3.241e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__JAKZFD01
+0.007736	3.241e-05	0.007736	3.241e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__JAKZFD01;s__JAKZFD01 sp022549225
+0	0	1.503e-06	6.296e-09	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Robbsia
+1.503e-06	6.296e-09	1.503e-06	6.296e-09	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Robbsia;s__Robbsia andropogonis
+0	0	0.2208	0.0009248	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Aquabacterium
+0.2208	0.0009248	0.2208	0.0009248	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Aquabacterium;s__Aquabacterium sp918741295
+0	0	4.708e-06	1.972e-08	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Leptothrix
+4.708e-06	1.972e-08	4.708e-06	1.972e-08	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Leptothrix;s__Leptothrix cholodnii
+0.06104	0.0002557	0.06104	0.0002557	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Polaromonas
+0.2633	0.001103	0.4242	0.001777	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Acidovorax
+0.1609	0.0006739	0.1609	0.0006739	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Acidovorax;s__Acidovorax sp000302535
+5.212e-05	2.183e-07	5.212e-05	2.183e-07	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Acidovorax;s__Acidovorax sp019219095
+0	0	1.176e-05	4.925e-08	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Pseudorhodoferax
+1.176e-05	4.925e-08	1.176e-05	4.925e-08	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Pseudorhodoferax;s__Pseudorhodoferax soli
+0	0	0.04287	0.0001796	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__MR-S7
+0.04287	0.0001796	0.04287	0.0001796	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__MR-S7;s__MR-S7 sp000400995
+0.07537	0.0003157	0.07539	0.0003158	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Limnohabitans_A
+1.387e-05	5.811e-08	1.387e-05	5.811e-08	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Limnohabitans_A;s__Limnohabitans_A sp001412535
+0	0	0.03924	0.0001643	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Pelomonas
+0.03924	0.0001643	0.03924	0.0001643	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Pelomonas;s__Pelomonas sp001425055
+0	0	0.03925	0.0001644	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Mitsuaria
+0.03925	0.0001644	0.03925	0.0001644	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Mitsuaria;s__Mitsuaria sp001653795
+0.5429	0.002274	1.609	0.006741	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Janthinobacterium
+0.5329	0.002232	0.5329	0.002232	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Janthinobacterium;s__Janthinobacterium sp900156175
+0.5335	0.002235	0.5335	0.002235	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Janthinobacterium;s__Janthinobacterium sp030944405
+0	0	0.1101	0.0004613	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Ideonella
+0.1101	0.0004613	0.1101	0.0004613	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Ideonella;s__Ideonella oryzae
+0	0	0.1234	0.0005169	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Hylemonella
+0.1234	0.0005169	0.1234	0.0005169	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Hylemonella;s__Hylemonella gracilis_A
+0	0	0.01108	4.641e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__JAEUPI01
+0.01108	4.641e-05	0.01108	4.641e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__JAEUPI01;s__JAEUPI01 sp026125795
+0	0	0.8553	0.003583	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Pseudoduganella
+0.8553	0.003583	0.8553	0.003583	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae;g__Pseudoduganella;s__Pseudoduganella sp001425005
+0	0	2.314	0.009693	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Usitatibacteraceae
+0	0	2.314	0.009693	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Usitatibacteraceae;g__Usitatibacter
+2.314	0.009693	2.314	0.009693	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Usitatibacteraceae;g__Usitatibacter;s__Usitatibacter rugosus
+0.2243	0.0009395	0.2931	0.001228	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Chitinibacteraceae
+0	0	0.05603	0.0002347	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Chitinibacteraceae;g__Chitinibacter
+0.05603	0.0002347	0.05603	0.0002347	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Chitinibacteraceae;g__Chitinibacter;s__Chitinibacter fontanus
+0	0	0.01276	5.346e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Chitinibacteraceae;g__Silvimonas
+0.01276	5.346e-05	0.01276	5.346e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Chitinibacteraceae;g__Silvimonas;s__Silvimonas iriomotensis
+0	0	0.01154	4.835e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Ga0077523
+0	0	0.01154	4.835e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Ga0077523;g__Ga0077523
+0.01154	4.835e-05	0.01154	4.835e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Ga0077523;g__Ga0077523;s__Ga0077523 sp016713305
+1.065	0.004463	3.062	0.01283	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Gallionellaceae
+0	0	0.9159	0.003836	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Gallionellaceae;g__Ferriphaselus
+0.9159	0.003836	0.9159	0.003836	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Gallionellaceae;g__Ferriphaselus;s__Ferriphaselus sp000746095
+0	0	1.081	0.004527	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Gallionellaceae;g__Nitrotoga
+1.081	0.004527	1.081	0.004527	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Gallionellaceae;g__Nitrotoga;s__Nitrotoga sp013168275
+3.316e-05	1.389e-07	1.189	0.004982	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Rhodocyclaceae
+0.129	0.0005404	0.9998	0.004188	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Rhodocyclaceae;g__Azonexus
+0.8525	0.003571	0.8525	0.003571	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Rhodocyclaceae;g__Azonexus;s__Azonexus sp003441615
+0.01277	5.347e-05	0.01277	5.347e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Rhodocyclaceae;g__Azonexus;s__Azonexus australiensis_B
+0.005516	2.31e-05	0.005516	2.31e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Rhodocyclaceae;g__Azonexus;s__Azonexus fungiphilus
+0.02693	0.0001128	0.1895	0.0007936	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Rhodocyclaceae;g__Thauera
+0.1625	0.0006808	0.1625	0.0006808	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Rhodocyclaceae;g__Thauera;s__Thauera linaloolentis
+0	0	0.1133	0.0004748	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__UBA3065
+0	0	0.1133	0.0004748	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__UBA3065;g__UBA3065
+0.1133	0.0004748	0.1133	0.0004748	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__UBA3065;g__UBA3065;s__UBA3065 sp018882975
+0.2895	0.001213	1.384	0.005798	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Nitrosomonadaceae
+0.07125	0.0002985	1.071	0.004484	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Nitrosomonadaceae;g__Nitrosomonas
+3.269e-06	1.369e-08	3.269e-06	1.369e-08	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Nitrosomonadaceae;g__Nitrosomonas;s__Nitrosomonas nitrosa
+0.9992	0.004186	0.9992	0.004186	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Nitrosomonadaceae;g__Nitrosomonas;s__Nitrosomonas sp019745325
+0.02415	0.0001011	0.02415	0.0001011	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Nitrosomonadaceae;g__Nitrosospira
+0	0	0.7525	0.003152	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Chitinimonadaceae
+0	0	0.7525	0.003152	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Chitinimonadaceae;g__Chitinimonas
+0.7525	0.003152	0.7525	0.003152	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Chitinimonadaceae;g__Chitinimonas;s__Chitinimonas sp002735695
+0	0	0.01061	4.445e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae_A
+0	0	0.01061	4.445e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae_A;g__Kinetoplastibacterium
+0.01061	4.445e-05	0.01061	4.445e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Burkholderiales;f__Burkholderiaceae_A;g__Kinetoplastibacterium;s__Kinetoplastibacterium sorsogonicusi
+0	0	2.006	0.008404	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Coxiellales
+0.1501	0.0006289	2.006	0.008404	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Coxiellales;f__Coxiellaceae
+0	0	1.321	0.005533	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Coxiellales;f__Coxiellaceae;g__JAHFRQ01
+1.321	0.005533	1.321	0.005533	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Coxiellales;f__Coxiellaceae;g__JAHFRQ01;s__JAHFRQ01 sp023266215
+0	0	0.5354	0.002243	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Coxiellales;f__Coxiellaceae;g__Coxiella
+0.5354	0.002243	0.5354	0.002243	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Coxiellales;f__Coxiellaceae;g__Coxiella;s__Coxiella sp009883795
+0	0	0.04499	0.0001885	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Diplorickettsiales
+0	0	0.04499	0.0001885	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Diplorickettsiales;f__Diplorickettsiaceae
+0	0	0.04499	0.0001885	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Diplorickettsiales;f__Diplorickettsiaceae;g__Rickettsiella_B
+0.04499	0.0001885	0.04499	0.0001885	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Diplorickettsiales;f__Diplorickettsiaceae;g__Rickettsiella_B;s__Rickettsiella_B viridis
+0	0	0.5521	0.002313	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__DSM-16500
+0	0	0.5521	0.002313	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__DSM-16500;f__DSM-16500
+0	0	0.5521	0.002313	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__DSM-16500;f__DSM-16500;g__JABDGC01
+0.5521	0.002313	0.5521	0.002313	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__DSM-16500;f__DSM-16500;g__JABDGC01;s__JABDGC01 sp013286215
+0	0	4.812	0.02015	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__SLND01
+0	0	4.812	0.02015	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__SLND01;f__SLND01
+0	0	4.812	0.02015	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__SLND01;f__SLND01;g__Natronospira
+4.812	0.02015	4.812	0.02015	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__SLND01;f__SLND01;g__Natronospira;s__Natronospira sp007131825
+0	0	0.0006484	2.716e-06	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__HTCC5015
+0	0	0.0006484	2.716e-06	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__HTCC5015;f__HTCC5015
+0	0	0.0006484	2.716e-06	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__HTCC5015;f__HTCC5015;g__JACDDA01
+0.0006484	2.716e-06	0.0006484	2.716e-06	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__HTCC5015;f__HTCC5015;g__JACDDA01;s__JACDDA01 sp013817245
+0	0	0.127	0.0005321	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Arenicellales
+0	0	0.127	0.0005321	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Arenicellales;f__JAJDZL01
+0	0	0.127	0.0005321	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Arenicellales;f__JAJDZL01;g__JAJDZL01
+0.127	0.0005321	0.127	0.0005321	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Arenicellales;f__JAJDZL01;g__JAJDZL01;s__JAJDZL01 sp958295885
+0.0001923	8.055e-07	1.124	0.004709	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Nitrosococcales
+0	0	0.02609	0.0001093	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Nitrosococcales;f__Methylophagaceae
+0	0	0.02609	0.0001093	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Nitrosococcales;f__Methylophagaceae;g__Methylophaga
+0.02609	0.0001093	0.02609	0.0001093	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Nitrosococcales;f__Methylophagaceae;g__Methylophaga;s__Methylophaga sp030651745
+0	0	1.098	0.004599	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Nitrosococcales;f__Nitrosococcaceae
+0	0	1.098	0.004599	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Nitrosococcales;f__Nitrosococcaceae;g__Nitrosacidococcus
+1.098	0.004599	1.098	0.004599	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Nitrosococcales;f__Nitrosococcaceae;g__Nitrosacidococcus;s__Nitrosacidococcus tergens
+0	0	0.8103	0.003394	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__HK1
+0	0	0.8103	0.003394	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__HK1;f__HK1
+0	0	0.8103	0.003394	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__HK1;f__HK1;g__HK1
+0.8103	0.003394	0.8103	0.003394	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__HK1;f__HK1;g__HK1;s__HK1 sp958295835
+2.837	0.01188	5.073	0.02125	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Nitrococcales
+0	0	2.236	0.009366	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Nitrococcales;f__Halorhodospiraceae
+0	0	2.236	0.009366	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Nitrococcales;f__Halorhodospiraceae;g__Halorhodospira
+2.236	0.009366	2.236	0.009366	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Nitrococcales;f__Halorhodospiraceae;g__Halorhodospira;s__Halorhodospira neutriphila
+0	0	3.552	0.01488	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Steroidobacterales
+2.773	0.01161	3.552	0.01488	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Steroidobacterales;f__Steroidobacteraceae
+0	0	0.0001761	7.378e-07	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Steroidobacterales;f__Steroidobacteraceae;g__ZC4RG30
+0.0001761	7.378e-07	0.0001761	7.378e-07	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Steroidobacterales;f__Steroidobacteraceae;g__ZC4RG30;s__ZC4RG30 sp016720075
+0	0	0.7691	0.003222	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Steroidobacterales;f__Steroidobacteraceae;g__13-2-20CM-66-19
+0.7691	0.003222	0.7691	0.003222	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Steroidobacterales;f__Steroidobacteraceae;g__13-2-20CM-66-19;s__13-2-20CM-66-19 sp028293765
+0	0	0.01027	4.303e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Steroidobacterales;f__Steroidobacteraceae;g__Povalibacter
+0.01027	4.303e-05	0.01027	4.303e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Steroidobacterales;f__Steroidobacteraceae;g__Povalibacter;s__Povalibacter uvarum
+0	0	0.09173	0.0003842	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__JABCZS01
+0	0	0.09173	0.0003842	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__JABCZS01;f__JABCZS01
+0	0	0.09173	0.0003842	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__JABCZS01;f__JABCZS01;g__JAJFKJ01
+0.09173	0.0003842	0.09173	0.0003842	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__JABCZS01;f__JABCZS01;g__JAJFKJ01;s__JAJFKJ01 sp021773275
+0	0	2.832	0.01186	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Legionellales
+0.7502	0.003142	2.832	0.01186	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Legionellales;f__Legionellaceae
+0	0	0.3347	0.001402	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Legionellales;f__Legionellaceae;g__JACETI01
+0.3347	0.001402	0.3347	0.001402	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Legionellales;f__Legionellaceae;g__JACETI01;s__JACETI01 sp013911415
+0	0	1.287e-05	5.391e-08	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Legionellales;f__Legionellaceae;g__Legionella_D
+1.287e-05	5.391e-08	1.287e-05	5.391e-08	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Legionellales;f__Legionellaceae;g__Legionella_D;s__Legionella_D israelensis
+0	0	0.5373	0.002251	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Legionellales;f__Legionellaceae;g__Legionella_C
+0.5373	0.002251	0.5373	0.002251	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Legionellales;f__Legionellaceae;g__Legionella_C;s__Legionella_C birminghamensis
+0	0	0.003891	1.63e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Legionellales;f__Legionellaceae;g__Tatlockia
+0.003891	1.63e-05	0.003891	1.63e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Legionellales;f__Legionellaceae;g__Tatlockia;s__Tatlockia sp900640175
+1.028	0.004308	1.206	0.005052	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Legionellales;f__Legionellaceae;g__Legionella
+6.153e-05	2.577e-07	6.153e-05	2.577e-07	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Legionellales;f__Legionellaceae;g__Legionella;s__Legionella sp026191355
+0.1776	0.000744	0.1776	0.000744	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Legionellales;f__Legionellaceae;g__Legionella;s__Legionella lytica
+0	0	0.3034	0.001271	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__BW-2
+0	0	0.3034	0.001271	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__BW-2;f__BW-2
+0	0	0.3034	0.001271	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__BW-2;f__BW-2;g__JADFYS01
+0.3034	0.001271	0.3034	0.001271	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__BW-2;f__BW-2;g__JADFYS01;s__JADFYS01 sp015231435
+0	0	0.2894	0.001212	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__GCA-2729495
+0	0	0.2894	0.001212	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__GCA-2729495;f__GCA-2729495
+0	0	0.2894	0.001212	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__GCA-2729495;f__GCA-2729495;g__SHZI01
+0.2894	0.001212	0.2894	0.001212	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__GCA-2729495;f__GCA-2729495;g__SHZI01;s__SHZI01 sp024234935
+0	0	0.5922	0.00248	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales_A
+0	0	0.5922	0.00248	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales_A;f__Azotimanducaceae
+0	0	0.5922	0.00248	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales_A;f__Azotimanducaceae;g__Bin55
+0.5922	0.00248	0.5922	0.00248	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Pseudomonadales_A;f__Azotimanducaceae;g__Bin55;s__Bin55 sp026706935
+0	0	0.004696	1.967e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__GRL18
+0	0	0.004696	1.967e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__GRL18;f__GRL18
+0	0	0.004696	1.967e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__GRL18;f__GRL18;g__GRL18
+0.004696	1.967e-05	0.004696	1.967e-05	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__GRL18;f__GRL18;g__GRL18;s__GRL18 sp025655635
+0	0	0.0001266	5.303e-07	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__GCA-002705445
+0	0	0.0001266	5.303e-07	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__GCA-002705445;f__GCA-002716945
+0	0	0.0001266	5.303e-07	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__GCA-002705445;f__GCA-002716945;g__CACLCV01
+0.0001266	5.303e-07	0.0001266	5.303e-07	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__GCA-002705445;f__GCA-002716945;g__CACLCV01;s__CACLCV01 sp019651095
+0	0	2.277	0.009538	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__PS1
+1.119	0.004685	2.277	0.009538	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__PS1;f__Thioglobaceae
+0.4686	0.001963	0.6909	0.002894	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__PS1;f__Thioglobaceae;g__Pseudothioglobus
+0.2222	0.0009308	0.2222	0.0009308	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__PS1;f__Thioglobaceae;g__Pseudothioglobus;s__Pseudothioglobus sp902511025
+7.804e-05	3.269e-07	7.804e-05	3.269e-07	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__PS1;f__Thioglobaceae;g__Pseudothioglobus;s__Pseudothioglobus sp028345955
+0	0	0.3115	0.001305	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__PS1;f__Thioglobaceae;g__Ruthia
+0.3115	0.001305	0.3115	0.001305	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__PS1;f__Thioglobaceae;g__Ruthia;s__Ruthia sp016592615
+0	0	0.1561	0.0006538	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__PS1;f__Thioglobaceae;g__Thioglobus_A
+0.1561	0.0006538	0.1561	0.0006538	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__PS1;f__Thioglobaceae;g__Thioglobus_A;s__Thioglobus_A autotrophicus
+0	0	0.6284	0.002632	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Cardiobacteriales
+0	0	0.6284	0.002632	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Cardiobacteriales;f__Cardiobacteriaceae
+0	0	0.6284	0.002632	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Cardiobacteriales;f__Cardiobacteriaceae;g__Suttonella_A
+0.6284	0.002632	0.6284	0.002632	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Cardiobacteriales;f__Cardiobacteriaceae;g__Suttonella_A;s__Suttonella_A ornithocola
+0	0	1.194	0.005	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Ga0077536
+0	0	1.194	0.005	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Ga0077536;f__Ga0077536
+0	0	1.194	0.005	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Ga0077536;f__Ga0077536;g__Ga0077536
+1.194	0.005	1.194	0.005	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Ga0077536;f__Ga0077536;g__Ga0077536;s__Ga0077536 sp009692365
+0	0	6.105	0.02557	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Francisellales
+6.105	0.02557	6.105	0.02557	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Francisellales;f__Francisellaceae
+0	0	0.001384	5.799e-06	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__GCA-013348725
+0	0	0.001384	5.799e-06	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__GCA-013348725;f__GCA-013348725
+0	0	0.001384	5.799e-06	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__GCA-013348725;f__GCA-013348725;g__GCA-013348725
+0.001384	5.799e-06	0.001384	5.799e-06	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__GCA-013348725;f__GCA-013348725;g__GCA-013348725;s__GCA-013348725 sp013348725
+0	0	3.334e-06	1.397e-08	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Competibacterales
+0	0	3.334e-06	1.397e-08	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Competibacterales;f__Competibacteraceae
+0	0	3.334e-06	1.397e-08	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Competibacterales;f__Competibacteraceae;g__Contendobacter
+3.334e-06	1.397e-08	3.334e-06	1.397e-08	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Competibacterales;f__Competibacteraceae;g__Contendobacter;s__Contendobacter sp012031845
+0	0	0.04135	0.0001732	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Immundisolibacterales
+0	0	0.04135	0.0001732	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Immundisolibacterales;f__Immundisolibacteraceae
+0	0	0.04135	0.0001732	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Immundisolibacterales;f__Immundisolibacteraceae;g__Immundisolibacter
+0.04135	0.0001732	0.04135	0.0001732	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Immundisolibacterales;f__Immundisolibacteraceae;g__Immundisolibacter;s__Immundisolibacter sp014359565
+0	0	0.3505	0.001468	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Beggiatoales
+0	0	0.3505	0.001468	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Beggiatoales;f__Beggiatoaceae
+0	0	0.3505	0.001468	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Beggiatoales;f__Beggiatoaceae;g__Thioploca
+0.3505	0.001468	0.3505	0.001468	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Beggiatoales;f__Beggiatoaceae;g__Thioploca;s__Thioploca sp012032555
+0	0	0.7015	0.002939	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Halothiobacillales
+0	0	0.7015	0.002939	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Halothiobacillales;f__Halothiobacillaceae
+0	0	0.7015	0.002939	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Halothiobacillales;f__Halothiobacillaceae;g__Guyparkeria
+0.7015	0.002939	0.7015	0.002939	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Halothiobacillales;f__Halothiobacillaceae;g__Guyparkeria;s__Guyparkeria hydrothermalis_A
+0	0	0.1553	0.0006505	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__UBA11654
+0	0	0.1553	0.0006505	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__UBA11654;f__UBA11654
+0	0	0.1553	0.0006505	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__UBA11654;f__UBA11654;g__UBA11654
+0.1553	0.0006505	0.1553	0.0006505	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__UBA11654;f__UBA11654;g__UBA11654;s__UBA11654 sp001629325
+0	0	0.07349	0.0003078	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__UBA1113
+0	0	0.07349	0.0003078	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__UBA1113;f__UBA1113
+0	0	0.07349	0.0003078	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__UBA1113;f__UBA1113;g__VFKP01
+0.07349	0.0003078	0.07349	0.0003078	d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__UBA1113;f__UBA1113;g__VFKP01;s__VFKP01 sp021782495

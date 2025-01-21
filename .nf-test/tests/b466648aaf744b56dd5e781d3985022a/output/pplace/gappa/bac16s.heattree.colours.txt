@@ -1,0 +1,5 @@
+    At 0.000: Label '0', Color #81bfff
+    At 0.315: Label '5', Color #a96fd6
+    At 0.631: Label '10', Color #8e2f8c
+    At 0.946: Label '15', Color #150715
+    At 1.000: Label '15.86', Color #000000

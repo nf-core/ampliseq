@@ -1,0 +1,4 @@
+"NFCORE_AMPLISEQ:AMPLISEQ:SUMMARY_REPORT":
+    R: 4.2.3
+    rmarkdown: 2.22
+    knitr: 1.43

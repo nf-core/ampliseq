@@ -1,0 +1,1 @@
+learnErrors	nbases = 1e8, nreads = NULL, randomize = TRUE, MAX_CONSIST = 10, OMEGA_C = 0, qualityType = "Auto",errorEstimationFunction = loessErrfun

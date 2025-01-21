@@ -1,0 +1,5 @@
+Sample	cutadapt_version	pairs_processed	r1_with_adapters	r2_with_adapters	pairs_too_short	pairs_written	bp_processed	bp_written	percent_trimmed	pairs_filtered_unexplained
+sampleID_1	4.6	2500	1840	1821	0	1812	976805	831596	14.865710146856332	688
+sampleID_1a	4.6	2500	2303	2248	0	2221	1215218	1019985	16.065677104848678	279
+sampleID_2	4.6	2500	2389	2369	0	2350	1214380	1079069	11.142393649434279	150
+sampleID_2a	4.6	2500	2319	2277	0	2244	1217285	1031109	15.294364097150625	256

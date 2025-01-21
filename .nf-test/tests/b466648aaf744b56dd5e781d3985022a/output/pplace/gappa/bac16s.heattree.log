@@ -1,0 +1,76 @@
+                                              ....      ....  
+                                             '' '||.   .||'   
+                                                  ||  ||      
+                                                  '|.|'       
+     ...'   ....   ... ...  ... ...   ....        .|'|.       
+    |  ||  '' .||   ||'  ||  ||'  || '' .||      .|'  ||      
+     |''   .|' ||   ||    |  ||    | .|' ||     .|'|.  ||     
+    '....  '|..'|'. ||...'   ||...'  '|..'|.    '||'    ||:.  
+    '....'          ||       ||                               
+                   ''''     ''''   v0.8.0 (c) 2017-2022
+                                   by Lucas Czech and Pierre Barbera
+
+Invocation:                        gappa examine heat-tree --threads 2 --file-prefix bac16s.heattree. --jplace-path bac16s.epa_result.jplace.gz --write-nexus-tree --write-phyloxml-tree --write-svg-tree --log-file bac16s.heattree.log
+Command:                           gappa examine heat-tree
+
+Input:
+  --jplace-path                    bac16s.epa_result.jplace.gz
+
+Settings:
+  --mass-norm                      absolute
+  --point-mass                     false
+  --ignore-multiplicities          false
+
+Color:
+  --color-list                     BuPuBk
+  --reverse-color-list             false
+  --under-color                    #ff00ff
+  --clip-under                     false
+  --over-color                     #00ffff
+  --clip-over                      false
+  --clip                           false
+  --mask-color                     #ffff00
+  --log-scaling                    false
+  --min-value                      0
+  --max-value                      1
+  --mask-value                     nan
+
+Output:
+  --out-dir                        .
+  --file-prefix                    bac16s.heattree.
+  --file-suffix
+
+Tree Output:
+  --write-newick-tree              false
+  --write-nexus-tree               true
+  --write-phyloxml-tree            true
+  --write-svg-tree                 true
+
+Svg Tree Output:
+  --svg-tree-shape                 circular
+  --svg-tree-type                  cladogram
+  --svg-tree-stroke-width          5
+  --svg-tree-ladderize             false
+
+Global Options:
+  --allow-file-overwriting         false
+  --verbose                        false
+  --threads                        2
+  --log-file                       bac16s.heattree.log
+
+Run the following command to get the references that need to be cited:
+`gappa tools citation Czech2020-genesis-and-gappa`
+
+Started 2025-01-21 15:48:58
+
+Found 1 jplace file
+Output options --write-nexus-tree and --write-phyloxml-tree produce trees with colored branches. These formats are however not able to store the legend, that is, which color represents which value. Thus, use to following positions to create a legend (with linear color interpolation between the positions). These positions range from 0.0 (lowest) to 1.0 (heighest), and are labeled with the values and colors represented by those positions.
+    At 0.000: Label '0', Color #81bfff
+    At 0.315: Label '5', Color #a96fd6
+    At 0.631: Label '10', Color #8e2f8c
+    At 0.946: Label '15', Color #150715
+    At 1.000: Label '15.86', Color #000000
+Alternatively, use the option --write-svg-tree to create an Svg file from which the color legend can be copied.
+
+
+Finished 2025-01-21 15:48:58

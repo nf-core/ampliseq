@@ -1,0 +1,1 @@
+filterAndTrim	truncLen = c(230, 229),maxN = 0, truncQ = 2, trimRight = 0, minQ = 0, rm.lowcomplex = 0, orient.fwd = NULL, matchIDs = FALSE, id.sep = "\s", id.field = NULL, n = 1e+05, OMP = TRUE, qualityType = "Auto",maxEE = c(2, 2),trimLeft = 0, minLen = 50, maxLen = Inf, rm.phix = TRUE

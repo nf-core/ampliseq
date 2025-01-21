@@ -1,0 +1,879 @@
+{
+    "input": null,
+    "input_fasta": null,
+    "input_folder": null,
+    "multiregion": null,
+    "extension": "/*_R{1,2}_001.fastq.gz",
+    "pacbio": false,
+    "iontorrent": false,
+    "FW_primer": null,
+    "RV_primer": null,
+    "classifier": null,
+    "metadata": null,
+    "save_intermediates": false,
+    "trunc_qmin": 25,
+    "trunc_rmin": 0.75,
+    "trunclenf": null,
+    "trunclenr": null,
+    "max_ee": 2,
+    "max_len": null,
+    "ignore_failed_filtering": false,
+    "min_len": 50,
+    "metadata_category": null,
+    "metadata_category_barplot": null,
+    "double_primer": false,
+    "retain_untrimmed": false,
+    "cutadapt_min_overlap": 3,
+    "cutadapt_max_error_rate": 0.1,
+    "exclude_taxa": "mitochondria,chloroplast",
+    "min_frequency": 1,
+    "min_samples": 1,
+    "multiple_sequencing_runs": false,
+    "single_end": false,
+    "sample_inference": "independent",
+    "illumina_novaseq": false,
+    "illumina_pe_its": false,
+    "concatenate_reads": false,
+    "cut_its": "none",
+    "its_partial": 0,
+    "picrust": false,
+    "sbdiexport": false,
+    "addsh": false,
+    "tax_agglom_min": 2,
+    "tax_agglom_max": 6,
+    "min_read_counts": 1,
+    "ignore_failed_trimming": false,
+    "ignore_empty_input_files": false,
+    "qiime_adonis_formula": null,
+    "seed": 100,
+    "filter_ssu": null,
+    "min_len_asv": null,
+    "max_len_asv": null,
+    "filter_codons": null,
+    "orf_start": 1,
+    "orf_end": null,
+    "stop_codons": "TAA,TAG",
+    "pplace_tree": null,
+    "pplace_sheet": null,
+    "pplace_aln": null,
+    "pplace_model": null,
+    "pplace_alnmethod": "hmmer",
+    "pplace_taxonomy": null,
+    "pplace_name": null,
+    "diversity_rarefaction_depth": 500,
+    "ancom_sample_min_count": 1,
+    "vsearch_cluster": null,
+    "vsearch_cluster_id": 0.97,
+    "ancom": false,
+    "ancombc": false,
+    "ancombc_effect_size": 1,
+    "ancombc_significance": 0.05,
+    "ancombc_formula": null,
+    "ancombc_formula_reflvl": null,
+    "raise_filter_stacksize": true,
+    "report_template": "/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/assets/report_template.Rmd",
+    "report_css": "/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/assets/nf-core_style.css",
+    "report_logo": "/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/assets/nf-core-ampliseq_logo_light_long.png",
+    "report_title": "Summary of analysis results",
+    "report_abstract": null,
+    "skip_cutadapt": false,
+    "skip_dada_quality": false,
+    "skip_barrnap": false,
+    "skip_qiime": false,
+    "skip_qiime_downstream": false,
+    "skip_fastqc": false,
+    "skip_alpha_rarefaction": false,
+    "skip_abundance_tables": false,
+    "skip_barplot": false,
+    "skip_taxonomy": false,
+    "skip_dada_taxonomy": false,
+    "skip_dada_addspecies": false,
+    "skip_diversity_indices": false,
+    "skip_phyloseq": false,
+    "skip_tse": false,
+    "skip_multiqc": false,
+    "skip_report": false,
+    "dada_ref_taxonomy": "silva=138.2",
+    "dada_assign_taxlevels": null,
+    "dada_ref_tax_custom": null,
+    "dada_ref_tax_custom_sp": null,
+    "cut_dada_ref_taxonomy": false,
+    "dada_addspecies_allowmultiple": false,
+    "dada_taxonomy_rc": false,
+    "sintax_ref_taxonomy": null,
+    "qiime_ref_taxonomy": null,
+    "qiime_ref_tax_custom": null,
+    "kraken2_ref_taxonomy": null,
+    "kraken2_assign_taxlevels": null,
+    "kraken2_ref_tax_custom": null,
+    "kraken2_confidence": 0.0,
+    "sidle_ref_taxonomy": null,
+    "sidle_ref_tax_custom": null,
+    "sidle_ref_tree_custom": null,
+    "multiqc_config": null,
+    "multiqc_title": null,
+    "multiqc_logo": null,
+    "max_multiqc_email_size": "25.MB",
+    "multiqc_methods_description": null,
+    "outdir": "/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/baeaff5d94d89a887073d115ef4b6b40/output",
+    "publish_dir_mode": "copy",
+    "email": null,
+    "email_on_fail": null,
+    "plaintext_email": false,
+    "monochrome_logs": false,
+    "hook_url": null,
+    "help": false,
+    "help_full": false,
+    "show_hidden": false,
+    "version": false,
+    "pipelines_testdata_base_path": "https://raw.githubusercontent.com/nf-core/test-datasets/",
+    "config_profile_name": null,
+    "config_profile_description": null,
+    "custom_config_version": "master",
+    "custom_config_base": "https://raw.githubusercontent.com/nf-core/configs/master",
+    "config_profile_contact": null,
+    "config_profile_url": null,
+    "validate_params": true,
+    "dada_ref_databases": {
+        "coidb": {
+            "title": "COIDB - CO1 Taxonomy Database - Release 221216",
+            "file": [
+                "https://figshare.scilifelab.se/ndownloader/files/38787072",
+                "https://figshare.scilifelab.se/ndownloader/files/38787069"
+            ],
+            "citation": "Sundh J, Manoharan L, Iwaszkiewicz-Eggebrecht E, Miraldo A, Andersson A, Ronquist F. COI reference sequences from BOLD DB. doi: https://doi.org/10.17044/scilifelab.20514192.v2",
+            "fmtscript": "taxref_reformat_coidb.sh",
+            "dbversion": "COIDB 221216 (https://doi.org/10.17044/scilifelab.20514192.v2)"
+        },
+        "coidb=221216": {
+            "title": "COIDB - CO1 Taxonomy Database - Release 221216",
+            "file": [
+                "https://figshare.scilifelab.se/ndownloader/files/38787072",
+                "https://figshare.scilifelab.se/ndownloader/files/38787069"
+            ],
+            "citation": "Sundh J, Manoharan L, Iwaszkiewicz-Eggebrecht E, Miraldo A, Andersson A, Ronquist F. COI reference sequences from BOLD DB. doi: https://doi.org/10.17044/scilifelab.20514192.v2",
+            "fmtscript": "taxref_reformat_coidb.sh",
+            "dbversion": "COIDB 221216 (https://doi.org/10.17044/scilifelab.20514192.v2)"
+        },
+        "gtdb": {
+            "title": "GTDB - Genome Taxonomy Database - Release R09-RS220",
+            "file": [
+                "https://data.gtdb.ecogenomic.org/releases/release220/220.0/genomic_files_reps/bac120_ssu_reps_r220.fna.gz",
+                "https://data.gtdb.ecogenomic.org/releases/release220/220.0/genomic_files_reps/ar53_ssu_reps_r220.fna.gz"
+            ],
+            "citation": "Parks DH, Chuvochina M, Waite DW, Rinke C, Skarshewski A, Chaumeil PA, Hugenholtz P. A standardized bacterial taxonomy based on genome phylogeny substantially revises the tree of life. Nat Biotechnol. 2018 Nov;36(10):996-1004. doi: 10.1038/nbt.4229. Epub 2018 Aug 27. PMID: 30148503.",
+            "fmtscript": "taxref_reformat_gtdb.sh",
+            "dbversion": "GTDB R09-RS220 (https://data.gtdb.ecogenomic.org/releases/release220/220.0)"
+        },
+        "gtdb=R09-RS220": {
+            "title": "GTDB - Genome Taxonomy Database - Release R09-RS220",
+            "file": [
+                "https://data.gtdb.ecogenomic.org/releases/release220/220.0/genomic_files_reps/bac120_ssu_reps_r220.fna.gz",
+                "https://data.gtdb.ecogenomic.org/releases/release220/220.0/genomic_files_reps/ar53_ssu_reps_r220.fna.gz"
+            ],
+            "citation": "Parks DH, Chuvochina M, Waite DW, Rinke C, Skarshewski A, Chaumeil PA, Hugenholtz P. A standardized bacterial taxonomy based on genome phylogeny substantially revises the tree of life. Nat Biotechnol. 2018 Nov;36(10):996-1004. doi: 10.1038/nbt.4229. Epub 2018 Aug 27. PMID: 30148503.",
+            "fmtscript": "taxref_reformat_gtdb.sh",
+            "dbversion": "GTDB R09-RS220 (https://data.gtdb.ecogenomic.org/releases/release220/220.0)"
+        },
+        "gtdb=R08-RS214": {
+            "title": "GTDB - Genome Taxonomy Database - Release R08-RS214.1",
+            "file": [
+                "https://data.gtdb.ecogenomic.org/releases/release214/214.1/genomic_files_reps/bac120_ssu_reps_r214.tar.gz",
+                "https://data.gtdb.ecogenomic.org/releases/release214/214.1/genomic_files_reps/ar53_ssu_reps_r214.tar.gz"
+            ],
+            "citation": "Parks DH, Chuvochina M, Waite DW, Rinke C, Skarshewski A, Chaumeil PA, Hugenholtz P. A standardized bacterial taxonomy based on genome phylogeny substantially revises the tree of life. Nat Biotechnol. 2018 Nov;36(10):996-1004. doi: 10.1038/nbt.4229. Epub 2018 Aug 27. PMID: 30148503.",
+            "fmtscript": "taxref_reformat_gtdb.sh",
+            "dbversion": "GTDB R08-RS214.1 (https://data.gtdb.ecogenomic.org/releases/release214/214.1)"
+        },
+        "gtdb=R07-RS207": {
+            "title": "GTDB - Genome Taxonomy Database - Release R07-RS207",
+            "file": [
+                "https://data.gtdb.ecogenomic.org/releases/release207/207.0/genomic_files_reps/bac120_ssu_reps_r207.tar.gz",
+                "https://data.gtdb.ecogenomic.org/releases/release207/207.0/genomic_files_reps/ar53_ssu_reps_r207.tar.gz"
+            ],
+            "citation": "Parks DH, Chuvochina M, Waite DW, Rinke C, Skarshewski A, Chaumeil PA, Hugenholtz P. A standardized bacterial taxonomy based on genome phylogeny substantially revises the tree of life. Nat Biotechnol. 2018 Nov;36(10):996-1004. doi: 10.1038/nbt.4229. Epub 2018 Aug 27. PMID: 30148503.",
+            "fmtscript": "taxref_reformat_gtdb.sh",
+            "dbversion": "GTDB R07-RS207 (https://data.gtdb.ecogenomic.org/releases/release207/207.0)"
+        },
+        "gtdb=R06-RS202": {
+            "title": "GTDB - Genome Taxonomy Database - Release R06-RS202",
+            "file": [
+                "https://data.gtdb.ecogenomic.org/releases/release202/202.0/genomic_files_reps/bac120_ssu_reps_r202.tar.gz",
+                "https://data.gtdb.ecogenomic.org/releases/release202/202.0/genomic_files_reps/ar122_ssu_reps_r202.tar.gz"
+            ],
+            "citation": "Parks DH, Chuvochina M, Waite DW, Rinke C, Skarshewski A, Chaumeil PA, Hugenholtz P. A standardized bacterial taxonomy based on genome phylogeny substantially revises the tree of life. Nat Biotechnol. 2018 Nov;36(10):996-1004. doi: 10.1038/nbt.4229. Epub 2018 Aug 27. PMID: 30148503.",
+            "fmtscript": "taxref_reformat_gtdb.sh",
+            "dbversion": "GTDB R06-RS202 (https://data.gtdb.ecogenomic.org/releases/release202/202.0/)"
+        },
+        "gtdb=R05-RS95": {
+            "title": "GTDB - Genome Taxonomy Database - Release R05-RS95",
+            "file": [
+                "https://data.gtdb.ecogenomic.org/releases/release95/95.0/genomic_files_reps/bac120_ssu_reps_r95.tar.gz",
+                "https://data.gtdb.ecogenomic.org/releases/release95/95.0/genomic_files_reps/ar122_ssu_reps_r95.tar.gz"
+            ],
+            "citation": "Parks DH, Chuvochina M, Waite DW, Rinke C, Skarshewski A, Chaumeil PA, Hugenholtz P. A standardized bacterial taxonomy based on genome phylogeny substantially revises the tree of life. Nat Biotechnol. 2018 Nov;36(10):996-1004. doi: 10.1038/nbt.4229. Epub 2018 Aug 27. PMID: 30148503.",
+            "fmtscript": "taxref_reformat_gtdb.sh",
+            "dbversion": "GTDB R05-RS95 (https://data.gtdb.ecogenomic.org/releases/release95/95.0/)"
+        },
+        "midori2-co1": {
+            "title": "MIDORI2 - CO1 Taxonomy Database - Release GB250",
+            "file": [
+                "http://reference-midori.info/download/Databases/GenBank250/DADA2_sp/uniq/MIDORI2_UNIQ_NUC_SP_GB250_CO1_DADA2.fasta.gz"
+            ],
+            "citation": "Machida RJ, Leray M, Ho SL, Knowlton N. Metazoan mitochondrial gene sequence reference datasets for taxonomic assignment of environmental samples. Sci Data. 2017 Mar 14;4:170027. doi: 10.1038/sdata.2017.27. PMID: 28291235; PMCID: PMC5349245.",
+            "fmtscript": "taxref_reformat_midori2.sh",
+            "dbversion": "MIDORI2-CO1 GB250 (http://reference-midori.info/download/Databases/GenBank250/DADA2_sp/uniq/MIDORI2_UNIQ_NUC_SP_GB250_CO1_DADA2.fasta.gz)",
+            "taxlevels": "Phylum,Class,Order,Family,Genus,Species"
+        },
+        "midori2-co1=gb250": {
+            "title": "MIDORI2 - CO1 Taxonomy Database - Release GB250",
+            "file": [
+                "http://reference-midori.info/download/Databases/GenBank250/DADA2_sp/uniq/MIDORI2_UNIQ_NUC_SP_GB250_CO1_DADA2.fasta.gz"
+            ],
+            "citation": "Machida RJ, Leray M, Ho SL, Knowlton N. Metazoan mitochondrial gene sequence reference datasets for taxonomic assignment of environmental samples. Sci Data. 2017 Mar 14;4:170027. doi: 10.1038/sdata.2017.27. PMID: 28291235; PMCID: PMC5349245.",
+            "fmtscript": "taxref_reformat_midori2.sh",
+            "dbversion": "MIDORI2-CO1 GB250 (http://reference-midori.info/download/Databases/GenBank250/DADA2_sp/uniq/MIDORI2_UNIQ_NUC_SP_GB250_CO1_DADA2.fasta.gz)",
+            "taxlevels": "Phylum,Class,Order,Family,Genus,Species"
+        },
+        "pr2": {
+            "title": "PR2 - Protist Reference Ribosomal Database - Version 5.0.0",
+            "file": [
+                "https://github.com/pr2database/pr2database/releases/download/v5.0.0/pr2_version_5.0.0_SSU_dada2.fasta.gz",
+                "https://github.com/pr2database/pr2database/releases/download/v5.0.0/pr2_version_5.0.0_SSU_UTAX.fasta.gz"
+            ],
+            "citation": "Guillou L, Bachar D, Audic S, Bass D, Berney C, Bittner L, Boutte C, Burgaud G, de Vargas C, Decelle J, Del Campo J, Dolan JR, Dunthorn M, Edvardsen B, Holzmann M, Kooistra WH, Lara E, Le Bescot N, Logares R, Mah\u00e9 F, Massana R, Montresor M, Morard R, Not F, Pawlowski J, Probert I, Sauvadet AL, Siano R, Stoeck T, Vaulot D, Zimmermann P, Christen R. The Protist Ribosomal Reference database (PR2): a catalog of unicellular eukaryote small sub-unit rRNA sequences with curated taxonomy. Nucleic Acids Res. 2013 Jan;41(Database issue):D597-604. doi: 10.1093/nar/gks1160. Epub 2012 Nov 27. PMID: 23193267; PMCID: PMC3531120.",
+            "fmtscript": "taxref_reformat_pr2.sh",
+            "dbversion": "PR2 v5.0.0 (https://github.com/pr2database/pr2database/releases/tag/v5.0.0)",
+            "taxlevels": "Domain,Supergroup,Division,Subdivision,Class,Order,Family,Genus,Species"
+        },
+        "pr2=5.0.0": {
+            "title": "PR2 - Protist Reference Ribosomal Database - Version 5.0.0",
+            "file": [
+                "https://github.com/pr2database/pr2database/releases/download/v5.0.0/pr2_version_5.0.0_SSU_dada2.fasta.gz",
+                "https://github.com/pr2database/pr2database/releases/download/v5.0.0/pr2_version_5.0.0_SSU_UTAX.fasta.gz"
+            ],
+            "citation": "Guillou L, Bachar D, Audic S, Bass D, Berney C, Bittner L, Boutte C, Burgaud G, de Vargas C, Decelle J, Del Campo J, Dolan JR, Dunthorn M, Edvardsen B, Holzmann M, Kooistra WH, Lara E, Le Bescot N, Logares R, Mah\u00e9 F, Massana R, Montresor M, Morard R, Not F, Pawlowski J, Probert I, Sauvadet AL, Siano R, Stoeck T, Vaulot D, Zimmermann P, Christen R. The Protist Ribosomal Reference database (PR2): a catalog of unicellular eukaryote small sub-unit rRNA sequences with curated taxonomy. Nucleic Acids Res. 2013 Jan;41(Database issue):D597-604. doi: 10.1093/nar/gks1160. Epub 2012 Nov 27. PMID: 23193267; PMCID: PMC3531120.",
+            "fmtscript": "taxref_reformat_pr2.sh",
+            "dbversion": "PR2 v5.0.0 (https://github.com/pr2database/pr2database/releases/tag/v5.0.0)",
+            "taxlevels": "Domain,Supergroup,Division,Subdivision,Class,Order,Family,Genus,Species"
+        },
+        "pr2=4.14.0": {
+            "title": "PR2 - Protist Reference Ribosomal Database - Version 4.14.0",
+            "file": [
+                "https://github.com/pr2database/pr2database/releases/download/v4.14.0/pr2_version_4.14.0_SSU_dada2.fasta.gz",
+                "https://github.com/pr2database/pr2database/releases/download/v4.14.0/pr2_version_4.14.0_SSU_UTAX.fasta.gz"
+            ],
+            "citation": "Guillou L, Bachar D, Audic S, Bass D, Berney C, Bittner L, Boutte C, Burgaud G, de Vargas C, Decelle J, Del Campo J, Dolan JR, Dunthorn M, Edvardsen B, Holzmann M, Kooistra WH, Lara E, Le Bescot N, Logares R, Mah\u00e9 F, Massana R, Montresor M, Morard R, Not F, Pawlowski J, Probert I, Sauvadet AL, Siano R, Stoeck T, Vaulot D, Zimmermann P, Christen R. The Protist Ribosomal Reference database (PR2): a catalog of unicellular eukaryote small sub-unit rRNA sequences with curated taxonomy. Nucleic Acids Res. 2013 Jan;41(Database issue):D597-604. doi: 10.1093/nar/gks1160. Epub 2012 Nov 27. PMID: 23193267; PMCID: PMC3531120.",
+            "fmtscript": "taxref_reformat_pr2.sh",
+            "dbversion": "PR2 v4.14.0 (https://github.com/pr2database/pr2database/releases/tag/v4.14.0)",
+            "taxlevels": "Domain,Kingdom,Phylum,Class,Order,Family,Genus,Species"
+        },
+        "pr2=4.13.0": {
+            "title": "PR2 - Protist Reference Ribosomal Database - Version 4.13.0",
+            "file": [
+                "https://github.com/pr2database/pr2database/releases/download/v4.13.0/pr2_version_4.13.0_18S_dada2.fasta.gz",
+                "https://github.com/pr2database/pr2database/releases/download/v4.13.0/pr2_version_4.13.0_18S_UTAX.fasta.gz"
+            ],
+            "citation": "Guillou L, Bachar D, Audic S, Bass D, Berney C, Bittner L, Boutte C, Burgaud G, de Vargas C, Decelle J, Del Campo J, Dolan JR, Dunthorn M, Edvardsen B, Holzmann M, Kooistra WH, Lara E, Le Bescot N, Logares R, Mah\u00e9 F, Massana R, Montresor M, Morard R, Not F, Pawlowski J, Probert I, Sauvadet AL, Siano R, Stoeck T, Vaulot D, Zimmermann P, Christen R. The Protist Ribosomal Reference database (PR2): a catalog of unicellular eukaryote small sub-unit rRNA sequences with curated taxonomy. Nucleic Acids Res. 2013 Jan;41(Database issue):D597-604. doi: 10.1093/nar/gks1160. Epub 2012 Nov 27. PMID: 23193267; PMCID: PMC3531120.",
+            "fmtscript": "taxref_reformat_pr2.sh",
+            "dbversion": "PR2 v4.13.0 (https://github.com/pr2database/pr2database/releases/tag/v4.13.0)",
+            "taxlevels": "Domain,Kingdom,Phylum,Class,Order,Family,Genus,Species"
+        },
+        "rdp": {
+            "title": "RDP - Ribosomal Database Project - RDP trainset 18/release 11.5",
+            "file": [
+                "https://zenodo.org/record/4310151/files/rdp_train_set_18.fa.gz",
+                "https://zenodo.org/record/4310151/files/rdp_species_assignment_18.fa.gz"
+            ],
+            "citation": "Cole JR, Wang Q, Fish JA, Chai B, McGarrell DM, Sun Y, Brown CT, Porras-Alfaro A, Kuske CR, Tiedje JM. Ribosomal Database Project: data and tools for high throughput rRNA analysis. Nucleic Acids Res. 2014 Jan;42(Database issue):D633-42. doi: 10.1093/nar/gkt1244. Epub 2013 Nov 27. PMID: 24288368; PMCID: PMC3965039.",
+            "fmtscript": "taxref_reformat_standard.sh",
+            "dbversion": "RDP 18/11.5 (https://zenodo.org/record/4310151/)"
+        },
+        "rdp=18": {
+            "title": "RDP - Ribosomal Database Project - RDP trainset 18/release 11.5",
+            "file": [
+                "https://zenodo.org/record/4310151/files/rdp_train_set_18.fa.gz",
+                "https://zenodo.org/record/4310151/files/rdp_species_assignment_18.fa.gz"
+            ],
+            "citation": "Cole JR, Wang Q, Fish JA, Chai B, McGarrell DM, Sun Y, Brown CT, Porras-Alfaro A, Kuske CR, Tiedje JM. Ribosomal Database Project: data and tools for high throughput rRNA analysis. Nucleic Acids Res. 2014 Jan;42(Database issue):D633-42. doi: 10.1093/nar/gkt1244. Epub 2013 Nov 27. PMID: 24288368; PMCID: PMC3965039.",
+            "fmtscript": "taxref_reformat_standard.sh",
+            "dbversion": "RDP 18/11.5 (https://zenodo.org/record/4310151/)"
+        },
+        "sbdi-gtdb": {
+            "title": "SBDI-GTDB - Sativa curated 16S GTDB database - Release R09-RS220-1",
+            "file": [
+                "https://figshare.scilifelab.se/ndownloader/files/47244061",
+                "https://figshare.scilifelab.se/ndownloader/files/47244076"
+            ],
+            "citation": "Lundin D, Andersson A. SBDI Sativa curated 16S GTDB database. FigShare. doi: 10.17044/scilifelab.14869077.v6",
+            "fmtscript": "taxref_reformat_sbdi-gtdb.sh",
+            "dbversion": "SBDI-GTDB-R09-RS220-1 (https://figshare.scilifelab.se/articles/dataset/SBDI_Sativa_curated_16S_GTDB_database/14869077/7)",
+            "taxlevels": "Domain,Kingdom,Phylum,Class,Order,Family,Genus,Species"
+        },
+        "sbdi-gtdb=R09-RS220-1": {
+            "title": "SBDI-GTDB - Sativa curated 16S GTDB database - Release R09-RS220-1",
+            "file": [
+                "https://figshare.scilifelab.se/ndownloader/files/47244061",
+                "https://figshare.scilifelab.se/ndownloader/files/47244076"
+            ],
+            "citation": "Lundin D, Andersson A. SBDI Sativa curated 16S GTDB database. FigShare. doi: 10.17044/scilifelab.14869077.v6",
+            "fmtscript": "taxref_reformat_sbdi-gtdb.sh",
+            "dbversion": "SBDI-GTDB-R09-RS220-1 (https://figshare.scilifelab.se/articles/dataset/SBDI_Sativa_curated_16S_GTDB_database/14869077/7)",
+            "taxlevels": "Domain,Kingdom,Phylum,Class,Order,Family,Genus,Species"
+        },
+        "sbdi-gtdb=R08-RS214-1": {
+            "title": "SBDI-GTDB - Sativa curated 16S GTDB database - Release R08-RS214-1",
+            "file": [
+                "https://figshare.scilifelab.se/ndownloader/files/45818841",
+                "https://figshare.scilifelab.se/ndownloader/files/45818850"
+            ],
+            "citation": "Lundin D, Andersson A. SBDI Sativa curated 16S GTDB database. FigShare. doi: 10.17044/scilifelab.14869077.v6",
+            "fmtscript": "taxref_reformat_sbdi-gtdb.sh",
+            "dbversion": "SBDI-GTDB-R08-RS214-1 (https://figshare.scilifelab.se/articles/dataset/SBDI_Sativa_curated_16S_GTDB_database/14869077/6)",
+            "taxlevels": "Domain,Kingdom,Phylum,Class,Order,Family,Genus,Species"
+        },
+        "sbdi-gtdb=R07-RS207-1": {
+            "title": "SBDI-GTDB - Sativa curated 16S GTDB database - Release R07-RS207-1",
+            "file": [
+                "https://scilifelab.figshare.com/ndownloader/files/36980767",
+                "https://scilifelab.figshare.com/ndownloader/files/36980788"
+            ],
+            "citation": "Lundin D, Andersson A. SBDI Sativa curated 16S GTDB database. FigShare. doi: 10.17044/scilifelab.14869077.v4",
+            "fmtscript": "taxref_reformat_sbdi-gtdb.sh",
+            "dbversion": "SBDI-GTDB-R07-RS207-1 (https://scilifelab.figshare.com/articles/dataset/SBDI_Sativa_curated_16S_GTDB_database/14869077/4)",
+            "taxlevels": "Domain,Kingdom,Phylum,Class,Order,Family,Genus,Species"
+        },
+        "sbdi-gtdb=R06-RS202-3": {
+            "title": "SBDI-GTDB - Sativa curated 16S GTDB database - Release R06-RS202-1",
+            "file": [
+                "https://scilifelab.figshare.com/ndownloader/files/31370437",
+                "https://scilifelab.figshare.com/ndownloader/files/31370434"
+            ],
+            "citation": "Lundin D, Andersson A. SBDI Sativa curated 16S GTDB database. FigShare. doi: 10.17044/scilifelab.14869077.v3",
+            "fmtscript": "taxref_reformat_sbdi-gtdb.sh",
+            "dbversion": "SBDI-GTDB-R06-RS202-3 (https://scilifelab.figshare.com/articles/dataset/SBDI_Sativa_curated_16S_GTDB_database/14869077/3)",
+            "taxlevels": "Domain,Kingdom,Phylum,Class,Order,Family,Genus,Species"
+        },
+        "sbdi-gtdb=R06-RS202-1": {
+            "title": "SBDI-GTDB - Sativa curated 16S GTDB database - Release R06-RS202-1",
+            "file": [
+                "https://scilifelab.figshare.com/ndownloader/files/28624479",
+                "https://scilifelab.figshare.com/ndownloader/files/28624482"
+            ],
+            "citation": "Lundin D, Andersson A. SBDI Sativa curated 16S GTDB database. FigShare. doi: 10.17044/scilifelab.14869077.v1",
+            "fmtscript": "taxref_reformat_sbdi-gtdb.sh",
+            "dbversion": "SBDI-GTDB-R06-RS202-1 (https://scilifelab.figshare.com/articles/dataset/SBDI_Sativa_curated_16S_GTDB_database/14869077/1)",
+            "taxlevels": "Domain,Kingdom,Phylum,Class,Order,Family,Genus,Species"
+        },
+        "silva": {
+            "title": "Silva 138.2 prokaryotic SSU",
+            "file": [
+                "https://zenodo.org/records/14169026/files/silva_nr99_v138.2_toSpecies_trainset.fa.gz",
+                "https://zenodo.org/records/14169026/files/silva_v138.2_assignSpecies.fa.gz"
+            ],
+            "citation": "Quast C, Pruesse E, Yilmaz P, Gerken J, Schweer T, Yarza P, Peplies J, Gl\u00f6ckner FO. The SILVA ribosomal RNA gene database project: improved data processing and web-based tools. Nucleic Acids Res. 2013 Jan;41(Database issue):D590-6. doi: 10.1093/nar/gks1219. Epub 2012 Nov 28. PMID: 23193283; PMCID: PMC3531112.",
+            "fmtscript": "taxref_reformat_standard.sh",
+            "dbversion": "SILVA v138.2 (https://zenodo.org/records/14169026)"
+        },
+        "silva=138.2": {
+            "title": "Silva 138.2 prokaryotic SSU",
+            "file": [
+                "https://zenodo.org/records/14169026/files/silva_nr99_v138.2_toSpecies_trainset.fa.gz",
+                "https://zenodo.org/records/14169026/files/silva_v138.2_assignSpecies.fa.gz"
+            ],
+            "citation": "Quast C, Pruesse E, Yilmaz P, Gerken J, Schweer T, Yarza P, Peplies J, Gl\u00f6ckner FO. The SILVA ribosomal RNA gene database project: improved data processing and web-based tools. Nucleic Acids Res. 2013 Jan;41(Database issue):D590-6. doi: 10.1093/nar/gks1219. Epub 2012 Nov 28. PMID: 23193283; PMCID: PMC3531112.",
+            "fmtscript": "taxref_reformat_standard.sh",
+            "dbversion": "SILVA v138.2 (https://zenodo.org/records/14169026)"
+        },
+        "silva=138": {
+            "title": "Silva 138.1 prokaryotic SSU",
+            "file": [
+                "https://zenodo.org/record/4587955/files/silva_nr99_v138.1_wSpecies_train_set.fa.gz",
+                "https://zenodo.org/record/4587955/files/silva_species_assignment_v138.1.fa.gz"
+            ],
+            "citation": "Quast C, Pruesse E, Yilmaz P, Gerken J, Schweer T, Yarza P, Peplies J, Gl\u00f6ckner FO. The SILVA ribosomal RNA gene database project: improved data processing and web-based tools. Nucleic Acids Res. 2013 Jan;41(Database issue):D590-6. doi: 10.1093/nar/gks1219. Epub 2012 Nov 28. PMID: 23193283; PMCID: PMC3531112.",
+            "fmtscript": "taxref_reformat_standard.sh",
+            "dbversion": "SILVA v138.1 (https://zenodo.org/record/4587955)"
+        },
+        "silva=132": {
+            "title": "Silva Projects version 132 release",
+            "file": [
+                "https://zenodo.org/record/1172783/files/silva_nr_v132_train_set.fa.gz",
+                "https://zenodo.org/record/1172783/files/silva_species_assignment_v132.fa.gz"
+            ],
+            "citation": "Quast C, Pruesse E, Yilmaz P, Gerken J, Schweer T, Yarza P, Peplies J, Gl\u00f6ckner FO. The SILVA ribosomal RNA gene database project: improved data processing and web-based tools. Nucleic Acids Res. 2013 Jan;41(Database issue):D590-6. doi: 10.1093/nar/gks1219. Epub 2012 Nov 28. PMID: 23193283; PMCID: PMC3531112.",
+            "fmtscript": "taxref_reformat_standard.sh",
+            "dbversion": "SILVA v132 (https://zenodo.org/record/1172783)"
+        },
+        "unite-fungi": {
+            "title": "UNITE general FASTA release for Fungi - Version 10.0",
+            "file": [
+                "https://s3.hpc.ut.ee/plutof-public/original/d18aa648-3f4c-4f46-84d4-c8c5d48439ba.tgz"
+            ],
+            "citation": "Abarenkov, Kessy; Zirk, Allan; Piirmann, Timo; P\u00f6h\u00f6nen, Raivo; Ivanov, Filipp; Nilsson, R. Henrik; K\u00f5ljalg, Urmas (2024): UNITE general FASTA release for Fungi. Version 04.04.2024. UNITE Community. https://doi.org/10.15156/BIO/2959332",
+            "fmtscript": "taxref_reformat_unite.sh",
+            "dbversion": "UNITE-fungi v10.0 (https://doi.org/10.15156/BIO/2959332)",
+            "shfile": [
+                "https://figshare.scilifelab.se/ndownloader/files/50595459",
+                "https://figshare.scilifelab.se/ndownloader/files/50595462"
+            ]
+        },
+        "unite-fungi=10.0": {
+            "title": "UNITE general FASTA release for Fungi - Version 10.0",
+            "file": [
+                "https://s3.hpc.ut.ee/plutof-public/original/d18aa648-3f4c-4f46-84d4-c8c5d48439ba.tgz"
+            ],
+            "citation": "Abarenkov, Kessy; Zirk, Allan; Piirmann, Timo; P\u00f6h\u00f6nen, Raivo; Ivanov, Filipp; Nilsson, R. Henrik; K\u00f5ljalg, Urmas (2024): UNITE general FASTA release for Fungi. Version 04.04.2024. UNITE Community. https://doi.org/10.15156/BIO/2959332",
+            "fmtscript": "taxref_reformat_unite.sh",
+            "dbversion": "UNITE-fungi v10.0 (https://doi.org/10.15156/BIO/2959332)",
+            "shfile": [
+                "https://figshare.scilifelab.se/ndownloader/files/50595459",
+                "https://figshare.scilifelab.se/ndownloader/files/50595462"
+            ]
+        },
+        "unite-fungi=9.0": {
+            "title": "UNITE general FASTA release for Fungi - Version 9.0",
+            "file": [
+                "https://s3.hpc.ut.ee/plutof-public/original/fa1038da-d18d-46b7-88a9-c21bcf38c43d.tgz"
+            ],
+            "citation": "Abarenkov, Kessy; Zirk, Allan; Piirmann, Timo; P\u00f6h\u00f6nen, Raivo; Ivanov, Filipp; Nilsson, R. Henrik; K\u00f5ljalg, Urmas (2023): UNITE general FASTA release for Fungi. Version 18.07.2023. UNITE Community. https://doi.org/10.15156/BIO/2938067",
+            "fmtscript": "taxref_reformat_unite.sh",
+            "dbversion": "UNITE-fungi v9.0 (https://doi.org/10.15156/BIO/2938067)",
+            "shfile": [
+                "https://figshare.scilifelab.se/ndownloader/files/50055762",
+                "https://figshare.scilifelab.se/ndownloader/files/50055765"
+            ]
+        },
+        "unite-fungi=8.3": {
+            "title": "UNITE general FASTA release for Fungi - Version 8.3",
+            "file": [
+                "https://s3.hpc.ut.ee/plutof-public/original/a0d487ac-1339-4bea-a0e9-8627f87a2f88.tgz"
+            ],
+            "citation": "Abarenkov, Kessy; Zirk, Allan; Piirmann, Timo; P\u00f6h\u00f6nen, Raivo; Ivanov, Filipp; Nilsson, R. Henrik; K\u00f5ljalg, Urmas (2021): UNITE general FASTA release for Fungi. Version 10.05.2021. UNITE Community. https://doi.org/10.15156/BIO/1280049",
+            "fmtscript": "taxref_reformat_unite.sh",
+            "dbversion": "UNITE-fungi v8.3 (https://doi.org/10.15156/BIO/1280049)",
+            "shfile": [
+                "https://scilifelab.figshare.com/ndownloader/files/34497977",
+                "https://scilifelab.figshare.com/ndownloader/files/34497980"
+            ]
+        },
+        "unite-fungi=8.2": {
+            "title": "UNITE general FASTA release for Fungi - Version 8.2",
+            "file": [
+                "https://s3.hpc.ut.ee/plutof-public/original/6fdb458a-9299-41dc-8774-5152b867d882.gz"
+            ],
+            "citation": "Abarenkov, Kessy; Zirk, Allan; Piirmann, Timo; P\u00f6h\u00f6nen, Raivo; Ivanov, Filipp; Nilsson, R. Henrik; K\u00f5ljalg, Urmas (2020): UNITE general FASTA release for Fungi. Version 04.02.2020. UNITE Community. https://doi.org/10.15156/BIO/786368",
+            "fmtscript": "taxref_reformat_unite.sh",
+            "dbversion": "UNITE-fungi v8.2 (https://doi.plutof.ut.ee/doi/10.15156/BIO/786368)",
+            "shfile": [
+                "https://scilifelab.figshare.com/ndownloader/files/34497971",
+                "https://scilifelab.figshare.com/ndownloader/files/34497974"
+            ]
+        },
+        "unite-alleuk": {
+            "title": "UNITE general FASTA release for eukaryotes - Version 10.0",
+            "file": [
+                "https://s3.hpc.ut.ee/plutof-public/original/1dda2021-4893-4f2f-b50e-87bfea795267.tgz"
+            ],
+            "citation": "Abarenkov, Kessy; Zirk, Allan; Piirmann, Timo; P\u00f6h\u00f6nen, Raivo; Ivanov, Filipp; Nilsson, R. Henrik; K\u00f5ljalg, Urmas (2024): UNITE general FASTA release for eukaryotes. Version 04.04.2024. UNITE Community. https://doi.org/10.15156/BIO/2959334",
+            "fmtscript": "taxref_reformat_unite.sh",
+            "dbversion": "UNITE-alleuk v10.0 (https://doi.org/10.15156/BIO/2959334)",
+            "shfile": [
+                "https://figshare.scilifelab.se/ndownloader/files/50595465",
+                "https://figshare.scilifelab.se/ndownloader/files/50595471"
+            ]
+        },
+        "unite-alleuk=10.0": {
+            "title": "UNITE general FASTA release for eukaryotes - Version 10.0",
+            "file": [
+                "https://s3.hpc.ut.ee/plutof-public/original/1dda2021-4893-4f2f-b50e-87bfea795267.tgz"
+            ],
+            "citation": "Abarenkov, Kessy; Zirk, Allan; Piirmann, Timo; P\u00f6h\u00f6nen, Raivo; Ivanov, Filipp; Nilsson, R. Henrik; K\u00f5ljalg, Urmas (2024): UNITE general FASTA release for eukaryotes. Version 04.04.2024. UNITE Community. https://doi.org/10.15156/BIO/2959334",
+            "fmtscript": "taxref_reformat_unite.sh",
+            "dbversion": "UNITE-alleuk v10.0 (https://doi.org/10.15156/BIO/2959334)",
+            "shfile": [
+                "https://figshare.scilifelab.se/ndownloader/files/50595465",
+                "https://figshare.scilifelab.se/ndownloader/files/50595471"
+            ]
+        },
+        "unite-alleuk=9.0": {
+            "title": "UNITE general FASTA release for eukaryotes - Version 9.0",
+            "file": [
+                "https://s3.hpc.ut.ee/plutof-public/original/e318f5fd-1ef4-40fd-9e77-1b94d91b3858.tgz"
+            ],
+            "citation": "Abarenkov, Kessy; Zirk, Allan; Piirmann, Timo; P\u00f6h\u00f6nen, Raivo; Ivanov, Filipp; Nilsson, R. Henrik; K\u00f5ljalg, Urmas (2023): UNITE general FASTA release for eukaryotes. Version 18.07.2023. UNITE Community. https://doi.org/10.15156/BIO/2938069",
+            "fmtscript": "taxref_reformat_unite.sh",
+            "dbversion": "UNITE-alleuk v9.0 (https://doi.org/10.15156/BIO/2938069)",
+            "shfile": [
+                "https://figshare.scilifelab.se/ndownloader/files/50055768",
+                "https://figshare.scilifelab.se/ndownloader/files/50055771"
+            ]
+        },
+        "unite-alleuk=8.3": {
+            "title": "UNITE general FASTA release for eukaryotes - Version 8.3",
+            "file": [
+                "https://s3.hpc.ut.ee/plutof-public/original/6e72e839-acfc-4044-84b4-5152b74c1552.tgz"
+            ],
+            "citation": "Abarenkov, Kessy; Zirk, Allan; Piirmann, Timo; P\u00f6h\u00f6nen, Raivo; Ivanov, Filipp; Nilsson, R. Henrik; K\u00f5ljalg, Urmas (2021): UNITE general FASTA release for eukaryotes. Version 10.05.2021. UNITE Community. https://doi.org/10.15156/BIO/1280127",
+            "fmtscript": "taxref_reformat_unite.sh",
+            "dbversion": "UNITE-alleuk v8.3 (https://doi.org/10.15156/BIO/1280127)",
+            "shfile": [
+                "https://scilifelab.figshare.com/ndownloader/files/34994575",
+                "https://scilifelab.figshare.com/ndownloader/files/34994578"
+            ]
+        },
+        "unite-alleuk=8.2": {
+            "title": "UNITE general FASTA release for eukaryotes - Version 8.2",
+            "file": [
+                "https://s3.hpc.ut.ee/plutof-public/original/dbd892b6-0446-4351-988e-922c4b73585e.gz"
+            ],
+            "citation": "Abarenkov, Kessy; Zirk, Allan; Piirmann, Timo; P\u00f6h\u00f6nen, Raivo; Ivanov, Filipp; Nilsson, R. Henrik; K\u00f5ljalg, Urmas (2020): UNITE general FASTA release for eukaryotes. Version 04.02.2020. UNITE Community. https://doi.org/10.15156/BIO/786370",
+            "fmtscript": "taxref_reformat_unite.sh",
+            "dbversion": "UNITE-alleuk v8.2 (https://doi.org/10.15156/BIO/786370)",
+            "shfile": [
+                "https://scilifelab.figshare.com/ndownloader/files/34994569",
+                "https://scilifelab.figshare.com/ndownloader/files/34994572"
+            ]
+        },
+        "zehr-nifh": {
+            "title": "Zehr lab nifH database - version 2.5.0",
+            "file": [
+                "https://raw.githubusercontent.com/moyn413/nifHdada2/master/nifH_dada2_v2.0.5.fasta",
+                "https://raw.githubusercontent.com/moyn413/nifHdada2/master/nifH_dada2_phylum_v2.0.5.csv"
+            ],
+            "citation": "M. A. Moynihan & C. Furbo Reeder 2023. nifHdada2 GitHub repository, v2.0.5. Zenodo. http://doi.org/10.5281/zenodo.7996213",
+            "fmtscript": "taxref_reformat_zehr-nifh.sh",
+            "dbversion": "Zehr-nifH v. 2.5.0",
+            "taxlevels": "Domain,Phylum,Class,Order,Family,Genus"
+        },
+        "zehr-nifh=2.5.0": {
+            "title": "Zehr lab nifH database - version 2.5.0",
+            "file": [
+                "https://raw.githubusercontent.com/moyn413/nifHdada2/master/nifH_dada2_v2.0.5.fasta",
+                "https://raw.githubusercontent.com/moyn413/nifHdada2/master/nifH_dada2_phylum_v2.0.5.csv"
+            ],
+            "citation": "M. A. Moynihan & C. Furbo Reeder 2023. nifHdada2 GitHub repository, v2.0.5. Zenodo. http://doi.org/10.5281/zenodo.7996213",
+            "fmtscript": "taxref_reformat_zehr-nifh.sh",
+            "dbversion": "Zehr-nifH v. 2.5.0",
+            "taxlevels": "Domain,Phylum,Class,Order,Family,Genus"
+        }
+    },
+    "qiime_ref_databases": {
+        "silva=138": {
+            "title": "QIIME2 pre-formatted SILVA dereplicated at 99% similarity - Version 138",
+            "file": [
+                "https://data.qiime2.org/2023.7/common/silva-138-99-seqs.qza",
+                "https://data.qiime2.org/2023.7/common/silva-138-99-tax.qza"
+            ],
+            "citation": "https://www.arb-silva.de/; Bokulich, N.A., Robeson, M., Dillon, M.R. bokulich-lab/RESCRIPt. Zenodo. http://doi.org/10.5281/zenodo.3891931",
+            "license": "https://www.arb-silva.de/silva-license-information/",
+            "fmtscript": "taxref_reformat_qiime_silva138.sh"
+        },
+        "silva": {
+            "title": "QIIME2 pre-formatted SILVA dereplicated at 99% similarity - Version 138",
+            "file": [
+                "https://data.qiime2.org/2023.7/common/silva-138-99-seqs.qza",
+                "https://data.qiime2.org/2023.7/common/silva-138-99-tax.qza"
+            ],
+            "citation": "https://www.arb-silva.de/; Bokulich, N.A., Robeson, M., Dillon, M.R. bokulich-lab/RESCRIPt. Zenodo. http://doi.org/10.5281/zenodo.3891931",
+            "license": "https://www.arb-silva.de/silva-license-information/",
+            "fmtscript": "taxref_reformat_qiime_silva138.sh"
+        },
+        "greengenes85": {
+            "title": "Greengenes 16S - Version 13_8 - clustered at 85% similarity - for testing purposes only",
+            "file": [
+                "https://data.qiime2.org/2023.7/tutorials/training-feature-classifiers/85_otus.fasta",
+                "https://data.qiime2.org/2023.7/tutorials/training-feature-classifiers/85_otu_taxonomy.txt"
+            ],
+            "citation": "McDonald, D., Price, M., Goodrich, J. et al. An improved Greengenes taxonomy with explicit ranks for ecological and evolutionary analyses of bacteria and archaea. ISME J 6, 610\u2013618 (2012). https://doi.org/10.1038/ismej.2011.139",
+            "fmtscript": "taxref_reformat_qiime_greengenes85.sh"
+        },
+        "greengenes2": {
+            "title": "Greengenes2 16S - Version 2022.10",
+            "file": [
+                "http://ftp.microbio.me/greengenes_release/2022.10/2022.10.seqs.fna.gz",
+                "http://ftp.microbio.me/greengenes_release/2022.10/2022.10.taxonomy.md5.tsv.gz"
+            ],
+            "citation": "McDonald, D., Jiang, Y., Balaban, M. et al. Greengenes2 unifies microbial data in a single reference tree. Nat Biotechnol (2023). https://doi.org/10.1038/s41587-023-01845-1",
+            "fmtscript": "taxref_reformat_qiime_greengenes2022.sh"
+        },
+        "greengenes2=2022.10": {
+            "title": "Greengenes2 16S - Version 2022.10",
+            "file": [
+                "http://ftp.microbio.me/greengenes_release/2022.10/2022.10.seqs.fna.gz",
+                "http://ftp.microbio.me/greengenes_release/2022.10/2022.10.taxonomy.md5.tsv.gz"
+            ],
+            "citation": "McDonald, D., Jiang, Y., Balaban, M. et al. Greengenes2 unifies microbial data in a single reference tree. Nat Biotechnol (2023). https://doi.org/10.1038/s41587-023-01845-1",
+            "fmtscript": "taxref_reformat_qiime_greengenes2022.sh"
+        }
+    },
+    "sintax_ref_databases": {
+        "coidb": {
+            "title": "COIDB - CO1 Taxonomy Database - Release 221216",
+            "file": [
+                "https://figshare.scilifelab.se/ndownloader/files/38787078"
+            ],
+            "citation": "Sundh J, Manoharan L, Iwaszkiewicz-Eggebrecht E, Miraldo A, Andersson A, Ronquist F. COI reference sequences from BOLD DB. doi: https://doi.org/10.17044/scilifelab.20514192.v2",
+            "fmtscript": "taxref_reformat_sintax_fasta.sh",
+            "dbversion": "COIDB 221216 (https://doi.org/10.17044/scilifelab.20514192.v2)",
+            "taxlevels": "Kingdom,Phylum,Class,Order,Family,Genus,Species,BOLD_bin"
+        },
+        "coidb=221216": {
+            "title": "COIDB - CO1 Taxonomy Database - Release 221216",
+            "file": [
+                "https://figshare.scilifelab.se/ndownloader/files/38787078"
+            ],
+            "citation": "Sundh J, Manoharan L, Iwaszkiewicz-Eggebrecht E, Miraldo A, Andersson A, Ronquist F. COI reference sequences from BOLD DB. doi: https://doi.org/10.17044/scilifelab.20514192.v2",
+            "fmtscript": "taxref_reformat_sintax_fasta.sh",
+            "dbversion": "COIDB 221216 (https://doi.org/10.17044/scilifelab.20514192.v2)",
+            "taxlevels": "Kingdom,Phylum,Class,Order,Family,Genus,Species,BOLD_bin"
+        },
+        "unite-fungi": {
+            "title": "UNITE USEARCH/UTAX release for Fungi - Version 10.0",
+            "file": [
+                "https://s3.hpc.ut.ee/plutof-public/original/b27cffec-1e7d-4584-93d3-12add9fa180b.gz"
+            ],
+            "citation": "Abarenkov, Kessy; Zirk, Allan; Piirmann, Timo; P\u00f6h\u00f6nen, Raivo; Ivanov, Filipp; Nilsson, R. Henrik; K\u00f5ljalg, Urmas (2024): UNITE USEARCH/UTAX release for Fungi. UNITE Community. 10.15156/BIO/2959340",
+            "fmtscript": "taxref_reformat_sintax_fasta.sh",
+            "dbversion": "UNITE-fungi v10.0 (https://doi.plutof.ut.ee/doi/10.15156/BIO/2959340)"
+        },
+        "unite-fungi=10.0": {
+            "title": "UNITE USEARCH/UTAX release for Fungi - Version 10.0",
+            "file": [
+                "https://s3.hpc.ut.ee/plutof-public/original/b27cffec-1e7d-4584-93d3-12add9fa180b.gz"
+            ],
+            "citation": "Abarenkov, Kessy; Zirk, Allan; Piirmann, Timo; P\u00f6h\u00f6nen, Raivo; Ivanov, Filipp; Nilsson, R. Henrik; K\u00f5ljalg, Urmas (2024): UNITE USEARCH/UTAX release for Fungi. UNITE Community. 10.15156/BIO/2959340",
+            "fmtscript": "taxref_reformat_sintax_fasta.sh",
+            "dbversion": "UNITE-fungi v10.0 (https://doi.plutof.ut.ee/doi/10.15156/BIO/2959340)"
+        },
+        "unite-fungi=9.0": {
+            "title": "UNITE USEARCH/UTAX release for Fungi - Version 9.0",
+            "file": [
+                "https://s3.hpc.ut.ee/plutof-public/original/096d35b9-1d41-42bc-a0a6-dc4f4f17cc79.gz"
+            ],
+            "citation": "Abarenkov, Kessy; Zirk, Allan; Piirmann, Timo; P\u00f6h\u00f6nen, Raivo; Ivanov, Filipp; Nilsson, R. Henrik; K\u00f5ljalg, Urmas (2022): UNITE USEARCH/UTAX release for Fungi. Version 16.10.2022. UNITE Community. https://doi.org/10.15156/BIO/2483923",
+            "fmtscript": "taxref_reformat_sintax_fasta.sh",
+            "dbversion": "UNITE-fungi v9.0 (https://doi.org/10.15156/BIO/2483923)"
+        },
+        "unite-fungi=8.3": {
+            "title": "UNITE USEARCH/UTAX release for Fungi - Version 8.3",
+            "file": [
+                "https://s3.hpc.ut.ee/plutof-public/original/5f5085d1-ff89-4e9d-9c85-12165dcbf880.gz"
+            ],
+            "citation": "Abarenkov, Kessy; Zirk, Allan; Piirmann, Timo; P\u00f6h\u00f6nen, Raivo; Ivanov, Filipp; Nilsson, R. Henrik; K\u00f5ljalg, Urmas (2021): UNITE USEARCH/UTAX release for Fungi. UNITE Community. 10.15156/BIO/1280276",
+            "fmtscript": "taxref_reformat_sintax_fasta.sh",
+            "dbversion": "UNITE-fungi v8.3 (https://dx.doi.org/10.15156/BIO/1280276)"
+        },
+        "unite-fungi=8.2": {
+            "title": "UNITE USEARCH/UTAX release for Fungi - Version 8.2",
+            "file": [
+                "https://s3.hpc.ut.ee/plutof-public/original/a6c4d680-c99a-4252-ba67-748271c7d7f4.gz"
+            ],
+            "citation": "Abarenkov, Kessy; Zirk, Allan; Piirmann, Timo; P\u00f6h\u00f6nen, Raivo; Ivanov, Filipp; Nilsson, R. Henrik; K\u00f5ljalg, Urmas (2020): UNITE USEARCH/UTAX release for Fungi. UNITE Community. 10.15156/BIO/786375",
+            "fmtscript": "taxref_reformat_sintax_fasta.sh",
+            "dbversion": "UNITE-fungi v8.2 (https://doi.org/10.15156/BIO/786375)"
+        },
+        "unite-alleuk": {
+            "title": "UNITE USEARCH/UTAX release for eukaryotes - Version 10.0",
+            "file": [
+                "https://s3.hpc.ut.ee/plutof-public/original/6f19ddb6-1ac0-4834-a74c-b639688878a4.gz"
+            ],
+            "citation": "Abarenkov, Kessy; Zirk, Allan; Piirmann, Timo; P\u00f6h\u00f6nen, Raivo; Ivanov, Filipp; Nilsson, R. Henrik; K\u00f5ljalg, Urmas (2024): UNITE USEARCH/UTAX release for eukaryotes. Version 04.04.2024. UNITE Community. https://doi.org/10.15156/BIO/2959341",
+            "fmtscript": "taxref_reformat_sintax_fasta.sh",
+            "dbversion": "UNITE-alleuk v10.0 (https://doi.org/10.15156/BIO/2959341)"
+        },
+        "unite-alleuk=10.0": {
+            "title": "UNITE USEARCH/UTAX release for eukaryotes - Version 10.0",
+            "file": [
+                "https://s3.hpc.ut.ee/plutof-public/original/6f19ddb6-1ac0-4834-a74c-b639688878a4.gz"
+            ],
+            "citation": "Abarenkov, Kessy; Zirk, Allan; Piirmann, Timo; P\u00f6h\u00f6nen, Raivo; Ivanov, Filipp; Nilsson, R. Henrik; K\u00f5ljalg, Urmas (2024): UNITE USEARCH/UTAX release for eukaryotes. Version 04.04.2024. UNITE Community. https://doi.org/10.15156/BIO/2959341",
+            "fmtscript": "taxref_reformat_sintax_fasta.sh",
+            "dbversion": "UNITE-alleuk v10.0 (https://doi.org/10.15156/BIO/2959341)"
+        },
+        "unite-alleuk=9.0": {
+            "title": "UNITE USEARCH/UTAX release for eukaryotes - Version 9.0",
+            "file": [
+                "https://s3.hpc.ut.ee/plutof-public/original/00853437-b8b3-4d94-bcd8-7b942fcd8aa2.gz"
+            ],
+            "citation": "Abarenkov, Kessy; Zirk, Allan; Piirmann, Timo; P\u00f6h\u00f6nen, Raivo; Ivanov, Filipp; Nilsson, R. Henrik; K\u00f5ljalg, Urmas (2022): UNITE USEARCH/UTAX release for eukaryotes. Version 16.10.2022. UNITE Community. https://doi.org/10.15156/BIO/2483924",
+            "fmtscript": "taxref_reformat_sintax_fasta.sh",
+            "dbversion": "UNITE-alleuk v9.0 (https://doi.org/10.15156/BIO/2483924)"
+        },
+        "unite-alleuk=8.3": {
+            "title": "UNITE USEARCH/UTAX release for eukaryotes - Version 8.3",
+            "file": [
+                "https://s3.hpc.ut.ee/plutof-public/original/33ef3b65-5877-4bc9-8210-8e74f5ea63d7.gz"
+            ],
+            "citation": "Abarenkov, Kessy; Zirk, Allan; Piirmann, Timo; P\u00f6h\u00f6nen, Raivo; Ivanov, Filipp; Nilsson, R. Henrik; K\u00f5ljalg, Urmas (2021): UNITE USEARCH/UTAX release for eukaryotes. UNITE Community. 10.15156/BIO/1280317",
+            "fmtscript": "taxref_reformat_sintax_fasta.sh",
+            "dbversion": "UNITE-alleuk v8.3 (https://doi.org/10.15156/BIO/1280127)"
+        },
+        "unite-alleuk=8.2": {
+            "title": "UNITE USEARCH/UTAX release for eukaryotes - Version 8.2",
+            "file": [
+                "https://s3.hpc.ut.ee/plutof-public/original/fd6411cf-2c68-42e5-ae94-13ffb933a5c5.gz"
+            ],
+            "citation": "Abarenkov, Kessy; Zirk, Allan; Piirmann, Timo; P\u00f6h\u00f6nen, Raivo; Ivanov, Filipp; Nilsson, R. Henrik; K\u00f5ljalg, Urmas (2020): UNITE USEARCH/UTAX release for eukaryotes. UNITE Community. 10.15156/BIO/786376",
+            "fmtscript": "taxref_reformat_sintax_fasta.sh",
+            "dbversion": "UNITE-alleuk v8.2 (https://dx.doi.org/10.15156/BIO/786376)"
+        }
+    },
+    "kraken2_ref_databases": {
+        "silva": {
+            "title": "Kraken2 pre-formatted SILVA - Version 138",
+            "file": [
+                "https://genome-idx.s3.amazonaws.com/kraken/16S_Silva138_20200326.tgz"
+            ],
+            "citation": "https://www.arb-silva.de/; Bokulich, N.A., Robeson, M., Dillon, M.R. bokulich-lab/RESCRIPt. Zenodo. http://doi.org/10.5281/zenodo.3891931",
+            "license": "https://www.arb-silva.de/silva-license-information/",
+            "fmtscript": "",
+            "taxlevels": "D,P,C,O,F,G"
+        },
+        "silva=138": {
+            "title": "Kraken2 pre-formatted SILVA - Version 138",
+            "file": [
+                "https://genome-idx.s3.amazonaws.com/kraken/16S_Silva138_20200326.tgz"
+            ],
+            "citation": "https://www.arb-silva.de/; Bokulich, N.A., Robeson, M., Dillon, M.R. bokulich-lab/RESCRIPt. Zenodo. http://doi.org/10.5281/zenodo.3891931",
+            "license": "https://www.arb-silva.de/silva-license-information/",
+            "fmtscript": "",
+            "taxlevels": "D,P,C,O,F,G"
+        },
+        "silva=132": {
+            "title": "Kraken2 pre-formatted SILVA - Version 132",
+            "file": [
+                "https://genome-idx.s3.amazonaws.com/kraken/16S_Silva132_20200326.tgz"
+            ],
+            "citation": "https://www.arb-silva.de/; Bokulich, N.A., Robeson, M., Dillon, M.R. bokulich-lab/RESCRIPt. Zenodo. http://doi.org/10.5281/zenodo.3891931",
+            "license": "https://www.arb-silva.de/silva-license-information/",
+            "fmtscript": "",
+            "taxlevels": "D,P,C,O,F,G"
+        },
+        "rdp": {
+            "title": "RDP - Ribosomal Database Project - RDP trainset 18/release 11.5",
+            "file": [
+                "https://genome-idx.s3.amazonaws.com/kraken/16S_RDP11.5_20200326.tgz"
+            ],
+            "citation": "Cole JR, Wang Q, Fish JA, Chai B, McGarrell DM, Sun Y, Brown CT, Porras-Alfaro A, Kuske CR, Tiedje JM. Ribosomal Database Project: data and tools for high throughput rRNA analysis. Nucleic Acids Res. 2014 Jan;42(Database issue):D633-42. doi: 10.1093/nar/gkt1244. Epub 2013 Nov 27. PMID: 24288368; PMCID: PMC3965039.",
+            "fmtscript": "",
+            "taxlevels": "D,P,C,O,F,G"
+        },
+        "rdp=18": {
+            "title": "RDP - Ribosomal Database Project - RDP trainset 18/release 11.5",
+            "file": [
+                "https://genome-idx.s3.amazonaws.com/kraken/16S_RDP11.5_20200326.tgz"
+            ],
+            "citation": "Cole JR, Wang Q, Fish JA, Chai B, McGarrell DM, Sun Y, Brown CT, Porras-Alfaro A, Kuske CR, Tiedje JM. Ribosomal Database Project: data and tools for high throughput rRNA analysis. Nucleic Acids Res. 2014 Jan;42(Database issue):D633-42. doi: 10.1093/nar/gkt1244. Epub 2013 Nov 27. PMID: 24288368; PMCID: PMC3965039.",
+            "fmtscript": "",
+            "taxlevels": "D,P,C,O,F,G"
+        },
+        "greengenes": {
+            "title": "Kraken2 pre-formatted Greengenes - Version 13.5",
+            "file": [
+                "https://genome-idx.s3.amazonaws.com/kraken/16S_Greengenes13.5_20200326.tgz"
+            ],
+            "citation": "McDonald, D., Price, M., Goodrich, J. et al. An improved Greengenes taxonomy with explicit ranks for ecological and evolutionary analyses of bacteria and archaea. ISME J 6, 610\u2013618 (2012). https://doi.org/10.1038/ismej.2011.139",
+            "fmtscript": "",
+            "taxlevels": "D,P,C,O,F,G,S"
+        },
+        "greengenes=13.5": {
+            "title": "Kraken2 pre-formatted Greengenes - Version 13.5",
+            "file": [
+                "https://genome-idx.s3.amazonaws.com/kraken/16S_Greengenes13.5_20200326.tgz"
+            ],
+            "citation": "McDonald, D., Price, M., Goodrich, J. et al. An improved Greengenes taxonomy with explicit ranks for ecological and evolutionary analyses of bacteria and archaea. ISME J 6, 610\u2013618 (2012). https://doi.org/10.1038/ismej.2011.139",
+            "fmtscript": "",
+            "taxlevels": "D,P,C,O,F,G,S"
+        },
+        "standard": {
+            "title": "Standard database - Version 20240904",
+            "file": [
+                "https://genome-idx.s3.amazonaws.com/kraken/k2_standard_20240904.tar.gz"
+            ],
+            "citation": "Wood, D. E., Lu, J., & Langmead, B. (2019). Improved metagenomic analysis with Kraken 2. Genome biology, 20(1), 257. https://doi.org/10.1186/s13059-019-1891-0",
+            "fmtscript": "",
+            "taxlevels": "D,P,C,O,F,G,S"
+        },
+        "standard=20240904": {
+            "title": "Standard database - Version 20240904",
+            "file": [
+                "https://genome-idx.s3.amazonaws.com/kraken/k2_standard_20240904.tar.gz"
+            ],
+            "citation": "Wood, D. E., Lu, J., & Langmead, B. (2019). Improved metagenomic analysis with Kraken 2. Genome biology, 20(1), 257. https://doi.org/10.1186/s13059-019-1891-0",
+            "fmtscript": "",
+            "taxlevels": "D,P,C,O,F,G,S"
+        },
+        "standard=20230605": {
+            "title": "Standard database - Version 20230605",
+            "file": [
+                "https://genome-idx.s3.amazonaws.com/kraken/k2_standard_20230605.tar.gz"
+            ],
+            "citation": "Wood, D. E., Lu, J., & Langmead, B. (2019). Improved metagenomic analysis with Kraken 2. Genome biology, 20(1), 257. https://doi.org/10.1186/s13059-019-1891-0",
+            "fmtscript": "",
+            "taxlevels": "D,P,C,O,F,G,S"
+        }
+    },
+    "sidle_ref_databases": {
+        "silva": {
+            "title": "SILVA - Version 128",
+            "file": [
+                "https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_128_release.tgz"
+            ],
+            "tree_qza": [
+                "https://data.qiime2.org/2021.4/common/sepp-refs-silva-128.qza"
+            ],
+            "citation": "https://www.arb-silva.de/; Bokulich, N.A., Robeson, M., Dillon, M.R. bokulich-lab/RESCRIPt. Zenodo. http://doi.org/10.5281/zenodo.3891931",
+            "license": "https://www.arb-silva.de/silva-license-information/",
+            "fmtscript": "taxref_reformat_sidle.sh",
+            "taxlevels": "D,P,C,O,F,G"
+        },
+        "silva=128": {
+            "title": "SILVA - Version 128",
+            "file": [
+                "https://www.arb-silva.de/fileadmin/silva_databases/qiime/Silva_128_release.tgz"
+            ],
+            "tree_qza": [
+                "https://data.qiime2.org/2021.4/common/sepp-refs-silva-128.qza"
+            ],
+            "citation": "https://www.arb-silva.de/; Bokulich, N.A., Robeson, M., Dillon, M.R. bokulich-lab/RESCRIPt. Zenodo. http://doi.org/10.5281/zenodo.3891931",
+            "license": "https://www.arb-silva.de/silva-license-information/",
+            "fmtscript": "taxref_reformat_sidle.sh",
+            "taxlevels": "D,P,C,O,F,G"
+        },
+        "greengenes": {
+            "title": "Greengenes - Version 13_8",
+            "file": [
+                "ftp://greengenes.microbio.me/greengenes_release/gg_13_5/gg_13_8_otus.tar.gz"
+            ],
+            "tree_qza": [
+                "https://data.qiime2.org/2021.4/common/sepp-refs-gg-13-8.qza"
+            ],
+            "citation": "McDonald, D., Price, M., Goodrich, J. et al. An improved Greengenes taxonomy with explicit ranks for ecological and evolutionary analyses of bacteria and archaea. ISME J 6, 610\u2013618 (2012). https://doi.org/10.1038/ismej.2011.139",
+            "fmtscript": "taxref_reformat_sidle.sh",
+            "taxlevels": "D,P,C,O,F,G,S"
+        },
+        "greengenes=13_8": {
+            "title": "Greengenes - Version 13_8",
+            "file": [
+                "ftp://greengenes.microbio.me/greengenes_release/gg_13_5/gg_13_8_otus.tar.gz"
+            ],
+            "tree_qza": [
+                "https://data.qiime2.org/2021.4/common/sepp-refs-gg-13-8.qza"
+            ],
+            "citation": "McDonald, D., Price, M., Goodrich, J. et al. An improved Greengenes taxonomy with explicit ranks for ecological and evolutionary analyses of bacteria and archaea. ISME J 6, 610\u2013618 (2012). https://doi.org/10.1038/ismej.2011.139",
+            "fmtscript": "taxref_reformat_sidle.sh",
+            "taxlevels": "D,P,C,O,F,G,S"
+        },
+        "greengenes88": {
+            "title": "Greengenes - Version 13_8 - clustered at 88% similarity - for testing purposes only",
+            "file": [
+                "ftp://greengenes.microbio.me/greengenes_release/gg_13_5/gg_13_8_otus.tar.gz"
+            ],
+            "citation": "McDonald, D., Price, M., Goodrich, J. et al. An improved Greengenes taxonomy with explicit ranks for ecological and evolutionary analyses of bacteria and archaea. ISME J 6, 610\u2013618 (2012). https://doi.org/10.1038/ismej.2011.139",
+            "fmtscript": "taxref_reformat_sidle.sh",
+            "taxlevels": "D,P,C,O,F,G,S",
+            "derep": "88"
+        }
+    }
+}

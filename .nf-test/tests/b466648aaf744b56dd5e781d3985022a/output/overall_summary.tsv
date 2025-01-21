@@ -1,0 +1,5 @@
+sample	cutadapt_total_processed	cutadapt_reverse_complemented	cutadapt_passing_filters	cutadapt_passing_filters_percent	DADA2_input	filtered	denoisedF	denoisedR	merged	nonchim	ssufilter_input	ssufilter_output
+sampleID_1	2,500	NA	1,812	72.5%	1812	1394	1177	1127	1030	1030	1030	942
+sampleID_1a	2,500	NA	2,221	88.8%	2221	1959	1363	1341	1229	1229	1229	796
+sampleID_2	2,500	NA	2,350	94.0%	2350	1865	1524	1500	1387	1387	1387	1202
+sampleID_2a	2,500	NA	2,244	89.8%	2244	1983	1463	1439	1275	1275	1275	904

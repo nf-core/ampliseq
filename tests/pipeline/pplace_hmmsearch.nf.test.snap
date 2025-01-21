@@ -1,0 +1,71 @@
+{
+    "input": {
+        "content": [
+            "Samplesheet.tsv:md5,dbf8d1a2b7933dab9e5a139f33c2b1f4",
+            "Metadata.tsv:md5,060b56528bb566eed71f6dfdb52cc395"
+        ],
+        "meta": {
+            "nf-test": "0.9.0",
+            "nextflow": "24.10.3"
+        },
+        "timestamp": "2025-01-21T15:49:18.606845"
+    },
+    "cutadapt": {
+        "content": [
+            "cutadapt_summary.tsv:md5,5d02749984a811479e7d534fda75163f"
+        ],
+        "meta": {
+            "nf-test": "0.9.0",
+            "nextflow": "24.10.3"
+        },
+        "timestamp": "2025-01-21T15:49:18.536473"
+    },
+    "overall_summary_tsv": {
+        "content": [
+            "overall_summary.tsv:md5,97d0949d7b4bf23f44788530dd6728ad"
+        ],
+        "meta": {
+            "nf-test": "0.9.0",
+            "nextflow": "24.10.3"
+        },
+        "timestamp": "2025-01-21T15:49:18.406044"
+    },
+    "dada2": {
+        "content": [
+            "ASV_seqs.fasta:md5,864c3e0dc9b4a7649beee0c8665dceb5",
+            "ASV_table.tsv:md5,2618251e597593e4d716dd9bed095539",
+            "DADA2_stats.tsv:md5,54a1ac8d6c5a3ff15f700c4b2dd40c86",
+            "DADA2_table.rds:md5,d095501019ce7ebccfa0eb801db1ed29",
+            "DADA2_table.tsv:md5,5c9fb0bfd70da165f0ce6a361bfe0b43"
+        ],
+        "meta": {
+            "nf-test": "0.9.0",
+            "nextflow": "24.10.3"
+        },
+        "timestamp": "2025-01-21T15:49:18.570997"
+    },
+    "barrnap": {
+        "content": [
+            "rrna.arc.gff:md5,6dae470aace9293d5eb8c318584852dd",
+            "rrna.bac.gff:md5,439a9084f089120f700f938dfb58fa41",
+            "rrna.euk.gff:md5,c9bc1d9d8fb77dc19c95dee2d53840eb",
+            "rrna.mito.gff:md5,df19e1b84ba6f691d20c72b397c88abf"
+        ],
+        "meta": {
+            "nf-test": "0.9.0",
+            "nextflow": "24.10.3"
+        },
+        "timestamp": "2025-01-21T15:49:18.498844"
+    },
+    "multiqc": {
+        "content": [
+            "multiqc_general_stats.txt:md5,7a395be7984aaa0f9154de4abed5d824",
+            "multiqc_cutadapt.txt:md5,b4409890ffb9c6938433c374b50c380e"
+        ],
+        "meta": {
+            "nf-test": "0.9.0",
+            "nextflow": "24.10.3"
+        },
+        "timestamp": "2025-01-21T15:49:18.662649"
+    }
+}

@@ -1,0 +1,1622 @@
+{
+    "report_data_sources": {
+        "Cutadapt": {
+            "all_sections": {
+                "sampleID_1a": "/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/f8/db336f000bc9a1e31493199e593079/3/sampleID_1a.trimmed.cutadapt.log",
+                "sampleID_2": "/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/f8/db336f000bc9a1e31493199e593079/5/sampleID_2.trimmed.cutadapt.log",
+                "sampleID_1": "/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/f8/db336f000bc9a1e31493199e593079/6/sampleID_1.trimmed.cutadapt.log",
+                "sampleID_2a": "/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/f8/db336f000bc9a1e31493199e593079/4/sampleID_2a.trimmed.cutadapt.log"
+            }
+        }
+    },
+    "report_general_stats_data": [
+        {
+            "sampleID_1a": {
+                "cutadapt_version": "4.6",
+                "pairs_processed": 2500,
+                "r1_with_adapters": 2303,
+                "r2_with_adapters": 2248,
+                "pairs_too_short": 0,
+                "pairs_written": 2221,
+                "bp_processed": 1215218,
+                "bp_written": 1019985,
+                "percent_trimmed": 16.065677104848678,
+                "pairs_filtered_unexplained": 279
+            },
+            "sampleID_2": {
+                "cutadapt_version": "4.6",
+                "pairs_processed": 2500,
+                "r1_with_adapters": 2389,
+                "r2_with_adapters": 2369,
+                "pairs_too_short": 0,
+                "pairs_written": 2350,
+                "bp_processed": 1214380,
+                "bp_written": 1079069,
+                "percent_trimmed": 11.142393649434279,
+                "pairs_filtered_unexplained": 150
+            },
+            "sampleID_1": {
+                "cutadapt_version": "4.6",
+                "pairs_processed": 2500,
+                "r1_with_adapters": 1840,
+                "r2_with_adapters": 1821,
+                "pairs_too_short": 0,
+                "pairs_written": 1812,
+                "bp_processed": 976805,
+                "bp_written": 831596,
+                "percent_trimmed": 14.865710146856332,
+                "pairs_filtered_unexplained": 688
+            },
+            "sampleID_2a": {
+                "cutadapt_version": "4.6",
+                "pairs_processed": 2500,
+                "r1_with_adapters": 2319,
+                "r2_with_adapters": 2277,
+                "pairs_too_short": 0,
+                "pairs_written": 2244,
+                "bp_processed": 1217285,
+                "bp_written": 1031109,
+                "percent_trimmed": 15.294364097150625,
+                "pairs_filtered_unexplained": 256
+            }
+        }
+    ],
+    "report_general_stats_headers": [
+        {
+            "percent_trimmed": {
+                "title": "Trimmed bases",
+                "description": "% total base pairs trimmed",
+                "max": 100,
+                "min": 0,
+                "suffix": "%",
+                "scale": "RdYlBu-rev",
+                "namespace": "Cutadapt",
+                "rid": "cutadapt-percent_trimmed",
+                "placement": 1000
+            }
+        }
+    ],
+    "report_multiqc_command": "/usr/local/bin/multiqc --force --config multiqc_config.yml .",
+    "report_plot_data": {
+        "cutadapt_filtered_reads_plot": {
+            "id": "cutadapt_filtered_reads_plot",
+            "anchor": "cutadapt_filtered_reads_plot",
+            "plot_type": "bar_graph",
+            "layout": {
+                "autosize": true,
+                "colorway": [
+                    "#7cb5ec",
+                    "#434348",
+                    "#90ed7d",
+                    "#f7a35c",
+                    "#8085e9",
+                    "#f15c80",
+                    "#e4d354",
+                    "#2b908f",
+                    "#f45b5b",
+                    "#91e8e1"
+                ],
+                "font": {
+                    "family": "'Lucida Grande', 'Open Sans', verdana, arial, sans-serif"
+                },
+                "height": 300,
+                "hoverlabel": {
+                    "namelength": -1,
+                    "bgcolor": "rgba(255, 255, 255, 0.8)",
+                    "font": {
+                        "color": "black"
+                    }
+                },
+                "margin": {
+                    "b": 65,
+                    "l": 60,
+                    "pad": 5,
+                    "r": 15,
+                    "t": 50
+                },
+                "modebar": {
+                    "activecolor": "rgba(0, 0, 0, 1)",
+                    "bgcolor": "rgba(0, 0, 0, 0)",
+                    "color": "rgba(0, 0, 0, 0.5)"
+                },
+                "paper_bgcolor": "white",
+                "plot_bgcolor": "white",
+                "showlegend": true,
+                "title": {
+                    "font": {
+                        "size": 20
+                    },
+                    "text": "Cutadapt: Filtered Reads",
+                    "x": 0.5,
+                    "xanchor": "center"
+                },
+                "xaxis": {
+                    "automargin": true,
+                    "color": "rgba(0,0,0,0.3)",
+                    "gridcolor": "rgba(0,0,0,0.05)",
+                    "tickfont": {
+                        "color": "rgba(0,0,0,1)",
+                        "size": 10
+                    },
+                    "zerolinecolor": "rgba(0,0,0,0.05)"
+                },
+                "yaxis": {
+                    "automargin": true,
+                    "color": "rgba(0,0,0,0.3)",
+                    "gridcolor": "rgba(0,0,0,0.05)",
+                    "tickfont": {
+                        "color": "rgba(0,0,0,1)",
+                        "size": 10
+                    },
+                    "zerolinecolor": "rgba(0,0,0,0.05)",
+                    "showgrid": false,
+                    "categoryorder": "trace",
+                    "type": "category"
+                },
+                "barmode": "relative",
+                "bargroupgap": 0,
+                "bargap": 0.2,
+                "legend": {
+                    "tracegroupgap": 0,
+                    "traceorder": "normal"
+                },
+                "hovermode": "y unified"
+            },
+            "datasets": [
+                {
+                    "plot_id": "cutadapt_filtered_reads_plot",
+                    "label": "1",
+                    "uid": "cutadapt_filtered_reads_plot",
+                    "dconfig": {
+                        "title": "Cutadapt: Filtered Reads<br><sup>4 samples</sup>"
+                    },
+                    "layout": {
+                        "title": {
+                            "text": "Cutadapt: Filtered Reads<br><sup>4 samples</sup>"
+                        },
+                        "xaxis": {
+                            "title": {
+                                "text": "Counts"
+                            },
+                            "hoverformat": ",.2f",
+                            "ticksuffix": "",
+                            "autorangeoptions": {
+                                "minallowed": 0,
+                                "maxallowed": 2500.0
+                            }
+                        },
+                        "yaxis": {
+                            "title": null,
+                            "hoverformat": null,
+                            "ticksuffix": ""
+                        },
+                        "showlegend": true
+                    },
+                    "trace_params": {
+                        "hovertemplate": "<b></b>%{meta}: <b>%{x}</b><extra></extra>",
+                        "orientation": "h",
+                        "marker": {
+                            "line": {
+                                "width": 0
+                            }
+                        },
+                        "textposition": "inside",
+                        "insidetextanchor": "start"
+                    },
+                    "pct_range": {
+                        "xaxis": {
+                            "min": 0,
+                            "max": 100
+                        },
+                        "yaxis": {
+                            "min": 0,
+                            "max": 100
+                        }
+                    },
+                    "n_samples": 4,
+                    "cats": [
+                        {
+                            "name": "Pairs passing filters",
+                            "color": "124,181,236",
+                            "data": [
+                                2244.0,
+                                2350.0,
+                                2221.0,
+                                1812.0
+                            ],
+                            "data_pct": [
+                                89.75999999999999,
+                                94.0,
+                                88.84,
+                                72.48
+                            ]
+                        },
+                        {
+                            "name": "Filtered pairs (uncategorised)",
+                            "color": "244,91,91",
+                            "data": [
+                                256.0,
+                                150.0,
+                                279.0,
+                                688.0
+                            ],
+                            "data_pct": [
+                                10.24,
+                                6.0,
+                                11.16,
+                                27.52
+                            ]
+                        }
+                    ],
+                    "samples": [
+                        "sampleID_2a",
+                        "sampleID_2",
+                        "sampleID_1a",
+                        "sampleID_1"
+                    ]
+                }
+            ],
+            "pconfig": {
+                "id": "cutadapt_filtered_reads_plot",
+                "title": "Cutadapt: Filtered Reads",
+                "anchor": null,
+                "table_title": null,
+                "height": null,
+                "width": null,
+                "square": false,
+                "logswitch": false,
+                "logswitch_active": false,
+                "logswitch_label": "Log10",
+                "cpswitch": true,
+                "cpswitch_c_active": true,
+                "cpswitch_counts_label": "Counts",
+                "cpswitch_percent_label": "Percentages",
+                "xLog": null,
+                "yLog": null,
+                "xlog": false,
+                "ylog": false,
+                "data_labels": [],
+                "xTitle": null,
+                "yTitle": null,
+                "xlab": null,
+                "ylab": "Counts",
+                "xsuffix": null,
+                "ysuffix": null,
+                "tt_suffix": null,
+                "xLabFormat": null,
+                "yLabFormat": null,
+                "xLabelFormat": null,
+                "yLabelFormat": null,
+                "xlab_format": null,
+                "ylab_format": null,
+                "tt_label": null,
+                "xDecimals": null,
+                "yDecimals": null,
+                "decimalPlaces": null,
+                "x_decimals": null,
+                "y_decimals": null,
+                "tt_decimals": null,
+                "xmin": null,
+                "xmax": null,
+                "ymin": null,
+                "ymax": null,
+                "xFloor": null,
+                "xCeiling": null,
+                "yFloor": null,
+                "yCeiling": null,
+                "x_clipmin": null,
+                "x_clipmax": null,
+                "y_clipmin": null,
+                "y_clipmax": null,
+                "save_data_file": true,
+                "showlegend": null,
+                "xMinRange": null,
+                "yMinRange": null,
+                "x_minrange": null,
+                "y_minrange": null,
+                "xPlotBands": null,
+                "yPlotBands": null,
+                "xPlotLines": null,
+                "yPlotLines": null,
+                "x_bands": null,
+                "y_bands": null,
+                "x_lines": null,
+                "y_lines": null,
+                "stacking": "relative",
+                "hide_zero_cats": true,
+                "sort_samples": true,
+                "use_legend": true,
+                "suffix": null,
+                "lab_format": null
+            },
+            "add_log_tab": false,
+            "add_pct_tab": true,
+            "l_active": false,
+            "p_active": false,
+            "pct_axis_update": {
+                "ticksuffix": "%",
+                "hoverformat": ".1f"
+            },
+            "axis_controlled_by_switches": [
+                "xaxis"
+            ],
+            "square": false,
+            "flat": false,
+            "defer_render": false
+        },
+        "cutadapt_trimmed_sequences_plot_5": {
+            "id": "cutadapt_trimmed_sequences_plot_5",
+            "anchor": "cutadapt_trimmed_sequences_plot_5",
+            "plot_type": "xy_line",
+            "layout": {
+                "autosize": true,
+                "colorway": [
+                    "#7cb5ec",
+                    "#434348",
+                    "#90ed7d",
+                    "#f7a35c",
+                    "#8085e9",
+                    "#f15c80",
+                    "#e4d354",
+                    "#2b908f",
+                    "#f45b5b",
+                    "#91e8e1"
+                ],
+                "font": {
+                    "family": "'Lucida Grande', 'Open Sans', verdana, arial, sans-serif"
+                },
+                "height": 500,
+                "hoverlabel": {
+                    "namelength": -1
+                },
+                "margin": {
+                    "b": 65,
+                    "l": 60,
+                    "pad": 5,
+                    "r": 15,
+                    "t": 50
+                },
+                "modebar": {
+                    "activecolor": "rgba(0, 0, 0, 1)",
+                    "bgcolor": "rgba(0, 0, 0, 0)",
+                    "color": "rgba(0, 0, 0, 0.5)"
+                },
+                "paper_bgcolor": "white",
+                "plot_bgcolor": "white",
+                "showlegend": false,
+                "title": {
+                    "font": {
+                        "size": 20
+                    },
+                    "text": "Cutadapt: Lengths of Trimmed Sequences (5' end)",
+                    "x": 0.5,
+                    "xanchor": "center"
+                },
+                "xaxis": {
+                    "automargin": true,
+                    "color": "rgba(0,0,0,0.3)",
+                    "gridcolor": "rgba(0,0,0,0.05)",
+                    "tickfont": {
+                        "color": "rgba(0,0,0,1)",
+                        "size": 10
+                    },
+                    "zerolinecolor": "rgba(0,0,0,0.05)"
+                },
+                "yaxis": {
+                    "automargin": true,
+                    "color": "rgba(0,0,0,0.3)",
+                    "gridcolor": "rgba(0,0,0,0.05)",
+                    "tickfont": {
+                        "color": "rgba(0,0,0,1)",
+                        "size": 10
+                    },
+                    "zerolinecolor": "rgba(0,0,0,0.05)"
+                },
+                "hoverdistance": -1
+            },
+            "datasets": [
+                {
+                    "plot_id": "cutadapt_trimmed_sequences_plot_5",
+                    "label": "Counts",
+                    "uid": "cutadapt_trimmed_sequences_plot_5_Counts",
+                    "dconfig": {
+                        "name": "Counts",
+                        "ylab": "Count",
+                        "title": "Cutadapt: Lengths of Trimmed Sequences (5' end)<br><sup>Counts, 8 samples</sup>"
+                    },
+                    "layout": {
+                        "title": {
+                            "text": "Cutadapt: Lengths of Trimmed Sequences (5' end)<br><sup>Counts, 8 samples</sup>"
+                        },
+                        "xaxis": {
+                            "hoverformat": null,
+                            "ticksuffix": " bp",
+                            "title": {
+                                "text": "Length Trimmed (bp)"
+                            },
+                            "rangemode": "normal",
+                            "autorangeoptions": {
+                                "clipmin": null,
+                                "clipmax": null,
+                                "minallowed": null,
+                                "maxallowed": null
+                            }
+                        },
+                        "yaxis": {
+                            "hoverformat": null,
+                            "ticksuffix": "",
+                            "title": {
+                                "text": "Count"
+                            },
+                            "rangemode": "tozero",
+                            "autorangeoptions": {
+                                "clipmin": null,
+                                "clipmax": null,
+                                "minallowed": 0,
+                                "maxallowed": null
+                            }
+                        }
+                    },
+                    "trace_params": {
+                        "hovertemplate": "<b>%{text}</b><br><b>%{x} trimmed</b>: %{y:.0f}<extra></extra>",
+                        "mode": "lines+markers",
+                        "line": {
+                            "width": 0.6
+                        },
+                        "marker": {
+                            "size": 5
+                        }
+                    },
+                    "pct_range": {
+                        "xaxis": {
+                            "min": 0,
+                            "max": 100
+                        },
+                        "yaxis": {
+                            "min": 0,
+                            "max": 100
+                        }
+                    },
+                    "n_samples": 8,
+                    "lines": [
+                        {
+                            "name": "sampleID_1 - First read: Adapter 1",
+                            "pairs": [
+                                [
+                                    18,
+                                    4
+                                ],
+                                [
+                                    19,
+                                    1835
+                                ],
+                                [
+                                    174,
+                                    1
+                                ]
+                            ],
+                            "color": "#7cb5ec",
+                            "width": 2,
+                            "dash": null,
+                            "showlegend": true,
+                            "marker": null
+                        },
+                        {
+                            "name": "sampleID_1 - Second read: Adapter 2",
+                            "pairs": [
+                                [
+                                    19,
+                                    14
+                                ],
+                                [
+                                    20,
+                                    1793
+                                ],
+                                [
+                                    21,
+                                    13
+                                ],
+                                [
+                                    22,
+                                    1
+                                ]
+                            ],
+                            "color": "#434348",
+                            "width": 2,
+                            "dash": null,
+                            "showlegend": true,
+                            "marker": null
+                        },
+                        {
+                            "name": "sampleID_1a - First read: Adapter 1",
+                            "pairs": [
+                                [
+                                    17,
+                                    1
+                                ],
+                                [
+                                    18,
+                                    17
+                                ],
+                                [
+                                    19,
+                                    2282
+                                ],
+                                [
+                                    20,
+                                    3
+                                ]
+                            ],
+                            "color": "#90ed7d",
+                            "width": 2,
+                            "dash": null,
+                            "showlegend": true,
+                            "marker": null
+                        },
+                        {
+                            "name": "sampleID_1a - Second read: Adapter 2",
+                            "pairs": [
+                                [
+                                    19,
+                                    21
+                                ],
+                                [
+                                    20,
+                                    2211
+                                ],
+                                [
+                                    21,
+                                    15
+                                ],
+                                [
+                                    59,
+                                    1
+                                ]
+                            ],
+                            "color": "#f7a35c",
+                            "width": 2,
+                            "dash": null,
+                            "showlegend": true,
+                            "marker": null
+                        },
+                        {
+                            "name": "sampleID_2 - First read: Adapter 1",
+                            "pairs": [
+                                [
+                                    18,
+                                    9
+                                ],
+                                [
+                                    19,
+                                    2378
+                                ],
+                                [
+                                    198,
+                                    2
+                                ]
+                            ],
+                            "color": "#8085e9",
+                            "width": 2,
+                            "dash": null,
+                            "showlegend": true,
+                            "marker": null
+                        },
+                        {
+                            "name": "sampleID_2 - Second read: Adapter 2",
+                            "pairs": [
+                                [
+                                    16,
+                                    1
+                                ],
+                                [
+                                    19,
+                                    25
+                                ],
+                                [
+                                    20,
+                                    2322
+                                ],
+                                [
+                                    21,
+                                    19
+                                ],
+                                [
+                                    24,
+                                    2
+                                ]
+                            ],
+                            "color": "#f15c80",
+                            "width": 2,
+                            "dash": null,
+                            "showlegend": true,
+                            "marker": null
+                        },
+                        {
+                            "name": "sampleID_2a - First read: Adapter 1",
+                            "pairs": [
+                                [
+                                    16,
+                                    1
+                                ],
+                                [
+                                    18,
+                                    10
+                                ],
+                                [
+                                    19,
+                                    2302
+                                ],
+                                [
+                                    20,
+                                    6
+                                ]
+                            ],
+                            "color": "#e4d354",
+                            "width": 2,
+                            "dash": null,
+                            "showlegend": true,
+                            "marker": null
+                        },
+                        {
+                            "name": "sampleID_2a - Second read: Adapter 2",
+                            "pairs": [
+                                [
+                                    19,
+                                    17
+                                ],
+                                [
+                                    20,
+                                    2249
+                                ],
+                                [
+                                    21,
+                                    11
+                                ]
+                            ],
+                            "color": "#2b908f",
+                            "width": 2,
+                            "dash": null,
+                            "showlegend": true,
+                            "marker": null
+                        }
+                    ]
+                },
+                {
+                    "plot_id": "cutadapt_trimmed_sequences_plot_5",
+                    "label": "Obs/Exp",
+                    "uid": "cutadapt_trimmed_sequences_plot_5_Obs_Exp",
+                    "dconfig": {
+                        "name": "Obs/Exp",
+                        "ylab": "Observed / Expected",
+                        "title": "Cutadapt: Lengths of Trimmed Sequences (5' end)<br><sup>Obs/Exp, 8 samples</sup>"
+                    },
+                    "layout": {
+                        "title": {
+                            "text": "Cutadapt: Lengths of Trimmed Sequences (5' end)<br><sup>Obs/Exp, 8 samples</sup>"
+                        },
+                        "xaxis": {
+                            "hoverformat": null,
+                            "ticksuffix": " bp",
+                            "title": {
+                                "text": "Length Trimmed (bp)"
+                            },
+                            "rangemode": "normal",
+                            "autorangeoptions": {
+                                "clipmin": null,
+                                "clipmax": null,
+                                "minallowed": null,
+                                "maxallowed": null
+                            }
+                        },
+                        "yaxis": {
+                            "hoverformat": null,
+                            "ticksuffix": "",
+                            "title": {
+                                "text": "Observed / Expected"
+                            },
+                            "rangemode": "tozero",
+                            "autorangeoptions": {
+                                "clipmin": null,
+                                "clipmax": null,
+                                "minallowed": 0,
+                                "maxallowed": null
+                            }
+                        }
+                    },
+                    "trace_params": {
+                        "hovertemplate": "<b>%{text}</b><br><b>%{x} trimmed</b>: %{y:.0f}<extra></extra>",
+                        "mode": "lines+markers",
+                        "line": {
+                            "width": 0.6
+                        },
+                        "marker": {
+                            "size": 5
+                        }
+                    },
+                    "pct_range": {
+                        "xaxis": {
+                            "min": 0,
+                            "max": 100
+                        },
+                        "yaxis": {
+                            "min": 0,
+                            "max": 100
+                        }
+                    },
+                    "n_samples": 8,
+                    "lines": [
+                        {
+                            "name": "sampleID_1 - First read: Adapter 1",
+                            "pairs": [
+                                [
+                                    18,
+                                    4.0
+                                ],
+                                [
+                                    19,
+                                    1835.0
+                                ],
+                                [
+                                    174,
+                                    1.0
+                                ]
+                            ],
+                            "color": "#7cb5ec",
+                            "width": 2,
+                            "dash": null,
+                            "showlegend": true,
+                            "marker": null
+                        },
+                        {
+                            "name": "sampleID_1 - Second read: Adapter 2",
+                            "pairs": [
+                                [
+                                    19,
+                                    14.0
+                                ],
+                                [
+                                    20,
+                                    1793.0
+                                ],
+                                [
+                                    21,
+                                    13.0
+                                ],
+                                [
+                                    22,
+                                    1.0
+                                ]
+                            ],
+                            "color": "#434348",
+                            "width": 2,
+                            "dash": null,
+                            "showlegend": true,
+                            "marker": null
+                        },
+                        {
+                            "name": "sampleID_1a - First read: Adapter 1",
+                            "pairs": [
+                                [
+                                    17,
+                                    1.0
+                                ],
+                                [
+                                    18,
+                                    17.0
+                                ],
+                                [
+                                    19,
+                                    2282.0
+                                ],
+                                [
+                                    20,
+                                    3.0
+                                ]
+                            ],
+                            "color": "#90ed7d",
+                            "width": 2,
+                            "dash": null,
+                            "showlegend": true,
+                            "marker": null
+                        },
+                        {
+                            "name": "sampleID_1a - Second read: Adapter 2",
+                            "pairs": [
+                                [
+                                    19,
+                                    21.0
+                                ],
+                                [
+                                    20,
+                                    2211.0
+                                ],
+                                [
+                                    21,
+                                    15.0
+                                ],
+                                [
+                                    59,
+                                    1.0
+                                ]
+                            ],
+                            "color": "#f7a35c",
+                            "width": 2,
+                            "dash": null,
+                            "showlegend": true,
+                            "marker": null
+                        },
+                        {
+                            "name": "sampleID_2 - First read: Adapter 1",
+                            "pairs": [
+                                [
+                                    18,
+                                    9.0
+                                ],
+                                [
+                                    19,
+                                    2378.0
+                                ],
+                                [
+                                    198,
+                                    2.0
+                                ]
+                            ],
+                            "color": "#8085e9",
+                            "width": 2,
+                            "dash": null,
+                            "showlegend": true,
+                            "marker": null
+                        },
+                        {
+                            "name": "sampleID_2 - Second read: Adapter 2",
+                            "pairs": [
+                                [
+                                    16,
+                                    1.0
+                                ],
+                                [
+                                    19,
+                                    25.0
+                                ],
+                                [
+                                    20,
+                                    2322.0
+                                ],
+                                [
+                                    21,
+                                    19.0
+                                ],
+                                [
+                                    24,
+                                    2.0
+                                ]
+                            ],
+                            "color": "#f15c80",
+                            "width": 2,
+                            "dash": null,
+                            "showlegend": true,
+                            "marker": null
+                        },
+                        {
+                            "name": "sampleID_2a - First read: Adapter 1",
+                            "pairs": [
+                                [
+                                    16,
+                                    1.0
+                                ],
+                                [
+                                    18,
+                                    10.0
+                                ],
+                                [
+                                    19,
+                                    2302.0
+                                ],
+                                [
+                                    20,
+                                    6.0
+                                ]
+                            ],
+                            "color": "#e4d354",
+                            "width": 2,
+                            "dash": null,
+                            "showlegend": true,
+                            "marker": null
+                        },
+                        {
+                            "name": "sampleID_2a - Second read: Adapter 2",
+                            "pairs": [
+                                [
+                                    19,
+                                    17.0
+                                ],
+                                [
+                                    20,
+                                    2249.0
+                                ],
+                                [
+                                    21,
+                                    11.0
+                                ]
+                            ],
+                            "color": "#2b908f",
+                            "width": 2,
+                            "dash": null,
+                            "showlegend": true,
+                            "marker": null
+                        }
+                    ]
+                }
+            ],
+            "pconfig": {
+                "id": "cutadapt_trimmed_sequences_plot_5",
+                "title": "Cutadapt: Lengths of Trimmed Sequences (5' end)",
+                "anchor": null,
+                "table_title": null,
+                "height": null,
+                "width": null,
+                "square": false,
+                "logswitch": false,
+                "logswitch_active": false,
+                "logswitch_label": "Log10",
+                "cpswitch": true,
+                "cpswitch_c_active": true,
+                "cpswitch_counts_label": "Counts",
+                "cpswitch_percent_label": "Percentages",
+                "xLog": null,
+                "yLog": null,
+                "xlog": false,
+                "ylog": false,
+                "data_labels": [
+                    {
+                        "name": "Counts",
+                        "ylab": "Count",
+                        "title": "Cutadapt: Lengths of Trimmed Sequences (5' end)<br><sup>Counts, 8 samples</sup>"
+                    },
+                    {
+                        "name": "Obs/Exp",
+                        "ylab": "Observed / Expected",
+                        "title": "Cutadapt: Lengths of Trimmed Sequences (5' end)<br><sup>Obs/Exp, 8 samples</sup>"
+                    }
+                ],
+                "xTitle": null,
+                "yTitle": null,
+                "xlab": "Length Trimmed (bp)",
+                "ylab": "Counts",
+                "xsuffix": " bp",
+                "ysuffix": null,
+                "tt_suffix": null,
+                "xLabFormat": null,
+                "yLabFormat": null,
+                "xLabelFormat": null,
+                "yLabelFormat": null,
+                "xlab_format": null,
+                "ylab_format": null,
+                "tt_label": "<b>{point.x} bp trimmed</b>: {point.y:.0f}",
+                "xDecimals": null,
+                "yDecimals": null,
+                "decimalPlaces": null,
+                "x_decimals": null,
+                "y_decimals": null,
+                "tt_decimals": null,
+                "xmin": null,
+                "xmax": null,
+                "ymin": 0,
+                "ymax": null,
+                "xFloor": null,
+                "xCeiling": null,
+                "yFloor": null,
+                "yCeiling": null,
+                "x_clipmin": null,
+                "x_clipmax": null,
+                "y_clipmin": null,
+                "y_clipmax": null,
+                "save_data_file": true,
+                "showlegend": null,
+                "xMinRange": null,
+                "yMinRange": null,
+                "x_minrange": null,
+                "y_minrange": null,
+                "xPlotBands": null,
+                "yPlotBands": null,
+                "xPlotLines": null,
+                "yPlotLines": null,
+                "x_bands": null,
+                "y_bands": null,
+                "x_lines": null,
+                "y_lines": null,
+                "categories": false,
+                "smooth_points": 500,
+                "smooth_points_sumcounts": null,
+                "extra_series": null,
+                "style": null,
+                "hide_zero_cats": false,
+                "hide_empty": false,
+                "colors": {}
+            },
+            "add_log_tab": false,
+            "add_pct_tab": false,
+            "l_active": false,
+            "p_active": false,
+            "pct_axis_update": {
+                "ticksuffix": "%",
+                "hoverformat": ".1f"
+            },
+            "axis_controlled_by_switches": [
+                "yaxis"
+            ],
+            "square": false,
+            "flat": false,
+            "defer_render": false
+        },
+        "general_stats_table": {
+            "id": "general_stats_table",
+            "anchor": "general_stats_table",
+            "plot_type": "violin",
+            "layout": {
+                "autosize": true,
+                "colorway": [
+                    "#7cb5ec",
+                    "#434348",
+                    "#90ed7d",
+                    "#f7a35c",
+                    "#8085e9",
+                    "#f15c80",
+                    "#e4d354",
+                    "#2b908f",
+                    "#f45b5b",
+                    "#91e8e1"
+                ],
+                "font": {
+                    "family": "'Lucida Grande', 'Open Sans', verdana, arial, sans-serif"
+                },
+                "height": 500,
+                "hoverlabel": {
+                    "namelength": -1
+                },
+                "margin": {
+                    "b": 40,
+                    "l": 60,
+                    "pad": 0,
+                    "r": 15,
+                    "t": 50
+                },
+                "modebar": {
+                    "activecolor": "rgba(0, 0, 0, 1)",
+                    "bgcolor": "rgba(0, 0, 0, 0)",
+                    "color": "rgba(0, 0, 0, 0.5)"
+                },
+                "paper_bgcolor": "white",
+                "plot_bgcolor": "white",
+                "showlegend": false,
+                "title": {
+                    "font": {
+                        "size": 20
+                    },
+                    "text": "General Statistics",
+                    "x": 0.5,
+                    "xanchor": "center"
+                },
+                "xaxis": {
+                    "automargin": false,
+                    "color": "rgba(0,0,0,0.3)",
+                    "gridcolor": "rgba(0,0,0,0.1)",
+                    "tickfont": {
+                        "color": "rgba(0,0,0,0.5)",
+                        "size": 9
+                    },
+                    "zerolinecolor": "rgba(0,0,0,0.1)"
+                },
+                "yaxis": {
+                    "automargin": true,
+                    "color": "rgba(0,0,0,0.3)",
+                    "gridcolor": "rgba(0,0,0,0.1)",
+                    "tickfont": {
+                        "color": "rgba(0,0,0,0.5)",
+                        "size": 9
+                    },
+                    "zerolinecolor": "rgba(0,0,0,0.1)"
+                },
+                "violingap": 0,
+                "grid": {
+                    "columns": 1,
+                    "roworder": "top to bottom",
+                    "ygap": 0.4
+                }
+            },
+            "datasets": [
+                {
+                    "plot_id": "general_stats_table",
+                    "label": "1",
+                    "uid": "general_stats_table",
+                    "dconfig": {
+                        "ylab": "",
+                        "title": "General Statistics<br><sup>4 samples</sup>"
+                    },
+                    "layout": {
+                        "title": {
+                            "text": "General Statistics<br><sup>4 samples</sup>"
+                        },
+                        "xaxis": {
+                            "hoverformat": null,
+                            "ticksuffix": "",
+                            "title": {
+                                "text": null
+                            },
+                            "rangemode": "normal",
+                            "autorangeoptions": {
+                                "clipmin": null,
+                                "clipmax": null,
+                                "minallowed": null,
+                                "maxallowed": null
+                            }
+                        },
+                        "yaxis": {
+                            "hoverformat": null,
+                            "ticksuffix": "",
+                            "title": {
+                                "text": ""
+                            },
+                            "rangemode": "normal",
+                            "autorangeoptions": {
+                                "clipmin": null,
+                                "clipmax": null,
+                                "minallowed": null,
+                                "maxallowed": null
+                            }
+                        }
+                    },
+                    "trace_params": {
+                        "hovertemplate": "<b>%{text}</b>: %{x}<extra></extra>",
+                        "orientation": "h",
+                        "box": {
+                            "visible": true
+                        },
+                        "meanline": {
+                            "visible": true
+                        },
+                        "fillcolor": "#b5b5b5",
+                        "line": {
+                            "width": 2,
+                            "color": "#b5b5b5"
+                        },
+                        "opacity": 0.5,
+                        "points": false,
+                        "hoveron": "points"
+                    },
+                    "pct_range": {
+                        "xaxis": {
+                            "min": 0,
+                            "max": 100
+                        },
+                        "yaxis": {
+                            "min": 0,
+                            "max": 100
+                        }
+                    },
+                    "n_samples": 4,
+                    "metrics": [
+                        "cutadapt-percent_trimmed"
+                    ],
+                    "header_by_metric": {
+                        "cutadapt-percent_trimmed": {
+                            "title": "Trimmed bases",
+                            "description": "% total base pairs trimmed",
+                            "suffix": "%",
+                            "dmin": 0.0,
+                            "dmax": 100.0,
+                            "hidden": false,
+                            "xaxis": {
+                                "ticksuffix": "%",
+                                "tickvals": null,
+                                "range": [
+                                    -0.5,
+                                    100.5025
+                                ]
+                            },
+                            "show_only_outliers": false,
+                            "show_points": true,
+                            "namespace": "Cutadapt",
+                            "color": null,
+                            "hoverformat": ".2f"
+                        }
+                    },
+                    "violin_value_by_sample_by_metric": {
+                        "cutadapt-percent_trimmed": {
+                            "sampleID_1a": 16.065677104848678,
+                            "sampleID_2": 11.142393649434279,
+                            "sampleID_1": 14.865710146856332,
+                            "sampleID_2a": 15.294364097150625
+                        }
+                    },
+                    "scatter_value_by_sample_by_metric": {
+                        "cutadapt-percent_trimmed": {}
+                    },
+                    "all_samples": [
+                        "sampleID_1",
+                        "sampleID_1a",
+                        "sampleID_2",
+                        "sampleID_2a"
+                    ],
+                    "scatter_trace_params": {
+                        "mode": "markers",
+                        "marker": {
+                            "size": 4,
+                            "color": "#0b79e6"
+                        },
+                        "showlegend": false,
+                        "hovertemplate": "<b>%{text}</b>: %{x}<extra></extra>",
+                        "hoverlabel": {
+                            "bgcolor": "white"
+                        }
+                    }
+                }
+            ],
+            "pconfig": {
+                "id": "general_stats_table",
+                "title": "General Statistics",
+                "anchor": null,
+                "table_title": null,
+                "height": null,
+                "width": null,
+                "square": false,
+                "logswitch": false,
+                "logswitch_active": false,
+                "logswitch_label": "Log10",
+                "cpswitch": true,
+                "cpswitch_c_active": true,
+                "cpswitch_counts_label": "Counts",
+                "cpswitch_percent_label": "Percentages",
+                "xLog": null,
+                "yLog": null,
+                "xlog": false,
+                "ylog": false,
+                "data_labels": [],
+                "xTitle": null,
+                "yTitle": null,
+                "xlab": null,
+                "ylab": null,
+                "xsuffix": null,
+                "ysuffix": null,
+                "tt_suffix": null,
+                "xLabFormat": null,
+                "yLabFormat": null,
+                "xLabelFormat": null,
+                "yLabelFormat": null,
+                "xlab_format": null,
+                "ylab_format": null,
+                "tt_label": null,
+                "xDecimals": null,
+                "yDecimals": null,
+                "decimalPlaces": null,
+                "x_decimals": null,
+                "y_decimals": null,
+                "tt_decimals": null,
+                "xmin": null,
+                "xmax": null,
+                "ymin": null,
+                "ymax": null,
+                "xFloor": null,
+                "xCeiling": null,
+                "yFloor": null,
+                "yCeiling": null,
+                "x_clipmin": null,
+                "x_clipmax": null,
+                "y_clipmin": null,
+                "y_clipmax": null,
+                "save_data_file": true,
+                "showlegend": null,
+                "xMinRange": null,
+                "yMinRange": null,
+                "x_minrange": null,
+                "y_minrange": null,
+                "xPlotBands": null,
+                "yPlotBands": null,
+                "xPlotLines": null,
+                "yPlotLines": null,
+                "x_bands": null,
+                "y_bands": null,
+                "x_lines": null,
+                "y_lines": null,
+                "namespace": "",
+                "save_file": true,
+                "raw_data_fn": "multiqc_general_stats",
+                "defaultsort": null,
+                "sortRows": true,
+                "sort_rows": true,
+                "only_defined_headers": true,
+                "col1_header": "Sample Name",
+                "no_beeswarm": false,
+                "no_violin": false,
+                "scale": "GnBu",
+                "min": null
+            },
+            "add_log_tab": false,
+            "add_pct_tab": false,
+            "l_active": false,
+            "p_active": false,
+            "pct_axis_update": {
+                "ticksuffix": "%",
+                "hoverformat": ".1f"
+            },
+            "axis_controlled_by_switches": [],
+            "square": false,
+            "flat": false,
+            "defer_render": false,
+            "violin_height": 70,
+            "extra_height": 63,
+            "no_violin": false,
+            "show_table": true,
+            "show_table_by_default": true,
+            "n_samples": 4,
+            "main_table_dt": {
+                "id": "general_stats_table",
+                "anchor": "general_stats_table_table",
+                "pconfig": {
+                    "id": "general_stats_table",
+                    "title": "General Statistics",
+                    "anchor": null,
+                    "table_title": null,
+                    "height": null,
+                    "width": null,
+                    "square": false,
+                    "logswitch": false,
+                    "logswitch_active": false,
+                    "logswitch_label": "Log10",
+                    "cpswitch": true,
+                    "cpswitch_c_active": true,
+                    "cpswitch_counts_label": "Counts",
+                    "cpswitch_percent_label": "Percentages",
+                    "xLog": null,
+                    "yLog": null,
+                    "xlog": false,
+                    "ylog": false,
+                    "data_labels": [],
+                    "xTitle": null,
+                    "yTitle": null,
+                    "xlab": null,
+                    "ylab": null,
+                    "xsuffix": null,
+                    "ysuffix": null,
+                    "tt_suffix": null,
+                    "xLabFormat": null,
+                    "yLabFormat": null,
+                    "xLabelFormat": null,
+                    "yLabelFormat": null,
+                    "xlab_format": null,
+                    "ylab_format": null,
+                    "tt_label": null,
+                    "xDecimals": null,
+                    "yDecimals": null,
+                    "decimalPlaces": null,
+                    "x_decimals": null,
+                    "y_decimals": null,
+                    "tt_decimals": null,
+                    "xmin": null,
+                    "xmax": null,
+                    "ymin": null,
+                    "ymax": null,
+                    "xFloor": null,
+                    "xCeiling": null,
+                    "yFloor": null,
+                    "yCeiling": null,
+                    "x_clipmin": null,
+                    "x_clipmax": null,
+                    "y_clipmin": null,
+                    "y_clipmax": null,
+                    "save_data_file": true,
+                    "showlegend": null,
+                    "xMinRange": null,
+                    "yMinRange": null,
+                    "x_minrange": null,
+                    "y_minrange": null,
+                    "xPlotBands": null,
+                    "yPlotBands": null,
+                    "xPlotLines": null,
+                    "yPlotLines": null,
+                    "x_bands": null,
+                    "y_bands": null,
+                    "x_lines": null,
+                    "y_lines": null,
+                    "namespace": "",
+                    "save_file": true,
+                    "raw_data_fn": "multiqc_general_stats",
+                    "defaultsort": null,
+                    "sortRows": true,
+                    "sort_rows": true,
+                    "only_defined_headers": true,
+                    "col1_header": "Sample Name",
+                    "no_beeswarm": false,
+                    "no_violin": false,
+                    "scale": "GnBu",
+                    "min": null
+                },
+                "sections": [
+                    {
+                        "column_by_key": {
+                            "percent_trimmed": {
+                                "rid": "cutadapt-percent_trimmed",
+                                "title": "Trimmed bases",
+                                "description": "% total base pairs trimmed",
+                                "scale": "RdYlBu-rev",
+                                "hidden": false,
+                                "placement": 1000.0,
+                                "namespace": "Cutadapt",
+                                "colour": null,
+                                "color": null,
+                                "max": 100.0,
+                                "dmax": 100.0,
+                                "min": 0.0,
+                                "dmin": 0.0,
+                                "ceiling": null,
+                                "floor": null,
+                                "minRange": null,
+                                "minrange": null,
+                                "shared_key": null,
+                                "tt_decimals": null,
+                                "suffix": "%",
+                                "cond_formatting_colours": [
+                                    {
+                                        "blue": "#337ab7"
+                                    },
+                                    {
+                                        "lbue": "#5bc0de"
+                                    },
+                                    {
+                                        "pass": "#5cb85c"
+                                    },
+                                    {
+                                        "warn": "#f0ad4e"
+                                    },
+                                    {
+                                        "fail": "#d9534f"
+                                    }
+                                ],
+                                "cond_formatting_rules": {},
+                                "bgcols": {},
+                                "bars_zero_centrepoint": false
+                            }
+                        },
+                        "rows_by_sgroup": {
+                            "sampleID_1a": [
+                                {
+                                    "sample": "sampleID_1a",
+                                    "raw_data": {
+                                        "percent_trimmed": 16.065677104848678
+                                    },
+                                    "formatted_data": {
+                                        "percent_trimmed": "16.1"
+                                    }
+                                }
+                            ],
+                            "sampleID_2": [
+                                {
+                                    "sample": "sampleID_2",
+                                    "raw_data": {
+                                        "percent_trimmed": 11.142393649434279
+                                    },
+                                    "formatted_data": {
+                                        "percent_trimmed": "11.1"
+                                    }
+                                }
+                            ],
+                            "sampleID_1": [
+                                {
+                                    "sample": "sampleID_1",
+                                    "raw_data": {
+                                        "percent_trimmed": 14.865710146856332
+                                    },
+                                    "formatted_data": {
+                                        "percent_trimmed": "14.9"
+                                    }
+                                }
+                            ],
+                            "sampleID_2a": [
+                                {
+                                    "sample": "sampleID_2a",
+                                    "raw_data": {
+                                        "percent_trimmed": 15.294364097150625
+                                    },
+                                    "formatted_data": {
+                                        "percent_trimmed": "15.3"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "headers_in_order": {
+                    "1000.0": [
+                        [
+                            0,
+                            "percent_trimmed"
+                        ]
+                    ]
+                }
+            }
+        }
+    },
+    "report_saved_raw_data": {
+        "multiqc_cutadapt": {
+            "sampleID_1a": {
+                "cutadapt_version": "4.6",
+                "pairs_processed": 2500,
+                "r1_with_adapters": 2303,
+                "r2_with_adapters": 2248,
+                "pairs_too_short": 0,
+                "pairs_written": 2221,
+                "bp_processed": 1215218,
+                "bp_written": 1019985,
+                "percent_trimmed": 16.065677104848678,
+                "pairs_filtered_unexplained": 279
+            },
+            "sampleID_2": {
+                "cutadapt_version": "4.6",
+                "pairs_processed": 2500,
+                "r1_with_adapters": 2389,
+                "r2_with_adapters": 2369,
+                "pairs_too_short": 0,
+                "pairs_written": 2350,
+                "bp_processed": 1214380,
+                "bp_written": 1079069,
+                "percent_trimmed": 11.142393649434279,
+                "pairs_filtered_unexplained": 150
+            },
+            "sampleID_1": {
+                "cutadapt_version": "4.6",
+                "pairs_processed": 2500,
+                "r1_with_adapters": 1840,
+                "r2_with_adapters": 1821,
+                "pairs_too_short": 0,
+                "pairs_written": 1812,
+                "bp_processed": 976805,
+                "bp_written": 831596,
+                "percent_trimmed": 14.865710146856332,
+                "pairs_filtered_unexplained": 688
+            },
+            "sampleID_2a": {
+                "cutadapt_version": "4.6",
+                "pairs_processed": 2500,
+                "r1_with_adapters": 2319,
+                "r2_with_adapters": 2277,
+                "pairs_too_short": 0,
+                "pairs_written": 2244,
+                "bp_processed": 1217285,
+                "bp_written": 1031109,
+                "percent_trimmed": 15.294364097150625,
+                "pairs_filtered_unexplained": 256
+            }
+        },
+        "multiqc_general_stats": {
+            "sampleID_1a": {
+                "cutadapt-percent_trimmed": 16.065677104848678
+            },
+            "sampleID_2": {
+                "cutadapt-percent_trimmed": 11.142393649434279
+            },
+            "sampleID_1": {
+                "cutadapt-percent_trimmed": 14.865710146856332
+            },
+            "sampleID_2a": {
+                "cutadapt-percent_trimmed": 15.294364097150625
+            }
+        }
+    },
+    "config_analysis_dir_abs": [
+        "/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/f8/db336f000bc9a1e31493199e593079"
+    ],
+    "config_analysis_dir": [
+        "."
+    ],
+    "config_creation_date": "2025-01-21, 15:49 CET",
+    "config_git_hash": null,
+    "config_intro_text": null,
+    "config_report_comment": "This report has been generated by the <a href=\"https://github.com/nf-core/ampliseq/tree/dev\" target=\"_blank\">nf-core/ampliseq</a> analysis pipeline. For information about how to interpret these results, please see the <a href=\"https://nf-co.re/ampliseq/dev/docs/output\" target=\"_blank\">documentation</a>.\n",
+    "config_report_header_info": null,
+    "config_script_path": "/usr/local/lib/python3.12/site-packages/multiqc",
+    "config_short_version": "1.25.1",
+    "config_subtitle": null,
+    "config_title": null,
+    "config_version": "1.25.1",
+    "config_output_dir": "/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/f8/db336f000bc9a1e31493199e593079"
+}

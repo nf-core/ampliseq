@@ -1,0 +1,9 @@
+Sample	0	1	2	3	4
+sampleID_1 - First read: Adapter 1	(18, 4)	(19, 1835)	(174, 1)		
+sampleID_1 - Second read: Adapter 2	(19, 14)	(20, 1793)	(21, 13)	(22, 1)	
+sampleID_1a - First read: Adapter 1	(17, 1)	(18, 17)	(19, 2282)	(20, 3)	
+sampleID_1a - Second read: Adapter 2	(19, 21)	(20, 2211)	(21, 15)	(59, 1)	
+sampleID_2 - First read: Adapter 1	(18, 9)	(19, 2378)	(198, 2)		
+sampleID_2 - Second read: Adapter 2	(16, 1)	(19, 25)	(20, 2322)	(21, 19)	(24, 2)
+sampleID_2a - First read: Adapter 1	(16, 1)	(18, 10)	(19, 2302)	(20, 6)	
+sampleID_2a - Second read: Adapter 2	(19, 17)	(20, 2249)	(21, 11)		

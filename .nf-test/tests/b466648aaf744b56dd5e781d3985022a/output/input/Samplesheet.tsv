@@ -1,0 +1,5 @@
+sampleID	forwardReads	reverseReads
+sampleID_1a	https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/1a_S103_L001_R1_001.fastq.gz	https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/1a_S103_L001_R2_001.fastq.gz
+sampleID_1	https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/1_S103_L001_R1_001.fastq.gz	https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/1_S103_L001_R2_001.fastq.gz
+sampleID_2a	https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/2a_S115_L001_R1_001.fastq.gz	https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/2a_S115_L001_R2_001.fastq.gz
+sampleID_2	https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/2_S115_L001_R1_001.fastq.gz	https://github.com/nf-core/test-datasets/raw/ampliseq/testdata/2_S115_L001_R2_001.fastq.gz

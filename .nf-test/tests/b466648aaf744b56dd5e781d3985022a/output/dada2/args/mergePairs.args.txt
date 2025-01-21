@@ -1,0 +1,1 @@
+mergePairs	minOverlap = 12, maxMismatch = 0, returnRejects = FALSE, propagateCol = character(0), trimOverhang = FALSE, match = 1, mismatch = -64, gap = -64, homo_gap = NULL, endsfree = TRUE, vec = FALSE,justConcatenate = FALSE

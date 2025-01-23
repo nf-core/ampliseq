@@ -1,9 +1,0 @@
-[2025-01-21 15:49:05,650] multiqc.config                                     [INFO   ]  Loading config settings from: multiqc_config.yml
-[2025-01-21 15:49:05,773] multiqc.core.version_check                         [WARNING]  MultiQC Version v1.26 now available!
-[2025-01-21 15:49:05,773] multiqc.core.file_search                           [INFO   ]  Search path: /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/.nf-test/tests/b466648aaf744b56dd5e781d3985022a/work/f8/db336f000bc9a1e31493199e593079
-[2025-01-21 15:49:05,869] multiqc.modules.custom_content.custom_content      [WARNING]  HTML plot type found with more than one dataset in nf-core-ampliseq-methods-description
-[2025-01-21 15:49:05,869] multiqc.modules.custom_content.custom_content      [INFO   ]  nf-core-ampliseq-methods-description: Found 1 sample (html)
-[2025-01-21 15:49:05,869] multiqc.modules.custom_content.custom_content      [WARNING]  HTML plot type found with more than one dataset in nf-core-ampliseq-summary
-[2025-01-21 15:49:05,869] multiqc.modules.custom_content.custom_content      [INFO   ]  nf-core-ampliseq-summary: Found 1 sample (html)
-[2025-01-21 15:49:05,879] multiqc.modules.cutadapt.cutadapt                  [INFO   ]  Found 4 reports
-[2025-01-21 15:49:05,952] multiqc.core.write_results                         [INFO   ]  Rendering plots. Export plots to formats png, svg, pdf is requested, so it might take a while. To disable plot export, set `export_plots: false` in config, or remove the `--export-plots` command line flag

@@ -1,3 +1,0 @@
-ERROR ~ No such file or directory: Can't find a matching module file for include: ../../../modules/nf-core/mafft/main
-
- -- Check script '/Users/dadiaa/projects/dev/ampliseq/./workflows/../subworkflows/nf-core/fasta_newick_epang_gappa/main.nf' at line: 9 or see '/Users/dadiaa/projects/dev/ampliseq/.nf-test/tests/8c8324cbe790d5d15bc06eebb2df43af/meta/nextflow.log' file for more details

@@ -1,5 +1,0 @@
-Sample	cutadapt-percent_trimmed
-sampleID_1	14.865710146856332
-sampleID_1a	16.065677104848678
-sampleID_2	11.142393649434279
-sampleID_2a	15.294364097150625

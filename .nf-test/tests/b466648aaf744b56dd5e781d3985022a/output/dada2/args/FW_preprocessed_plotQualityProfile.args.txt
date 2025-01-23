@@ -1,2 +1,0 @@
-plotQualityProfile	, n = 5e+04, aggregate = TRUE
-max_files	4

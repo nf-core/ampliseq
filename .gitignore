@@ -7,4 +7,4 @@ testing/
 testing*
 *.pyc
 null/
-.nf-test/
+.nf-test/test

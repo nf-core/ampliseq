@@ -1,0 +1,33 @@
+Jan-21 15:44:08.149 [main] INFO  com.askimed.nf.test.App - nf-test 0.9.0
+Jan-21 15:44:08.182 [main] INFO  com.askimed.nf.test.App - Arguments: [test, --profile, test_pplace_hmmsearch,singularity, ./tests/pipeline/pplace_hmmsearch.nf.test]
+Jan-21 15:44:12.792 [main] INFO  com.askimed.nf.test.App - Nextflow Version: 24.10.3
+Jan-21 15:44:12.796 [main] INFO  com.askimed.nf.test.commands.RunTestsCommand - Load config from file /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/nf-test.config...
+Jan-21 15:44:19.790 [main] INFO  com.askimed.nf.test.lang.dependencies.DependencyResolver - Loaded 212 files from directory /cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq in 4.903 sec
+Jan-21 15:44:19.796 [main] INFO  com.askimed.nf.test.lang.dependencies.DependencyResolver - Found 1 tests.
+Jan-21 15:44:19.796 [main] DEBUG com.askimed.nf.test.lang.dependencies.DependencyResolver - Found tests: [/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/tests/pipeline/pplace_hmmsearch.nf.test]
+Jan-21 15:44:19.796 [main] INFO  com.askimed.nf.test.commands.RunTestsCommand - Detected 1 test files.
+Jan-21 15:44:20.249 [main] INFO  com.askimed.nf.test.core.TestExecutionEngine - Started test plan
+Jan-21 15:44:20.249 [main] INFO  com.askimed.nf.test.core.TestExecutionEngine - Running testsuite 'Test Workflow main.nf' from file '/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/tests/pipeline/pplace_hmmsearch.nf.test'.
+Jan-21 15:44:20.250 [main] INFO  com.askimed.nf.test.core.TestExecutionEngine - Run test 'b466648a: test_pplace_hmmsearch'. type: com.askimed.nf.test.lang.pipeline.PipelineTest
+Jan-21 15:49:18.369 [main] DEBUG com.askimed.nf.test.lang.extensions.SnapshotFile - Init new snapshot file '/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/tests/pipeline/pplace_hmmsearch.nf.test.snap'
+Jan-21 15:49:18.381 [main] DEBUG com.askimed.nf.test.lang.extensions.Snapshot - Snapshot 'overall_summary_tsv' not found.
+Jan-21 15:49:18.406 [main] DEBUG com.askimed.nf.test.lang.extensions.SnapshotFile - Created snapshot 'overall_summary_tsv'
+Jan-21 15:49:18.497 [main] DEBUG com.askimed.nf.test.lang.extensions.SnapshotFile - Wrote snapshots to file '/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/tests/pipeline/pplace_hmmsearch.nf.test.snap'
+Jan-21 15:49:18.498 [main] DEBUG com.askimed.nf.test.lang.extensions.Snapshot - Snapshot 'barrnap' not found.
+Jan-21 15:49:18.498 [main] DEBUG com.askimed.nf.test.lang.extensions.SnapshotFile - Created snapshot 'barrnap'
+Jan-21 15:49:18.535 [main] DEBUG com.askimed.nf.test.lang.extensions.SnapshotFile - Wrote snapshots to file '/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/tests/pipeline/pplace_hmmsearch.nf.test.snap'
+Jan-21 15:49:18.536 [main] DEBUG com.askimed.nf.test.lang.extensions.Snapshot - Snapshot 'cutadapt' not found.
+Jan-21 15:49:18.536 [main] DEBUG com.askimed.nf.test.lang.extensions.SnapshotFile - Created snapshot 'cutadapt'
+Jan-21 15:49:18.570 [main] DEBUG com.askimed.nf.test.lang.extensions.SnapshotFile - Wrote snapshots to file '/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/tests/pipeline/pplace_hmmsearch.nf.test.snap'
+Jan-21 15:49:18.570 [main] DEBUG com.askimed.nf.test.lang.extensions.Snapshot - Snapshot 'dada2' not found.
+Jan-21 15:49:18.571 [main] DEBUG com.askimed.nf.test.lang.extensions.SnapshotFile - Created snapshot 'dada2'
+Jan-21 15:49:18.606 [main] DEBUG com.askimed.nf.test.lang.extensions.SnapshotFile - Wrote snapshots to file '/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/tests/pipeline/pplace_hmmsearch.nf.test.snap'
+Jan-21 15:49:18.606 [main] DEBUG com.askimed.nf.test.lang.extensions.Snapshot - Snapshot 'input' not found.
+Jan-21 15:49:18.606 [main] DEBUG com.askimed.nf.test.lang.extensions.SnapshotFile - Created snapshot 'input'
+Jan-21 15:49:18.659 [main] DEBUG com.askimed.nf.test.lang.extensions.SnapshotFile - Wrote snapshots to file '/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/tests/pipeline/pplace_hmmsearch.nf.test.snap'
+Jan-21 15:49:18.662 [main] DEBUG com.askimed.nf.test.lang.extensions.Snapshot - Snapshot 'multiqc' not found.
+Jan-21 15:49:18.662 [main] DEBUG com.askimed.nf.test.lang.extensions.SnapshotFile - Created snapshot 'multiqc'
+Jan-21 15:49:18.719 [main] DEBUG com.askimed.nf.test.lang.extensions.SnapshotFile - Wrote snapshots to file '/cfs/klemming/projects/supr/snic2020-16-76/ddl/dev/ampliseq/tests/pipeline/pplace_hmmsearch.nf.test.snap'
+Jan-21 15:49:18.726 [main] INFO  com.askimed.nf.test.core.TestExecutionEngine - Test 'b466648a: test_pplace_hmmsearch' finished. status: PASSED
+Jan-21 15:49:18.739 [main] INFO  com.askimed.nf.test.core.TestExecutionEngine - Testsuite 'Test Workflow main.nf' finished. snapshot file: true, skipped tests: false, failed tests: false
+Jan-21 15:49:18.743 [main] INFO  com.askimed.nf.test.core.TestExecutionEngine - Executed 1 tests. 0 tests failed. Done!

@@ -1,0 +1,66 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/nf-core/ampliseq/master/assets/schema_pplace_sheet.json",
+    "title": "nf-core/phyloplace pipeline - params.pplace_sheet schema",
+    "description": "Schema for the file provided with params.pplace_sheet",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "target": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "Target name must be provided and cannot contain spaces",
+                "meta": ["id"]
+            },
+            "min_bitscore": {
+                "type": "integer",
+                "errorMessage": "Minimum bitscore for hits to this HMM.",
+                "meta": ["min_bitscore"]
+            },
+            "alignmethod": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "Method to use for aligning: 'hmmer' or 'mafft'.",
+                "meta": ["alignmethod"]
+            },
+            "hmm": {
+                "type": "string",
+                "pattern": "^\\S+.hmm$",
+                "errorMessage": "HMMER HMM file to search sequences with.",
+                "meta": ["hmm"]
+            },
+            "extract_hmm": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "Name of HMM file in multi-HMM to extract.",
+                "meta": ["extract_hmm"]
+            },
+            "refseqfile": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "Multiple sequence alignment of reference sequences. Any format suppored by hmmbuild in HMMER (see queryfile for examples) or MAFFT.",
+                "meta": ["refseqfile"]
+            },
+            "refphylogeny": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "Newick formatted file with the reference phylogeny.",
+                "meta": ["refphylogeny"]
+            },
+            "model": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "Phylogenetic model to use in placement, see EPA-NG documentation.",
+                "meta": ["model"]
+            },
+            "taxonomy": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "Tab separated file with taxonomy assignments of reference sequences.",
+                "meta": ["taxonomy"]
+            }
+        },
+        "required": ["target", "hmm"]
+    }
+}

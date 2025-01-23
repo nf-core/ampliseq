@@ -731,7 +731,7 @@ workflow AMPLISEQ {
                 model: it[2].data.model,
                 taxonomy: it[2].data.taxonomy
             ]
-        ] 
+        ]
         }
         .set { ch_pp_data }
 

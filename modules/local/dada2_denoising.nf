@@ -87,7 +87,7 @@ process DADA2_DENOISING {
             mergers <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, $args2, verbose=TRUE)
         }
 
-        saveRDS(mergers, "${meta.run}.mergers.rds")
+        saveRDS(mergers, "${prefix}.mergers.rds")
 
         # make table
         seqtab <- makeSequenceTable(mergers)

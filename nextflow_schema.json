@@ -269,10 +269,47 @@
                     "description": "Mode of sample inference: \"independent\", \"pooled\" or \"pseudo\"",
                     "enum": ["independent", "pooled", "pseudo"]
                 },
-                "concatenate_reads": {
-                    "type": "boolean",
-                    "description": "Not recommended: When paired end reads are not sufficiently overlapping for merging.",
-                    "help_text": "This parameters specifies that paired-end reads are not merged after denoising but concatenated (separated by 10 N's). This is of advantage when an amplicon was sequenced that is too long for merging (i.e. bad experimental design). This is an alternative to only analyzing the forward or reverse read in case of non-overlapping paired-end sequencing data.\n\n**This parameter is not recommended! Only if all other options fail.**"
+                "mergepairs_strategy": {
+                    "type": "string",
+                    "default": "merge",
+                    "description": "Strategy to merge paired end reads. When paired end reads are not sufficiently overlapping for merging, you can use \"concatenate\" (not recommended). When you have a mix of overlapping and non overlapping reads use \"consensus\"",
+                    "help_text": "This parameters specifies how paired-end reads are merged after denoising. By default, read pairs will be merged by overlap. Concatenating read pairs (separated by 10 N's) is an alternative to only analyzing the forward or reverse read in case of non-overlapping paired-end sequencing data, this is not recommended, only if all other options fail. The consensus strategy is merging read pairs by overlap if possible and concatenates non-overlapping read pairs, based on `--mergepairs_consensus_*` parameters.",
+                    "enum": ["merge", "concatenate", "consensus"]
+                },
+                "mergepairs_consensus_match": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "The score assigned for each matching base pair during sequence alignment.",
+                    "help_text": "This parameter specifies the numerical value added to the alignment score for every pair of bases that match between the forward and reverse reads. A higher value increases the preference for alignments with more matching bases."
+                },
+                "mergepairs_consensus_mismatch": {
+                    "type": "integer",
+                    "default": -2,
+                    "description": "The penalty score assigned for each mismatched base pair during sequence alignment.",
+                    "help_text": "This parameter defines the numerical penalty subtracted from the alignment score for each base pair mismatch between the forward and reverse reads. A higher penalty reduces the likelihood of accepting alignments with mismatches."
+                },
+                "mergepairs_consensus_gap": {
+                    "type": "integer",
+                    "default": -4,
+                    "description": "The penalty score assigned for each gap introduced during sequence alignment.",
+                    "help_text": "This parameter sets the numerical penalty subtracted from the alignment score for each gap (insertion or deletion) introduced to align the forward and reverse reads. A higher penalty discourages alignments that require gaps."
+                },
+                "mergepairs_consensus_minoverlap": {
+                    "type": "integer",
+                    "default": 12,
+                    "description": "The minimum number of overlapping base pairs required to merge forward and reverse reads.",
+                    "help_text": "This parameter specifies the smallest number of consecutive base pairs that must overlap between the forward and reverse reads for them to be merged. Ensuring sufficient overlap is crucial for accurate merging."
+                },
+                "mergepairs_consensus_maxmismatch": {
+                    "type": "integer",
+                    "default": 0,
+                    "description": "The maximum number of mismatches allowed within the overlapping region for merging reads.",
+                    "help_text": "This parameter defines the highest number of mismatched base pairs permitted in the overlap region between forward and reverse reads for a successful merge. Setting this value helps control the stringency of read merging, balancing between sensitivity and accuracy."
+                },
+                "mergepairs_consensus_percentile_cutoff": {
+                    "type": "number",
+                    "default": 0.001,
+                    "description": "The percentile used to determine a stringent cutoff which will correspond to the minimum observed overlap in the dataset. This ensures that only read pairs with high overlap are merged into consensus sequences. Those with insufficient overlap are concatenated."
                 }
             },
             "fa_icon": "fas fa-braille"
@@ -295,6 +332,13 @@
                     "maximum": 1,
                     "description": "Pairwise Identity value used when post-clustering ASVs if `--vsearch_cluster` option is used (default: 0.97).",
                     "help_text": "Lowering or increasing this value can change the number ASVs left over after clustering."
+                },
+                "raise_filter_stacksize": {
+                    "type": "boolean",
+                    "default": true,
+                    "fa_icon": "fas fa-angle-double-up",
+                    "description": "Raise stack size when filtering VSEARCH clusters",
+                    "help_text": "Setting to true adds 'ulimit -s unlimited' to the beginning of the filt_clusters.py command."
                 },
                 "filter_ssu": {
                     "type": "string",
@@ -361,7 +405,7 @@
                     "type": "string",
                     "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `silva=138`) . This will download the desired database, format it to produce a file that is compatible with DADA2's assignTaxonomy and another file that is compatible with DADA2's addSpecies.\n\nThe following databases are supported:\n- GTDB - Genome Taxonomy Database - 16S rRNA\n- SBDI-GTDB, a Sativa-vetted version of the GTDB 16S rRNA\n- PR2 - Protist Reference Ribosomal Database - 18S rRNA\n- RDP - Ribosomal Database Project - 16S rRNA\n- SILVA ribosomal RNA gene database project - 16S rRNA\n- UNITE - eukaryotic nuclear ribosomal ITS region - ITS\n- COIDB - eukaryotic Cytochrome Oxidase I (COI) from The Barcode of Life Data System (BOLD) - COI\n\nGenerally, using `gtdb`, `pr2`, `rdp`, `sbdi-gtdb`, `silva`, `coidb`, `unite-fungi`, or `unite-alleuk` will select the most recent supported version.\n\nPlease note that commercial/non-academic entities [require licensing](https://www.arb-silva.de/silva-license-information) for SILVA v132 database (non-default) but not from v138 on (default).",
                     "description": "Name of supported database, and optionally also version number",
-                    "default": "silva=138",
+                    "default": "silva=138.2",
                     "enum": [
                         "coidb",
                         "coidb=221216",
@@ -386,13 +430,16 @@
                         "sbdi-gtdb=R06-RS202-3",
                         "sbdi-gtdb=R06-RS202-1",
                         "silva",
-                        "silva=132",
+                        "silva=138.2",
                         "silva=138",
+                        "silva=132",
                         "unite-alleuk",
+                        "unite-alleuk=10.0",
                         "unite-alleuk=9.0",
                         "unite-alleuk=8.3",
                         "unite-alleuk=8.2",
                         "unite-fungi",
+                        "unite-fungi=10.0",
                         "unite-fungi=9.0",
                         "unite-fungi=8.3",
                         "unite-fungi=8.2",
@@ -794,6 +841,14 @@
                 "skip_diversity_indices": {
                     "type": "boolean",
                     "description": "Skip alpha and beta diversity analysis"
+                },
+                "skip_phyloseq": {
+                    "type": "boolean",
+                    "description": "Skip exporting phyloseq rds object(s)"
+                },
+                "skip_tse": {
+                    "type": "boolean",
+                    "description": "Skip exporting TreeSummarizedExperiment rds object(s)"
                 },
                 "skip_multiqc": {
                     "type": "boolean",

@@ -1,7 +1,7 @@
 process QIIME2_TREE {
     label 'process_medium'
 
-    container "qiime2/core:2023.7"
+    container "qiime2/amplicon:2024.10"
 
     input:
     path(repseq)

@@ -102,6 +102,8 @@ nextflow_pipeline {
                 { assert new File("$outputDir/summary_report/summary_report.html").exists() },
                 { assert new File("$outputDir/phyloseq/dada2_phyloseq.rds").exists() },
                 { assert new File("$outputDir/phyloseq/qiime2_phyloseq.rds").exists() },
+                { assert new File("$outputDir/treesummarizedexperiment/dada2_TreeSummarizedExperiment.rds").exists() },
+                { assert new File("$outputDir/treesummarizedexperiment/qiime2_TreeSummarizedExperiment.rds").exists() },
                 { assert snapshot(path("$outputDir/vsearch_cluster/ASV_post_clustering_filtered.fna"),
                                 path("$outputDir/vsearch_cluster/ASV_post_clustering_filtered.stats.tsv"),
                                 path("$outputDir/vsearch_cluster/ASV_post_clustering_filtered.table.tsv")).match("vsearch_cluster") }

@@ -23,8 +23,9 @@ process FILTER_CLUSTERS {
     script:
     def prefix   = task.ext.prefix ?: "'$meta.id'"
     def clusters = "'$clusters'"
+    def ulimiter = params.raise_filter_stacksize ? "ulimit -s unlimited" : ""
     """
-    ulimit -s unlimited
+    ${ulimiter}
     echo ${clusters} | filt_clusters.py -t ${asv} -p ${prefix} -c -
 
     cat <<-END_VERSIONS > versions.yml

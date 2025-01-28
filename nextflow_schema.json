@@ -704,7 +704,7 @@
             "properties": {
                 "report_template": {
                     "type": "string",
-                    "default": "${projectDir}/assets/report_template.Rmd",
+                    "default": "/home/proj/development/microbial/16s/ampliseq/assets/report_template.Rmd",
                     "description": "Path to Markdown file (Rmd)"
                 },
                 "report_css": {
@@ -995,5 +995,41 @@
         {
             "$ref": "#/$defs/institutional_config_options"
         }
-    ]
+    ],
+    "properties": {
+        "nanopore": {
+            "type": "boolean"
+        },
+        "db": {
+            "type": "string",
+            "default": "/home/proj/development/microbial/16s/databases/emu_database"
+        },
+        "seqtype": {
+            "type": "string",
+            "default": "map-ont"
+        },
+        "min_abundance": {
+            "type": "number",
+            "default": 0.0001
+        },
+        "minimap_max_alignments": {
+            "type": "integer",
+            "default": 50
+        },
+        "minibatch_size": {
+            "type": "integer",
+            "default": 500000000
+        },
+        "keep_read_assignments": {
+            "type": "boolean",
+            "default": true
+        },
+        "keep_files": {
+            "type": "boolean"
+        },
+        "output_unclassified": {
+            "type": "boolean",
+            "default": true
+        }
+    }
 }

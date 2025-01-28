@@ -104,7 +104,7 @@ ch_report_abstract = params.report_abstract ? Channel.fromPath(params.report_abs
 // Set non-params Variables
 
 single_end = params.single_end
-if (params.pacbio || params.iontorrent) {
+if (params.pacbio || params.iontorrent || params.nanopore) {
     single_end = true
 }
 
@@ -220,6 +220,7 @@ include { SUMMARY_REPORT                } from '../modules/local/summary_report'
 include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_PPLACE } from '../modules/local/phyloseq_intax'
 include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_QIIME2 } from '../modules/local/phyloseq_intax'
 include { FILTER_CLUSTERS               } from '../modules/local/filter_clusters'
+include { EMU_ABUNDANCE                 } from '../modules/local/emu_abundance'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
@@ -365,6 +366,10 @@ workflow AMPLISEQ {
         ch_versions = ch_versions.mix(CUTADAPT_WORKFLOW.out.versions)
     } else {
         ch_trimmed_reads = RENAME_RAW_DATA_FILES.out.fastq
+    }
+
+    if (params.nanopore){
+        EMU_ABUNDANCE(ch_trimmed_reads)
     }
 
     //

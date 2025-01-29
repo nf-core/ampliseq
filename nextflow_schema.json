@@ -1030,6 +1030,9 @@
         "output_unclassified": {
             "type": "boolean",
             "default": true
+        },
+        "reads": {
+            "type": "string"
         }
     }
 }

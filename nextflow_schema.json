@@ -704,7 +704,7 @@
             "properties": {
                 "report_template": {
                     "type": "string",
-                    "default": "/home/proj/development/microbial/16s/ampliseq/assets/report_template.Rmd",
+                    "default": "${projectDir}/assets/report_template.Rmd",
                     "description": "Path to Markdown file (Rmd)"
                 },
                 "report_css": {
@@ -1002,7 +1002,7 @@
         },
         "db": {
             "type": "string",
-            "default": "/home/proj/development/microbial/16s/databases/emu_database"
+            "default": "${projectDir}/assets/emu_database"
         },
         "seqtype": {
             "type": "string",

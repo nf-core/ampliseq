@@ -416,6 +416,7 @@
                         "rdp",
                         "rdp=18",
                         "sbdi-gtdb",
+                        "sbdi-gtdb=R09-RS220-2",
                         "sbdi-gtdb=R09-RS220-1",
                         "sbdi-gtdb=R08-RS214-1",
                         "sbdi-gtdb=R07-RS207-1",

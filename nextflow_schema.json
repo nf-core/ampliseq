@@ -15,6 +15,7 @@
                     "type": "string",
                     "format": "file-path",
                     "mimetype": "text/tsv",
+                    "pattern": "^\\S+\\.tsv$",
                     "fa_icon": "fas fa-dna",
                     "description": "Path to tab-separated sample sheet",
                     "help_text": "Path to sample sheet, either tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml), that points to compressed fastq files.\n\nThe sample sheet must have two to four tab-separated columns/entries with the following headers: \n- `sampleID` (required): Unique sample IDs, must start with a letter, and can only contain letters, numbers or underscores\n- `forwardReads` (required): Paths to (forward) reads zipped FastQ files\n- `reverseReads` (optional): Paths to reverse reads zipped FastQ files, required if the data is paired-end\n- `run` (optional): If the data was produced by multiple sequencing runs, any string\n\nRelated parameters are:\n- `--pacbio` and `--iontorrent` if the sequencing data is PacBio data or IonTorrent data (default expected: paired-end Illumina data)\n- `--single_end` if the sequencing data is single-ended Illumina data (default expected: paired-end Illumina data)\n- Choose an appropriate reference taxonomy for the type of amplicon (16S/18S/ITS/CO1) (default: DADA2 assignTaxonomy and 16S rRNA sequence database)",

@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | **mergepairs_consensus_maxmismatch**       | The maximum number of mismatches allowed within the overlapping region for merging reads. | 0                 |
 | **mergepairs_consensus_percentile_cutoff** | The percentile cutoff determining the minimum observed overlap in the dataset.            | 0.001             |
 
+- [#833](https://github.com/nf-core/ampliseq/pull/833) - Add paths to updated version of SBDI-GTDB database.
+
 ### `Changed`
 
 - [#803](https://github.com/nf-core/ampliseq/pull/803) - Changed DADA2_DENOISING : `--concatenate_reads` renaming to `--mergepairs_strategy` ; support new method named "consensus" by setting `--mergepairs_strategy consensus` ; changed options of `--mergepairs_strategy` from TRUE/FALSE (boolean) to ["merge", "concatenate", "consensus"].

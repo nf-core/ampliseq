@@ -3,7 +3,7 @@ process QIIME2_ANCOM_TAX {
     label 'process_medium'
     label 'single_cpu'
 
-    container "qiime2/core:2023.7"
+    container "qiime2/amplicon:2024.10"
 
     input:
     tuple path(metadata), path(table), path(taxonomy) ,val(taxlevel)

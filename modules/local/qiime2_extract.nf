@@ -1,7 +1,7 @@
 process QIIME2_EXTRACT {
     tag "${meta.FW_primer}-${meta.RV_primer}"
 
-    container "qiime2/core:2023.7"
+    container "qiime2/amplicon:2024.10"
 
     input:
     tuple val(meta), path(database)

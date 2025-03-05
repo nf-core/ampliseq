@@ -3,6 +3,47 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## nf-core/ampliseq version 2.13.0dev
+
+### `Added`
+
+- [#798](https://github.com/nf-core/ampliseq/pull/798) - Added SILVA version 138.2 of DADA2 taxonomy database: `silva=138.2` or `silva` as parameter to `--dada2_ref_taxonomy`
+- [#804](https://github.com/nf-core/ampliseq/pull/804) - Added version 10 of Unite as parameter for `--dada_ref_taxonomy` (issue [#768](https://github.com/nf-core/ampliseq/issues/768))
+- [#803](https://github.com/nf-core/ampliseq/pull/803) - New parameters introduced related to `--mergepairs_strategy`. These parameters would only be effective if `--mergepairs_strategy consensus` is set.
+- [#807](https://github.com/nf-core/ampliseq/pull/807) - Export of TreeSummarizedExperiment R object by default, can be omitted with `--skip_tse`, also added ability to skip phyloseq R object generation with `--skip_phyloseq`
+
+| **Parameter**                              | **Description**                                                                           | **Default Value** |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------- | ----------------- |
+| **mergepairs_consensus_match**             | The score assigned for each matching base pair during sequence alignment.                 | 1                 |
+| **mergepairs_consensus_mismatch**          | The penalty score assigned for each mismatched base pair during sequence alignment.       | -2                |
+| **mergepairs_consensus_gap**               | The penalty score assigned for each gap introduced during sequence alignment.             | -4                |
+| **mergepairs_consensus_minoverlap**        | The minimum number of overlapping base pairs required to merge forward and reverse reads. | 12                |
+| **mergepairs_consensus_maxmismatch**       | The maximum number of mismatches allowed within the overlapping region for merging reads. | 0                 |
+| **mergepairs_consensus_percentile_cutoff** | The percentile cutoff determining the minimum observed overlap in the dataset.            | 0.001             |
+
+- [#833](https://github.com/nf-core/ampliseq/pull/833) - Add paths to updated version of SBDI-GTDB database.
+
+### `Changed`
+
+- [#803](https://github.com/nf-core/ampliseq/pull/803) - Changed DADA2_DENOISING : `--concatenate_reads` renaming to `--mergepairs_strategy` ; support new method named "consensus" by setting `--mergepairs_strategy consensus` ; changed options of `--mergepairs_strategy` from TRUE/FALSE (boolean) to ["merge", "concatenate", "consensus"].
+- [#818](https://github.com/nf-core/ampliseq/pull/818) - Provide users the ability to not bump stack size in vsearch clustering.
+
+### `Fixed`
+
+- [#800](https://github.com/nf-core/ampliseq/pull/800) - Fixed SH files for UNITE9.0, they were missing some entries due to a bug caused by API update in PlutoF
+- [#808](https://github.com/nf-core/ampliseq/pull/808) - Add missing library declaration in R script.
+- [#832](https://github.com/nf-core/ampliseq/pull/832) - Add pattern to input field
+
+### `Dependencies`
+
+- [#797](https://github.com/nf-core/ampliseq/pull/797) - Update QIIME2
+
+| software | previously | now     |
+| -------- | ---------- | ------- |
+| QIIME2   | 2023.7     | 2024.10 |
+
+### `Removed`
+
 ## nf-core/ampliseq version 2.12.0 - 2024-11-14
 
 ### `Fixed`

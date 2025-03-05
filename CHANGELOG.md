@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## nf-core/ampliseq version 2.12.0 - 2024-11-14
 
+### `Fixed`
+
+- [#836](https://github.com/nf-core/ampliseq/pull/836) - Replaced zenodo.org/record to zenodo.org/records in ref_databases.config
+
 ### `Added`
 
 - [#786](https://github.com/nf-core/ampliseq/pull/786) - Added version 20240904 of Kraken2 standard taxonomy database: `standard=20240904` or `standard` as parameter to `--kraken2_ref_taxonomy`

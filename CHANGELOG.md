@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#800](https://github.com/nf-core/ampliseq/pull/800) - Fixed SH files for UNITE9.0, they were missing some entries due to a bug caused by API update in PlutoF
 - [#808](https://github.com/nf-core/ampliseq/pull/808) - Add missing library declaration in R script.
 - [#832](https://github.com/nf-core/ampliseq/pull/832) - Add pattern to input field
+- [#845](https://github.com/nf-core/ampliseq/pull/845) - Template update for nf-core/tools version 3.2.0
 
 ### `Dependencies`
 

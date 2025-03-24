@@ -33,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#837](https://github.com/nf-core/ampliseq/pull/837) - Replaced zenodo.org/record to zenodo.org/records in ref_databases.config
 - [#800](https://github.com/nf-core/ampliseq/pull/800) - Fixed SH files for UNITE9.0, they were missing some entries due to a bug caused by API update in PlutoF
 - [#808](https://github.com/nf-core/ampliseq/pull/808) - Add missing library declaration in R script.
-- [#832](https://github.com/nf-core/ampliseq/pull/832) - Add pattern to input field
+- [#832](https://github.com/nf-core/ampliseq/pull/832),[#848](https://github.com/nf-core/ampliseq/pull/848) - Add pattern to input fields
 - [#845](https://github.com/nf-core/ampliseq/pull/845) - Template update for nf-core/tools version 3.2.0
 - [#846](https://github.com/nf-core/ampliseq/pull/846) - Validation of sample sheet doesnt allow intergers for sampleID any more
 

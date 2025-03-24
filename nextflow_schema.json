@@ -25,6 +25,7 @@
                     "type": "string",
                     "format": "file-path",
                     "mimetype": "text/tsv",
+                    "pattern": "^\\S+\\.(fasta|fas|fna|fa|ffn)$",
                     "fa_icon": "fas fa-dna",
                     "description": "Path to ASV/OTU fasta file",
                     "help_text": "Path to fasta format file with sequences that will be taxonomically classified. The fasta file input option can be used to taxonomically classify previously produced ASV/OTU sequences.\n\nThe fasta sequence header line may contain a description, that will be kept as part of the sequence name. However, tabs will be changed into spaces.\n\nRelated parameters are:\n- Choose an appropriate reference taxonomy for the type of amplicon (16S/18S/ITS/CO1) (default: DADA2 assignTaxonomy and 16S rRNA sequence database)"
@@ -59,6 +60,7 @@
                     "type": "string",
                     "format": "file-path",
                     "mimetype": "text/tsv",
+                    "pattern": "^\\S+\\.(tsv|csv|yml|yaml|txt)$",
                     "fa_icon": "fas fa-dna",
                     "description": "Path to multi-region definition sheet, for multi-region analysis with Sidle",
                     "help_text": "Path to file with information about sequenced regions, either tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml). This initiates scaffolding multiple regions along a reference.\n\nThe file must have four headers: \n- `region`: Unique region identifier\n- `region_length`: Minimal length of region\n- `FW_primer`: Forward primer sequence\n- `RV_primer`: Reverse primer sequence\n\nFor more details check the usage documentation.\n\nRelated parameters are:\n- `--sidle_ref_taxonomy` to select the reference taxonomic database\n- `--sidle_ref_tax_custom` for custom reference taxonomic database files\n- `--sidle_ref_tree_custom` for custom phylogenetic tree of reference taxonomic database",

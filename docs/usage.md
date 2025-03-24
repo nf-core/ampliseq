@@ -20,12 +20,13 @@
   - [Updating the pipeline](#updating-the-pipeline)
   - [Reproducibility](#reproducibility)
 - [Core Nextflow arguments](#core-nextflow-arguments)
-  - [-profile](#profile)
-  - [-resume](#resume)
-  - [-c](#c)
+  - [`-profile`](#-profile)
+  - [`-resume`](#-resume)
+  - [`-c`](#-c)
 - [Custom configuration](#custom-configuration)
   - [Resource requests](#resource-requests)
-  - [Updating containers](#updating-containers)
+  - [Custom Containers](#custom-containers)
+  - [Custom Tool Arguments](#custom-tool-arguments)
   - [nf-core/configs](#nf-coreconfigs)
 - [Running in the background](#running-in-the-background)
 - [Nextflow memory requirements](#nextflow-memory-requirements)
@@ -116,7 +117,7 @@ The sample sheet file can be tab-separated (.tsv), comma-separated (.csv), or in
 
 | Column       | Necessity | Description                                                                   |
 | ------------ | --------- | ----------------------------------------------------------------------------- |
-| sampleID     | required  | Unique sample identifiers                                                     |
+| sampleID     | required  | Unique sample identifiers (see below for requirements)                        |
 | forwardReads | required  | Paths to (forward) reads zipped FastQ files                                   |
 | reverseReads | optional  | Paths to reverse reads zipped FastQ files, required if the data is paired-end |
 | run          | optional  | If the data was produced by multiple sequencing runs, any string              |
@@ -207,7 +208,7 @@ Please note the following additional requirements:
 - `--extension` must have at least one `*` wildcard character
 - When using the pipeline with paired end data, the `--extension` must use `{1,2}` (or similar) notation to specify read pairs
 - To run single-end data you must additionally specify `--single_end` and `--extension` may not include curly brackets `{}`
-- Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique (also across sequencing runs)
+- Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique (also across sequencing runs) and only contain letters, numbers or underscores
 - If your data is scattered, produce a sample sheet
 
 ### Taxonomic classification
@@ -303,7 +304,7 @@ Please note the following requirements:
 
 The metadata file must be tab-separated with a header line. The first column in the tab-separated metadata file is the sample identifier column (required header: ID) and defines the sample or feature IDs associated with the dataset. In addition to the sample identifier column, the metadata file is required to have at least one column with multiple different non-numeric values but not all unique.
 
-Sample identifiers should be 36 characters long or less, and also contain only ASCII alphanumeric characters (i.e. in the range of [a-z], [A-Z], or [0-9]), or the dash (-) character. For downstream analysis, by default all numeric columns, blanks or NA are removed, and only columns with multiple different values but not all unique are selected.
+Sample identifiers should be 36 characters long or less, and also contain only ASCII alphanumeric characters (i.e. in the range of [a-z], [A-Z], or [0-9]), or the underscore (_) character. For downstream analysis, by default all numeric columns, blanks or NA are removed, and only columns with multiple different values but not all unique are selected.
 
 The columns which are to be assessed can be specified by `--metadata_category`. If `--metadata_category` isn't specified than all columns that fit the specification are automatically chosen.
 

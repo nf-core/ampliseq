@@ -27,7 +27,10 @@ jobs:
     name: nf-test
     # Only run on push if this is the nf-core dev branch (merged PRs)
     if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/ampliseq') }}"
-    runs-on: ubuntu-latest
+    runs-on:
+      - runs-on=${{ github.run_id }}
+      - runner=4cpu-linux-x64
+      - image=ubuntu22-full-x64
     strategy:
       fail-fast: false
       matrix:

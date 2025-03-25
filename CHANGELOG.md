@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#833](https://github.com/nf-core/ampliseq/pull/833) - Add paths to updated version of SBDI-GTDB database.
 - [#849](https://github.com/nf-core/ampliseq/pull/849) - Added Greengenes version 2024.09 of DADA2 taxonomy database: `greengenes2=2024.09` or `greengenes2` as parameter to `--dada2_ref_taxonomy`
+- [#853](https://github.com/nf-core/ampliseq/pull/853) - Added Greengenes2 version 2024.09 for taxonomic classification with QIIME2: `greengenes2=2024.09` or `greengenes2` as parameter to `--qiime_ref_taxonomy`
 
 ### `Changed`
 

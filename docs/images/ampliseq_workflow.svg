@@ -258,16 +258,16 @@
      inkscape:document-rotation="0"
      showguides="true"
      inkscape:window-maximized="1"
-     inkscape:window-y="0"
+     inkscape:window-y="27"
      inkscape:window-x="72"
-     inkscape:window-height="1043"
+     inkscape:window-height="1136"
      inkscape:window-width="1848"
      showgrid="false"
      inkscape:current-layer="layer1"
      inkscape:document-units="mm"
-     inkscape:cy="149.93758"
-     inkscape:cx="208.08879"
-     inkscape:zoom="1"
+     inkscape:cy="329.10928"
+     inkscape:cx="675.68839"
+     inkscape:zoom="1.4142136"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="1.0"
@@ -412,7 +412,7 @@
        style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.500001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png" />
     <g
-       transform="translate(-16.266344,1.918233)"
+       transform="matrix(0.83644291,0,0,0.83644291,25.785109,25.899335)"
        id="g128964">
       <path
          style="stroke-width:0.118933"
@@ -442,7 +442,7 @@
          id="path6276-4-3-4-0" />
     </g>
     <g
-       transform="translate(-12.626419,-10.847917)"
+       transform="matrix(0.83644291,0,0,0.83644291,28.829698,15.221179)"
        id="g128956">
       <path
          style="stroke-width:0.118933"
@@ -1055,7 +1055,7 @@
     <g
        inkscape:export-ydpi="305.81"
        inkscape:export-xdpi="305.81"
-       transform="translate(53.464945,-6.2974566)"
+       transform="translate(53.464945,-5.2391394)"
        id="g4887-4"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png">
       <g
@@ -1097,23 +1097,23 @@
        inkscape:export-ydpi="305.81"
        inkscape:export-xdpi="305.81"
        id="text4732-0-6-5-6-8-6"
-       y="108.46043"
+       y="114.81044"
        x="242.75334"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778006px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
        xml:space="preserve"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png"><tspan
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778006px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.26458299"
-         y="108.46043"
+         y="114.81044"
          x="242.75334"
          sodipodi:role="line"
          id="tspan126358">Visualisations,</tspan><tspan
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778006px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.26458299"
-         y="111.9882"
+         y="118.33822"
          x="242.75334"
          sodipodi:role="line"
          id="tspan4263">tables, formats</tspan></text>
     <g
-       transform="translate(245.86424,7.9526664)"
+       transform="matrix(0.83644291,0,0,0.83644291,245.04239,30.946794)"
        id="g1942-6">
       <path
          style="stroke-width:0.118932"
@@ -1144,7 +1144,7 @@
     </g>
     <g
        id="g130036"
-       transform="translate(6.023189,2.6458334)">
+       transform="matrix(0.83644291,0,0,0.83644291,44.429031,26.507931)">
       <path
          style="stroke-width:0.118933"
          sodipodi:nodetypes="scsccccccccssscsssscsssscsscsccsscccccccccc"
@@ -1175,7 +1175,7 @@
          id="path6276-4-3-4" />
     </g>
     <g
-       transform="translate(-13.845264,1.9855763)"
+       transform="matrix(0.83644291,0,0,0.83644291,27.810204,25.955664)"
        id="g126864">
       <path
          style="stroke-width:0.118932"
@@ -1823,7 +1823,7 @@
     <g
        inkscape:export-ydpi="305.81"
        inkscape:export-xdpi="305.81"
-       transform="translate(53.464945,0.76738998)"
+       transform="translate(53.464945,1.6045967)"
        id="g4887-4-3"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png">
       <g
@@ -1902,7 +1902,7 @@
     <g
        inkscape:export-ydpi="305.81"
        inkscape:export-xdpi="305.81"
-       transform="translate(53.464945,7.8322365)"
+       transform="translate(53.464945,8.4483328)"
        id="g4887-4-3-6"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png">
       <g
@@ -1941,7 +1941,7 @@
              id="rect5446-2-4" /></flowRegion><flowPara
            id="flowPara5448-9-7" /></flowRoot>    </g>
     <g
-       transform="translate(-0.12156176,-10.847917)"
+       transform="matrix(0.83644291,0,0,0.83644291,39.289298,15.221179)"
        id="g128956-8">
       <path
          style="stroke-width:0.118933"
@@ -2722,5 +2722,40 @@
            width="166.60783"
            id="rect5868-7-7-9-2-9" /></flowRegion><flowPara
          id="flowPara4555-5-8-2-2"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20.76339912px;line-height:1.25;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro';fill:#000000">(multi-regions)</flowPara></flowRoot>  </g>
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20.76339912px;line-height:1.25;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro';fill:#000000">(multi-regions)</flowPara></flowRoot>    <g
+       id="g1334"
+       transform="translate(0,0.52916663)">
+      <rect
+         rx="2.467063"
+         style="opacity:1;fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         id="rect4770-6-8-5-4-1-4-3-7-2-7"
+         width="31.516283"
+         height="4.9341259"
+         x="226.83681"
+         y="103.90406"
+         ry="2.467063" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.17499995px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
+         x="228.02878"
+         y="106.96398"
+         id="text4774-5-7-6-5-6-5-9-5"><tspan
+           sodipodi:role="line"
+           id="tspan4772-1-3-3-0-1-3-3-3"
+           x="228.02878"
+           y="106.96398"
+           style="font-size:2.29305553px;stroke-width:0.26458299">TreeSummarizedExperiment</tspan></text>
+    </g>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot5442-5-1-5"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       transform="translate(53.381416,14.762903)"><flowRegion
+         id="flowRegion5444-6-9-6"><rect
+           id="rect5446-2-4-2"
+           width="221.42857"
+           height="155.71428"
+           x="952.85712"
+           y="-187.72778" /></flowRegion><flowPara
+         id="flowPara5448-9-7-9" /></flowRoot>  </g>
 </svg>

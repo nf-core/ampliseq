@@ -3,6 +3,7 @@ process QIIME2_TRAIN {
     label 'process_high'
     label 'single_cpu'
 
+    conda "${projectDir}/modules/local/envs/qiime2-amplicon-2024.10-py310-linux-conda.yml"
     container "qiime2/amplicon:2024.10"
 
     input:
@@ -16,10 +17,6 @@ process QIIME2_TRAIN {
     task.ext.when == null || task.ext.when
 
     script:
-    // Exit if running this module with -profile conda / -profile mamba
-    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
-        error "QIIME2 does not support Conda. Please use Docker / Singularity / Podman instead."
-    }
     """
     export XDG_CONFIG_HOME="./xdgconfig"
     export MPLCONFIGDIR="./mplconfigdir"

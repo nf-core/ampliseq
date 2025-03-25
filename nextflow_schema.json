@@ -404,6 +404,8 @@
                     "enum": [
                         "coidb",
                         "coidb=221216",
+                        "greengenes2",
+                        "greengenes2=2024.09",
                         "gtdb",
                         "gtdb=R05-RS95",
                         "gtdb=R06-RS202",

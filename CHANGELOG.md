@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | **mergepairs_consensus_percentile_cutoff** | The percentile cutoff determining the minimum observed overlap in the dataset.            | 0.001             |
 
 - [#833](https://github.com/nf-core/ampliseq/pull/833) - Add paths to updated version of SBDI-GTDB database.
+- [#849](https://github.com/nf-core/ampliseq/pull/849) - Added Greengenes version 2024.09 of DADA2 taxonomy database: `greengenes2=2024.09` or `greengenes2` as parameter to `--dada2_ref_taxonomy`
 
 ### `Changed`
 

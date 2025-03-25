@@ -22,7 +22,6 @@ process QIIME2_ANCOMBC_ASV {
     task.ext.when == null || task.ext.when
 
     script:
-
     def args        = task.ext.args ?: ''
     def args2       = task.ext.args2 ?: ''
     def formula     = formula ?: "${table.baseName}"

@@ -984,6 +984,7 @@ workflow AMPLISEQ {
             ch_unfiltered_fasta.ifEmpty( [] ), // this is identical to DADA2_MERGE.out.fasta if !params.input_fasta
             DADA2_MERGE.out.dada2asv.ifEmpty( [] ),
             DADA2_MERGE.out.dada2stats.ifEmpty( [] ),
+            params.mergepairs_strategy,
             params.vsearch_cluster ? FILTER_CLUSTERS.out.asv.ifEmpty( [] ) : [],
             !params.skip_barrnap ? BARRNAPSUMMARY.out.summary.ifEmpty( [] ) : [],
             params.filter_ssu ? FILTER_SSU.out.stats.ifEmpty( [] ) : [],

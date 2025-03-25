@@ -25,6 +25,7 @@ process SUMMARY_REPORT  {
     path(dada_asv_fa)
     path(dada_tab)
     path(dada_stats)
+    val(mergepairs_strategy)
     path(vsearch_cluster)
     path(barrnap_summary)
     path(filter_ssu_stats)
@@ -103,6 +104,7 @@ process SUMMARY_REPORT  {
         dada_asv_fa ? "path_asv_fa='$dada_asv_fa'": "",
         dada_tab ? "path_dada2_tab='$dada_tab'" : "",
         dada_stats ? "dada_stats_path='$dada_stats'" : "",
+        "mergepairs_strategy='$mergepairs_strategy'",
         vsearch_cluster ? "vsearch_cluster='$vsearch_cluster',vsearch_cluster_id='$params.vsearch_cluster_id'" : "",
         params.skip_barrnap ? "" : "path_barrnap_sum='$barrnap_summary'",
         filter_ssu_stats ? "filter_ssu_stats='$filter_ssu_stats'" : "",

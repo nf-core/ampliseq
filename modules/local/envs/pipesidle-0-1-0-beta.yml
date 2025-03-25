@@ -8,7 +8,7 @@ channels:
 dependencies:
   - pip
   - pip:
-    - git+https://github.com/jwdebelius/q2-sidle.git@0.1.0-beta
+      - git+https://github.com/jwdebelius/q2-sidle.git@0.1.0-beta
   - dask=2022.2.1
   - dask-core=2022.2.1
   - xmltodict=0.13.0

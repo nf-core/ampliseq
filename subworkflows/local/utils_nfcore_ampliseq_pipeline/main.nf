@@ -229,6 +229,7 @@ def validateInputParameters() {
 
     String[] sbdi_compatible_databases = [
         "coidb","coidb=221216",
+        "greengenes2","greengenes2=2024.09",
         "gtdb","gtdb=R09-RS220","gtdb=R08-RS214","gtdb=R07-RS207","gtdb=R06-RS202","gtdb=R05-RS95",
         "midori2-co1","midori2-co1=gb250",
         "pr2","pr2=5.0.0","pr2=4.14.0","pr2=4.13.0",

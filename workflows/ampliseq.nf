@@ -149,11 +149,10 @@ if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1)
 }
 
 //only run QIIME2 downstream analysis when taxonomy is actually calculated and all required data is available
-if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) && !params.skip_taxonomy && !params.skip_qiime && !params.skip_qiime_downstream && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom || params.multiregion) ) {
+if ( !params.skip_taxonomy && !params.skip_qiime && !params.skip_qiime_downstream && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom || params.multiregion) ) {
     run_qiime2 = true
 } else {
     run_qiime2 = false
-    if ( workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1 ) { log.warn "Conda or mamba is enabled, any steps involving QIIME2 are not available. Use a container engine instead of conda to enable all software." }
 }
 
 // This tracks tax tables produced during pipeline and each table will be used during phyloseq and treesummarizedexperiment

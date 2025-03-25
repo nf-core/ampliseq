@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#832](https://github.com/nf-core/ampliseq/pull/832),[#848](https://github.com/nf-core/ampliseq/pull/848) - Add pattern to input fields
 - [#845](https://github.com/nf-core/ampliseq/pull/845) - Template update for nf-core/tools version 3.2.0
 - [#846](https://github.com/nf-core/ampliseq/pull/846) - Validation of sample sheet doesnt allow intergers for sampleID any more
+- [#854](https://github.com/nf-core/ampliseq/pull/854) - QIIME2 is now also available with conda/mamba
 
 ### `Dependencies`
 

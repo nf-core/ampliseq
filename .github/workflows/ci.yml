@@ -77,6 +77,14 @@ jobs:
         with:
           version: "${{ matrix.NXF_VER }}"
 
+      - name: Install dependencies for Apptainer
+        if: contains(matrix.profile, 'singularity')
+        shell: bash
+        run: |
+          sudo add-apt-repository universe
+          sudo apt-get update
+          sudo apt-get install -y uidmap squashfs-tools
+
       - name: Set up Apptainer
         if: matrix.profile == 'singularity'
         uses: eWaterCycle/setup-apptainer@main

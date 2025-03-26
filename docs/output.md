@@ -272,6 +272,7 @@ Files when _not_ using ITSx (default):
   - `ASV_tax.*.tsv`: Taxonomic classification for each ASV sequence.
   - `ASV_tax_species.*.tsv`: Exact species classification for each ASV sequence.
   - `ref_taxonomy.*.txt`: Information about the used reference taxonomy, such as title, version, citation.
+- `dada2/chunks/`: Directory containing files with taxonomy assignments of individual chunks.
 
 </details>
 

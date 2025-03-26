@@ -21,7 +21,7 @@
         "content": [
             "ASV_seqs.fasta:md5,3cc6f93eeee721c63beddfbeae8462e9",
             "ASV_table.tsv:md5,b7f193b12f02f33f4e03e7bfed8ae5c0",
-            "ref_taxonomy.rdp_18.txt:md5,815c4fce9f3d1de019fb995a43fb66ed",
+            "ref_taxonomy.rdp_18.txt:md5,c20d8e186e2893ba7818a0115edb013e",
             "DADA2_stats.tsv:md5,ce4ebd6936bd78f337870c04ee671070",
             "DADA2_table.rds:md5,ef8051d016bb7a868401528982e9920f",
             "DADA2_table.tsv:md5,ac91dd7c8a73df76b8143b60bc646c6c"

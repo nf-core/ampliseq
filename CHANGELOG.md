@@ -7,13 +7,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#798](https://github.com/nf-core/ampliseq/pull/798) - Added SILVA version 138.2 of DADA2 taxonomy database: `silva=138.2` or `silva` as parameter to `--dada2_ref_taxonomy`
 - [#801](https://github.com/nf-core/ampliseq/pull/801) - Parameter `--quality_type` allows specifying the type of quality scores in raw read data, by default `Auto` (i.e. default behavior did not change)
+- [#804](https://github.com/nf-core/ampliseq/pull/804) - Added version 10 of Unite as parameter for `--dada_ref_taxonomy` (issue [#768](https://github.com/nf-core/ampliseq/issues/768))
+- [#803](https://github.com/nf-core/ampliseq/pull/803),[#856](https://github.com/nf-core/ampliseq/pull/856) - New parameters introduced related to `--mergepairs_strategy`. These parameters would only be effective if `--mergepairs_strategy consensus` is set.
+- [#807](https://github.com/nf-core/ampliseq/pull/807) - Export of TreeSummarizedExperiment R object by default, can be omitted with `--skip_tse`, also added ability to skip phyloseq R object generation with `--skip_phyloseq`
+
+| **Parameter**                              | **Description**                                                                           | **Default Value** |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------- | ----------------- |
+| **mergepairs_consensus_match**             | The score assigned for each matching base pair during sequence alignment.                 | 1                 |
+| **mergepairs_consensus_mismatch**          | The penalty score assigned for each mismatched base pair during sequence alignment.       | -2                |
+| **mergepairs_consensus_gap**               | The penalty score assigned for each gap introduced during sequence alignment.             | -4                |
+| **mergepairs_consensus_minoverlap**        | The minimum number of overlapping base pairs required to merge forward and reverse reads. | 12                |
+| **mergepairs_consensus_maxmismatch**       | The maximum number of mismatches allowed within the overlapping region for merging reads. | 0                 |
+| **mergepairs_consensus_percentile_cutoff** | The percentile cutoff determining the minimum observed overlap in the dataset.            | 0.001             |
+
+- [#833](https://github.com/nf-core/ampliseq/pull/833) - Add paths to updated version of SBDI-GTDB database.
+- [#849](https://github.com/nf-core/ampliseq/pull/849) - Added Greengenes version 2024.09 of DADA2 taxonomy database: `greengenes2=2024.09` or `greengenes2` as parameter to `--dada2_ref_taxonomy`
+- [#853](https://github.com/nf-core/ampliseq/pull/853) - Added Greengenes2 version 2024.09 for taxonomic classification with QIIME2: `greengenes2=2024.09` or `greengenes2` as parameter to `--qiime_ref_taxonomy`
 
 ### `Changed`
 
+- [#803](https://github.com/nf-core/ampliseq/pull/803) - Changed DADA2_DENOISING : `--concatenate_reads` renaming to `--mergepairs_strategy` ; support new method named "consensus" by setting `--mergepairs_strategy consensus` ; changed options of `--mergepairs_strategy` from TRUE/FALSE (boolean) to ["merge", "concatenate", "consensus"].
+- [#818](https://github.com/nf-core/ampliseq/pull/818) - Provide users the ability to not bump stack size in vsearch clustering.
+
 ### `Fixed`
 
+- [#837](https://github.com/nf-core/ampliseq/pull/837) - Replaced zenodo.org/record to zenodo.org/records in ref_databases.config
+- [#800](https://github.com/nf-core/ampliseq/pull/800) - Fixed SH files for UNITE9.0, they were missing some entries due to a bug caused by API update in PlutoF
+- [#808](https://github.com/nf-core/ampliseq/pull/808) - Add missing library declaration in R script.
+- [#847](https://github.com/nf-core/ampliseq/pull/847) - update the `usage.md` about sample id format (no dashes allowed)
+- [#832](https://github.com/nf-core/ampliseq/pull/832),[#848](https://github.com/nf-core/ampliseq/pull/848) - Add pattern to input fields
+- [#845](https://github.com/nf-core/ampliseq/pull/845) - Template update for nf-core/tools version 3.2.0
+- [#846](https://github.com/nf-core/ampliseq/pull/846) - Validation of sample sheet doesnt allow intergers for sampleID any more
+- [#854](https://github.com/nf-core/ampliseq/pull/854),[#858](https://github.com/nf-core/ampliseq/pull/858) - QIIME2 and Sidle are now also available with conda/mamba
+
 ### `Dependencies`
+
+- [#797](https://github.com/nf-core/ampliseq/pull/797) - Update QIIME2
+
+| software | previously | now     |
+| -------- | ---------- | ------- |
+| QIIME2   | 2023.7     | 2024.10 |
 
 ### `Removed`
 

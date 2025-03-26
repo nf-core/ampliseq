@@ -1,7 +1,8 @@
 process QIIME2_EXTRACT {
     tag "${meta.FW_primer}-${meta.RV_primer}"
 
-    container "qiime2/core:2023.7"
+    conda "${projectDir}/modules/local/envs/qiime2-amplicon-2024.10-py310-linux-conda.yml"
+    container "qiime2/amplicon:2024.10"
 
     input:
     tuple val(meta), path(database)
@@ -14,10 +15,6 @@ process QIIME2_EXTRACT {
     task.ext.when == null || task.ext.when
 
     script:
-    // Exit if running this module with -profile conda / -profile mamba
-    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
-        error "QIIME2 does not support Conda. Please use Docker / Singularity / Podman instead."
-    }
     def args = task.ext.args ?: ''
     """
     export XDG_CONFIG_HOME="./xdgconfig"

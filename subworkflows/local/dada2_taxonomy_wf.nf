@@ -63,12 +63,14 @@ workflow DADA2_TAXONOMY_WF {
         .set { ch_fasta_chunks }
 
     //DADA2 assignTaxonomy
-    DADA2_TAXONOMY ( ch_fasta_chunks, ch_assigntax, ASV_tax_name + ".${val_dada_ref_taxonomy}.tsv", taxlevels )
+    DADA2_TAXONOMY ( ch_fasta_chunks, ch_assigntax, ASV_tax_name+".${val_dada_ref_taxonomy}_chunk.tsv", taxlevels )
     ch_versions_dada_taxonomy = ch_versions_dada_taxonomy.mix(DADA2_TAXONOMY.out.versions)
+
     // collect all DADA2_TAXONOMY.out.tsv into one file
     DADA2_TAXONOMY.out.tsv
-        .collectFile(name: 'dada2_taxonomy.tsv', newLine: false, cache: true, keepHeader: true, skip: 1, sort: true)
+        .collectFile(name: ASV_tax_name+".${val_dada_ref_taxonomy}.tsv", newLine: false, cache: true, keepHeader: true, skip: 1, sort: true)
         .set { ch_dada2_taxonomy_tsv }
+    ch_dada2_taxonomy_tsv.subscribe{ file(it).copyTo("${params.outdir}/dada2") }
 
     if (params.cut_its != "none") {
         FORMAT_TAXRESULTS_STD ( ch_dada2_taxonomy_tsv, ch_full_fasta, "ASV_tax.${val_dada_ref_taxonomy}.tsv" )
@@ -77,11 +79,13 @@ workflow DADA2_TAXONOMY_WF {
 
     //DADA2 addSpecies
     if (!params.skip_dada_addspecies) {
-        DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, ASV_tax_name + "_species.${val_dada_ref_taxonomy}.tsv", taxlevels )
+        DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, ASV_tax_name+"_species.${val_dada_ref_taxonomy}_chunk.tsv", taxlevels )
+
         // collect all DADA2_ADDSPECIES.out.tsv into one file
         DADA2_ADDSPECIES.out.tsv
-            .collectFile(name: 'dada2_addspecies.tsv', newLine: false, cache: true, keepHeader: true, skip: 1, sort: true)
+            .collectFile(name: ASV_tax_name+"_species.${val_dada_ref_taxonomy}.tsv", newLine: false, cache: true, keepHeader: true, skip: 1, sort: true)
             .set { ch_dada2_addspecies_tsv }
+        ch_dada2_addspecies_tsv.subscribe{ file(it).copyTo("${params.outdir}/dada2") }
 
         if (params.cut_its == "none") {
             ch_dada2_tax1 = ch_dada2_addspecies_tsv

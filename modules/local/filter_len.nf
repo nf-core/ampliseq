@@ -25,7 +25,6 @@ process FILTER_LEN {
     script:
     def min_len_asv = task.ext.min_len_asv ?: '1'
     def max_len_asv = task.ext.max_len_asv ?: '1000000'
-
     def read_table  = table ? "table <- read.table(file = '$table', sep = '\t', comment.char = '', header=TRUE)" : "table <- data.frame(matrix(ncol = 1, nrow = 0))"
     def asv_table_filtered  = table ? "ASV_table.len.tsv" : "empty_ASV_table.len.tsv"
     """

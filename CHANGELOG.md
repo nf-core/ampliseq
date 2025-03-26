@@ -51,6 +51,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Removed`
 
+- [#860](https://github.com/nf-core/ampliseq/pull/860) - Removed unused test profile `test_its_dada_taxonomy`.
+
 ## nf-core/ampliseq version 2.12.0 - 2024-11-14
 
 ### `Added`

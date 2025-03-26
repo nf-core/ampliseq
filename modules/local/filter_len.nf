@@ -8,8 +8,8 @@ process FILTER_LEN {
         'biocontainers/bioconductor-biostrings:2.58.0--r40h037d062_0' }"
 
     input:
-    path(fasta)
-    path(table)
+    path(fasta, stageAs: 'input/*')
+    path(table, stageAs: 'input/*')
 
     output:
     path( "stats.len.tsv" )      , emit: stats

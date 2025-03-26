@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 - [#798](https://github.com/nf-core/ampliseq/pull/798) - Added SILVA version 138.2 of DADA2 taxonomy database: `silva=138.2` or `silva` as parameter to `--dada2_ref_taxonomy`
+- [#801](https://github.com/nf-core/ampliseq/pull/801) - Parameter `--quality_type` allows specifying the type of quality scores in raw read data, by default `Auto` (i.e. default behavior did not change)
 - [#804](https://github.com/nf-core/ampliseq/pull/804) - Added version 10 of Unite as parameter for `--dada_ref_taxonomy` (issue [#768](https://github.com/nf-core/ampliseq/issues/768))
 - [#803](https://github.com/nf-core/ampliseq/pull/803),[#856](https://github.com/nf-core/ampliseq/pull/856) - New parameters introduced related to `--mergepairs_strategy`. These parameters would only be effective if `--mergepairs_strategy consensus` is set.
 - [#807](https://github.com/nf-core/ampliseq/pull/807) - Export of TreeSummarizedExperiment R object by default, can be omitted with `--skip_tse`, also added ability to skip phyloseq R object generation with `--skip_phyloseq`

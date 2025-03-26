@@ -121,6 +121,14 @@
                     "help_text": "This will cause the pipeline to\n- not truncate input reads if not `--trunclenf` and `--trunclenr` are overwriting defaults\n- remove reverse complement primers from the end of reads in case the read length exceeds the amplicon length",
                     "fa_icon": "fas fa-align-justify"
                 },
+                "quality_type": {
+                    "type": "string",
+                    "default": "Auto",
+                    "description": "Type of quality scores in raw read data",
+                    "help_text": "From R package 'ShortRead' function 'readFastq': Representation to be used for quality scores, must be one of `Auto` (infer automatically), `FastqQuality` (Phred-like base 33 encoding), `SFastqQuality` (Illumina base 64 encoding).",
+                    "enum": ["Auto", "FastqQuality", "SFastqQuality"],
+                    "fa_icon": "fab fa-amilia"
+                },
                 "multiple_sequencing_runs": {
                     "type": "boolean",
                     "description": "If using `--input_folder`: samples were sequenced in multiple sequencing runs",

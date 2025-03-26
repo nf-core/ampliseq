@@ -21,6 +21,7 @@ workflow DADA2_TAXONOMY_WF {
     ch_fasta
     ch_full_fasta
     taxlevels
+    val_dada_assign_chunksize
 
     main:
     ch_versions_dada_taxonomy = Channel.empty()
@@ -56,27 +57,42 @@ workflow DADA2_TAXONOMY_WF {
         ASV_tax_name = "ASV_ITS_tax"
     }
 
+    //split sequences into chunks
+    ch_fasta
+        .splitFasta( by: val_dada_assign_chunksize, file: true )
+        .set { ch_fasta_chunks }
+
     //DADA2 assignTaxonomy
-    DADA2_TAXONOMY ( ch_fasta, ch_assigntax, ASV_tax_name + ".${val_dada_ref_taxonomy}.tsv", taxlevels )
+    DADA2_TAXONOMY ( ch_fasta_chunks, ch_assigntax, ASV_tax_name + ".${val_dada_ref_taxonomy}.tsv", taxlevels )
     ch_versions_dada_taxonomy = ch_versions_dada_taxonomy.mix(DADA2_TAXONOMY.out.versions)
+    // collect all DADA2_TAXONOMY.out.tsv into one file
+    DADA2_TAXONOMY.out.tsv
+        .collectFile(name: 'dada2_taxonomy.tsv', newLine: false, cache: true, keepHeader: true, skip: 1, sort: true)
+        .set { ch_dada2_taxonomy_tsv }
+
     if (params.cut_its != "none") {
-        FORMAT_TAXRESULTS_STD ( DADA2_TAXONOMY.out.tsv, ch_full_fasta, "ASV_tax.${val_dada_ref_taxonomy}.tsv" )
+        FORMAT_TAXRESULTS_STD ( ch_dada2_taxonomy_tsv, ch_full_fasta, "ASV_tax.${val_dada_ref_taxonomy}.tsv" )
         ch_versions_dada_taxonomy = ch_versions_dada_taxonomy.mix( FORMAT_TAXRESULTS_STD.out.versions.ifEmpty(null) )
     }
 
     //DADA2 addSpecies
     if (!params.skip_dada_addspecies) {
         DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, ASV_tax_name + "_species.${val_dada_ref_taxonomy}.tsv", taxlevels )
+        // collect all DADA2_ADDSPECIES.out.tsv into one file
+        DADA2_ADDSPECIES.out.tsv
+            .collectFile(name: 'dada2_addspecies.tsv', newLine: false, cache: true, keepHeader: true, skip: 1, sort: true)
+            .set { ch_dada2_addspecies_tsv }
+
         if (params.cut_its == "none") {
-            ch_dada2_tax1 = DADA2_ADDSPECIES.out.tsv
+            ch_dada2_tax1 = ch_dada2_addspecies_tsv
         } else {
-            FORMAT_TAXRESULTS_ADDSP ( DADA2_ADDSPECIES.out.tsv, ch_full_fasta, "ASV_tax_species.${val_dada_ref_taxonomy}.tsv" )
+            FORMAT_TAXRESULTS_ADDSP ( ch_dada2_addspecies_tsv, ch_full_fasta, "ASV_tax_species.${val_dada_ref_taxonomy}.tsv" )
             ch_dada2_tax1 = FORMAT_TAXRESULTS_ADDSP.out.tsv
         }
     //no DADA2 addSpecies, use results from assignTaxonomy:
     } else {
         if (params.cut_its == "none") {
-            ch_dada2_tax1 = DADA2_TAXONOMY.out.tsv
+            ch_dada2_tax1 = ch_dada2_taxonomy_tsv
         } else {
             ch_dada2_tax1 = FORMAT_TAXRESULTS_STD.out.tsv
         }

@@ -602,7 +602,8 @@ workflow AMPLISEQ {
             val_dada_ref_taxonomy,
             ch_fasta,
             ch_full_fasta,
-            taxlevels
+            taxlevels,
+            params.dada_assign_chunksize
         ).tax.set { ch_dada2_tax }
         ch_versions = ch_versions.mix(DADA2_TAXONOMY_WF.out.versions)
         ch_tax_for_robject = ch_tax_for_robject.mix ( ch_dada2_tax.map { it = [ "dada2", file(it) ] } )

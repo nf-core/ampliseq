@@ -579,8 +579,9 @@ workflow AMPLISEQ {
         }
         ITSX_CUTASV ( ch_full_fasta, outfile )
         ch_versions = ch_versions.mix(ITSX_CUTASV.out.versions)
-        FILTER_LEN_ITSX ( ITSX_CUTASV.out.fasta, [] )
+        FILTER_LEN_ITSX ( ITSX_CUTASV.out.fasta, ch_dada2_asv.ifEmpty( [] ) )
         ch_fasta = FILTER_LEN_ITSX.out.fasta
+        ch_dada2_asv = FILTER_LEN_ITSX.out.asv
     }
 
     //

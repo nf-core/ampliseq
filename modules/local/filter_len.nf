@@ -8,8 +8,8 @@ process FILTER_LEN {
         'biocontainers/bioconductor-biostrings:2.58.0--r40h037d062_0' }"
 
     input:
-    path(fasta)
-    path(table)
+    path(fasta, stageAs: 'input/*')
+    path(table, stageAs: 'input/*')
 
     output:
     path( "stats.len.tsv" )      , emit: stats
@@ -25,7 +25,6 @@ process FILTER_LEN {
     script:
     def min_len_asv = task.ext.min_len_asv ?: '1'
     def max_len_asv = task.ext.max_len_asv ?: '1000000'
-
     def read_table  = table ? "table <- read.table(file = '$table', sep = '\t', comment.char = '', header=TRUE)" : "table <- data.frame(matrix(ncol = 1, nrow = 0))"
     def asv_table_filtered  = table ? "ASV_table.len.tsv" : "empty_ASV_table.len.tsv"
     """
@@ -39,16 +38,16 @@ process FILTER_LEN {
     colnames(table)[1] <- "ASV_ID"
 
     #read fasta file of ASV sequences
-    seq <- readDNAStringSet("$fasta")
-    seq <- data.frame(ID=names(seq), sequence=paste(seq))
+    input_seq <- readDNAStringSet("$fasta")
+    input_seq <- data.frame(ID=names(input_seq), sequence=paste(input_seq))
 
     #filter
-    filtered_seq <- seq[nchar(seq\$sequence) %in% $min_len_asv:$max_len_asv,]
-    list <- filtered_seq[, "ID", drop = FALSE]
-    filtered_table <- merge(table, list, by.x="ASV_ID", by.y="ID", all.x=FALSE, all.y=TRUE)
+    filtered_seq <- input_seq[nchar(input_seq\$sequence) %in% $min_len_asv:$max_len_asv,]
+    id_list <- filtered_seq[, "ID", drop = FALSE]
+    filtered_table <- merge(table, id_list, by.x="ASV_ID", by.y="ID", all.x=FALSE, all.y=TRUE)
 
     #report
-    distribution_before <- table(nchar(seq\$sequence))
+    distribution_before <- table(nchar(input_seq\$sequence))
     distribution_before <- data.frame(Length=names(distribution_before),Counts=as.vector(distribution_before))
     distribution_after <- table(nchar(filtered_seq\$sequence))
     distribution_after <- data.frame(Length=names(distribution_after),Counts=as.vector(distribution_after))

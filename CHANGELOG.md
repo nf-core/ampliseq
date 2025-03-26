@@ -41,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#845](https://github.com/nf-core/ampliseq/pull/845) - Template update for nf-core/tools version 3.2.0
 - [#846](https://github.com/nf-core/ampliseq/pull/846) - Validation of sample sheet doesnt allow intergers for sampleID any more
 - [#854](https://github.com/nf-core/ampliseq/pull/854),[#858](https://github.com/nf-core/ampliseq/pull/858) - QIIME2 and Sidle are now also available with conda/mamba
+- [#862](https://github.com/nf-core/ampliseq/pull/862) - ITSx serves now as filter of the abundance table
 
 ### `Dependencies`
 

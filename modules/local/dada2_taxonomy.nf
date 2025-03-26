@@ -14,8 +14,8 @@ process DADA2_TAXONOMY {
     val(taxlevels_input)
 
     output:
-    path(outfile), emit: tsv
-    path( "ASV_tax.rds" ), emit: rds
+    path("*${outfile}.tsv")    , emit: tsv
+    path( "*${outfile}.rds" ), emit: rds
     path "versions.yml"  , emit: versions
     path "*.args.txt"    , emit: args
 
@@ -68,11 +68,11 @@ process DADA2_TAXONOMY {
     colnames(taxa_export) <- sub("tax.", "", colnames(taxa_export))
     rownames(taxa_export) <- names(seq)
 
-    write.table(taxa_export, file = \"$outfile\", sep = "\\t", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '')
+    write.table(taxa_export, file = \"${fasta.baseName}${outfile}.tsv\", sep = "\\t", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '')
 
     # Save a version with rownames for addSpecies
     taxa_export <- cbind( ASV_ID = tx\$ASV_ID, taxa\$tax, confidence = tx\$confidence)
-    saveRDS(taxa_export, "ASV_tax.rds")
+    saveRDS(taxa_export, "${fasta.baseName}${outfile}.rds")
 
     write.table('assignTaxonomy\t$args\ntaxlevels\t$taxlevels\nseed\t$seed', file = "assignTaxonomy.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
     writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")

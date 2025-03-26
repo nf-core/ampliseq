@@ -17,7 +17,6 @@ process QIIME2_INTAX {
     task.ext.when == null || task.ext.when
 
     script:
-
     def script_cmd = script ? "$script $tax" : "cp $tax tax.tsv"
     """
     export MPLCONFIGDIR="./mplconfigdir"

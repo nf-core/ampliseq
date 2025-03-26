@@ -16,7 +16,6 @@ process QIIME2_FILTERSAMPLES {
     task.ext.when == null || task.ext.when
 
     script:
-
     def args = task.ext.args ?: "--p-where \'${filter}<>\"\"\'"
     def prefix = task.ext.prefix ?: "${filter}"
     """

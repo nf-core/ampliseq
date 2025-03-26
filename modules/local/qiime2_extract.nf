@@ -15,7 +15,6 @@ process QIIME2_EXTRACT {
     task.ext.when == null || task.ext.when
 
     script:
-
     def args = task.ext.args ?: ''
     """
     export XDG_CONFIG_HOME="./xdgconfig"

@@ -18,7 +18,6 @@ process QIIME2_BARPLOT {
     task.ext.when == null || task.ext.when
 
     script:
-
     suffix = setting ? "_${table.baseName}" : ""
     def metadata_cmd = metadata ? "--m-metadata-file ${metadata}": ""
     """

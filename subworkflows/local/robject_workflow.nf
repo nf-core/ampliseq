@@ -17,12 +17,6 @@ workflow ROBJECT_WORKFLOW {
     main:
     ch_versions_robject_workflow = Channel.empty()
 
-    if ( params.metadata ) {
-        ch_robject_inmeta = ch_meta.first() // The .first() is to make sure it's a value channel
-    } else {
-        ch_robject_inmeta = []
-    }
-
     if ( run_qiime2 ) {
         if ( params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1 ) {
             ch_robject_inasv = PHYLOSEQ_INASV ( ch_tsv ).tsv
@@ -33,13 +27,24 @@ workflow ROBJECT_WORKFLOW {
         ch_robject_inasv = ch_tsv
     }
 
+    ch_tax
+        .combine(ch_robject_inasv)
+        .combine(ch_meta.ifEmpty('EMPTY'))
+        .combine(ch_robject_intree.ifEmpty('EMPTY'))
+        .map {
+            id, tax, tsv, meta, tree ->
+                def meta_new = ( meta != 'EMPTY' ? meta : [] )
+                def tree_new = ( tree != 'EMPTY' ? tree : [] )
+                [ id, tax, tsv, meta_new, tree_new ] }
+        .set { ch_for_r_objects }
+
     if ( !params.skip_phyloseq ) {
-        PHYLOSEQ ( ch_tax.combine(ch_robject_inasv), ch_robject_inmeta, ch_robject_intree )
+        PHYLOSEQ ( ch_for_r_objects )
         ch_versions_robject_workflow = ch_versions_robject_workflow.mix(PHYLOSEQ.out.versions)
     }
 
     if ( !params.skip_tse ) {
-        TREESUMMARIZEDEXPERIMENT ( ch_tax.combine(ch_robject_inasv), ch_robject_inmeta, ch_robject_intree )
+        TREESUMMARIZEDEXPERIMENT ( ch_for_r_objects )
         ch_versions_robject_workflow = ch_versions_robject_workflow.mix(TREESUMMARIZEDEXPERIMENT.out.versions)
     }
 

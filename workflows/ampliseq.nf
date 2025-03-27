@@ -877,13 +877,13 @@ workflow AMPLISEQ {
         } else if ( run_qiime2 && params.metadata && (!params.skip_alpha_rarefaction || !params.skip_diversity_indices) ) {
             ch_tree_for_robject = QIIME2_DIVERSITY.out.tree_nwk
         } else {
-            ch_tree_for_robject = []
+            ch_tree_for_robject = Channel.empty()
         }
 
         ROBJECT_WORKFLOW (
             ch_tax_for_robject,
             ch_tsv,
-            ch_metadata.ifEmpty([]),
+            ch_metadata,
             ch_tree_for_robject,
             run_qiime2
         )

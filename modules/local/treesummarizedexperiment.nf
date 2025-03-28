@@ -8,9 +8,7 @@ process TREESUMMARIZEDEXPERIMENT {
         'biocontainers/bioconductor-treesummarizedexperiment:2.10.0--r43hdfd78af_0' }"
 
     input:
-    tuple val(prefix), path(tax_tsv), path(otu_tsv)
-    path sam_tsv
-    path tree
+    tuple val(prefix), path(tax_tsv), path(otu_tsv), path(sam_tsv), path(tree)
 
     output:
     tuple val(prefix), path("*TreeSummarizedExperiment.rds"), emit: rds

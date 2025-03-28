@@ -42,7 +42,7 @@ By default, the pipeline currently performs the following:
 - Phylogenetic placement ([EPA-NG](https://github.com/Pbdas/epa-ng))
 - Taxonomical classification using DADA2; alternatives are [SINTAX](https://doi.org/10.1101/074161), [Kraken2](https://doi.org/10.1186/s13059-019-1891-0), and [QIIME2](https://www.nature.com/articles/s41587-019-0209-9)
 - Excludes unwanted taxa, produces absolute and relative feature/taxa count tables and plots, plots alpha rarefaction curves, computes alpha and beta diversity indices and plots thereof ([QIIME2](https://www.nature.com/articles/s41587-019-0209-9))
-- Creates phyloseq R objects ([Phyloseq](https://www.bioconductor.org/packages/release/bioc/html/phyloseq.html))
+- Creates phyloseq R objects ([Phyloseq](https://www.bioconductor.org/packages/release/bioc/html/phyloseq.html) and [TreeSE](https://doi.org/10.12688/f1000research.26669.2))
 - Pipeline QC summaries ([MultiQC](https://multiqc.info/))
 - Pipeline summary report ([R Markdown](https://github.com/rstudio/rmarkdown))
 

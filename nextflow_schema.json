@@ -486,7 +486,7 @@
                 "dada_assign_chunksize": {
                     "type": "integer",
                     "help_text": "Chunks for DADA2's assignTaxonomy and addSpecies can speed up the process and lower required memory.",
-                    "description": "ASV fasta will be subsetted into chunks of that size for classification",
+                    "description": "ASV fasta will be subset into chunks of this size for classification",
                     "default": 10000
                 },
                 "pplace_tree": {

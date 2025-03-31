@@ -8,7 +8,7 @@
         "type": "object",
         "properties": {
             "region": {
-                "type": "string",
+                "type": ["string", "integer"],
                 "pattern": "^\\S+$",
                 "errorMessage": "Region name is mandatory, cannot contain spaces, and must be unique",
                 "meta": ["region"]

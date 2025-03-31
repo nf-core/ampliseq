@@ -5,4 +5,4 @@
 gunzip -c *train*gz > assignTaxonomy.fna
 
 # and the file for add species, identified by containing "species" in the name, is renamed
-mv *species*gz addSpecies.fna.gz
+mv *assign*gz addSpecies.fna.gz

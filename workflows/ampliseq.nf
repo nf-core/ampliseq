@@ -149,15 +149,14 @@ if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1)
 }
 
 //only run QIIME2 downstream analysis when taxonomy is actually calculated and all required data is available
-if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) && !params.skip_taxonomy && !params.skip_qiime && !params.skip_qiime_downstream && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom || params.multiregion) ) {
+if ( !params.skip_taxonomy && !params.skip_qiime && !params.skip_qiime_downstream && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom || params.multiregion) ) {
     run_qiime2 = true
 } else {
     run_qiime2 = false
-    if ( workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1 ) { log.warn "Conda or mamba is enabled, any steps involving QIIME2 are not available. Use a container engine instead of conda to enable all software." }
 }
 
-// This tracks tax tables produced during pipeline and each table will be used during phyloseq
-ch_tax_for_phyloseq = Channel.empty()
+// This tracks tax tables produced during pipeline and each table will be used during phyloseq and treesummarizedexperiment
+ch_tax_for_robject = Channel.empty()
 
 
 /*
@@ -237,7 +236,7 @@ include { QIIME2_EXPORT                 } from '../subworkflows/local/qiime2_exp
 include { QIIME2_BARPLOTAVG             } from '../subworkflows/local/qiime2_barplotavg'
 include { QIIME2_DIVERSITY              } from '../subworkflows/local/qiime2_diversity'
 include { QIIME2_ANCOM                  } from '../subworkflows/local/qiime2_ancom'
-include { PHYLOSEQ_WORKFLOW             } from '../subworkflows/local/phyloseq_workflow'
+include { ROBJECT_WORKFLOW             } from '../subworkflows/local/robject_workflow'
 
 //
 // FUNCTIONS
@@ -580,8 +579,9 @@ workflow AMPLISEQ {
         }
         ITSX_CUTASV ( ch_full_fasta, outfile )
         ch_versions = ch_versions.mix(ITSX_CUTASV.out.versions)
-        FILTER_LEN_ITSX ( ITSX_CUTASV.out.fasta, [] )
+        FILTER_LEN_ITSX ( ITSX_CUTASV.out.fasta, ch_dada2_asv.ifEmpty( [] ) )
         ch_fasta = FILTER_LEN_ITSX.out.fasta
+        ch_dada2_asv = FILTER_LEN_ITSX.out.asv
     }
 
     //
@@ -603,10 +603,11 @@ workflow AMPLISEQ {
             val_dada_ref_taxonomy,
             ch_fasta,
             ch_full_fasta,
-            taxlevels
+            taxlevels,
+            params.dada_assign_chunksize
         ).tax.set { ch_dada2_tax }
         ch_versions = ch_versions.mix(DADA2_TAXONOMY_WF.out.versions)
-        ch_tax_for_phyloseq = ch_tax_for_phyloseq.mix ( ch_dada2_tax.map { it = [ "dada2", file(it) ] } )
+        ch_tax_for_robject = ch_tax_for_robject.mix ( ch_dada2_tax.map { it = [ "dada2", file(it) ] } )
     } else {
         ch_dada2_tax = Channel.empty()
     }
@@ -620,7 +621,7 @@ workflow AMPLISEQ {
             kraken2_taxlevels
         ).qiime2_tsv.set { ch_kraken2_tax }
         ch_versions = ch_versions.mix(KRAKEN2_TAXONOMY_WF.out.versions)
-        ch_tax_for_phyloseq = ch_tax_for_phyloseq.mix ( ch_kraken2_tax.map { it = [ "kraken2", file(it) ] } )
+        ch_tax_for_robject = ch_tax_for_robject.mix ( ch_kraken2_tax.map { it = [ "kraken2", file(it) ] } )
     } else {
         ch_kraken2_tax = Channel.empty()
     }
@@ -635,7 +636,7 @@ workflow AMPLISEQ {
             sintax_taxlevels
         ).tax.set { ch_sintax_tax }
         ch_versions = ch_versions.mix(SINTAX_TAXONOMY_WF.out.versions)
-        ch_tax_for_phyloseq = ch_tax_for_phyloseq.mix ( ch_sintax_tax.map { it = [ "sintax", file(it) ] } )
+        ch_tax_for_robject = ch_tax_for_robject.mix ( ch_sintax_tax.map { it = [ "sintax", file(it) ] } )
     } else {
         ch_sintax_tax = Channel.empty()
     }
@@ -657,7 +658,7 @@ workflow AMPLISEQ {
         FASTA_NEWICK_EPANG_GAPPA ( ch_pp_data )
         ch_versions = ch_versions.mix( FASTA_NEWICK_EPANG_GAPPA.out.versions )
         ch_pplace_tax = FORMAT_PPLACETAX ( FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query ).tsv
-        ch_tax_for_phyloseq = ch_tax_for_phyloseq.mix ( PHYLOSEQ_INTAX_PPLACE ( ch_pplace_tax ).tsv.map { it = [ "pplace", file(it) ] } )
+        ch_tax_for_robject = ch_tax_for_robject.mix ( PHYLOSEQ_INTAX_PPLACE ( ch_pplace_tax ).tsv.map { it = [ "pplace", file(it) ] } )
     } else {
         ch_pplace_tax = Channel.empty()
     }
@@ -679,7 +680,7 @@ workflow AMPLISEQ {
         )
         ch_versions = ch_versions.mix( QIIME2_TAXONOMY.out.versions )
         ch_qiime2_tax = QIIME2_TAXONOMY.out.tsv
-        ch_tax_for_phyloseq = ch_tax_for_phyloseq.mix ( PHYLOSEQ_INTAX_QIIME2 ( ch_qiime2_tax ).tsv.map { it = [ "qiime2", file(it) ] } )
+        ch_tax_for_robject = ch_tax_for_robject.mix ( PHYLOSEQ_INTAX_QIIME2 ( ch_qiime2_tax ).tsv.map { it = [ "qiime2", file(it) ] } )
     } else {
         ch_qiime2_tax = Channel.empty()
     }
@@ -866,23 +867,27 @@ workflow AMPLISEQ {
     }
 
     //
-    // SUBWORKFLOW: Create phyloseq objects
+    // SUBWORKFLOW: Create R objects
     //
-    if ( !params.skip_taxonomy ) {
+    if ( !params.skip_taxonomy && ( !params.skip_phyloseq || !params.skip_tse ) ) {
         if ( params.pplace_tree ) {
-            ch_tree_for_phyloseq = FASTA_NEWICK_EPANG_GAPPA.out.grafted_phylogeny
+            ch_tree_for_robject = FASTA_NEWICK_EPANG_GAPPA.out.grafted_phylogeny.map { it = it[1] }.first()
+        } else if (params.multiregion) {
+            ch_tree_for_robject = SIDLE_WF.out.tree_nwk
+        } else if ( run_qiime2 && params.metadata && (!params.skip_alpha_rarefaction || !params.skip_diversity_indices) ) {
+            ch_tree_for_robject = QIIME2_DIVERSITY.out.tree_nwk
         } else {
-            ch_tree_for_phyloseq = []
+            ch_tree_for_robject = Channel.empty()
         }
 
-        PHYLOSEQ_WORKFLOW (
-            ch_tax_for_phyloseq,
+        ROBJECT_WORKFLOW (
+            ch_tax_for_robject,
             ch_tsv,
-            ch_metadata.ifEmpty([]),
-            ch_tree_for_phyloseq,
+            ch_metadata,
+            ch_tree_for_robject,
             run_qiime2
         )
-        ch_versions = ch_versions.mix(PHYLOSEQ_WORKFLOW.out.versions.first())
+        ch_versions = ch_versions.mix(ROBJECT_WORKFLOW.out.versions)
     }
 
     //
@@ -914,14 +919,14 @@ workflow AMPLISEQ {
             workflow, parameters_schema: "nextflow_schema.json")
         ch_workflow_summary = Channel.value(paramsSummaryMultiqc(summary_params))
 
+        ch_multiqc_files = ch_multiqc_files.mix(
+            ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
         ch_multiqc_custom_methods_description = params.multiqc_methods_description ?
             file(params.multiqc_methods_description, checkIfExists: true) :
             file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
         ch_methods_description                = Channel.value(
             methodsDescriptionText(ch_multiqc_custom_methods_description))
 
-        ch_multiqc_files = ch_multiqc_files.mix(
-            ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
         ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
         ch_multiqc_files = ch_multiqc_files.mix(
             ch_methods_description.collectFile(
@@ -980,6 +985,7 @@ workflow AMPLISEQ {
             ch_unfiltered_fasta.ifEmpty( [] ), // this is identical to DADA2_MERGE.out.fasta if !params.input_fasta
             DADA2_MERGE.out.dada2asv.ifEmpty( [] ),
             DADA2_MERGE.out.dada2stats.ifEmpty( [] ),
+            params.mergepairs_strategy,
             params.vsearch_cluster ? FILTER_CLUSTERS.out.asv.ifEmpty( [] ) : [],
             !params.skip_barrnap ? BARRNAPSUMMARY.out.summary.ifEmpty( [] ) : [],
             params.filter_ssu ? FILTER_SSU.out.stats.ifEmpty( [] ) : [],
@@ -1012,7 +1018,8 @@ workflow AMPLISEQ {
             run_qiime2 && params.ancombc_formula && params.metadata ? QIIME2_ANCOM.out.ancombc_formula.collect().ifEmpty( [] ) : [],
             params.picrust ? PICRUST.out.pathways.ifEmpty( [] ) : [],
             params.sbdiexport ? SBDIEXPORT.out.sbditables.mix(SBDIEXPORTREANNOTATE.out.sbdiannottables).collect().ifEmpty( [] ) : [],
-            !params.skip_taxonomy ? PHYLOSEQ_WORKFLOW.out.rds.map{info,rds -> [rds]}.collect().ifEmpty( [] ) : []
+            !params.skip_taxonomy && !params.skip_phyloseq ? ROBJECT_WORKFLOW.out.phyloseq.map{info,rds -> [rds]}.collect().ifEmpty( [] ) : [],
+            !params.skip_taxonomy && !params.skip_tse ? ROBJECT_WORKFLOW.out.tse.map{info,rds -> [rds]}.collect().ifEmpty( [] ) : []
         )
         ch_versions    = ch_versions.mix(SUMMARY_REPORT.out.versions)
     }

@@ -106,6 +106,7 @@ workflow PIPELINE_COMPLETION {
 
     main:
     summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
+    def multiqc_reports = multiqc_report.toList()
 
     //
     // Completion email and summary
@@ -119,7 +120,7 @@ workflow PIPELINE_COMPLETION {
                 plaintext_email,
                 outdir,
                 monochrome_logs,
-                multiqc_report.toList()
+                multiqc_reports.getVal(),
             )
         }
 
@@ -228,12 +229,13 @@ def validateInputParameters() {
 
     String[] sbdi_compatible_databases = [
         "coidb","coidb=221216",
+        "greengenes2","greengenes2=2024.09",
         "gtdb","gtdb=R09-RS220","gtdb=R08-RS214","gtdb=R07-RS207","gtdb=R06-RS202","gtdb=R05-RS95",
         "midori2-co1","midori2-co1=gb250",
         "pr2","pr2=5.0.0","pr2=4.14.0","pr2=4.13.0",
         "rdp","rdp=18",
-        "sbdi-gtdb","sbdi-gtdb=R09-RS220-1","sbdi-gtdb=R08-RS214-1","sbdi-gtdb=R07-RS207-1",
-        "silva","silva=138","silva=132",
+        "sbdi-gtdb","sbdi-gtdb=R09-RS220-2","sbdi-gtdb=R09-RS220-1", "sbdi-gtdb=R08-RS214-1","sbdi-gtdb=R07-RS207-1",
+        "silva","silva=138.2","silva=138","silva=132",
         "unite-fungi","unite-fungi=10.0","unite-fungi=9.0","unite-fungi=8.3","unite-fungi=8.2",
         "unite-alleuk","unite-alleuk=10.0","unite-alleuk=9.0","unite-alleuk=8.3","unite-alleuk=8.2"
     ]
@@ -406,7 +408,7 @@ def toolBibliographyText() {
 }
 
 def methodsDescriptionText(mqc_methods_yaml) {
-    // Convert  to a named map so can be used as with familar NXF ${workflow} variable syntax in the MultiQC YML file
+    // Convert  to a named map so can be used as with familiar NXF ${workflow} variable syntax in the MultiQC YML file
     def meta = [:]
     meta.workflow = workflow.toMap()
     meta["manifest_map"] = workflow.manifest.toMap()

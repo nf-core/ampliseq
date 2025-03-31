@@ -27,7 +27,8 @@ workflow QIIME2_DIVERSITY {
     ch_versions_qiime2_diversity = Channel.empty()
 
     //Phylogenetic tree for beta & alpha diversities
-    if (!ch_tree) {
+    produce_tree = !ch_tree ? true : false
+    if (produce_tree) {
         QIIME2_TREE ( ch_seq )
         ch_versions_qiime2_diversity = ch_versions_qiime2_diversity.mix(QIIME2_TREE.out.versions)
         ch_tree = QIIME2_TREE.out.qza
@@ -82,6 +83,8 @@ workflow QIIME2_DIVERSITY {
     }
 
     emit:
+    tree_qza = ch_tree
+    tree_nwk = produce_tree ? QIIME2_TREE.out.nwk : []
     depth    = !skip_diversity_indices ? QIIME2_DIVERSITY_CORE.out.depth : []
     alpha    = !skip_diversity_indices ? QIIME2_DIVERSITY_ALPHA.out.alpha : []
     beta     = !skip_diversity_indices ? QIIME2_DIVERSITY_BETA.out.beta : []

@@ -70,10 +70,10 @@ workflow PARSE_INPUT {
             }
         }
 
-    //Check that no dots "." are in sampleID
+    //Check that sampleIDs contain only letter, number and underscore characters
     ch_reads
         .map { meta, reads -> meta.sample }
-        .subscribe { if ( "$it".contains(".") ) error("Please review data input, sampleIDs may not contain dots, but \"$it\" does.") }
+        .subscribe { if ( ! "$it".matches(/^[a-zA-Z0-9_]+$/) ) error("Please review data input, sampleIDs may not contain characters other than letters, numbers or underscores, but \"$it\" does.") }
 
     //Check that sampleIDs do not start with a number when using metadata (sampleID gets X prepended by R and metadata wont match any more!)
     ch_reads

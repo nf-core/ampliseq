@@ -22,7 +22,7 @@
         "content": [
             "ASV_seqs.fasta:md5,f786f2a262c3b7bf1eca475dc2c9bef6",
             "ASV_table.tsv:md5,91ca9b9ab06a873033c29af4f93dfa80",
-            "ref_taxonomy.rdp_18.txt:md5,815c4fce9f3d1de019fb995a43fb66ed",
+            "ref_taxonomy.rdp_18.txt:md5,c20d8e186e2893ba7818a0115edb013e",
             "DADA2_stats.tsv:md5,1413d7b7abcdd9344efe78b550112345",
             "DADA2_table.rds:md5,e55f6c929176c853ac4d91123532df9c",
             "DADA2_table.tsv:md5,e9d7e7dfabdd1f9d3bbaa45eba545367"

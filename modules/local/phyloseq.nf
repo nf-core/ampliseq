@@ -8,9 +8,7 @@ process PHYLOSEQ {
         'biocontainers/bioconductor-phyloseq:1.46.0--r43hdfd78af_0' }"
 
     input:
-    tuple val(prefix), path(tax_tsv), path(otu_tsv)
-    path sam_tsv
-    path tree
+    tuple val(prefix), path(tax_tsv), path(otu_tsv), path(sam_tsv), path(tree)
 
     output:
     tuple val(prefix), path("*phyloseq.rds"), emit: rds

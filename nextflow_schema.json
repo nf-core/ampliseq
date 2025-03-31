@@ -483,6 +483,12 @@
                     "help_text": "Reverse-complement of each sequences will be used for classification if it is a better match to the reference sequences than the forward sequence.",
                     "description": "If reverse-complement of each sequences will be also tested for classification"
                 },
+                "dada_assign_chunksize": {
+                    "type": "integer",
+                    "help_text": "Chunks for DADA2's assignTaxonomy and addSpecies can speed up the process and lower required memory.",
+                    "description": "ASV fasta will be subset into chunks of this size for classification",
+                    "default": 10000
+                },
                 "pplace_tree": {
                     "type": "string",
                     "description": "Newick file with reference phylogenetic tree. Requires also `--pplace_aln` and `--pplace_model`."

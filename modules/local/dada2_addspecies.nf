@@ -11,11 +11,10 @@ process DADA2_ADDSPECIES {
     input:
     path(taxtable)
     path(database)
-    val(outfile)
     val(taxlevels_input)
 
     output:
-    path(outfile)       , emit: tsv
+    path("${taxtable.baseName}.species.tsv")   , emit: tsv
     path "versions.yml" , emit: versions
     path "*.args.txt"   , emit: args
 
@@ -62,7 +61,7 @@ process DADA2_ADDSPECIES {
         taxa_export <- taxa
     }
 
-    write.table(taxa_export, file = \"$outfile\", sep = "\\t", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '')
+    write.table(taxa_export, file = \"${taxtable.baseName}.species.tsv\", sep = "\\t", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '')
 
     write.table('addSpecies\t$args\ntaxlevels\t$taxlevels\nseed\t$seed', file = "addSpecies.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
     writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")

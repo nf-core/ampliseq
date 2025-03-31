@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## nf-core/ampliseq version 2.13.0
+## nf-core/ampliseq version 2.13.0 - 2025-04-01
 
 ### `Added`
 
@@ -50,10 +50,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Dependencies`
 
 - [#797](https://github.com/nf-core/ampliseq/pull/797) - Update QIIME2
+- [#845](https://github.com/nf-core/ampliseq/pull/845) - Update FASTQC module (no version change though) and MultiQC
 
 | software | previously | now     |
 | -------- | ---------- | ------- |
 | QIIME2   | 2023.7     | 2024.10 |
+| MultiQC  | 1.25.1     | 1.27    |
 
 ### `Removed`
 

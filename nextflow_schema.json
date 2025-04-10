@@ -627,14 +627,39 @@
                 },
                 "sidle_ref_tax_custom": {
                     "type": "string",
-                    "help_text": "Consider also setting `--sidle_ref_tree_custom`. Example usage: `--sidle_ref_tax_custom 'rep_set_99.fasta,rep_set_aligned_99.fasta,taxonomy_99_taxonomy.txt'`",
-                    "description": "Comma separated paths to three files: reference taxonomy sequences (*.fasta), reference taxonomy strings (*.txt)"
+                    "help_text": "Use with `--sidle_ref_seq_custom`. Consider also setting `--sidle_ref_aln_custom` and `--sidle_ref_tree_custom`. Example usage: `--sidle_ref_tax_custom 'taxonomy_99_taxonomy.txt'`",
+                    "description": "Path to reference taxonomy strings (*.txt)",
+                    "pattern": "^.*\\.txt$"
+                },
+                "sidle_ref_seq_custom": {
+                    "type": "string",
+                    "help_text": "Use with `--sidle_ref_tax_custom`. Example usage: `--sidle_ref_seq_custom 'rep_set_99.fasta'`",
+                    "description": "Path to reference taxonomy sequences in fasta format",
+                    "pattern": "^.*\\.(fasta|fas|fna|fa|ffn)$"
+                },
+                "sidle_ref_aln_custom": {
+                    "type": "string",
+                    "help_text": "May be used with `--sidle_ref_tax_custom`. Allows sequence reconstruction. Example usage: `--sidle_ref_aln_custom 'rep_set_aligned_99.fasta'`",
+                    "description": "Path to multiple sequence alignment of reference taxonomy sequences in fasta format",
+                    "pattern": "^.*\\.(fasta|fas|fna|fa|ffn)$"
                 },
                 "sidle_ref_tree_custom": {
                     "type": "string",
-                    "help_text": "Overwrites tree chosen by `--sidle_ref_taxonomy`",
+                    "help_text": "Use with `--sidle_ref_aln_custom`. Recommended with `--sidle_ref_tax_custom`. Allows phylogenetic tree reconstruction and therefore diversity analysis. Overwrites tree chosen by `--sidle_ref_taxonomy`",
                     "description": "Path to SIDLE reference taxonomy tree (*.qza)",
                     "pattern": "^.*\\.qza$"
+                },
+                "sidle_ref_degenerates": {
+                    "type": "integer",
+                    "default": 5,
+                    "min": 0,
+                    "help_text": "Only effective with `--sidle_ref_tax_custom`. Recommended with `--sidle_ref_tax_custom`, default 5 was recommended with SILVA 128. Sets `--p-num-degenerates` for `qiime rescript cull-seqs`.",
+                    "description": "Exclude reference sequences with more than this much degenerates"
+                },
+                "sidle_ref_cleaning": {
+                    "type": "string",
+                    "help_text": "Recommended with `--sidle_ref_tax_custom`, default '--p-database silva' was recommended with SILVA 128. Therefore, ad-hoc database cleaning will be performed automatically, specifically with regard to the `define-missing` and `ambiguity-handling` parameters.  Overwrites recommended settings for database chosen by `--sidle_ref_taxonomy`",
+                    "description": "Arguments for `qiime sidle reconstruct-taxonomy` regarding ad-hoc cleaning"
                 }
             }
         },

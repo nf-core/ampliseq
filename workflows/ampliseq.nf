@@ -15,18 +15,15 @@ if (params.classifier) {
 } else { ch_qiime_classifier = Channel.empty() }
 
 if (params.sidle_ref_tax_custom) {
-    if ("${params.sidle_ref_tax_custom}".contains(",")) {
-        sidle_ref_paths = "${params.sidle_ref_tax_custom}".split(",")
-        if (sidle_ref_paths.length != 3) {
-            error "--sidle_ref_tax_custom exately three filepaths separated by a comma (fasta, aligned fasta, taxonomy). Please review input."
-        }
-        ch_sidle_ref_taxonomy = Channel.fromPath( Arrays.asList(sidle_ref_paths), checkIfExists: true )
-    } else {
-        error "--sidle_ref_tax_custom accepts exately three filepaths separated by a comma. Please review input."
-    }
-    val_sidle_ref_taxonomy = "user"
+    //custom ref taxonomy input from params.sidle_ref_tax_custom & params.sidle_ref_seq_custom & [optionallly] params.sidle_ref_aln_custom
+    Channel.fromPath("${params.sidle_ref_tax_custom}", checkIfExists: true)
+        .combine( Channel.fromPath("${params.sidle_ref_seq_custom}", checkIfExists: true) )
+        .combine( params.sidle_ref_aln_custom ? Channel.fromPath("${params.sidle_ref_aln_custom}", checkIfExists: true) : Channel.of("EMPTY") )
+        .set{ ch_sidle_ref_taxonomy }
     ch_sidle_ref_taxonomy_tree = params.sidle_ref_tree_custom ? Channel.fromPath("${params.sidle_ref_tree_custom}", checkIfExists: true) : Channel.empty()
+    val_sidle_ref_taxonomy = "user"
 } else if (params.sidle_ref_taxonomy) {
+    //standard ref taxonomy input from params.sidle_ref_taxonomy & conf/ref_databases.config
     ch_sidle_ref_taxonomy = Channel.fromList( params.sidle_ref_databases[params.sidle_ref_taxonomy]["file"] ).map { file(it) }
     ch_sidle_ref_taxonomy_tree = params.sidle_ref_tree_custom ? Channel.fromPath("${params.sidle_ref_tree_custom}", checkIfExists: true) :
         params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] ? Channel.fromList( params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] ).map { file(it) } : Channel.empty()

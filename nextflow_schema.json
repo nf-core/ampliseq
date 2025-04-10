@@ -410,6 +410,7 @@
                     "description": "Name of supported database, and optionally also version number",
                     "default": "silva=138.2",
                     "enum": [
+                        "bold-trnl",
                         "coidb",
                         "coidb=221216",
                         "greengenes2",

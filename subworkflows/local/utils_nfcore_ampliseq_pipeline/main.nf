@@ -271,7 +271,13 @@ def validateInputParameters() {
     // When multi-region analysis is used, some parameter combinations are required or not allowed:
     if ( params.multiregion ) {
         if ( !params.sidle_ref_taxonomy && !params.sidle_ref_tree_custom ) {
-            log.warn "Missing parameter: Either use `--sidle_ref_taxonomy` or `--sidle_ref_tree_custom` to get (unified) taxonomic classifications"
+            log.warn "Missing parameter: Either use `--sidle_ref_taxonomy` or `--sidle_ref_tree_custom` to perform diversity analysis"
+        }
+        if ( !params.sidle_ref_taxonomy && !params.sidle_ref_aln_custom ) {
+            log.warn "Missing parameter: Either use `--sidle_ref_taxonomy` or `--sidle_ref_aln_custom` to reconstruct sequences/fragments and with `--sidle_ref_tree_custom` the phylogenetic tree"
+        }
+        if ( !params.sidle_ref_taxonomy && ( !params.sidle_ref_tax_custom || !params.sidle_ref_seq_custom ) ) {
+            error("Missing parameter: Either use `--sidle_ref_taxonomy` or `--sidle_ref_tax_custom` and `--sidle_ref_seq_custom`")
         }
         if ( (params.dada_ref_tax_custom || params.dada_ref_taxonomy) && !params.skip_dada_taxonomy ) {
             error("Incompatible parameters: Multiple region analysis with `--multiregion` does not work with `--dada_ref_tax_custom`, `--dada_ref_taxonomy`")

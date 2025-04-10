@@ -16,7 +16,6 @@ if (params.classifier) {
 
 if (params.sidle_ref_tax_custom) {
     //custom ref taxonomy input from params.sidle_ref_tax_custom & params.sidle_ref_seq_custom & [optionallly] params.sidle_ref_aln_custom
-    //NO INPUT IS OPTIONAL: ch_sidle_ref_taxonomy = Channel.fromPath( Arrays.asList( params.sidle_ref_tax_custom, params.sidle_ref_seq_custom, params.sidle_ref_aln_custom ), checkIfExists: true )
     Channel.fromPath("${params.sidle_ref_tax_custom}", checkIfExists: true)
         .combine( Channel.fromPath("${params.sidle_ref_seq_custom}", checkIfExists: true) )
         .combine( params.sidle_ref_aln_custom ? Channel.fromPath("${params.sidle_ref_aln_custom}", checkIfExists: true) : Channel.of("EMPTY") )

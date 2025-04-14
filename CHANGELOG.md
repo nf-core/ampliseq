@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#871](https://github.com/nf-core/ampliseq/pull/871) - Multi-region analysis is now easier with custom databases. No alignment file of the reference sequences are needed.
+
+| **Parameter**             | **Description**                                                                                         |
+| ------------------------- | ------------------------------------------------------------------------------------------------------- |
+| **sidle_ref_tax_custom**  | Changed: Previously three files, now one file: path to reference taxonomy strings                       |
+| **sidle_ref_seq_custom**  | New: Path to reference taxonomy sequences in fasta format                                               |
+| **sidle_ref_aln_custom**  | New: Path to multiple sequence alignment of reference taxonomy sequences in fasta format                |
+| **sidle_ref_degenerates** | New: Only effective with `--sidle_ref_tax_custom`, filter reference sequences, default: 5               |
+| **sidle_ref_cleaning**    | New: Arguments regarding ad-hoc cleaning, with `--sidle_ref_tax_custom` default is '--p-database silva' |
+
 ### `Fixed`
 
 ### `Dependencies`

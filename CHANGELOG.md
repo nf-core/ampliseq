@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
-- [#871](https://github.com/nf-core/ampliseq/pull/871) - Multi-region analysis is now easier with cusom databases. No alignment file of the reference sequences are needed.
+- [#871](https://github.com/nf-core/ampliseq/pull/871) - Multi-region analysis is now easier with custom databases. No alignment file of the reference sequences are needed.
 
 | **Parameter**             | **Description**                                                                                         |
 | ------------------------- | ------------------------------------------------------------------------------------------------------- |

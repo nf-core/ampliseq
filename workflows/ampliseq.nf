@@ -117,9 +117,9 @@ workflow AMPLISEQ {
         val_sidle_ref_taxonomy = "user"
     } else if (params.sidle_ref_taxonomy) {
         //standard ref taxonomy input from params.sidle_ref_taxonomy & conf/ref_databases.config
-        ch_sidle_ref_taxonomy = Channel.fromList( params.sidle_ref_databases[params.sidle_ref_taxonomy]["file"] ).map { file(it) }
+        ch_sidle_ref_taxonomy = Channel.fromList( params.sidle_ref_databases[params.sidle_ref_taxonomy]["file"] ).map { it -> file(it) }
         ch_sidle_ref_taxonomy_tree = params.sidle_ref_tree_custom ? Channel.fromPath("${params.sidle_ref_tree_custom}", checkIfExists: true) :
-            params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] ? Channel.fromList( params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] ).map { file(it) } : Channel.empty()
+            params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] ? Channel.fromList( params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] ).map { it -> file(it) } : Channel.empty()
         val_sidle_ref_taxonomy = params.sidle_ref_taxonomy.replace('=','_').replace('.','_')
     } else {
         ch_sidle_ref_taxonomy = Channel.empty()
@@ -137,7 +137,7 @@ workflow AMPLISEQ {
         val_dada_ref_taxonomy = "user"
     } else if (params.dada_ref_taxonomy && !params.skip_dada_taxonomy && !params.skip_taxonomy) {
         //standard ref taxonomy input from params.dada_ref_taxonomy & conf/ref_databases.config
-        ch_dada_ref_taxonomy = params.dada_ref_databases.containsKey(params.dada_ref_taxonomy) ? Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["file"]).map { file(it) } : Channel.empty()
+        ch_dada_ref_taxonomy = params.dada_ref_databases.containsKey(params.dada_ref_taxonomy) ? Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["file"]).map { it -> file(it) } : Channel.empty()
         val_dada_ref_taxonomy = params.dada_ref_taxonomy.replace('=','_').replace('.','_')
     } else {
         ch_dada_ref_taxonomy = Channel.empty()
@@ -157,7 +157,7 @@ workflow AMPLISEQ {
         }
         val_qiime_ref_taxonomy = "user"
     } else if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
-        ch_qiime_ref_taxonomy = params.qiime_ref_databases.containsKey(params.qiime_ref_taxonomy) ? Channel.fromList(params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"]).map { file(it) } : Channel.empty()
+        ch_qiime_ref_taxonomy = params.qiime_ref_databases.containsKey(params.qiime_ref_taxonomy) ? Channel.fromList(params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"]).map { it -> file(it) } : Channel.empty()
         val_qiime_ref_taxonomy = params.qiime_ref_taxonomy.replace('=','_').replace('.','_')
     } else {
         ch_qiime_ref_taxonomy = Channel.empty()
@@ -165,7 +165,7 @@ workflow AMPLISEQ {
     }
 
     if (params.sintax_ref_taxonomy && !params.skip_taxonomy) {
-        ch_sintax_ref_taxonomy = params.sintax_ref_databases.containsKey(params.sintax_ref_taxonomy) ? Channel.fromList(params.sintax_ref_databases[params.sintax_ref_taxonomy]["file"]).map { file(it) } : Channel.empty()
+        ch_sintax_ref_taxonomy = params.sintax_ref_databases.containsKey(params.sintax_ref_taxonomy) ? Channel.fromList(params.sintax_ref_databases[params.sintax_ref_taxonomy]["file"]).map { it -> file(it) } : Channel.empty()
         val_sintax_ref_taxonomy = params.sintax_ref_taxonomy.replace('=','_').replace('.','_')
     } else {
         ch_sintax_ref_taxonomy = Channel.empty()
@@ -178,7 +178,7 @@ workflow AMPLISEQ {
         val_kraken2_ref_taxonomy = "user"
     } else if (params.kraken2_ref_taxonomy && !params.skip_taxonomy) {
         //standard ref taxonomy input from params.dada_ref_taxonomy & conf/ref_databases.config
-        ch_kraken2_ref_taxonomy = params.kraken2_ref_databases.containsKey(params.kraken2_ref_taxonomy) ? Channel.fromList(params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["file"]).map { file(it) } : Channel.empty()
+        ch_kraken2_ref_taxonomy = params.kraken2_ref_databases.containsKey(params.kraken2_ref_taxonomy) ? Channel.fromList(params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["file"]).map { it -> file(it) } : Channel.empty()
         val_kraken2_ref_taxonomy = params.kraken2_ref_taxonomy.replace('=','_').replace('.','_')
     } else {
         ch_kraken2_ref_taxonomy = Channel.empty()
@@ -596,7 +596,7 @@ workflow AMPLISEQ {
             params.dada_assign_chunksize
         ).tax.set { ch_dada2_tax }
         ch_versions = ch_versions.mix(DADA2_TAXONOMY_WF.out.versions)
-        ch_tax_for_robject = ch_tax_for_robject.mix ( ch_dada2_tax.map { def it = [ "dada2", file(it) ] } )
+        ch_tax_for_robject = ch_tax_for_robject.mix ( ch_dada2_tax.map { it -> [ "dada2", file(it) ] } )
     } else {
         ch_dada2_tax = Channel.empty()
     }
@@ -610,7 +610,7 @@ workflow AMPLISEQ {
             kraken2_taxlevels
         ).qiime2_tsv.set { ch_kraken2_tax }
         ch_versions = ch_versions.mix(KRAKEN2_TAXONOMY_WF.out.versions)
-        ch_tax_for_robject = ch_tax_for_robject.mix ( ch_kraken2_tax.map { def it = [ "kraken2", file(it) ] } )
+        ch_tax_for_robject = ch_tax_for_robject.mix ( ch_kraken2_tax.map { it -> [ "kraken2", file(it) ] } )
     } else {
         ch_kraken2_tax = Channel.empty()
     }
@@ -625,7 +625,7 @@ workflow AMPLISEQ {
             sintax_taxlevels
         ).tax.set { ch_sintax_tax }
         ch_versions = ch_versions.mix(SINTAX_TAXONOMY_WF.out.versions)
-        ch_tax_for_robject = ch_tax_for_robject.mix ( ch_sintax_tax.map { def it = [ "sintax", file(it) ] } )
+        ch_tax_for_robject = ch_tax_for_robject.mix ( ch_sintax_tax.map { it -> [ "sintax", file(it) ] } )
     } else {
         ch_sintax_tax = Channel.empty()
     }
@@ -647,7 +647,7 @@ workflow AMPLISEQ {
         FASTA_NEWICK_EPANG_GAPPA ( ch_pp_data )
         ch_versions = ch_versions.mix( FASTA_NEWICK_EPANG_GAPPA.out.versions )
         ch_pplace_tax = FORMAT_PPLACETAX ( FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query ).tsv
-        ch_tax_for_robject = ch_tax_for_robject.mix ( PHYLOSEQ_INTAX_PPLACE ( ch_pplace_tax ).tsv.map { def it = [ "pplace", file(it) ] } )
+        ch_tax_for_robject = ch_tax_for_robject.mix ( PHYLOSEQ_INTAX_PPLACE ( ch_pplace_tax ).tsv.map { it -> [ "pplace", file(it) ] } )
     } else {
         ch_pplace_tax = Channel.empty()
     }
@@ -669,7 +669,7 @@ workflow AMPLISEQ {
         )
         ch_versions = ch_versions.mix( QIIME2_TAXONOMY.out.versions )
         ch_qiime2_tax = QIIME2_TAXONOMY.out.tsv
-        ch_tax_for_robject = ch_tax_for_robject.mix ( PHYLOSEQ_INTAX_QIIME2 ( ch_qiime2_tax ).tsv.map { def it = [ "qiime2", file(it) ] } )
+        ch_tax_for_robject = ch_tax_for_robject.mix ( PHYLOSEQ_INTAX_QIIME2 ( ch_qiime2_tax ).tsv.map { it -> [ "qiime2", file(it) ] } )
     } else {
         ch_qiime2_tax = Channel.empty()
     }
@@ -860,7 +860,7 @@ workflow AMPLISEQ {
     //
     if ( !params.skip_taxonomy && ( !params.skip_phyloseq || !params.skip_tse ) ) {
         if ( params.pplace_tree ) {
-            ch_tree_for_robject = FASTA_NEWICK_EPANG_GAPPA.out.grafted_phylogeny.map { def it = it[1] }.first()
+            ch_tree_for_robject = FASTA_NEWICK_EPANG_GAPPA.out.grafted_phylogeny.map { it -> it[1] }.first()
         } else if (params.multiregion) {
             ch_tree_for_robject = SIDLE_WF.out.tree_nwk
         } else if ( run_qiime2 && params.metadata && (!params.skip_alpha_rarefaction || !params.skip_diversity_indices) ) {

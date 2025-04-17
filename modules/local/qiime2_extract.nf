@@ -11,9 +11,6 @@ process QIIME2_EXTRACT {
     tuple val(meta), path("*.qza"), emit: qza
     path "versions.yml"          , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     """

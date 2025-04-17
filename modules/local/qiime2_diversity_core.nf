@@ -18,9 +18,6 @@ process QIIME2_DIVERSITY_CORE {
     path "versions.yml"                         , emit: versions
     path("*rarefaction.txt")                    , emit: depth
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     """
     # FIX: detecting a viable GPU on your system, but the GPU is unavailable for compute, causing UniFrac to fail.

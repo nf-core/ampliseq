@@ -18,9 +18,6 @@ process FILTER_CODONS {
     path( "codon.filtered.stats.tsv"      ) , emit: stats, optional: true
     path( "versions.yml"                  ) , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     def count_table = asv ? "-t ${asv}" : ""

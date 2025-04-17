@@ -14,9 +14,6 @@ process SIDLE_DBEXTRACT {
     tuple val(meta), path("db_*_map.qza")  , emit: map
     path "versions.yml"                    , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.region}"

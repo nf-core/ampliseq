@@ -14,9 +14,6 @@ process QIIME2_BARPLOT {
     path("barplot${suffix}/*"), emit: folder
     path "versions.yml"       , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     suffix = setting ? "_${table.baseName}" : ""
     def metadata_cmd = metadata ? "--m-metadata-file ${metadata}": ""

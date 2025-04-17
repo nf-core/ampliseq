@@ -13,9 +13,6 @@ process PHYLOSEQ_INASV {
     path( "*.tsv" )          , emit: tsv
     path "versions.yml"      , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     """
     tail $biom_file -n +2 | sed '1s/#OTU ID/ASV_ID/' > reformat_$biom_file

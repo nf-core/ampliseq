@@ -13,9 +13,6 @@ process QIIME2_ANCOM_TAX {
     path "ancom/*"      , emit: ancom
     path "versions.yml" , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     """
     export XDG_CONFIG_HOME="./xdgconfig"

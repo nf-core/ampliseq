@@ -17,9 +17,6 @@ process NOVASEQ_ERR {
     tuple val(meta), path("*.md.err.convergence.txt"), emit: convergence
     path "versions.yml"                  , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     if (!meta.single_end) {
         """

@@ -16,8 +16,6 @@ process COMBINE_TABLE {
     path("${outfile}")  , emit: tsv
     path "versions.yml" , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
 
     script:
     """

@@ -15,8 +15,6 @@ process CUTADAPT_SUMMARY {
     path("*_summary.tsv") , emit: tsv
     path "versions.yml"   , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
 
     script:
     def mode  = meta.single_end ? "single_end" : "paired_end"

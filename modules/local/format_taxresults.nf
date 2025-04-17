@@ -15,9 +15,6 @@ process FORMAT_TAXRESULTS {
     path(outfile)      , emit: tsv
     path "versions.yml", emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     """
     add_full_sequence_to_taxfile.py $taxtable $fastafile $outfile

@@ -18,9 +18,6 @@ process DADA2_QUALITY {
     path "*.args.txt"                        , emit: args
     path "*plotQualityProfile.txt"           , emit: warning
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta}"

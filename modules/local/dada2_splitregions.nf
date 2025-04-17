@@ -15,9 +15,6 @@ process DADA2_SPLITREGIONS {
     tuple val(meta), path( "ASV_table_*.tsv" ), path( "ASV_seqs_*.fasta" ), emit: for_sidle
     path "versions.yml"                                                   , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     // Make groovy map to R list; requirement: Values may not be false,true,null
     def mapping_r_list = mapping

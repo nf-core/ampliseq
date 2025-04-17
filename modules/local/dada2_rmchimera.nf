@@ -15,9 +15,6 @@ process DADA2_RMCHIMERA {
     path "versions.yml"                    , emit: versions
     path "*.args.txt"                      , emit: args
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def prefix = task.ext.prefix ?: "prefix"
     def args = task.ext.args ?: ''

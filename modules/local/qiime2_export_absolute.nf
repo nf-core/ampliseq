@@ -20,9 +20,6 @@ process QIIME2_EXPORT_ABSOLUTE {
     path("abs-abund-table-*.tsv")    , emit: abundtable
     path "versions.yml"              , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     """
     export XDG_CONFIG_HOME="./xdgconfig"

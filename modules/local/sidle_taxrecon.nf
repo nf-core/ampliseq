@@ -14,9 +14,6 @@ process SIDLE_TAXRECON {
     path("reconstruction_taxonomy.tsv"), emit: tsv
     path "versions.yml"                , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     """

@@ -8,7 +8,7 @@ process FORMAT_TAXRESULTS_KRAKEN2 {
 
     input:
     tuple val(meta), path(report)
-    tuple val(meta), path(classified_reads_assignment)
+    tuple val(meta2), path(classified_reads_assignment)
     val(taxlevels_input)
 
     output:
@@ -17,9 +17,6 @@ process FORMAT_TAXRESULTS_KRAKEN2 {
     path("*.kraken2.tsv")            , emit: tsv
     path("*.kraken2.into-qiime2.tsv"), emit: qiime2_tsv
     path "versions.yml"              , emit: versions
-
-    when:
-    task.ext.when == null || task.ext.when
 
     script:
     def taxlevels = taxlevels_input ? taxlevels_input : "D,P,C,O,F,G,S"

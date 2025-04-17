@@ -14,9 +14,6 @@ process METADATA_PAIRWISE {
     stdout               emit: category
     path "versions.yml", emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     """
     metadata_pairwise.r ${metadata}

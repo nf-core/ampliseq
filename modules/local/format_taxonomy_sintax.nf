@@ -14,9 +14,6 @@ process FORMAT_TAXONOMY_SINTAX {
     path( "ref_taxonomy_sintax.txt")     , emit: ref_tax_info
     path "versions.yml"           , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     """
     ${params.sintax_ref_databases[params.sintax_ref_taxonomy]["fmtscript"]} \\

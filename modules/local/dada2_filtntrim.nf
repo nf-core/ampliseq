@@ -8,21 +8,19 @@ process DADA2_FILTNTRIM {
         'biocontainers/bioconductor-dada2:1.30.0--r43hf17093f_0' }"
 
     input:
-    tuple val(meta), path(reads), val(trunclenf), val(trunclenr)
+    tuple val(meta), path(reads), val(trunclenf_in), val(trunclenr_in)
 
     output:
     tuple val(meta), path("*.filt.fastq.gz"), path("*.filter_stats.tsv"), path("*.args.txt"), emit: reads_logs_args
     path "versions.yml"                        , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
 
     script:
     def args        = task.ext.args ?: ''
     def in_and_out  = meta.single_end ? "\"${reads}\", \"${meta.id}.filt.fastq.gz\"" : "\"${reads[0]}\", \"${meta.id}_1.filt.fastq.gz\", \"${reads[1]}\", \"${meta.id}_2.filt.fastq.gz\""
     def outfiles    = meta.single_end ? "\"${meta.id}.filt.fastq.gz\"" : "\"${meta.id}_1.filt.fastq.gz\", \"${meta.id}_2.filt.fastq.gz\""
-    def trunclenf   = trunclenf[1].toInteger()
-    def trunclenr   = trunclenr[1].toInteger()
+    def trunclenf   = trunclenf_in[1].toInteger()
+    def trunclenr   = trunclenr_in[1].toInteger()
     def trunc_args  = meta.single_end ? "truncLen = $trunclenf" : "truncLen = c($trunclenf, $trunclenr)"
     """
     #!/usr/bin/env Rscript

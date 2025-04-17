@@ -13,9 +13,6 @@ process QIIME2_INTAX {
     path("taxonomy.qza") , emit: qza
     path "versions.yml"  , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def script_cmd = script ? "$script $tax" : "cp $tax tax.tsv"
     """

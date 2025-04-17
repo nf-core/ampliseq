@@ -86,7 +86,7 @@ workflow DADA2_PREPROCESSING {
         .map { meta, reads, logs, args -> [ meta.id ] }
         .collect()
         .subscribe {
-            samples = it.join("\n")
+            def samples = it.join("\n")
             if (params.ignore_failed_filtering) {
                 log.warn "The following samples had too few reads (<$params.min_read_counts) after quality filtering with DADA2:\n$samples\nIgnoring failed samples and continue!\n"
             } else {

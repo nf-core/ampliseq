@@ -12,9 +12,6 @@ process QIIME2_INTREE {
     path("tree.qza")   , emit: qza
     path "versions.yml", emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     """
     export MPLCONFIGDIR="./mplconfigdir"

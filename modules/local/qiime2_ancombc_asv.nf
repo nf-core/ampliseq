@@ -1,5 +1,5 @@
 process QIIME2_ANCOMBC_ASV {
-    tag "${table.baseName}-${formula}"
+    tag "${table.baseName}-${formula_in}"
     label 'process_medium'
     label 'single_cpu'
     label 'process_long'
@@ -9,7 +9,7 @@ process QIIME2_ANCOMBC_ASV {
     container "qiime2/amplicon:2024.10"
 
     input:
-    tuple path(metadata), path(table), val(formula)
+    tuple path(metadata), path(table), val(formula_in)
 
     output:
     path("da_barplot/*")   , emit: da_barplot
@@ -18,13 +18,10 @@ process QIIME2_ANCOMBC_ASV {
     path("*.qzv")          , emit: qzv
     path "versions.yml"    , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args        = task.ext.args ?: ''
     def args2       = task.ext.args2 ?: ''
-    def formula     = formula ?: "${table.baseName}"
+    def formula     = formula_in ?: "${table.baseName}"
     """
     export XDG_CONFIG_HOME="./xdgconfig"
     export MPLCONFIGDIR="./mplconfigdir"

@@ -14,9 +14,6 @@ process SIDLE_TREERECON {
     path("reconstructed_tree.nwk")       , emit: nwk
     path "versions.yml"                  , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     """
     # https://q2-sidle.readthedocs.io/en/latest/reconstruction.html#reconstructing-the-phylogenetic-tree

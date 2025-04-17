@@ -51,8 +51,8 @@ workflow PARSE_INPUT {
         ch_folders
             .collect()
             .subscribe {
-                String folders = it.toString().replace("[", "").replace("]","")
-                log.info "\nFound the folder(s) \"$folders\" containing sequencing read files matching \"${extension}\" in \"${input}\".\n" }
+                String folder = it.toString().replace("[", "").replace("]","")
+                log.info "\nFound the folder(s) \"$folder\" containing sequencing read files matching \"${extension}\" in \"${input}\".\n" }
         //Stop if folder count is 1 and multiple_sequencing_runs
         ch_folders
             .count()
@@ -65,7 +65,7 @@ workflow PARSE_INPUT {
         .toList()
         .subscribe {
             if( it.size() != it.unique().size() ) {
-                ids = it.take(10);
+                def ids = it.take(10);
                 error("Please review data input, sample IDs are not unique! First IDs are $ids")
             }
         }

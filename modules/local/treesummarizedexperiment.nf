@@ -14,15 +14,7 @@ process TREESUMMARIZEDEXPERIMENT {
     tuple val(prefix), path("*TreeSummarizedExperiment.rds"), emit: rds
     path "versions.yml"                                     , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
-    def sam_tsv = "\"${sam_tsv}\""
-    def otu_tsv = "\"${otu_tsv}\""
-    def tax_tsv = "\"${tax_tsv}\""
-    def tree    = "\"${tree}\""
-    def prefix  = "\"${prefix}\""
     """
     #!/usr/bin/env Rscript
 
@@ -30,11 +22,11 @@ process TREESUMMARIZEDEXPERIMENT {
 
     # Read otu table. It must be in a SimpleList as a matrix where rows
     # represent taxa and columns samples.
-    otu_mat  <- read.table($otu_tsv, sep="\\t", header=TRUE, row.names=1)
+    otu_mat  <- read.table("$otu_tsv", sep="\\t", header=TRUE, row.names=1)
     otu_mat <- as.matrix(otu_mat)
     assays <- SimpleList(counts = otu_mat)
     # Read taxonomy table. Correct format for it is DataFrame.
-    taxonomy_table  <- read.table($tax_tsv, sep="\\t", header=TRUE, row.names=1)
+    taxonomy_table  <- read.table("$tax_tsv", sep="\\t", header=TRUE, row.names=1)
     taxonomy_table <- DataFrame(taxonomy_table)
 
     # Match rownames between taxonomy table and abundance matrix.
@@ -54,8 +46,8 @@ process TREESUMMARIZEDEXPERIMENT {
 
     # If provided, we add sample metadata as DataFrame object. rownames of
     # sample metadata must match with colnames of abundance matrix.
-    if (file.exists($sam_tsv)) {
-        sample_meta  <- read.table($sam_tsv, sep="\\t", header=TRUE, row.names=1)
+    if (file.exists("$sam_tsv")) {
+        sample_meta  <- read.table("$sam_tsv", sep="\\t", header=TRUE, row.names=1)
         sample_meta <- sample_meta[match(colnames(tse), rownames(sample_meta)), ]
         sample_meta  <- DataFrame(sample_meta)
         colData(tse) <- sample_meta
@@ -63,12 +55,12 @@ process TREESUMMARIZEDEXPERIMENT {
 
     # If provided, we add phylogeny. The rownames in abundance matrix must match
     # with node labels in phylogeny.
-    if (file.exists($tree)) {
-        phylogeny <- ape::read.tree($tree)
+    if (file.exists("$tree")) {
+        phylogeny <- ape::read.tree("$tree")
         rowTree(tse) <- phylogeny
     }
 
-    saveRDS(tse, file = paste0($prefix, "_TreeSummarizedExperiment.rds"))
+    saveRDS(tse, file = paste0("$prefix", "_TreeSummarizedExperiment.rds"))
 
     # Version information
     writeLines(c("\\"${task.process}\\":",

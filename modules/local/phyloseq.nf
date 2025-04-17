@@ -14,22 +14,14 @@ process PHYLOSEQ {
     tuple val(prefix), path("*phyloseq.rds"), emit: rds
     path "versions.yml"                     , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
-    def sam_tsv = "\"${sam_tsv}\""
-    def otu_tsv = "\"${otu_tsv}\""
-    def tax_tsv = "\"${tax_tsv}\""
-    def tree    = "\"${tree}\""
-    def prefix  = "\"${prefix}\""
     """
     #!/usr/bin/env Rscript
 
     suppressPackageStartupMessages(library(phyloseq))
 
-    otu_df  <- read.table($otu_tsv, sep="\\t", header=TRUE, row.names=1)
-    tax_df  <- read.table($tax_tsv, sep="\\t", header=TRUE, row.names=1)
+    otu_df  <- read.table("$otu_tsv", sep="\\t", header=TRUE, row.names=1)
+    tax_df  <- read.table("$tax_tsv", sep="\\t", header=TRUE, row.names=1)
     otu_mat <- as.matrix(otu_df)
     tax_mat <- as.matrix(tax_df)
 
@@ -37,18 +29,18 @@ process PHYLOSEQ {
     TAX     <- tax_table(tax_mat)
     phy_obj <- phyloseq(OTU, TAX)
 
-    if (file.exists($sam_tsv)) {
-        sam_df  <- read.table($sam_tsv, sep="\\t", header=TRUE, row.names=1)
+    if (file.exists("$sam_tsv")) {
+        sam_df  <- read.table("$sam_tsv", sep="\\t", header=TRUE, row.names=1)
         SAM     <- sample_data(sam_df)
         phy_obj <- merge_phyloseq(phy_obj, SAM)
     }
 
-    if (file.exists($tree)) {
-        TREE    <- read_tree($tree)
+    if (file.exists("$tree")) {
+        TREE    <- read_tree("$tree")
         phy_obj <- merge_phyloseq(phy_obj, TREE)
     }
 
-    saveRDS(phy_obj, file = paste0($prefix, "_phyloseq.rds"))
+    saveRDS(phy_obj, file = paste0("$prefix", "_phyloseq.rds"))
 
     # Version information
     writeLines(c("\\"${task.process}\\":",

@@ -12,9 +12,6 @@ process SIDLE_ALIGN {
     tuple val(meta), path("*rep-seqs_align-map.qza"), emit: aligned_map
     path "versions.yml"                             , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.region}"

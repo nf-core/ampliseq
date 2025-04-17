@@ -19,9 +19,6 @@ process FILTER_LEN {
     path( "ASV_len_filt.tsv" )   , emit: len_filt
     path "versions.yml"          , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def min_len_asv = task.ext.min_len_asv ?: '1'
     def max_len_asv = task.ext.max_len_asv ?: '1000000'

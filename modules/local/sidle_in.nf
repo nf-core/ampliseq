@@ -12,9 +12,6 @@ process SIDLE_IN {
     tuple val(meta), path("*_table.qza"), path("*_rep-seqs.qza"), emit: table_seq
     path "versions.yml"                 , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.region}"

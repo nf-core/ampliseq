@@ -1,5 +1,5 @@
 process QIIME2_ANCOMBC_TAX {
-    tag "${table.baseName}-${formula}-${taxlevel}"
+    tag "${table.baseName}-${formula_in}-${taxlevel}"
     label 'process_medium'
     label 'single_cpu'
 
@@ -7,7 +7,7 @@ process QIIME2_ANCOMBC_TAX {
     container "qiime2/amplicon:2024.10"
 
     input:
-    tuple path(metadata), path(table), path(taxonomy), val(taxlevel), val(formula)
+    tuple path(metadata), path(table), path(taxonomy), val(taxlevel), val(formula_in)
 
     output:
     path("da_barplot/*")   , emit: da_barplot
@@ -16,13 +16,10 @@ process QIIME2_ANCOMBC_TAX {
     path("*.qzv")          , emit: qzv, optional: true
     path "versions.yml"    , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args        = task.ext.args ?: ''
     def args2       = task.ext.args2 ?: ''
-    def formula     = formula ?: "${table.baseName}"
+    def formula     = formula_in ?: "${table.baseName}"
     def prefix      = "lvl${taxlevel}-${formula}"
     def outfolder   = "Category-${formula}-level-${taxlevel}"
     """

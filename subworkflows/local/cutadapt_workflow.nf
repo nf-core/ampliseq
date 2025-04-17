@@ -66,7 +66,7 @@ workflow CUTADAPT_WORKFLOW {
         .map { meta, reads -> [ meta.id ] }
         .collect()
         .subscribe {
-            samples = it.join("\n")
+            def samples = it.join("\n")
             if (params.ignore_failed_trimming) {
                 log.warn "The following samples had too few reads (<$params.min_read_counts) after trimming with cutadapt:\n$samples\nIgnoring failed samples and continue!\n"
             } else {

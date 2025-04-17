@@ -16,9 +16,6 @@ process FORMAT_TAXONOMY_QIIME {
     path( "ref_taxonomy.txt"), emit: ref_tax_info
     path "versions.yml"      , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     """
     ${params.qiime_ref_databases[params.qiime_ref_taxonomy]["fmtscript"]} \\

@@ -15,15 +15,12 @@ process SIDLE_DBRECON {
     path("reconstruction_summary/*")  , emit: visualisation
     path "versions.yml"               , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     def db_input = ""
     // sort the input so that the regions are sorted by sequence
     def df = [metaid, map, aligned_map].transpose().sort{ it[0] }
-    for (i in df) {
+    df.each { i ->
         db_input += " --p-region "+i[0]+" --i-kmer-map "+i[1]+" --i-regional-alignment "+i[2]
     }
     """

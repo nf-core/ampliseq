@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
+- [#869](https://github.com/nf-core/ampliseq/issues/869) Pulled the updated vsearch/clusters module from nf-core to fix a bug where a wildcard expansion trigging an arguments-too-long error.
+
 ### `Dependencies`
 
 ### `Removed`

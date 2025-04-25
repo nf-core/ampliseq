@@ -37,9 +37,9 @@ workflow SIDLE_WF {
         ch_db_taxonomy = FORMAT_TAXONOMY_SIDLE.out.tax
     } else {
         //input from params.sidle_ref_tax_custom: it[0] = taxonomy txt = ch_db_taxonomy, it[1] = fasta = ch_db_sequences, it[2] = aligned fasta = ch_db_alignedsequences
-        ch_db_taxonomy = ch_sidle_ref_taxonomy.map{ it[0] }
-        ch_db_sequences = ch_sidle_ref_taxonomy.map{ it[1] }
-        ch_db_alignedsequences = params.sidle_ref_aln_custom ? ch_sidle_ref_taxonomy.map{ it[2] } : Channel.empty()
+        ch_db_taxonomy = ch_sidle_ref_taxonomy.map{ it -> it[0] }
+        ch_db_sequences = ch_sidle_ref_taxonomy.map{ it -> it[1] }
+        ch_db_alignedsequences = params.sidle_ref_aln_custom ? ch_sidle_ref_taxonomy.map{ it -> it[2] } : Channel.empty()
     }
     SIDLE_INDB ( ch_db_sequences, ch_db_taxonomy )
     ch_sidle_versions = ch_sidle_versions.mix(SIDLE_INDB.out.versions)

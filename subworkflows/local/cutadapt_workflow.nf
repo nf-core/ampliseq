@@ -56,7 +56,7 @@ workflow CUTADAPT_WORKFLOW {
 
     //Filter empty files
     ch_trimmed_reads
-        .branch {
+        .branch { it ->
             failed: it[0].single_end ? it[1].countFastq() < params.min_read_counts : it[1][0].countFastq() < params.min_read_counts || it[1][1].countFastq() < params.min_read_counts
             passed: true
         }
@@ -65,7 +65,7 @@ workflow CUTADAPT_WORKFLOW {
     ch_trimmed_reads_result.failed
         .map { meta, reads -> [ meta.id ] }
         .collect()
-        .subscribe {
+        .subscribe { it ->
             def samples = it.join("\n")
             if (params.ignore_failed_trimming) {
                 log.warn "The following samples had too few reads (<$params.min_read_counts) after trimming with cutadapt:\n$samples\nIgnoring failed samples and continue!\n"

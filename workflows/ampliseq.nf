@@ -306,7 +306,7 @@ workflow AMPLISEQ {
 
     //Filter empty files
     ch_input_reads.dump(tag:'ch_input_reads')
-        .branch {
+        .branch { it ->
             failed: it[0].single_end ? it[1].countFastq() < params.min_read_counts : it[1][0].countFastq() < params.min_read_counts || it[1][1].countFastq() < params.min_read_counts
             passed: true
         }
@@ -315,7 +315,7 @@ workflow AMPLISEQ {
     ch_reads_result.failed
         .map { meta, reads -> [ meta.id ] }
         .collect()
-        .subscribe {
+        .subscribe { it ->
             def samples = it.join("\n")
             if (params.ignore_empty_input_files) {
                 log.warn "At least one input file for the following sample(s) had too few reads (<$params.min_read_counts):\n$samples\nThe threshold can be adjusted with `--min_read_counts`. Ignoring failed samples and continue!\n"
@@ -336,7 +336,7 @@ workflow AMPLISEQ {
     //
     if (!params.skip_fastqc) {
         FASTQC ( RENAME_RAW_DATA_FILES.out.fastq )
-        ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
+        ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{ it -> it[1] })
         ch_versions = ch_versions.mix(FASTQC.out.versions.first())
     }
 
@@ -349,7 +349,7 @@ workflow AMPLISEQ {
             params.illumina_pe_its,
             params.double_primer
         ).reads.set { ch_trimmed_reads }
-        ch_multiqc_files = ch_multiqc_files.mix(CUTADAPT_WORKFLOW.out.logs.collect{it[1]})
+        ch_multiqc_files = ch_multiqc_files.mix(CUTADAPT_WORKFLOW.out.logs.collect{ it -> it[1] })
         ch_versions = ch_versions.mix(CUTADAPT_WORKFLOW.out.versions)
     } else {
         ch_trimmed_reads = RENAME_RAW_DATA_FILES.out.fastq
@@ -495,7 +495,7 @@ workflow AMPLISEQ {
         ch_versions = ch_versions.mix(BARRNAP.out.versions)
         BARRNAPSUMMARY ( BARRNAP.out.gff.collect() )
         ch_versions = ch_versions.mix(BARRNAPSUMMARY.out.versions)
-        BARRNAPSUMMARY.out.warning.subscribe {
+        BARRNAPSUMMARY.out.warning.subscribe { it ->
             if ( it.baseName.toString().startsWith("WARNING") ) {
                 error("Barrnap could not identify any rRNA in the ASV sequences! This will result in all sequences being removed with SSU filtering.")
             }
@@ -511,7 +511,7 @@ workflow AMPLISEQ {
     } else if ( !params.skip_barrnap && !params.filter_ssu && !params.multiregion ) {
         BARRNAP ( ch_unfiltered_fasta )
         BARRNAPSUMMARY ( BARRNAP.out.gff.collect() )
-        BARRNAPSUMMARY.out.warning.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn "Barrnap could not identify any rRNA in the ASV sequences. We recommended to use the --skip_barrnap option for these sequences." }
+        BARRNAPSUMMARY.out.warning.subscribe { it -> if ( it.baseName.toString().startsWith("WARNING") ) log.warn "Barrnap could not identify any rRNA in the ASV sequences. We recommended to use the --skip_barrnap option for these sequences." }
         ch_barrnapsummary = BARRNAPSUMMARY.out.summary
         ch_versions = ch_versions.mix(BARRNAP.out.versions)
         ch_versions = ch_versions.mix(BARRNAPSUMMARY.out.versions)
@@ -532,7 +532,7 @@ workflow AMPLISEQ {
         ch_dada2_fasta = FILTER_LEN_ASV.out.fasta
         ch_dada2_asv = FILTER_LEN_ASV.out.asv
         // Make sure that not all sequences were removed
-        ch_dada2_fasta.subscribe { if (it.countLines() == 0) error("ASV length filtering activated by '--min_len_asv' or '--max_len_asv' removed all ASVs, please adjust settings.") }
+        ch_dada2_fasta.subscribe { it -> if (it.countLines() == 0) error("ASV length filtering activated by '--min_len_asv' or '--max_len_asv' removed all ASVs, please adjust settings.") }
     }
 
     //
@@ -547,7 +547,7 @@ workflow AMPLISEQ {
         ch_dada2_fasta = FILTER_CODONS.out.fasta
         ch_dada2_asv = FILTER_CODONS.out.asv
         // Make sure that not all sequences were removed
-        ch_dada2_fasta.subscribe { if (it.countLines() == 0) error("ASV codon filtering activated by '--filter_codons' removed all ASVs, please adjust settings.") }
+        ch_dada2_fasta.subscribe { it -> if (it.countLines() == 0) error("ASV codon filtering activated by '--filter_codons' removed all ASVs, please adjust settings.") }
     }
 
     //
@@ -782,7 +782,7 @@ workflow AMPLISEQ {
             METADATA_ALL ( ch_metadata ).category.set { ch_metacolumn_all }
             ch_versions = ch_versions.mix( METADATA_ALL.out.versions )
             //return empty channel if no appropriate column was found
-            ch_metacolumn_all.branch { passed: it != "" }.set { result }
+            ch_metacolumn_all.branch { it -> passed: it != "" }.set { result }
             ch_metacolumn_all = result.passed
             ch_metacolumn_all = ch_metacolumn_all.splitCsv().flatten()
             METADATA_PAIRWISE ( ch_metadata ).category.set { ch_metacolumn_pairwise }

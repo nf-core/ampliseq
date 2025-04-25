@@ -99,9 +99,8 @@
                     },
                     "vsearch/usearchglobal": {
                         "branch": "master",
-                        "git_sha": "81880787133db07d9b4c1febd152c090eb8325dc",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/vsearch/usearchglobal/vsearch-usearchglobal.diff"
+                        "git_sha": "087a2003d9709be9cd580b432a799805777794be",
+                        "installed_by": ["modules"]
                     }
                 }
             },

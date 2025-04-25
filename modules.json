@@ -89,7 +89,7 @@
                     },
                     "vsearch/cluster": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "git_sha": "f10b2465108305544f708389324480db1b5e9f34",
                         "installed_by": ["modules"]
                     },
                     "vsearch/sintax": {

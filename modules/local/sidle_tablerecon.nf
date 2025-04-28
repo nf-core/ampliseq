@@ -18,15 +18,12 @@ process SIDLE_TABLERECON {
     path("reconstructed_feature-table.tsv") , emit: tsv
     path "versions.yml"                     , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     def region_input = ""
     // sort the input so that the regions are sorted by sequence
     def df = [metaid, aligned_map, table].transpose().sort{ it[0] }
-    for (i in df) {
+    df.each { i ->
         region_input += " --p-region "+i[0]+" --i-regional-alignment "+i[1]+" --i-regional-table "+i[2]
     }
     """

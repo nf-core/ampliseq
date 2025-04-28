@@ -11,9 +11,6 @@ process SIDLE_INDBALIGNED {
     path("db_alignedsequences.qza"), emit: seq
     path "versions.yml"            , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def args = task.ext.args ?: ''
     """

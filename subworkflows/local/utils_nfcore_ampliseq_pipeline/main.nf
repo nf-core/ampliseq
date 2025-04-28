@@ -241,17 +241,17 @@ def validateInputParameters() {
     ]
     if (params.sbdiexport){
         if (params.sintax_ref_taxonomy ) {
-            if (!Arrays.stream(sbdi_compatible_databases).anyMatch(entry -> params.sintax_ref_taxonomy.toString().equals(entry)) ) {
+            if ( !Arrays.stream(sbdi_compatible_databases).any{ entry -> params.sintax_ref_taxonomy.toString().equals(entry) } ) {
                 error("Incompatible parameters: `--sbdiexport` does not work with the chosen database of `--sintax_ref_taxonomy` because the expected taxonomic levels do not match.")
             }
-        } else if (!Arrays.stream(sbdi_compatible_databases).anyMatch(entry -> params.dada_ref_taxonomy.toString().equals(entry)) ) {
+        } else if ( !Arrays.stream(sbdi_compatible_databases).any{ entry -> params.dada_ref_taxonomy.toString().equals(entry) } ) {
             error("Incompatible parameters: `--sbdiexport` does not work with the chosen database of `--dada_ref_taxonomy` because the expected taxonomic levels do not match.")
         }
     }
 
     if (params.addsh && !params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]) {
         def validDBs = ""
-        for (db in params.dada_ref_databases.keySet()) {
+        params.dada_ref_databases.keySet().each { db ->
             if (params.dada_ref_databases[db]["shfile"]) {
                 validDBs += " " + db
             }
@@ -376,7 +376,7 @@ def validateInputSamplesheet(input) {
     def (metas, fastqs) = input[1..2]
 
     // Check that multiple runs of the same sample are of the same datatype i.e. single-end / paired-end
-    def endedness_ok = metas.collect{ it.single_end }.unique().size == 1
+    def endedness_ok = metas.collect{ it -> it.single_end }.unique().size == 1
     if (!endedness_ok) {
         error("Please check input samplesheet -> Multiple runs of a sample must be of the same datatype i.e. single-end or paired-end: ${metas[0].id}")
     }

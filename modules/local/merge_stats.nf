@@ -14,9 +14,6 @@ process MERGE_STATS {
     path("overall_summary.tsv") , emit: tsv
     path "versions.yml"         , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     """
     #!/usr/bin/env Rscript

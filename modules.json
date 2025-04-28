@@ -99,7 +99,7 @@
                     },
                     "vsearch/usearchglobal": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "git_sha": "087a2003d9709be9cd580b432a799805777794be",
                         "installed_by": ["modules"]
                     }
                 }

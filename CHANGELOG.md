@@ -42,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#849](https://github.com/nf-core/ampliseq/pull/849) - Added Greengenes version 2024.09 of DADA2 taxonomy database: `greengenes2=2024.09` or `greengenes2` as parameter to `--dada2_ref_taxonomy`
 - [#853](https://github.com/nf-core/ampliseq/pull/853) - Added Greengenes2 version 2024.09 for taxonomic classification with QIIME2: `greengenes2=2024.09` or `greengenes2` as parameter to `--qiime_ref_taxonomy`
 - [#864](https://github.com/nf-core/ampliseq/pull/864) - Taxonomic assignment using DADA2 is done in chunks of 10,000 ASVs by default, the chunk size can be adjusted with `--dada_assign_chunksize`
+- [#879](https://github.com/nf-core/ampliseq/pull/879) - Add `sbdi-gtdb=R10-RS226-1` as parameter to `--dada_ref_taxonomy` and make this version the default for `sbdi-gtdb`.
 
 | **New parameter**                          | **Description**                                                                           | **Default Value** |
 | ------------------------------------------ | ----------------------------------------------------------------------------------------- | ----------------- |

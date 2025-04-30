@@ -9,7 +9,7 @@ lint:
         - params.report_template
         - params.report_css
         - params.report_logo
-nf_core_version: 3.2.0
+nf_core_version: 3.2.1
 repository_type: pipeline
 template:
   author: Daniel Straub, Alexander Peltzer

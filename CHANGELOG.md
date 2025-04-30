@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#879](https://github.com/nf-core/ampliseq/pull/879) - Add `sbdi-gtdb=R10-RS226-1` as parameter to `--dada_ref_taxonomy` and make this version the default for `sbdi-gtdb`.
+
 ### `Changed`
 
 - [#871](https://github.com/nf-core/ampliseq/pull/871) - Multi-region analysis is now easier with custom databases. No alignment file of the reference sequences are needed.

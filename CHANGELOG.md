@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#872](https://github.com/nf-core/ampliseq/pull/872) - Follow nextflow's strict syntax
 - [#876](https://github.com/nf-core/ampliseq/pull/876) - Pulled the updated vsearch/clusters module from nf-core to fix a bug where a wildcard expansion trigging an arguments-too-long error.
 - [#878](https://github.com/nf-core/ampliseq/pull/878) - Downgraded nf-schema from 2.3.0 to 2.2.0 due to incompatibilities with nextflow stable versions 25.05 and newer
+- [#881](https://github.com/nf-core/ampliseq/pull/881) - Template update for nf-core/tools version 3.2.1
 
 ### `Dependencies`
 

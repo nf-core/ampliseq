@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 - [#879](https://github.com/nf-core/ampliseq/pull/879) - Add `sbdi-gtdb=R10-RS226-1` as parameter to `--dada_ref_taxonomy` and make this version the default for `sbdi-gtdb`.
+- [#882](https://github.com/nf-core/ampliseq/pull/882) - Add `gtdb=R10-RS226` as parameter to `--dada_ref_taxonomy` and make this version the default for `gtdb`.
 
 ### `Changed`
 

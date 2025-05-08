@@ -235,7 +235,7 @@ Pre-configured reference taxonomy databases are:
 | phytoref     | +     | -      | -       | -      | eukaryotic plastid 16S rRNA                   |
 | zehr-nifh    | +     | -      | -       | -      | Nitrogenase iron protein NifH                 |
 | standard     | -     | -      | +       | -      | any in genomes of archaea, bacteria, viruses⁴ |
-| plantae-bold-trnl | +     | -      | -       | -      | Plantae ITS1, ITS2, trnL region               |
+| plantae-bold | +     | -      | -       | -      | Plantae ITS1, trnL region                     |
 
 ¹: As of Silva version 138 optimized for classification of Bacteria and Archaea, not suitable for Eukaryotes; ²[`--dada_taxonomy_rc`](https://nf-co.re/ampliseq/parameters#dada_taxonomy_rc) is recommended; ³: de-replicated at 85%, only for testing purposes; ⁴: quality of results might vary
 

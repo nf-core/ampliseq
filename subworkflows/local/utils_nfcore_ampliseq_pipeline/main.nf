@@ -228,11 +228,11 @@ def validateInputParameters() {
     }
 
     String[] sbdi_compatible_databases = [
-        "plantae-bold-trnl",
         "coidb","coidb=221216",
         "greengenes2","greengenes2=2024.09",
         "gtdb","gtdb=R09-RS220","gtdb=R08-RS214","gtdb=R07-RS207","gtdb=R06-RS202","gtdb=R05-RS95",
         "midori2-co1","midori2-co1=gb250",
+        "plantae-bold-trnl","plantae-bold-trnl=20240510","plantae-bold-its1","plantae-bold-its1=20240510",
         "pr2","pr2=5.0.0","pr2=4.14.0","pr2=4.13.0",
         "rdp","rdp=18",
         "sbdi-gtdb","sbdi-gtdb=R09-RS220-2","sbdi-gtdb=R09-RS220-1", "sbdi-gtdb=R08-RS214-1","sbdi-gtdb=R07-RS207-1",

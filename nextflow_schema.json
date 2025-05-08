@@ -410,7 +410,6 @@
                     "description": "Name of supported database, and optionally also version number",
                     "default": "silva=138.2",
                     "enum": [
-                        "plantae-bold-trnl",
                         "coidb",
                         "coidb=221216",
                         "greengenes2",
@@ -423,6 +422,10 @@
                         "gtdb=R09-RS220",
                         "midori2-co1",
                         "midori2-co1=gb250",
+                        "plantae-bold-trnl",
+                        "plantae-bold-trnl=20240510",
+                        "plantae-bold-its1",
+                        "plantae-bold-its1=20240510",
                         "pr2",
                         "pr2=4.13.0",
                         "pr2=4.14.0",

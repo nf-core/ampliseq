@@ -3,6 +3,12 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### `Added`
+
+- [#883](https://github.com/nf-core/ampliseq/pull/883) - Added BOLD databases `plantae-bold-its1` & `plantae-bold-trnL`, for plant samples with markers ITS1 and trnL, versions 20240510, for DADA2 as parameter to `--dada2_ref_taxonomy`
+
 ## nf-core/ampliseq version 2.13.0
 
 ### `Added`

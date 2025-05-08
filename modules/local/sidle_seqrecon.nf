@@ -16,9 +16,6 @@ process SIDLE_SEQRECON {
     path("reconstructed_fragments.fasta"), emit: fasta
     path "versions.yml"                  , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     """
     #https://q2-sidle.readthedocs.io/en/latest/reconstruction.html#reconstructing-the-phylogenetic-tree

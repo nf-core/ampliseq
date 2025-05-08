@@ -66,9 +66,6 @@ process SUMMARY_REPORT  {
     path "summary_report.html" , emit: report
     path "versions.yml"        , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     // make named R list (comma separated)
     // all non-boolean or non-numeric values must be encumbered by single quotes (')!

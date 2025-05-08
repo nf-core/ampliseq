@@ -13,9 +13,6 @@ process FORMAT_FASTAINPUT {
     path "input.mod.fasta"  , emit: fasta
     path "versions.yml"     , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     """
     cat $fastain | sed '/^>/s/\t/ /g' > input.mod.fasta

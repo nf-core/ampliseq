@@ -230,29 +230,29 @@ def validateInputParameters() {
     String[] sbdi_compatible_databases = [
         "coidb","coidb=221216",
         "greengenes2","greengenes2=2024.09",
-        "gtdb","gtdb=R09-RS220","gtdb=R08-RS214","gtdb=R07-RS207","gtdb=R06-RS202","gtdb=R05-RS95",
+        "gtdb","gtdb=R10-RS226","gtdb=R09-RS220","gtdb=R08-RS214","gtdb=R07-RS207","gtdb=R06-RS202","gtdb=R05-RS95",
         "midori2-co1","midori2-co1=gb250",
         "plantae-bold-trnl","plantae-bold-trnl=20240510","plantae-bold-its1","plantae-bold-its1=20240510",
         "pr2","pr2=5.0.0","pr2=4.14.0","pr2=4.13.0",
         "rdp","rdp=18",
-        "sbdi-gtdb","sbdi-gtdb=R09-RS220-2","sbdi-gtdb=R09-RS220-1", "sbdi-gtdb=R08-RS214-1","sbdi-gtdb=R07-RS207-1",
+        "sbdi-gtdb","sbdi-gtdb=R10-RS226-1","sbdi-gtdb=R09-RS220-2","sbdi-gtdb=R09-RS220-1", "sbdi-gtdb=R08-RS214-1","sbdi-gtdb=R07-RS207-1",
         "silva","silva=138.2","silva=138","silva=132",
         "unite-fungi","unite-fungi=10.0","unite-fungi=9.0","unite-fungi=8.3","unite-fungi=8.2",
         "unite-alleuk","unite-alleuk=10.0","unite-alleuk=9.0","unite-alleuk=8.3","unite-alleuk=8.2"
     ]
     if (params.sbdiexport){
         if (params.sintax_ref_taxonomy ) {
-            if (!Arrays.stream(sbdi_compatible_databases).anyMatch(entry -> params.sintax_ref_taxonomy.toString().equals(entry)) ) {
+            if ( !Arrays.stream(sbdi_compatible_databases).any{ entry -> params.sintax_ref_taxonomy.toString().equals(entry) } ) {
                 error("Incompatible parameters: `--sbdiexport` does not work with the chosen database of `--sintax_ref_taxonomy` because the expected taxonomic levels do not match.")
             }
-        } else if (!Arrays.stream(sbdi_compatible_databases).anyMatch(entry -> params.dada_ref_taxonomy.toString().equals(entry)) ) {
+        } else if ( !Arrays.stream(sbdi_compatible_databases).any{ entry -> params.dada_ref_taxonomy.toString().equals(entry) } ) {
             error("Incompatible parameters: `--sbdiexport` does not work with the chosen database of `--dada_ref_taxonomy` because the expected taxonomic levels do not match.")
         }
     }
 
     if (params.addsh && !params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]) {
         def validDBs = ""
-        for (db in params.dada_ref_databases.keySet()) {
+        params.dada_ref_databases.keySet().each { db ->
             if (params.dada_ref_databases[db]["shfile"]) {
                 validDBs += " " + db
             }
@@ -272,7 +272,13 @@ def validateInputParameters() {
     // When multi-region analysis is used, some parameter combinations are required or not allowed:
     if ( params.multiregion ) {
         if ( !params.sidle_ref_taxonomy && !params.sidle_ref_tree_custom ) {
-            log.warn "Missing parameter: Either use `--sidle_ref_taxonomy` or `--sidle_ref_tree_custom` to get (unified) taxonomic classifications"
+            log.warn "Missing parameter: Either use `--sidle_ref_taxonomy` or `--sidle_ref_tree_custom` to perform diversity analysis"
+        }
+        if ( !params.sidle_ref_taxonomy && !params.sidle_ref_aln_custom ) {
+            log.warn "Missing parameter: Either use `--sidle_ref_taxonomy` or `--sidle_ref_aln_custom` to reconstruct sequences/fragments and with `--sidle_ref_tree_custom` the phylogenetic tree"
+        }
+        if ( !params.sidle_ref_taxonomy && ( !params.sidle_ref_tax_custom || !params.sidle_ref_seq_custom ) ) {
+            error("Missing parameter: Either use `--sidle_ref_taxonomy` or `--sidle_ref_tax_custom` and `--sidle_ref_seq_custom`")
         }
         if ( (params.dada_ref_tax_custom || params.dada_ref_taxonomy) && !params.skip_dada_taxonomy ) {
             error("Incompatible parameters: Multiple region analysis with `--multiregion` does not work with `--dada_ref_tax_custom`, `--dada_ref_taxonomy`")
@@ -371,7 +377,7 @@ def validateInputSamplesheet(input) {
     def (metas, fastqs) = input[1..2]
 
     // Check that multiple runs of the same sample are of the same datatype i.e. single-end / paired-end
-    def endedness_ok = metas.collect{ it.single_end }.unique().size == 1
+    def endedness_ok = metas.collect{ it -> it.single_end }.unique().size == 1
     if (!endedness_ok) {
         error("Please check input samplesheet -> Multiple runs of a sample must be of the same datatype i.e. single-end or paired-end: ${metas[0].id}")
     }

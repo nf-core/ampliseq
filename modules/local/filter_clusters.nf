@@ -17,16 +17,12 @@ process FILTER_CLUSTERS {
     path( "ASV_post_clustering_filtered.stats.tsv") , emit: stats
     path( "versions.yml"                          ) , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def prefix   = task.ext.prefix ?: "'$meta.id'"
-    def clusters = "'$clusters'"
     def ulimiter = params.raise_filter_stacksize ? "ulimit -s unlimited" : ""
     """
     ${ulimiter}
-    echo ${clusters} | filt_clusters.py -t ${asv} -p ${prefix} -c -
+    echo '${clusters}' | filt_clusters.py -t ${asv} -p ${prefix} -c -
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

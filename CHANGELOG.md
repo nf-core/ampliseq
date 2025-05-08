@@ -3,13 +3,38 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## nf-core/ampliseq version 2.14.0dev
 
 ### `Added`
 
-- [#883](https://github.com/nf-core/ampliseq/pull/883) - Added BOLD databases `plantae-bold-its1` & `plantae-bold-trnL`, for plant samples with markers ITS1 and trnL, versions 20240510, for DADA2 as parameter to `--dada2_ref_taxonomy`
+- [#879](https://github.com/nf-core/ampliseq/pull/879) - Add `sbdi-gtdb=R10-RS226-1` as parameter to `--dada_ref_taxonomy` and make this version the default for `sbdi-gtdb`.
+- [#882](https://github.com/nf-core/ampliseq/pull/882) - Add `gtdb=R10-RS226` as parameter to `--dada_ref_taxonomy` and make this version the default for `gtdb`.
+- [#883](https://github.com/nf-core/ampliseq/pull/883) - Add BOLD databases `plantae-bold-its1` & `plantae-bold-trnL`, for plant samples with markers ITS1 and trnL, versions 20240510, for DADA2 as parameter to `--dada2_ref_taxonomy`.
 
-## nf-core/ampliseq version 2.13.0
+### `Changed`
+
+- [#871](https://github.com/nf-core/ampliseq/pull/871) - Multi-region analysis is now easier with custom databases. No alignment file of the reference sequences are needed.
+
+| **Parameter**             | **Description**                                                                                         |
+| ------------------------- | ------------------------------------------------------------------------------------------------------- |
+| **sidle_ref_tax_custom**  | Changed: Previously three files, now one file: path to reference taxonomy strings                       |
+| **sidle_ref_seq_custom**  | New: Path to reference taxonomy sequences in fasta format                                               |
+| **sidle_ref_aln_custom**  | New: Path to multiple sequence alignment of reference taxonomy sequences in fasta format                |
+| **sidle_ref_degenerates** | New: Only effective with `--sidle_ref_tax_custom`, filter reference sequences, default: 5               |
+| **sidle_ref_cleaning**    | New: Arguments regarding ad-hoc cleaning, with `--sidle_ref_tax_custom` default is '--p-database silva' |
+
+### `Fixed`
+
+- [#872](https://github.com/nf-core/ampliseq/pull/872) - Follow nextflow's strict syntax
+- [#876](https://github.com/nf-core/ampliseq/pull/876) - Pulled the updated vsearch/clusters module from nf-core to fix a bug where a wildcard expansion trigging an arguments-too-long error.
+- [#878](https://github.com/nf-core/ampliseq/pull/878) - Downgraded nf-schema from 2.3.0 to 2.2.0 due to incompatibilities with nextflow stable versions 25.05 and newer
+- [#881](https://github.com/nf-core/ampliseq/pull/881) - Template update for nf-core/tools version 3.2.1
+
+### `Dependencies`
+
+### `Removed`
+
+## nf-core/ampliseq version 2.13.0 - 2025-04-04
 
 ### `Added`
 
@@ -56,10 +81,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Dependencies`
 
 - [#797](https://github.com/nf-core/ampliseq/pull/797) - Update QIIME2
+- [#845](https://github.com/nf-core/ampliseq/pull/845) - Update FASTQC module (no version change though) and MultiQC
 
 | software | previously | now     |
 | -------- | ---------- | ------- |
 | QIIME2   | 2023.7     | 2024.10 |
+| MultiQC  | 1.25.1     | 1.27    |
 
 ### `Removed`
 

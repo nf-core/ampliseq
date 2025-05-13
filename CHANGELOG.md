@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#879](https://github.com/nf-core/ampliseq/pull/879) - Add `sbdi-gtdb=R10-RS226-1` as parameter to `--dada_ref_taxonomy` and make this version the default for `sbdi-gtdb`.
 - [#882](https://github.com/nf-core/ampliseq/pull/882) - Add `gtdb=R10-RS226` as parameter to `--dada_ref_taxonomy` and make this version the default for `gtdb`.
+- [#883](https://github.com/nf-core/ampliseq/pull/883) - Add BOLD databases `plantae-bold-its1` & `plantae-bold-trnL`, for plant samples with markers ITS1 and trnL, versions 20240510, for DADA2 as parameter to `--dada2_ref_taxonomy`.
 
 ### `Changed`
 

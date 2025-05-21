@@ -7,10 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-- [#885](https://github.com/nf-core/ampliseq/pull/885) - Add `pr2=5.1.0` as parameter to `--dada_ref_taxonomy` and make this version the default for `pr2`.
 - [#879](https://github.com/nf-core/ampliseq/pull/879) - Add `sbdi-gtdb=R10-RS226-1` as parameter to `--dada_ref_taxonomy` and make this version the default for `sbdi-gtdb`.
 - [#882](https://github.com/nf-core/ampliseq/pull/882) - Add `gtdb=R10-RS226` as parameter to `--dada_ref_taxonomy` and make this version the default for `gtdb`.
 - [#883](https://github.com/nf-core/ampliseq/pull/883) - Add BOLD databases `plantae-bold-its1` & `plantae-bold-trnL`, for plant samples with markers ITS1 and trnL, versions 20240510, for DADA2 as parameter to `--dada2_ref_taxonomy`.
+- [#885](https://github.com/nf-core/ampliseq/pull/885) - Add `pr2=5.1.0` as parameter to `--dada_ref_taxonomy` and make this version the default for `pr2`.
 
 ### `Changed`
 
@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#876](https://github.com/nf-core/ampliseq/pull/876) - Pulled the updated vsearch/clusters module from nf-core to fix a bug where a wildcard expansion trigging an arguments-too-long error.
 - [#878](https://github.com/nf-core/ampliseq/pull/878) - Downgraded nf-schema from 2.3.0 to 2.2.0 due to incompatibilities with nextflow stable versions 25.05 and newer
 - [#881](https://github.com/nf-core/ampliseq/pull/881) - Template update for nf-core/tools version 3.2.1
+- [#887](https://github.com/nf-core/ampliseq/pull/887) - Updated documentation to include all updates
 
 ### `Dependencies`
 

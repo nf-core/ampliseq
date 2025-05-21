@@ -81,6 +81,10 @@
 
   > M. A. Moynihan & C. Furbo Reeder 2023. nifHdada2 GitHub repository, v2.0.5. Zenodo. doi: http://doi.org/10.5281/zenodo.7996213
 
+- [BOLD Plantae](https://boldsystems.org/)
+
+  > Kesisoglou, G., Keisaris, S., & Pechlivanis, N. (2025). BOLD (Plantae - ITS1, ITS2, trnL) training data formatted for DADA2 [Data set]. Zenodo. https://doi.org/10.5281/zenodo.15089110
+
 ### Phylogenetic placement
 
 - [nf-core/phyloplace](https://nf-co.re/phyloplace)

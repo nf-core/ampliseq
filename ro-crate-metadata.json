@@ -162,8 +162,8 @@
             "sdPublisher": {
                 "@id": "https://nf-co.re/"
             },
-            "url": ["https://github.com/nf-core/ampliseq", "https://nf-co.re/ampliseq/2.14.0/"],
-            "version": ["2.14.0"]
+            "url": ["https://github.com/nf-core/ampliseq", "https://nf-co.re/ampliseq/2.15.0dev/"],
+            "version": ["2.15.0dev"]
         },
         {
             "@id": "https://w3id.org/workflowhub/workflow-ro-crate#nextflow",

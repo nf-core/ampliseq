@@ -61,7 +61,7 @@ work                # Directory containing the nextflow working files
 ```
 
 > [!TIP]
-> For [Reproducibility](#reproducibility), specify the version to run using `-r` (= release, e.g. 2.13.0, please use the most recent release). See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters) for more information about pipeline specific parameters.
+> For [Reproducibility](#reproducibility), specify the version to run using `-r` (= release, e.g. 2.14.0, please use the most recent release). See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters) for more information about pipeline specific parameters.
 
 > [!NOTE]
 > If the data originates from multiple sequencing runs, the error profile of each of those sequencing runs needs to be considered separately. Using the `run` column in the samplesheet input or adding `--multiple_sequencing_runs` for direct FASTQ input will separate certain processes by the sequencing run. Please see the following example:
@@ -235,6 +235,7 @@ Pre-configured reference taxonomy databases are:
 | phytoref     | +     | -      | -       | -      | eukaryotic plastid 16S rRNA                   |
 | zehr-nifh    | +     | -      | -       | -      | Nitrogenase iron protein NifH                 |
 | standard     | -     | -      | +       | -      | any in genomes of archaea, bacteria, viruses⁴ |
+| plantae-bold | +     | -      | -       | -      | Plantae ITS1, trnL region                     |
 
 ¹: As of Silva version 138 optimized for classification of Bacteria and Archaea, not suitable for Eukaryotes; ²[`--dada_taxonomy_rc`](https://nf-co.re/ampliseq/parameters#dada_taxonomy_rc) is recommended; ³: de-replicated at 85%, only for testing purposes; ⁴: quality of results might vary
 
@@ -253,7 +254,7 @@ Instead of relying on one short amplicon, scaffolding multiple regions along a r
 
 For example, multiple variable regions of the 16S rRNA gene were sequenced with various primers and need to be unified. This leads to one unified abundance and taxonomy profile over all variable regions. However, ASV sequences are only available separately, there is no reconstruction of complete de-novo sequences feasible.
 
-Information about sequencing data via [`--input`](#samplesheet-input), region primers length information via [`--multiregion`](https://nf-co.re/ampliseq/parameters#multiregion), and a taxonomic database via [`--sidle_ref_taxonomy`](https://nf-co.re/ampliseq/parameters#sidle_ref_taxonomy) or [`--sidle_ref_tax_custom`](https://nf-co.re/ampliseq/parameters#sidle_ref_tax_custom) is required.
+Information about sequencing data via [`--input`](#samplesheet-input), region primers length information via [`--multiregion`](https://nf-co.re/ampliseq/parameters#multiregion), and a taxonomic database via [`--sidle_ref_taxonomy`](https://nf-co.re/ampliseq/parameters#sidle_ref_taxonomy) or [`--sidle_ref_tax_custom`](https://nf-co.re/ampliseq/parameters#sidle_ref_tax_custom) with [`--sidle_ref_seq_custom`](https://nf-co.re/ampliseq/parameters#sidle_ref_seq_custom) is required.
 
 ```bash
 --input "samplesheet_multiregion.tsv"  --multiregion "regions_multiregion.tsv" --sidle_ref_taxonomy "silva=128"
@@ -322,7 +323,7 @@ nextflow pull nf-core/ampliseq
 
 It is a good idea to specify the pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
 
-First, go to the [nf-core/ampliseq releases page](https://github.com/nf-core/ampliseq/releases) and find the latest pipeline version - numeric only (eg. `2.13.0`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 2.13.0`. Of course, you can switch to another version by changing the number after the `-r` flag.
+First, go to the [nf-core/ampliseq releases page](https://github.com/nf-core/ampliseq/releases) and find the latest pipeline version - numeric only (eg. `2.14.0`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 2.14.0`. Of course, you can switch to another version by changing the number after the `-r` flag.
 
 This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future. For example, at the bottom of the MultiQC reports.
 

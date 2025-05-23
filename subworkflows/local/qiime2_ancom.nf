@@ -42,7 +42,7 @@ workflow QIIME2_ANCOM {
             .set{ ch_for_ancom_tax }
         QIIME2_ANCOM_TAX ( ch_for_ancom_tax )
         ch_versions_qiime2_ancom = ch_versions_qiime2_ancom.mix(QIIME2_ANCOM_TAX.out.versions)
-        QIIME2_ANCOM_TAX.out.ancom.subscribe { if ( it.baseName[0].toString().startsWith("WARNING") ) log.warn it.baseName[0].toString().replace("WARNING ","QIIME2_ANCOM_TAX: ") }
+        QIIME2_ANCOM_TAX.out.ancom.subscribe { it -> if ( it.baseName[0].toString().startsWith("WARNING") ) log.warn it.baseName[0].toString().replace("WARNING ","QIIME2_ANCOM_TAX: ") }
 
         //ANCOM on ASVs
         QIIME2_ANCOM_ASV ( ch_metadata.combine( QIIME2_FILTERSAMPLES_ANCOM.out.qza.flatten() ) )
@@ -59,7 +59,7 @@ workflow QIIME2_ANCOM {
             .set{ ch_for_ancombc_tax }
         QIIME2_ANCOMBC_TAX ( ch_for_ancombc_tax )
         ch_versions_qiime2_ancom = ch_versions_qiime2_ancom.mix(QIIME2_ANCOMBC_TAX.out.versions)
-        QIIME2_ANCOMBC_TAX.out.da_barplot.subscribe { if ( it.baseName[0].toString().startsWith("WARNING") ) log.warn it.baseName[0].toString().replace("WARNING ","QIIME2_ANCOMBC_TAX: ") }
+        QIIME2_ANCOMBC_TAX.out.da_barplot.subscribe { it -> if ( it.baseName[0].toString().startsWith("WARNING") ) log.warn it.baseName[0].toString().replace("WARNING ","QIIME2_ANCOMBC_TAX: ") }
 
         //ANCOMBC on ASVs
         QIIME2_ANCOMBC_ASV ( ch_metadata.combine( QIIME2_FILTERSAMPLES_ANCOM.out.qza.flatten() ).combine( Channel.fromList([""]) ) )
@@ -79,7 +79,7 @@ workflow QIIME2_ANCOM {
             .set{ ch_for_ancombc_tax }
         ANCOMBC_FORMULA_TAX ( ch_for_ancombc_tax )
         ch_versions_qiime2_ancom = ch_versions_qiime2_ancom.mix(ANCOMBC_FORMULA_TAX.out.versions)
-        ANCOMBC_FORMULA_TAX.out.da_barplot.subscribe { if ( it.baseName[0].toString().startsWith("WARNING") ) log.warn it.baseName[0].toString().replace("WARNING ","QIIME2_ANCOMBC_TAX: ") }
+        ANCOMBC_FORMULA_TAX.out.da_barplot.subscribe { it -> if ( it.baseName[0].toString().startsWith("WARNING") ) log.warn it.baseName[0].toString().replace("WARNING ","QIIME2_ANCOMBC_TAX: ") }
 
         //ANCOMBC with ancombc_formula on ASVs
         ANCOMBC_FORMULA_ASV ( ch_metadata.combine( ch_asv ).combine( ch_ancombc_formula ) )

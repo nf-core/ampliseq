@@ -13,9 +13,6 @@ process PHYLOSEQ_INTAX {
     path( "*.tsv" )          , emit: tsv
     path "versions.yml"      , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     """
     reformat_tax_for_phyloseq.py $tax_tsv reformat_$tax_tsv

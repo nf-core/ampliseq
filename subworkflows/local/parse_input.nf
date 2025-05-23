@@ -50,22 +50,22 @@ workflow PARSE_INPUT {
         //Report folders with sequencing files
         ch_folders
             .collect()
-            .subscribe {
-                String folders = it.toString().replace("[", "").replace("]","")
-                log.info "\nFound the folder(s) \"$folders\" containing sequencing read files matching \"${extension}\" in \"${input}\".\n" }
+            .subscribe { it ->
+                String folder = it.toString().replace("[", "").replace("]","")
+                log.info "\nFound the folder(s) \"$folder\" containing sequencing read files matching \"${extension}\" in \"${input}\".\n" }
         //Stop if folder count is 1 and multiple_sequencing_runs
         ch_folders
             .count()
-            .subscribe { if ( it == 1 ) error("Found only one folder with read data but \"--multiple_sequencing_runs\" was specified. Please review data input.") }
+            .subscribe { it -> if ( it == 1 ) error("Found only one folder with read data but \"--multiple_sequencing_runs\" was specified. Please review data input.") }
     }
 
     //Check whether all sampleID = meta.sample are unique
     ch_reads
         .map { meta, reads -> [ meta.sample ] }
         .toList()
-        .subscribe {
+        .subscribe { it ->
             if( it.size() != it.unique().size() ) {
-                ids = it.take(10);
+                def ids = it.take(10);
                 error("Please review data input, sample IDs are not unique! First IDs are $ids")
             }
         }
@@ -73,12 +73,12 @@ workflow PARSE_INPUT {
     //Check that sampleIDs contain only letter, number and underscore characters
     ch_reads
         .map { meta, reads -> meta.sample }
-        .subscribe { if ( ! "$it".matches(/^[a-zA-Z0-9_]+$/) ) error("Please review data input, sampleIDs may not contain characters other than letters, numbers or underscores, but \"$it\" does.") }
+        .subscribe { it -> if ( ! "$it".matches(/^[a-zA-Z0-9_]+$/) ) error("Please review data input, sampleIDs may not contain characters other than letters, numbers or underscores, but \"$it\" does.") }
 
     //Check that sampleIDs do not start with a number when using metadata (sampleID gets X prepended by R and metadata wont match any more!)
     ch_reads
         .map { meta, reads -> meta.sample }
-        .subscribe { if ( params.metadata && "$it"[0].isNumber() ) error("Please review data input, sampleIDs may not start with a number, but \"$it\" does. The pipeline unintentionally modifies such strings and the metadata will not match any more.") }
+        .subscribe { it -> if ( params.metadata && "$it"[0].isNumber() ) error("Please review data input, sampleIDs may not start with a number, but \"$it\" does. The pipeline unintentionally modifies such strings and the metadata will not match any more.") }
 
     emit:
     reads   = ch_reads

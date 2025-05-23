@@ -17,9 +17,6 @@ process FORMAT_TAXONOMY_SIDLE {
     path( "ref_taxonomy.*.txt")   , emit: ref_tax_info
     path "versions.yml"           , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def derep = params.sidle_ref_databases[params.sidle_ref_taxonomy]["derep"] ?: "99"
     """

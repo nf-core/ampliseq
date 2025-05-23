@@ -46,7 +46,7 @@ workflow QIIME2_DIVERSITY {
         QIIME2_DIVERSITY_CORE ( ch_metadata, ch_asv, ch_tree, ch_stats, diversity_rarefaction_depth )
         ch_versions_qiime2_diversity = ch_versions_qiime2_diversity.mix(QIIME2_DIVERSITY_CORE.out.versions)
         //Print warning if rarefaction depth is <10000
-        QIIME2_DIVERSITY_CORE.out.depth.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","QIIME2_DIVERSITY_CORE: ") }
+        QIIME2_DIVERSITY_CORE.out.depth.subscribe { it -> if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","QIIME2_DIVERSITY_CORE: ") }
 
         //alpha_diversity ( ch_metadata, DIVERSITY_CORE.out.qza )
         ch_metadata

@@ -17,9 +17,6 @@ process QIIME2_TABLEFILTERTAXA {
     path("filtered-table.tsv"), emit: tsv
     path "versions.yml"       , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     """
     export XDG_CONFIG_HOME="./xdgconfig"

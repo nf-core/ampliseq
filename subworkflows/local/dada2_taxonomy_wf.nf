@@ -29,7 +29,7 @@ workflow DADA2_TAXONOMY_WF {
     // Set cutoff to use for SH assignment and path to SH taxonomy file
     if ( params.addsh ) {
         vsearch_cutoff = 0.985
-        ch_shinfo = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]).map { file(it) }
+        ch_shinfo = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]).map { it -> file(it) }
     }
 
     //cut taxonomy to expected amplicon
@@ -70,7 +70,7 @@ workflow DADA2_TAXONOMY_WF {
     DADA2_TAXONOMY.out.tsv
         .collectFile(name: ASV_tax_name+".${val_dada_ref_taxonomy}.tsv", newLine: false, cache: true, keepHeader: true, skip: 1, sort: true)
         .set { ch_dada2_taxonomy_tsv }
-    ch_dada2_taxonomy_tsv.subscribe{ file(it).copyTo("${params.outdir}/dada2") }
+    ch_dada2_taxonomy_tsv.subscribe{ it -> file(it).copyTo("${params.outdir}/dada2") }
 
     if (params.cut_its != "none") {
         FORMAT_TAXRESULTS_STD ( ch_dada2_taxonomy_tsv, ch_full_fasta, "ASV_tax.${val_dada_ref_taxonomy}.tsv" )
@@ -85,7 +85,7 @@ workflow DADA2_TAXONOMY_WF {
         DADA2_ADDSPECIES.out.tsv
             .collectFile(name: ASV_tax_name+"_species.${val_dada_ref_taxonomy}.tsv", newLine: false, cache: true, keepHeader: true, skip: 1, sort: true)
             .set { ch_dada2_addspecies_tsv }
-        ch_dada2_addspecies_tsv.subscribe{ file(it).copyTo("${params.outdir}/dada2") }
+        ch_dada2_addspecies_tsv.subscribe{ it -> file(it).copyTo("${params.outdir}/dada2") }
 
         if (params.cut_its == "none") {
             ch_dada2_tax1 = ch_dada2_addspecies_tsv

@@ -18,9 +18,6 @@ process FILTER_SSU {
     path( "ASV_seqs.ssu.fasta" ) , emit: fasta
     path "versions.yml"          , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     def kingdom = params.filter_ssu ?: "bac,arc,mito,euk"
     def read_table  = table ? "table <- read.table(file = '$table', sep = '\t', comment.char = '', header=TRUE)" : "table <- data.frame(matrix(ncol = 1, nrow = 0))"

@@ -15,9 +15,6 @@ process FORMAT_PPLACETAX {
     path("*.taxonomy.tsv")        , emit: tsv
     path "versions.yml"           , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     """
     #!/usr/bin/env Rscript

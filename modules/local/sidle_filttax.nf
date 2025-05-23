@@ -14,9 +14,6 @@ process SIDLE_FILTTAX {
     path("reconstructed_merged.tsv")  , emit: merged
     path "versions.yml"               , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
-
     script:
     """
     #!/usr/bin/env Rscript

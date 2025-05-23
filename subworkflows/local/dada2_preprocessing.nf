@@ -45,7 +45,7 @@ workflow DADA2_PREPROCESSING {
     if ( !params.skip_dada_quality ) {
         DADA2_QUALITY1 ( ch_all_trimmed_reads.dump(tag: 'into_dada2_quality') )
         ch_versions_dada2_preprocessing = ch_versions_dada2_preprocessing.mix(DADA2_QUALITY1.out.versions)
-        DADA2_QUALITY1.out.warning.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","DADA2_QUALITY1: ") }
+        DADA2_QUALITY1.out.warning.subscribe { it -> if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","DADA2_QUALITY1: ") }
         ch_DADA2_QUALITY1_SVG = DADA2_QUALITY1.out.svg
     }
 
@@ -57,7 +57,7 @@ workflow DADA2_PREPROCESSING {
             .set { ch_trunc }
         ch_versions_dada2_preprocessing = ch_versions_dada2_preprocessing.mix(TRUNCLEN.out.versions.first())
         //add one more warning or reminder that trunclenf and trunclenr were chosen automatically
-        ch_trunc.subscribe {
+        ch_trunc.subscribe { it ->
             if ( "${it[0][1]}".toInteger() + "${it[1][1]}".toInteger() <= 10 ) { log.warn "`--trunclenf` was set to ${it[0][1]} and `--trunclenr` to ${it[1][1]}, this is too low! Please either change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr`." }
             else if ( "${it[0][1]}".toInteger() <= 10 ) { log.warn "`--trunclenf` was set to ${it[0][1]}, this is too low! Please either change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr`." }
             else if ( "${it[1][1]}".toInteger() <= 10 ) { log.warn "`--trunclenr` was set to ${it[1][1]}, this is too low! Please either change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr`." }
@@ -76,7 +76,7 @@ workflow DADA2_PREPROCESSING {
 
     //Filter empty files
     DADA2_FILTNTRIM.out.reads_logs_args
-        .branch {
+        .branch { it ->
             failed: it[0].single_end ? it[1].countFastq() < params.min_read_counts : it[1][0].countFastq() < params.min_read_counts || it[1][1].countFastq() < params.min_read_counts
             passed: true
         }
@@ -85,8 +85,8 @@ workflow DADA2_PREPROCESSING {
     ch_dada2_filtntrim_results.failed
         .map { meta, reads, logs, args -> [ meta.id ] }
         .collect()
-        .subscribe {
-            samples = it.join("\n")
+        .subscribe { it ->
+            def samples = it.join("\n")
             if (params.ignore_failed_filtering) {
                 log.warn "The following samples had too few reads (<$params.min_read_counts) after quality filtering with DADA2:\n$samples\nIgnoring failed samples and continue!\n"
             } else {
@@ -133,7 +133,7 @@ workflow DADA2_PREPROCESSING {
     if ( !params.skip_dada_quality ) {
         DADA2_QUALITY2 ( ch_all_preprocessed_reads.dump(tag: 'into_dada2_quality2') )
         ch_versions_dada2_preprocessing = ch_versions_dada2_preprocessing.mix(DADA2_QUALITY2.out.versions)
-        DADA2_QUALITY2.out.warning.subscribe { if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","DADA2_QUALITY2: ") }
+        DADA2_QUALITY2.out.warning.subscribe { it -> if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","DADA2_QUALITY2: ") }
         ch_DADA2_QUALITY2_SVG = DADA2_QUALITY2.out.svg
     }
 

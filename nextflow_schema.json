@@ -63,7 +63,7 @@
                     "pattern": "^\\S+\\.(tsv|csv|yml|yaml|txt)$",
                     "fa_icon": "fas fa-dna",
                     "description": "Path to multi-region definition sheet, for multi-region analysis with Sidle",
-                    "help_text": "Path to file with information about sequenced regions, either tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml). This initiates scaffolding multiple regions along a reference.\n\nThe file must have four headers: \n- `region`: Unique region identifier\n- `region_length`: Minimal length of region\n- `FW_primer`: Forward primer sequence\n- `RV_primer`: Reverse primer sequence\n\nFor more details check the usage documentation.\n\nRelated parameters are:\n- `--sidle_ref_taxonomy` to select the reference taxonomic database\n- `--sidle_ref_tax_custom` for custom reference taxonomic database files\n- `--sidle_ref_tree_custom` for custom phylogenetic tree of reference taxonomic database",
+                    "help_text": "Path to file with information about sequenced regions, either tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml). This initiates scaffolding multiple regions along a reference.\n\nThe file must have four headers: \n- `region`: Unique region identifier\n- `region_length`: Minimal length of region\n- `FW_primer`: Forward primer sequence\n- `RV_primer`: Reverse primer sequence\n\nFor more details check the usage documentation.\n\nRelated parameters are:\n- `--sidle_ref_taxonomy` to select the reference taxonomic database\n- `--sidle_ref_tax_custom`, `--sidle_ref_seq_custom` and related parameters for custom reference taxonomic database files",
                     "schema": "assets/schema_multiregion.json"
                 },
                 "outdir": {
@@ -420,15 +420,22 @@
                         "gtdb=R07-RS207",
                         "gtdb=R08-RS214",
                         "gtdb=R09-RS220",
+                        "gtdb=R10-RS226",
                         "midori2-co1",
                         "midori2-co1=gb250",
+                        "plantae-bold-trnl",
+                        "plantae-bold-trnl=20240510",
+                        "plantae-bold-its1",
+                        "plantae-bold-its1=20240510",
                         "pr2",
                         "pr2=4.13.0",
                         "pr2=4.14.0",
                         "pr2=5.0.0",
+                        "pr2=5.1.0",
                         "rdp",
                         "rdp=18",
                         "sbdi-gtdb",
+                        "sbdi-gtdb=R10-RS226-1",
                         "sbdi-gtdb=R09-RS220-2",
                         "sbdi-gtdb=R09-RS220-1",
                         "sbdi-gtdb=R08-RS214-1",
@@ -627,14 +634,39 @@
                 },
                 "sidle_ref_tax_custom": {
                     "type": "string",
-                    "help_text": "Consider also setting `--sidle_ref_tree_custom`. Example usage: `--sidle_ref_tax_custom 'rep_set_99.fasta,rep_set_aligned_99.fasta,taxonomy_99_taxonomy.txt'`",
-                    "description": "Comma separated paths to three files: reference taxonomy sequences (*.fasta), reference taxonomy strings (*.txt)"
+                    "help_text": "Use with `--sidle_ref_seq_custom`. Consider also setting `--sidle_ref_aln_custom` and `--sidle_ref_tree_custom`. The taxonomy file must be headerless and follow the format of `qiime tools import`'s `HeaderlessTSVTaxonomyFormat`. Example usage: `--sidle_ref_tax_custom 'taxonomy_99_taxonomy.txt'`",
+                    "description": "Path to reference taxonomy strings (headerless, *.txt)",
+                    "pattern": "^.*\\.txt$"
+                },
+                "sidle_ref_seq_custom": {
+                    "type": "string",
+                    "help_text": "Use with `--sidle_ref_tax_custom`. Example usage: `--sidle_ref_seq_custom 'rep_set_99.fasta'`",
+                    "description": "Path to reference taxonomy sequences in fasta format",
+                    "pattern": "^.*\\.(fasta|fas|fna|fa|ffn)$"
+                },
+                "sidle_ref_aln_custom": {
+                    "type": "string",
+                    "help_text": "May be used with `--sidle_ref_tax_custom`. Allows sequence reconstruction. Example usage: `--sidle_ref_aln_custom 'rep_set_aligned_99.fasta'`",
+                    "description": "Path to multiple sequence alignment of reference taxonomy sequences in fasta format",
+                    "pattern": "^.*\\.(fasta|fas|fna|fa|ffn)$"
                 },
                 "sidle_ref_tree_custom": {
                     "type": "string",
-                    "help_text": "Overwrites tree chosen by `--sidle_ref_taxonomy`",
+                    "help_text": "Use with `--sidle_ref_aln_custom`. Recommended with `--sidle_ref_tax_custom`. Allows phylogenetic tree reconstruction and therefore diversity analysis. Overwrites tree chosen by `--sidle_ref_taxonomy`",
                     "description": "Path to SIDLE reference taxonomy tree (*.qza)",
                     "pattern": "^.*\\.qza$"
+                },
+                "sidle_ref_degenerates": {
+                    "type": "integer",
+                    "default": 5,
+                    "min": 0,
+                    "help_text": "Only effective with `--sidle_ref_tax_custom`. Recommended with `--sidle_ref_tax_custom`, default 5 was recommended with SILVA 128. Sets `--p-num-degenerates` for `qiime rescript cull-seqs`.",
+                    "description": "Exclude reference sequences with more than this much degenerates"
+                },
+                "sidle_ref_cleaning": {
+                    "type": "string",
+                    "help_text": "Recommended with `--sidle_ref_tax_custom`, default '--p-database silva' was recommended with SILVA 128. Therefore, ad-hoc database cleaning will be performed automatically, specifically with regard to the `define-missing` and `ambiguity-handling` parameters.  Overwrites recommended settings for database chosen by `--sidle_ref_taxonomy`",
+                    "description": "Arguments for `qiime sidle reconstruct-taxonomy` regarding ad-hoc cleaning"
                 }
             }
         },

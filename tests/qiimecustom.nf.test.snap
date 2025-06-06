@@ -26,6 +26,16 @@
         ],
         "timestamp": "2023-05-28T21:18:54+0000"
     },
+    "dada2": {
+        "content": [
+            "ASV_seqs.fasta:md5,864c3e0dc9b4a7649beee0c8665dceb5",
+            "ASV_table.tsv:md5,2618251e597593e4d716dd9bed095539",
+            "DADA2_stats.tsv:md5,54a1ac8d6c5a3ff15f700c4b2dd40c86",
+            "DADA2_table.rds:md5,d095501019ce7ebccfa0eb801db1ed29",
+            "DADA2_table.tsv:md5,5c9fb0bfd70da165f0ce6a361bfe0b43"
+        ],
+        "timestamp": "2023-05-28T20:55:32+0000"
+    },
     "multiqc": {
         "content": [
             "multiqc_fastqc.txt:md5,7d23984b06e4251f17e1cfce7a04aaae",

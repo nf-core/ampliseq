@@ -106,4 +106,3 @@ workflow QIIME2_PREPTAX {
     classifier = QIIME2_TRAIN.out.qza
     versions   = ch_qiime2_preptax_versions
 }
-

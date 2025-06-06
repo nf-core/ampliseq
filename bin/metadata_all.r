@@ -26,4 +26,3 @@ for (i in 2:ncol(data)) {
 }
 vector <- paste(vector, collapse=",")
 cat(vector)
-

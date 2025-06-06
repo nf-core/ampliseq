@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Removed`
 
+- [#]() - Remove BOLD databases `plantae-bold-its1` & `plantae-bold-trnL`, for plant samples with markers ITS1 and trnL, versions 20240510. Database included low quality sequences.
+
 ## nf-core/ampliseq version 2.14.0 - 2025-05-23
 
 ### `Added`

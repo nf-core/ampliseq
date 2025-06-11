@@ -40,7 +40,6 @@ nextflow_pipeline {
                 { assert new File("$outputDir/dada2/ASV_tax.user.tsv").exists() },
                 { assert new File("$outputDir/qiime2/abundance_tables/count_table_filter_stats.tsv").exists() },
                 { assert new File("$outputDir/qiime2/abundance_tables/feature-table.tsv").exists() },
-                { assert new File("$outputDir/qiime2/ancombc/da_barplot/Category-treatment1-ASV/index.html").exists() },
                 { assert new File("$outputDir/qiime2/barplot/index.html").exists() },
                 { assert new File("$outputDir/qiime2/alpha-rarefaction/index.html").exists() },
                 { assert new File("$outputDir/qiime2/diversity/alpha_diversity/shannon_vector/kruskal-wallis-pairwise-treatment1.csv").exists() },

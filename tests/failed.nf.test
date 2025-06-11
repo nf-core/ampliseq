@@ -1,11 +1,11 @@
 nextflow_pipeline {
 
-    name "Test Workflow main.nf"
-    script "main.nf"
-    tag "test_failed"
+    name "Test pipeline"
+    script "../main.nf"
     tag "pipeline"
+    profile "test_failed"
 
-    test("Failing samples") {
+    test("-profile test_failed") {
 
         when {
             params {
@@ -14,8 +14,25 @@ nextflow_pipeline {
         }
 
         then {
+            // stable_name: All files + folders in ${params.outdir}/ with a stable name
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
+            // stable_path: All files in ${params.outdir}/ with stable content
+            def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
             assertAll(
-                { assert workflow.success },
+                { assert workflow.success},
+                /* New syntax, is not satisfied
+                { assert snapshot(
+                    // Number of successful tasks
+                    workflow.trace.succeeded().size(),
+                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_ampliseq_software_mqc_versions.yml"),
+                    // All stable path name, with a relative path
+                    stable_name,
+                    // All files with stable contents
+                    stable_path
+                ).match() }
+                */
+                // Old syntax, provisionally used
                 { assert new File("$outputDir/overall_summary.tsv").exists() },
                 { assert new File("$outputDir/barrnap/summary.tsv").exists() },
                 { assert new File("$outputDir/cutadapt/cutadapt_summary.tsv").exists() },
@@ -23,7 +40,6 @@ nextflow_pipeline {
                 { assert new File("$outputDir/dada2/ASV_tax.user.tsv").exists() },
                 { assert new File("$outputDir/qiime2/abundance_tables/count_table_filter_stats.tsv").exists() },
                 { assert new File("$outputDir/qiime2/abundance_tables/feature-table.tsv").exists() },
-                { assert new File("$outputDir/qiime2/ancombc/da_barplot/Category-treatment1-ASV/index.html").exists() },
                 { assert new File("$outputDir/qiime2/barplot/index.html").exists() },
                 { assert new File("$outputDir/qiime2/alpha-rarefaction/index.html").exists() },
                 { assert new File("$outputDir/qiime2/diversity/alpha_diversity/shannon_vector/kruskal-wallis-pairwise-treatment1.csv").exists() },

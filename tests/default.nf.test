@@ -53,7 +53,7 @@ nextflow_pipeline {
                     path("$outputDir/SBDI/event.tsv"),
                     path("$outputDir/vsearch_cluster/ASV_post_clustering_filtered.fna"),
                     path("$outputDir/vsearch_cluster/ASV_post_clustering_filtered.stats.tsv"),
-                    path("$outputDir/vsearch_cluster/ASV_post_clustering_filtered.table.tsv"),
+                    path("$outputDir/vsearch_cluster/ASV_post_clustering_filtered.table.tsv")
                 ).match() }
             )
         }

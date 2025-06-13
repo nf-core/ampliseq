@@ -1,7 +1,7 @@
 {
     "-profile test": {
         "content": [
-            122,
+            123,
             {
                 "ANCOMBC_FORMULA_ASV": {
                     "qiime2": "2024.10.1"
@@ -2424,6 +2424,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.2"
         },
-        "timestamp": "2025-06-13T13:29:02.706367285"
+        "timestamp": "2025-06-13T15:20:58.451145935"
     }
 }

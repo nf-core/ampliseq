@@ -18,35 +18,34 @@ nextflow_pipeline {
             def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
             // stable_path: All files in ${params.outdir}/ with stable content
             def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
+
+            assert workflow.success
             assertAll(
-                { assert workflow.success},
-                /* New syntax, is not satisfied
                 { assert snapshot(
                     // Number of successful tasks
                     workflow.trace.succeeded().size(),
                     // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
-                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_ampliseq_software_mqc_versions.yml"),
+                    removeNextflowVersion("$outputDir/pipeline_info/software_versions.yml"),
                     // All stable path name, with a relative path
                     stable_name,
-                    // All files with stable contents
-                    stable_path
-                ).match() }
-                */
-                // Old syntax, provisionally used
-                { assert new File("$outputDir/overall_summary.tsv").exists() },
-                { assert new File("$outputDir/barrnap/summary.tsv").exists() },
-                { assert new File("$outputDir/cutadapt/cutadapt_summary.tsv").exists() },
-                { assert new File("$outputDir/dada2/DADA2_table.tsv").exists() },
-                { assert new File("$outputDir/dada2/ASV_tax.user.tsv").exists() },
-                { assert new File("$outputDir/qiime2/abundance_tables/count_table_filter_stats.tsv").exists() },
-                { assert new File("$outputDir/qiime2/abundance_tables/feature-table.tsv").exists() },
-                { assert new File("$outputDir/qiime2/barplot/index.html").exists() },
-                { assert new File("$outputDir/qiime2/alpha-rarefaction/index.html").exists() },
-                { assert new File("$outputDir/qiime2/diversity/alpha_diversity/shannon_vector/kruskal-wallis-pairwise-treatment1.csv").exists() },
-                { assert new File("$outputDir/qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA/index.html").exists() },
-                { assert new File("$outputDir/summary_report/summary_report.html").exists() },
-                { assert new File("$outputDir/phyloseq/dada2_phyloseq.rds").exists() },
-                { assert new File("$outputDir/treesummarizedexperiment/dada2_TreeSummarizedExperiment.rds").exists() }
+                    // Manually chosen files for content checks
+                    path("$outputDir/overall_summary.tsv"),
+                    path("$outputDir/asv_length_filter/").list(),
+                    path("$outputDir/barrnap/rrna.arc.gff"),
+                    path("$outputDir/barrnap/rrna.bac.gff"),
+                    path("$outputDir/barrnap/rrna.euk.gff"),
+                    path("$outputDir/barrnap/rrna.mito.gff"),
+                    path("$outputDir/cutadapt/cutadapt_summary.tsv"),
+                    path("$outputDir/dada2/ASV_seqs.fasta"),
+                    path("$outputDir/dada2/ASV_table.tsv"),
+                    path("$outputDir/dada2/DADA2_stats.tsv"),
+                    path("$outputDir/dada2/DADA2_table.rds"),
+                    path("$outputDir/dada2/DADA2_table.tsv"),
+                    path("$outputDir/qiime2/representative_sequences/descriptive_stats.tsv"),
+                    path("$outputDir/qiime2/representative_sequences/seven_number_summary.tsv"),
+                    path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt"),
+                    path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt")
+                ).match() },
             )
         }
     }

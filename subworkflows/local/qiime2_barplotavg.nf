@@ -30,7 +30,7 @@ workflow QIIME2_BARPLOTAVG {
     ch_versions_qiime2_barplotavg = ch_versions_qiime2_barplotavg.mix(QIIME2_FEATURETABLE_GROUP.out.versions)
 
     //Barplot
-    QIIME2_BPAVG ( [], QIIME2_FEATURETABLE_GROUP.out.qza, ch_tax, 'average' )
+    QIIME2_BPAVG ( [], QIIME2_FEATURETABLE_GROUP.out.qza, ch_tax.collect(), 'average' )
     ch_versions_qiime2_barplotavg = ch_versions_qiime2_barplotavg.mix(QIIME2_BPAVG.out.versions)
 
     emit:

@@ -63,7 +63,7 @@ workflow DADA2_TAXONOMY_WF {
         .set { ch_fasta_chunks }
 
     //DADA2 assignTaxonomy
-    DADA2_TAXONOMY ( ch_fasta_chunks, ch_assigntax, ".${ASV_tax_name}.${val_dada_ref_taxonomy}", taxlevels )
+    DADA2_TAXONOMY ( ch_fasta_chunks, ch_assigntax.collect(), ".${ASV_tax_name}.${val_dada_ref_taxonomy}", taxlevels )
     ch_versions_dada_taxonomy = ch_versions_dada_taxonomy.mix(DADA2_TAXONOMY.out.versions)
 
     // collect all DADA2_TAXONOMY.out.tsv into one file
@@ -79,7 +79,7 @@ workflow DADA2_TAXONOMY_WF {
 
     //DADA2 addSpecies
     if (!params.skip_dada_addspecies) {
-        DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies, taxlevels )
+        DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies.collect(), taxlevels )
 
         // collect all DADA2_ADDSPECIES.out.tsv into one file
         DADA2_ADDSPECIES.out.tsv

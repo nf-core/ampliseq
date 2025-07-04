@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Fixed`
 
 - [#893](https://github.com/nf-core/ampliseq/pull/893),[#896](https://github.com/nf-core/ampliseq/pull/896) - Template update for nf-core/tools version 3.3.1
+- [#897](https://github.com/nf-core/ampliseq/pull/897) - Allow multiple region analysis with one sample
 - [#899](https://github.com/nf-core/ampliseq/pull/899) - With `--dada_ref_tax_custom` all chunks defined by `--dada_assign_chunksize` are now taxonomically annotated.
 
 ### `Dependencies`

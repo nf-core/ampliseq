@@ -7,4 +7,3 @@ gunzip -c *.fasta.gz | sed 's/\(phylum_\)\|\(class_\)\|\(order_\)\|\(family_\)\|
 
 #unzip, remove last ";", take last field separated by ";" and add fake SeqID
 gunzip -c *.fasta.gz | sed 's/;*$//g' | sed 's/.*;/> /' | sed 's/> \(.*\)_\([0-9]\+$\)/>\2 \1/' > addSpecies.fna
-

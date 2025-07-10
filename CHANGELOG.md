@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#903](https://github.com/nf-core/ampliseq/pull/903) - Corrects a broken link for *midori2-co1* database.
+
 ### `Fixed`
 
 - [#893](https://github.com/nf-core/ampliseq/pull/893),[#896](https://github.com/nf-core/ampliseq/pull/896) - Template update for nf-core/tools version 3.3.1

@@ -744,7 +744,7 @@ workflow AMPLISEQ {
             QIIME2_SEQFILTERTABLE ( QIIME2_TABLEFILTERTAXA.out.qza, QIIME2_INSEQ.out.qza )
             ch_versions = ch_versions.mix( QIIME2_SEQFILTERTABLE.out.versions )
             FILTER_STATS ( ch_dada2_asv, QIIME2_TABLEFILTERTAXA.out.tsv )
-            ch_versions = ch_versions.mix( FILTER_STATS.out.versions.ifEmpty(null) )
+            ch_versions = ch_versions.mix( FILTER_STATS.out.versions )
             MERGE_STATS_FILTERTAXA (ch_stats, FILTER_STATS.out.tsv)
             ch_versions = ch_versions.mix( MERGE_STATS_FILTERTAXA.out.versions )
             ch_asv = QIIME2_TABLEFILTERTAXA.out.qza
@@ -836,7 +836,7 @@ workflow AMPLISEQ {
         } else {
             PICRUST ( ch_fasta, ch_dada2_asv, "DADA2", "This Picrust2 analysis is based on unfiltered reads from DADA2" )
         }
-        ch_versions = ch_versions.mix(PICRUST.out.versions.ifEmpty(null))
+        ch_versions = ch_versions.mix(PICRUST.out.versions)
     }
 
     //

@@ -90,6 +90,12 @@ process DADA2_DENOISING {
 
             }
 
+            # if one sample, need to convert back to df for next steps
+
+            if(length(mergers) == 1) {
+                mergers <- mergers[[1]]
+            }
+
         } else {
             mergers <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, $args2, verbose=TRUE)
         }

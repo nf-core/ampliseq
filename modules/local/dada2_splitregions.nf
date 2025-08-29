@@ -43,7 +43,7 @@ process DADA2_SPLITREGIONS {
     }
 
     # filter rows with only 0, occurring because many samples were removed
-    df <- df[as.logical(rowSums(df[,2:(ncol(df)-1)] != 0)), ]
+    df <- df[as.logical(rowSums(df[,2:(ncol(df)-1), drop=FALSE] != 0)), ]
 
     # Write file with ASV abdundance and sequences to file
     write.table(df, file = "DADA2_table_${suffix}.tsv", sep = "\\t", row.names = FALSE, quote = FALSE, na = '')

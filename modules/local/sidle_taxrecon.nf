@@ -28,6 +28,10 @@ process SIDLE_TAXRECON {
     echo "$args"
     echo "___"
 
+    #visualize arguments
+    echo "$args" > args.txt
+    cat args.txt
+
     #reconstruct taxonomy
     qiime sidle reconstruct-taxonomy \\
         --i-reconstruction-map ${reconstruction_map} \\
@@ -35,7 +39,7 @@ process SIDLE_TAXRECON {
         $args \\
         --o-reconstructed-taxonomy reconstruction_taxonomy.qza
 
-    #export visualisation
+    #export visualisation test
     qiime metadata tabulate \\
         --m-input-file reconstruction_taxonomy.qza \\
         --o-visualization reconstruction_taxonomy.qzv

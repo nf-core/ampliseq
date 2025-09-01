@@ -69,13 +69,26 @@ process SIDLE_TABLERECON {
             --input-path "\$filtered_table" \
             --output-path "\${filtered_table_exported_folder}"
 
+        # Import the exported BIOM back into a QZA (correct way)
+        qiime tools import \
+            --input-path "\${filtered_table_exported_folder}/feature-table.biom" \
+            --type 'FeatureTable[Frequency]' \
+            --input-format BIOMV210Format \
+            --output-path "\${filtered_table}"
+
         cp "\${filtered_table_exported_folder}"/feature-table.biom "\${filtered_table}"
         # Convert biom -> tsv
         biom convert \
-            -i "\${filtered_table}" \
+            -i "\${filtered_table_exported_folder}/feature-table.biom" \
             -o "\${region_table_base}_filtered_feature-table.tsv" \
             --to-tsv
+
+        echo "Filtered:"
         cat "\${region_table_base}_filtered_feature-table.tsv"
+
+
+        echo "_______________________________________________________"
+        ls -lisah "\${filtered_table}"
     done
 
 

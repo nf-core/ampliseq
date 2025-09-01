@@ -39,16 +39,16 @@ process SIDLE_TABLERECON {
         # Print original table
         echo "Original table for \$region_table:"
         region_table_base=\$(basename "\$region_table" .qza)
-        qiime tools export \
-            --input-path "\$region_table" \
-            --output-path "\${region_table_base}_exported"
+        #qiime tools export \
+        #    --input-path "\$region_table" \
+        #    --output-path "\${region_table_base}_exported"
 
         # Convert biom -> tsv
-        biom convert \
-            -i "\${region_table_base}_exported/feature-table.biom" \
-            -o "\${region_table_base}_feature-table.tsv" \
-            --to-tsv
-        cat "\${region_table_base}_feature-table.tsv"
+        #biom convert \
+        #    -i "\${region_table_base}_exported/feature-table.biom" \
+        #    -o "\${region_table_base}_feature-table.tsv" \
+        #    --to-tsv
+        #cat "\${region_table_base}_feature-table.tsv"
 
         # Filter zero-count samples and print filtered table
         filtered_table="\${region_table_base}.filtered.qza"
@@ -57,27 +57,27 @@ process SIDLE_TABLERECON {
             --i-table "\$region_table" \
             --p-min-frequency 2 \
             --o-filtered-table "\$filtered_table"
-        echo "Filtered table for \$region_table:"
-        qiime tools export \
-            --input-path "\$filtered_table" \
-            --output-path "\${filtered_table_exported_folder}"
+        #echo "Filtered table for \$region_table:"
+        #qiime tools export \
+        #    --input-path "\$filtered_table" \
+        #    --output-path "\${filtered_table_exported_folder}"
 
         # Import the exported BIOM back into a QZA (correct way)
-        qiime tools import \
-            --input-path "\${filtered_table_exported_folder}/feature-table.biom" \
-            --type 'FeatureTable[Frequency]' \
-            --input-format BIOMV210Format \
-            --output-path "\${filtered_table}"
+        #qiime tools import \
+        #    --input-path "\${filtered_table_exported_folder}/feature-table.biom" \
+        #    --type 'FeatureTable[Frequency]' \
+        #    --input-format BIOMV210Format \
+        #    --output-path "\${filtered_table}"
 
-        cp "\${filtered_table_exported_folder}"/feature-table.biom "\${filtered_table}"
+        #cp "\${filtered_table_exported_folder}"/feature-table.biom "\${filtered_table}"
         # Convert biom -> tsv
-        biom convert \
-            -i "\${filtered_table_exported_folder}/feature-table.biom" \
-            -o "\${region_table_base}_filtered_feature-table.tsv" \
-            --to-tsv
+        #biom convert \
+        #    -i "\${filtered_table_exported_folder}/feature-table.biom" \
+        #    -o "\${region_table_base}_filtered_feature-table.tsv" \
+        #    --to-tsv
 
-        echo "Filtered:"
-        cat "\${region_table_base}_filtered_feature-table.tsv"
+        #echo "Filtered:"
+        #cat "\${region_table_base}_filtered_feature-table.tsv"
 
 
         echo "_______________________________________________________"

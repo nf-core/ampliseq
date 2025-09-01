@@ -24,7 +24,8 @@ process SIDLE_TABLERECON {
     // input must be sorted already by regions
     def df = [region, aligned_map, table].transpose()
     df.each { i ->
-        region_input += " --p-region "+i[0]+" --i-regional-alignment "+i[1]+" --i-regional-table "+i[2]
+        def table_base = i[2].toString().replaceAll(/\.qza$/, '')
+        region_input += " --p-region ${i[0]} --i-regional-alignment ${i[1]} --i-regional-table ${table_base}.filtered.qza"
     }
     """
     #https://q2-sidle.readthedocs.io/en/latest/reconstruction.html#table-reconstruction
@@ -32,14 +33,6 @@ process SIDLE_TABLERECON {
     export MPLCONFIGDIR="./mplconfigdir"
     export NUMBA_CACHE_DIR="./numbacache"
 
-    #understand input args
-    echo "Args:"
-    echo "$args"
-    echo "$table"
-    echo "___"
-
-    #visualize arguments
-    echo "$args" > args.txt
 
     # Print original and filtered tables for all region tables in $table for investigation
     for region_table in ${table}; do
@@ -62,7 +55,7 @@ process SIDLE_TABLERECON {
         filtered_table_exported_folder="\${region_table_base}_filtered"
         qiime feature-table filter-samples \
             --i-table "\$region_table" \
-            --p-min-frequency 1 \
+            --p-min-frequency 2 \
             --o-filtered-table "\$filtered_table"
         echo "Filtered table for \$region_table:"
         qiime tools export \

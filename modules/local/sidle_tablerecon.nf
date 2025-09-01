@@ -32,6 +32,16 @@ process SIDLE_TABLERECON {
     export MPLCONFIGDIR="./mplconfigdir"
     export NUMBA_CACHE_DIR="./numbacache"
 
+    #understand input args
+    echo "Args:"
+    echo "$args"
+    echo "___"
+
+    #visualize arguments
+    echo "$args" > args.txt
+    cat args.txt
+    cat "$region_input"
+
     qiime sidle reconstruct-counts \\
         --p-n-workers $task.cpus \\
         $region_input \\

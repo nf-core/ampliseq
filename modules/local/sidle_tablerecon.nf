@@ -35,15 +35,14 @@ process SIDLE_TABLERECON {
     #understand input args
     echo "Args:"
     echo "$args"
-    echo "$aligned_map"
+    echo "$table"
     echo "___"
 
     #visualize arguments
     echo "$args" > args.txt
-    cat args.txt
-    cat "$region_input"
-    # Print original and filtered tables for all region tables in $aligned_map for investigation
-    for region_table in ${aligned_map}; do
+
+    # Print original and filtered tables for all region tables in $table for investigation
+    for region_table in ${table}; do
         # Print original table
         echo "Original table for \$region_table:"
         region_table_base=\$(basename "\$region_table" .qza)

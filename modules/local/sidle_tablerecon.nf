@@ -35,6 +35,7 @@ process SIDLE_TABLERECON {
     #understand input args
     echo "Args:"
     echo "$args"
+    echo "$aligned_map"
     echo "___"
 
     #visualize arguments

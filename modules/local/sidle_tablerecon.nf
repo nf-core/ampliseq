@@ -55,7 +55,7 @@ process SIDLE_TABLERECON {
             -i "\${region_table_base}_exported/feature-table.biom" \
             -o "\${region_table_base}_feature-table.tsv" \
             --to-tsv
-        cat "\${region_table_base}_exported/feature-table.tsv"
+        cat "\${region_table_base}_feature-table.tsv"
 
         # Filter zero-count samples and print filtered table
         filtered_table="\${region_table_base}.filtered.qza"
@@ -68,7 +68,14 @@ process SIDLE_TABLERECON {
         qiime tools export \
             --input-path "\$filtered_table" \
             --output-path "\${filtered_table_exported_folder}"
-        cat "\${filtered_table_exported_folder}/feature-table.tsv"
+
+        cp "\${filtered_table_exported_folder}"/feature-table.biom "\${filtered_table}"
+        # Convert biom -> tsv
+        biom convert \
+            -i "\${filtered_table}" \
+            -o "\${region_table_base}_filtered_feature-table.tsv" \
+            --to-tsv
+        cat "\${region_table_base}_filtered_feature-table.tsv"
     done
 
 

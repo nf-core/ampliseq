@@ -42,6 +42,30 @@ process SIDLE_TABLERECON {
     echo "$args" > args.txt
     cat args.txt
     cat "$region_input"
+    # Print original and filtered tables for all region tables in $aligned_map for investigation
+    for region_table in ${aligned_map}; do
+        # Print original table
+        echo "Original table for $region_table:"
+        region_table_base=$(basename "$region_table" .qza)
+        qiime tools export \
+            --input-path "$region_table" \
+            --output-path "${region_table_base}_exported"
+        cat "${region_table_base}_exported/feature-table.tsv"
+
+        # Filter zero-count samples and print filtered table
+        filtered_table="${region_table_base}.filtered.qza"
+        filtered_table_exported_folder="${region_table_base}_filtered"
+        qiime feature-table filter-samples \
+            --i-table "$region_table" \
+            --p-min-frequency 1 \
+            --o-filtered-table "$filtered_table"
+        echo "Filtered table for $region_table:"
+        qiime tools export \
+            --input-path "$filtered_table" \
+            --output-path "${filtered_table_exported_folder}"
+        cat "${filtered_table_exported_folder}/feature-table.tsv"
+    done
+
 
     qiime sidle reconstruct-counts \\
         --p-n-workers $task.cpus \\

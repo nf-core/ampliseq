@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## nf-core/ampliseq version 2.15.0dev
 
 ### `Added`
+- [#909](https://github.com/nf-core/ampliseq/pull/909) - Parameter `--truncq` allows read truncation by quality score, where each read is truncated at the first instance of a quality score less than or equal to `truncq` (default value is 2). This quality score-based truncation occurs before read length truncation. If `--trunc_qmin` and `--trunc_rmin` are used to automatically calculate the values for `trunclenf` and `trunclenr` used for read length truncation, those calculations are based on the read metrics before quality score-based truncation (using `truncq`) is performed. `truncq` is passed directly as `truncQ` into DADA2's [filterAndTrim](https://rdrr.io/bioc/dada2/man/filterAndTrim.html) method.
 
 ### `Changed`
 

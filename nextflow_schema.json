@@ -203,6 +203,13 @@
             "description": "Read trimming and quality filtering is supposed to reduce spurious results and aid error correction",
             "default": "",
             "properties": {
+                "truncq": {
+                    "type": "integer",
+                    "default": 2,
+                    "fa_icon": "fas fa-greater-than-equal",
+                    "minimum": 0,
+                    "description": "Truncate each read at the first instance of a quality score less than or equal to truncq. Applied before read length truncation."
+                },
                 "trunclenf": {
                     "type": "integer",
                     "description": "DADA2 read truncation value for forward strand, set this to 0 for no truncation",
@@ -219,7 +226,7 @@
                     "type": "integer",
                     "default": 25,
                     "description": "If --trunclenf and --trunclenr are not set, these values will be automatically determined using this median quality score",
-                    "help_text": "Automatically determine `--trunclenf` and `--trunclenr` before the median quality score drops below `--trunc_qmin`. The fraction of reads retained is defined by `--trunc_rmin`, which might override the quality cutoff.\n\nFor example:\n\n```bash\n--trunc_qmin 35\n```\n\nPlease note:\n\n1. The code choosing `--trunclenf` and `--trunclenr` using `--trunc_qmin` automatically cannot take amplicon length or overlap requirements for merging into account, therefore use with caution.\n2. A minimum value of 25 is recommended. However, high quality data with a large paired sequence overlap might justify a higher value (e.g. 35). Also, very low quality data might require a lower value.\n3. If the quality cutoff is too low to include a certain fraction of reads that is specified by `--trunc_rmin` (e.g. 0.75 means at least 75% percent of reads are retained), a lower cutoff according to `--trunc_rmin` superseeds the quality cutoff.",
+                    "help_text": "Automatically determine `--trunclenf` and `--trunclenr` before the median quality score drops below `--trunc_qmin`. The fraction of reads retained is defined by `--trunc_rmin`, which might override the quality cutoff.\n\nFor example:\n\n```bash\n--trunc_qmin 35\n```\n\nPlease note:\n\n1. The code choosing `--trunclenf` and `--trunclenr` using `--trunc_qmin` automatically cannot take amplicon length or overlap requirements for merging into account, therefore use with caution.\n2. A minimum value of 25 is recommended. However, high quality data with a large paired sequence overlap might justify a higher value (e.g. 35). Also, very low quality data might require a lower value.\n3. If the quality cutoff is too low to include a certain fraction of reads that is specified by `--trunc_rmin` (e.g. 0.75 means at least 75% percent of reads are retained), a lower cutoff according to `--trunc_rmin` superseeds the quality cutoff.\n4. The calculations for the values of `--trunclenf` and `--trunclenr` are made before any quality score-based read truncation (using `--truncq`) is performed.",
                     "fa_icon": "fas fa-greater-than-equal"
                 },
                 "trunc_rmin": {

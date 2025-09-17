@@ -13,6 +13,7 @@
     - [Samplesheet input](#samplesheet-input)
     - [ASV/OTU fasta input](#asvotu-fasta-input)
     - [Direct FASTQ input](#direct-fastq-input)
+  - [Regions of variable length e.g. ITS](#regions-of-variable-length-eg-its)
   - [Taxonomic classification](#taxonomic-classification)
   - [Multiple region analysis with Sidle](#multiple-region-analysis-with-sidle)
   - [Metadata](#metadata)
@@ -208,6 +209,10 @@ Please note the following additional requirements:
 - To run single-end data you must additionally specify `--single_end` and `--extension` may not include curly brackets `{}`
 - Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique (also across sequencing runs) and only contain letters, numbers or underscores
 - If your data is scattered, produce a sample sheet
+
+### Regions of variable length (e.g. ITS)
+
+Special considerations should be made when pre-processing reads for regions of variable length, e.g. ITS for fungal barcoding. For ITS regions e.g. ITS1 or ITS2, it is recommended to use the `--illumina_pe_its` parameter for paired-end Illumina reads, which disables fixed-length read truncation. Also consider adjusting `--truncq` to a value higher than the default value of 2 if you find that a high proportion of reads is excluded by DADA2 filtering.
 
 ### Taxonomic classification
 

@@ -53,7 +53,7 @@
                     "fastqc": "0.12.1"
                 },
                 "FORMAT_TAXONOMY_SINTAX": {
-                    "bash": "5.0.16"
+                    "sed": "4.7"
                 },
                 "FORMAT_TAXRESULTS_SINTAX": {
                     "python": "3.9.1"

@@ -29,7 +29,7 @@
                     "sed": 4.7
                 },
                 "FORMAT_TAXONOMY": {
-                    "bash": "5.0.16"
+                    "sed": "4.7"
                 },
                 "Workflow": {
                     "nf-core/ampliseq": "v2.15.0"

@@ -60,7 +60,7 @@
                     "fastqc": "0.12.1"
                 },
                 "FORMAT_TAXONOMY": {
-                    "bash": "5.0.16"
+                    "sed": "4.7"
                 },
                 "MERGE_STATS_STD": {
                     "R": "4.3.2"

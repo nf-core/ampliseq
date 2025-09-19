@@ -30,6 +30,7 @@ params:
     barplot: FALSE
     abundance_tables: FALSE
     alpha_rarefaction: FALSE
+    truncq: ""
     trunclenf: ""
     trunclenr: ""
     max_ee: ""
@@ -299,6 +300,9 @@ Additional quality filtering can improve sequence recovery.
 Often it is advised trimming the last few nucleotides to avoid less well-controlled errors that can arise there.
 "))
 
+if (params$truncq) {
+    cat("Each read was truncated at the first instance of a quality score less than or equal to ", params$truncq, ". ", sep = "")
+}
 if (params$trunc_qmin) {
     f_and_tr_args <- readLines(params$dada_filtntrim_args)
     trunc_len <- strsplit(gsub(".*truncLen = c\\((.+)\\),maxN.*", "\\1",
@@ -313,7 +317,7 @@ if (params$trunc_qmin) {
         "forward reads at ", tr_len_f, " bp and reverse ",
         "reads at ", tr_len_r, " bp, reads shorter than this were discarded. ", sep = "")
 } else if (params$trunclenf == "null" && params$trunclenr == "null") {
-    cat("Reads were not trimmed. ")
+    cat("Reads were not trimmed to a specific length. ")
 } else if (params$trunclenf != 0 && params$trunclenr != 0) {
     cat("Forward reads were trimmed at ", params$trunclenf,
             " bp and reverse reads were trimmed at ", params$trunclenr,
@@ -1700,6 +1704,9 @@ if ( params$dada_sample_inference == "independent" ) {
 
 cat("with DADA2 ([Callahan et al., 2016](https://pubmed.ncbi.nlm.nih.gov/27214047/)) to eliminate PhiX contamination, ")
 
+if (params$truncq) {
+    cat("truncate reads at the first instance of a quality score less than or equal to ", params$truncq, ", ", sep = "")
+}
 if (params$trunc_qmin) {
     cat("trim reads (before median quality drops below ", params$trunc_qmin,
         " and at least ",params$trunc_rmin*100, "% of reads are retained; ",

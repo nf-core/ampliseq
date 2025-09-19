@@ -86,6 +86,7 @@ process SUMMARY_REPORT  {
         cutadapt_summary ?
             params.retain_untrimmed ? "flag_retain_untrimmed=TRUE,cutadapt_summary='$cutadapt_summary'" :
             "cutadapt_summary='$cutadapt_summary'" : "",
+        "truncq=$params.truncq",
         find_truncation_values ? "trunc_qmin=$params.trunc_qmin,trunc_rmin=$params.trunc_rmin" : "",
         "trunclenf='$params.trunclenf'",
         "trunclenr='$params.trunclenr'",

@@ -20,7 +20,7 @@ template:
   outdir: .
   skip_features:
     - igenomes
-  version: 2.15.0dev
+  version: 2.15.0
 update:
   https://github.com/nf-core/modules.git:
     nf-core:

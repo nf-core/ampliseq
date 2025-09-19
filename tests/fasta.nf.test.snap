@@ -32,7 +32,7 @@
                     "bash": "5.0.16"
                 },
                 "Workflow": {
-                    "nf-core/ampliseq": "v2.15.0dev"
+                    "nf-core/ampliseq": "v2.15.0"
                 }
             },
             [

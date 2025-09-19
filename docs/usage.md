@@ -62,7 +62,7 @@ work                # Directory containing the nextflow working files
 ```
 
 > [!TIP]
-> For [Reproducibility](#reproducibility), specify the version to run using `-r` (= release, e.g. 2.14.0, please use the most recent release). See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters) for more information about pipeline specific parameters.
+> For [Reproducibility](#reproducibility), specify the version to run using `-r` (= release, e.g. 2.15.0, please use the most recent release). See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters) for more information about pipeline specific parameters.
 
 > [!NOTE]
 > If the data originates from multiple sequencing runs, the error profile of each of those sequencing runs needs to be considered separately. Using the `run` column in the samplesheet input or adding `--multiple_sequencing_runs` for direct FASTQ input will separate certain processes by the sequencing run. Please see the following example:
@@ -327,7 +327,7 @@ nextflow pull nf-core/ampliseq
 
 It is a good idea to specify the pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
 
-First, go to the [nf-core/ampliseq releases page](https://github.com/nf-core/ampliseq/releases) and find the latest pipeline version - numeric only (eg. `2.14.0`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 2.14.0`. Of course, you can switch to another version by changing the number after the `-r` flag.
+First, go to the [nf-core/ampliseq releases page](https://github.com/nf-core/ampliseq/releases) and find the latest pipeline version - numeric only (eg. `2.15.0`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 2.15.0`. Of course, you can switch to another version by changing the number after the `-r` flag.
 
 This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future. For example, at the bottom of the MultiQC reports.
 

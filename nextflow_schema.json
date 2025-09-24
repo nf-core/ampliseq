@@ -405,6 +405,23 @@
             },
             "fa_icon": "fas fa-filter"
         },
+        "dada2_assigntaxonomy": {
+            "title": "DADA2 assignTaxonomy",
+            "type": "object",
+            "description": "Options for the DADA2 assignTaxonomy method used to classify ASVs against a database",
+            "default": "",
+            "fa_icon": "fas fa-sitemap",
+            "properties": {
+                "dada_min_boot": {
+                    "type": "integer",
+                    "default": 50,
+                    "fa_icon": "fas fa-greater-than-equal",
+                    "description": "The minimum bootstrap confidence (out of 100 trials) for assigning a taxonomic level. Matches `minBoot` in DADA2's assignTaxonomy method.",
+                    "minimum": 0,
+                    "maximum": 100
+                }
+            }
+        },
         "taxonomic_database": {
             "title": "Taxonomic database",
             "type": "object",
@@ -1090,6 +1107,9 @@
         },
         {
             "$ref": "#/$defs/asv_post_processing"
+        },
+        {
+            "$ref": "#/$defs/dada2_assigntaxonomy"
         },
         {
             "$ref": "#/$defs/taxonomic_database"

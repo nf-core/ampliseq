@@ -42,6 +42,7 @@ params:
     filter_ssu: FALSE
     min_len_asv: ""
     max_len_asv: ""
+    dada_min_boot: ""
     cut_its: FALSE
     dada2_ref_tax_title: FALSE
     qiime2_ref_tax_title: FALSE
@@ -905,11 +906,16 @@ cat("## DADA2\n")
 if ( !isFALSE(params$dada2_ref_tax_title) ) {
     cat("The taxonomic classification was performed by [DADA2](https://pubmed.ncbi.nlm.nih.gov/27214047/)
         using the database: `", params$dada2_ref_tax_title, "`.
-        More details about the reference taxonomy database can be found in the ['Methods section'](#methods).\n\n", sep = "")
+        More details about the reference taxonomy database can be found in the ['Methods section'](#methods).", sep = "")
 } else {
     cat("The taxonomic classification was performed by DADA2 using a custom database ",
-            "provided by the user.\n\n", sep = "")
+            "provided by the user.", sep = "")
 }
+if (params$dada_min_boot) {
+    cat(" A minimum bootstrap confidence of ", params$dada_min_boot, " (out of 100 trials) ",
+        "was used for assigning a taxonomic level.", sep="")
+}
+cat ("\n\n")
 
 # mention if taxonomy was cut by cutadapt
 if ( !isFALSE(params$cut_dada_ref_taxonomy) ) {
@@ -1783,10 +1789,15 @@ cat(filter_codons_fasta_passed,"ASVs had no stop codons (",params$stop_codons,")
 ```{r, eval = any_taxonomy, results='asis'}
 methods_taxonomic_classification <- c("Taxonomic classification was performed by ")
 if ( !isFALSE(params$dada2_taxonomy) ) {
-    if ( !isFALSE(params$dada2_ref_tax_title) ) {
-        methods_taxonomic_classification_dada <- paste("DADA2 and the database '",params$dada2_ref_tax_title,"' (`", params$dada2_ref_tax_citation,"`)", sep="")
+    if (params$dada_min_boot) {
+        dada_min_boot_part <- paste("(with a minimum bootstrap confidence of ",params$dada_min_boot," out of 100 trials for assigning a taxonomic level) " )
     } else {
-        methods_taxonomic_classification_dada <- paste("DADA2 with a user provided database", sep="")
+        dada_min_boot_part <- ""
+    }
+    if ( !isFALSE(params$dada2_ref_tax_title) ) {
+        methods_taxonomic_classification_dada <- paste("DADA2 ",dada_min_boot_part,"and the database '",params$dada2_ref_tax_title,"' (`", params$dada2_ref_tax_citation,"`)", sep="")
+    } else {
+        methods_taxonomic_classification_dada <- paste("DADA2 ",dada_min_boot_part,"with a user provided database", sep="")
     }
     if ( !isFALSE(params$cut_dada_ref_taxonomy) ) {
         methods_taxonomic_classification_dada <- paste(methods_taxonomic_classification_dada,

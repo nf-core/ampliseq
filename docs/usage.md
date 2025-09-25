@@ -250,7 +250,7 @@ Special features of taxonomic classification tools:
 - QIIME2's reference taxonomy databases will have regions matching the amplicon extracted with primer sequences.
 - DADA2, Kraken2, and QIIME2 have specific parameters to accept custom databases (but theoretically possible with all classifiers)
 
-Parameter guidance is given in [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#taxonomic-database). Citations are listed in [`CITATIONS.md`](CITATIONS.md).
+Parameter guidance is given in [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#taxonomic-assignment). Citations are listed in [`CITATIONS.md`](CITATIONS.md).
 
 ### Multiple region analysis with Sidle
 

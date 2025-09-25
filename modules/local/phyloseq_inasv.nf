@@ -19,7 +19,7 @@ process PHYLOSEQ_INASV {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        bash: \$(bash --version | sed -n 1p | grep -Eo 'version [[:alnum:].]+' | sed 's/version //')
+        sed: \$(sed --version 2>&1 | sed -n 1p | sed 's/sed (GNU sed) //')
     END_VERSIONS
     """
 }

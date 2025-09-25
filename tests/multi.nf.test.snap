@@ -48,7 +48,7 @@
                     "pandas": "1.1.5"
                 },
                 "FORMAT_TAXONOMY": {
-                    "bash": "5.0.16"
+                    "sed": 4.7
                 },
                 "MERGE_STATS_FILTERTAXA": {
                     "R": "4.3.2"

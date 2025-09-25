@@ -64,6 +64,7 @@ jobs:
     runs-on: # use self-hosted runners
       - runs-on=${{ github.run_id }}-nf-test
       - runner=4cpu-linux-x64
+      - disk=large # '-profile test_multiregion' with singularity requires the larger disk
     strategy:
       fail-fast: false
       matrix:

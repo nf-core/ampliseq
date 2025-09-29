@@ -66,13 +66,13 @@ workflow QIIME2_PREPTAX {
             ch_qiime_db_dir = ch_qiime_db_dir.mix(ch_qiime_ref_tax_branched.dir)
 
             ch_ref_database_fna = ch_qiime_db_dir.map{ dir ->
-                files = file(dir.resolve("*.fna"), checkIfExists: true)
+                def files = file(dir.resolve("*.fna"), checkIfExists: true)
             } | filter { it ->
                 if (it.size() > 1) log.warn "Found multiple fasta files for QIIME2 reference database."
                 it.size() == 1
             }
             ch_ref_database_tax = ch_qiime_db_dir.map{ dir ->
-                files = file(dir.resolve("*.tax"), checkIfExists: true)
+                def files = file(dir.resolve("*.tax"), checkIfExists: true)
             } | filter { it ->
                 if (it.size() > 1) log.warn "Found multiple tax files for QIIME2 reference database."
                 it.size() == 1

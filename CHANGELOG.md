@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#909](https://github.com/nf-core/ampliseq/pull/909),[#914](https://github.com/nf-core/ampliseq/pull/914) - Parameter `--truncq` allows read truncation by quality score, where each read is truncated at the first instance of a quality score less than or equal to `truncq` (default value is 2). This quality score-based truncation occurs before read length truncation. If `--trunc_qmin` and `--trunc_rmin` are used to automatically calculate the values for `trunclenf` and `trunclenr` used for read length truncation, those calculations are based on the read metrics before quality score-based truncation (using `truncq`) is performed. `truncq` is passed directly as `truncQ` into DADA2's [filterAndTrim](https://rdrr.io/bioc/dada2/man/filterAndTrim.html) method.
 - [#913](https://github.com/nf-core/ampliseq/pull/913) - Parameter `--dada_min_boot` allows the user to specify a minimum bootstrap confidence (out of 100 trials) for assigning a taxonomic level with DADA2's [assignTaxonomy](https://rdrr.io/bioc/dada2/man/assignTaxonomy.html) method.
-- [#909](https://github.com/nf-core/ampliseq/pull/909) - Parameter `--truncq` allows read truncation by quality score, where each read is truncated at the first instance of a quality score less than or equal to `truncq` (default value is 2). This quality score-based truncation occurs before read length truncation. If `--trunc_qmin` and `--trunc_rmin` are used to automatically calculate the values for `trunclenf` and `trunclenr` used for read length truncation, those calculations are based on the read metrics before quality score-based truncation (using `truncq`) is performed. `truncq` is passed directly as `truncQ` into DADA2's [filterAndTrim](https://rdrr.io/bioc/dada2/man/filterAndTrim.html) method.
 
 ### `Changed`
 
@@ -16,11 +16,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
-- [#906](https://github.com/nf-core/ampliseq/pull/906) - Fix `--mergepairs_strategy "consensus"` causing an error in dada2_stats when analysing a run composed by only one sample
 - [#893](https://github.com/nf-core/ampliseq/pull/893),[#896](https://github.com/nf-core/ampliseq/pull/896),[#905](https://github.com/nf-core/ampliseq/pull/905),[#912](https://github.com/nf-core/ampliseq/pull/912) - Template update for nf-core/tools version 3.3.2 and reorganization of nf-test
-- [#897](https://github.com/nf-core/ampliseq/pull/897) - Allow multiple region analysis with one sample
+- [#897](https://github.com/nf-core/ampliseq/pull/897) - Allow multiple region analysis with one sample.
 - [#899](https://github.com/nf-core/ampliseq/pull/899) - With `--dada_ref_tax_custom` all chunks defined by `--dada_assign_chunksize` are now taxonomically annotated.
 - [#904](https://github.com/nf-core/ampliseq/pull/904) - Update `untar` module.
+- [#906](https://github.com/nf-core/ampliseq/pull/906) - Fix `--mergepairs_strategy "consensus"` causing an error in dada2_stats when analysing a run composed by only one sample.
 
 ### `Dependencies`
 

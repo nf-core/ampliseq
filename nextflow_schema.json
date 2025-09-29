@@ -208,7 +208,8 @@
                     "default": 2,
                     "fa_icon": "fas fa-greater-than-equal",
                     "minimum": 0,
-                    "description": "Truncate each read at the first instance of a quality score less than or equal to truncq. Applied before read length truncation."
+                    "description": "Truncate each read at the first instance of a quality score less than or equal to `--truncq`.",
+                    "help_text": "Applied before read length truncation, but in the same step as read length truncation. The parameter is equivalent to `truncQ` in DADA2's filterAndTrim method. `--truncq` defaults to 2, which was already the default previously. If `--trunc_qmin` and `--trunc_rmin` are used to automatically calculate `--trunclenf` and `--trunclenr`, these values are determined using the read metrics calculated on the read input before DADA2 filterAndTrim is called, and so before `--truncq` is applied."
                 },
                 "trunclenf": {
                     "type": "integer",
@@ -411,14 +412,6 @@
             "fa_icon": "fas fa-database",
             "description": "Choose a method and database for taxonomic assignments to single-region amplicons",
             "properties": {
-                "dada_min_boot": {
-                    "type": "integer",
-                    "default": 50,
-                    "fa_icon": "fas fa-greater-than-equal",
-                    "description": "The minimum bootstrap confidence (out of 100 trials) for assigning a taxonomic level with DADA2. Matches `minBoot` in DADA2's assignTaxonomy method.",
-                    "minimum": 0,
-                    "maximum": 100
-                },
                 "dada_ref_taxonomy": {
                     "type": "string",
                     "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `silva=138`) . This will download the desired database, format it to produce a file that is compatible with DADA2's assignTaxonomy and another file that is compatible with DADA2's addSpecies.\n\nThe following databases are supported:\n- GTDB - Genome Taxonomy Database - 16S rRNA\n- SBDI-GTDB, a Sativa-vetted version of the GTDB 16S rRNA\n- PR2 - Protist Reference Ribosomal Database - 18S rRNA\n- RDP - Ribosomal Database Project - 16S rRNA\n- SILVA ribosomal RNA gene database project - 16S rRNA\n- UNITE - eukaryotic nuclear ribosomal ITS region - ITS\n- COIDB - eukaryotic Cytochrome Oxidase I (COI) from The Barcode of Life Data System (BOLD) - COI\n\nGenerally, using `gtdb`, `pr2`, `rdp`, `sbdi-gtdb`, `silva`, `coidb`, `unite-fungi`, or `unite-alleuk` will select the most recent supported version.\n\nPlease note that commercial/non-academic entities [require licensing](https://www.arb-silva.de/silva-license-information) for SILVA v132 database (non-default) but not from v138 on (default).",
@@ -480,6 +473,14 @@
                     "type": "string",
                     "help_text": "Requires `--dada_ref_tax_custom`. Must be compatible to DADA2's addSpecies function: 'Can be compressed. This reference fasta file should be formatted so that the id lines correspond to the genus-species binomial of the associated sequence.' See also https://rdrr.io/bioc/dada2/man/addSpecies.html",
                     "description": "Path to a custom DADA2 reference taxonomy database for species assignment"
+                },
+                "dada_min_boot": {
+                    "type": "integer",
+                    "default": 50,
+                    "fa_icon": "fas fa-greater-than-equal",
+                    "description": "The minimum bootstrap confidence (out of 100 trials) for assigning a taxonomic level with DADA2. Matches `minBoot` in DADA2's assignTaxonomy method.",
+                    "minimum": 0,
+                    "maximum": 100
                 },
                 "dada_assign_taxlevels": {
                     "type": "string",

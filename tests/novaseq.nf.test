@@ -1,0 +1,42 @@
+nextflow_pipeline {
+
+    name "Test pipeline"
+    script "../main.nf"
+    tag "pipeline"
+    profile "test_novaseq"
+
+    test("-profile test_novaseq") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            // stable_name: All files + folders in ${params.outdir}/ with a stable name
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
+
+            assert workflow.success
+            assertAll(
+                { assert snapshot(
+                    // Number of successful tasks
+                    workflow.trace.succeeded().size(),
+                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/software_versions.yml"),
+                    // All stable path name, with a relative path
+                    stable_name,
+                    // Manually chosen files for content checks
+                    path("$outputDir/dada2/ASV_seqs.fasta"),
+                    path("$outputDir/dada2/ASV_table.tsv"),
+                    path("$outputDir/dada2/DADA2_stats.tsv"),
+                    path("$outputDir/dada2/DADA2_table.rds"),
+                    path("$outputDir/dada2/DADA2_table.tsv"),
+                    path("$outputDir/input/Samplesheet_novaseq.tsv"),
+                    path("$outputDir/multiqc/multiqc_data/multiqc_fastqc.txt"),
+                    path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt")
+                ).match() }
+            )
+        }
+    }
+}

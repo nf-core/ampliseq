@@ -1,0 +1,102 @@
+{
+    "-profile test_fasta": {
+        "content": [
+            11,
+            {
+                "BARRNAP": {
+                    "barrnap": 0.9
+                },
+                "BARRNAPSUMMARY": {
+                    "python": "Python 3.9.1"
+                },
+                "DADA2_TAXONOMY": {
+                    "R": "4.3.2",
+                    "dada2": "1.30.0"
+                },
+                "FILTER_CODONS": {
+                    "python": "3.9.1",
+                    "pandas": "1.1.5"
+                },
+                "FILTER_LEN_ASV": {
+                    "R": "4.0.3",
+                    "Biostrings": "2.58.0"
+                },
+                "FILTER_SSU": {
+                    "R": "4.0.3",
+                    "Biostrings": "2.58.0"
+                },
+                "FORMAT_FASTAINPUT": {
+                    "sed": 4.7
+                },
+                "FORMAT_TAXONOMY": {
+                    "sed": 4.7
+                },
+                "Workflow": {
+                    "nf-core/ampliseq": "v2.15.0"
+                }
+            },
+            [
+                "asv_length_filter",
+                "asv_length_filter/ASV_len_filt.tsv",
+                "asv_length_filter/ASV_len_orig.tsv",
+                "asv_length_filter/ASV_seqs.len.fasta",
+                "asv_length_filter/stats.len.tsv",
+                "barrnap",
+                "barrnap/ASV_seqs.ssu.fasta",
+                "barrnap/rrna.arc.gff",
+                "barrnap/rrna.bac.gff",
+                "barrnap/rrna.euk.gff",
+                "barrnap/rrna.mito.gff",
+                "barrnap/summary.tsv",
+                "codon_filter",
+                "codon_filter/ASV_codon_filtered.fna",
+                "codon_filter/ASV_codon_filtered.list",
+                "dada2",
+                "dada2/ASV_tax.rdp_18.tsv",
+                "dada2/ASV_tax_species.rdp_18.tsv",
+                "dada2/args",
+                "dada2/args/addSpecies.args.txt",
+                "dada2/args/assignTaxonomy.args.txt",
+                "dada2/chunks",
+                "dada2/chunks/ASV_codon_filtered.1.ASV_tax.rdp_18.species.tsv",
+                "dada2/chunks/ASV_codon_filtered.1.ASV_tax.rdp_18.tsv",
+                "dada2/ref_taxonomy.rdp_18.txt",
+                "input",
+                "input/ASV_seqs.fasta",
+                "multiqc",
+                "multiqc/multiqc_data",
+                "multiqc/multiqc_data/BETA-multiqc.parquet",
+                "multiqc/multiqc_data/multiqc.log",
+                "multiqc/multiqc_data/multiqc_citations.txt",
+                "multiqc/multiqc_data/multiqc_data.json",
+                "multiqc/multiqc_data/multiqc_sources.txt",
+                "multiqc/multiqc_report.html",
+                "pipeline_info",
+                "pipeline_info/software_versions.yml",
+                "summary_report",
+                "summary_report/asv_length_profile_before_length_filter.svg",
+                "summary_report/dada2_taxonomic_classification_per_taxonomy_level.svg",
+                "summary_report/rrna_detection_with_barrnap.svg",
+                "summary_report/summary_report.html",
+                "summary_report/versions.yml"
+            ],
+            "ASV_len_filt.tsv:md5,0e5bd974219951f56db71843053ac796",
+            "ASV_len_orig.tsv:md5,09a300b31acf0eee817367dad5083f48",
+            "ASV_seqs.len.fasta:md5,9479b62fcff165963b33821e03fe7d7e",
+            "stats.len.tsv:md5,6cc39bcbd889634364499f3a5a82af35",
+            "rrna.arc.gff:md5,6dae470aace9293d5eb8c318584852dd",
+            "rrna.bac.gff:md5,439a9084f089120f700f938dfb58fa41",
+            "rrna.euk.gff:md5,c9bc1d9d8fb77dc19c95dee2d53840eb",
+            "rrna.mito.gff:md5,df19e1b84ba6f691d20c72b397c88abf",
+            "ASV_codon_filtered.fna:md5,9eac2d17e026ac8b1cba876ff3cac619",
+            "ASV_codon_filtered.list:md5,6cdde55829be1ebc5d73a17602e7c881",
+            "ref_taxonomy.rdp_18.txt:md5,c20d8e186e2893ba7818a0115edb013e",
+            "ASV_seqs.fasta:md5,39b0d4ad96b37fa68d4ee5c21b667fed"
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.2"
+        },
+        "timestamp": "2025-06-12T14:22:51.39593484"
+    }
+}

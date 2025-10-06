@@ -1,0 +1,46 @@
+nextflow_pipeline {
+
+    name "Test pipeline"
+    script "../main.nf"
+    tag "pipeline"
+    profile "test_fasta"
+
+    test("-profile test_fasta") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            // stable_name: All files + folders in ${params.outdir}/ with a stable name
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
+
+            assert workflow.success
+            assertAll(
+                { assert snapshot(
+                    // Number of successful tasks
+                    workflow.trace.succeeded().size(),
+                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/software_versions.yml"),
+                    // All stable path name, with a relative path
+                    stable_name,
+                    // Manually chosen files for content checks
+                    path("$outputDir/asv_length_filter/ASV_len_filt.tsv"),
+                    path("$outputDir/asv_length_filter/ASV_len_orig.tsv"),
+                    path("$outputDir/asv_length_filter/ASV_seqs.len.fasta"),
+                    path("$outputDir/asv_length_filter/stats.len.tsv"),
+                    path("$outputDir/barrnap/rrna.arc.gff"),
+                    path("$outputDir/barrnap/rrna.bac.gff"),
+                    path("$outputDir/barrnap/rrna.euk.gff"),
+                    path("$outputDir/barrnap/rrna.mito.gff"),
+                    path("$outputDir/codon_filter/ASV_codon_filtered.fna"),
+                    path("$outputDir/codon_filter/ASV_codon_filtered.list"),
+                    path("$outputDir/dada2/ref_taxonomy.rdp_18.txt"),
+                    path("$outputDir/input/ASV_seqs.fasta")
+                ).match() }
+            )
+        }
+    }
+}

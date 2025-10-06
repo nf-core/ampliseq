@@ -1,5 +1,4 @@
 lint:
-  actions_ci: false
   files_exist:
     - conf/igenomes.config
   files_unchanged:
@@ -9,7 +8,7 @@ lint:
         - params.report_template
         - params.report_css
         - params.report_logo
-nf_core_version: 3.2.1
+nf_core_version: 3.3.2
 repository_type: pipeline
 template:
   author: Daniel Straub, Alexander Peltzer
@@ -21,7 +20,7 @@ template:
   outdir: .
   skip_features:
     - igenomes
-  version: 2.14.0
+  version: 2.15.0
 update:
   https://github.com/nf-core/modules.git:
     nf-core:

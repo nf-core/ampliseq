@@ -1,0 +1,197 @@
+{
+    "-profile test_novaseq": {
+        "content": [
+            22,
+            {
+                "DADA2_DENOISING": {
+                    "R": "4.3.2",
+                    "dada2": "1.30.0"
+                },
+                "DADA2_ERR": {
+                    "R": "4.3.2",
+                    "dada2": "1.30.0"
+                },
+                "DADA2_FILTNTRIM": {
+                    "R": "4.3.2",
+                    "dada2": "1.30.0"
+                },
+                "DADA2_MERGE": {
+                    "R": "4.1.1",
+                    "dada2": "1.22.0"
+                },
+                "DADA2_QUALITY1": {
+                    "R": "4.3.2",
+                    "dada2": "1.30.0",
+                    "ShortRead": "1.60.0"
+                },
+                "DADA2_QUALITY2": {
+                    "R": "4.3.2",
+                    "dada2": "1.30.0",
+                    "ShortRead": "1.60.0"
+                },
+                "DADA2_RMCHIMERA": {
+                    "R": "4.3.2",
+                    "dada2": "1.30.0"
+                },
+                "DADA2_STATS": {
+                    "R": "4.3.2",
+                    "dada2": "1.30.0"
+                },
+                "FASTQC": {
+                    "fastqc": "0.12.1"
+                },
+                "FILTER_CODONS": {
+                    "python": "3.9.1",
+                    "pandas": "1.1.5"
+                },
+                "MERGE_STATS_CODONS": {
+                    "R": "4.3.2"
+                },
+                "RENAME_RAW_DATA_FILES": {
+                    "sed": 4.7
+                },
+                "TRUNCLEN": {
+                    "python": "3.9.1",
+                    "pandas": "1.1.5"
+                },
+                "Workflow": {
+                    "nf-core/ampliseq": "v2.15.0"
+                }
+            },
+            [
+                "codon_filter",
+                "codon_filter/ASV_codon_filtered.fna",
+                "codon_filter/ASV_codon_filtered.list",
+                "codon_filter/ASV_codon_filtered.table.tsv",
+                "codon_filter/codon.filtered.stats.tsv",
+                "dada2",
+                "dada2/ASV_seqs.fasta",
+                "dada2/ASV_table.tsv",
+                "dada2/DADA2_stats.tsv",
+                "dada2/DADA2_table.rds",
+                "dada2/DADA2_table.tsv",
+                "dada2/QC",
+                "dada2/QC/1_1.err.convergence.txt",
+                "dada2/QC/1_1.err.pdf",
+                "dada2/QC/1_1.md.err.convergence.txt",
+                "dada2/QC/1_1.md.err.pdf",
+                "dada2/QC/1_2.err.convergence.txt",
+                "dada2/QC/1_2.err.pdf",
+                "dada2/QC/1_2.md.err.convergence.txt",
+                "dada2/QC/1_2.md.err.pdf",
+                "dada2/QC/2 files were used for FW plotQualityProfile.txt",
+                "dada2/QC/2 files were used for RV plotQualityProfile.txt",
+                "dada2/QC/FW_preprocessed_qual_stats.pdf",
+                "dada2/QC/FW_qual_stats.pdf",
+                "dada2/QC/RV_preprocessed_qual_stats.pdf",
+                "dada2/QC/RV_qual_stats.pdf",
+                "dada2/QC/svg",
+                "dada2/QC/svg/1_1.err.svg",
+                "dada2/QC/svg/1_1.md.err.svg",
+                "dada2/QC/svg/1_2.err.svg",
+                "dada2/QC/svg/1_2.md.err.svg",
+                "dada2/QC/svg/FW_preprocessed_qual_stats.svg",
+                "dada2/QC/svg/FW_qual_stats.svg",
+                "dada2/QC/svg/RV_preprocessed_qual_stats.svg",
+                "dada2/QC/svg/RV_qual_stats.svg",
+                "dada2/args",
+                "dada2/args/FW_plotQualityProfile.args.txt",
+                "dada2/args/FW_preprocessed_plotQualityProfile.args.txt",
+                "dada2/args/RV_plotQualityProfile.args.txt",
+                "dada2/args/RV_preprocessed_plotQualityProfile.args.txt",
+                "dada2/args/dada.args.txt",
+                "dada2/args/filterAndTrim.args.txt",
+                "dada2/args/learnErrors.args.txt",
+                "dada2/args/mergePairs.args.txt",
+                "dada2/args/removeBimeraDenovo.args.txt",
+                "dada2/log",
+                "dada2/log/1.dada.log",
+                "dada2/log/1.err.log",
+                "fastqc",
+                "fastqc/S1_1_fastqc.html",
+                "fastqc/S1_2_fastqc.html",
+                "fastqc/S2_1_fastqc.html",
+                "fastqc/S2_2_fastqc.html",
+                "input",
+                "input/Samplesheet_novaseq.tsv",
+                "multiqc",
+                "multiqc/multiqc_data",
+                "multiqc/multiqc_data/BETA-multiqc.parquet",
+                "multiqc/multiqc_data/fastqc-status-check-heatmap.txt",
+                "multiqc/multiqc_data/fastqc_overrepresented_sequences_plot.txt",
+                "multiqc/multiqc_data/fastqc_per_base_n_content_plot.txt",
+                "multiqc/multiqc_data/fastqc_per_base_sequence_quality_plot.txt",
+                "multiqc/multiqc_data/fastqc_per_sequence_gc_content_plot_Counts.txt",
+                "multiqc/multiqc_data/fastqc_per_sequence_gc_content_plot_Percentages.txt",
+                "multiqc/multiqc_data/fastqc_per_sequence_quality_scores_plot.txt",
+                "multiqc/multiqc_data/fastqc_sequence_counts_plot.txt",
+                "multiqc/multiqc_data/fastqc_sequence_duplication_levels_plot.txt",
+                "multiqc/multiqc_data/fastqc_top_overrepresented_sequences_table.txt",
+                "multiqc/multiqc_data/multiqc.log",
+                "multiqc/multiqc_data/multiqc_citations.txt",
+                "multiqc/multiqc_data/multiqc_data.json",
+                "multiqc/multiqc_data/multiqc_fastqc.txt",
+                "multiqc/multiqc_data/multiqc_general_stats.txt",
+                "multiqc/multiqc_data/multiqc_sources.txt",
+                "multiqc/multiqc_plots",
+                "multiqc/multiqc_plots/pdf",
+                "multiqc/multiqc_plots/pdf/fastqc-status-check-heatmap.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_overrepresented_sequences_plot.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_per_base_n_content_plot.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_per_base_sequence_quality_plot.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_per_sequence_gc_content_plot_Counts.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_per_sequence_gc_content_plot_Percentages.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_per_sequence_quality_scores_plot.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_sequence_counts_plot-cnt.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_sequence_counts_plot-pct.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_sequence_duplication_levels_plot.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_top_overrepresented_sequences_table.pdf",
+                "multiqc/multiqc_plots/png",
+                "multiqc/multiqc_plots/png/fastqc-status-check-heatmap.png",
+                "multiqc/multiqc_plots/png/fastqc_overrepresented_sequences_plot.png",
+                "multiqc/multiqc_plots/png/fastqc_per_base_n_content_plot.png",
+                "multiqc/multiqc_plots/png/fastqc_per_base_sequence_quality_plot.png",
+                "multiqc/multiqc_plots/png/fastqc_per_sequence_gc_content_plot_Counts.png",
+                "multiqc/multiqc_plots/png/fastqc_per_sequence_gc_content_plot_Percentages.png",
+                "multiqc/multiqc_plots/png/fastqc_per_sequence_quality_scores_plot.png",
+                "multiqc/multiqc_plots/png/fastqc_sequence_counts_plot-cnt.png",
+                "multiqc/multiqc_plots/png/fastqc_sequence_counts_plot-pct.png",
+                "multiqc/multiqc_plots/png/fastqc_sequence_duplication_levels_plot.png",
+                "multiqc/multiqc_plots/png/fastqc_top_overrepresented_sequences_table.png",
+                "multiqc/multiqc_plots/svg",
+                "multiqc/multiqc_plots/svg/fastqc-status-check-heatmap.svg",
+                "multiqc/multiqc_plots/svg/fastqc_overrepresented_sequences_plot.svg",
+                "multiqc/multiqc_plots/svg/fastqc_per_base_n_content_plot.svg",
+                "multiqc/multiqc_plots/svg/fastqc_per_base_sequence_quality_plot.svg",
+                "multiqc/multiqc_plots/svg/fastqc_per_sequence_gc_content_plot_Counts.svg",
+                "multiqc/multiqc_plots/svg/fastqc_per_sequence_gc_content_plot_Percentages.svg",
+                "multiqc/multiqc_plots/svg/fastqc_per_sequence_quality_scores_plot.svg",
+                "multiqc/multiqc_plots/svg/fastqc_sequence_counts_plot-cnt.svg",
+                "multiqc/multiqc_plots/svg/fastqc_sequence_counts_plot-pct.svg",
+                "multiqc/multiqc_plots/svg/fastqc_sequence_duplication_levels_plot.svg",
+                "multiqc/multiqc_plots/svg/fastqc_top_overrepresented_sequences_table.svg",
+                "multiqc/multiqc_report.html",
+                "overall_summary.tsv",
+                "pipeline_info",
+                "pipeline_info/software_versions.yml",
+                "summary_report",
+                "summary_report/stacked_barchart_of_reads.svg",
+                "summary_report/summary_report.html",
+                "summary_report/versions.yml"
+            ],
+            "ASV_seqs.fasta:md5,7b11038ff5eb3c795fc60ddf1cd17156",
+            "ASV_table.tsv:md5,9735aeef0ecad9ea66e7bf2222a3ffb4",
+            "DADA2_stats.tsv:md5,f509e598009556e0730b558022e75278",
+            "DADA2_table.rds:md5,a475a9459dc32195e67e1e78ab048da4",
+            "DADA2_table.tsv:md5,cb47a29726b9fa4671e022428d2825cd",
+            "Samplesheet_novaseq.tsv:md5,bcca78fe24736f4ee4ea26fdbd47ee64",
+            "multiqc_fastqc.txt:md5,a99548124efd185a7d4e33245edcb81b",
+            "multiqc_general_stats.txt:md5,92648df79061fa3b17fea104fe1b7641"
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.2"
+        },
+        "timestamp": "2025-06-12T16:33:27.109497713"
+    }
+}

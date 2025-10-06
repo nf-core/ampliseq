@@ -86,6 +86,7 @@ process SUMMARY_REPORT  {
         cutadapt_summary ?
             params.retain_untrimmed ? "flag_retain_untrimmed=TRUE,cutadapt_summary='$cutadapt_summary'" :
             "cutadapt_summary='$cutadapt_summary'" : "",
+        "truncq=$params.truncq",
         find_truncation_values ? "trunc_qmin=$params.trunc_qmin,trunc_rmin=$params.trunc_rmin" : "",
         "trunclenf='$params.trunclenf'",
         "trunclenr='$params.trunclenr'",
@@ -112,6 +113,7 @@ process SUMMARY_REPORT  {
         params.max_len_asv ? "max_len_asv=$params.max_len_asv" : "max_len_asv=0",
         filter_codons_fasta ? "filter_codons_fasta='$filter_codons_fasta',stop_codons='$params.stop_codons'" : "",
         filter_codons_stats ? "filter_codons_stats='$filter_codons_stats'" : "",
+        "dada_min_boot=$params.dada_min_boot",
         itsx_cutasv_summary ? "itsx_cutasv_summary='$itsx_cutasv_summary',cut_its='$params.cut_its'" : "",
         dada2_tax ? "dada2_taxonomy='$dada2_tax'" : "",
         dada2_tax && !params.dada_ref_tax_custom ? "dada2_ref_tax_title='${params.dada_ref_databases[params.dada_ref_taxonomy]["title"]}',dada2_ref_tax_file='${params.dada_ref_databases[params.dada_ref_taxonomy]["file"]}',dada2_ref_tax_citation='${params.dada_ref_databases[params.dada_ref_taxonomy]["citation"]}'" : "",

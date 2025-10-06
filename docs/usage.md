@@ -13,6 +13,7 @@
     - [Samplesheet input](#samplesheet-input)
     - [ASV/OTU fasta input](#asvotu-fasta-input)
     - [Direct FASTQ input](#direct-fastq-input)
+  - [Regions of variable length e.g. ITS](#regions-of-variable-length-eg-its)
   - [Taxonomic classification](#taxonomic-classification)
   - [Multiple region analysis with Sidle](#multiple-region-analysis-with-sidle)
   - [Metadata](#metadata)
@@ -61,7 +62,7 @@ work                # Directory containing the nextflow working files
 ```
 
 > [!TIP]
-> For [Reproducibility](#reproducibility), specify the version to run using `-r` (= release, e.g. 2.14.0, please use the most recent release). See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters) for more information about pipeline specific parameters.
+> For [Reproducibility](#reproducibility), specify the version to run using `-r` (= release, e.g. 2.15.0, please use the most recent release). See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters) for more information about pipeline specific parameters.
 
 > [!NOTE]
 > If the data originates from multiple sequencing runs, the error profile of each of those sequencing runs needs to be considered separately. Using the `run` column in the samplesheet input or adding `--multiple_sequencing_runs` for direct FASTQ input will separate certain processes by the sequencing run. Please see the following example:
@@ -209,6 +210,10 @@ Please note the following additional requirements:
 - Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique (also across sequencing runs) and only contain letters, numbers or underscores
 - If your data is scattered, produce a sample sheet
 
+### Regions of variable length (e.g. ITS)
+
+Special considerations should be made when pre-processing reads for regions of variable length, e.g. ITS for fungal barcoding. For ITS regions e.g. ITS1 or ITS2, it is recommended to use the `--illumina_pe_its` parameter for paired-end Illumina reads, which disables fixed-length read truncation. Also consider adjusting `--truncq` to a value higher than the default value of 2 if you find that a high proportion of reads is excluded by DADA2 filtering.
+
 ### Taxonomic classification
 
 Taxonomic classification of ASVs can be performed with tools DADA2, SINTAX, Kraken2 or QIIME2. Multiple taxonomic reference databases are pre-configured for those tools, but user supplied databases are also supported for some tools. Alternatively (or in addition), phylogenetic placement can be used to extract taxonomic classifications.
@@ -235,7 +240,6 @@ Pre-configured reference taxonomy databases are:
 | phytoref     | +     | -      | -       | -      | eukaryotic plastid 16S rRNA                   |
 | zehr-nifh    | +     | -      | -       | -      | Nitrogenase iron protein NifH                 |
 | standard     | -     | -      | +       | -      | any in genomes of archaea, bacteria, viruses⁴ |
-| plantae-bold | +     | -      | -       | -      | Plantae ITS1, trnL region                     |
 
 ¹: As of Silva version 138 optimized for classification of Bacteria and Archaea, not suitable for Eukaryotes; ²[`--dada_taxonomy_rc`](https://nf-co.re/ampliseq/parameters#dada_taxonomy_rc) is recommended; ³: de-replicated at 85%, only for testing purposes; ⁴: quality of results might vary
 
@@ -246,7 +250,7 @@ Special features of taxonomic classification tools:
 - QIIME2's reference taxonomy databases will have regions matching the amplicon extracted with primer sequences.
 - DADA2, Kraken2, and QIIME2 have specific parameters to accept custom databases (but theoretically possible with all classifiers)
 
-Parameter guidance is given in [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#taxonomic-database). Citations are listed in [`CITATIONS.md`](CITATIONS.md).
+Parameter guidance is given in [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#taxonomic-assignment). Citations are listed in [`CITATIONS.md`](CITATIONS.md).
 
 ### Multiple region analysis with Sidle
 
@@ -323,7 +327,7 @@ nextflow pull nf-core/ampliseq
 
 It is a good idea to specify the pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
 
-First, go to the [nf-core/ampliseq releases page](https://github.com/nf-core/ampliseq/releases) and find the latest pipeline version - numeric only (eg. `2.14.0`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 2.14.0`. Of course, you can switch to another version by changing the number after the `-r` flag.
+First, go to the [nf-core/ampliseq releases page](https://github.com/nf-core/ampliseq/releases) and find the latest pipeline version - numeric only (eg. `2.15.0`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 2.15.0`. Of course, you can switch to another version by changing the number after the `-r` flag.
 
 This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future. For example, at the bottom of the MultiQC reports.
 

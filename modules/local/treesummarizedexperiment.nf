@@ -2,7 +2,7 @@ process TREESUMMARIZEDEXPERIMENT {
     tag "$prefix"
     label 'process_low'
 
-    conda "bioconda::bioconductor-treesummarizedexperiment=2.10.0"
+    conda "bioconda::bioconductor-treesummarizedexperiment=2.10.0 conda-forge::r-base=4.3.2"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/bioconductor-treesummarizedexperiment:2.10.0--r43hdfd78af_0' :
         'biocontainers/bioconductor-treesummarizedexperiment:2.10.0--r43hdfd78af_0' }"

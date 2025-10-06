@@ -203,6 +203,14 @@
             "description": "Read trimming and quality filtering is supposed to reduce spurious results and aid error correction",
             "default": "",
             "properties": {
+                "truncq": {
+                    "type": "integer",
+                    "default": 2,
+                    "fa_icon": "fas fa-greater-than-equal",
+                    "minimum": 0,
+                    "description": "Truncate each read at the first instance of a quality score less than or equal to `--truncq`.",
+                    "help_text": "Applied before read length truncation, but in the same step as read length truncation. The parameter is equivalent to `truncQ` in DADA2's filterAndTrim method. `--truncq` defaults to 2, which was already the default previously. If `--trunc_qmin` and `--trunc_rmin` are used to automatically calculate `--trunclenf` and `--trunclenr`, these values are determined using the read metrics calculated on the read input before DADA2 filterAndTrim is called, and so before `--truncq` is applied."
+                },
                 "trunclenf": {
                     "type": "integer",
                     "description": "DADA2 read truncation value for forward strand, set this to 0 for no truncation",
@@ -219,7 +227,7 @@
                     "type": "integer",
                     "default": 25,
                     "description": "If --trunclenf and --trunclenr are not set, these values will be automatically determined using this median quality score",
-                    "help_text": "Automatically determine `--trunclenf` and `--trunclenr` before the median quality score drops below `--trunc_qmin`. The fraction of reads retained is defined by `--trunc_rmin`, which might override the quality cutoff.\n\nFor example:\n\n```bash\n--trunc_qmin 35\n```\n\nPlease note:\n\n1. The code choosing `--trunclenf` and `--trunclenr` using `--trunc_qmin` automatically cannot take amplicon length or overlap requirements for merging into account, therefore use with caution.\n2. A minimum value of 25 is recommended. However, high quality data with a large paired sequence overlap might justify a higher value (e.g. 35). Also, very low quality data might require a lower value.\n3. If the quality cutoff is too low to include a certain fraction of reads that is specified by `--trunc_rmin` (e.g. 0.75 means at least 75% percent of reads are retained), a lower cutoff according to `--trunc_rmin` superseeds the quality cutoff.",
+                    "help_text": "Automatically determine `--trunclenf` and `--trunclenr` before the median quality score drops below `--trunc_qmin`. The fraction of reads retained is defined by `--trunc_rmin`, which might override the quality cutoff.\n\nFor example:\n\n```bash\n--trunc_qmin 35\n```\n\nPlease note:\n\n1. The code choosing `--trunclenf` and `--trunclenr` using `--trunc_qmin` automatically cannot take amplicon length or overlap requirements for merging into account, therefore use with caution.\n2. A minimum value of 25 is recommended. However, high quality data with a large paired sequence overlap might justify a higher value (e.g. 35). Also, very low quality data might require a lower value.\n3. If the quality cutoff is too low to include a certain fraction of reads that is specified by `--trunc_rmin` (e.g. 0.75 means at least 75% percent of reads are retained), a lower cutoff according to `--trunc_rmin` superseeds the quality cutoff.\n4. The calculations for the values of `--trunclenf` and `--trunclenr` are made before any quality score-based read truncation (using `--truncq`) is performed.",
                     "fa_icon": "fas fa-greater-than-equal"
                 },
                 "trunc_rmin": {
@@ -398,8 +406,8 @@
             },
             "fa_icon": "fas fa-filter"
         },
-        "taxonomic_database": {
-            "title": "Taxonomic database",
+        "taxonomic_assignment": {
+            "title": "Taxonomic assignment",
             "type": "object",
             "fa_icon": "fas fa-database",
             "description": "Choose a method and database for taxonomic assignments to single-region amplicons",
@@ -423,10 +431,6 @@
                         "gtdb=R10-RS226",
                         "midori2-co1",
                         "midori2-co1=gb250",
-                        "plantae-bold-trnl",
-                        "plantae-bold-trnl=20240510",
-                        "plantae-bold-its1",
-                        "plantae-bold-its1=20240510",
                         "pr2",
                         "pr2=4.13.0",
                         "pr2=4.14.0",
@@ -469,6 +473,14 @@
                     "type": "string",
                     "help_text": "Requires `--dada_ref_tax_custom`. Must be compatible to DADA2's addSpecies function: 'Can be compressed. This reference fasta file should be formatted so that the id lines correspond to the genus-species binomial of the associated sequence.' See also https://rdrr.io/bioc/dada2/man/addSpecies.html",
                     "description": "Path to a custom DADA2 reference taxonomy database for species assignment"
+                },
+                "dada_min_boot": {
+                    "type": "integer",
+                    "default": 50,
+                    "fa_icon": "fas fa-greater-than-equal",
+                    "description": "The minimum bootstrap confidence (out of 100 trials) for assigning a taxonomic level with DADA2. Matches `minBoot` in DADA2's assignTaxonomy method.",
+                    "minimum": 0,
+                    "maximum": 100
                 },
                 "dada_assign_taxlevels": {
                     "type": "string",
@@ -1089,7 +1101,7 @@
             "$ref": "#/$defs/asv_post_processing"
         },
         {
-            "$ref": "#/$defs/taxonomic_database"
+            "$ref": "#/$defs/taxonomic_assignment"
         },
         {
             "$ref": "#/$defs/multiregion_taxonomic_database"

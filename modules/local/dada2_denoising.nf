@@ -3,7 +3,7 @@ process DADA2_DENOISING {
     label 'process_medium'
     label 'process_long'
 
-    conda "bioconda::bioconductor-dada2=1.30.0"
+    conda "bioconda::bioconductor-dada2=1.30.0 conda-forge::r-base=4.3.2"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.30.0--r43hf17093f_0' :
         'biocontainers/bioconductor-dada2:1.30.0--r43hf17093f_0' }"
@@ -88,6 +88,12 @@ process DADA2_DENOISING {
                     mergers[[x]] <- mergers[[x]][mergers[[x]][["accept"]], ]
                 }
 
+            }
+
+            # if one sample, need to convert back to df for next steps
+
+            if(length(mergers) == 1) {
+                mergers <- mergers[[1]]
             }
 
         } else {

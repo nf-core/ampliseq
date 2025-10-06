@@ -202,7 +202,7 @@ workflow AMPLISEQ {
     trunclenr = params.trunclenr ?: 0
     if ( !single_end && !params.illumina_pe_its && (params.trunclenf == null || params.trunclenr == null) && !params.input_fasta ) {
         find_truncation_values = true
-        log.warn "No DADA2 cutoffs were specified (`--trunclenf` & `--trunclenr`), therefore reads will be truncated where median quality drops below ${params.trunc_qmin} (defined by `--trunc_qmin`) but at least a fraction of ${params.trunc_rmin} (defined by `--trunc_rmin`) of the reads will be retained.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\n"
+        log.warn "No DADA2 read truncation cutoffs were specified (`--trunclenf` & `--trunclenr`), therefore reads will be truncated where median quality drops below ${params.trunc_qmin} (defined by `--trunc_qmin`) but at least a fraction of ${params.trunc_rmin} (defined by `--trunc_rmin`) of the reads will be retained.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\nThe cutoffs are chosen before any quality score-based read truncation (using `--truncq`) is performed.\n"
     } else { find_truncation_values = false }
 
     // save params to values to be able to overwrite it
@@ -232,7 +232,7 @@ workflow AMPLISEQ {
     }
 
     // Only run QIIME2 taxonomy classification if needed parameters are passed and we are not skipping taxonomy or qiime steps.
-    if ( !(workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) && !params.skip_taxonomy && !params.skip_qiime && (params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier) ) {
+    if ( !params.skip_taxonomy && !params.skip_qiime && (params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier) ) {
         run_qiime2_taxonomy = true
     } else {
         run_qiime2_taxonomy = false
@@ -744,7 +744,7 @@ workflow AMPLISEQ {
             QIIME2_SEQFILTERTABLE ( QIIME2_TABLEFILTERTAXA.out.qza, QIIME2_INSEQ.out.qza )
             ch_versions = ch_versions.mix( QIIME2_SEQFILTERTABLE.out.versions )
             FILTER_STATS ( ch_dada2_asv, QIIME2_TABLEFILTERTAXA.out.tsv )
-            ch_versions = ch_versions.mix( FILTER_STATS.out.versions.ifEmpty(null) )
+            ch_versions = ch_versions.mix( FILTER_STATS.out.versions )
             MERGE_STATS_FILTERTAXA (ch_stats, FILTER_STATS.out.tsv)
             ch_versions = ch_versions.mix( MERGE_STATS_FILTERTAXA.out.versions )
             ch_asv = QIIME2_TABLEFILTERTAXA.out.qza
@@ -836,7 +836,7 @@ workflow AMPLISEQ {
         } else {
             PICRUST ( ch_fasta, ch_dada2_asv, "DADA2", "This Picrust2 analysis is based on unfiltered reads from DADA2" )
         }
-        ch_versions = ch_versions.mix(PICRUST.out.versions.ifEmpty(null))
+        ch_versions = ch_versions.mix(PICRUST.out.versions)
     }
 
     //

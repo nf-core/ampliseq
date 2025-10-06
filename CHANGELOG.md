@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#899](https://github.com/nf-core/ampliseq/pull/899) - With `--dada_ref_tax_custom` all chunks defined by `--dada_assign_chunksize` are now taxonomically annotated.
 - [#904](https://github.com/nf-core/ampliseq/pull/904) - Update `untar` module.
 - [#906](https://github.com/nf-core/ampliseq/pull/906) - Fix `--mergepairs_strategy "consensus"` causing an error in dada2_stats when analysing a run composed by only one sample.
+- [#916](https://github.com/nf-core/ampliseq/pull/916) - Improved ext.args layout
 
 ### `Dependencies`
 

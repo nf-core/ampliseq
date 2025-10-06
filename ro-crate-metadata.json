@@ -21,8 +21,8 @@
         {
             "@id": "./",
             "@type": "Dataset",
-            "creativeWorkStatus": "Stable",
-            "datePublished": "2025-09-19T10:34:11+00:00",
+            "creativeWorkStatus": "InProgress",
+            "datePublished": "2025-10-06T16:12:55+00:00",
             "description": "<h1>\n  <picture>\n    <source media=\"(prefers-color-scheme: dark)\" srcset=\"docs/images/nf-core-ampliseq_logo_dark.png\">\n    <img alt=\"nf-core/ampliseq\" src=\"docs/images/nf-core-ampliseq_logo_light.png\">\n  </picture>\n</h1>\n\n[![GitHub Actions CI Status](https://github.com/nf-core/ampliseq/actions/workflows/nf-test.yml/badge.svg)](https://github.com/nf-core/ampliseq/actions/workflows/nf-test.yml)\n[![GitHub Actions Linting Status](https://github.com/nf-core/ampliseq/actions/workflows/linting.yml/badge.svg)](https://github.com/nf-core/ampliseq/actions/workflows/linting.yml)[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/ampliseq/results)[![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)\n\n[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.1493841-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.1493841)[![Cite Publication](https://img.shields.io/badge/Cite%20Us!-Cite%20Publication-important?labelColor=000000)](https://doi.org/10.3389/fmicb.2020.550420)\n\n[![Nextflow](https://img.shields.io/badge/version-%E2%89%A524.10.5-green?style=flat&logo=nextflow&logoColor=white&color=%230DC09D&link=https%3A%2F%2Fnextflow.io)](https://www.nextflow.io/)\n[![nf-core template version](https://img.shields.io/badge/nf--core_template-3.3.2-green?style=flat&logo=nfcore&logoColor=white&color=%2324B064&link=https%3A%2F%2Fnf-co.re)](https://github.com/nf-core/tools/releases/tag/3.3.2)\n[![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)\n[![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)\n[![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)\n[![Launch on Seqera Platform](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Seqera%20Platform-%234256e7)](https://cloud.seqera.io/launch?pipeline=https://github.com/nf-core/ampliseq)\n\n[![Get help on Slack](http://img.shields.io/badge/slack-nf--core%20%23ampliseq-4A154B?labelColor=000000&logo=slack)](https://nfcore.slack.com/channels/ampliseq)[![Follow on Bluesky](https://img.shields.io/badge/bluesky-%40nf__core-1185fe?labelColor=000000&logo=bluesky)](https://bsky.app/profile/nf-co.re)[![Follow on Mastodon](https://img.shields.io/badge/mastodon-nf__core-6364ff?labelColor=FFFFFF&logo=mastodon)](https://mstdn.science/@nf_core)[![Watch on YouTube](http://img.shields.io/badge/youtube-nf--core-FF0000?labelColor=000000&logo=youtube)](https://www.youtube.com/c/nf-core)[![Watch on YouTube](http://img.shields.io/badge/youtube-ampliseq-FFFF00?labelColor=000000&logo=youtube)](https://youtu.be/a0VOEeAvETs)\n\n## Introduction\n\n**nfcore/ampliseq** is a bioinformatics analysis pipeline used for amplicon sequencing, supporting denoising of any amplicon and supports a variety of taxonomic databases for taxonomic assignment including 16S, ITS, CO1 and 18S. Phylogenetic placement is also possible. Multiple region analysis such as 5R is implemented. Supported is paired-end Illumina or single-end Illumina, PacBio and IonTorrent data. Default is the analysis of 16S rRNA gene amplicons sequenced paired-end with Illumina.\n\nA video about relevance, usage and output of the pipeline (version 2.1.0; 26th Oct. 2021) can also be found in [YouTube](https://youtu.be/a0VOEeAvETs) and [billibilli](https://www.bilibili.com/video/BV1B44y1e7MM), the slides are deposited at [figshare](https://doi.org/10.6084/m9.figshare.16871008.v1).\n\n<p align=\"center\">\n    <img src=\"docs/images/ampliseq_workflow.png\" alt=\"nf-core/ampliseq workflow overview\" width=\"60%\">\n</p>\n\nOn release, automated continuous integration tests run the pipeline on a full-sized dataset on the AWS cloud infrastructure. This ensures that the pipeline runs on AWS, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources. The results obtained from the full-sized test can be viewed on the [nf-core website](https://nf-co.re/ampliseq/results).\n\n## Pipeline summary\n\nBy default, the pipeline currently performs the following:\n\n- Sequencing quality control ([FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))\n- Trimming of reads ([Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200))\n- Infer Amplicon Sequence Variants (ASVs) ([DADA2](https://doi.org/10.1038/nmeth.3869))\n- Optional post-clustering with [VSEARCH](https://github.com/torognes/vsearch)\n- Predict whether ASVs are ribosomal RNA sequences ([Barrnap](https://github.com/tseemann/barrnap))\n- Phylogenetic placement ([EPA-NG](https://github.com/Pbdas/epa-ng))\n- Taxonomical classification using DADA2; alternatives are [SINTAX](https://doi.org/10.1101/074161), [Kraken2](https://doi.org/10.1186/s13059-019-1891-0), and [QIIME2](https://www.nature.com/articles/s41587-019-0209-9)\n- Excludes unwanted taxa, produces absolute and relative feature/taxa count tables and plots, plots alpha rarefaction curves, computes alpha and beta diversity indices and plots thereof ([QIIME2](https://www.nature.com/articles/s41587-019-0209-9))\n- Creates phyloseq R objects ([Phyloseq](https://www.bioconductor.org/packages/release/bioc/html/phyloseq.html) and [TreeSE](https://doi.org/10.12688/f1000research.26669.2))\n- Pipeline QC summaries ([MultiQC](https://multiqc.info/))\n- Pipeline summary report ([R Markdown](https://github.com/rstudio/rmarkdown))\n\n## Usage\n\n> [!NOTE]\n> If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.\n\nFirst, you need to know whether the sequencing files at hand are expected to contain primer sequences (usually yes) and if yes, what primer sequences. In the example below, the paired end sequencing data was produced with 515f (GTGYCAGCMGCCGCGGTAA) and 806r (GGACTACNVGGGTWTCTAAT) primers of the V4 region of the 16S rRNA gene. Please note, that those sequences should not contain any sequencing adapter sequences, only the sequence that matches the biological amplicon.\n\nNext, the data needs to be organized in a folder, here `data`, or detailed in a samplesheet (see [input documentation](https://nf-co.re/ampliseq/usage#input-specifications)).\n\nNow, you can run the pipeline using:\n\n```bash\nnextflow run nf-core/ampliseq \\\n   -profile <docker/singularity/.../institute> \\\n   --input \"data\" \\\n   --FW_primer \"GTGYCAGCMGCCGCGGTAA\" \\\n   --RV_primer \"GGACTACNVGGGTWTCTAAT\" \\\n   --outdir <OUTDIR>\n```\n\n> [!NOTE]\n> Adding metadata will considerably increase the output, see [metadata documentation](https://nf-co.re/ampliseq/usage#metadata).\n\n> [!TIP]\n> By default the taxonomic assignment will be performed with DADA2 on SILVA database, but there are various tools and databases readily available, see [taxonomic classification documentation](https://nf-co.re/ampliseq/usage#taxonomic-classification). Differential abundance testing with ([ANCOM](https://www.ncbi.nlm.nih.gov/pubmed/26028277)) or ([ANCOM-BC](https://www.ncbi.nlm.nih.gov/pubmed/32665548)) when opting in.\n\n> [!WARNING]\n> Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_; see [docs](https://nf-co.re/docs/usage/getting_started/configuration#custom-configuration-files).\n\nFor more details and further functionality, please refer to the [usage documentation](https://nf-co.re/ampliseq/usage) and the [parameter documentation](https://nf-co.re/ampliseq/parameters).\n\n## Pipeline output\n\nTo see the results of an example test run with a full size dataset refer to the [results](https://nf-co.re/ampliseq/results) tab on the nf-core website pipeline page.\nFor more details about the output files and reports, please refer to the\n[output documentation](https://nf-co.re/ampliseq/output).\n\n## Credits\n\nnf-core/ampliseq was originally written by Daniel Straub ([@d4straub](https://github.com/d4straub)) and Alexander Peltzer ([@apeltzer](https://github.com/apeltzer)) for use at the [Quantitative Biology Center (QBiC)](https://www.info.qbic.uni-tuebingen.de/) and [Microbial Ecology, Center for Applied Geosciences](http://www.uni-tuebingen.de/de/104325), part of Eberhard Karls Universit\u00e4t T\u00fcbingen (Germany). Daniel Lundin [@erikrikarddaniel](https://github.com/erikrikarddaniel) ([Linnaeus University, Sweden](https://lnu.se/)) joined before pipeline release 2.0.0 and helped to improve the pipeline considerably.\n\nWe thank the following people for their extensive assistance in the development of this pipeline (in alphabetical order):\n\n[Adam Bennett](https://github.com/a4000), [Diego Brambilla](https://github.com/DiegoBrambilla), [Emelie Nilsson](https://github.com/emnilsson), [Jeanette T\u00e5ngrot](https://github.com/jtangrot), [Lokeshwaran Manoharan](https://github.com/lokeshbio), [Marissa Dubbelaar](https://github.com/marissaDubbelaar), [Sabrina Krakau](https://github.com/skrakau), [Sam Minot](https://github.com/sminot), [Till Englert](https://github.com/tillenglert)\n\n## Contributions and Support\n\nIf you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).\n\nFor further information or help, don't hesitate to get in touch on the [Slack `#ampliseq` channel](https://nfcore.slack.com/channels/ampliseq) (you can join with [this invite](https://nf-co.re/join/slack)).\n\n## Citations\n\nIf you use `nf-core/ampliseq` for your analysis, please cite the `ampliseq` article as follows:\n\n> **Interpretations of Environmental Microbial Community Studies Are Biased by the Selected 16S rRNA (Gene) Amplicon Sequencing Pipeline**\n>\n> Daniel Straub, Nia Blackwell, Adrian Langarica-Fuentes, Alexander Peltzer, Sven Nahnsen, Sara Kleindienst\n>\n> _Frontiers in Microbiology_ 2020, 11:2652 [doi: 10.3389/fmicb.2020.550420](https://doi.org/10.3389/fmicb.2020.550420).\n\nYou can cite the `nf-core/ampliseq` zenodo record for a specific version using the following [doi: 10.5281/zenodo.1493841](https://zenodo.org/badge/latestdoi/150448201)\n\nAn extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.\n\nYou can cite the `nf-core` publication as follows:\n\n> **The nf-core framework for community-curated bioinformatics pipelines.**\n>\n> Philip Ewels, Alexander Peltzer, Sven Fillinger, Harshil Patel, Johannes Alneberg, Andreas Wilm, Maxime Ulysse Garcia, Paolo Di Tommaso & Sven Nahnsen.\n>\n> _Nat Biotechnol._ 2020 Feb 13. doi: [10.1038/s41587-020-0439-x](https://dx.doi.org/10.1038/s41587-020-0439-x).\n",
             "hasPart": [
                 {
@@ -105,7 +105,7 @@
             },
             "mentions": [
                 {
-                    "@id": "#7a27732d-cfcf-47c2-9576-5e5f6d265eae"
+                    "@id": "#4e77e2df-12a8-4057-86ee-3492d7d73c6f"
                 }
             ],
             "name": "nf-core/ampliseq"
@@ -134,23 +134,23 @@
             ],
             "creator": [
                 {
-                    "@id": "#jeanette.tangrot@umu.se"
-                },
-                {
                     "@id": "#emelie.nilsson@lnu.se"
-                },
-                {
-                    "@id": "https://orcid.org/0000-0002-6503-2180"
                 },
                 {
                     "@id": "#42973691+d4straub@users.noreply.github.com"
                 },
                 {
                     "@id": "#phil.ewels@scilifelab.se"
+                },
+                {
+                    "@id": "#jeanette.tangrot@umu.se"
+                },
+                {
+                    "@id": "https://orcid.org/0000-0002-6503-2180"
                 }
             ],
             "dateCreated": "",
-            "dateModified": "2025-09-19T12:34:11Z",
+            "dateModified": "2025-10-06T18:12:55Z",
             "dct:conformsTo": "https://bioschemas.org/profiles/ComputationalWorkflow/1.0-RELEASE/",
             "keywords": [
                 "nf-core",
@@ -176,13 +176,13 @@
             ],
             "maintainer": [
                 {
+                    "@id": "#42973691+d4straub@users.noreply.github.com"
+                },
+                {
                     "@id": "#jeanette.tangrot@umu.se"
                 },
                 {
                     "@id": "https://orcid.org/0000-0002-6503-2180"
-                },
-                {
-                    "@id": "#42973691+d4straub@users.noreply.github.com"
                 }
             ],
             "name": [
@@ -196,10 +196,10 @@
             },
             "url": [
                 "https://github.com/nf-core/ampliseq",
-                "https://nf-co.re/ampliseq/2.15.0/"
+                "https://nf-co.re/ampliseq/dev/"
             ],
             "version": [
-                "2.15.0"
+                "2.16.0dev"
             ]
         },
         {
@@ -215,11 +215,11 @@
             "version": "!>=24.10.5"
         },
         {
-            "@id": "#7a27732d-cfcf-47c2-9576-5e5f6d265eae",
+            "@id": "#4e77e2df-12a8-4057-86ee-3492d7d73c6f",
             "@type": "TestSuite",
             "instance": [
                 {
-                    "@id": "#ddad1248-748b-4395-b38b-86f6d68e0192"
+                    "@id": "#7253faba-431a-4053-a4cc-94cbbb9f8785"
                 }
             ],
             "mainEntity": {
@@ -228,7 +228,7 @@
             "name": "Test suite for nf-core/ampliseq"
         },
         {
-            "@id": "#ddad1248-748b-4395-b38b-86f6d68e0192",
+            "@id": "#7253faba-431a-4053-a4cc-94cbbb9f8785",
             "@type": "TestInstance",
             "name": "GitHub Actions workflow for testing nf-core/ampliseq",
             "resource": "repos/nf-core/ampliseq/actions/workflows/nf-test.yml",
@@ -367,22 +367,10 @@
             "url": "https://nf-co.re/"
         },
         {
-            "@id": "#jeanette.tangrot@umu.se",
-            "@type": "Person",
-            "email": "jeanette.tangrot@umu.se",
-            "name": "Jeanette T\u00e5ngrot"
-        },
-        {
             "@id": "#emelie.nilsson@lnu.se",
             "@type": "Person",
             "email": "emelie.nilsson@lnu.se",
             "name": "Emelie Nilsso"
-        },
-        {
-            "@id": "https://orcid.org/0000-0002-6503-2180",
-            "@type": "Person",
-            "email": "apeltzer@users.noreply.github.com",
-            "name": "Alexander Peltzer"
         },
         {
             "@id": "#42973691+d4straub@users.noreply.github.com",
@@ -395,6 +383,18 @@
             "@type": "Person",
             "email": "phil.ewels@scilifelab.se",
             "name": "Phil Ewels"
+        },
+        {
+            "@id": "#jeanette.tangrot@umu.se",
+            "@type": "Person",
+            "email": "jeanette.tangrot@umu.se",
+            "name": "Jeanette T\u00e5ngrot"
+        },
+        {
+            "@id": "https://orcid.org/0000-0002-6503-2180",
+            "@type": "Person",
+            "email": "apeltzer@users.noreply.github.com",
+            "name": "Alexander Peltzer"
         }
     ]
 }

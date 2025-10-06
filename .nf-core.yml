@@ -1,13 +1,13 @@
 lint:
   files_exist:
-  - conf/igenomes.config
+    - conf/igenomes.config
   files_unchanged:
-  - .gitattributes
+    - .gitattributes
   nextflow_config:
-  - config_defaults:
-    - params.report_template
-    - params.report_css
-    - params.report_logo
+    - config_defaults:
+        - params.report_template
+        - params.report_css
+        - params.report_logo
 nf_core_version: 3.3.2
 repository_type: pipeline
 template:
@@ -19,7 +19,7 @@ template:
   org: nf-core
   outdir: .
   skip_features:
-  - igenomes
+    - igenomes
   version: 2.16.0dev
 update:
   https://github.com/nf-core/modules.git:

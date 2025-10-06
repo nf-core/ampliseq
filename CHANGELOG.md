@@ -10,10 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#909](https://github.com/nf-core/ampliseq/pull/909),[#914](https://github.com/nf-core/ampliseq/pull/914) - Parameter `--truncq` allows read truncation by quality score, where each read is truncated at the first instance of a quality score less than or equal to `truncq` (default value is 2). This quality score-based truncation occurs before read length truncation. If `--trunc_qmin` and `--trunc_rmin` are used to automatically calculate the values for `trunclenf` and `trunclenr` used for read length truncation, those calculations are based on the read metrics before quality score-based truncation (using `truncq`) is performed. `truncq` is passed directly as `truncQ` into DADA2's [filterAndTrim](https://rdrr.io/bioc/dada2/man/filterAndTrim.html) method.
 - [#913](https://github.com/nf-core/ampliseq/pull/913) - Parameter `--dada_min_boot` allows the user to specify a minimum bootstrap confidence (out of 100 trials) for assigning a taxonomic level with DADA2's [assignTaxonomy](https://rdrr.io/bioc/dada2/man/assignTaxonomy.html) method.
 
-| **Parameter**      | **Description**                                                                                         |
-| ------------------ | ---------------------------------------------------------------------- |
-| **truncq**         | New: Read quality score-based truncation                               |
-| **dada_min_boot**  | New: Minimum bootstrap confidence for taxonomic assignments with DADA2 |
+| **Parameter**     | **Description**                                                        |
+| ----------------- | ---------------------------------------------------------------------- |
+| **truncq**        | New: Read quality score-based truncation                               |
+| **dada_min_boot** | New: Minimum bootstrap confidence for taxonomic assignments with DADA2 |
 
 ### `Changed`
 

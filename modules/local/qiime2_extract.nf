@@ -1,5 +1,7 @@
 process QIIME2_EXTRACT {
     tag "${meta.FW_primer}-${meta.RV_primer}"
+    label 'process_medium'
+    label 'process_long'
 
     conda "${projectDir}/modules/local/envs/qiime2-amplicon-2024.10-py310-linux-conda.yml"
     container "qiime2/amplicon:2024.10"

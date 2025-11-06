@@ -1,7 +1,7 @@
 process DADA2_ADDSPECIES {
     tag "${taxtable},${database}"
     label 'process_high'
-    label 'single_cpu'
+    label 'process_cpu_single'
 
     conda "bioconda::bioconductor-dada2=1.30.0 conda-forge::r-base=4.3.2"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?

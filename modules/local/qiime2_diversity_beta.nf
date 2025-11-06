@@ -1,6 +1,6 @@
 process QIIME2_DIVERSITY_BETA {
     tag "${core.baseName}-${category}"
-    label 'process_low'
+    label 'process_medium'
 
     conda "${projectDir}/modules/local/envs/qiime2-amplicon-2024.10-py310-linux-conda.yml"
     container "qiime2/amplicon:2024.10"

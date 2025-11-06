@@ -1,6 +1,6 @@
 process METADATA_PAIRWISE {
     tag "$metadata"
-    label 'process_low'
+    label 'process_single'
 
     conda "bioconda::bioconductor-dada2=1.30.0 conda-forge::r-base=4.3.2"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?

@@ -1,7 +1,7 @@
 process QIIME2_ANCOMBC_TAX {
     tag "${table.baseName}-${formula_in}-${taxlevel}"
     label 'process_medium'
-    label 'single_cpu'
+    label 'process_cpu_single'
 
     conda "${projectDir}/modules/local/envs/qiime2-amplicon-2024.10-py310-linux-conda.yml"
     container "qiime2/amplicon:2024.10"

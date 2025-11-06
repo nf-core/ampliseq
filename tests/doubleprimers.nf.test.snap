@@ -1,7 +1,6 @@
 {
     "-profile test_doubleprimers": {
         "content": [
-            44,
             {
                 "BARRNAP": {
                     "barrnap": 0.9

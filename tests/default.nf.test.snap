@@ -1,7 +1,6 @@
 {
     "-profile test": {
         "content": [
-            123,
             {
                 "ANCOMBC_FORMULA_ASV": {
                     "qiime2": "2024.10.1"

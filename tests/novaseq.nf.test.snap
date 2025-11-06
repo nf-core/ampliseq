@@ -1,7 +1,6 @@
 {
     "-profile test_novaseq": {
         "content": [
-            22,
             {
                 "DADA2_DENOISING": {
                     "R": "4.3.2",
@@ -116,7 +115,6 @@
                 "input/Samplesheet_novaseq.tsv",
                 "multiqc",
                 "multiqc/multiqc_data",
-                "multiqc/multiqc_data/BETA-multiqc.parquet",
                 "multiqc/multiqc_data/fastqc-status-check-heatmap.txt",
                 "multiqc/multiqc_data/fastqc_overrepresented_sequences_plot.txt",
                 "multiqc/multiqc_data/fastqc_per_base_n_content_plot.txt",
@@ -127,7 +125,9 @@
                 "multiqc/multiqc_data/fastqc_sequence_counts_plot.txt",
                 "multiqc/multiqc_data/fastqc_sequence_duplication_levels_plot.txt",
                 "multiqc/multiqc_data/fastqc_top_overrepresented_sequences_table.txt",
+                "multiqc/multiqc_data/llms-full.txt",
                 "multiqc/multiqc_data/multiqc.log",
+                "multiqc/multiqc_data/multiqc.parquet",
                 "multiqc/multiqc_data/multiqc_citations.txt",
                 "multiqc/multiqc_data/multiqc_data.json",
                 "multiqc/multiqc_data/multiqc_fastqc.txt",

@@ -1,7 +1,6 @@
 {
     "-profile test_pacbio_its": {
         "content": [
-            34,
             {
                 "BARRNAP": {
                     "barrnap": 0.9
@@ -142,7 +141,6 @@
                 "itsx/ITSx.args.txt",
                 "multiqc",
                 "multiqc/multiqc_data",
-                "multiqc/multiqc_data/BETA-multiqc.parquet",
                 "multiqc/multiqc_data/cutadapt_filtered_reads_plot.txt",
                 "multiqc/multiqc_data/cutadapt_trimmed_sequences_plot_3_Counts.txt",
                 "multiqc/multiqc_data/cutadapt_trimmed_sequences_plot_3_Obs_Exp.txt",
@@ -160,7 +158,9 @@
                 "multiqc/multiqc_data/fastqc_sequence_duplication_levels_plot.txt",
                 "multiqc/multiqc_data/fastqc_sequence_length_distribution_plot.txt",
                 "multiqc/multiqc_data/fastqc_top_overrepresented_sequences_table.txt",
+                "multiqc/multiqc_data/llms-full.txt",
                 "multiqc/multiqc_data/multiqc.log",
+                "multiqc/multiqc_data/multiqc.parquet",
                 "multiqc/multiqc_data/multiqc_citations.txt",
                 "multiqc/multiqc_data/multiqc_cutadapt.txt",
                 "multiqc/multiqc_data/multiqc_data.json",

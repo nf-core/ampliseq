@@ -1,6 +1,6 @@
 process QIIME2_TABLEFILTERTAXA {
     tag "taxa:${exclude_taxa};min-freq:${min_frequency};min-samples:${min_samples}"
-    label 'process_low'
+    label 'process_single'
 
     conda "${projectDir}/modules/local/envs/qiime2-amplicon-2024.10-py310-linux-conda.yml"
     container "qiime2/amplicon:2024.10"

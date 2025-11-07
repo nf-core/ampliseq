@@ -1,7 +1,7 @@
 process QIIME2_ANCOM_ASV {
     tag "${table.baseName}"
     label 'process_medium'
-    label 'single_cpu'
+    label 'process_cpu_single'
     label 'process_long'
     label 'error_ignore'
 

@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+[#928](https://github.com/nf-core/ampliseq/pull/928) - Resource allocations were reduced for most smaller processes.
+
 ### `Fixed`
 
 [#926](https://github.com/nf-core/ampliseq/pull/926) - Template update for nf-core/tools version 3.4.1

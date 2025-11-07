@@ -1,7 +1,7 @@
 process QIIME2_TRAIN {
     tag "${meta.FW_primer}-${meta.RV_primer}"
-    label 'process_high'
-    label 'single_cpu'
+    label 'process_huge'
+    label 'process_cpu_single'
 
     conda "${projectDir}/modules/local/envs/qiime2-amplicon-2024.10-py310-linux-conda.yml"
     container "qiime2/amplicon:2024.10"

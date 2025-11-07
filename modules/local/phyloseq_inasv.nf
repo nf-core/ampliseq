@@ -1,5 +1,5 @@
 process PHYLOSEQ_INASV {
-    label 'process_low'
+    label 'process_single'
 
     conda "conda-forge::sed=4.7"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?

@@ -1,5 +1,5 @@
 process QIIME2_ALPHARAREFACTION {
-    label 'process_medium'
+    label 'process_low'
 
     conda "${projectDir}/modules/local/envs/qiime2-amplicon-2024.10-py310-linux-conda.yml"
     container "qiime2/amplicon:2024.10"

@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Changed`
 
 [#928](https://github.com/nf-core/ampliseq/pull/928) - Resource allocations were reduced for most smaller processes.
-[#931](https://github.com/nf-core/ampliseq/pull/931) - Replace sbdi-gtdb=R10-RS226-1 with updated database sbdi-gtdb=R10-RS226-2 (see https://figshare.scilifelab.se/articles/dataset/SBDI_Sativa_curated_16S_GTDB_database/14869077/10)
+[#931](https://github.com/nf-core/ampliseq/pull/931) - For `--dada_ref_taxonomy`, replace `sbdi-gtdb=R10-RS226-1` with updated database `sbdi-gtdb=R10-RS226-2` (see https://figshare.scilifelab.se/articles/dataset/SBDI_Sativa_curated_16S_GTDB_database/14869077/10)
 
 ### `Fixed`
 

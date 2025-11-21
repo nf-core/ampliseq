@@ -74,7 +74,7 @@ workflow DADA2_TAXONOMY_WF {
 
     if (params.cut_its != "none") {
         FORMAT_TAXRESULTS_STD ( ch_dada2_taxonomy_tsv, ch_full_fasta, "ASV_tax.${val_dada_ref_taxonomy}.tsv" )
-        ch_versions_dada_taxonomy = ch_versions_dada_taxonomy.mix( FORMAT_TAXRESULTS_STD.out.versions.ifEmpty(null) )
+        ch_versions_dada_taxonomy = ch_versions_dada_taxonomy.mix( FORMAT_TAXRESULTS_STD.out.versions )
     }
 
     //DADA2 addSpecies
@@ -119,9 +119,9 @@ workflow DADA2_TAXONOMY_WF {
                     [ meta, fasta ] }
             .set { ch_fasta_map }
         VSEARCH_USEARCHGLOBAL( ch_fasta_map, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
-        ch_versions_dada_taxonomy = ch_versions_dada_taxonomy.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
+        ch_versions_dada_taxonomy = ch_versions_dada_taxonomy.mix(VSEARCH_USEARCHGLOBAL.out.versions)
         ASSIGNSH( ch_dada2_tax1, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, ASV_SH_name + ".${val_dada_ref_taxonomy}.tsv")
-        ch_versions_dada_taxonomy = ch_versions_dada_taxonomy.mix(ASSIGNSH.out.versions.ifEmpty(null))
+        ch_versions_dada_taxonomy = ch_versions_dada_taxonomy.mix(ASSIGNSH.out.versions)
         ch_dada2_tax = ASSIGNSH.out.tsv
     } else {
         ch_dada2_tax = ch_dada2_tax1

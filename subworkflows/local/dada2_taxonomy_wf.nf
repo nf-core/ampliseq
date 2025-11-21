@@ -24,12 +24,12 @@ workflow DADA2_TAXONOMY_WF {
     val_dada_assign_chunksize
 
     main:
-    ch_versions_dada_taxonomy = Channel.empty()
+    ch_versions_dada_taxonomy = channel.empty()
 
     // Set cutoff to use for SH assignment and path to SH taxonomy file
     if ( params.addsh ) {
         vsearch_cutoff = 0.985
-        ch_shinfo = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]).map { it -> file(it) }
+        ch_shinfo = channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]).map { it -> file(it) }
     }
 
     //cut taxonomy to expected amplicon

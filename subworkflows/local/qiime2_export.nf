@@ -23,7 +23,7 @@ workflow QIIME2_EXPORT {
     tax_agglom_max
 
     main:
-    ch_versions_qiime2_export = Channel.empty()
+    ch_versions_qiime2_export = channel.empty()
 
     //export_filtered_dada_output (optional)
     QIIME2_EXPORT_ABSOLUTE ( ch_asv, ch_seq, ch_tax, tax_agglom_min, tax_agglom_max )

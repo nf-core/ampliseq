@@ -21,9 +21,9 @@ workflow QIIME2_ANCOM {
     ancombc_formula
 
     main:
-    ch_versions_qiime2_ancom = Channel.empty()
+    ch_versions_qiime2_ancom = channel.empty()
 
-    ch_taxlevel = Channel.of( tax_agglom_min..tax_agglom_max )
+    ch_taxlevel = channel.of( tax_agglom_min..tax_agglom_max )
 
     //Filter ASV table to get rid of samples that have no metadata values
     ch_metadata
@@ -55,22 +55,22 @@ workflow QIIME2_ANCOM {
             .combine( QIIME2_FILTERSAMPLES_ANCOM.out.qza )
             .combine( ch_tax )
             .combine( ch_taxlevel )
-            .combine( Channel.fromList([""]) )
+            .combine( channel.fromList([""]) )
             .set{ ch_for_ancombc_tax }
         QIIME2_ANCOMBC_TAX ( ch_for_ancombc_tax )
         ch_versions_qiime2_ancom = ch_versions_qiime2_ancom.mix(QIIME2_ANCOMBC_TAX.out.versions)
         QIIME2_ANCOMBC_TAX.out.da_barplot.subscribe { it -> if ( it.baseName[0].toString().startsWith("WARNING") ) log.warn it.baseName[0].toString().replace("WARNING ","QIIME2_ANCOMBC_TAX: ") }
 
         //ANCOMBC on ASVs
-        QIIME2_ANCOMBC_ASV ( ch_metadata.combine( QIIME2_FILTERSAMPLES_ANCOM.out.qza.flatten() ).combine( Channel.fromList([""]) ) )
+        QIIME2_ANCOMBC_ASV ( ch_metadata.combine( QIIME2_FILTERSAMPLES_ANCOM.out.qza.flatten() ).combine( channel.fromList([""]) ) )
         ch_versions_qiime2_ancom = ch_versions_qiime2_ancom.mix(QIIME2_ANCOMBC_ASV.out.versions)
     }
 
     if ( ancombc_formula ) {
-        ch_ancombc_formula = Channel.fromList( ancombc_formula.toString().replace(" ","").tokenize(',') )
+        ch_ancombc_formula = channel.fromList( ancombc_formula.toString().replace(" ","").tokenize(',') )
 
         //ANCOMBC with ancombc_formula on various taxonomic levels
-        ch_taxlevel = Channel.of( tax_agglom_min..tax_agglom_max )
+        ch_taxlevel = channel.of( tax_agglom_min..tax_agglom_max )
         ch_metadata
             .combine( ch_asv )
             .combine( ch_tax )
@@ -87,8 +87,8 @@ workflow QIIME2_ANCOM {
     }
 
     emit:
-    ancom    = params.ancom ? QIIME2_ANCOM_ASV.out.ancom.mix(QIIME2_ANCOM_TAX.out.ancom) : Channel.empty()
-    ancombc  = params.ancombc ? QIIME2_ANCOMBC_ASV.out.da_barplot.mix(QIIME2_ANCOMBC_TAX.out.da_barplot) : Channel.empty()
-    ancombc_formula = ancombc_formula ? ANCOMBC_FORMULA_ASV.out.da_barplot.mix(ANCOMBC_FORMULA_TAX.out.da_barplot) : Channel.empty()
+    ancom    = params.ancom ? QIIME2_ANCOM_ASV.out.ancom.mix(QIIME2_ANCOM_TAX.out.ancom) : channel.empty()
+    ancombc  = params.ancombc ? QIIME2_ANCOMBC_ASV.out.da_barplot.mix(QIIME2_ANCOMBC_TAX.out.da_barplot) : channel.empty()
+    ancombc_formula = ancombc_formula ? ANCOMBC_FORMULA_ASV.out.da_barplot.mix(ANCOMBC_FORMULA_TAX.out.da_barplot) : channel.empty()
     versions = ch_versions_qiime2_ancom
 }

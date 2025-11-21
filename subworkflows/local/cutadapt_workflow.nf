@@ -16,7 +16,7 @@ workflow CUTADAPT_WORKFLOW {
     double_primer
 
     main:
-    ch_versions_cutadapt_workflow = Channel.empty()
+    ch_versions_cutadapt_workflow = channel.empty()
 
     CUTADAPT_BASIC ( ch_file ).reads.set { ch_trimmed_reads }
     CUTADAPT_BASIC.out.log

@@ -16,7 +16,7 @@ workflow QIIME2_PREPTAX {
     RV_primer //val
 
     main:
-    ch_qiime2_preptax_versions = Channel.empty()
+    ch_qiime2_preptax_versions = channel.empty()
 
     if (params.qiime_ref_tax_custom) {
         // Handle case where we have been provided a pair of filepaths.

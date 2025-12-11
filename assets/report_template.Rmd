@@ -252,7 +252,7 @@ if ( file.exists(params$mqc_plot) ) {
     knitr::include_graphics(params$mqc_plot)
 }
 ```
-```{r, !isFALSE(params$mqc_plot), results='asis'}
+```{r, eval = !isFALSE(params$mqc_plot), results='asis'}
 if ( !file.exists(params$mqc_plot) ) {
     cat(paste0("
 _This plot is missing. That is only a visual mishap, all data can be found in the MultiQC report._

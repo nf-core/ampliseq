@@ -62,10 +62,10 @@
                     "R": "4.4.3"
                 },
                 "METADATA_ALL": {
-                    "R": "4.3.2"
+                    "R": "4.4.3"
                 },
                 "METADATA_PAIRWISE": {
-                    "R": "4.3.2"
+                    "R": "4.4.3"
                 },
                 "QIIME2_ANCOM_ASV": {
                     "qiime2": "2024.10.1"

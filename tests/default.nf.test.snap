@@ -90,7 +90,7 @@
                     "sed": 4.7
                 },
                 "MERGE_STATS_FILTERSSU": {
-                    "R": "4.3.2"
+                    "R": "4.4.3"
                 },
                 "MERGE_STATS_FILTERTAXA": {
                     "R": "4.4.3"
@@ -99,10 +99,10 @@
                     "R": "4.4.3"
                 },
                 "METADATA_ALL": {
-                    "R": "4.3.2"
+                    "R": "4.4.3"
                 },
                 "METADATA_PAIRWISE": {
-                    "R": "4.3.2"
+                    "R": "4.4.3"
                 },
                 "PHYLOSEQ": {
                     "R": "4.4.2",

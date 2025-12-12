@@ -2,10 +2,10 @@ process METADATA_PAIRWISE {
     tag "$metadata"
     label 'process_single'
 
-    conda "bioconda::bioconductor-dada2=1.30.0 conda-forge::r-base=4.3.2"
+    conda "bioconda::bioconductor-dada2=1.34.0 conda-forge::r-base=4.4.3"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.30.0--r43hf17093f_0' :
-        'biocontainers/bioconductor-dada2:1.30.0--r43hf17093f_0' }"
+        'https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.34.0--r44he5774e6_2' :
+        'biocontainers/bioconductor-dada2:1.34.0--r44he5774e6_2' }"
 
     input:
     path(metadata)

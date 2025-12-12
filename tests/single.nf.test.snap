@@ -65,8 +65,8 @@
                     "R": "4.3.2"
                 },
                 "PHYLOSEQ": {
-                    "R": "4.3.2",
-                    "phyloseq": "1.46.0"
+                    "R": "4.4.2",
+                    "phyloseq": "1.50.0"
                 },
                 "RENAME_RAW_DATA_FILES": {
                     "sed": 4.7

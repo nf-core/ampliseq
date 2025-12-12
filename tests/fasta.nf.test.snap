@@ -9,8 +9,8 @@
                     "python": "Python 3.9.1"
                 },
                 "DADA2_TAXONOMY": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0"
                 },
                 "FILTER_CODONS": {
                     "python": "3.9.1",

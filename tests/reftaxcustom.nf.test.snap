@@ -9,48 +9,48 @@
                     "python": "Python 3.9.1"
                 },
                 "CUTADAPT_BASIC": {
-                    "cutadapt": 4.6
+                    "cutadapt": 5.2
                 },
                 "CUTADAPT_SUMMARY_STD": {
                     "python": "Python 3.8.3"
                 },
                 "DADA2_DENOISING": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0"
                 },
                 "DADA2_ERR": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0"
                 },
                 "DADA2_FILTNTRIM": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0"
                 },
                 "DADA2_MERGE": {
                     "R": "4.1.1",
                     "dada2": "1.22.0"
                 },
                 "DADA2_QUALITY1": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0",
+                    "R": "4.4.3",
+                    "dada2": "1.34.0",
                     "ShortRead": "1.60.0"
                 },
                 "DADA2_QUALITY2": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0",
+                    "R": "4.4.3",
+                    "dada2": "1.34.0",
                     "ShortRead": "1.60.0"
                 },
                 "DADA2_RMCHIMERA": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0"
                 },
                 "DADA2_STATS": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0"
                 },
                 "DADA2_TAXONOMY": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0"
                 },
                 "FASTQC": {
                     "fastqc": "0.12.1"

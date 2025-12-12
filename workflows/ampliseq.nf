@@ -337,7 +337,6 @@ workflow AMPLISEQ {
     if (!params.skip_fastqc) {
         FASTQC ( RENAME_RAW_DATA_FILES.out.fastq )
         ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{ it -> it[1] })
-        ch_versions = ch_versions.mix(FASTQC.out.versions.first())
     }
 
     //
@@ -350,7 +349,6 @@ workflow AMPLISEQ {
             params.double_primer
         ).reads.set { ch_trimmed_reads }
         ch_multiqc_files = ch_multiqc_files.mix(CUTADAPT_WORKFLOW.out.logs.collect{ it -> it[1] })
-        ch_versions = ch_versions.mix(CUTADAPT_WORKFLOW.out.versions)
     } else {
         ch_trimmed_reads = RENAME_RAW_DATA_FILES.out.fastq
     }

@@ -56,7 +56,7 @@
                     "sed": 4.7
                 },
                 "MERGE_STATS_FILTERTAXA": {
-                    "R": "4.3.2"
+                    "R": "4.4.3"
                 },
                 "MERGE_STATS_STD": {
                     "R": "4.4.3"

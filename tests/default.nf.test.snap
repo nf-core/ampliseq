@@ -2407,7 +2407,7 @@
             "Metadata.tsv:md5,060b56528bb566eed71f6dfdb52cc395",
             "multiqc_fastqc.txt:md5,7d23984b06e4251f17e1cfce7a04aaae",
             "multiqc_general_stats.txt:md5,885c19ff3e53d16bfe7937d6694268d7",
-            "multiqc_cutadapt.txt:md5,b4409890ffb9c6938433c374b50c380e",
+            "multiqc_cutadapt.txt:md5,3dce058d2d6c85a3cca7314ae19c5586",
             "dna.tsv:md5,46bb52a05204ade2d571ac089f732012",
             "emof.tsv:md5,52ff7d226c79b1f78d5f4895d748f915",
             "event.tsv:md5,d275c5c0d7dbf7a5b2c61082fbce486d",

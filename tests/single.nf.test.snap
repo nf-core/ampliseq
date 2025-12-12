@@ -244,7 +244,7 @@
             "Samplesheet.tsv:md5,dbf8d1a2b7933dab9e5a139f33c2b1f4",
             "multiqc_fastqc.txt:md5,75d0463a8b94a5dec14c3fb5b82169cd",
             "multiqc_general_stats.txt:md5,1662178e2c1ac6cb0880f95c1746ce81",
-            "multiqc_cutadapt.txt:md5,15ff9f378c1d8fb01fdd40b8010862d4"
+            "multiqc_cutadapt.txt:md5,0adee517528dc17cb0c9dfdc9858dc2c"
         ],
         "meta": {
             "nf-test": "0.9.2",

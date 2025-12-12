@@ -279,7 +279,7 @@
             "ASV_tax.user.kraken2.tsv:md5,95c3f9daa5da8fe00159fb07d394c3ce",
             "multiqc_fastqc.txt:md5,7d23984b06e4251f17e1cfce7a04aaae",
             "multiqc_general_stats.txt:md5,885c19ff3e53d16bfe7937d6694268d7",
-            "multiqc_cutadapt.txt:md5,b4409890ffb9c6938433c374b50c380e"
+            "multiqc_cutadapt.txt:md5,3dce058d2d6c85a3cca7314ae19c5586"
         ],
         "meta": {
             "nf-test": "0.9.2",

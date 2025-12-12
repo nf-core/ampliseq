@@ -1194,7 +1194,7 @@
             "descriptive_stats.tsv:md5,666279e79355dd60a0f5c7c8bb77618d",
             "seven_number_summary.tsv:md5,e087b59678e7e9ade87e0a7349f54e2e",
             "multiqc_general_stats.txt:md5,7a395be7984aaa0f9154de4abed5d824",
-            "multiqc_cutadapt.txt:md5,b4409890ffb9c6938433c374b50c380e"
+            "multiqc_cutadapt.txt:md5,3dce058d2d6c85a3cca7314ae19c5586"
         ],
         "meta": {
             "nf-test": "0.9.2",

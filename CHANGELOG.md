@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
-[#926](https://github.com/nf-core/ampliseq/pull/926) - Template update for nf-core/tools version 3.4.1
+[#926](https://github.com/nf-core/ampliseq/pull/926),[932](https://github.com/nf-core/ampliseq/pull/932) - Template update for nf-core/tools version 3.5.1
 [#929](https://github.com/nf-core/ampliseq/pull/929),[#935](https://github.com/nf-core/ampliseq/pull/935) - A bug in a dependency of MultiQC can lead (rarely) to plot generation being omitted, without warning. In that case, the subsequent pipeline summary report failed previously, now it gracefully handles that issue.
 
 ### `Dependencies`

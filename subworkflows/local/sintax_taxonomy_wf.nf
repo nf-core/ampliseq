@@ -16,7 +16,7 @@ workflow SINTAX_TAXONOMY_WF {
     sintax_taxlevels
 
     main:
-    ch_versions_sintax_taxonomy = Channel.empty()
+    ch_versions_sintax_taxonomy = channel.empty()
 
     //format taxonomy file
     FORMAT_TAXONOMY_SINTAX ( ch_sintax_ref_taxonomy )

@@ -47,7 +47,6 @@ workflow DADA2_TAXONOMY_WF {
         CUTADAPT_TAXONOMY ( ch_assigntax ).reads
             .map { meta, db -> db }
             .set { ch_assigntax }
-        ch_versions_dada_taxonomy = ch_versions_dada_taxonomy.mix( CUTADAPT_TAXONOMY.out.versions )
     }
 
     //set file name prefix

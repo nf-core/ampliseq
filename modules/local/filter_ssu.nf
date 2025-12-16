@@ -13,6 +13,7 @@ process FILTER_SSU {
     path(barrnap_summary)
 
     output:
+    path( "result.tsv" )         , emit: result, optional: true
     path( "stats.ssu.tsv" )      , emit: stats, optional: true
     path( "ASV_table.ssu.tsv" )  , emit: asv, optional: true
     path( "ASV_seqs.ssu.fasta" ) , emit: fasta
@@ -39,6 +40,7 @@ process FILTER_SSU {
     df[is.na(df)] <- 1
     df\$result = colnames(df[,2:5])[apply(df[,2:5],1,which.min)]
     df\$result = gsub("_eval", "", df\$result)
+    write.table(df, file = "result.tsv", row.names=FALSE, sep="\t", col.names = TRUE, quote = FALSE, na = '')
 
     # filter ASVs
     df_filtered = subset(df, df\$result %in% kingdom)

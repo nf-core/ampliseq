@@ -12,44 +12,44 @@
                     "R": "4.0.3"
                 },
                 "CUTADAPT_BASIC": {
-                    "cutadapt": 4.6
+                    "cutadapt": 5.2
                 },
                 "CUTADAPT_SUMMARY_STD": {
                     "python": "Python 3.8.3"
                 },
                 "DADA2_DENOISING": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0"
                 },
                 "DADA2_ERR": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0"
                 },
                 "DADA2_FILTNTRIM": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0"
                 },
                 "DADA2_MERGE": {
                     "R": "4.1.1",
                     "dada2": "1.22.0"
                 },
                 "DADA2_QUALITY1": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0",
-                    "ShortRead": "1.60.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0",
+                    "ShortRead": "1.64.0"
                 },
                 "DADA2_QUALITY2": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0",
-                    "ShortRead": "1.60.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0",
+                    "ShortRead": "1.64.0"
                 },
                 "DADA2_RMCHIMERA": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0"
                 },
                 "DADA2_STATS": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0"
                 },
                 "FASTQC": {
                     "fastqc": "0.12.1"
@@ -68,20 +68,20 @@
                     "ITSx": "1.1.3"
                 },
                 "MERGE_STATS_FILTERTAXA": {
-                    "R": "4.3.2"
+                    "R": "4.4.3"
                 },
                 "MERGE_STATS_STD": {
-                    "R": "4.3.2"
+                    "R": "4.4.3"
                 },
                 "METADATA_ALL": {
-                    "R": "4.3.2"
+                    "R": "4.4.3"
                 },
                 "METADATA_PAIRWISE": {
-                    "R": "4.3.2"
+                    "R": "4.4.3"
                 },
                 "PHYLOSEQ": {
-                    "R": "4.3.2",
-                    "phyloseq": "1.46.0"
+                    "R": "4.4.2",
+                    "phyloseq": "1.50.0"
                 },
                 "QIIME2_ALPHARAREFACTION": {
                     "qiime2": "2024.10.1"
@@ -256,6 +256,7 @@
                 "multiqc/multiqc_plots/pdf/cutadapt_trimmed_sequences_plot_3_Obs_Exp.pdf",
                 "multiqc/multiqc_plots/pdf/cutadapt_trimmed_sequences_plot_5_Counts.pdf",
                 "multiqc/multiqc_plots/pdf/cutadapt_trimmed_sequences_plot_5_Obs_Exp.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc-status-check-heatmap.pdf",
                 "multiqc/multiqc_plots/pdf/fastqc_adapter_content_plot.pdf",
                 "multiqc/multiqc_plots/pdf/fastqc_overrepresented_sequences_plot.pdf",
                 "multiqc/multiqc_plots/pdf/fastqc_per_base_n_content_plot.pdf",
@@ -275,6 +276,7 @@
                 "multiqc/multiqc_plots/png/cutadapt_trimmed_sequences_plot_3_Obs_Exp.png",
                 "multiqc/multiqc_plots/png/cutadapt_trimmed_sequences_plot_5_Counts.png",
                 "multiqc/multiqc_plots/png/cutadapt_trimmed_sequences_plot_5_Obs_Exp.png",
+                "multiqc/multiqc_plots/png/fastqc-status-check-heatmap.png",
                 "multiqc/multiqc_plots/png/fastqc_adapter_content_plot.png",
                 "multiqc/multiqc_plots/png/fastqc_overrepresented_sequences_plot.png",
                 "multiqc/multiqc_plots/png/fastqc_per_base_n_content_plot.png",
@@ -294,6 +296,7 @@
                 "multiqc/multiqc_plots/svg/cutadapt_trimmed_sequences_plot_3_Obs_Exp.svg",
                 "multiqc/multiqc_plots/svg/cutadapt_trimmed_sequences_plot_5_Counts.svg",
                 "multiqc/multiqc_plots/svg/cutadapt_trimmed_sequences_plot_5_Obs_Exp.svg",
+                "multiqc/multiqc_plots/svg/fastqc-status-check-heatmap.svg",
                 "multiqc/multiqc_plots/svg/fastqc_adapter_content_plot.svg",
                 "multiqc/multiqc_plots/svg/fastqc_overrepresented_sequences_plot.svg",
                 "multiqc/multiqc_plots/svg/fastqc_per_base_n_content_plot.svg",
@@ -1489,12 +1492,12 @@
             "emof.tsv:md5,c6599c76a70fe5458db56ff8c2e89a37",
             "event.tsv:md5,bfcf7d8ac2a3c6b48d075d6dc235f0e4",
             "multiqc_general_stats.txt:md5,1fef8358fe3cc974bf05e2f27fc7e250",
-            "multiqc_cutadapt.txt:md5,ae5e5bf06cdbfa4d8305bbcb61c3ba04"
+            "multiqc_cutadapt.txt:md5,160135fece18361e17bef9e8d04cf0b9"
         ],
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.2"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.0"
         },
-        "timestamp": "2025-06-13T09:00:36.509799113"
+        "timestamp": "2025-12-15T16:06:57.06137956"
     }
 }

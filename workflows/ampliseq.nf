@@ -337,7 +337,6 @@ workflow AMPLISEQ {
     if (!params.skip_fastqc) {
         FASTQC ( RENAME_RAW_DATA_FILES.out.fastq )
         ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{ it -> it[1] })
-        ch_versions = ch_versions.mix(FASTQC.out.versions.first())
     }
 
     //

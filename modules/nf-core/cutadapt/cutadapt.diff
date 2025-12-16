@@ -1,0 +1,30 @@
+Changes in component 'nf-core/cutadapt'
+'modules/nf-core/cutadapt/meta.yml' is unchanged
+Changes in 'cutadapt/main.nf':
+--- modules/nf-core/cutadapt/main.nf
++++ modules/nf-core/cutadapt/main.nf
+@@ -11,7 +11,7 @@
+     tuple val(meta), path(reads)
+ 
+     output:
+-    tuple val(meta), path('*.trim.fastq.gz'), emit: reads
++    tuple val(meta), path("*.trim.${outformat}.gz"), emit: reads
+     tuple val(meta), path('*.log')          , emit: log
+     tuple val("${task.process}"), val("cutadapt"), eval('cutadapt --version'), topic: versions, emit: versions_cutadapt
+ 
+@@ -21,7 +21,8 @@
+     script:
+     def args = task.ext.args ?: ''
+     def prefix = task.ext.prefix ?: "${meta.id}"
+-    def trimmed  = meta.single_end ? "-o ${prefix}.trim.fastq.gz" : "-o ${prefix}_1.trim.fastq.gz -p ${prefix}_2.trim.fastq.gz"
++    outformat = task.ext.outformat ?: "fastq"
++    def trimmed  = meta.single_end ? "-o ${prefix}.trim.${outformat}.gz" : "-o ${prefix}_1.trim.${outformat}.gz -p ${prefix}_2.trim.${outformat}.gz"
+     """
+     cutadapt \\
+         --cores $task.cpus \\
+
+'modules/nf-core/cutadapt/environment.yml' is unchanged
+'modules/nf-core/cutadapt/tests/main.nf.test' is unchanged
+'modules/nf-core/cutadapt/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/cutadapt/tests/nextflow.config' is unchanged
+************************************************************

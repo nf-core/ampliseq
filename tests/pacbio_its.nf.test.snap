@@ -77,7 +77,7 @@
                     "vsearch": "2.21.1"
                 },
                 "Workflow": {
-                    "nf-core/ampliseq": "v2.16.0dev"
+                    "nf-core/ampliseq": "v2.16.0"
                 }
             },
             [

@@ -19,14 +19,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Dependencies`
 
-- [#936](https://github.com/nf-core/ampliseq/pull/936) - Updated some software versions
+- [#936](https://github.com/nf-core/ampliseq/pull/936),[#940](https://github.com/nf-core/ampliseq/pull/940) - Updated some software versions
 
-| software | previously | now    |
-| -------- | ---------- | ------ |
-| Cutadapt | 4.6        | 5.2    |
-| DADA2    | 1.30.0     | 1.34.0 |
-| Phyloseq | 1.46.0     | 1.50.0 |
-| MultiQC  | 1.29       | 1.33   |
+| software | previously | now       |
+| -------- | ---------- | --------- |
+| nextflow | >=25.04.0  | >=25.04.8 |
+| Cutadapt | 4.6        | 5.2       |
+| DADA2    | 1.30.0     | 1.34.0    |
+| Phyloseq | 1.46.0     | 1.50.0    |
+| MultiQC  | 1.29       | 1.33      |
 
 ### `Removed`
 

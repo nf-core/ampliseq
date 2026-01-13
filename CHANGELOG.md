@@ -3,19 +3,19 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## nf-core/ampliseq version 2.16.0 - 2025-12-19
+## nf-core/ampliseq version 2.16.0 - 2026-01-14
 
 ### `Added`
 
 ### `Changed`
 
-[#928](https://github.com/nf-core/ampliseq/pull/928) - Resource allocations were reduced for most smaller processes.
-[#931](https://github.com/nf-core/ampliseq/pull/931) - For `--dada_ref_taxonomy`, replace `sbdi-gtdb=R10-RS226-1` with updated database `sbdi-gtdb=R10-RS226-2` (see https://figshare.scilifelab.se/articles/dataset/SBDI_Sativa_curated_16S_GTDB_database/14869077/10)
+- [#928](https://github.com/nf-core/ampliseq/pull/928) - Resource allocations were reduced for most smaller processes.
+- [#931](https://github.com/nf-core/ampliseq/pull/931) - For `--dada_ref_taxonomy`, replace `sbdi-gtdb=R10-RS226-1` with updated database `sbdi-gtdb=R10-RS226-2` (see https://figshare.scilifelab.se/articles/dataset/SBDI_Sativa_curated_16S_GTDB_database/14869077/10)
 
 ### `Fixed`
 
-[#926](https://github.com/nf-core/ampliseq/pull/926),[932](https://github.com/nf-core/ampliseq/pull/932) - Template update for nf-core/tools version 3.5.1
-[#929](https://github.com/nf-core/ampliseq/pull/929),[#935](https://github.com/nf-core/ampliseq/pull/935) - A bug in a dependency of MultiQC can lead (rarely) to plot generation being omitted, without warning. In that case, the subsequent pipeline summary report failed previously, now it gracefully handles that issue.
+- [#926](https://github.com/nf-core/ampliseq/pull/926),[932](https://github.com/nf-core/ampliseq/pull/932) - Template update for nf-core/tools version 3.5.1
+- [#929](https://github.com/nf-core/ampliseq/pull/929),[#935](https://github.com/nf-core/ampliseq/pull/935) - A bug in a dependency of MultiQC can lead (rarely) to plot generation being omitted, without warning. In that case, the subsequent pipeline summary report failed previously, now it gracefully handles that issue.
 
 ### `Dependencies`
 

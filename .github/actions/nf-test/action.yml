@@ -53,7 +53,7 @@ runs:
         auto-update-conda: true
         conda-solver: libmamba
         channels: conda-forge
-        channel-priority: strict
+        channel-priority: flexible # 'strict' would be preferable but 'flexible' is required for QIIME2 2024.10 conda yml file
         conda-remove-defaults: true
 
     - name: Run nf-test

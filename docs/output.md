@@ -194,6 +194,7 @@ Optionally, ASV sequences can be filtered for rRNA sequences identified by Barrn
 - `barrnap/`
   - `rrna.<kingdom>.gff`: GFF3 output for rRNA matches per kingdom, where kingdom is one of `bac,arc,mito,euk`.
   - `summary.tsv`: Summary of evalues for each ASV and kingdom
+  - `result.tsv`: Classification of ASVs into domains based on the lowest evalue, only if `--filter_ssu` is set.
   - `ASV_seqs.ssu.fasta`: Fasta file with filtered ASV sequences, only if `--filter_ssu` is set.
   - `ASV_table.ssu.tsv`: Counts for each filtered ASV sequence, only if `--filter_ssu` is set.
   - `stats.ssu.tsv`: Tracking read numbers through filtering, for each sample, only if `--filter_ssu` is set.

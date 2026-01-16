@@ -245,8 +245,20 @@ MultiQC report, which can be found in [multiqc/multiqc_report.html](../multiqc/m
 "))
 ```
 
+<!-- TODO: MultiQC occasionally doesnt produce plots. This seems to be a consequence of an issue in Kaleido, should be fixed with Kaleido2 -->
+
 ```{r, eval = !isFALSE(params$mqc_plot), out.width='100%', dpi=1200, fig.align='center'}
-knitr::include_graphics(params$mqc_plot)
+if ( file.exists(params$mqc_plot) ) {
+    knitr::include_graphics(params$mqc_plot)
+}
+```
+```{r, eval = !isFALSE(params$mqc_plot), results='asis'}
+if ( !file.exists(params$mqc_plot) ) {
+    cat(paste0("
+_This plot is missing. That is only a visual mishap, all data can be found in the MultiQC report._
+_The cause is likely a bug in Kaleido, a dependency of MultiQC. There is no need to take action._
+    "))
+}
 ```
 
 <!-- Subsection on Cutadapt -->

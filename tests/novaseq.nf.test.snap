@@ -1,41 +1,40 @@
 {
     "-profile test_novaseq": {
         "content": [
-            22,
             {
                 "DADA2_DENOISING": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0"
                 },
                 "DADA2_ERR": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0"
                 },
                 "DADA2_FILTNTRIM": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0"
                 },
                 "DADA2_MERGE": {
                     "R": "4.1.1",
                     "dada2": "1.22.0"
                 },
                 "DADA2_QUALITY1": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0",
-                    "ShortRead": "1.60.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0",
+                    "ShortRead": "1.64.0"
                 },
                 "DADA2_QUALITY2": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0",
-                    "ShortRead": "1.60.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0",
+                    "ShortRead": "1.64.0"
                 },
                 "DADA2_RMCHIMERA": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0"
                 },
                 "DADA2_STATS": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0"
                 },
                 "FASTQC": {
                     "fastqc": "0.12.1"
@@ -45,7 +44,7 @@
                     "pandas": "1.1.5"
                 },
                 "MERGE_STATS_CODONS": {
-                    "R": "4.3.2"
+                    "R": "4.4.3"
                 },
                 "RENAME_RAW_DATA_FILES": {
                     "sed": 4.7
@@ -55,7 +54,7 @@
                     "pandas": "1.1.5"
                 },
                 "Workflow": {
-                    "nf-core/ampliseq": "v2.15.0"
+                    "nf-core/ampliseq": "v2.16.0"
                 }
             },
             [
@@ -116,7 +115,6 @@
                 "input/Samplesheet_novaseq.tsv",
                 "multiqc",
                 "multiqc/multiqc_data",
-                "multiqc/multiqc_data/BETA-multiqc.parquet",
                 "multiqc/multiqc_data/fastqc-status-check-heatmap.txt",
                 "multiqc/multiqc_data/fastqc_overrepresented_sequences_plot.txt",
                 "multiqc/multiqc_data/fastqc_per_base_n_content_plot.txt",
@@ -127,7 +125,9 @@
                 "multiqc/multiqc_data/fastqc_sequence_counts_plot.txt",
                 "multiqc/multiqc_data/fastqc_sequence_duplication_levels_plot.txt",
                 "multiqc/multiqc_data/fastqc_top_overrepresented_sequences_table.txt",
+                "multiqc/multiqc_data/llms-full.txt",
                 "multiqc/multiqc_data/multiqc.log",
+                "multiqc/multiqc_data/multiqc.parquet",
                 "multiqc/multiqc_data/multiqc_citations.txt",
                 "multiqc/multiqc_data/multiqc_data.json",
                 "multiqc/multiqc_data/multiqc_fastqc.txt",

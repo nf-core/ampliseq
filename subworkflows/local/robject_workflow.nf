@@ -15,7 +15,7 @@ workflow ROBJECT_WORKFLOW {
     run_qiime2
 
     main:
-    ch_versions_robject_workflow = Channel.empty()
+    ch_versions_robject_workflow = channel.empty()
 
     if ( run_qiime2 ) {
         if ( params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1 ) {

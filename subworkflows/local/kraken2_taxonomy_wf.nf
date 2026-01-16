@@ -14,7 +14,7 @@ workflow KRAKEN2_TAXONOMY_WF {
     kraken2_taxlevels
 
     main:
-    ch_versions_kraken2_taxonomy = Channel.empty()
+    ch_versions_kraken2_taxonomy = channel.empty()
 
     // format taxonomy file
     ch_kraken2_ref_taxonomy

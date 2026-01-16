@@ -16,7 +16,7 @@ workflow CUTADAPT_WORKFLOW {
     double_primer
 
     main:
-    ch_versions_cutadapt_workflow = Channel.empty()
+    ch_versions_cutadapt_workflow = channel.empty()
 
     CUTADAPT_BASIC ( ch_file ).reads.set { ch_trimmed_reads }
     CUTADAPT_BASIC.out.log
@@ -27,7 +27,6 @@ workflow CUTADAPT_WORKFLOW {
                 [ meta, log ] }
         .groupTuple(by: 0 )
         .set { ch_cutadapt_logs }
-    ch_versions_cutadapt_workflow = ch_versions_cutadapt_workflow.mix( CUTADAPT_BASIC.out.versions )
     CUTADAPT_SUMMARY_STD ( "cutadapt_standard", ch_cutadapt_logs )
     ch_versions_cutadapt_workflow = ch_versions_cutadapt_workflow.mix( CUTADAPT_SUMMARY_STD.out.versions )
 
@@ -46,8 +45,8 @@ workflow CUTADAPT_WORKFLOW {
             .groupTuple(by: 0 )
             .set { ch_cutadapt_doubleprimer_logs }
         CUTADAPT_SUMMARY_DOUBLEPRIMER ( "cutadapt_doubleprimer", ch_cutadapt_doubleprimer_logs )
-        ch_summaries = CUTADAPT_SUMMARY_STD.out.tsv.combine( CUTADAPT_SUMMARY_DOUBLEPRIMER.out.tsv )
         ch_versions_cutadapt_workflow = ch_versions_cutadapt_workflow.mix( CUTADAPT_SUMMARY_DOUBLEPRIMER.out.versions )
+        ch_summaries = CUTADAPT_SUMMARY_STD.out.tsv.combine( CUTADAPT_SUMMARY_DOUBLEPRIMER.out.tsv )
         CUTADAPT_SUMMARY_MERGE ( "merge", ch_summaries )
         ch_versions_cutadapt_workflow = ch_versions_cutadapt_workflow.mix( CUTADAPT_SUMMARY_MERGE.out.versions )
     } else {

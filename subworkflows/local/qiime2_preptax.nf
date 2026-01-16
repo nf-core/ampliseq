@@ -16,7 +16,7 @@ workflow QIIME2_PREPTAX {
     RV_primer //val
 
     main:
-    ch_qiime2_preptax_versions = Channel.empty()
+    ch_qiime2_preptax_versions = channel.empty()
 
     if (params.qiime_ref_tax_custom) {
         // Handle case where we have been provided a pair of filepaths.
@@ -29,10 +29,10 @@ workflow QIIME2_PREPTAX {
                 }.set { ch_qiime_ref_tax_branched }
             ch_qiime_ref_tax_branched.failed.subscribe { it -> error "$it is neither a compressed (ends with `.gz`) or decompressed sequence (ends with `.fna`) or taxonomy file (ends with `.tax`). Please review input." }
 
-            PIGZ_UNCOMPRESS(ch_qiime_ref_tax_branched.compressed)
+            PIGZ_UNCOMPRESS(ch_qiime_ref_tax_branched.compressed.map{ it -> [[:], it] })
             ch_qiime2_preptax_versions = ch_qiime2_preptax_versions.mix(PIGZ_UNCOMPRESS.out.versions)
 
-            ch_qiime_db_files = PIGZ_UNCOMPRESS.out.file
+            ch_qiime_db_files = PIGZ_UNCOMPRESS.out.file.map{ it -> it[1] }
             ch_qiime_db_files = ch_qiime_db_files.mix(ch_qiime_ref_tax_branched.decompressed)
 
             ch_ref_database_fna = ch_qiime_db_files.filter { it ->

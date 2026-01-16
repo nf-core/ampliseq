@@ -1,5 +1,5 @@
 process FILTER_STATS {
-    label 'process_low'
+    label 'process_single'
 
     conda "conda-forge::pandas=1.1.5 conda-forge::python=3.9.1"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?

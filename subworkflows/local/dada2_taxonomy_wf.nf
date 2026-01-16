@@ -24,12 +24,12 @@ workflow DADA2_TAXONOMY_WF {
     val_dada_assign_chunksize
 
     main:
-    ch_versions_dada_taxonomy = Channel.empty()
+    ch_versions_dada_taxonomy = channel.empty()
 
     // Set cutoff to use for SH assignment and path to SH taxonomy file
     if ( params.addsh ) {
         vsearch_cutoff = 0.985
-        ch_shinfo = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]).map { it -> file(it) }
+        ch_shinfo = channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]).map { it -> file(it) }
     }
 
     //cut taxonomy to expected amplicon
@@ -47,7 +47,6 @@ workflow DADA2_TAXONOMY_WF {
         CUTADAPT_TAXONOMY ( ch_assigntax ).reads
             .map { meta, db -> db }
             .set { ch_assigntax }
-        ch_versions_dada_taxonomy = ch_versions_dada_taxonomy.mix( CUTADAPT_TAXONOMY.out.versions )
     }
 
     //set file name prefix
@@ -74,7 +73,7 @@ workflow DADA2_TAXONOMY_WF {
 
     if (params.cut_its != "none") {
         FORMAT_TAXRESULTS_STD ( ch_dada2_taxonomy_tsv, ch_full_fasta, "ASV_tax.${val_dada_ref_taxonomy}.tsv" )
-        ch_versions_dada_taxonomy = ch_versions_dada_taxonomy.mix( FORMAT_TAXRESULTS_STD.out.versions.ifEmpty(null) )
+        ch_versions_dada_taxonomy = ch_versions_dada_taxonomy.mix( FORMAT_TAXRESULTS_STD.out.versions )
     }
 
     //DADA2 addSpecies
@@ -119,9 +118,9 @@ workflow DADA2_TAXONOMY_WF {
                     [ meta, fasta ] }
             .set { ch_fasta_map }
         VSEARCH_USEARCHGLOBAL( ch_fasta_map, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
-        ch_versions_dada_taxonomy = ch_versions_dada_taxonomy.mix(VSEARCH_USEARCHGLOBAL.out.versions.ifEmpty(null))
+        ch_versions_dada_taxonomy = ch_versions_dada_taxonomy.mix(VSEARCH_USEARCHGLOBAL.out.versions)
         ASSIGNSH( ch_dada2_tax1, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, ASV_SH_name + ".${val_dada_ref_taxonomy}.tsv")
-        ch_versions_dada_taxonomy = ch_versions_dada_taxonomy.mix(ASSIGNSH.out.versions.ifEmpty(null))
+        ch_versions_dada_taxonomy = ch_versions_dada_taxonomy.mix(ASSIGNSH.out.versions)
         ch_dada2_tax = ASSIGNSH.out.tsv
     } else {
         ch_dada2_tax = ch_dada2_tax1

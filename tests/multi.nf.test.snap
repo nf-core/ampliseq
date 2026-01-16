@@ -1,7 +1,6 @@
 {
     "-profile test_multi": {
         "content": [
-            39,
             {
                 "BARRNAP": {
                     "barrnap": 0.9
@@ -13,32 +12,32 @@
                     "R": "4.0.3"
                 },
                 "DADA2_DENOISING": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0"
                 },
                 "DADA2_ERR": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0"
                 },
                 "DADA2_FILTNTRIM": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0"
                 },
                 "DADA2_MERGE": {
                     "R": "4.1.1",
                     "dada2": "1.22.0"
                 },
                 "DADA2_RMCHIMERA": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0"
                 },
                 "DADA2_STATS": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0"
                 },
                 "DADA2_TAXONOMY": {
-                    "R": "4.3.2",
-                    "dada2": "1.30.0"
+                    "R": "4.4.3",
+                    "dada2": "1.34.0"
                 },
                 "FASTQC": {
                     "fastqc": "0.12.1"
@@ -51,7 +50,7 @@
                     "sed": 4.7
                 },
                 "MERGE_STATS_FILTERTAXA": {
-                    "R": "4.3.2"
+                    "R": "4.4.3"
                 },
                 "QIIME2_BARPLOT": {
                     "qiime2": "2024.10.1"
@@ -81,7 +80,7 @@
                     "sed": 4.7
                 },
                 "Workflow": {
-                    "nf-core/ampliseq": "v2.15.0"
+                    "nf-core/ampliseq": "v2.16.0"
                 }
             },
             [
@@ -140,7 +139,6 @@
                 "input/Samplesheet_multi.tsv",
                 "multiqc",
                 "multiqc/multiqc_data",
-                "multiqc/multiqc_data/BETA-multiqc.parquet",
                 "multiqc/multiqc_data/fastqc-status-check-heatmap.txt",
                 "multiqc/multiqc_data/fastqc_adapter_content_plot.txt",
                 "multiqc/multiqc_data/fastqc_overrepresented_sequences_plot.txt",
@@ -153,7 +151,9 @@
                 "multiqc/multiqc_data/fastqc_sequence_duplication_levels_plot.txt",
                 "multiqc/multiqc_data/fastqc_sequence_length_distribution_plot.txt",
                 "multiqc/multiqc_data/fastqc_top_overrepresented_sequences_table.txt",
+                "multiqc/multiqc_data/llms-full.txt",
                 "multiqc/multiqc_data/multiqc.log",
+                "multiqc/multiqc_data/multiqc.parquet",
                 "multiqc/multiqc_data/multiqc_citations.txt",
                 "multiqc/multiqc_data/multiqc_data.json",
                 "multiqc/multiqc_data/multiqc_fastqc.txt",

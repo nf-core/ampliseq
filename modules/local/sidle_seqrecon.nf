@@ -1,6 +1,6 @@
 process SIDLE_SEQRECON {
     label 'process_medium'
-    label 'single_cpu'
+    label 'process_cpu_single'
 
     conda "${projectDir}/modules/local/envs/pipesidle-0-1-0-beta.yml"
     container 'nf-core/pipesidle:0.1.0-beta'

@@ -18,7 +18,7 @@ workflow PARSE_INPUT {
     error_message += "In any case, please consult the pipeline documentation.\n"
     if ( single_end ) {
         //Get files - single end
-        Channel
+        channel
             .fromPath( input + folders + extension )
             .ifEmpty { error("${error_message}") }
             .map { read ->
@@ -30,7 +30,7 @@ workflow PARSE_INPUT {
             .set { ch_reads }
     } else {
         //Get files - paired end
-        Channel
+        channel
             .fromFilePairs( input + folders + extension, size: 2 )
             .ifEmpty { error("${error_message}") }
             .map { name, reads ->

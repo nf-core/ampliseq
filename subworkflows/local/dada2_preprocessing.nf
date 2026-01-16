@@ -16,7 +16,7 @@ workflow DADA2_PREPROCESSING {
     trunclenr
 
     main:
-    ch_versions_dada2_preprocessing = Channel.empty()
+    ch_versions_dada2_preprocessing = channel.empty()
 
     //plot unprocessed, aggregated quality profile for forward and reverse reads separately
     if (single_end) {
@@ -41,7 +41,7 @@ workflow DADA2_PREPROCESSING {
             .set { ch_all_trimmed_reads }
     }
 
-    ch_DADA2_QUALITY1_SVG = Channel.empty()
+    ch_DADA2_QUALITY1_SVG = channel.empty()
     if ( !params.skip_dada_quality ) {
         DADA2_QUALITY1 ( ch_all_trimmed_reads.dump(tag: 'into_dada2_quality') )
         ch_versions_dada2_preprocessing = ch_versions_dada2_preprocessing.mix(DADA2_QUALITY1.out.versions)
@@ -64,7 +64,7 @@ workflow DADA2_PREPROCESSING {
             else log.warn "Probably everything is fine, but this is a reminder that `--trunclenf` was set automatically to ${it[0][1]} and `--trunclenr` to ${it[1][1]}. If this doesnt seem reasonable, then please change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr` directly."
         }
     } else {
-        Channel.fromList( [['FW', trunclenf], ['RV', trunclenr]] )
+        channel.fromList( [['FW', trunclenf], ['RV', trunclenr]] )
             .toSortedList()
             .set { ch_trunc }
     }
@@ -129,7 +129,7 @@ workflow DADA2_PREPROCESSING {
             .set { ch_all_preprocessed_reads }
     }
 
-    ch_DADA2_QUALITY2_SVG = Channel.empty()
+    ch_DADA2_QUALITY2_SVG = channel.empty()
     if ( !params.skip_dada_quality ) {
         DADA2_QUALITY2 ( ch_all_preprocessed_reads.dump(tag: 'into_dada2_quality2') )
         ch_versions_dada2_preprocessing = ch_versions_dada2_preprocessing.mix(DADA2_QUALITY2.out.versions)

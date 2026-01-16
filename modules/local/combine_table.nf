@@ -1,5 +1,5 @@
 process COMBINE_TABLE {
-    label 'process_low'
+    label 'process_single'
 
     conda "bioconda::bioconductor-biostrings=2.58.0 conda-forge::r-base=4.0.3"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?

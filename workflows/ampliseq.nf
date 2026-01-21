@@ -273,6 +273,31 @@ workflow AMPLISEQ {
         error("One of `--input`, `--input_fasta`, `--input_folder` must be provided!")
     }
 
+    // Parse the --pplace_sheet file if present
+    ch_pplace_sheet = channel.empty()
+    if ( params.pplace_sheet ) {
+        ch_pplace_sheet = Channel.fromPath(params.pplace_sheet)
+            .splitCsv(header: true)
+            .map {
+                [
+                    meta: [
+                        id: it.target,
+                        min_bitscore: it.min_bitscore
+                    ],
+                    data: [
+                        alignmethod:    it.alignmethod  ? it.alignmethod                             : 'hmmer',
+                        hmm:            file(it.hmm,  checkIfExists: true),
+                        extract_hmm:    it.extract_hmm,
+                        refseqfile:     it.refseqfile   ? file(it.refseqfile,   checkIfExists: true) : [],
+                        refphylogeny:   it.refphylogeny ? file(it.refphylogeny, checkIfExists: true) : [],
+                        model:          it.model,
+                        taxonomy:       it.taxonomy     ? file(it.taxonomy,     checkIfExists: true) : []
+                    ]
+                ]
+            }
+    }
+    ch_pplace_sheet.view()
+
     //
     // Add primer info to sequencing files
     //

@@ -18,7 +18,7 @@ workflow QIIME2_DIVERSITY {
     ch_tree
     ch_stats //QIIME2_FILTERTAXA.out.tsv
     ch_metacolumn_pairwise //METADATA_PAIRWISE.out
-    ch_metacolumn_all //METADATA_ALL.out
+    _ch_metacolumn_all //METADATA_ALL.out
     skip_alpha_rarefaction
     skip_diversity_indices
     diversity_rarefaction_depth

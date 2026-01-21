@@ -2,7 +2,7 @@ process SIDLE_TRIM {
     tag "$meta.region,$meta.region_length"
     label 'process_single'
 
-    conda "${projectDir}/modules/local/envs/pipesidle-0-1-0-beta.yml"
+    conda "${moduleDir}/envs/pipesidle-0-1-0-beta.yml"
     container 'nf-core/pipesidle:0.1.0-beta'
 
     input:
@@ -14,10 +14,7 @@ process SIDLE_TRIM {
     path "versions.yml"                     , emit: versions
 
     script:
-    def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.region}"
-    def primerfw = "${meta.fw_primer}"
-    def primerrv = "${meta.rv_primer}"
     def length = "${meta.region_length}"
     """
     # https://q2-sidle.readthedocs.io/en/latest/read_preparation.html#dada2

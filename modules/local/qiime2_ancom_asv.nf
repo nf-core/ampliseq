@@ -5,7 +5,7 @@ process QIIME2_ANCOM_ASV {
     label 'process_long'
     label 'error_ignore'
 
-    conda "${projectDir}/modules/local/envs/qiime2-amplicon-2024.10-py310-linux-conda.yml"
+    conda "${moduleDir}/envs/qiime2-amplicon-2024.10-py310-linux-conda.yml"
     container "qiime2/amplicon:2024.10"
 
     input:

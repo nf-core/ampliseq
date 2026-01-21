@@ -255,7 +255,7 @@ workflow AMPLISEQ {
     ch_input_fasta = channel.empty()
     ch_input_reads = channel.empty()
     if ( params.input ) {
-        // See the documentation https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
+        // See the documentation https://nextflow-io.github.io/nf-schema/2.5.1/samplesheets/samplesheetToList/
         ch_input_reads = channel.fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json")) // meta: meta.sample, meta.run
             .map{ meta, readfw, readrv ->
                 meta.single_end = single_end.toBoolean()

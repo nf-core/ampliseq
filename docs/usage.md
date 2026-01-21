@@ -18,6 +18,9 @@
   - [Multiple region analysis with Sidle](#multiple-region-analysis-with-sidle)
   - [Metadata](#metadata)
   - [Differential abundance analysis](#differential-abundance-analysis)
+  - [Phylogenetic placement](#phylogenetic-placement)
+    - [Single reference phylogenetic placement](#single-reference-phylogenetic-placement)
+    - [Multiple reference phylogenetic placement](#multiple-reference-phylogenetic-placement)
   - [Updating the pipeline](#updating-the-pipeline)
   - [Reproducibility](#reproducibility)
 - [Core Nextflow arguments](#core-nextflow-arguments)
@@ -315,9 +318,37 @@ The columns which are to be assessed can be specified by `--metadata_category`. 
 
 Differential abundance analysis for relative abundance from microbial community analysis are plagued by multiple issues that aren't fully solved yet. But some approaches seem promising, for example Analysis of Composition of Microbiomes with Bias Correction ([ANCOM-BC](https://pubmed.ncbi.nlm.nih.gov/32665548/)). [ANCOM](https://pubmed.ncbi.nlm.nih.gov/26028277/) and ANCOM-BC are integrated into the pipeline, but only executed on request via `--ancom` and `--ancombc`, more details in the [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#differential-abundance-analysis).
 
+### Phylogenetic placement
+
+The pipeline can perform phylogenetic placement of ASV sequences in reference trees using [EPA-NG](https://github.com/pierrebarbera/epa-ng) using the same code as [nf-core/phyloplace](https://nf-co.re/phyloplace).
+This can be done either a single reference for all ASV sequences, or multiple references, see below.
+
+#### Single reference phylogenetic placement
+
+Adding the parameters `--pplace_tree`, `--place_aln`, `--pplace_alnmethod`, `--place_model`, `--pplace_taxonomy` and `--pplace_name` will perform phylogenetic placement of ASV sequences in the specified reference phylogeny.
+See the [nf-core/ampliseq parameter documentation](https://nf-co.re/ampliseq/parameters) for more information about the parameters.
+
+#### Multiple reference phylogenetic placement
+
+The pipeline can select reference trees for placement from a set by first running [HMMER](http://hmmer.org/).
+The set is provided with a spreadsheet passed to the [`--pplace_sheet`](https://nf-co.re/ampliseq/parameters#pplace_sheet), see example below.
+Each row in the spreadsheet needs to specify at least `target` and `hmm`.
+For each ASV sequence, the best matching hmm profile decides which reference phylogeny, if any, will be used for placement.
+When there's a `refseqfile`, `refphylogeny`, `model` and `taxonomy`, best matching ASV sequences will be placed in the specified phylogeny.
+If there is no reference tree information, ASV sequences matching these hmm profiles best will not be placed.
+The latter can be used to attract false positive sequences away from being placed in any of the trees.
+For hmm files with multiple profiles, the `extract_hmm` specifies which profile to use.
+
+```csv title="pplace_sheet.csv"
+target,alignmethod,hmm,extract_hmm,refseqfile,refphylogeny,model,taxonomy
+archaea16s,clustalo,https://raw.githubusercontent.com/tseemann/barrnap/master/db/arc.hmm,16S_rRNA,archaea.newick,archaea.alnfna,GTR+F+I+G4,archaea.taxonomy.tsv
+bacteria16s,clustalo,https://raw.githubusercontent.com/tseemann/barrnap/master/db/bac.hmm,16S_rRNA,bacteria.newick,bacteria.alnfna,GTR+F+I+G4,bacteria.taxonomy.tsv
+euk18s,clustalo,https://raw.githubusercontent.com/tseemann/barrnap/master/db/euk.hmm,18S_rRNA,,,,
+```
+
 ### Updating the pipeline
 
-When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
+When you run the below command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
 
 ```bash
 nextflow pull nf-core/ampliseq

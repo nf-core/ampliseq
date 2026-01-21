@@ -4,4 +4,5 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - bioconda::hmmer=3.4
+  - bioconda::clustalo=1.2.4
+  - conda-forge::pigz=2.8

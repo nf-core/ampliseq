@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#943](https://github.com/nf-core/ampliseq/pull/943) - Fix SciLifeLab Figshare urls for reference databases.
 - [#942](https://github.com/nf-core/ampliseq/pull/942) - Nextflow strict syntax for non-nf-core-modules/workflows
+- [#944](https://github.com/nf-core/ampliseq/pull/944) - Regions in multiple region analysis are now always properly sorted.
 
 ### `Dependencies`
 

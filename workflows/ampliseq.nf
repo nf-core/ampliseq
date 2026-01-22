@@ -11,6 +11,7 @@
 include { FASTQC                            } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
 include { VSEARCH_CLUSTER                   } from '../modules/nf-core/vsearch/cluster/main'
+include { FASTA_HMMSEARCH_RANK_FASTAS       } from '../subworkflows/nf-core/fasta_hmmsearch_rank_fastas'
 include { FASTA_NEWICK_EPANG_GAPPA          } from '../subworkflows/nf-core/fasta_newick_epang_gappa/main'
 
 //
@@ -58,6 +59,7 @@ include { SUMMARY_REPORT                } from '../modules/local/summary_report'
 include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_PPLACE } from '../modules/local/phyloseq_intax'
 include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_QIIME2 } from '../modules/local/phyloseq_intax'
 include { FILTER_CLUSTERS               } from '../modules/local/filter_clusters'
+include { HMMER_HMMEXTRACT              } from '../modules/local/hmmer/hmmextract'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
@@ -278,7 +280,7 @@ workflow AMPLISEQ {
     if ( params.pplace_sheet ) {
         ch_pplace_sheet = Channel.fromPath(params.pplace_sheet)
             .splitCsv(header: true)
-            .map {
+            .map { it ->
                 [
                     meta: [
                         id: it.target,
@@ -296,7 +298,6 @@ workflow AMPLISEQ {
                 ]
             }
     }
-    ch_pplace_sheet.view()
 
     //
     // Add primer info to sequencing files
@@ -654,7 +655,9 @@ workflow AMPLISEQ {
         ch_sintax_tax = channel.empty()
     }
 
-    // Phylo placement
+    // Phylogenetic placement
+
+    // Single reference variant
     if ( params.pplace_tree ) {
         ch_pp_data = ch_fasta.map { it ->
             [ meta: [ id: params.pplace_name ?: 'user_tree' ],
@@ -675,6 +678,55 @@ workflow AMPLISEQ {
     } else {
         ch_pplace_tax = channel.empty()
     }
+
+    // Multiple references with hmms
+
+    // For search entries with a named hmm to extract, call extraction
+    ch_pplace_sheet
+        .filter { it.data.extract_hmm }
+        .map { [ it.meta, it.data.hmm, it.data.extract_hmm ] }
+        .set { ch_hmmextract }
+
+    HMMER_HMMEXTRACT(ch_hmmextract)
+    ch_versions = ch_versions.mix(HMMER_HMMEXTRACT.out.versions)
+
+    // Create an input channel for FASTA_HMMSEARCH_RANK_FASTAS by adding the non-keyed entries from the original channel to the output of the extracted
+    ch_search_profiles = HMMER_HMMEXTRACT.out.hmm
+        .mix(
+            ch_pplace_sheet
+                .filter { it -> ! it.data.extract_hmm }
+                .map { it -> [ it.meta, it.data.hmm ] }
+        )
+
+    FASTA_HMMSEARCH_RANK_FASTAS(ch_search_profiles, ch_fasta)
+    ch_versions = ch_versions.mix(FASTA_HMMSEARCH_RANK_FASTAS.out.versions)
+
+    ch_phyloplace_data = FASTA_HMMSEARCH_RANK_FASTAS.out.seqfastas
+        .join(
+            ch_pplace_sheet
+                .filter { it -> it.data.alignmethod && it.data.refseqfile && it.data.refphylogeny }
+                .map { it -> [ [ id: it.meta.id ], it ] }
+        )
+        .map { it -> [
+            meta: it[2].meta,
+            data: [
+                alignmethod: it[2].data.alignmethod,
+                queryseqfile: it[1],
+                refseqfile: it[2].data.refseqfile,
+                refphylogeny: it[2].data.refphylogeny,
+                model: it[2].data.model,
+                taxonomy: it[2].data.taxonomy
+            ]
+        ] }
+
+    //
+    // SUBWORKFLOW: Run phylogenetic placement
+    //
+    FASTA_NEWICK_EPANG_GAPPA(ch_phyloplace_data)
+    ch_versions = ch_versions.mix(FASTA_NEWICK_EPANG_GAPPA.out.versions)
+
+    FASTA_NEWICK_EPANG_GAPPA.out.grafted_phylogeny.view()
+    FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query.view()
 
     //QIIME2
     if ( run_qiime2_taxonomy ) {

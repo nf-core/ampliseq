@@ -2,7 +2,7 @@ process SIDLE_ALIGN {
     tag "$meta.region"
     label 'process_medium'
 
-    conda "${projectDir}/modules/local/envs/pipesidle-0-1-0-beta.yml"
+    conda "${moduleDir}/envs/pipesidle-0-1-0-beta.yml"
     container 'nf-core/pipesidle:0.1.0-beta'
 
     input:
@@ -15,8 +15,6 @@ process SIDLE_ALIGN {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.region}"
-    def primerfw = "${meta.fw_primer}"
-    def primerrv = "${meta.rv_primer}"
     """
     # https://q2-sidle.readthedocs.io/en/latest/reconstruction.html#regional-alignment
     export XDG_CONFIG_HOME="./xdgconfig"

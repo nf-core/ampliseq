@@ -1,7 +1,7 @@
 process SIDLE_INDB {
     label 'process_single'
 
-    conda "${projectDir}/modules/local/envs/pipesidle-0-1-0-beta.yml"
+    conda "${moduleDir}/envs/pipesidle-0-1-0-beta.yml"
     container 'nf-core/pipesidle:0.1.0-beta'
 
     input:

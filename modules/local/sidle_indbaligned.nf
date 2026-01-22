@@ -1,7 +1,7 @@
 process SIDLE_INDBALIGNED {
     label 'process_single'
 
-    conda "${projectDir}/modules/local/envs/pipesidle-0-1-0-beta.yml"
+    conda "${moduleDir}/envs/pipesidle-0-1-0-beta.yml"
     container 'nf-core/pipesidle:0.1.0-beta'
 
     input:
@@ -12,7 +12,6 @@ process SIDLE_INDBALIGNED {
     path "versions.yml"            , emit: versions
 
     script:
-    def args = task.ext.args ?: ''
     """
     export XDG_CONFIG_HOME="./xdgconfig"
     export MPLCONFIGDIR="./mplconfigdir"

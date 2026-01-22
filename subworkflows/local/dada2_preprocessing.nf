@@ -21,18 +21,18 @@ workflow DADA2_PREPROCESSING {
     //plot unprocessed, aggregated quality profile for forward and reverse reads separately
     if (single_end) {
         ch_trimmed_reads
-            .map { meta, reads -> [ reads ] }
+            .map { _meta, reads -> [ reads ] }
             .collect()
             .map { reads -> [ "single_end", reads ] }
             .set { ch_all_trimmed_reads }
     } else {
         ch_trimmed_reads
-            .map { meta, reads -> [ reads[0] ] }
+            .map { _meta, reads -> [ reads[0] ] }
             .collect()
             .map { reads -> [ "FW", reads ] }
             .set { ch_all_trimmed_fw }
         ch_trimmed_reads
-            .map { meta, reads -> [ reads[1] ] }
+            .map { _meta, reads -> [ reads[1] ] }
             .collect()
             .map { reads -> [ "RV", reads ] }
             .set { ch_all_trimmed_rv }
@@ -83,7 +83,7 @@ workflow DADA2_PREPROCESSING {
         .set { ch_dada2_filtntrim_results }
     ch_dada2_filtntrim_results.passed.set { ch_dada2_filtntrim_results_passed }
     ch_dada2_filtntrim_results.failed
-        .map { meta, reads, logs, args -> [ meta.id ] }
+        .map { meta, _reads, _logs, _args -> [ meta.id ] }
         .collect()
         .subscribe { it ->
             def samples = it.join("\n")
@@ -97,30 +97,30 @@ workflow DADA2_PREPROCESSING {
     // Break apart the reads and logs so that only the samples
     // which pass filtering are retained
     ch_dada2_filtntrim_results_passed
-        .map{ meta, reads, logs, args -> [meta, reads] }
+        .map{ meta, reads, _logs, _args -> [meta, reads] }
         .set{ ch_dada2_filtntrim_reads_passed }
     ch_dada2_filtntrim_results_passed
-        .map{ meta, reads, logs, args -> [meta, logs] }
+        .map{ meta, _reads, logs, _args -> [meta, logs] }
         .set{ ch_dada2_filtntrim_logs_passed }
     ch_dada2_filtntrim_results_passed
-        .map{ meta, reads, logs, args -> args }
+        .map{ _meta, _reads, _logs, args -> args }
         .set{ ch_dada2_filtntrim_args_passed }
 
     //plot post-processing, aggregated quality profile for forward and reverse reads separately
     if (single_end) {
         ch_dada2_filtntrim_reads_passed
-            .map { meta, reads -> [ reads ] }
+            .map { _meta, reads -> [ reads ] }
             .collect()
             .map { reads -> [ "single_end", reads ] }
             .set { ch_all_preprocessed_reads }
     } else {
         ch_dada2_filtntrim_reads_passed
-            .map { meta, reads -> [ reads[0] ] }
+            .map { _meta, reads -> [ reads[0] ] }
             .collect()
             .map { reads -> [ "FW", reads ] }
             .set { ch_all_preprocessed_fw }
         ch_dada2_filtntrim_reads_passed
-            .map { meta, reads -> [ reads[1] ] }
+            .map { _meta, reads -> [ reads[1] ] }
             .collect()
             .map { reads -> [ "RV", reads ] }
             .set { ch_all_preprocessed_rv }

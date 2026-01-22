@@ -3,7 +3,7 @@ process QIIME2_ANCOMBC_TAX {
     label 'process_medium'
     label 'process_cpu_single'
 
-    conda "${projectDir}/modules/local/envs/qiime2-amplicon-2024.10-py310-linux-conda.yml"
+    conda "${moduleDir}/envs/qiime2-amplicon-2024.10-py310-linux-conda.yml"
     container "qiime2/amplicon:2024.10"
 
     input:

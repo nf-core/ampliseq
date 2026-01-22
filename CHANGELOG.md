@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
-- [#943](https://github.com/nf-core/ampliseq/pull/943),[932](https://github.com/nf-core/ampliseq/pull/932) - Fix SciLifeLab Figshare urls for reference databases.
+- [#943](https://github.com/nf-core/ampliseq/pull/943) - Fix SciLifeLab Figshare urls for reference databases.
 
 ### `Dependencies`
 

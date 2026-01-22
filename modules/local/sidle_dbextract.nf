@@ -11,7 +11,7 @@ process SIDLE_DBEXTRACT {
 
     output:
     tuple val(meta), path("db_*_kmers.qza"), emit: kmers
-    tuple val(meta), path("db_*_map.qza")  , emit: map
+    tuple val(meta), path("db_*_map.qza")  , emit: kmer_map
     path "versions.yml"                    , emit: versions
 
     script:

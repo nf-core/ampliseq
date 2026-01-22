@@ -6,7 +6,7 @@ process SIDLE_DBRECON {
 
     input:
     val(metaid)
-    path(map)
+    path(kmer_map)
     path(aligned_map)
 
     output:
@@ -19,7 +19,7 @@ process SIDLE_DBRECON {
     def args = task.ext.args ?: ''
     def db_input = ""
     // sort the input so that the regions are sorted by sequence
-    def df = [metaid, map, aligned_map].transpose().sort{ it[0] }
+    def df = [metaid, kmer_map, aligned_map].transpose().sort{ it[0] }
     df.each { i ->
         db_input += " --p-region "+i[0]+" --i-kmer-map "+i[1]+" --i-regional-alignment "+i[2]
     }

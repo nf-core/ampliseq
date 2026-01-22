@@ -76,7 +76,7 @@
                     "pandas": "1.1.5"
                 },
                 "Workflow": {
-                    "nf-core/ampliseq": "v2.17.0dev"
+                    "nf-core/ampliseq": "v2.16.1"
                 }
             },
             [
@@ -260,8 +260,8 @@
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.10.0"
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-12-15T14:33:22.142443576"
+        "timestamp": "2026-01-22T20:15:58.380244825"
     }
 }

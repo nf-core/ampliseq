@@ -45,7 +45,7 @@ workflow DADA2_TAXONOMY_WF {
                     [ meta, db ] }
             .set { ch_assigntax }
         CUTADAPT_TAXONOMY ( ch_assigntax ).reads
-            .map { meta, db -> db }
+            .map { _meta, db -> db }
             .set { ch_assigntax }
     }
 

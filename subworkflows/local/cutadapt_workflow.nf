@@ -62,7 +62,7 @@ workflow CUTADAPT_WORKFLOW {
         .set { ch_trimmed_reads_result }
     ch_trimmed_reads_result.passed.set { ch_trimmed_reads_passed }
     ch_trimmed_reads_result.failed
-        .map { meta, reads -> [ meta.id ] }
+        .map { meta, _reads -> [ meta.id ] }
         .collect()
         .subscribe { it ->
             def samples = it.join("\n")

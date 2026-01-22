@@ -44,7 +44,7 @@ workflow PARSE_INPUT {
     if (multiple_sequencing_runs) {
         //Get folder information
         ch_reads
-            .flatMap { meta, reads -> [ meta.run ] }
+            .flatMap { meta, _reads -> [ meta.run ] }
             .unique()
             .set { ch_folders }
         //Report folders with sequencing files
@@ -61,7 +61,7 @@ workflow PARSE_INPUT {
 
     //Check whether all sampleID = meta.sample are unique
     ch_reads
-        .map { meta, reads -> [ meta.sample ] }
+        .map { meta, _reads -> [ meta.sample ] }
         .toList()
         .subscribe { it ->
             if( it.size() != it.unique().size() ) {
@@ -72,12 +72,12 @@ workflow PARSE_INPUT {
 
     //Check that sampleIDs contain only letter, number and underscore characters
     ch_reads
-        .map { meta, reads -> meta.sample }
+        .map { meta, _reads -> meta.sample }
         .subscribe { it -> if ( ! "$it".matches(/^[a-zA-Z0-9_]+$/) ) error("Please review data input, sampleIDs may not contain characters other than letters, numbers or underscores, but \"$it\" does.") }
 
     //Check that sampleIDs do not start with a number when using metadata (sampleID gets X prepended by R and metadata wont match any more!)
     ch_reads
-        .map { meta, reads -> meta.sample }
+        .map { meta, _reads -> meta.sample }
         .subscribe { it -> if ( params.metadata && "$it"[0].isNumber() ) error("Please review data input, sampleIDs may not start with a number, but \"$it\" does. The pipeline unintentionally modifies such strings and the metadata will not match any more.") }
 
     emit:

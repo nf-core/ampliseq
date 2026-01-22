@@ -255,7 +255,7 @@ workflow AMPLISEQ {
     ch_input_fasta = channel.empty()
     ch_input_reads = channel.empty()
     if ( params.input ) {
-        // See the documentation https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
+        // See the documentation https://nextflow-io.github.io/nf-schema/2.5.1/samplesheets/samplesheetToList/
         ch_input_reads = channel.fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json")) // meta: meta.sample, meta.run
             .map{ meta, readfw, readrv ->
                 meta.single_end = single_end.toBoolean()
@@ -338,7 +338,7 @@ workflow AMPLISEQ {
         .set { ch_reads_result }
     ch_reads_result.passed.set { ch_reads }
     ch_reads_result.failed
-        .map { meta, reads -> [ meta.id ] }
+        .map { meta, _reads -> [ meta.id ] }
         .collect()
         .subscribe { it ->
             def samples = it.join("\n")
@@ -428,8 +428,8 @@ workflow AMPLISEQ {
 
     //merge if several runs, otherwise just publish
     DADA2_MERGE (
-        DADA2_STATS.out.stats.map { meta, stats -> stats }.collect(),
-        DADA2_RMCHIMERA.out.rds.map { meta, rds -> rds }.collect() )
+        DADA2_STATS.out.stats.map { _meta, stats -> stats }.collect(),
+        DADA2_RMCHIMERA.out.rds.map { _meta, rds -> rds }.collect() )
     ch_versions = ch_versions.mix(DADA2_MERGE.out.versions)
 
     //merge cutadapt_summary and dada_stats files
@@ -450,7 +450,7 @@ workflow AMPLISEQ {
             //DADA2_DENOISING per run & region -> per run
             ch_reads
                 .map {
-                    info, reads ->
+                    info, _reads ->
                         def meta = info.subMap( info.keySet() - 'id' - 'sample' - 'run' ) // All of 'id', 'sample', 'run' must be removed to merge by region
                         def inf2 = info.subMap( 'id', 'sample' )// May not contain false,true,null; only 'id', 'sample' required
                         [ meta, inf2 ] }
@@ -1048,8 +1048,8 @@ workflow AMPLISEQ {
             run_qiime2 && params.ancombc_formula && params.metadata ? QIIME2_ANCOM.out.ancombc_formula.collect().ifEmpty( [] ) : [],
             params.picrust ? PICRUST.out.pathways.ifEmpty( [] ) : [],
             params.sbdiexport ? SBDIEXPORT.out.sbditables.mix(SBDIEXPORTREANNOTATE.out.sbdiannottables).collect().ifEmpty( [] ) : [],
-            !params.skip_taxonomy && !params.skip_phyloseq ? ROBJECT_WORKFLOW.out.phyloseq.map{info,rds -> [rds]}.collect().ifEmpty( [] ) : [],
-            !params.skip_taxonomy && !params.skip_tse ? ROBJECT_WORKFLOW.out.tse.map{info,rds -> [rds]}.collect().ifEmpty( [] ) : []
+            !params.skip_taxonomy && !params.skip_phyloseq ? ROBJECT_WORKFLOW.out.phyloseq.map{_info,rds -> [rds]}.collect().ifEmpty( [] ) : [],
+            !params.skip_taxonomy && !params.skip_tse ? ROBJECT_WORKFLOW.out.tse.map{_info,rds -> [rds]}.collect().ifEmpty( [] ) : []
         )
         ch_versions    = ch_versions.mix(SUMMARY_REPORT.out.versions)
     }

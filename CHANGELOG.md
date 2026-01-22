@@ -3,6 +3,21 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## nf-core/ampliseq version 2.17.0dev
+
+### `Added`
+
+### `Changed`
+
+### `Fixed`
+
+- [#943](https://github.com/nf-core/ampliseq/pull/943) - Fix SciLifeLab Figshare urls for reference databases.
+- [#942](https://github.com/nf-core/ampliseq/pull/942) - Nextflow strict syntax for non-nf-core-modules/workflows
+
+### `Dependencies`
+
+### `Removed`
+
 ## nf-core/ampliseq version 2.16.0 - 2026-01-14
 
 ### `Added`

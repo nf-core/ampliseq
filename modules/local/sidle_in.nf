@@ -2,7 +2,7 @@ process SIDLE_IN {
     tag "$meta.region"
     label 'process_single'
 
-    conda "${projectDir}/modules/local/envs/pipesidle-0-1-0-beta.yml"
+    conda "${moduleDir}/envs/pipesidle-0-1-0-beta.yml"
     container 'nf-core/pipesidle:0.1.0-beta'
 
     input:
@@ -13,7 +13,6 @@ process SIDLE_IN {
     path "versions.yml"                 , emit: versions
 
     script:
-    def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.region}"
     """
     export XDG_CONFIG_HOME="./xdgconfig"

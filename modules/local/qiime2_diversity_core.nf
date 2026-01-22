@@ -1,7 +1,7 @@
 process QIIME2_DIVERSITY_CORE {
     label 'process_medium'
 
-    conda "${projectDir}/modules/local/envs/qiime2-amplicon-2024.10-py310-linux-conda.yml"
+    conda "${moduleDir}/envs/qiime2-amplicon-2024.10-py310-linux-conda.yml"
     container "qiime2/amplicon:2024.10"
 
     input:

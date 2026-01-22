@@ -1,11 +1,11 @@
 process SIDLE_DBRECON {
     label 'process_medium'
 
-    conda "${projectDir}/modules/local/envs/pipesidle-0-1-0-beta.yml"
+    conda "${moduleDir}/envs/pipesidle-0-1-0-beta.yml"
     container 'nf-core/pipesidle:0.1.0-beta'
 
     input:
-    val(metaid)
+    val(region)
     path(kmer_map)
     path(aligned_map)
 
@@ -19,7 +19,7 @@ process SIDLE_DBRECON {
     def args = task.ext.args ?: ''
     def db_input = ""
     // sort the input so that the regions are sorted by sequence
-    def df = [metaid, kmer_map, aligned_map].transpose().sort{ it[0] }
+    def df = [region, kmer_map, aligned_map].transpose().sort()
     df.each { i ->
         db_input += " --p-region "+i[0]+" --i-kmer-map "+i[1]+" --i-regional-alignment "+i[2]
     }

@@ -1,7 +1,7 @@
 process SIDLE_TABLERECON {
     label 'process_medium'
 
-    conda "${projectDir}/modules/local/envs/pipesidle-0-1-0-beta.yml"
+    conda "${moduleDir}/envs/pipesidle-0-1-0-beta.yml"
     container 'nf-core/pipesidle:0.1.0-beta'
 
     input:
@@ -22,7 +22,7 @@ process SIDLE_TABLERECON {
     def args = task.ext.args ?: ''
     def region_input = ""
     // sort the input so that the regions are sorted by sequence
-    def df = [region, aligned_map, table].transpose().sort{ it[0] }
+    def df = [region, aligned_map, table].transpose().sort()
     df.each { i ->
         region_input += " --p-region "+i[0]+" --i-regional-alignment "+i[1]+" --i-regional-table "+i[2]
     }

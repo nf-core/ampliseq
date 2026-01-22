@@ -18,8 +18,8 @@ process SIDLE_DBRECON {
     script:
     def args = task.ext.args ?: ''
     def db_input = ""
-    // sort the input so that the regions are sorted by sequence
-    def df = [region, kmer_map, aligned_map].transpose().sort()
+    // input must be sorted already by regions
+    def df = [region, kmer_map, aligned_map].transpose()
     df.each { i ->
         db_input += " --p-region "+i[0]+" --i-kmer-map "+i[1]+" --i-regional-alignment "+i[2]
     }

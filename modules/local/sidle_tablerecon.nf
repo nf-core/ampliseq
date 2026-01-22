@@ -21,8 +21,8 @@ process SIDLE_TABLERECON {
     script:
     def args = task.ext.args ?: ''
     def region_input = ""
-    // sort the input so that the regions are sorted by sequence
-    def df = [region, aligned_map, table].transpose().sort()
+    // input must be sorted already by regions
+    def df = [region, aligned_map, table].transpose()
     df.each { i ->
         region_input += " --p-region "+i[0]+" --i-regional-alignment "+i[1]+" --i-regional-table "+i[2]
     }

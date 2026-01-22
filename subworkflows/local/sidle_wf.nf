@@ -66,6 +66,8 @@ workflow SIDLE_WF {
 
     SIDLE_DBEXTRACT.out.kmer_map
         .join(SIDLE_ALIGN.out.aligned_map)
+        .toSortedList( { a, b -> a[0].region <=> b[0].region } )
+        .flatMap()
         .multiMap { meta, kmer_map, aligned_map ->
             region: meta.region
             kmer_map: kmer_map
@@ -81,6 +83,8 @@ workflow SIDLE_WF {
 
     SIDLE_TRIM.out.table
         .join(SIDLE_ALIGN.out.aligned_map)
+        .toSortedList( { a, b -> a[0].region <=> b[0].region } )
+        .flatMap()
         .multiMap { meta, table, aligned_map ->
             region: meta.region
             table: table

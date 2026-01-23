@@ -114,7 +114,7 @@
                     "untar": 1.34
                 },
                 "Workflow": {
-                    "nf-core/ampliseq": "v2.16.0"
+                    "nf-core/ampliseq": "v2.16.1"
                 }
             },
             [
@@ -308,8 +308,8 @@
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.10.0"
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-12-15T13:45:01.844416414"
+        "timestamp": "2026-01-22T19:31:31.442049151"
     }
 }

@@ -3,7 +3,7 @@ process SIDLE_DBEXTRACT {
     tag "$meta.region,$meta.region_length"
     label 'process_medium'
 
-    conda "${projectDir}/modules/local/envs/pipesidle-0-1-0-beta.yml"
+    conda "${moduleDir}/envs/pipesidle-0-1-0-beta.yml"
     container 'nf-core/pipesidle:0.1.0-beta'
 
     input:
@@ -11,7 +11,7 @@ process SIDLE_DBEXTRACT {
 
     output:
     tuple val(meta), path("db_*_kmers.qza"), emit: kmers
-    tuple val(meta), path("db_*_map.qza")  , emit: map
+    tuple val(meta), path("db_*_map.qza")  , emit: kmer_map
     path "versions.yml"                    , emit: versions
 
     script:

@@ -3,6 +3,18 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## nf-core/ampliseq version 2.17.0dev - YYYY-MM-DD
+
+### `Added`
+
+### `Changed`
+
+### `Fixed`
+
+### `Dependencies`
+
+### `Removed`
+
 ## nf-core/ampliseq version 2.16.1 - 2026-01-23
 
 ### `Added`

@@ -64,25 +64,29 @@ workflow SIDLE_WF {
     SIDLE_ALIGN ( SIDLE_DBEXTRACT.out.kmers.join(SIDLE_TRIM.out.seq).dump(tag: 'into_SIDLE_ALIGN') )
     ch_sidle_versions = ch_sidle_versions.mix(SIDLE_ALIGN.out.versions)
 
-    SIDLE_DBEXTRACT.out.map
+    SIDLE_DBEXTRACT.out.kmer_map
         .join(SIDLE_ALIGN.out.aligned_map)
-        .multiMap { meta, map, aligned_map ->
-            sampleid: meta.id
-            map: map
+        .toSortedList( { a, b -> a[0].region <=> b[0].region } )
+        .flatMap()
+        .multiMap { meta, kmer_map, aligned_map ->
+            region: meta.region
+            kmer_map: kmer_map
             aligned_map: aligned_map
         }
         .set { ch_db_reconstruction }
 
     SIDLE_DBRECON (
-        ch_db_reconstruction.sampleid.collect(),
-        ch_db_reconstruction.map.collect(),
+        ch_db_reconstruction.region.collect(),
+        ch_db_reconstruction.kmer_map.collect(),
         ch_db_reconstruction.aligned_map.collect() )
     ch_sidle_versions = ch_sidle_versions.mix(SIDLE_DBRECON.out.versions)
 
     SIDLE_TRIM.out.table
         .join(SIDLE_ALIGN.out.aligned_map)
+        .toSortedList( { a, b -> a[0].region <=> b[0].region } )
+        .flatMap()
         .multiMap { meta, table, aligned_map ->
-            sampleid: meta.id
+            region: meta.region
             table: table
             aligned_map: aligned_map
         }
@@ -90,7 +94,7 @@ workflow SIDLE_WF {
 
     // Abundance table
     SIDLE_TABLERECON (
-        ch_table_reconstruction.sampleid.collect(),
+        ch_table_reconstruction.region.collect(),
         ch_table_reconstruction.table.collect(),
         ch_table_reconstruction.aligned_map.collect(),
         SIDLE_DBRECON.out.reconstruction_map,

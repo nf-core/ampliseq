@@ -725,9 +725,6 @@ workflow AMPLISEQ {
     FASTA_NEWICK_EPANG_GAPPA(ch_phyloplace_data)
     ch_versions = ch_versions.mix(FASTA_NEWICK_EPANG_GAPPA.out.versions)
 
-    FASTA_NEWICK_EPANG_GAPPA.out.grafted_phylogeny.view()
-    FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query.view()
-
     //QIIME2
     if ( run_qiime2_taxonomy ) {
         if ((params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && !params.classifier) {

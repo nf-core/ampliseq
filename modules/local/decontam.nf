@@ -12,7 +12,7 @@ process DECONTAM {
     val(iscontaminant_method)              // one of "auto", "frequency", "prevalence", "combined", "minimum", "either", "both"
     val(iscontaminant_threshold)           // default: 0.1
     val(isnotcontaminant_threshold)        // default: 0.5
-    
+
     output:
     path("decontaminated.tsv")        , emit: decontaminated_abundances
     path("decontaminated_counts.tsv") , emit: decontaminated_counts
@@ -29,11 +29,11 @@ process DECONTAM {
 
     script:
     def args    = task.ext.args   ?: 'detailed=TRUE, normalize=TRUE'
-    def method  = iscontaminant_method ?: "auto" 
+    def method  = iscontaminant_method ?: "auto"
     """
     #!/usr/bin/env Rscript
     suppressPackageStartupMessages(library(decontam))
-    
+
     # get controls and concentrations
     metadata <- read.csv("$metadata_tsv", header=TRUE, sep="\\t")
     metadata <- metadata[order(metadata[,1]),] # make sure samples in metadata and abundances are in same order
@@ -43,7 +43,7 @@ process DECONTAM {
     if("control" %in% colnames(metadata)) {
         negative_controls <- metadata\$control == 'control'
     } else { negative_controls <- list() }
-    
+
     # get abundance table
     abundances_tsv <- read.csv("$abundances_tsv", header=TRUE, sep="\\t")
     abundances <- abundances_tsv[,-1]
@@ -56,7 +56,7 @@ process DECONTAM {
 
     # start dataframe for logging feature numbers
     df <- data.frame(input = nrow(abundances_tsv))
-    
+
     # find contaminats: null hypothesis here is that sequences are **not** contaminants.
     # Requires sufficient positive proof an ASV is a contaminant before calling it so.
     # Uses prevalence, frequency, or a combination of both

@@ -661,7 +661,7 @@ if (!isFALSE(params$notcontaminant_counts)) {
 
 cat(". Details with statistics can be found in folder [decontam](../decontam).")
 
-if ( params$decontam == "none" ) { 
+if ( params$decontam == "none" ) {
     cat("\nHowever, contaminant information was not used to remove any ASVs!\n")
 } else if (params$decontam == "decontaminate") {
     cat("\n\nThe following table shows read counts for each sample before and after decontamination:\n\n")
@@ -702,14 +702,14 @@ if ( params$decontam == "none" ) {
 }
 
 if (params$decontam == "decontaminate") {
-    cat(paste0("In average ", round(decontaminated_counts_avg_removed,2), "% reads were removed as contamination, 
-    but at most ",decontaminated_counts_max_removed,"% reads per sample. 
+    cat(paste0("In average ", round(decontaminated_counts_avg_removed,2), "% reads were removed as contamination,
+    but at most ",decontaminated_counts_max_removed,"% reads per sample.
     The number of ASVs was reduced by ",n_asv_decontaminated_details_flagged,
-    " (",round( n_asv_decontaminated_details_flagged/n_asv_decontam_details_total*100 ,2),"%), from 
+    " (",round( n_asv_decontaminated_details_flagged/n_asv_decontam_details_total*100 ,2),"%), from
     ",n_asv_decontam_details_total," to ",n_asv_decontam_details_total-n_asv_decontaminated_details_flagged," ASVs.
     "))
 } else if (params$decontam == "notcontaminant" && !isFALSE(params$notcontaminant_counts)) {
-    cat(paste0("In average ", round(notcontaminant_counts_avg_removed,2), "% reads were removed as contamination, i.e. with 
+    cat(paste0("In average ", round(notcontaminant_counts_avg_removed,2), "% reads were removed as contamination, i.e. with
     insufficient proof as non-contaminant, but at most ",notcontaminant_counts_max_removed,"% reads per sample.
     The number of ASVs was reduced by ",n_asv_decontam_details_total-n_asv_notcontaminant_details_flagged,
     " (",100-round( n_asv_notcontaminant_details_flagged/n_asv_decontam_details_total*100 ,2),"%), from ",n_asv_decontam_details_total," to ",n_asv_notcontaminant_details_flagged," ASVs.
@@ -1861,12 +1861,12 @@ VSEARCH ([Rognes et al., 2016](https://peerj.com/articles/2584/)) clustered ",n_
 centroids with pairwise identity of ",params$vsearch_cluster_id,"."))
 ```
 ```{r, eval = (params$decontam != "none"), results='asis'}
-if ( params$decontam == "decontaminate" ) { 
+if ( params$decontam == "decontaminate" ) {
     cat(paste0(" Decontam ([Davis, 2018](https://doi.org/10.1186/s40168-018-0605-2)) removed ",
     decontam_n_asv_removed," ASVs with less than ",round(decontam_max_percent_reads_removed, 2),"% counts per sample
     because those were found to be contamination (",decontam_n_asv_passed," ASVs passed).
     " ))
-} else if ( params$decontam == "notcontaminant" ) { 
+} else if ( params$decontam == "notcontaminant" ) {
     cat(paste0(" Decontam ([Davis, 2018](https://doi.org/10.1186/s40168-018-0605-2)) removed ",
     decontam_n_asv_removed," ASVs with less than ",round(decontam_max_percent_reads_removed,2),"% counts per sample
     because those were not found to be non-contaminants (",decontam_n_asv_passed," ASVs passed).

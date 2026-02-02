@@ -114,12 +114,14 @@ Optionally, a metadata sheet can be specified for downstream analysis.
 
 The sample sheet file can be tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml) and can have two to four columns/entries with the following headers:
 
-| Column       | Necessity | Description                                                                   |
-| ------------ | --------- | ----------------------------------------------------------------------------- |
-| sampleID     | required  | Unique sample identifiers (see below for requirements)                        |
-| forwardReads | required  | Paths to (forward) reads zipped FastQ files                                   |
-| reverseReads | optional  | Paths to reverse reads zipped FastQ files, required if the data is paired-end |
-| run          | optional  | If the data was produced by multiple sequencing runs, any string              |
+| Column        | Necessity | Description                                                                   |
+| ------------- | --------- | ----------------------------------------------------------------------------- |
+| sampleID      | required  | Unique sample identifiers (see below for requirements)                        |
+| forwardReads  | required  | Paths to (forward) reads zipped FastQ files                                   |
+| reverseReads  | optional  | Paths to reverse reads zipped FastQ files, required if the data is paired-end |
+| run           | optional  | If the data was produced by multiple sequencing runs, any string              |
+| control       | optional  | "control" or "sample" to allow decontamination with negative controls         |
+| quant_reading | optional  | Quantification reading to allow decontamination based on abundances           |
 
 ```bash
 --input 'path/to/samplesheet.tsv'
@@ -127,19 +129,19 @@ The sample sheet file can be tab-separated (.tsv), comma-separated (.csv), or in
 
 For example, the tab-separated samplesheet may contain:
 
-| sampleID | forwardReads              | reverseReads              | run |
-| -------- | ------------------------- | ------------------------- | --- |
-| sample1  | ./data/S1_R1_001.fastq.gz | ./data/S1_R2_001.fastq.gz | A   |
-| sample2  | ./data/S2_fw.fastq.gz     | ./data/S2_rv.fastq.gz     | A   |
-| sample3  | ./S4x.fastq.gz            | ./S4y.fastq.gz            | B   |
-| sample4  | ./a.fastq.gz              | ./b.fastq.gz              | B   |
+| sampleID | forwardReads              | reverseReads              | run | control | quant_reading |
+| -------- | ------------------------- | ------------------------- | --- | ------- | ------------- |
+| sample1  | ./data/S1_R1_001.fastq.gz | ./data/S1_R2_001.fastq.gz | A   | control | 1000          |
+| sample2  | ./data/S2_fw.fastq.gz     | ./data/S2_rv.fastq.gz     | A   | sample  | 10000         |
+| sample3  | ./S4x.fastq.gz            | ./S4y.fastq.gz            | B   | control | 1100          |
+| sample4  | ./a.fastq.gz              | ./b.fastq.gz              | B   | sample  | 11000         |
 
 Please note the following requirements:
 
-- 2 to 4 columns/entries
+- 2 to 6 columns/entries
 - File extensions `.tsv`,`.csv`,`.yml`,`.yaml` specify the file type, otherwise file type will be derived from content, if possible
 - Must contain the header `sampleID` and `forwardReads`
-- May contain the header `reverseReads` and `run`
+- May contain the header `reverseReads`, `run`, `control`, and `quant_reading`
 - Sample IDs must be unique
 - Sample IDs must start with a letter
 - Sample IDs can only contain letters, numbers or underscores

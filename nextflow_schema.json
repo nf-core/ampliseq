@@ -351,6 +351,42 @@
                     "description": "Raise stack size when filtering VSEARCH clusters",
                     "help_text": "Setting to true adds 'ulimit -s unlimited' to the beginning of the filt_clusters.py command."
                 },
+                "decontam": {
+                    "type": "string",
+                    "description": "Choose whether decontamination with `decontam` is applied to features.",
+                    "help_text": "`decontaminate` assumes that features are **not** contaminants and requires sufficient positive proof a feature is a contaminant before calling it so. Only works with at least one of `control` and/or `quant_reading` columns in the samplesheet. `notcontaminant` assumes that features **are** contaminants and requires sufficient proof a feature is not a contaminant before calling it so. Only works with `control` column in the samplesheet.",
+                    "default": "none",
+                    "enum": [ "none", "decontaminate", "notcontaminant"]
+                },
+                "decontam_decontaminate_method": {
+                    "type": "string",
+                    "description": "Choose the decontamination method for `--decontam decontaminate`.",
+                    "help_text": "A description of the options can be found at https://rdrr.io/bioc/decontam/man/isContaminant.html",
+                    "default": "auto",
+                    "enum": [ 
+                        "auto",
+                        "frequency",
+                        "prevalence",
+                        "combined",
+                        "minimum",
+                        "either",
+                        "both"
+                    ]
+                },
+                "decontam_decontaminate_threshold": {
+                    "type": "number",
+                    "default": 0.1,
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Choose the contamination likelihood threshold for `--decontam decontaminate`."
+                },
+                "decontam_notcontaminant_threshold": {
+                    "type": "number",
+                    "default": 0.5,
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Choose the non-contaminant likelihood threshold for `--decontam notcontaminant`."
+                },
                 "filter_ssu": {
                     "type": "string",
                     "description": "Enable SSU filtering. Comma separated list of kingdoms (domains) in Barrnap, a combination (or one) of \"bac\", \"arc\", \"mito\", and \"euk\". ASVs that have their lowest evalue in that kingdoms are kept.",

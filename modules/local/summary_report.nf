@@ -27,6 +27,11 @@ process SUMMARY_REPORT  {
     path(dada_stats)
     val(mergepairs_strategy)
     path(vsearch_cluster)
+    val(decontam)
+    path(decontaminated_counts)
+    path(notcontaminant_counts)
+    path(decontaminated_details)
+    path(notcontaminant_details)
     path(barrnap_summary)
     path(filter_ssu_stats)
     path(filter_ssu_asv)
@@ -104,6 +109,8 @@ process SUMMARY_REPORT  {
         dada_stats ? "dada_stats_path='$dada_stats'" : "",
         "mergepairs_strategy='$mergepairs_strategy'",
         vsearch_cluster ? "vsearch_cluster='$vsearch_cluster',vsearch_cluster_id='$params.vsearch_cluster_id'" : "",
+        decontaminated_counts ? "decontam='$decontam',decontaminated_counts='$decontaminated_counts',decontaminated_details='$decontaminated_details'" : "",
+        notcontaminant_counts ? "notcontaminant_counts='$notcontaminant_counts',notcontaminant_details='$notcontaminant_details'" : "",
         params.skip_barrnap ? "" : "path_barrnap_sum='$barrnap_summary'",
         filter_ssu_stats ? "filter_ssu_stats='$filter_ssu_stats'" : "",
         filter_ssu_asv ? "filter_ssu_asv='$filter_ssu_asv',filter_ssu='$params.filter_ssu'" : "",

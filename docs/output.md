@@ -182,6 +182,24 @@ This directory will hold the centroid fasta file, the filtered asv count table (
 
 </details>
 
+#### Decontam
+
+Decontam performs simple statistical identification and removal of contaminant sequences. When the samplesheet includes columns `control` and/or `quant_reading`, decontam is executed. Filtering for downstream tools is only applied when additionally modifying `--decontam`.
+
+Files prepended with `decontaminated` are based on the hypothesis that all sequences are genuine and sufficient proof needs to exist to label an ASV as contamination. `notcontaminant` reverses the hypothesis and assumes that all ASVs are contaminats as long as there is not sufficient proof to identify it as genuine, non-contaminant sequence.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `decontam/`
+  - `decontam_metadata.tsv`: Information about quantification readings and controls.
+  - `[decontaminated/notcontaminant].tsv`: Filtered ASV abundance file.
+  - `[decontaminated/notcontaminant]_counts.tsv`: Tracking read numbers through filtering, for each sample.
+  - `[decontaminated/notcontaminant]_details.tsv`: Statistics file by decontam.
+  - `[decontaminated/notcontaminant]_log.tsv`: Tracking ASV numbers.
+
+</details>
+
 #### Barrnap
 
 Barrnap predicts the location of ribosomal RNA genes in genomes, here it can be used to discriminate rRNA sequences from potential contamination. It supports bacteria (5S,23S,16S), archaea (5S,5.8S,23S,16S), metazoan mitochondria (12S,16S) and eukaryotes (5S,5.8S,28S,18S).

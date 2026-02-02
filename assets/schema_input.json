@@ -33,6 +33,17 @@
                 "errorMessage": "Run name cannot contain spaces",
                 "meta": ["run"],
                 "default": "1"
+            },
+            "control": {
+                "type": ["string"],
+                "enum": ["control", "sample"],
+                "errorMessage": "Must be 'control' or 'sample'",
+                "meta": ["control"]
+            },
+            "quant_reading": {
+                "type": ["number"],
+                "errorMessage": "Quantification must be a number",
+                "meta": ["quant_reading"]
             }
         },
         "required": ["sampleID", "forwardReads"]

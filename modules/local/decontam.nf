@@ -1,5 +1,5 @@
 process DECONTAM {
-    label 'process_low'
+    label 'process_single'
 
     conda "bioconda::bioconductor-decontam=1.3.0"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?

@@ -14,6 +14,7 @@
     - [ASV/OTU fasta input](#asvotu-fasta-input)
     - [Direct FASTQ input](#direct-fastq-input)
   - [Regions of variable length e.g. ITS](#regions-of-variable-length-eg-its)
+  - [Decontamination](#decontamination)
   - [Taxonomic classification](#taxonomic-classification)
   - [Multiple region analysis with Sidle](#multiple-region-analysis-with-sidle)
   - [Metadata](#metadata)
@@ -215,6 +216,18 @@ Please note the following additional requirements:
 ### Regions of variable length (e.g. ITS)
 
 Special considerations should be made when pre-processing reads for regions of variable length, e.g. ITS for fungal barcoding. For ITS regions e.g. ITS1 or ITS2, it is recommended to use the `--illumina_pe_its` parameter for paired-end Illumina reads, which disables fixed-length read truncation. Also consider adjusting `--truncq` to a value higher than the default value of 2 if you find that a high proportion of reads is excluded by DADA2 filtering.
+
+#### Decontamination
+
+[Decontam](https://doi.org/10.1186/s40168-018-0605-2) performs simple statistical identification and removal of contaminant sequences. Decontam is most useful with low biomass samples, where contamination removal is particularly impactful. The limitations and applications of Decontam have been extensively described in its [publication](https://doi.org/10.1186/s40168-018-0605-2) and [R package description](https://benjjneb.github.io/decontam/vignettes/decontam_intro.html). [Fierer et al. 2025](https://doi.org/10.1038/s41564-025-02035-2) compare concepts and methods for decontamiation including Decontam. Next, a brief explanation on how to use Decontam in the context of nf-core/ampliseq.
+
+Decontam is applied to the abundance table with information from the samplesheet after ASV generation (or OTU clustering, if chosen), before ASV filtering by barrnap, length, and such. Required for using Decontam is at least one of DNA quantitation data and negative controls, that can be added in the samplesheet in optional columns `quant_reading` and `control`. Whenever at least one of those two columns is supplied, Decontam is applied to the data and the results are stored, however without further consequences. Filtering for downstream analysis is only applied when additionally specifying `--decontam decotaminate` or `--decontam notcontaminant`.
+
+Decontam has two methods, the "frequency" method based on the distribution of the frequency of each sequence feature as a function of the input DNA concentration (sample sheet column `quant_reading`) and the "prevalence" method based on the prevalence (presence/absence across samples) of each sequence feature in true positive samples compared to the prevalence in negative controls (sample sheet column `control`). DNA quantitation data for the "frequency" method refers to DNA extraction concentration or to sequencing library input, optimally as standardized fluorescent intensities. The model requires a gradient of concentrations to detect contaminants that are more frequent in samples with low concentration reading than in samples with high quantification reading. The "frequency" method model assumptions are violated if microbial biomass systematically differs between sample groups. For the "prevalence" method, at least 3 negative controls are required, a minimum of 5 is recommended. The "prevalence" method has reduced sensitivity to detect contaminants present only in very few samples or with fewer negative controls.
+
+Furthermore, Decontam tests two hypothesis, whether features [_are_ contaminants](https://rdrr.io/bioc/decontam/man/isContaminant.html) or are [_not_ contaminants](https://rdrr.io/bioc/decontam/man/isNotContaminant.html) (called "non-contaminants"). The former assumes all features are not contaminants and requires sufficient positive proof a feature is a "contaminant" before calling it so. The latter assumes that features are contaminants and requires sufficient proof a feature is not a contaminant before calling it "non-contaminant". Contaminants are identified based on the "frequency" method (sample sheet column `quant_reading`) or the "prevalence" method (sample sheet column `control`), or a combination of both, adjustable with `--decontam_decontaminate_method` (default: `auto` that chooses `frequency`, `prevalence` or `combined` based on the input). Non-contaminants are identified solely based on the "prevalence" method (sample sheet column `control`). The p-value thresholds can be adjusted with `--decontam_decontaminate_threshold` and `--decontam_notcontaminant_threshold`.
+
+By default, the information of contaminants or non-contaminants are not further used. However, contaminants are removed with `--decontam decotaminate` from subsequent analysis or only non-contaminants are retained with `--decontam notcontaminant`.
 
 ### Taxonomic classification
 

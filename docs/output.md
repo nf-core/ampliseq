@@ -184,7 +184,7 @@ This directory will hold the centroid fasta file, the filtered asv count table (
 
 #### Decontam
 
-Decontam performs simple statistical identification and removal of contaminant sequences. When the samplesheet includes columns `control` and/or `quant_reading`, decontam is executed. Filtering for downstream tools is only applied when additionally modifying `--decontam`.
+Decontam performs simple statistical identification and removal of contaminant sequences. When the samplesheet includes columns `control` and/or `quant_reading`, decontam is executed. Filtering for downstream tools is only applied when additionally specifying `--decontam decotaminate` or `--decontam notcontaminant`.
 
 Files prepended with `decontaminated` are based on the hypothesis that all sequences are genuine and sufficient proof needs to exist to label an ASV as contamination. `notcontaminant` reverses the hypothesis and assumes that all ASVs are contaminats as long as there is not sufficient proof to identify it as genuine, non-contaminant sequence.
 

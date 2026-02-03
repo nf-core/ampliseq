@@ -361,7 +361,7 @@
                 "decontam_decontaminate_method": {
                     "type": "string",
                     "description": "Choose the decontamination method for `--decontam decontaminate`.",
-                    "help_text": "A description of the options can be found at https://rdrr.io/bioc/decontam/man/isContaminant.html",
+                    "help_text": "A description of the options can be found at https://rdrr.io/bioc/decontam/man/isContaminant.html, using 'auto' is using 'frequency', 'prevalence', or 'combined' where appropriate. Be aware that using 'frequency' while also having control samples can violate Decontam's assumption of similar bacterial biomass across samples.",
                     "default": "auto",
                     "enum": ["auto", "frequency", "prevalence", "combined", "minimum", "either", "both"]
                 },

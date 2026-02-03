@@ -30,9 +30,11 @@ process DECONTAM {
     script:
     def args    = task.ext.args   ?: 'detailed=TRUE, normalize=TRUE'
     def method  = iscontaminant_method ?: "auto"
+    def seed    = task.ext.seed ?: '100'
     """
     #!/usr/bin/env Rscript
     suppressPackageStartupMessages(library(decontam))
+    set.seed($seed) # Initialize random number generator for reproducibility
 
     # get controls and concentrations
     metadata <- read.csv("$metadata_tsv", header=TRUE, sep="\\t")

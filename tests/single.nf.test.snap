@@ -138,7 +138,6 @@
                 "decontam/decontaminated_details.tsv",
                 "decontam/decontaminated_log.tsv",
                 "decontam/decontaminated.tsv",
-                "decontam/decontam_metadata.tsv",
                 "fastqc",
                 "fastqc/sampleID_1_fastqc.html",
                 "fastqc/sampleID_1a_fastqc.html",

@@ -338,7 +338,6 @@ workflow AMPLISEQ {
             }
         .filter { it -> it.countLines() > 1 } // only output decontam metadata if thats actually present
         .set { ch_decontam_metadata }
-    ch_decontam_metadata.subscribe{ it -> if(it.countLines() > 1) file(it).copyTo("${params.outdir}/decontam") }
     ch_reads
         .map { info, reads ->
             def meta = info.subMap( info.keySet() - 'control' - 'quant_reading' ) // remove decontam metadata because it isnt needed any more

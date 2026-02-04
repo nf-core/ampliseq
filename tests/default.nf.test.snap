@@ -286,7 +286,6 @@
                 "decontam/decontaminated_details.tsv",
                 "decontam/decontaminated_log.tsv",
                 "decontam/decontaminated.tsv",
-                "decontam/decontam_metadata.tsv",
                 "fastqc",
                 "fastqc/sampleID_1_1_fastqc.html",
                 "fastqc/sampleID_1_2_fastqc.html",
@@ -2241,8 +2240,7 @@
                 "decontaminated_counts.tsv:md5,f519211d0ac2cb979b09d3803e8ca3fa",
                 "decontaminated_details.tsv:md5,c6a9b11f0f67eb3331fc8ec747d62802",
                 "decontaminated_log.tsv:md5,e4af6016bd48a5eda8f1aa9aad3ed712",
-                "decontaminated.tsv:md5,a8b1235efe3cf3b215ab8bafa2c0996c",
-                "decontam_metadata.tsv:md5,864199c6ab8e506c527268ce9026c664"
+                "decontaminated.tsv:md5,a8b1235efe3cf3b215ab8bafa2c0996c"
             ],
             "ASV_post_clustering_filtered.fna:md5,57379771c59df16d0c0164db34e8f148",
             "ASV_post_clustering_filtered.stats.tsv:md5,222f6a7cdbf2d4b3f745a49359a61c0d",

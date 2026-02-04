@@ -192,7 +192,6 @@ Files prepended with `decontaminated` are based on the hypothesis that all seque
 <summary>Output files</summary>
 
 - `decontam/`
-  - `decontam_metadata.tsv`: Information about quantification readings and controls.
   - `[decontaminated/notcontaminant].tsv`: Filtered ASV abundance file.
   - `[decontaminated/notcontaminant]_counts.tsv`: Tracking read numbers through filtering, for each sample.
   - `[decontaminated/notcontaminant]_details.tsv`: Statistics file by decontam.

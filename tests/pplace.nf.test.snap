@@ -237,7 +237,6 @@
                 "decontam/decontaminated_details.tsv",
                 "decontam/decontaminated_log.tsv",
                 "decontam/decontaminated.tsv",
-                "decontam/decontam_metadata.tsv",
                 "input",
                 "input/Metadata.tsv",
                 "input/Samplesheet.tsv",

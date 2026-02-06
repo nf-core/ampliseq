@@ -40,6 +40,7 @@ By default, the pipeline currently performs the following:
 - Trimming of reads ([Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200))
 - Infer Amplicon Sequence Variants (ASVs) ([DADA2](https://doi.org/10.1038/nmeth.3869))
 - Optional post-clustering with [VSEARCH](https://github.com/torognes/vsearch)
+- Decontamination with [decontam](https://pubmed.ncbi.nlm.nih.gov/30558668/), if any controls or quantification information is given
 - Predict whether ASVs are ribosomal RNA sequences ([Barrnap](https://github.com/tseemann/barrnap))
 - Phylogenetic placement ([EPA-NG](https://github.com/Pbdas/epa-ng))
 - Taxonomical classification using DADA2; alternatives are [SINTAX](https://doi.org/10.1101/074161), [Kraken2](https://doi.org/10.1186/s13059-019-1891-0), and [QIIME2](https://www.nature.com/articles/s41587-019-0209-9)
@@ -67,6 +68,9 @@ nextflow run nf-core/ampliseq \
    --RV_primer "GGACTACNVGGGTWTCTAAT" \
    --outdir <OUTDIR>
 ```
+
+> [!NOTE]
+> Using a samplesheet will increase input flexibility and options considerably.
 
 > [!NOTE]
 > Adding metadata will considerably increase the output, see [metadata documentation](https://nf-co.re/ampliseq/usage#metadata).

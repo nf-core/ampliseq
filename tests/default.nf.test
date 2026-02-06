@@ -49,6 +49,7 @@ nextflow_pipeline {
                     path("$outputDir/SBDI/dna.tsv"),
                     path("$outputDir/SBDI/emof.tsv"),
                     path("$outputDir/SBDI/event.tsv"),
+                    path("$outputDir/decontam/").list(),
                     path("$outputDir/vsearch_cluster/ASV_post_clustering_filtered.fna"),
                     path("$outputDir/vsearch_cluster/ASV_post_clustering_filtered.stats.tsv"),
                     path("$outputDir/vsearch_cluster/ASV_post_clustering_filtered.table.tsv")

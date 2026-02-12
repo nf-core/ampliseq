@@ -42,6 +42,8 @@ workflow QIIME2_DIVERSITY {
 
     //Calculate diversity indices
     if (!skip_diversity_indices) {
+        // warn if metadata is insufficient
+        ch_metacolumn_pairwise.collect().ifEmpty{ log.warn "Alpha diversity measures and beta diversity statistics are omitted because of insufficient metadata!" }
 
         QIIME2_DIVERSITY_CORE ( ch_metadata, ch_asv, ch_tree, ch_stats, diversity_rarefaction_depth )
         ch_versions_qiime2_diversity = ch_versions_qiime2_diversity.mix(QIIME2_DIVERSITY_CORE.out.versions)
@@ -51,6 +53,8 @@ workflow QIIME2_DIVERSITY {
         //alpha_diversity ( ch_metadata, DIVERSITY_CORE.out.qza )
         ch_metadata
             .combine( QIIME2_DIVERSITY_CORE.out.vector.flatten() )
+            .combine( ch_metacolumn_pairwise.collect() ) // prevent execution when there is no appropriate metadata
+            .map{ it -> [it[0], it[1]] }                 // drop unused information from previous step
             .set{ ch_to_diversity_alpha }
         QIIME2_DIVERSITY_ALPHA ( ch_to_diversity_alpha )
         ch_versions_qiime2_diversity = ch_versions_qiime2_diversity.mix(QIIME2_DIVERSITY_ALPHA.out.versions)

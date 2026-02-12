@@ -300,8 +300,8 @@ For example, the tab-separated `regions_multiregion.tsv` may contain:
 
 > [!WARNING]
 > Several downstream filtering options are not allowed or disabled when analysing multi region data.
-> Disabled functions are any ASV postprocessing/filtering options that require sequences and also no 
-> sample subsetting using the metadata sheet is available (i.e. if provided, the metadata sheet has 
+> Disabled functions are any ASV postprocessing/filtering options that require sequences and also no
+> sample subsetting using the metadata sheet is available (i.e. if provided, the metadata sheet has
 > to include all samples that pass preprocessing).
 
 ### Metadata

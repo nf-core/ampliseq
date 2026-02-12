@@ -298,6 +298,12 @@ For example, the tab-separated `regions_multiregion.tsv` may contain:
 | region4 | GGAGCATGTGGWTTAATTCGA | CGTTGCGGGACTTAACCC   | 115           |
 | region5 | GGAGGAAGGTGGGGATGAC   | AAGGCCCGGGAACGTATT   | 150           |
 
+> [!WARNING]
+> Several downstream filtering options are not allowed or disabled when analysing multi region data.
+> Disabled functions are any ASV postprocessing/filtering options that require sequences and also no 
+> sample subsetting using the metadata sheet is available (i.e. if provided, the metadata sheet has 
+> to include all samples that pass preprocessing).
+
 ### Metadata
 
 Metadata is optional, but for performing downstream analysis such as barplots, diversity indices or differential abundance testing, a metadata file is essential.

@@ -302,6 +302,10 @@ For example, the tab-separated `regions_multiregion.tsv` may contain:
 
 Metadata is optional, but for performing downstream analysis such as barplots, diversity indices or differential abundance testing, a metadata file is essential.
 
+> [!TIP]
+> The metadata defines what samples are entering downstream analysis. For example, when having negative controls in the samplesheet,
+> those can be omitted in the metadata sheet and will not enter downstream analysis with QIIME2.
+
 ```bash
 --metadata "path/to/metadata.tsv"
 ```

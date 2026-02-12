@@ -33,14 +33,19 @@ process FILTER_SAMPLES {
     write.table(meta_filtered, file = "metadata.tsv", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '', sep = "\t")
     write.table(abund_filtered, file = "table.tsv", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '', sep = "\t")
 
+    # error in case all samples were removed
+    if ( nrow(meta_filtered) == 0 ) { 
+        stop("All samples were removed. That means no overlap between the metadata sample IDs and the abundance table sample IDs was found. Make sure that sample IDs match.") 
+    }
+
     # this is in case some samples were lost during preprocessing, i.e. samples in metadata but not in abundance table
     if ( nrow(meta) > nrow(meta_filtered) ) { 
-        log_message = paste("The metadata file rows were reduced from", nrow(meta), "to", nrow(meta_filtered),", because some samples were missing in the abundance table.")
+        log_message = paste("The metadata file rows were reduced from", nrow(meta), "to", nrow(meta_filtered),", because some samples were missing in the abundance table")
         write.table(log_message, file = paste0(log_message,".log"), row.names = FALSE, col.names = FALSE, quote = FALSE)
     }
     # this is in case some samples were not in metadata, i.e. only a subset of samples is entering downstream analysis
     if ( ncol(abund) > ncol(abund_filtered) ) { 
-        log_message = paste("Samples in the abundance file were reduced from", ncol(abund)-1, "to", ncol(abund_filtered)-1,", because the metadata did not contain all samples in the abundance table.")
+        log_message = paste("Samples in the abundance file were reduced from", ncol(abund)-1, "to", ncol(abund_filtered)-1,", because the metadata did not contain all samples in the abundance table")
         write.table(log_message, file = paste0(log_message,".log"), row.names = FALSE, col.names = FALSE, quote = FALSE)
     }
 

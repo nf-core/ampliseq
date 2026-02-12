@@ -727,15 +727,14 @@ workflow AMPLISEQ {
     // SUBWORKFLOW / MODULES : Downstream analysis with QIIME2
     //
     if ( run_qiime2 ) {
-        // Filter metadata and/or abundances so tht they match
-        // (1) samples could be lost during preprocessing (QIIME2_BARPLOT fails when sample is missing)
-        // (2) controls can be excluded for downstream analysis by not adding them to the metadata sheet
-        // check if metadata ids deviate from sample ids: channel.fromList(samplesheetToList(params.metadata, []))
-        FILTER_SAMPLES ( ch_metadata, ch_dada2_asv )
-        ch_versions = ch_versions.mix( FILTER_SAMPLES.out.versions )
-        ch_metadata = FILTER_SAMPLES.out.metadata
-        ch_dada2_asv = FILTER_SAMPLES.out.abundances
-        FILTER_SAMPLES.out.log.collect().subscribe{ it -> log.warn "${it.baseName.toString()}" }
+        // Filter metadata and/or abundances so that they match: (1) samples ost during preprocessing, (2) intentional data subsetting for downstream analysis
+        if ( params.metadata ) {
+            FILTER_SAMPLES ( ch_metadata, ch_dada2_asv )
+            ch_versions = ch_versions.mix( FILTER_SAMPLES.out.versions )
+            ch_metadata = FILTER_SAMPLES.out.metadata
+            ch_dada2_asv = FILTER_SAMPLES.out.abundances
+            FILTER_SAMPLES.out.log.collect().subscribe{ it -> log.warn "${it.baseName.toString()}" }
+        }
 
         // Import ASV abundance table and sequences into QIIME2
         QIIME2_INASV ( ch_dada2_asv )

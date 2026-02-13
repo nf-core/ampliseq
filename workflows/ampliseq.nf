@@ -129,6 +129,8 @@ workflow AMPLISEQ {
         val_sidle_ref_taxonomy = "none"
     }
 
+    ch_pplace_sheet = channel.empty()
+
     if (params.dada_ref_tax_custom) {
         //custom ref taxonomy input from params.dada_ref_tax_custom & params.dada_ref_tax_custom_sp
         ch_assigntax = channel.fromPath("${params.dada_ref_tax_custom}", checkIfExists: true)
@@ -141,6 +143,27 @@ workflow AMPLISEQ {
         //standard ref taxonomy input from params.dada_ref_taxonomy & conf/ref_databases.config
         ch_dada_ref_taxonomy = params.dada_ref_databases.containsKey(params.dada_ref_taxonomy) ? channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["file"]).map { it -> file(it) } : channel.empty()
         val_dada_ref_taxonomy = params.dada_ref_taxonomy.replace('=','_').replace('.','_')
+
+        if ( !params.skip_pplace && params.dada_ref_databases[params.dada_ref_taxonomy].containsKey("pplace") ) {
+            ch_pplace_sheet = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["pplace"])
+                .map { it ->
+                    [
+                        meta: [
+                            id: it.target,
+                            min_bitscore: it.min_bitscore
+                        ],
+                        data: [
+                            alignmethod:    it.alignmethod  ? it.alignmethod                             : 'clustalo',
+                            hmm:            file(it.hmm,  checkIfExists: true),
+                            extract_hmm:    it.extract_hmm,
+                            refseqfile:     it.refseqfile   ? file(it.refseqfile,   checkIfExists: true) : [],
+                            refphylogeny:   it.refphylogeny ? file(it.refphylogeny, checkIfExists: true) : [],
+                            model:          it.model,
+                            taxonomy:       it.taxonomy     ? file(it.taxonomy,     checkIfExists: true) : []
+                        ]
+                    ]
+                }
+        }
     } else {
         ch_dada_ref_taxonomy = channel.empty()
         val_dada_ref_taxonomy = "none"
@@ -276,7 +299,6 @@ workflow AMPLISEQ {
     }
 
     // Parse the --pplace_sheet file if present
-    ch_pplace_sheet = channel.empty()
     if ( params.pplace_sheet ) {
         ch_pplace_sheet = Channel.fromPath(params.pplace_sheet)
             .splitCsv(header: true)

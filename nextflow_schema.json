@@ -899,6 +899,11 @@
                     "type": "boolean",
                     "description": "Skip species level when using DADA2 for taxonomic classification. This reduces the required memory dramatically under certain conditions. Incompatible with `--sbdiexport`"
                 },
+                "skip_pplace": {
+                    "type": "boolean",
+                    "description": "Skip phylogenetic placement even when reference trees are specified by the selected `--dada_ref_taxonomy`",
+                    "default": true
+                },
                 "skip_barplot": {
                     "type": "boolean",
                     "description": "Skip producing barplot"

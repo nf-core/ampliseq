@@ -21,6 +21,7 @@
   - [Phylogenetic placement](#phylogenetic-placement)
     - [Single reference phylogenetic placement](#single-reference-phylogenetic-placement)
     - [Multiple reference phylogenetic placement](#multiple-reference-phylogenetic-placement)
+    - [Placement in database provided phylogenies](#placement-in-database-provided-phylogenies)
   - [Updating the pipeline](#updating-the-pipeline)
   - [Reproducibility](#reproducibility)
 - [Core Nextflow arguments](#core-nextflow-arguments)
@@ -227,22 +228,22 @@ Default setting for taxonomic classification is DADA2 with the SILVA reference t
 
 Pre-configured reference taxonomy databases are:
 
-| Database key | DADA2 | SINTAX | Kraken2 | QIIME2 | Target genes                                  |
-| ------------ | ----- | ------ | ------- | ------ | --------------------------------------------- |
-| silva        | +¹    | -      | +       | +      | 16S rRNA                                      |
-| gtdb         | +²    | -      | -       | -      | 16S rRNA                                      |
-| sbdi-gtdb    | +     | -      | -       | -      | 16S rRNA                                      |
-| rdp          | +     | -      | +       | -      | 16S rRNA                                      |
-| greengenes   | -     | -      | +       | (+)³   | 16S rRNA                                      |
-| greengenes2  | +     | -      | -       | +      | 16S rRNA                                      |
-| pr2          | +     | -      | -       | -      | 18S rRNA                                      |
-| unite-fungi  | +     | +      | -       | -      | eukaryotic nuclear ribosomal ITS region       |
-| unite-alleuk | +     | +      | -       | -      | eukaryotic nuclear ribosomal ITS region       |
-| coidb        | +     | +      | -       | -      | eukaryotic Cytochrome Oxidase I (COI)         |
-| midori2-co1  | +     | -      | -       | -      | eukaryotic Cytochrome Oxidase I (COI)         |
-| phytoref     | +     | -      | -       | -      | eukaryotic plastid 16S rRNA                   |
-| zehr-nifh    | +     | -      | -       | -      | Nitrogenase iron protein NifH                 |
-| standard     | -     | -      | +       | -      | any in genomes of archaea, bacteria, viruses⁴ |
+| Database key | DADA2 | SINTAX | Kraken2 | QIIME2 | Phyloplace | Target genes                                  |
+| ------------ | ----- | ------ | ------- | ------ | -----------|---------------------------------------------- |
+| silva        | +¹    | -      | +       | +      | -          | 16S rRNA                                      |
+| gtdb         | +²    | -      | -       | -      | -          | 16S rRNA                                      |
+| sbdi-gtdb    | +     | -      | -       | -      | +          | 16S rRNA                                      |
+| rdp          | +     | -      | +       | -      | -          | 16S rRNA                                      |
+| greengenes   | -     | -      | +       | (+)³   | -          | 16S rRNA                                      |
+| greengenes2  | +     | -      | -       | +      | -          | 16S rRNA                                      |
+| pr2          | +     | -      | -       | -      | -          | 18S rRNA                                      |
+| unite-fungi  | +     | +      | -       | -      | -          | eukaryotic nuclear ribosomal ITS region       |
+| unite-alleuk | +     | +      | -       | -      | -          | eukaryotic nuclear ribosomal ITS region       |
+| coidb        | +     | +      | -       | -      | -          | eukaryotic Cytochrome Oxidase I (COI)         |
+| midori2-co1  | +     | -      | -       | -      | -          | eukaryotic Cytochrome Oxidase I (COI)         |
+| phytoref     | +     | -      | -       | -      | -          | eukaryotic plastid 16S rRNA                   |
+| zehr-nifh    | +     | -      | -       | -      | -          | Nitrogenase iron protein NifH                 |
+| standard     | -     | -      | +       | -      | -          | any in genomes of archaea, bacteria, viruses⁴ |
 
 ¹: As of Silva version 138 optimized for classification of Bacteria and Archaea, not suitable for Eukaryotes; ²[`--dada_taxonomy_rc`](https://nf-co.re/ampliseq/parameters#dada_taxonomy_rc) is recommended; ³: de-replicated at 85%, only for testing purposes; ⁴: quality of results might vary
 
@@ -252,6 +253,7 @@ Special features of taxonomic classification tools:
 - Kraken2 is very fast and can use large databases containing complete genomes.
 - QIIME2's reference taxonomy databases will have regions matching the amplicon extracted with primer sequences.
 - DADA2, Kraken2, and QIIME2 have specific parameters to accept custom databases (but theoretically possible with all classifiers)
+- Phyloplace assigns taxonomy by placement on reference phylogenies provided with the database, see [Placement in database provided phylogenies](#placement-in-database-provided-phylogenies).
 
 Parameter guidance is given in [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#taxonomic-assignment). Citations are listed in [`CITATIONS.md`](CITATIONS.md).
 
@@ -338,6 +340,7 @@ When there's a `refseqfile`, `refphylogeny`, `model` and `taxonomy`, best matchi
 If there is no reference tree information, ASV sequences matching these hmm profiles best will not be placed.
 The latter can be used to attract false positive sequences away from being placed in any of the trees.
 For hmm files with multiple profiles, the `extract_hmm` specifies which profile to use.
+Finally, you can specify `min_bitscore` to set a minimum score for a sequence to be included in further processing.
 
 ```csv title="pplace_sheet.csv"
 target,alignmethod,hmm,extract_hmm,refseqfile,refphylogeny,model,taxonomy
@@ -345,6 +348,16 @@ archaea16s,clustalo,https://raw.githubusercontent.com/tseemann/barrnap/master/db
 bacteria16s,clustalo,https://raw.githubusercontent.com/tseemann/barrnap/master/db/bac.hmm,16S_rRNA,bacteria.newick,bacteria.alnfna,GTR+F+I+G4,bacteria.taxonomy.tsv
 euk18s,clustalo,https://raw.githubusercontent.com/tseemann/barrnap/master/db/euk.hmm,18S_rRNA,,,,
 ```
+
+#### Placement in database-provided phylogenies
+
+Reference databases for taxonomy can provide reference phylogenies for placement (currently only SBDI-GTDB).
+This is not run by default since it takes quite a lot of resources.
+If you want to enable this, set `--skip_pplace false`.
+
+> [!NOTE]
+> Since phylogenetic placement requires a lot of memory when the reference phylogeny is large, we have set the minimum memory for two processes to 60 GiB in order to work with the GTDB bacterial tree.
+> If your tree is smaller, the setting can be lowered for the `EPANG_PLACE` and `GAPPA_ASSIGN` processes, see [resource requests](#resource-requests) below.
 
 ### Updating the pipeline
 

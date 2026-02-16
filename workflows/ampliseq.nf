@@ -42,6 +42,7 @@ include { FORMAT_FASTAINPUT             } from '../modules/local/format_fastainp
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
 include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
 include { MERGE_STATS as MERGE_STATS_STD} from '../modules/local/merge_stats'
+include { FILTER_SAMPLES                } from '../modules/local/filter_samples'
 include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'
 include { QIIME2_TABLEFILTERTAXA        } from '../modules/local/qiime2_tablefiltertaxa'
 include { QIIME2_SEQFILTERTABLE         } from '../modules/local/qiime2_seqfiltertable'
@@ -464,12 +465,12 @@ workflow AMPLISEQ {
         // forward results to downstream analysis if multi region
         ch_dada2_asv = SIDLE_WF.out.table_tsv
         ch_dada2_fasta = channel.empty()
-        // Any ASV post-clustering param is not allowed:
-        // - solved by '!params.multiregion' for vsearch_cluster, filter_ssu, min_len_asv, max_len_asv, filter_codons
-        // - solved in 'lib/WorkflowAmpliseq.groovy': cut_its
+        // Any ASV postprocessing is not allowed:
+        // - solved by '!params.multiregion' for vsearch_cluster, FILTER_SAMPLES, filter_ssu, min_len_asv, max_len_asv, filter_codons
+        // - solved in 'subworkflows/local/utils_nfcore_ampliseq_pipeline/main.nf': cut_its
         // Must have params:
         // - solved by '!params.multiregion' for skip_report
-        // - solved in 'lib/WorkflowAmpliseq.groovy': skip_dada_taxonomy
+        // - solved in 'subworkflows/local/utils_nfcore_ampliseq_pipeline/main.nf': skip_dada_taxonomy
     } else {
         // forward results to downstream analysis if single region
         ch_dada2_fasta = DADA2_MERGE.out.fasta
@@ -726,6 +727,15 @@ workflow AMPLISEQ {
     // SUBWORKFLOW / MODULES : Downstream analysis with QIIME2
     //
     if ( run_qiime2 ) {
+        // Filter metadata and/or abundances so that they match: (1) samples lost during preprocessing, (2) intentional data subsetting for downstream analysis
+        if ( params.metadata && !params.multiregion ) {
+            FILTER_SAMPLES ( ch_metadata, ch_dada2_asv )
+            ch_versions = ch_versions.mix( FILTER_SAMPLES.out.versions )
+            ch_metadata = FILTER_SAMPLES.out.metadata
+            ch_dada2_asv = FILTER_SAMPLES.out.abundances
+            FILTER_SAMPLES.out.log.collect().subscribe{ it -> log.warn "${it.baseName.toString()}" }
+        }
+
         // Import ASV abundance table and sequences into QIIME2
         QIIME2_INASV ( ch_dada2_asv )
         ch_versions = ch_versions.mix( QIIME2_INASV.out.versions )

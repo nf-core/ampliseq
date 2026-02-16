@@ -61,6 +61,9 @@
                 "EPANG_PLACE": {
                     "epang": "0.3.8"
                 },
+                "FILTER_SAMPLES": {
+                    "R": "4.2.1"
+                },
                 "FILTER_SSU": {
                     "R": "4.0.3",
                     "Biostrings": "2.58.0"

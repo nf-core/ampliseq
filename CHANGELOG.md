@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Changed`
 
 ### `Fixed`
+- [#706](https://github.com/nf-core/ampliseq/pull/706) - Ensure paired FASTQ files stay aligned by generating reverse paths from forward files instead of sorting independently
 
 ### `Dependencies`
 

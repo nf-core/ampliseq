@@ -14,6 +14,7 @@
     - [ASV/OTU fasta input](#asvotu-fasta-input)
     - [Direct FASTQ input](#direct-fastq-input)
   - [Regions of variable length e.g. ITS](#regions-of-variable-length-eg-its)
+  - [Decontamination](#decontamination)
   - [Taxonomic classification](#taxonomic-classification)
   - [Multiple region analysis with Sidle](#multiple-region-analysis-with-sidle)
   - [Metadata](#metadata)
@@ -118,12 +119,14 @@ Optionally, a metadata sheet can be specified for downstream analysis.
 
 The sample sheet file can be tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml) and can have two to four columns/entries with the following headers:
 
-| Column       | Necessity | Description                                                                   |
-| ------------ | --------- | ----------------------------------------------------------------------------- |
-| sampleID     | required  | Unique sample identifiers (see below for requirements)                        |
-| forwardReads | required  | Paths to (forward) reads zipped FastQ files                                   |
-| reverseReads | optional  | Paths to reverse reads zipped FastQ files, required if the data is paired-end |
-| run          | optional  | If the data was produced by multiple sequencing runs, any string              |
+| Column        | Necessity | Description                                                                   |
+| ------------- | --------- | ----------------------------------------------------------------------------- |
+| sampleID      | required  | Unique sample identifiers (see below for requirements)                        |
+| forwardReads  | required  | Paths to (forward) reads zipped FastQ files                                   |
+| reverseReads  | optional  | Paths to reverse reads zipped FastQ files, required if the data is paired-end |
+| run           | optional  | If the data was produced by multiple sequencing runs, any string              |
+| control       | optional  | "control" or "sample" to allow decontamination with negative controls         |
+| quant_reading | optional  | Quantification reading to allow decontamination based on abundances           |
 
 ```bash
 --input 'path/to/samplesheet.tsv'
@@ -131,19 +134,19 @@ The sample sheet file can be tab-separated (.tsv), comma-separated (.csv), or in
 
 For example, the tab-separated samplesheet may contain:
 
-| sampleID | forwardReads              | reverseReads              | run |
-| -------- | ------------------------- | ------------------------- | --- |
-| sample1  | ./data/S1_R1_001.fastq.gz | ./data/S1_R2_001.fastq.gz | A   |
-| sample2  | ./data/S2_fw.fastq.gz     | ./data/S2_rv.fastq.gz     | A   |
-| sample3  | ./S4x.fastq.gz            | ./S4y.fastq.gz            | B   |
-| sample4  | ./a.fastq.gz              | ./b.fastq.gz              | B   |
+| sampleID | forwardReads              | reverseReads              | run | control | quant_reading |
+| -------- | ------------------------- | ------------------------- | --- | ------- | ------------- |
+| sample1  | ./data/S1_R1_001.fastq.gz | ./data/S1_R2_001.fastq.gz | A   | control | 1000          |
+| sample2  | ./data/S2_fw.fastq.gz     | ./data/S2_rv.fastq.gz     | A   | sample  | 10000         |
+| sample3  | ./S4x.fastq.gz            | ./S4y.fastq.gz            | B   | control | 1100          |
+| sample4  | ./a.fastq.gz              | ./b.fastq.gz              | B   | sample  | 11000         |
 
 Please note the following requirements:
 
-- 2 to 4 columns/entries
+- 2 to 6 columns/entries
 - File extensions `.tsv`,`.csv`,`.yml`,`.yaml` specify the file type, otherwise file type will be derived from content, if possible
 - Must contain the header `sampleID` and `forwardReads`
-- May contain the header `reverseReads` and `run`
+- May contain the header `reverseReads`, `run`, `control`, and `quant_reading`
 - Sample IDs must be unique
 - Sample IDs must start with a letter
 - Sample IDs can only contain letters, numbers or underscores
@@ -218,6 +221,18 @@ Please note the following additional requirements:
 
 Special considerations should be made when pre-processing reads for regions of variable length, e.g. ITS for fungal barcoding. For ITS regions e.g. ITS1 or ITS2, it is recommended to use the `--illumina_pe_its` parameter for paired-end Illumina reads, which disables fixed-length read truncation. Also consider adjusting `--truncq` to a value higher than the default value of 2 if you find that a high proportion of reads is excluded by DADA2 filtering.
 
+#### Decontamination
+
+[Decontam](https://doi.org/10.1186/s40168-018-0605-2) performs simple statistical identification and removal of contaminant sequences. Decontam is most useful with low biomass samples, where contamination removal is particularly impactful. The limitations and applications of Decontam have been extensively described in its [publication](https://doi.org/10.1186/s40168-018-0605-2) and [R package description](https://benjjneb.github.io/decontam/vignettes/decontam_intro.html). [Fierer et al. 2025](https://doi.org/10.1038/s41564-025-02035-2) compare concepts and methods for decontamiation including Decontam. Next, a brief explanation on how to use Decontam in the context of nf-core/ampliseq.
+
+Decontam is applied to the abundance table with information from the samplesheet after ASV generation (or OTU clustering, if chosen), before ASV filtering by barrnap, length, and such. Required for using Decontam is at least one of DNA quantitation data and negative controls, that can be added in the samplesheet in optional columns `quant_reading` and `control`. Whenever at least one of those two columns is supplied, Decontam is applied to the data and the results are stored, however without further consequences. Filtering for downstream analysis is only applied when additionally specifying `--decontam decotaminate` or `--decontam notcontaminant`.
+
+Decontam has two methods, the "frequency" method based on the distribution of the frequency of each sequence feature as a function of the input DNA concentration (sample sheet column `quant_reading`) and the "prevalence" method based on the prevalence (presence/absence across samples) of each sequence feature in true positive samples compared to the prevalence in negative controls (sample sheet column `control`). DNA quantitation data for the "frequency" method refers to DNA extraction concentration or to sequencing library input, optimally as standardized fluorescent intensities. The model requires a gradient of concentrations to detect contaminants that are more frequent in samples with low concentration reading than in samples with high quantification reading. The "frequency" method model assumptions are violated if microbial biomass systematically differs between sample groups. For the "prevalence" method, at least 3 negative controls are required, a minimum of 5 is recommended. The "prevalence" method has reduced sensitivity to detect contaminants present only in very few samples or with fewer negative controls.
+
+Furthermore, Decontam tests two hypothesis, whether features [_are_ contaminants](https://rdrr.io/bioc/decontam/man/isContaminant.html) or are [_not_ contaminants](https://rdrr.io/bioc/decontam/man/isNotContaminant.html) (called "non-contaminants"). The former assumes all features are not contaminants and requires sufficient positive proof a feature is a "contaminant" before calling it so. The latter assumes that features are contaminants and requires sufficient proof a feature is not a contaminant before calling it "non-contaminant". Contaminants are identified based on the "frequency" method (sample sheet column `quant_reading`) or the "prevalence" method (sample sheet column `control`), or a combination of both, adjustable with `--decontam_decontaminate_method` (default: `auto` that chooses `frequency`, `prevalence` or `combined` based on the input). Non-contaminants are identified solely based on the "prevalence" method (sample sheet column `control`). The p-value thresholds can be adjusted with `--decontam_decontaminate_threshold` and `--decontam_notcontaminant_threshold`.
+
+By default, the information of contaminants or non-contaminants are not further used. However, contaminants are removed with `--decontam decotaminate` from subsequent analysis or only non-contaminants are retained with `--decontam notcontaminant`.
+
 ### Taxonomic classification
 
 Taxonomic classification of ASVs can be performed with tools DADA2, SINTAX, Kraken2 or QIIME2. Multiple taxonomic reference databases are pre-configured for those tools, but user supplied databases are also supported for some tools. Alternatively (or in addition), phylogenetic placement can be used to extract taxonomic classifications.
@@ -288,9 +303,19 @@ For example, the tab-separated `regions_multiregion.tsv` may contain:
 | region4 | GGAGCATGTGGWTTAATTCGA | CGTTGCGGGACTTAACCC   | 115           |
 | region5 | GGAGGAAGGTGGGGATGAC   | AAGGCCCGGGAACGTATT   | 150           |
 
+> [!WARNING]
+> Several downstream filtering options are not allowed or disabled when analysing multi region data.
+> Disabled functions are any ASV postprocessing/filtering options that require sequences and also no
+> sample subsetting using the metadata sheet is available (i.e. if provided, the metadata sheet has
+> to include all samples that pass preprocessing).
+
 ### Metadata
 
 Metadata is optional, but for performing downstream analysis such as barplots, diversity indices or differential abundance testing, a metadata file is essential.
+
+> [!TIP]
+> The metadata defines what samples are entering downstream analysis. For example, when having negative controls in the samplesheet,
+> those can be omitted in the metadata sheet and will not enter downstream analysis with QIIME2.
 
 ```bash
 --metadata "path/to/metadata.tsv"

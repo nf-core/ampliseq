@@ -7,9 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#948](https://github.com/nf-core/ampliseq/pull/948) - Decontam as optional decontamination tool.
+- [#949](https://github.com/nf-core/ampliseq/pull/949) - The dataset can be filtered for downstream analysis with the metadata sheet, for example to remove negative control samples meant for Decontam.
+
 ### `Changed`
 
 ### `Fixed`
+
+- [#706](https://github.com/nf-core/ampliseq/pull/706) - Ensure paired FASTQ files stay aligned by generating reverse paths from forward files instead of sorting independently
 
 ### `Dependencies`
 

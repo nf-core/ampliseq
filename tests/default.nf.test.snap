@@ -2403,11 +2403,11 @@
             "cutadapt_summary.tsv:md5,5d02749984a811479e7d534fda75163f",
             "ASV_seqs.fasta:md5,864c3e0dc9b4a7649beee0c8665dceb5",
             "ASV_table.tsv:md5,2618251e597593e4d716dd9bed095539",
-            "ref_taxonomy.gtdb_R07-RS207.txt:md5,965c6b1f9097128572a5ec2b8e9cef06",
+            "ref_taxonomy.gtdb_R07-RS207.txt:md5,248cd60a75d12415dc8ae5d827e53b3a",
             "DADA2_stats.tsv:md5,54a1ac8d6c5a3ff15f700c4b2dd40c86",
             "DADA2_table.rds:md5,d095501019ce7ebccfa0eb801db1ed29",
             "DADA2_table.tsv:md5,5c9fb0bfd70da165f0ce6a361bfe0b43",
-            "Samplesheet.tsv:md5,dbf8d1a2b7933dab9e5a139f33c2b1f4",
+            "Samplesheet.tsv:md5,51ff46f4b431730e41b6950ae3b20e35",
             "Metadata.tsv:md5,060b56528bb566eed71f6dfdb52cc395",
             "multiqc_fastqc.txt:md5,7d23984b06e4251f17e1cfce7a04aaae",
             "multiqc_general_stats.txt:md5,885c19ff3e53d16bfe7937d6694268d7",
@@ -2419,10 +2419,10 @@
             "ASV_post_clustering_filtered.stats.tsv:md5,222f6a7cdbf2d4b3f745a49359a61c0d",
             "ASV_post_clustering_filtered.table.tsv:md5,e607469a32d490bbe139e9196ff4a47d"
         ],
+        "timestamp": "2026-03-03T09:59:01.392855744",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-22T19:25:44.809666243"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.3"
+        }
     }
 }

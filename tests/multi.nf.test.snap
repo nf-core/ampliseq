@@ -289,7 +289,7 @@
             "rrna.mito.gff:md5,737567148a9252d93deb529a06f3239c",
             "ASV_seqs.fasta:md5,f786f2a262c3b7bf1eca475dc2c9bef6",
             "ASV_table.tsv:md5,91ca9b9ab06a873033c29af4f93dfa80",
-            "ref_taxonomy.rdp_18.txt:md5,c20d8e186e2893ba7818a0115edb013e",
+            "ref_taxonomy.rdp_18.txt:md5,457f64b1391a6c47685e7e8b73c6523f",
             "DADA2_stats.tsv:md5,1413d7b7abcdd9344efe78b550112345",
             "DADA2_table.rds:md5,e55f6c929176c853ac4d91123532df9c",
             "DADA2_table.tsv:md5,e9d7e7dfabdd1f9d3bbaa45eba545367",
@@ -299,10 +299,10 @@
             "descriptive_stats.tsv:md5,f6c6527f32005a005fef4d1830874a3e",
             "seven_number_summary.tsv:md5,4b177ed9a865e3320953b69860a435ef"
         ],
+        "timestamp": "2026-03-03T14:12:30.075652918",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-22T19:49:00.719435899"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
     }
 }

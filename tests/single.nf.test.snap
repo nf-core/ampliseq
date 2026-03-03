@@ -240,19 +240,19 @@
             "cutadapt_summary.tsv:md5,cde6a72b1f0daccb7b69727834fbb9e5",
             "ASV_seqs.fasta:md5,3cc6f93eeee721c63beddfbeae8462e9",
             "ASV_table.tsv:md5,b7f193b12f02f33f4e03e7bfed8ae5c0",
-            "ref_taxonomy.rdp_18.txt:md5,c20d8e186e2893ba7818a0115edb013e",
+            "ref_taxonomy.rdp_18.txt:md5,457f64b1391a6c47685e7e8b73c6523f",
             "DADA2_stats.tsv:md5,ce4ebd6936bd78f337870c04ee671070",
             "DADA2_table.rds:md5,ef8051d016bb7a868401528982e9920f",
             "DADA2_table.tsv:md5,ac91dd7c8a73df76b8143b60bc646c6c",
-            "Samplesheet.tsv:md5,dbf8d1a2b7933dab9e5a139f33c2b1f4",
+            "Samplesheet.tsv:md5,51ff46f4b431730e41b6950ae3b20e35",
             "multiqc_fastqc.txt:md5,75d0463a8b94a5dec14c3fb5b82169cd",
             "multiqc_general_stats.txt:md5,1662178e2c1ac6cb0880f95c1746ce81",
             "multiqc_cutadapt.txt:md5,0adee517528dc17cb0c9dfdc9858dc2c"
         ],
+        "timestamp": "2026-03-03T13:41:52.365689597",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-22T20:23:05.321780848"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
     }
 }

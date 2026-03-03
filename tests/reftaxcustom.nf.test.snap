@@ -276,7 +276,7 @@
             "DADA2_stats.tsv:md5,54a1ac8d6c5a3ff15f700c4b2dd40c86",
             "DADA2_table.rds:md5,d095501019ce7ebccfa0eb801db1ed29",
             "DADA2_table.tsv:md5,5c9fb0bfd70da165f0ce6a361bfe0b43",
-            "Samplesheet.tsv:md5,dbf8d1a2b7933dab9e5a139f33c2b1f4",
+            "Samplesheet.tsv:md5,51ff46f4b431730e41b6950ae3b20e35",
             "ASV_tax.user.kraken2.classifiedreads.txt:md5,8a4693c37d5c24b342ef161b92567764",
             "ASV_tax.user.kraken2.complete.tsv:md5,3613dac9ce1bf03f87b57d1523e705f1",
             "ASV_tax.user.kraken2.tsv:md5,95c3f9daa5da8fe00159fb07d394c3ce",
@@ -284,10 +284,10 @@
             "multiqc_general_stats.txt:md5,885c19ff3e53d16bfe7937d6694268d7",
             "multiqc_cutadapt.txt:md5,3dce058d2d6c85a3cca7314ae19c5586"
         ],
+        "timestamp": "2026-03-03T13:17:02.177858732",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-22T20:20:03.172266858"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
     }
 }

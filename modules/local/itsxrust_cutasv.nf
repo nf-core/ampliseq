@@ -2,7 +2,9 @@ process ITSXRUST_CUTASV {
     label 'process_medium'
 
     conda "bioconda::itsxrust=0.2.2 bioconda::hmmer=3.4"
-    container "ghcr.io/ayobi/itsxrust:0.2.2"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'oras://ghcr.io/ayobi/itsxrust:0.2.2' :
+        'ghcr.io/ayobi/itsxrust:0.2.2' }"
 
     input:
     path fasta
@@ -18,10 +20,7 @@ process ITSXRUST_CUTASV {
     script:
     def args = task.ext.args ?: ''
     def hmm_path = task.ext.hmm ?: '/usr/local/share/itsxrust/hmm/F.hmm'
-    // Map the expected outfile name to the ITSxRust --region flag
-    // outfile is set by the workflow, e.g. ASV_ITS_seqs.full.fasta, ASV_ITS_seqs.ITS1.fasta, etc.
-    def region = outfile.contains('ITS1') ? 'its1' :
-                 outfile.contains('ITS2') ? 'its2' : 'full'
+
     """
     # Run ITSxRust with --region all so we always get full + ITS1 + ITS2 outputs
     # (mirrors ITSx behavior which always writes all region files)

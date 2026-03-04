@@ -163,6 +163,9 @@
 
   > Bengtsson-Palme, J., Ryberg, M., Hartmann, M., Branco, S., Wang, Z., Godhe, A., De Wit, P., Sánchez-García, M., Ebersberger, I., de Sousa, F., Amend, A., Jumpponen, A., Unterseher, M., Kristiansson, E., Abarenkov, K., Bertrand, Y.J.K., Sanli, K., Eriksson, K.M., Vik, U., Veldre, V. and Nilsson, R.H.. Improved software detection and extraction of ITS1 and ITS2 from ribosomal ITS sequences of fungi and other eukaryotes for analysis of environmental sequencing data. Methods Ecol Evol 2013, 4: 914-919. doi: 10.1111/2041-210X.12073.
 
+- [ITSxRust](https://doi.org/10.64898/2026.02.25.707950)
+  > O'Brien A, Lagos C, Fernández K, Ojeda B, Parada P. (2026). ITSxRust: ITS region extraction with partial-chain recovery and structured diagnostics for long-read amplicon sequencing. bioRxiv. doi: [10.64898/2026.02.25.707950](https://doi.org/10.64898/2026.02.25.707950)
+
 - [PICRUSt2](https://pubmed.ncbi.nlm.nih.gov/32483366/)
 
   > Douglas GM, Maffei VJ, Zaneveld JR, Yurgel SN, Brown JR, Taylor CM, Huttenhower C, Langille MGI. PICRUSt2 for prediction of metagenome functions. Nat Biotechnol. 2020 Jun;38(6):685-688. doi: 10.1038/s41587-020-0548-6. PMID: 32483366; PMCID: PMC7365738.

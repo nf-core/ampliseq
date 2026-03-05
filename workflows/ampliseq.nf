@@ -12,7 +12,8 @@ include { FASTQC                            } from '../modules/nf-core/fastqc/ma
 include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
 include { VSEARCH_CLUSTER                   } from '../modules/nf-core/vsearch/cluster/main'
 include { FASTA_HMMSEARCH_RANK_FASTAS       } from '../subworkflows/nf-core/fasta_hmmsearch_rank_fastas'
-include { FASTA_NEWICK_EPANG_GAPPA          } from '../subworkflows/nf-core/fasta_newick_epang_gappa/main'
+include { FASTA_NEWICK_EPANG_GAPPA as PPLACE_STANDARD   } from '../subworkflows/nf-core/fasta_newick_epang_gappa/main'
+include { FASTA_NEWICK_EPANG_GAPPA as PPLACE_SHEET      } from '../subworkflows/nf-core/fasta_newick_epang_gappa/main'
 
 //
 // MODULE: Installed directly from nf-core/modules
@@ -262,6 +263,11 @@ workflow AMPLISEQ {
     } else {
         run_qiime2_taxonomy = false
     }
+    println "skip_taxonomy: ${params.skip_taxonomy}"
+    println "qiime_ref_taxonomy: ${params.qiime_ref_taxonomy}"
+    println "qiime_ref_tax_custom: ${params.qiime_ref_tax_custom}"
+    println "classifier: ${params.classifier}"
+    println "run_qiime2_taxonomy 0: ${run_qiime2_taxonomy}"
 
     //only run QIIME2 downstream analysis when taxonomy is actually calculated and all required data is available
     if ( !params.skip_taxonomy && !params.skip_qiime && !params.skip_qiime_downstream && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom || params.multiregion) ) {
@@ -269,6 +275,7 @@ workflow AMPLISEQ {
     } else {
         run_qiime2 = false
     }
+    println "run_qiime2_taxonomy 1: ${run_qiime2_taxonomy}"
 
     ch_tax_for_robject = channel.empty()
     ch_versions = channel.empty()
@@ -693,9 +700,9 @@ workflow AMPLISEQ {
                 taxonomy:     params.pplace_taxonomy ? file( params.pplace_taxonomy, checkIfExists: true ) : []
             ] ]
         }
-        FASTA_NEWICK_EPANG_GAPPA ( ch_pp_data )
-        ch_versions = ch_versions.mix( FASTA_NEWICK_EPANG_GAPPA.out.versions )
-        ch_pplace_tax = FORMAT_PPLACETAX ( FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query ).tsv
+        PPLACE_STANDARD ( ch_pp_data )
+        ch_versions = ch_versions.mix( PPLACE_STANDARD.out.versions )
+        ch_pplace_tax = FORMAT_PPLACETAX ( PPLACE_STANDARD.out.taxonomy_per_query ).tsv
         ch_tax_for_robject = ch_tax_for_robject.mix ( PHYLOSEQ_INTAX_PPLACE ( ch_pplace_tax ).tsv.map { it -> [ "pplace", file(it) ] } )
     } else {
         ch_pplace_tax = channel.empty()
@@ -744,8 +751,8 @@ workflow AMPLISEQ {
     //
     // SUBWORKFLOW: Run phylogenetic placement
     //
-    FASTA_NEWICK_EPANG_GAPPA(ch_phyloplace_data)
-    ch_versions = ch_versions.mix(FASTA_NEWICK_EPANG_GAPPA.out.versions)
+    PPLACE_SHEET(ch_phyloplace_data)
+    ch_versions = ch_versions.mix(PPLACE_SHEET.out.versions)
 
     //QIIME2
     if ( run_qiime2_taxonomy ) {
@@ -781,7 +788,7 @@ workflow AMPLISEQ {
 
         // Import phylogenetic tree into QIIME2
         if ( params.pplace_tree ) {
-            ch_tree = QIIME2_INTREE ( FASTA_NEWICK_EPANG_GAPPA.out.grafted_phylogeny ).qza
+            ch_tree = QIIME2_INTREE ( PPLACE_STANDARD.out.grafted_phylogeny ).qza
             ch_versions = ch_versions.mix( QIIME2_INTREE.out.versions )
         } else if (params.multiregion) {
             ch_tree = SIDLE_WF.out.tree_qza
@@ -955,7 +962,7 @@ workflow AMPLISEQ {
     //
     if ( !params.skip_taxonomy && ( !params.skip_phyloseq || !params.skip_tse ) ) {
         if ( params.pplace_tree ) {
-            ch_tree_for_robject = FASTA_NEWICK_EPANG_GAPPA.out.grafted_phylogeny.map { it -> it[1] }.first()
+            ch_tree_for_robject = PPLACE_STANDARD.out.grafted_phylogeny.map { it -> it[1] }.first()
         } else if (params.multiregion) {
             ch_tree_for_robject = SIDLE_WF.out.tree_nwk
         } else if ( run_qiime2 && params.metadata && (!params.skip_alpha_rarefaction || !params.skip_diversity_indices) ) {
@@ -1101,7 +1108,7 @@ workflow AMPLISEQ {
             !params.skip_taxonomy && params.sintax_ref_taxonomy ? ch_sintax_tax.ifEmpty( [] ) : [],
             !params.skip_taxonomy && ( params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom ) ? KRAKEN2_TAXONOMY_WF.out.tax_tsv.ifEmpty( [] ) : [],
             !params.skip_taxonomy && params.pplace_tree ? ch_pplace_tax.ifEmpty( [] ) : [],
-            !params.skip_taxonomy && params.pplace_tree ? FASTA_NEWICK_EPANG_GAPPA.out.heattree.ifEmpty( [[],[]] ) : [[],[]],
+            !params.skip_taxonomy && params.pplace_tree ? PPLACE_STANDARD.out.heattree.ifEmpty( [[],[]] ) : [[],[]],
             !params.skip_taxonomy && ( params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier ) && run_qiime2_taxonomy ? QIIME2_TAXONOMY.out.tsv.ifEmpty( [] ) : [],
             run_qiime2,
             run_qiime2 ? val_used_taxonomy : "",

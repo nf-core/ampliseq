@@ -3,8 +3,8 @@ process ITSXRUST_CUTASV {
 
     conda "bioconda::itsxrust=0.2.2 bioconda::hmmer=3.4"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'oras://ghcr.io/ayobi/itsxrust:0.2.2' :
-        'ghcr.io/ayobi/itsxrust:0.2.2' }"
+        'https://depot.galaxyproject.org/singularity/itsxrust:0.2.2--hdd79491_1' :
+        'quay.io/biocontainers/itsxrust:0.2.2--hdd79491_1' }"
 
     input:
     path fasta

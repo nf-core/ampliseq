@@ -61,41 +61,17 @@ process ITSXRUST_CUTASV {
     fi
 
     # Generate ITSx-compatible summary from ITSxRust QC JSON
-    # The summary report parses lines like "Number of sequences in input: X"
-    python3 <<'EOF'
-import json, sys
-
-try:
-    with open("itsxrust_qc.json") as f:
-        qc = json.load(f)
-except (FileNotFoundError, json.JSONDecodeError):
-    # Fallback: write minimal summary
-    with open("ASV_ITS_seqs.summary.txt", "w") as out:
-        out.write("ITSxRust: QC JSON not available\\n")
-    sys.exit(0)
-
-total = qc.get("total_reads", 0)
-kept = qc.get("kept", 0)
-skipped = qc.get("skipped", 0)
-
-with open("ASV_ITS_seqs.summary.txt", "w") as out:
-    out.write(f"ITSxRust extraction summary\\n")
-    out.write(f"Number of sequences in input: {total}\\n")
-    out.write(f"Number of sequences extracted: {kept}\\n")
-    out.write(f"Number of sequences skipped: {skipped}\\n")
-    # Confidence breakdown if available
-    conf = qc.get("confidence", {})
-    if conf:
-        out.write(f"  Confident: {conf.get('confident', 0)}\\n")
-        out.write(f"  Ambiguous: {conf.get('ambiguous', 0)}\\n")
-        out.write(f"  Partial: {conf.get('partial', 0)}\\n")
-    # Skip reasons if available
-    reasons = qc.get("skip_reasons", {})
-    if reasons:
-        out.write("Skip reasons:\\n")
-        for reason, count in reasons.items():
-            out.write(f"  {reason}: {count}\\n")
-EOF
+    if [ -f itsxrust_qc.json ]; then
+        total=\$(grep -o '"total_reads":[0-9]*' itsxrust_qc.json | grep -o '[0-9]*')
+        kept=\$(grep -o '"kept":[0-9]*' itsxrust_qc.json | grep -o '[0-9]*')
+        skipped=\$(grep -o '"skipped":[0-9]*' itsxrust_qc.json | grep -o '[0-9]*')
+        echo "ITSxRust extraction summary" > ASV_ITS_seqs.summary.txt
+        echo "Number of sequences in input: \${total:-0}" >> ASV_ITS_seqs.summary.txt
+        echo "Number of sequences extracted: \${kept:-0}" >> ASV_ITS_seqs.summary.txt
+        echo "Number of sequences skipped: \${skipped:-0}" >> ASV_ITS_seqs.summary.txt
+    else
+        echo "ITSxRust: QC JSON not available" > ASV_ITS_seqs.summary.txt
+    fi
 
     # Validate that the expected output file exists and is non-empty
     if [ ! -s "$outfile" ]; then

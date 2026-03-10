@@ -8,10 +8,10 @@
 // MODULE & SUBWORKFLOW: Installed directly from nf-core/modules & nf-core/subworkflows
 //
 
-include { FASTQC                            } from '../modules/nf-core/fastqc/main'
-include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
-include { VSEARCH_CLUSTER                   } from '../modules/nf-core/vsearch/cluster/main'
-include { FASTA_HMMSEARCH_RANK_FASTAS       } from '../subworkflows/nf-core/fasta_hmmsearch_rank_fastas'
+include { FASTQC                                        } from '../modules/nf-core/fastqc/main'
+include { MULTIQC                                       } from '../modules/nf-core/multiqc/main'
+include { VSEARCH_CLUSTER                               } from '../modules/nf-core/vsearch/cluster/main'
+include { FASTA_HMMSEARCH_RANK_FASTAS                   } from '../subworkflows/nf-core/fasta_hmmsearch_rank_fastas'
 include { FASTA_NEWICK_EPANG_GAPPA as PPLACE_STANDARD   } from '../subworkflows/nf-core/fasta_newick_epang_gappa/main'
 include { FASTA_NEWICK_EPANG_GAPPA as PPLACE_SHEET      } from '../subworkflows/nf-core/fasta_newick_epang_gappa/main'
 
@@ -46,7 +46,8 @@ include { QIIME2_TABLEFILTERTAXA        } from '../modules/local/qiime2_tablefil
 include { QIIME2_SEQFILTERTABLE         } from '../modules/local/qiime2_seqfiltertable'
 include { QIIME2_INASV                  } from '../modules/local/qiime2_inasv'
 include { QIIME2_INTREE                 } from '../modules/local/qiime2_intree'
-include { FORMAT_PPLACETAX              } from '../modules/local/format_pplacetax'
+include { FORMAT_PPLACETAX as PPLACEFORMATTAX_STANDARD  } from '../modules/local/format_pplacetax'
+include { FORMAT_PPLACETAX as PPLACEFORMATTAX_SHEET     } from '../modules/local/format_pplacetax'
 include { FILTER_STATS                  } from '../modules/local/filter_stats'
 include { MERGE_STATS as MERGE_STATS_FILTERTAXA } from '../modules/local/merge_stats'
 include { QIIME2_BARPLOT                } from '../modules/local/qiime2_barplot'
@@ -263,11 +264,6 @@ workflow AMPLISEQ {
     } else {
         run_qiime2_taxonomy = false
     }
-    println "skip_taxonomy: ${params.skip_taxonomy}"
-    println "qiime_ref_taxonomy: ${params.qiime_ref_taxonomy}"
-    println "qiime_ref_tax_custom: ${params.qiime_ref_tax_custom}"
-    println "classifier: ${params.classifier}"
-    println "run_qiime2_taxonomy 0: ${run_qiime2_taxonomy}"
 
     //only run QIIME2 downstream analysis when taxonomy is actually calculated and all required data is available
     if ( !params.skip_taxonomy && !params.skip_qiime && !params.skip_qiime_downstream && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom || params.multiregion) ) {
@@ -275,7 +271,6 @@ workflow AMPLISEQ {
     } else {
         run_qiime2 = false
     }
-    println "run_qiime2_taxonomy 1: ${run_qiime2_taxonomy}"
 
     ch_tax_for_robject = channel.empty()
     ch_versions = channel.empty()
@@ -702,7 +697,7 @@ workflow AMPLISEQ {
         }
         PPLACE_STANDARD ( ch_pp_data )
         ch_versions = ch_versions.mix( PPLACE_STANDARD.out.versions )
-        ch_pplace_tax = FORMAT_PPLACETAX ( PPLACE_STANDARD.out.taxonomy_per_query ).tsv
+        ch_pplace_tax = PPLACEFORMATTAX_STANDARD ( PPLACE_STANDARD.out.taxonomy_per_query ).tsv
         ch_tax_for_robject = ch_tax_for_robject.mix ( PHYLOSEQ_INTAX_PPLACE ( ch_pplace_tax ).tsv.map { it -> [ "pplace", file(it) ] } )
     } else {
         ch_pplace_tax = channel.empty()
@@ -753,6 +748,17 @@ workflow AMPLISEQ {
     //
     PPLACE_SHEET(ch_phyloplace_data)
     ch_versions = ch_versions.mix(PPLACE_SHEET.out.versions)
+
+    PPLACEFORMATTAX_SHEET(PPLACE_SHEET.out.taxonomy_per_query)
+    ch_versions = ch_versions.mix(PPLACEFORMATTAX_SHEET.out.versions)
+
+    // Currently, this is not used for anything since the QIIME_INTAX call is wrapped in an if cluase checking params.pplace_tree
+    if ( ! params.pplace_tree ) {
+        ch_pplace_tax = PPLACEFORMATTAX_SHEET.out.tsv
+            .splitCsv(sep: '\t', header: true)
+            .map { r -> "${r.ASV_ID}\t${r.taxonomy}\n" }
+            .collectFile(name: 'concatenated_taxonomy.tsv', seed: "ASV_ID\ttaxonomy\n")
+    }
 
     //QIIME2
     if ( run_qiime2_taxonomy ) {
@@ -805,7 +811,7 @@ workflow AMPLISEQ {
             log.info "Use multi-region SIDLE taxonomy classification"
             val_used_taxonomy = "SIDLE"
             ch_tax = SIDLE_WF.out.tax_qza
-        } else if ( params.pplace_tree && params.pplace_taxonomy) {
+        } else if ( params.pplace_tree && params.pplace_taxonomy ) {
             log.info "Use EPA-NG / GAPPA taxonomy classification"
             val_used_taxonomy = "phylogenetic placement"
             ch_tax = QIIME2_INTAX ( ch_pplace_tax, "parse_dada2_taxonomy.r" ).qza

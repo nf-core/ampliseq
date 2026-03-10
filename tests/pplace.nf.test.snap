@@ -8,6 +8,10 @@
                 "BARRNAPSUMMARY": {
                     "python": "Python 3.9.1"
                 },
+                "CLUSTALO_ALIGN": {
+                    "clustalo": "1.2.4",
+                    "pigz": "2.8)"
+                },
                 "COMBINE_TABLE_PPLACE": {
                     "R": "4.0.3"
                 },
@@ -61,8 +65,8 @@
                 "EPANG_PLACE": {
                     "epang": "0.3.8"
                 },
-                "FILTER_SAMPLES": {
-                    "R": "4.2.1"
+                "EPANG_SPLIT_CLUSTALO": {
+                    "epang": "0.3.8"
                 },
                 "FILTER_SSU": {
                     "R": "4.0.3",
@@ -80,30 +84,6 @@
                 },
                 "GAPPA_HEATTREE": {
                     "gappa": "0.8.0"
-                },
-                "HMMER_AFAFORMATQUERY": {
-                    "hmmer/easel": 0.48
-                },
-                "HMMER_AFAFORMATREF": {
-                    "hmmer/easel": 0.48
-                },
-                "HMMER_HMMALIGNQUERY": {
-                    "hmmer": "3.3.2"
-                },
-                "HMMER_HMMALIGNREF": {
-                    "hmmer": "3.3.2"
-                },
-                "HMMER_HMMBUILD": {
-                    "hmmer": "3.3.2"
-                },
-                "HMMER_MASKQUERY": {
-                    "hmmer/easel": 0.48
-                },
-                "HMMER_MASKREF": {
-                    "hmmer/easel": 0.48
-                },
-                "HMMER_UNALIGNREF": {
-                    "hmmer/easel": 0.48
                 },
                 "MERGE_STATS_FILTERSSU": {
                     "R": "4.4.3"
@@ -280,6 +260,8 @@
                 "pipeline_info",
                 "pipeline_info/software_versions.yml",
                 "pplace",
+                "pplace/clustalo",
+                "pplace/clustalo/test_pplace.aln",
                 "pplace/epang",
                 "pplace/epang/test_pplace.epa_info.log",
                 "pplace/epang/test_pplace.epa_result.jplace.gz",
@@ -295,16 +277,6 @@
                 "pplace/gappa/test_pplace.taxonomy.per_query.tsv",
                 "pplace/gappa/test_pplace.taxonomy.profile.tsv",
                 "pplace/gappa/test_pplace.taxonomy.sativa.tsv",
-                "pplace/hmmer",
-                "pplace/hmmer/test_pplace.query.hmmalign.masked.afa.gz",
-                "pplace/hmmer/test_pplace.query.hmmalign.masked.sthlm.gz",
-                "pplace/hmmer/test_pplace.query.hmmalign.sthlm.gz",
-                "pplace/hmmer/test_pplace.ref.hmm.gz",
-                "pplace/hmmer/test_pplace.ref.hmmalign.masked.afa.gz",
-                "pplace/hmmer/test_pplace.ref.hmmalign.masked.sthlm.gz",
-                "pplace/hmmer/test_pplace.ref.hmmalign.sthlm.gz",
-                "pplace/hmmer/test_pplace.ref.hmmbuild.txt",
-                "pplace/hmmer/test_pplace.ref.unaligned.afa.gz",
                 "pplace/test_pplace.graft.test_pplace.epa_result.newick",
                 "pplace/test_pplace.heattree.tree.svg",
                 "pplace/test_pplace.taxonomy.per_query.tsv",
@@ -1209,10 +1181,10 @@
             "multiqc_general_stats.txt:md5,7a395be7984aaa0f9154de4abed5d824",
             "multiqc_cutadapt.txt:md5,3dce058d2d6c85a3cca7314ae19c5586"
         ],
+        "timestamp": "2026-03-05T09:33:39.07133593",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-22T20:12:36.255222869"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
     }
 }

@@ -54,6 +54,9 @@
                 "FASTQC": {
                     "fastqc": "0.12.1"
                 },
+                "FILTER_SAMPLES": {
+                    "R": "4.2.1"
+                },
                 "FILTER_STATS": {
                     "python": "3.9.1",
                     "pandas": "1.1.5"

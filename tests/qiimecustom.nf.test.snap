@@ -48,6 +48,10 @@
                     "R": "4.4.3",
                     "dada2": "1.34.0"
                 },
+                "DECONTAM": {
+                    "R": "4.5.2",
+                    "decontam": "1.30.0"
+                },
                 "FASTQC": {
                     "fastqc": "0.12.1"
                 },
@@ -129,6 +133,11 @@
                 "dada2/log",
                 "dada2/log/1.dada.log",
                 "dada2/log/1.err.log",
+                "decontam",
+                "decontam/decontaminated.tsv",
+                "decontam/decontaminated_counts.tsv",
+                "decontam/decontaminated_details.tsv",
+                "decontam/decontaminated_log.tsv",
                 "fastqc",
                 "fastqc/sampleID_1_1_fastqc.html",
                 "fastqc/sampleID_1_2_fastqc.html",

@@ -28,6 +28,9 @@ include { DADA2_STATS                   } from '../modules/local/dada2_stats'
 include { DADA2_MERGE                   } from '../modules/local/dada2_merge'
 include { DADA2_SPLITREGIONS            } from '../modules/local/dada2_splitregions'
 include { SIDLE_WF                      } from '../subworkflows/local/sidle_wf'
+include { DECONTAM                      } from '../modules/local/decontam'
+include { MERGE_STATS as MERGE_STATS_DECONTAM     } from '../modules/local/merge_stats'
+include { FILTER_SEQUENCES_ABUNDANCES   } from '../modules/local/filter_sequences_abundances'
 include { BARRNAP                       } from '../modules/local/barrnap'
 include { BARRNAPSUMMARY                } from '../modules/local/barrnapsummary'
 include { FILTER_SSU                    } from '../modules/local/filter_ssu'
@@ -41,6 +44,7 @@ include { FORMAT_FASTAINPUT             } from '../modules/local/format_fastainp
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
 include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
 include { MERGE_STATS as MERGE_STATS_STD} from '../modules/local/merge_stats'
+include { FILTER_SAMPLES                } from '../modules/local/filter_samples'
 include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'
 include { QIIME2_TABLEFILTERTAXA        } from '../modules/local/qiime2_tablefiltertaxa'
 include { QIIME2_SEQFILTERTABLE         } from '../modules/local/qiime2_seqfiltertable'
@@ -375,6 +379,22 @@ workflow AMPLISEQ {
         }
     ch_reads.dump(tag: 'ch_reads')
 
+    // Extract decontamination information
+    ch_reads // dont use 'storeDir: "${params.outdir}/decontam"' that seems to mess with the cache!
+        .collectFile(keepHeader: true, skip: 1, sort: true, cache: true){ meta, _reads ->
+            meta.control && meta.quant_reading ? ["decontam_metadata.tsv", "sample\tcontrol\tquant_reading\trun\n${meta.sample}\t${meta.control}\t${meta.quant_reading}\t${meta.run}\n"] :
+            meta.control ? ["decontam_metadata.tsv", "sample\tcontrol\trun\n${meta.sample}\t${meta.control}\t${meta.run}\n"] :
+            meta.quant_reading ? ["decontam_metadata.tsv", "sample\tquant_reading\trun\n${meta.sample}\t${meta.quant_reading}\t${meta.run}\n"] :
+                ["decontam_metadata.tsv", "empty\n"]
+            }
+        .filter { it -> it.countLines() > 1 } // only output decontam metadata if thats actually present
+        .set { ch_decontam_metadata }
+    ch_reads
+        .map { info, reads ->
+            def meta = info.subMap( info.keySet() - 'control' - 'quant_reading' ) // remove decontam metadata because it isnt needed any more
+            return [ meta, reads ] }
+        .set { ch_reads }
+
     //
     // MODULE: Rename files
     //
@@ -495,12 +515,12 @@ workflow AMPLISEQ {
         // forward results to downstream analysis if multi region
         ch_dada2_asv = SIDLE_WF.out.table_tsv
         ch_dada2_fasta = channel.empty()
-        // Any ASV post-clustering param is not allowed:
-        // - solved by '!params.multiregion' for vsearch_cluster, filter_ssu, min_len_asv, max_len_asv, filter_codons
-        // - solved in 'lib/WorkflowAmpliseq.groovy': cut_its
+        // Any ASV postprocessing is not allowed:
+        // - solved by '!params.multiregion' for vsearch_cluster, FILTER_SAMPLES, filter_ssu, min_len_asv, max_len_asv, filter_codons
+        // - solved in 'subworkflows/local/utils_nfcore_ampliseq_pipeline/main.nf': cut_its
         // Must have params:
         // - solved by '!params.multiregion' for skip_report
-        // - solved in 'lib/WorkflowAmpliseq.groovy': skip_dada_taxonomy
+        // - solved in 'subworkflows/local/utils_nfcore_ampliseq_pipeline/main.nf': skip_dada_taxonomy
     } else {
         // forward results to downstream analysis if single region
         ch_dada2_fasta = DADA2_MERGE.out.fasta
@@ -523,6 +543,36 @@ workflow AMPLISEQ {
         ch_versions = ch_versions.mix(FILTER_CLUSTERS.out.versions)
         ch_dada2_fasta = FILTER_CLUSTERS.out.fasta
         ch_dada2_asv = FILTER_CLUSTERS.out.asv
+    }
+
+    //
+    // MODULE : ASV decontamination with "decontam"
+    //
+    DECONTAM (
+        ch_dada2_asv,
+        ch_decontam_metadata,
+        params.decontam_decontaminate_method,
+        params.decontam_decontaminate_threshold,
+        params.decontam_notcontaminant_threshold
+    )
+    ch_versions = ch_versions.mix(DECONTAM.out.versions)
+    if (params.decontam == "decontaminate") {
+        ch_dada2_asv = DECONTAM.out.decontaminated_abundances
+            .filter { it -> it.countLines() > 1 }
+            .ifEmpty{ error("\nDecontamination removed all features, please adjust settings.\n") }
+        FILTER_SEQUENCES_ABUNDANCES ( ch_dada2_fasta, ch_dada2_asv )
+        ch_versions = ch_versions.mix(FILTER_SEQUENCES_ABUNDANCES.out.versions)
+        ch_dada2_fasta = FILTER_SEQUENCES_ABUNDANCES.out.seq
+        ch_stats = MERGE_STATS_DECONTAM ( ch_stats, DECONTAM.out.decontaminated_counts ).tsv
+        ch_versions = ch_versions.mix(MERGE_STATS_DECONTAM.out.versions)
+    } else if (params.decontam == "notcontaminant") {
+        ch_dada2_asv = DECONTAM.out.notcontaminant_abundances
+            .ifEmpty{ error("\nNo non-contaminant features were identified, please check control samples (column 'control' in samplesheet).\n") }
+        FILTER_SEQUENCES_ABUNDANCES ( ch_dada2_fasta, ch_dada2_asv )
+        ch_versions = ch_versions.mix(FILTER_SEQUENCES_ABUNDANCES.out.versions)
+        ch_dada2_fasta = FILTER_SEQUENCES_ABUNDANCES.out.seq
+        ch_stats = MERGE_STATS_DECONTAM ( ch_stats, DECONTAM.out.notcontaminant_counts ).tsv
+        ch_versions = ch_versions.mix(MERGE_STATS_DECONTAM.out.versions)
     }
 
     //
@@ -786,6 +836,15 @@ workflow AMPLISEQ {
     // SUBWORKFLOW / MODULES : Downstream analysis with QIIME2
     //
     if ( run_qiime2 ) {
+        // Filter metadata and/or abundances so that they match: (1) samples lost during preprocessing, (2) intentional data subsetting for downstream analysis
+        if ( params.metadata && !params.multiregion ) {
+            FILTER_SAMPLES ( ch_metadata, ch_dada2_asv )
+            ch_versions = ch_versions.mix( FILTER_SAMPLES.out.versions )
+            ch_metadata = FILTER_SAMPLES.out.metadata
+            ch_dada2_asv = FILTER_SAMPLES.out.abundances
+            FILTER_SAMPLES.out.log.collect().subscribe{ it -> log.warn "${it.baseName.toString()}" }
+        }
+
         // Import ASV abundance table and sequences into QIIME2
         QIIME2_INASV ( ch_dada2_asv )
         ch_versions = ch_versions.mix( QIIME2_INASV.out.versions )
@@ -1101,6 +1160,11 @@ workflow AMPLISEQ {
             DADA2_MERGE.out.dada2stats.ifEmpty( [] ),
             params.mergepairs_strategy,
             params.vsearch_cluster ? FILTER_CLUSTERS.out.asv.ifEmpty( [] ) : [],
+            params.decontam,
+            DECONTAM.out.decontaminated_counts.ifEmpty( [] ),
+            DECONTAM.out.notcontaminant_counts.ifEmpty( [] ),
+            DECONTAM.out.decontaminated_details.ifEmpty( [] ),
+            DECONTAM.out.notcontaminant_details.ifEmpty( [] ),
             !params.skip_barrnap ? BARRNAPSUMMARY.out.summary.ifEmpty( [] ) : [],
             params.filter_ssu ? FILTER_SSU.out.stats.ifEmpty( [] ) : [],
             params.filter_ssu ? FILTER_SSU.out.fasta.ifEmpty( [] ) : [],

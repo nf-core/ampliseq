@@ -39,6 +39,7 @@ params:
     dada_sample_inference: ""
     mergepairs_strategy: ""
     vsearch_cluster_id: ""
+    decontam: FALSE
     filter_ssu: FALSE
     min_len_asv: ""
     max_len_asv: ""
@@ -83,6 +84,10 @@ params:
     path_dada2_tab: FALSE
     dada_stats_path: FALSE
     vsearch_cluster: FALSE
+    decontaminated_counts: ""
+    decontaminated_details: ""
+    notcontaminant_counts: FALSE
+    notcontaminant_details: ""
     path_barrnap_sum: FALSE
     filter_ssu_stats: FALSE
     filter_ssu_asv: ""
@@ -603,7 +608,7 @@ if ( params$dada_sample_inference == "independent" ) {
 ```
 
 ```{r, results='asis'}
-flag_any_filtering <- !isFALSE(params$path_barrnap_sum) || !isFALSE(params$filter_len_asv) || !isFALSE(params$filter_codons_fasta) || !isFALSE(params$vsearch_cluster)
+flag_any_filtering <- !isFALSE(params$path_barrnap_sum) || !isFALSE(params$filter_len_asv) || !isFALSE(params$filter_codons_fasta) || !isFALSE(params$vsearch_cluster) || !isFALSE(params$decontam)
 ```
 
 <!-- Section on ASV filtering -->
@@ -625,6 +630,91 @@ cat(paste0("
 centroids with pairwise identity of ",params$vsearch_cluster_id,".
 Clustered ASV sequences and abundances can be found in folder [vsearch_cluster](../vsearch_cluster).
 "))
+```
+
+<!-- Subsection on decontamination with decontam -->
+
+```{r, eval = !isFALSE(params$decontam), results='asis'}
+# Read the decontam files
+decontaminated_counts = read.table( params$decontaminated_counts, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+decontaminated_details = read.table( params$decontaminated_details, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+n_asv_decontam_details_total <- nrow(decontaminated_details)
+# check for flagged features
+n_asv_decontaminated_details_flagged <- nrow( decontaminated_details[decontaminated_details[,ncol(decontaminated_details)],] )
+
+if (!isFALSE(params$notcontaminant_counts)) {
+    notcontaminant_counts = read.table( params$notcontaminant_counts, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+    notcontaminant_details = read.table( params$notcontaminant_details, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+    # check for flagged features
+    n_asv_notcontaminant_details_flagged <- nrow( notcontaminant_details[notcontaminant_details[,ncol(notcontaminant_details)],] )
+}
+
+cat(paste0("
+## Decontamination of ASVs
+
+Of ",n_asv_decontam_details_total," ASVs, [decontam](https://doi.org/10.1186/s40168-018-0605-2) flagged "
+,n_asv_decontaminated_details_flagged," as contamination, i.e. sufficient proof existed that those are contaminants"))
+
+if (!isFALSE(params$notcontaminant_counts)) {
+    cat(paste0(", and ",n_asv_notcontaminant_details_flagged," as non-contaminants, i.e. sufficient proof existed that those are _not_ contaminants"))
+}
+
+cat(". Details with statistics can be found in folder [decontam](../decontam).")
+
+if ( params$decontam == "none" ) {
+    cat("\nHowever, contaminant information was not used to remove any ASVs!\n")
+} else if (params$decontam == "decontaminate") {
+    cat("\n\nThe following table shows read counts for each sample before and after decontamination:\n\n")
+    colnames(decontaminated_counts) <- gsub("isContaminant_","",colnames(decontaminated_counts))
+    decontaminated_counts <- subset(decontaminated_counts, select = c(sample,input,output))
+    decontaminated_counts$'retained%' <- round( decontaminated_counts$output / decontaminated_counts$input *100, 2)
+    decontaminated_counts_avg_removed <- 100-sum(decontaminated_counts$'retained%')/length(decontaminated_counts$'retained%')
+    decontaminated_counts_max_removed <- 100-min(decontaminated_counts$'retained%')
+
+    # for methods section
+    decontam_n_asv_removed = n_asv_decontaminated_details_flagged
+    decontam_n_asv_passed = n_asv_decontam_details_total-n_asv_decontaminated_details_flagged
+    decontam_max_percent_reads_removed = decontaminated_counts_max_removed
+
+    # Display table
+    datatable(decontaminated_counts, options = list(
+        scrollX = TRUE,
+        scrollY = "300px",
+        paging = FALSE))
+} else if (params$decontam == "notcontaminant" && !isFALSE(params$notcontaminant_counts)) {
+    cat("\n\nThe following table shows read counts for each sample before and after non-contaminant selection:\n\n")
+    colnames(notcontaminant_counts) <- gsub("isNotContaminant_","",colnames(notcontaminant_counts))
+    notcontaminant_counts <- subset(notcontaminant_counts, select = c(sample,input,output))
+    notcontaminant_counts$'retained%' <- round( notcontaminant_counts$output / notcontaminant_counts$input *100, 2)
+    notcontaminant_counts_avg_removed <- 100-sum(notcontaminant_counts$'retained%')/length(notcontaminant_counts$'retained%')
+    notcontaminant_counts_max_removed <- 100-min(notcontaminant_counts$'retained%')
+
+    # for methods section
+    decontam_n_asv_removed <- n_asv_decontam_details_total-n_asv_notcontaminant_details_flagged
+    decontam_n_asv_passed <- n_asv_notcontaminant_details_flagged
+    decontam_max_percent_reads_removed <- notcontaminant_counts_max_removed
+
+    # Display table
+    datatable(notcontaminant_counts, options = list(
+        scrollX = TRUE,
+        scrollY = "300px",
+        paging = FALSE))
+}
+
+if (params$decontam == "decontaminate") {
+    cat(paste0("In average ", round(decontaminated_counts_avg_removed,2), "% reads were removed as contamination,
+    but at most ",decontaminated_counts_max_removed,"% reads per sample.
+    The number of ASVs was reduced by ",n_asv_decontaminated_details_flagged,
+    " (",round( n_asv_decontaminated_details_flagged/n_asv_decontam_details_total*100 ,2),"%), from
+    ",n_asv_decontam_details_total," to ",n_asv_decontam_details_total-n_asv_decontaminated_details_flagged," ASVs.
+    "))
+} else if (params$decontam == "notcontaminant" && !isFALSE(params$notcontaminant_counts)) {
+    cat(paste0("In average ", round(notcontaminant_counts_avg_removed,2), "% reads were removed as contamination, i.e. with
+    insufficient proof as non-contaminant, but at most ",notcontaminant_counts_max_removed,"% reads per sample.
+    The number of ASVs was reduced by ",n_asv_decontam_details_total-n_asv_notcontaminant_details_flagged,
+    " (",100-round( n_asv_notcontaminant_details_flagged/n_asv_decontam_details_total*100 ,2),"%), from ",n_asv_decontam_details_total," to ",n_asv_notcontaminant_details_flagged," ASVs.
+    "))
+}
 ```
 
 <!-- Subsection on rRNA classification with Barrnap -->
@@ -1768,8 +1858,20 @@ at least ",min(dada_stats_ex$analysis)," and at most ",max(dada_stats_ex$analysi
 ```{r, eval = !isFALSE(params$vsearch_cluster), results='asis'}
 cat(paste0("
 VSEARCH ([Rognes et al., 2016](https://peerj.com/articles/2584/)) clustered ",n_asv_dada," ASVs into ",n_asv_vsearch_cluster,"
-centroids with pairwise identity of ",params$vsearch_cluster_id,".
-"))
+centroids with pairwise identity of ",params$vsearch_cluster_id,"."))
+```
+```{r, eval = (params$decontam != "none"), results='asis'}
+if ( params$decontam == "decontaminate" ) {
+    cat(paste0(" Decontam ([Davis, 2018](https://doi.org/10.1186/s40168-018-0605-2)) removed ",
+    decontam_n_asv_removed," ASVs with less than ",round(decontam_max_percent_reads_removed, 2),"% counts per sample
+    because those were found to be contamination (",decontam_n_asv_passed," ASVs passed).
+    " ))
+} else if ( params$decontam == "notcontaminant" ) {
+    cat(paste0(" Decontam ([Davis, 2018](https://doi.org/10.1186/s40168-018-0605-2)) removed ",
+    decontam_n_asv_removed," ASVs with less than ",round(decontam_max_percent_reads_removed,2),"% counts per sample
+    because those were not found to be non-contaminants (",decontam_n_asv_passed," ASVs passed).
+    " ))
+}
 ```
 ```{r, eval = !isFALSE(params$path_barrnap_sum) && !isFALSE(params$filter_ssu), results='asis'}
 cat(paste0("Barrnap ([Seemann, 2013](https://github.com/tseemann/barrnap)) filtered ASVs for `",params$filter_ssu,"` (`bac`: Bacteria, `arc`: Archaea, `mito`: Mitochondria, `euk`: Eukaryotes),

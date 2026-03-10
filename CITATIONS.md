@@ -187,6 +187,10 @@
 
   > Edgar RC. (2016) SINTAX: a simple non-Bayesian taxonomy classifier for 16S and ITS sequences, BioRxiv, 074161. Preprint.
 
+- [decontam](https://pubmed.ncbi.nlm.nih.gov/30558668/)
+
+  > Davis NM, Proctor DM, Holmes SP, Relman DA, Callahan BJ. Simple statistical identification and removal of contaminant sequences in marker-gene and metagenomics data. Microbiome. 2018 Dec 17;6(1):226. doi: 10.1186/s40168-018-0605-2. PMID: 30558668; PMCID: PMC6298009.
+
 - [Kraken2](https://pubmed.ncbi.nlm.nih.gov/31779668/)
 
   > Wood, D. E., Lu, J., & Langmead, B. (2019). Improved metagenomic analysis with Kraken 2. Genome biology, 20(1), 257. https://doi.org/10.1186/s13059-019-1891-0

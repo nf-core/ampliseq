@@ -30,8 +30,8 @@ process DADA2_ERR {
         suppressPackageStartupMessages(library(dada2))
         set.seed($seed) # Initialize random number generator for reproducibility
 
-        fnFs <- sort(list.files(".", pattern = "_1.filt.fastq.gz", full.names = TRUE), method = "radix")
-        fnRs <- sort(list.files(".", pattern = "_2.filt.fastq.gz", full.names = TRUE), method = "radix")
+        fnFs <- list.files(".", pattern = "_1.filt.fastq.gz", full.names = TRUE)
+        fnRs <- sub("_1.filt.fastq.gz", "_2.filt.fastq.gz", fnFs)
 
         sink(file = "${prefix}.err.log")
         errF <- learnErrors(fnFs, $args, multithread = $task.cpus, verbose = TRUE)

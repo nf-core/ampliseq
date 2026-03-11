@@ -10,7 +10,7 @@
                 },
                 "CLUSTALO_ALIGN": {
                     "clustalo": "1.2.4",
-                    "pigz": "2.8)"
+                    "pigz": 2.8
                 },
                 "COMBINE_TABLE_PPLACE": {
                     "R": "4.0.3"
@@ -455,7 +455,7 @@
             4469,
             276
         ],
-        "timestamp": "2026-03-10T21:41:01.668879638",
+        "timestamp": "2026-03-11T07:02:34.036851532",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"

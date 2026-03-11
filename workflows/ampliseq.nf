@@ -150,7 +150,7 @@ workflow AMPLISEQ {
         ch_dada_ref_taxonomy = params.dada_ref_databases.containsKey(params.dada_ref_taxonomy) ? channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["file"]).map { it -> file(it) } : channel.empty()
         val_dada_ref_taxonomy = params.dada_ref_taxonomy.replace('=','_').replace('.','_')
 
-        if ( !params.skip_pplace && params.dada_ref_databases[params.dada_ref_taxonomy].containsKey("pplace") ) {
+        if ( params.run_pplace && params.dada_ref_databases[params.dada_ref_taxonomy].containsKey("pplace") ) {
             ch_pplace_sheet = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["pplace"])
                 .map { it ->
                     [

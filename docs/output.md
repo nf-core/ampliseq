@@ -35,7 +35,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [SINTAX](#sintax) - Taxonomic classification with SINTAX
   - [Kraken2](#kraken2) - Taxonomic classification with Kraken2
   - [QIIME2](#qiime2) - Taxonomic classification with QIIME2
-- [Phlogenetic placement and taxonomic classification](#phylogenetic-placement-and-taxonomic-classification) - Placing ASVs into a phyloenetic tree
+- [Phylogenetic placement and taxonomic classification](#phylogenetic-placement-and-taxonomic-classification) - Placing ASVs into a phylogenetic tree
 - [Multiple region analysis with Sidle](#multiple-region-analysis-with-sidle) - Scaffolding multiple regions along a reference
 - [Secondary analysis with QIIME2](#secondary-analysis-with-qiime2) - Visualisations, diversity and differential abundance analysis with QIIME2
   - [Abundance tables](#abundance-tables) - Exported abundance tables
@@ -390,10 +390,11 @@ Phylogenetic placement grafts sequences onto a phylogenetic reference tree and o
 - `pplace/`
   - `*.graft.*.epa_result.newick`: Full phylogeny with query sequences grafted on to the reference phylogeny, in newick format.
   - `*.taxonomy.per_query.tsv`: Tab separated file with taxonomy information per query from classification by `gappa examine examinassign`
-  - `*.per_query_unique.tsv`: Tab separated file with taxonomy information as above, but one row per query, by filtering for lowest LWR (likelihood weight ratio)
+  - `*.taxonomy.per_query_unique.tsv`: Tab separated file with taxonomy information as above, but one row per query, by filtering for lowest LWR (likelihood weight ratio)
   - `*.heattree.tree.svg`: Heattree in SVG format from calling `gappa examine heattree`, see [Gappa documentation](https://github.com/Pbdas/epa-ng/blob/master/README.md) for details.
-  - `pplace/hmmer/`: Contains intermediatary files if HMMER is used
-  - `pplace/mafft/`: Contains intermediatary files if MAFFT is used
+  - `pplace/clustalo/`: Contains intermediary files if Clustal Omega is used
+  - `pplace/hmmer/`: Contains intermedetary files if HMMER is used
+  - `pplace/mafft/`: Contains intermedetary files if MAFFT is used
   - `pplace/epang/`: Output files from EPA-NG.
   - `pplace/gappa/`: Gappa output described in the [Gappa documentation](https://github.com/Pbdas/epa-ng/blob/master/README.md).
 

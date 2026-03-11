@@ -16,14 +16,14 @@ jobs:
         with:
           workspace_id: ${{ vars.TOWER_WORKSPACE_ID }}
           access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}
-          compute_env: ${{ vars.TOWER_COMPUTE_ENV }}
+          compute_env: ${{ vars.TOWER_COMPUTE_ENV_NO_FUSION }}
           revision: ${{ github.sha }}
           workdir: s3://${{ vars.AWS_S3_BUCKET }}/work/ampliseq/work-${{ github.sha }}
           parameters: |
             {
               "outdir": "s3://${{ vars.AWS_S3_BUCKET }}/ampliseq/results-test-${{ github.sha }}"
             }
-          profiles: test
+          profiles: test,aws_scratch
 
       - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:

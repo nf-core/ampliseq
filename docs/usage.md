@@ -22,7 +22,7 @@
   - [Phylogenetic placement](#phylogenetic-placement)
     - [Single reference phylogenetic placement](#single-reference-phylogenetic-placement)
     - [Multiple reference phylogenetic placement](#multiple-reference-phylogenetic-placement)
-    - [Placement in database provided phylogenies](#placement-in-database-provided-phylogenies)
+    - [Placement in database-provided phylogenies](#placement-in-database-provided-phylogenies)
   - [Updating the pipeline](#updating-the-pipeline)
   - [Reproducibility](#reproducibility)
 - [Core Nextflow arguments](#core-nextflow-arguments)
@@ -376,7 +376,7 @@ euk18s,clustalo,https://raw.githubusercontent.com/tseemann/barrnap/master/db/euk
 
 #### Placement in database-provided phylogenies
 
-Reference databases for taxonomy can provide reference phylogenies for placement (currently only SBDI-GTDB).
+Reference databases for taxonomy can provide reference phylogenies for placement (currently only SBDI-GTDB from release R10-RS226-2).
 This is not run by default since it takes quite a lot of resources.
 If you want to enable this, set `--skip_pplace false`.
 

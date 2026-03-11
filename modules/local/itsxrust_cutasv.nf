@@ -60,6 +60,14 @@ process ITSXRUST_CUTASV {
         fi
     fi
 
+    # Strip ITSxRust coordinate annotations from FASTA headers (for now)
+    # e.g. ">seq1|full:47-433" becomes ">seq1"
+    for f in ASV_ITS_seqs.*.fasta; do
+        if [ -f "\$f" ]; then
+            sed -i 's/|[a-z]*[0-9]*:[0-9]*-[0-9]*//' "\$f"
+        fi
+    done
+
     # Generate ITSx-compatible summary from ITSxRust QC JSON
     if [ -f itsxrust_qc.json ]; then
         total=\$(grep -o '"total_reads":[0-9]*' itsxrust_qc.json | grep -o '[0-9]*')

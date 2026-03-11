@@ -244,7 +244,7 @@ Default setting for taxonomic classification is DADA2 with the SILVA reference t
 Pre-configured reference taxonomy databases are:
 
 | Database key | DADA2 | SINTAX | Kraken2 | QIIME2 | Phyloplace | Target genes                                  |
-| ------------ | ----- | ------ | ------- | ------ | -----------|---------------------------------------------- |
+| ------------ | ----- | ------ | ------- | ------ | ---------- | --------------------------------------------- |
 | silva        | +¹    | -      | +       | +      | -          | 16S rRNA                                      |
 | gtdb         | +²    | -      | -       | -      | -          | 16S rRNA                                      |
 | sbdi-gtdb    | +     | -      | -       | -      | +          | 16S rRNA                                      |

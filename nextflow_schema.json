@@ -1186,6 +1186,9 @@
             "$ref": "#/$defs/skipping_specific_steps"
         },
         {
+            "$ref": "#/$defs/running_specific_steps"
+        },
+        {
             "$ref": "#/$defs/generic_options"
         },
         {

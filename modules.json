@@ -19,7 +19,8 @@
                     "epang/place": {
                         "branch": "master",
                         "git_sha": "ac1f7b3aeb0eecfab0d13d85dcb7165ef301de1e",
-                        "installed_by": ["fasta_newick_epang_gappa"]
+                        "installed_by": ["fasta_newick_epang_gappa"],
+                        "patch": "modules/nf-core/epang/place/epang-place.diff"
                     },
                     "epang/split": {
                         "branch": "master",
@@ -34,7 +35,8 @@
                     "gappa/examineassign": {
                         "branch": "master",
                         "git_sha": "51de0f0431ac1300a8faa0edd718d6bd11b39918",
-                        "installed_by": ["fasta_newick_epang_gappa"]
+                        "installed_by": ["fasta_newick_epang_gappa"],
+                        "patch": "modules/nf-core/gappa/examineassign/gappa-examineassign.diff"
                     },
                     "gappa/examinegraft": {
                         "branch": "master",

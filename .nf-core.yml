@@ -3,6 +3,10 @@ lint:
     - conf/igenomes.config
   files_unchanged:
     - .gitattributes
+    - assets/nf-core-ampliseq_logo_light.png
+    - assets/nf-core-ampliseq_logo_dark.png
+    - docs/images/nf-core-ampliseq_logo_light.png
+    - docs/images/nf-core-ampliseq_logo_dark.png
   nextflow_config:
     - config_defaults:
         - params.report_template

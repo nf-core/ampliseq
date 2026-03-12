@@ -27,7 +27,7 @@ jobs:
         with:
           workspace_id: ${{ vars.TOWER_WORKSPACE_ID }}
           access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}
-          compute_env: ${{ vars.TOWER_COMPUTE_ENV }}
+          compute_env: ${{ vars.TOWER_COMPUTE_ENV_NO_FUSION }}
           revision: ${{ steps.revision.outputs.revision }}
           workdir: s3://${{ vars.AWS_S3_BUCKET }}/work/ampliseq/work-${{ steps.revision.outputs.revision }}
           parameters: |
@@ -35,7 +35,7 @@ jobs:
               "hook_url": "${{ secrets.MEGATESTS_ALERTS_SLACK_HOOK_URL }}",
               "outdir": "s3://${{ vars.AWS_S3_BUCKET }}/ampliseq/results-${{ steps.revision.outputs.revision }}"
             }
-          profiles: test_full
+          profiles: test_full,aws_scratch
 
       - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:

@@ -444,9 +444,9 @@
             "Samplesheet.tsv:md5,51ff46f4b431730e41b6950ae3b20e35",
             "multiqc_general_stats.txt:md5,885c19ff3e53d16bfe7937d6694268d7",
             "multiqc_cutadapt.txt:md5,3dce058d2d6c85a3cca7314ae19c5586",
-            "arc.epa_info.log:md5,a5e7eaec595be394b7921e330e92f1e6",
+            "arc.epa_info.log:md5,692f248022ace12574c7bcf48cd14a16",
             506,
-            "bac16s.epa_info.log:md5,0eb887cb38115c50845b6676c49c091b",
+            "bac16s.epa_info.log:md5,f455b43a11085d9355b09f5f7dc8d012",
             2886,
             1,
             610,
@@ -455,7 +455,7 @@
             4469,
             276
         ],
-        "timestamp": "2026-03-11T19:05:43.03834903",
+        "timestamp": "2026-03-12T17:24:08.918480377",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"

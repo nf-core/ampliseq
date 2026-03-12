@@ -2238,16 +2238,16 @@
             "emof.tsv:md5,52ff7d226c79b1f78d5f4895d748f915",
             "event.tsv:md5,d275c5c0d7dbf7a5b2c61082fbce486d",
             [
-                "decontaminated.tsv:md5,a8b1235efe3cf3b215ab8bafa2c0996c",
+                "decontaminated.tsv:md5,b0c462dc8cee98695fcabe0dedc95cc5",
                 "decontaminated_counts.tsv:md5,f519211d0ac2cb979b09d3803e8ca3fa",
-                "decontaminated_details.tsv:md5,c6a9b11f0f67eb3331fc8ec747d62802",
+                "decontaminated_details.tsv:md5,eb54952bf1c69d56b90ae250bc2e6bd8",
                 "decontaminated_log.tsv:md5,e4af6016bd48a5eda8f1aa9aad3ed712"
             ],
             "ASV_post_clustering_filtered.fna:md5,57379771c59df16d0c0164db34e8f148",
             "ASV_post_clustering_filtered.stats.tsv:md5,222f6a7cdbf2d4b3f745a49359a61c0d",
             "ASV_post_clustering_filtered.table.tsv:md5,e607469a32d490bbe139e9196ff4a47d"
         ],
-        "timestamp": "2026-03-12T08:27:13.766874674",
+        "timestamp": "2026-03-12T21:11:34.895168554",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"

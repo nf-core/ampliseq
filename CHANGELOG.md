@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#960](https://github.com/nf-core/ampliseq/pull/960) - Export beta diversity distance matrix in tsv format.
+
 ### `Fixed`
 
 - [#706](https://github.com/nf-core/ampliseq/pull/706) - Ensure paired FASTQ files stay aligned by generating reverse paths from forward files instead of sorting independently

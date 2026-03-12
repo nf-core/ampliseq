@@ -557,6 +557,7 @@ Furthermore, ADONIS permutation-based statistical test in vegan-R determine whet
 - `qiime2/diversity/beta_diversity/`
   - `<method>_distance_matrix-<treatment>/index.html`: Box plots and significance analysis (PERMANOVA).
   - `<method>_pcoa_results-PCoA/index.html`: Interactive PCoA plot.
+  - `<method>_distance_matrix.tsv`: Beta diversity distance matrix in tsv format.
 - `qiime2/diversity/beta_diversity/adonis/`
   - `<method>_distance_matrix-<adonis formula>/index.html`: Interactive (and .tsv) table of metadata feature importance and significance.
     - method: bray_curtis, jaccard, unweighted_unifrac, weighted_unifrac

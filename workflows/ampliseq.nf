@@ -372,7 +372,7 @@ workflow AMPLISEQ {
         // database files
         ch_kraken2_ref_taxonomy_url = params.kraken2_ref_databases.containsKey(params.kraken2_ref_taxonomy) ?
             channel.fromList(params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["file"]) : channel.empty()
-        ch_kraken2_ref_taxonomy = DOWNLOAD_REFERENCE_KRAKEN( ch_kraken2_ref_taxonomy_url ).db.collect()
+        ch_kraken2_ref_taxonomy = DOWNLOAD_REFERENCE_KRAKEN( ch_kraken2_ref_taxonomy_url ).db
         // name
         val_kraken2_ref_taxonomy = params.kraken2_ref_taxonomy.replace('=','_').replace('.','_')
         // taxlevels

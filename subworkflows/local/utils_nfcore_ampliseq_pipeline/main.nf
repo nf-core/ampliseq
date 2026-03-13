@@ -354,7 +354,7 @@ def validateInputParameters() {
         if (occurrences.size() > 1) {
             // Check if all occurrences have the same title
             def uniqueCateggory = occurrences.collect { it -> it.title }.unique()
-            
+
             if (uniqueCateggory.size() > 1) {
                 validationPassed = false
                 failed_duplication << "File '${fileName}' is used by different databases:\n" +

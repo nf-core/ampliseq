@@ -18,16 +18,14 @@ process SIDLE_TABLERECON {
     path("reconstructed_feature-table.tsv") , emit: tsv
     path "versions.yml"                     , emit: versions
 
-    path("*_feature-table.tsv")             , emit: regional_tsv
-    path("total_counts.tsv")                , emit: total_counts
-    path("kept_samples.tsv")                , emit: kept_samples
-
     script:
     def args = task.ext.args ?: ''
     def region_input = ""
     // input must be sorted already by regions
     def df = [region, aligned_map, table].transpose()
 
+    // extract --p-min-counts value from args, default to 0 if not provided
+    // Use minCounts for prefiltering the table so reconstruct-counts does not crash.
     def minCountsMatcher = args =~ /(^|\s)--p-min-counts(?:=|\s+)(\d+)(?=\s|$)/
     def minCounts = minCountsMatcher.find() ? minCountsMatcher.group(2) : '0'
 
@@ -83,13 +81,16 @@ process SIDLE_TABLERECON {
         ' *_feature-table.tsv | sort -k1,1
     } > total_counts.tsv 
 
+    # Extract all samples with total counts >= minCounts into kept_samples.tsv, 
+    # to be used for filtering the regional tables before reconstruction
     awk -v min_counts="${minCounts}" '
     BEGIN { FS=OFS="\t" }
     NR==1 { print "sample-id"; next }
     \$2 >= min_counts { print \$1 }
     ' total_counts.tsv > kept_samples.tsv
 
-
+    # Filter the regional tables to keep only the samples that meet the minCounts threshold, 
+    # to prevent reconstruct-counts from crashing due to samples with counts < --p-min-counts.
     for region_table in ${table}; do
         region_table_base=\$(basename "\$region_table" .qza)
         qiime feature-table filter-samples \\
@@ -97,9 +98,6 @@ process SIDLE_TABLERECON {
             --m-metadata-file kept_samples.tsv \\
             --o-filtered-table "\${region_table_base}.filtered.qza"
     done
-
-
-
 
     qiime sidle reconstruct-counts \\
         --p-n-workers $task.cpus \\

@@ -267,6 +267,10 @@ Special features of taxonomic classification tools:
 
 Parameter guidance is given in [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#taxonomic-assignment). Citations are listed in [`CITATIONS.md`](CITATIONS.md).
 
+> [!TIP]
+> Taxonomic reference databases can be stored and shared locally with [--ref_taxonomy_storage](https://nf-co.re/ampliseq/parameters/#ref_taxonomy_storage).
+> That way, remote files will be downloaded only if they are not available in the storage directory.
+
 ### Multiple region analysis with Sidle
 
 Instead of relying on one short amplicon, scaffolding multiple regions along a reference can improve resolution over a single region. This method applies [Sidle (SMURF Implementation Done to acceLerate Efficiency)](https://github.com/jwdebelius/q2-sidle) within [QIIME2](https://qiime2.org/) with [Silva](https://www.arb-silva.de/) (see [licence](https://www.arb-silva.de/silva-license-information/)) or [Greengenes](http://greengenes.microbio.me/greengenes_release/) database.

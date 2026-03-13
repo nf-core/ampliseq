@@ -319,6 +319,58 @@ def validateInputParameters() {
             log.warn "Incompatible parameters: Multiple region analysis with `--multiregion` ignores any of `--vsearch_cluster`, `--filter_ssu`, `--min_len_asv`, `--max_len_asv`, `--filter_codons`, `--cut_its`"
         }
     }
+
+    //
+    // Verify that all database files with identical titels are unique
+    //
+
+    // Collect all files from all database sections
+    def allFiles = [:]
+    params.each { sectionName, sectionValue ->
+        // Check if this section contains database configurations (nested maps with 'file' key)
+        if (sectionValue instanceof Map && sectionValue.any { it.value instanceof Map && it.value.containsKey('file') }) {
+            sectionValue.each { dbKey, dbConfig ->
+                if (dbConfig.containsKey('file')) {
+                    dbConfig.file.each { fileUrl ->
+                        def fileName = fileUrl.split('/')[-1]
+                        if (!allFiles.containsKey(fileName)) {
+                            allFiles[fileName] = []
+                        }
+                        allFiles[fileName] << [
+                            "section": sectionName,
+                            "key": dbKey,
+                            "title": dbConfig.title
+                        ]
+                    }
+                }
+            }
+        }
+    }
+    // Validate: files should be unique, unless they belong to the same database 'file'
+    def validationPassed = true
+    def failed_duplication = []
+    def passed_duplication = []
+    allFiles.each { fileName, occurrences ->
+        if (occurrences.size() > 1) {
+            // Check if all occurrences have the same title
+            def uniqueCateggory = occurrences.collect { it -> it.title }.unique()
+            
+            if (uniqueCateggory.size() > 1) {
+                validationPassed = false
+                failed_duplication << "File '${fileName}' is used by different databases:\n" +
+                    occurrences.collect { it -> "  - ${it.section}['${it.key}']: ${it.title}" }.join("\n")
+            } else {
+                // This is allowed: same database 'file' under different keys
+                passed_duplication << "  - File '${fileName}' with multiple keys: " +
+                    occurrences.collect { "${it.section}['${it.key}']" }.join(", ")
+            }
+        }
+    }
+    // Report in case the validation failed
+    if (!validationPassed) {
+        log.error( "Validation failed!\nDuplicated database files with same database title:\n" + passed_duplication.join("\n") + "\nDuplicate database files across different database titles detected:\n" + failed_duplication.join("\n\n") )
+        error("Duplicate files across different databases detected")
+    }
 }
 
 //

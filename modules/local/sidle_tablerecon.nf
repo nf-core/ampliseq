@@ -18,11 +18,19 @@ process SIDLE_TABLERECON {
     path("reconstructed_feature-table.tsv") , emit: tsv
     path "versions.yml"                     , emit: versions
 
+    path("*_feature-table.tsv")             , emit: regional_tsv
+    path("total_counts.tsv")                , emit: total_counts
+    path("kept_samples.tsv")                , emit: kept_samples
+
     script:
     def args = task.ext.args ?: ''
     def region_input = ""
     // input must be sorted already by regions
     def df = [region, aligned_map, table].transpose()
+
+    def minCountsMatcher = args =~ /(^|\s)--p-min-counts(?:=|\s+)(\d+)(?=\s|$)/
+    def minCounts = minCountsMatcher.find() ? minCountsMatcher.group(2) : '0'
+
     df.each { i ->
         def table_base = i[2].toString().replaceAll(/\.qza$/, '')
         region_input += " --p-region ${i[0]} --i-regional-alignment ${i[1]} --i-regional-table ${table_base}.filtered.qza"
@@ -34,55 +42,62 @@ process SIDLE_TABLERECON {
     export NUMBA_CACHE_DIR="./numbacache"
 
 
-    # Print original and filtered tables for all region tables in $table for investigation
+    # Export original and filtered regional tables as TSVs in the task work dir.
     for region_table in ${table}; do
-        # Print original table
-        echo "Original table for \$region_table:"
         region_table_base=\$(basename "\$region_table" .qza)
-        #qiime tools export \
-        #    --input-path "\$region_table" \
-        #    --output-path "\${region_table_base}_exported"
+        original_table_exported_folder="\${region_table_base}_exported"
+        original_table_tsv="\${region_table_base}_feature-table.tsv"
 
-        # Convert biom -> tsv
-        #biom convert \
-        #    -i "\${region_table_base}_exported/feature-table.biom" \
-        #    -o "\${region_table_base}_feature-table.tsv" \
-        #    --to-tsv
-        #cat "\${region_table_base}_feature-table.tsv"
-
-        # Filter zero-count samples and print filtered table
-        filtered_table="\${region_table_base}.filtered.qza"
-        filtered_table_exported_folder="\${region_table_base}_filtered"
-        qiime feature-table filter-samples \
-            --i-table "\$region_table" \
-            --p-min-frequency 2 \
-            --o-filtered-table "\$filtered_table"
-        #echo "Filtered table for \$region_table:"
-        #qiime tools export \
-        #    --input-path "\$filtered_table" \
-        #    --output-path "\${filtered_table_exported_folder}"
-
-        # Import the exported BIOM back into a QZA (correct way)
-        #qiime tools import \
-        #    --input-path "\${filtered_table_exported_folder}/feature-table.biom" \
-        #    --type 'FeatureTable[Frequency]' \
-        #    --input-format BIOMV210Format \
-        #    --output-path "\${filtered_table}"
-
-        #cp "\${filtered_table_exported_folder}"/feature-table.biom "\${filtered_table}"
-        # Convert biom -> tsv
-        #biom convert \
-        #    -i "\${filtered_table_exported_folder}/feature-table.biom" \
-        #    -o "\${region_table_base}_filtered_feature-table.tsv" \
-        #    --to-tsv
-
-        #echo "Filtered:"
-        #cat "\${region_table_base}_filtered_feature-table.tsv"
-
-
-        echo "_______________________________________________________"
-        ls -lisah "\${filtered_table}"
+        qiime tools export \
+            --input-path "\$region_table" \
+            --output-path "\${original_table_exported_folder}"
+        biom convert \
+            -i "\${original_table_exported_folder}/feature-table.biom" \
+            -o "\${original_table_tsv}" \
+            --to-tsv
     done
+
+    # Determine total counts per sample across all regional tables, to be used as input for reconstruction
+    {
+        echo -e "sample-id\ttotal_count"
+        awk '
+        BEGIN { FS=OFS="\t" }
+
+        \$1 == "#OTU ID" {
+            delete cols
+            for (i=2; i<=NF; i++) cols[i] = \$i
+            next
+        }
+
+        /^#/ { next }
+
+        {
+            for (i=2; i<=NF; i++) sum[cols[i]] += \$i
+        }
+
+        END {
+            for (s in sum) {
+                if (s != "") print s, sum[s]
+            }
+        }
+        ' *_feature-table.tsv | sort -k1,1
+    } > total_counts.tsv 
+
+    awk -v min_counts="${minCounts}" '
+    BEGIN { FS=OFS="\t" }
+    NR==1 { print "sample-id"; next }
+    \$2 >= min_counts { print \$1 }
+    ' total_counts.tsv > kept_samples.tsv
+
+
+    for region_table in ${table}; do
+        region_table_base=\$(basename "\$region_table" .qza)
+        qiime feature-table filter-samples \\
+            --i-table "\$region_table" \\
+            --m-metadata-file kept_samples.tsv \\
+            --o-filtered-table "\${region_table_base}.filtered.qza"
+    done
+
 
 
 

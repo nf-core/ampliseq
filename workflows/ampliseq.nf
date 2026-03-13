@@ -269,9 +269,9 @@ workflow AMPLISEQ {
         //standard ref taxonomy input from params.sidle_ref_taxonomy & conf/ref_databases.config
         ch_sidle_ref_taxonomy_url = channel.fromList(params.sidle_ref_databases[params.sidle_ref_taxonomy]["file"])
         ch_sidle_ref_taxonomy = DOWNLOAD_REFERENCE_SIDLE( ch_sidle_ref_taxonomy_url ).db.collect()
-        ch_sidle_ref_taxonomy_tree = 
+        ch_sidle_ref_taxonomy_tree =
             params.sidle_ref_tree_custom ? channel.fromPath("${params.sidle_ref_tree_custom}", checkIfExists: true) :
-                params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] ? 
+                params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] ?
                     DOWNLOAD_REFERENCE_SIDLE_TREE( channel.fromList( params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] ) ).db :
                         channel.empty()
         val_sidle_ref_taxonomy = params.sidle_ref_taxonomy.replace('=','_').replace('.','_')

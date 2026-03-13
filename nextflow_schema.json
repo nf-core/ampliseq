@@ -676,7 +676,7 @@
                     "type": "string",
                     "help_text": "",
                     "description": "Name of supported database, and optionally also version number",
-                    "enum": ["silva", "silva=128", "greengenes", "greengenes=13_8", "greengenes=12_8_88"]
+                    "enum": ["silva", "silva=128", "greengenes", "greengenes=13_8"]
                 },
                 "sidle_ref_tax_custom": {
                     "type": "string",

@@ -74,8 +74,8 @@ process ITSXRUST_CUTASV {
         kept=\$(grep -o '"kept":[0-9]*' itsxrust_qc.json | grep -o '[0-9]*')
         skipped=\$(grep -o '"skipped":[0-9]*' itsxrust_qc.json | grep -o '[0-9]*')
         echo "ITSxRust extraction summary" > ASV_ITS_seqs.summary.txt
-        echo "Number of sequences in input: \${total:-0}" >> ASV_ITS_seqs.summary.txt
-        echo "Number of sequences extracted: \${kept:-0}" >> ASV_ITS_seqs.summary.txt
+        echo "Number of sequences in input file: \${total:-0}" >> ASV_ITS_seqs.summary.txt
+        echo "Sequences detected as ITS by ITSx: \${kept:-0}" >> ASV_ITS_seqs.summary.txt
         echo "Number of sequences skipped: \${skipped:-0}" >> ASV_ITS_seqs.summary.txt
     else
         echo "ITSxRust: QC JSON not available" > ASV_ITS_seqs.summary.txt

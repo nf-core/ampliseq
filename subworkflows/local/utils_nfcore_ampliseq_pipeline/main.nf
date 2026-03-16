@@ -327,7 +327,7 @@ def validateInputParameters() {
     // Verify that all database entries have "dbversion" fields
     def requiredFields = ['title', 'file', 'citation', 'fmtscript', 'dbversion']
     def errors = []
-    
+
     // Iterate through all params entries
     params.each { key, value ->
         if (value instanceof Map) {

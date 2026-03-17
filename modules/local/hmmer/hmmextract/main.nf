@@ -22,7 +22,7 @@ process HMMER_HMMEXTRACT {
     script:
     def args    = task.ext.args ?: ''
     def prefix  = task.ext.prefix ?: "${meta.id}"
-    def outfile = ! key && ! keyfile ? '' : "> ${prefix}.hmm"
+    def outfile = ! key ? '' : "> ${prefix}.hmm"
 
     // Avoid accidentally overwriting the input hmm
     def move    = ""

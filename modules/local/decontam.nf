@@ -71,12 +71,12 @@ process DECONTAM {
     } else { stop("Neither negative controls nor concentration values were provided.") }
     contam_table <- cbind(ID = rownames(contam_table), contam_table)
     rownames(contam_table)[1] <- colnames(abundances_tsv)[1]
-    write.table(contam_table[order(contam_table\$ID),], file = "decontaminated_details.tsv", sep = "\\t", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '')
+    write.table(contam_table, file = "decontaminated_details.tsv", sep = "\\t", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '')
 
     # decontaminate abundance table
     iscontaminant_id <- contam_table[!(contam_table\$contaminant),][,1]
     abundances_filtered <- abundances_tsv[abundances_tsv[,1] %in% iscontaminant_id,]
-    write.table(abundances_filtered[order(abundances_filtered\$ASV_ID),], file = "decontaminated.tsv", sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '')
+    write.table(abundances_filtered, file = "decontaminated.tsv", sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '')
 
     # log retained features
     write.table(cbind(df, data.frame(isContaminant = nrow(abundances_filtered))), file = "decontaminated_log.tsv", row.names=FALSE, sep="\t")
@@ -85,7 +85,7 @@ process DECONTAM {
     counts <- as.data.frame( t( rbind( colSums(abundances_tsv[-1]), colSums(abundances_filtered[-1]) ) ) )
     counts\$ID <- rownames(counts)
     colnames(counts) <- c("isContaminant_input","isContaminant_output", "sample")
-    write.table(counts[order(counts\$sample),], file = "decontaminated_counts.tsv", row.names=FALSE, sep="\t")
+    write.table(counts, file = "decontaminated_counts.tsv", row.names=FALSE, sep="\t")
 
     # Find non-contaminants: null hypothesis here is that sequences **are** contaminants.
     # Requires sufficient positive proof an ASV is not a contaminant before calling it so.

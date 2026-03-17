@@ -729,9 +729,14 @@ workflow AMPLISEQ {
         ch_sintax_tax = channel.empty()
     }
 
+    //
     // Phylogenetic placement
+    //
 
+    //
     // Single reference variant
+    //
+
     if ( params.pplace_tree ) {
         ch_pp_data = ch_fasta.map { it ->
             [ meta: [ id: params.pplace_name ?: 'user_tree' ],
@@ -753,7 +758,9 @@ workflow AMPLISEQ {
         ch_pplace_tax = channel.empty()
     }
 
+    //
     // Multiple references with hmms
+    //
 
     // For search entries with a named hmm to extract, call extraction
     ch_pplace_sheet
@@ -772,6 +779,9 @@ workflow AMPLISEQ {
                 .map { it -> [ it.meta, it.data.hmm ] }
         )
 
+    //
+    // SUBWORKFLOW: Search the ASV fasta with the hmms for phyloplacement
+    //
     FASTA_HMMSEARCH_RANK_FASTAS(ch_search_profiles, ch_fasta)
     ch_versions = ch_versions.mix(FASTA_HMMSEARCH_RANK_FASTAS.out.versions)
 
@@ -802,7 +812,7 @@ workflow AMPLISEQ {
     PPLACEFORMATTAX_SHEET(PPLACE_SHEET.out.taxonomy_per_query)
     ch_versions = ch_versions.mix(PPLACEFORMATTAX_SHEET.out.versions)
 
-    // Currently, this is not used for anything since the QIIME_INTAX call is wrapped in an if cluase checking params.pplace_tree
+    // Currently, this channel used only for QIIME2_EXPORT and not QIIME2_INTAX since the call to the latter is wrapped in an if clause checking params.pplace_tree
     if ( ! params.pplace_tree ) {
         ch_pplace_tax = PPLACEFORMATTAX_SHEET.out.tsv
             .splitCsv(sep: '\t', header: true)

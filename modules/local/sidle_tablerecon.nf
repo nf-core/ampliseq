@@ -23,11 +23,7 @@ process SIDLE_TABLERECON {
     def region_input = ""
     // input must be sorted already by regions
     def df = [region, aligned_map, table].transpose()
-
-    // extract --p-min-counts value from args, default to 0 if not provided
-    // Use minCounts for prefiltering the table so reconstruct-counts does not crash.
-    def minCountsMatcher = args =~ /(^|\s)--p-min-counts(?:=|\s+)(\d+)(?=\s|$)/
-    def minCounts = minCountsMatcher.find() ? minCountsMatcher.group(2) : '0'
+    def minCounts = task.ext.min_counts ?: 0
 
     df.each { i ->
         def table_base = i[2].toString().replaceAll(/\.qza$/, '')
@@ -39,65 +35,7 @@ process SIDLE_TABLERECON {
     export MPLCONFIGDIR="./mplconfigdir"
     export NUMBA_CACHE_DIR="./numbacache"
 
-
-    # Export original and filtered regional tables as TSVs in the task work dir.
-    for region_table in ${table}; do
-        region_table_base=\$(basename "\$region_table" .qza)
-        original_table_exported_folder="\${region_table_base}_exported"
-        original_table_tsv="\${region_table_base}_feature-table.tsv"
-
-        qiime tools export \
-            --input-path "\$region_table" \
-            --output-path "\${original_table_exported_folder}"
-        biom convert \
-            -i "\${original_table_exported_folder}/feature-table.biom" \
-            -o "\${original_table_tsv}" \
-            --to-tsv
-    done
-
-    # Determine total counts per sample across all regional tables, to be used as input for reconstruction
-    {
-        echo -e "sample-id\ttotal_count"
-        awk '
-        BEGIN { FS=OFS="\t" }
-
-        \$1 == "#OTU ID" {
-            delete cols
-            for (i=2; i<=NF; i++) cols[i] = \$i
-            next
-        }
-
-        /^#/ { next }
-
-        {
-            for (i=2; i<=NF; i++) sum[cols[i]] += \$i
-        }
-
-        END {
-            for (s in sum) {
-                if (s != "") print s, sum[s]
-            }
-        }
-        ' *_feature-table.tsv | sort -k1,1
-    } > total_counts.tsv
-
-    # Extract all samples with total counts >= minCounts into kept_samples.tsv,
-    # to be used for filtering the regional tables before reconstruction
-    awk -v min_counts="${minCounts}" '
-    BEGIN { FS=OFS="\t" }
-    NR==1 { print "sample-id"; next }
-    \$2 >= min_counts { print \$1 }
-    ' total_counts.tsv > kept_samples.tsv
-
-    # Filter the regional tables to keep only the samples that meet the minCounts threshold,
-    # to prevent reconstruct-counts from crashing due to samples with counts < --p-min-counts.
-    for region_table in ${table}; do
-        region_table_base=\$(basename "\$region_table" .qza)
-        qiime feature-table filter-samples \\
-            --i-table "\$region_table" \\
-            --m-metadata-file kept_samples.tsv \\
-            --o-filtered-table "\${region_table_base}.filtered.qza"
-    done
+    prefilter_sidle_tablerecon.sh "${minCounts}" ${table}
 
     qiime sidle reconstruct-counts \\
         --p-n-workers $task.cpus \\

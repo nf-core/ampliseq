@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
 
-set -euo pipefail
+set -eu
 
-if [[ "$#" -lt 2 ]]; then
+if [ "$#" -lt 2 ]; then
     echo "Usage: prefilter_sidle_tablerecon.sh <min_counts> <regional_table.qza...>" >&2
     exit 1
 fi
@@ -27,7 +27,7 @@ done
 
 # Determine total counts per sample across all regional tables, to be used as input for reconstruction.
 {
-    echo -e "sample-id\ttotal_count"
+    printf "sample-id\ttotal_count\n"
     awk '
     BEGIN { FS=OFS="\t" }
 

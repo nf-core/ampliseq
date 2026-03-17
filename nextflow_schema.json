@@ -72,6 +72,12 @@
                     "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
                     "fa_icon": "fas fa-folder-open"
                 },
+                "ref_taxonomy_storage": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "The directory where the reference taxonomy databases will be saved for re-use. Absolute paths to storage on Cloud infrastructure.",
+                    "fa_icon": "fas fa-folder-open"
+                },
                 "save_intermediates": {
                     "type": "boolean",
                     "description": "Save intermediate results such as QIIME2's qza and qzv files",

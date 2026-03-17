@@ -319,6 +319,85 @@ def validateInputParameters() {
             log.warn "Incompatible parameters: Multiple region analysis with `--multiregion` ignores any of `--vsearch_cluster`, `--filter_ssu`, `--min_len_asv`, `--max_len_asv`, `--filter_codons`, `--cut_its`"
         }
     }
+
+    //
+    // Verify that all database files with identical dbversions are unique
+    //
+
+    // Verify that all database entries have "dbversion" fields
+    def requiredFields = ['title', 'file', 'citation', 'fmtscript', 'dbversion']
+    def errors = []
+
+    // Iterate through all params entries
+    params.each { key, value ->
+        if (value instanceof Map) {
+            // Iterate through each entry in the map
+            value.each { dbKey, dbEntry ->
+                if (dbEntry instanceof Map) {
+                    // Check for missing required fields
+                    def missingFields = requiredFields.findAll { field ->
+                        !dbEntry.containsKey(field) || dbEntry[field] == null
+                    }
+                    if (missingFields) {
+                        errors.add("   - params.${key}[${dbKey}]: Missing required fields: ${missingFields.join(', ')}")
+                    }
+                }
+            }
+        }
+    }
+    // Report errors
+    if (errors) {
+        log.error("Reference database validation failed:\n" + errors.join("\n"))
+        error("Missing fields in reference database definitions.")
+    }
+
+    // Collect all files from all database sections
+    def allFiles = [:]
+    params.each { sectionName, sectionValue ->
+        // Check if this section contains database configurations (nested maps with 'file' key)
+        if (sectionValue instanceof Map && sectionValue.any { it.value instanceof Map && it.value.containsKey('file') }) {
+            sectionValue.each { dbKey, dbConfig ->
+                if (dbConfig.containsKey('file')) {
+                    dbConfig.file.each { fileUrl ->
+                        def fileName = fileUrl.split('/')[-1]
+                        if (!allFiles.containsKey(fileName)) {
+                            allFiles[fileName] = []
+                        }
+                        allFiles[fileName] << [
+                            "section": sectionName,
+                            "key": dbKey,
+                            "dbversion": dbConfig.dbversion
+                        ]
+                    }
+                }
+            }
+        }
+    }
+    // Validate: files should be unique, unless they belong to the same database 'file'
+    def validationPassed = true
+    def failed_duplication = []
+    def passed_duplication = []
+    allFiles.each { fileName, occurrences ->
+        if (occurrences.size() > 1) {
+            // Check if all occurrences have the same dbversion
+            def uniqueCateggory = occurrences.collect { it -> it.dbversion }.unique()
+
+            if (uniqueCateggory.size() > 1) {
+                validationPassed = false
+                failed_duplication << "File '${fileName}' is used by different databases:\n" +
+                    occurrences.collect { it -> "  - ${it.section}['${it.key}']: ${it.dbversion}" }.join("\n")
+            } else {
+                // This is allowed: same database 'file' under different keys
+                passed_duplication << "  - File '${fileName}' with multiple keys: " +
+                    occurrences.collect { "${it.section}['${it.key}']" }.join(", ")
+            }
+        }
+    }
+    // Report in case the validation failed
+    if (!validationPassed) {
+        log.error( "Validation failed!\nDuplicated database files with same database dbversion:\n" + passed_duplication.join("\n") + "\nDuplicate database files across different database dbversions detected:\n" + failed_duplication.join("\n\n") )
+        error("Duplicate files across different databases detected")
+    }
 }
 
 //

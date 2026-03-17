@@ -885,6 +885,20 @@
             },
             "fa_icon": "fas fa-book-open"
         },
+        "running_specific_steps": {
+            "title": "Running specific steps",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "run_pplace": {
+                    "type": "boolean",
+                    "description": "Run phylogenetic placement when reference trees are specified by the selected `--dada_ref_taxonomy`",
+                    "default": false
+                }
+            },
+            "fa_icon": "fas fa-hand-paper"
+        },
         "skipping_specific_steps": {
             "title": "Skipping specific steps",
             "type": "object",
@@ -958,20 +972,6 @@
                 "skip_report": {
                     "type": "boolean",
                     "description": "Skip Markdown summary report"
-                }
-            },
-            "fa_icon": "fas fa-hand-paper"
-        },
-        "running_specific_steps": {
-            "title": "Running specific steps",
-            "type": "object",
-            "description": "",
-            "default": "",
-            "properties": {
-                "run_pplace": {
-                    "type": "boolean",
-                    "description": "Run phylogenetic placement when reference trees are specified by the selected `--dada_ref_taxonomy`",
-                    "default": false
                 }
             },
             "fa_icon": "fas fa-hand-paper"
@@ -1183,10 +1183,10 @@
             "$ref": "#/$defs/pipeline_report"
         },
         {
-            "$ref": "#/$defs/skipping_specific_steps"
+            "$ref": "#/$defs/running_specific_steps"
         },
         {
-            "$ref": "#/$defs/running_specific_steps"
+            "$ref": "#/$defs/skipping_specific_steps"
         },
         {
             "$ref": "#/$defs/generic_options"

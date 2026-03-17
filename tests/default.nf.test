@@ -41,6 +41,10 @@ nextflow_pipeline {
                     path("$outputDir/dada2/DADA2_stats.tsv"),
                     path("$outputDir/dada2/DADA2_table.rds"),
                     path("$outputDir/dada2/DADA2_table.tsv"),
+                    path("$outputDir/decontam/decontaminated.tsv"),
+                    path("$outputDir/decontam/decontaminated_counts.tsv"),
+                    path("$outputDir/decontam/decontaminated_details.tsv").readLines().size(),
+                    path("$outputDir/decontam/decontaminated_log.tsv"),
                     path("$outputDir/input/Samplesheet.tsv"),
                     path("$outputDir/input/Metadata.tsv"),
                     path("$outputDir/multiqc/multiqc_data/multiqc_fastqc.txt"),
@@ -49,11 +53,11 @@ nextflow_pipeline {
                     path("$outputDir/SBDI/dna.tsv"),
                     path("$outputDir/SBDI/emof.tsv"),
                     path("$outputDir/SBDI/event.tsv"),
-                    path("$outputDir/decontam/").list(),
                     path("$outputDir/vsearch_cluster/ASV_post_clustering_filtered.fna"),
                     path("$outputDir/vsearch_cluster/ASV_post_clustering_filtered.stats.tsv"),
                     path("$outputDir/vsearch_cluster/ASV_post_clustering_filtered.table.tsv")
-                ).match() }
+                ).match() },
+                { assert path("$outputDir/decontam/decontaminated_details.tsv").csv(sep: '\t', header: true).columns["freq"].sum() > 0.99999 },
             )
         }
     }

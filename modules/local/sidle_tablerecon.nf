@@ -79,9 +79,9 @@ process SIDLE_TABLERECON {
             }
         }
         ' *_feature-table.tsv | sort -k1,1
-    } > total_counts.tsv 
+    } > total_counts.tsv
 
-    # Extract all samples with total counts >= minCounts into kept_samples.tsv, 
+    # Extract all samples with total counts >= minCounts into kept_samples.tsv,
     # to be used for filtering the regional tables before reconstruction
     awk -v min_counts="${minCounts}" '
     BEGIN { FS=OFS="\t" }
@@ -89,7 +89,7 @@ process SIDLE_TABLERECON {
     \$2 >= min_counts { print \$1 }
     ' total_counts.tsv > kept_samples.tsv
 
-    # Filter the regional tables to keep only the samples that meet the minCounts threshold, 
+    # Filter the regional tables to keep only the samples that meet the minCounts threshold,
     # to prevent reconstruct-counts from crashing due to samples with counts < --p-min-counts.
     for region_table in ${table}; do
         region_table_base=\$(basename "\$region_table" .qza)

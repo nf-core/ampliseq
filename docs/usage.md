@@ -14,6 +14,7 @@
     - [ASV/OTU fasta input](#asvotu-fasta-input)
     - [Direct FASTQ input](#direct-fastq-input)
   - [Regions of variable length e.g. ITS](#regions-of-variable-length-eg-its)
+    - [ITS extraction tool](#its-extraction-tool)
   - [Decontamination](#decontamination)
   - [Taxonomic classification](#taxonomic-classification)
   - [Multiple region analysis with Sidle](#multiple-region-analysis-with-sidle)
@@ -216,6 +217,18 @@ Please note the following additional requirements:
 ### Regions of variable length (e.g. ITS)
 
 Special considerations should be made when pre-processing reads for regions of variable length, e.g. ITS for fungal barcoding. For ITS regions e.g. ITS1 or ITS2, it is recommended to use the `--illumina_pe_its` parameter for paired-end Illumina reads, which disables fixed-length read truncation. Also consider adjusting `--truncq` to a value higher than the default value of 2 if you find that a high proportion of reads is excluded by DADA2 filtering.
+
+#### ITS extraction tool
+
+By default, [ITSx](https://microbiology.se/software/itsx/) is used for ITS region extraction (`--its_extractor itsx`). As an alternative, [ITSxRust](https://github.com/ayobi/ITSxRust) can be used, which is optimized for long-read amplicon data from Oxford Nanopore and PacBio HiFi platforms:
+
+```bash
+--its_extractor itsxrust
+```
+
+ITSxRust automatically selects platform-appropriate presets: `--preset ont` by default, or `--preset hifi` when `--pacbio` is set. The required HMM profile is bundled in the container and Bioconda package, so no additional files need to be provided.
+
+ITSxRust produces the same output files as ITSx and is fully compatible with all downstream steps including `--cut_its` and `--its_partial`.
 
 #### Decontamination
 

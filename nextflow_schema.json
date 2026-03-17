@@ -663,6 +663,13 @@
                     "help_text": "If using cut_its, this option allows partial ITS sequences, longer than the specified cutoff.",
                     "description": "Cutoff for partial ITS sequences. Only full sequences by default.",
                     "default": 0
+                },
+                "its_extractor": {
+                    "type": "string",
+                    "description": "Tool for ITS region extraction: \"itsx\" or \"itsxrust\".",
+                    "help_text": "Choose the tool used for ITS extraction when --cut_its is set. ITSxRust is a Rust-based alternative that is faster and optimized for long-read (ONT, PacBio HiFi) data. Both tools use the same HMM profiles. Default: itsx for backward compatibility.",
+                    "default": "itsx",
+                    "enum": ["itsx", "itsxrust"]
                 }
             }
         },
@@ -833,7 +840,7 @@
                 },
                 "ancombc_effect_size": {
                     "type": "number",
-                    "default": 1,
+                    "default": 1.0,
                     "minimum": 0,
                     "description": "Effect size threshold for differential abundance barplot for `--ancombc` and `--ancombc_formula`",
                     "fa_icon": "fas fa-greater-than-equal"

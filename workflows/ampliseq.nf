@@ -47,6 +47,7 @@ include { FILTER_CODONS                 } from '../modules/local/filter_codons'
 include { FORMAT_FASTAINPUT             } from '../modules/local/format_fastainput'
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
 include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
+include { ITSXRUST_CUTASV               } from '../modules/local/itsxrust_cutasv'
 include { MERGE_STATS as MERGE_STATS_STD} from '../modules/local/merge_stats'
 include { FILTER_SAMPLES                } from '../modules/local/filter_samples'
 include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'
@@ -636,7 +637,7 @@ workflow AMPLISEQ {
     }
 
     //
-    // Modules : ITSx - cut out ITS region if long ITS reads
+    // Modules : ITSx / ITSxRust - cut out ITS region if long ITS reads
     //
     ch_full_fasta = ch_dada2_fasta
     if (params.cut_its == "none") {
@@ -651,9 +652,20 @@ workflow AMPLISEQ {
         else if (params.cut_its == "its2") {
             outfile =  params.its_partial ? "ASV_ITS_seqs.ITS2.full_and_partial.fasta" : "ASV_ITS_seqs.ITS2.fasta"
         }
-        ITSX_CUTASV ( ch_full_fasta, outfile )
-        ch_versions = ch_versions.mix(ITSX_CUTASV.out.versions)
-        FILTER_LEN_ITSX ( ITSX_CUTASV.out.fasta, ch_dada2_asv.ifEmpty( [] ) )
+
+        if (params.its_extractor == "itsxrust") {
+            ITSXRUST_CUTASV ( ch_full_fasta, outfile )
+            ch_versions = ch_versions.mix(ITSXRUST_CUTASV.out.versions)
+            ch_its_fasta = ITSXRUST_CUTASV.out.fasta
+            ch_its_summary = ITSXRUST_CUTASV.out.summary
+        } else {
+            ITSX_CUTASV ( ch_full_fasta, outfile )
+            ch_versions = ch_versions.mix(ITSX_CUTASV.out.versions)
+            ch_its_fasta = ITSX_CUTASV.out.fasta
+            ch_its_summary = ITSX_CUTASV.out.summary
+        }
+
+        FILTER_LEN_ITSX ( ch_its_fasta, ch_dada2_asv.ifEmpty( [] ) )
         ch_fasta = FILTER_LEN_ITSX.out.fasta
         ch_dada2_asv = FILTER_LEN_ITSX.out.asv
     }
@@ -1099,7 +1111,7 @@ workflow AMPLISEQ {
             params.min_len_asv || params.max_len_asv ? FILTER_LEN_ASV.out.len_orig.ifEmpty( [] ) : [],
             params.filter_codons ? FILTER_CODONS.out.fasta.ifEmpty( [] ) : [],
             params.filter_codons ? FILTER_CODONS.out.stats.ifEmpty( [] ) : [],
-            params.cut_its != "none" ? ITSX_CUTASV.out.summary.ifEmpty( [] ) : [],
+            params.cut_its != "none" ? ch_its_summary.ifEmpty( [] ) : [],
             !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy ? ch_dada2_tax.ifEmpty( [] ) : [],
             !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy ? DADA2_TAXONOMY_WF.out.cut_tax.ifEmpty( [[],[]] ) : [[],[]],
             !params.skip_taxonomy && params.sintax_ref_taxonomy ? ch_sintax_tax.ifEmpty( [] ) : [],

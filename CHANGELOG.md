@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#948](https://github.com/nf-core/ampliseq/pull/948) - Decontam as optional decontamination tool.
 - [#949](https://github.com/nf-core/ampliseq/pull/949) - The dataset can be filtered for downstream analysis with the metadata sheet, for example to remove negative control samples meant for Decontam.
+- [#957](https://github.com/nf-core/ampliseq/pull/957) - Added ITSxRust as an optional alternative to ITSx for ITS region extraction via `--its_extractor itsxrust`.
 - [#964](https://github.com/nf-core/ampliseq/pull/964) - Enabled local reference storage directory with `--ref_taxonomy_storage`.
 
 ### `Changed`

@@ -28,7 +28,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [Barrnap](#barrnap) - Predict ribosomal RNA sequences and optional filtering
   - [Length filter](#length-filter) - Optionally, ASV can be filtered by length thresholds
   - [Codons](#codons) - Optionally the ASVs can be filtered by presence of stop codons.
-  - [ITSx](#itsx) - Optionally, the ITS region can be extracted
+  - [ITSx / ITSxRust](#itsx--itsxrust) - Optionally, the ITS region can be extracted
 - [Taxonomic classification](#taxonomic-classification) - Taxonomic classification of (filtered) ASVs
   - [DADA2](#dada2) - Taxonomic classification with DADA2
   - [assignSH](#assignsh) - Optionally, a UNITE species hypothesis (SH) can be added to the DADA2 taxonomy
@@ -253,9 +253,9 @@ Codon filtering can be activated by `--filter_codons`. By default, the codons ar
 
 </details>
 
-#### ITSx
+#### ITSx / ITSxRust
 
-Optionally, the ITS region can be extracted from each ASV sequence using ITSx, and taxonomic classification is performed based on the ITS sequence. Only sequences with at minimum 50bp in length are retained.
+Optionally, the ITS region can be extracted from each ASV sequence using [ITSx](https://microbiology.se/software/itsx/) (default) or [ITSxRust](https://github.com/ayobi/ITSxRust) (`--its_extractor itsxrust`), and taxonomic classification is performed based on the ITS sequence. Only sequences with at minimum 50bp in length are retained. ITSxRust is optimized for long-read data (ONT, PacBio HiFi) and produces the same output files as ITSx.
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -265,8 +265,8 @@ Optionally, the ITS region can be extracted from each ASV sequence using ITSx, a
   - `ASV_ITS_seqs.ITS1.fasta` or `ASV_ITS_seqs.ITS2.fasta`: If using --cut_its "its1" or --cut_its "its2"; fasta file with ITS1 or ITS2 region from each ASV sequence.
   - `ASV_ITS_seqs.full_and_partial.fasta`: If using --its_partial; fasta file with full and partial ITS regions from each ASV sequence.
   - `ASV_ITS_seqs.ITS1.full_and_partial.fasta` or `ASV_ITS_seqs.ITS2.full_and_partial.fasta`: If using --cut_its "its1" or --cut_its "its2" and --its_partial; fasta file with complete and partial ITS1 or ITS2 regions from each ASV sequence.
-  - `ASV_ITS_seqs.summary.txt`: Summary information from ITSx.
-  - `ITSx.args.txt`: File with parameters passed to ITSx.
+  - `ASV_ITS_seqs.summary.txt`: Summary information from ITSx or ITSxRust.
+  - `ITSx.args.txt`: File with parameters passed to ITSx or ITSxRust.
   - `ASV_seqs.len.fasta`: Fasta file with filtered ASV sequences.
   - `ASV_len_orig.tsv`: ASV length distribution before filtering.
   - `ASV_len_filt.tsv`: ASV length distribution after filtering.

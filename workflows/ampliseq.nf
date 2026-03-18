@@ -19,6 +19,12 @@ include { FASTA_NEWICK_EPANG_GAPPA as PPLACE_SHEET      } from '../subworkflows/
 // MODULE: Installed directly from nf-core/modules
 //
 
+include { DOWNLOAD_REFERENCE as DOWNLOAD_REFERENCE_DADA       } from '../modules/local/download_reference'
+include { DOWNLOAD_REFERENCE as DOWNLOAD_REFERENCE_SINTAX     } from '../modules/local/download_reference'
+include { DOWNLOAD_REFERENCE as DOWNLOAD_REFERENCE_KRAKEN     } from '../modules/local/download_reference'
+include { DOWNLOAD_REFERENCE as DOWNLOAD_REFERENCE_QIIME      } from '../modules/local/download_reference'
+include { DOWNLOAD_REFERENCE as DOWNLOAD_REFERENCE_SIDLE      } from '../modules/local/download_reference'
+include { DOWNLOAD_REFERENCE as DOWNLOAD_REFERENCE_SIDLE_TREE } from '../modules/local/download_reference'
 include { RENAME_RAW_DATA_FILES         } from '../modules/local/rename_raw_data_files'
 include { DADA2_ERR                     } from '../modules/local/dada2_err'
 include { NOVASEQ_ERR                   } from '../modules/local/novaseq_err'
@@ -43,6 +49,7 @@ include { FILTER_CODONS                 } from '../modules/local/filter_codons'
 include { FORMAT_FASTAINPUT             } from '../modules/local/format_fastainput'
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
 include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
+include { ITSXRUST_CUTASV               } from '../modules/local/itsxrust_cutasv'
 include { MERGE_STATS as MERGE_STATS_STD} from '../modules/local/merge_stats'
 include { FILTER_SAMPLES                } from '../modules/local/filter_samples'
 include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'
@@ -83,7 +90,7 @@ include { QIIME2_EXPORT                 } from '../subworkflows/local/qiime2_exp
 include { QIIME2_BARPLOTAVG             } from '../subworkflows/local/qiime2_barplotavg'
 include { QIIME2_DIVERSITY              } from '../subworkflows/local/qiime2_diversity'
 include { QIIME2_ANCOM                  } from '../subworkflows/local/qiime2_ancom'
-include { ROBJECT_WORKFLOW             } from '../subworkflows/local/robject_workflow'
+include { ROBJECT_WORKFLOW              } from '../subworkflows/local/robject_workflow'
 
 //
 // FUNCTIONS
@@ -104,117 +111,17 @@ include { makeComplement         } from '../subworkflows/local/utils_nfcore_ampl
 workflow AMPLISEQ {
 
     main:
+    // set empty channels
+    ch_tax_for_robject = channel.empty()
+    ch_versions        = channel.empty()
+    ch_multiqc_files   = channel.empty()
+
     //
     // INPUT AND VARIABLES
     //
     if (params.metadata) {
         ch_metadata = channel.fromPath("${params.metadata}", checkIfExists: true)
     } else { ch_metadata = channel.empty() }
-
-    if (params.classifier) {
-        ch_qiime_classifier = channel.fromPath("${params.classifier}", checkIfExists: true)
-    } else { ch_qiime_classifier = channel.empty() }
-
-    if (params.sidle_ref_tax_custom) {
-        //custom ref taxonomy input from params.sidle_ref_tax_custom & params.sidle_ref_seq_custom & [optionallly] params.sidle_ref_aln_custom
-        channel.fromPath("${params.sidle_ref_tax_custom}", checkIfExists: true)
-            .combine( channel.fromPath("${params.sidle_ref_seq_custom}", checkIfExists: true) )
-            .combine( params.sidle_ref_aln_custom ? channel.fromPath("${params.sidle_ref_aln_custom}", checkIfExists: true) : channel.of("EMPTY") )
-            .set{ ch_sidle_ref_taxonomy }
-        ch_sidle_ref_taxonomy_tree = params.sidle_ref_tree_custom ? channel.fromPath("${params.sidle_ref_tree_custom}", checkIfExists: true) : channel.empty()
-        val_sidle_ref_taxonomy = "user"
-    } else if (params.sidle_ref_taxonomy) {
-        //standard ref taxonomy input from params.sidle_ref_taxonomy & conf/ref_databases.config
-        ch_sidle_ref_taxonomy = channel.fromList( params.sidle_ref_databases[params.sidle_ref_taxonomy]["file"] ).map { it -> file(it) }
-        ch_sidle_ref_taxonomy_tree = params.sidle_ref_tree_custom ? channel.fromPath("${params.sidle_ref_tree_custom}", checkIfExists: true) :
-            params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] ? channel.fromList( params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] ).map { it -> file(it) } : channel.empty()
-        val_sidle_ref_taxonomy = params.sidle_ref_taxonomy.replace('=','_').replace('.','_')
-    } else {
-        ch_sidle_ref_taxonomy = channel.empty()
-        ch_sidle_ref_taxonomy_tree = channel.empty()
-        val_sidle_ref_taxonomy = "none"
-    }
-
-    ch_pplace_sheet = channel.empty()
-
-    if (params.dada_ref_tax_custom) {
-        //custom ref taxonomy input from params.dada_ref_tax_custom & params.dada_ref_tax_custom_sp
-        ch_assigntax = channel.fromPath("${params.dada_ref_tax_custom}", checkIfExists: true)
-        if (params.dada_ref_tax_custom_sp) {
-            ch_addspecies = channel.fromPath("${params.dada_ref_tax_custom_sp}", checkIfExists: true)
-        } else { ch_addspecies = channel.empty() }
-        ch_dada_ref_taxonomy = channel.empty()
-        val_dada_ref_taxonomy = "user"
-    } else if (params.dada_ref_taxonomy && !params.skip_dada_taxonomy && !params.skip_taxonomy) {
-        //standard ref taxonomy input from params.dada_ref_taxonomy & conf/ref_databases.config
-        ch_dada_ref_taxonomy = params.dada_ref_databases.containsKey(params.dada_ref_taxonomy) ? channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["file"]).map { it -> file(it) } : channel.empty()
-        val_dada_ref_taxonomy = params.dada_ref_taxonomy.replace('=','_').replace('.','_')
-
-        if ( params.run_pplace && params.dada_ref_databases[params.dada_ref_taxonomy].containsKey("pplace") ) {
-            ch_pplace_sheet = Channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["pplace"])
-                .map { it ->
-                    [
-                        meta: [
-                            id: it.target,
-                            min_bitscore: it.min_bitscore
-                        ],
-                        data: [
-                            alignmethod:    it.alignmethod  ? it.alignmethod                             : 'clustalo',
-                            hmm:            file(it.hmm,  checkIfExists: true),
-                            extract_hmm:    it.extract_hmm,
-                            refseqfile:     it.refseqfile   ? file(it.refseqfile,   checkIfExists: true) : [],
-                            refphylogeny:   it.refphylogeny ? file(it.refphylogeny, checkIfExists: true) : [],
-                            model:          it.model,
-                            taxonomy:       it.taxonomy     ? file(it.taxonomy,     checkIfExists: true) : []
-                        ]
-                    ]
-                }
-        }
-    } else {
-        ch_dada_ref_taxonomy = channel.empty()
-        val_dada_ref_taxonomy = "none"
-    }
-
-    if (params.qiime_ref_tax_custom) {
-        if ("${params.qiime_ref_tax_custom}".contains(",")) {
-            qiime_ref_paths = "${params.qiime_ref_tax_custom}".split(",")
-            if (qiime_ref_paths.length != 2) {
-                error "--qiime_ref_tax_custom accepts a single filepath to a directory or tarball, or two filepaths separated by a comma. Please review input."
-            }
-
-            ch_qiime_ref_taxonomy = channel.fromPath(Arrays.asList(qiime_ref_paths), checkIfExists: true)
-        } else {
-            ch_qiime_ref_taxonomy = channel.fromPath("${params.qiime_ref_tax_custom}", checkIfExists: true)
-        }
-        val_qiime_ref_taxonomy = "user"
-    } else if (params.qiime_ref_taxonomy && !params.skip_taxonomy && !params.classifier) {
-        ch_qiime_ref_taxonomy = params.qiime_ref_databases.containsKey(params.qiime_ref_taxonomy) ? channel.fromList(params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"]).map { it -> file(it) } : channel.empty()
-        val_qiime_ref_taxonomy = params.qiime_ref_taxonomy.replace('=','_').replace('.','_')
-    } else {
-        ch_qiime_ref_taxonomy = channel.empty()
-        val_qiime_ref_taxonomy = "none"
-    }
-
-    if (params.sintax_ref_taxonomy && !params.skip_taxonomy) {
-        ch_sintax_ref_taxonomy = params.sintax_ref_databases.containsKey(params.sintax_ref_taxonomy) ? channel.fromList(params.sintax_ref_databases[params.sintax_ref_taxonomy]["file"]).map { it -> file(it) } : channel.empty()
-        val_sintax_ref_taxonomy = params.sintax_ref_taxonomy.replace('=','_').replace('.','_')
-    } else {
-        ch_sintax_ref_taxonomy = channel.empty()
-        val_sintax_ref_taxonomy = "none"
-    }
-
-    if (params.kraken2_ref_tax_custom) {
-        //custom ref taxonomy input from params.kraken2_ref_tax_custom
-        ch_kraken2_ref_taxonomy = channel.fromPath("${params.kraken2_ref_tax_custom}", checkIfExists: true)
-        val_kraken2_ref_taxonomy = "user"
-    } else if (params.kraken2_ref_taxonomy && !params.skip_taxonomy) {
-        //standard ref taxonomy input from params.dada_ref_taxonomy & conf/ref_databases.config
-        ch_kraken2_ref_taxonomy = params.kraken2_ref_databases.containsKey(params.kraken2_ref_taxonomy) ? channel.fromList(params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["file"]).map { it -> file(it) } : channel.empty()
-        val_kraken2_ref_taxonomy = params.kraken2_ref_taxonomy.replace('=','_').replace('.','_')
-    } else {
-        ch_kraken2_ref_taxonomy = channel.empty()
-        val_kraken2_ref_taxonomy = "none"
-    }
 
     // report sources
     ch_report_template = channel.fromPath("${params.report_template}", checkIfExists: true)
@@ -240,28 +147,6 @@ workflow AMPLISEQ {
     tax_agglom_min = params.tax_agglom_min
     tax_agglom_max = params.tax_agglom_max
 
-    //use custom taxlevels from --dada_assign_taxlevels or database specific taxlevels if specified in conf/ref_databases.config
-    if ( params.dada_ref_taxonomy ) {
-        taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" :
-            params.dada_ref_databases.containsKey(params.dada_ref_taxonomy) && params.dada_ref_databases[params.dada_ref_taxonomy]["taxlevels"] ? params.dada_ref_databases[params.dada_ref_taxonomy]["taxlevels"] : ""
-    } else { taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" : "" }
-    if ( params.sintax_ref_taxonomy ) {
-        sintax_taxlevels = params.sintax_ref_databases.containsKey(params.sintax_ref_taxonomy) && params.sintax_ref_databases[params.sintax_ref_taxonomy]["taxlevels"] ? params.sintax_ref_databases[params.sintax_ref_taxonomy]["taxlevels"] : ""
-    } else {
-        sintax_taxlevels = ""
-    }
-    if ( params.kraken2_ref_taxonomy ) {
-        kraken2_taxlevels = params.kraken2_assign_taxlevels ? "${params.kraken2_assign_taxlevels}" :
-            params.kraken2_ref_databases.containsKey(params.kraken2_ref_taxonomy) && params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["taxlevels"] ? params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["taxlevels"] : ""
-    } else { kraken2_taxlevels = params.kraken2_assign_taxlevels ? "${params.kraken2_assign_taxlevels}" : "" }
-
-    //make sure that taxlevels adheres to requirements when mixed with addSpecies
-    if ( params.dada_ref_taxonomy && !params.skip_dada_addspecies && !params.skip_dada_taxonomy && !params.skip_taxonomy && taxlevels ) {
-        if ( !taxlevels.endsWith(",Genus,Species") && !taxlevels.endsWith(",Genus") ) {
-            error("Incompatible settings: To use exact species annotations, taxonomic levels must end with `,Genus,Species` or `,Genus` but are currently `${taxlevels}`. Taxonomic levels can be set with `--dada_assign_taxlevels`. Skip exact species annotations with `--skip_dada_addspecies`.\n")
-        }
-    }
-
     // Only run QIIME2 taxonomy classification if needed parameters are passed and we are not skipping taxonomy or qiime steps.
     if ( !params.skip_taxonomy && !params.skip_qiime && (params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier) ) {
         run_qiime2_taxonomy = true
@@ -275,10 +160,6 @@ workflow AMPLISEQ {
     } else {
         run_qiime2 = false
     }
-
-    ch_tax_for_robject = channel.empty()
-    ch_versions = channel.empty()
-    ch_multiqc_files = channel.empty()
 
     //
     // Create input channels
@@ -305,6 +186,7 @@ workflow AMPLISEQ {
     }
 
     // Parse the --pplace_sheet file if present
+    ch_pplace_sheet = channel.empty()
     if ( params.pplace_sheet ) {
         ch_pplace_sheet = Channel.fromPath(params.pplace_sheet)
             .splitCsv(header: true)
@@ -394,6 +276,139 @@ workflow AMPLISEQ {
             def meta = info.subMap( info.keySet() - 'control' - 'quant_reading' ) // remove decontam metadata because it isnt needed any more
             return [ meta, reads ] }
         .set { ch_reads }
+
+    //
+    // REFERENCE TAXONOMY DATABASES
+    //
+
+    // SIDLE
+    ch_sidle_ref_taxonomy      = channel.empty()
+    ch_sidle_ref_taxonomy_tree = channel.empty()
+    val_sidle_ref_taxonomy     = "none"
+
+    if (params.sidle_ref_tax_custom) {
+        //custom ref taxonomy input from params.sidle_ref_tax_custom & params.sidle_ref_seq_custom & [optionally] params.sidle_ref_aln_custom
+        channel.fromPath("${params.sidle_ref_tax_custom}", checkIfExists: true)
+            .combine( channel.fromPath("${params.sidle_ref_seq_custom}", checkIfExists: true) )
+            .combine( params.sidle_ref_aln_custom ? channel.fromPath("${params.sidle_ref_aln_custom}", checkIfExists: true) : channel.of("EMPTY") )
+            .set{ ch_sidle_ref_taxonomy }
+        ch_sidle_ref_taxonomy_tree = params.sidle_ref_tree_custom ? channel.fromPath("${params.sidle_ref_tree_custom}", checkIfExists: true) : channel.empty()
+        val_sidle_ref_taxonomy = "user"
+    } else if (params.sidle_ref_taxonomy) {
+        //standard ref taxonomy input from params.sidle_ref_taxonomy & conf/ref_databases.config
+        ch_sidle_ref_taxonomy_url = channel.fromList(params.sidle_ref_databases[params.sidle_ref_taxonomy]["file"])
+        ch_sidle_ref_taxonomy = DOWNLOAD_REFERENCE_SIDLE( ch_sidle_ref_taxonomy_url ).db.collect()
+        ch_sidle_ref_taxonomy_tree =
+            params.sidle_ref_tree_custom ? channel.fromPath("${params.sidle_ref_tree_custom}", checkIfExists: true) :
+                params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] ?
+                    DOWNLOAD_REFERENCE_SIDLE_TREE( channel.fromList( params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] ) ).db :
+                        channel.empty()
+        val_sidle_ref_taxonomy = params.sidle_ref_taxonomy.replace('=','_').replace('.','_')
+    }
+
+    // DADA2
+    ch_dada_assigntax     = channel.empty()
+    ch_dada_addspecies    = channel.empty()
+    ch_dada_ref_taxonomy  = channel.empty()
+    val_dada_ref_taxonomy = "none"
+    val_dada_taxlevels    = ""
+
+    if (params.dada_ref_tax_custom) {
+        //custom ref taxonomy input from params.dada_ref_tax_custom & params.dada_ref_tax_custom_sp
+        ch_dada_assigntax = channel.fromPath("${params.dada_ref_tax_custom}", checkIfExists: true)
+        if (params.dada_ref_tax_custom_sp) {
+            ch_dada_addspecies = channel.fromPath("${params.dada_ref_tax_custom_sp}", checkIfExists: true)
+        }
+        ch_dada_ref_taxonomy = channel.empty()
+        val_dada_ref_taxonomy = "user"
+        val_dada_taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" : ""
+    } else if (params.dada_ref_taxonomy && !params.skip_dada_taxonomy && !params.skip_taxonomy) {
+        //standard ref taxonomy input from params.dada_ref_taxonomy & conf/ref_databases.config
+        // database files
+        ch_dada_ref_taxonomy_url = params.dada_ref_databases.containsKey(params.dada_ref_taxonomy) ?
+            channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["file"]) :
+                channel.empty()
+        ch_dada_ref_taxonomy = DOWNLOAD_REFERENCE_DADA( ch_dada_ref_taxonomy_url ).db.collect()
+        // name
+        val_dada_ref_taxonomy = params.dada_ref_taxonomy.replace('=','_').replace('.','_')
+        // taxlevels
+        val_dada_taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" :
+            params.dada_ref_databases.containsKey(params.dada_ref_taxonomy) && params.dada_ref_databases[params.dada_ref_taxonomy]["taxlevels"] ?
+                params.dada_ref_databases[params.dada_ref_taxonomy]["taxlevels"] : ""
+    }
+
+    //make sure that taxlevels adheres to requirements when mixed with addSpecies
+    if ( params.dada_ref_taxonomy && !params.skip_dada_addspecies && !params.skip_dada_taxonomy && !params.skip_taxonomy && val_dada_taxlevels ) {
+        if ( !val_dada_taxlevels.endsWith(",Genus,Species") && !val_dada_taxlevels.endsWith(",Genus") ) {
+            error("Incompatible settings: To use exact species annotations, taxonomic levels must end with `,Genus,Species` or `,Genus` but are currently `${val_dada_taxlevels}`. Taxonomic levels can be set with `--dada_assign_taxlevels`. Skip exact species annotations with `--skip_dada_addspecies`.\n")
+        }
+    }
+
+    // QIIME2
+    ch_qiime_ref_taxonomy  = channel.empty()
+    val_qiime_ref_taxonomy = "none"
+    ch_qiime_classifier    = channel.empty()
+
+    if (params.classifier) {
+        ch_qiime_classifier = channel.fromPath("${params.classifier}", checkIfExists: true)
+    } else if (params.qiime_ref_tax_custom) {
+        if ("${params.qiime_ref_tax_custom}".contains(",")) {
+            qiime_ref_paths = "${params.qiime_ref_tax_custom}".split(",")
+            if (qiime_ref_paths.length != 2) {
+                error "--qiime_ref_tax_custom accepts a single filepath to a directory or tarball, or two filepaths separated by a comma. Please review input."
+            }
+            ch_qiime_ref_taxonomy = channel.fromPath(Arrays.asList(qiime_ref_paths), checkIfExists: true)
+        } else {
+            ch_qiime_ref_taxonomy = channel.fromPath("${params.qiime_ref_tax_custom}", checkIfExists: true)
+        }
+        val_qiime_ref_taxonomy = "user"
+    } else if (params.qiime_ref_taxonomy && run_qiime2_taxonomy) {
+        ch_qiime_ref_taxonomy_url = params.qiime_ref_databases.containsKey(params.qiime_ref_taxonomy) ?
+            channel.fromList(params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"]) : channel.empty()
+        ch_qiime_ref_taxonomy = DOWNLOAD_REFERENCE_QIIME( ch_qiime_ref_taxonomy_url ).db.collect()
+        val_qiime_ref_taxonomy = params.qiime_ref_taxonomy.replace('=','_').replace('.','_')
+    }
+
+    // SINTAX
+    ch_sintax_ref_taxonomy  = channel.empty()
+    val_sintax_ref_taxonomy = "none"
+    val_sintax_taxlevels    = ""
+
+    if (params.sintax_ref_taxonomy && !params.skip_taxonomy) {
+        // database files
+        ch_sintax_ref_taxonomy_url = params.sintax_ref_databases.containsKey(params.sintax_ref_taxonomy) ?
+            channel.fromList(params.sintax_ref_databases[params.sintax_ref_taxonomy]["file"]) : channel.empty()
+        ch_sintax_ref_taxonomy = DOWNLOAD_REFERENCE_SINTAX( ch_sintax_ref_taxonomy_url ).db.collect()
+        // name
+        val_sintax_ref_taxonomy = params.sintax_ref_taxonomy.replace('=','_').replace('.','_')
+        // taxlevels
+        val_sintax_taxlevels = params.sintax_ref_databases.containsKey(params.sintax_ref_taxonomy) && params.sintax_ref_databases[params.sintax_ref_taxonomy]["taxlevels"] ?
+            params.sintax_ref_databases[params.sintax_ref_taxonomy]["taxlevels"] : ""
+    }
+
+    // KRAKEN2
+    ch_kraken2_ref_taxonomy  = channel.empty()
+    val_kraken2_ref_taxonomy = "none"
+    val_kraken2_taxlevels    = ""
+
+    if (params.kraken2_ref_tax_custom) {
+        //custom ref taxonomy input from params.kraken2_ref_tax_custom
+        ch_kraken2_ref_taxonomy = channel.fromPath("${params.kraken2_ref_tax_custom}", checkIfExists: true)
+        val_kraken2_ref_taxonomy = "user"
+        val_kraken2_taxlevels = params.kraken2_assign_taxlevels ? "${params.kraken2_assign_taxlevels}" : ""
+    } else if (params.kraken2_ref_taxonomy && !params.skip_taxonomy) {
+        //standard ref taxonomy input from params.dada_ref_taxonomy & conf/ref_databases.config
+        // database files
+        ch_kraken2_ref_taxonomy_url = params.kraken2_ref_databases.containsKey(params.kraken2_ref_taxonomy) ?
+            channel.fromList(params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["file"]) : channel.empty()
+        ch_kraken2_ref_taxonomy = DOWNLOAD_REFERENCE_KRAKEN( ch_kraken2_ref_taxonomy_url ).db
+        // name
+        val_kraken2_ref_taxonomy = params.kraken2_ref_taxonomy.replace('=','_').replace('.','_')
+        // taxlevels
+        val_kraken2_taxlevels = params.kraken2_assign_taxlevels ? "${params.kraken2_assign_taxlevels}" :
+            params.kraken2_ref_databases.containsKey(params.kraken2_ref_taxonomy) && params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["taxlevels"] ?
+                params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["taxlevels"] : ""
+    }
 
     //
     // MODULE: Rename files
@@ -650,7 +665,7 @@ workflow AMPLISEQ {
     }
 
     //
-    // Modules : ITSx - cut out ITS region if long ITS reads
+    // Modules : ITSx / ITSxRust - cut out ITS region if long ITS reads
     //
     ch_full_fasta = ch_dada2_fasta
     if (params.cut_its == "none") {
@@ -665,9 +680,20 @@ workflow AMPLISEQ {
         else if (params.cut_its == "its2") {
             outfile =  params.its_partial ? "ASV_ITS_seqs.ITS2.full_and_partial.fasta" : "ASV_ITS_seqs.ITS2.fasta"
         }
-        ITSX_CUTASV ( ch_full_fasta, outfile )
-        ch_versions = ch_versions.mix(ITSX_CUTASV.out.versions)
-        FILTER_LEN_ITSX ( ITSX_CUTASV.out.fasta, ch_dada2_asv.ifEmpty( [] ) )
+
+        if (params.its_extractor == "itsxrust") {
+            ITSXRUST_CUTASV ( ch_full_fasta, outfile )
+            ch_versions = ch_versions.mix(ITSXRUST_CUTASV.out.versions)
+            ch_its_fasta = ITSXRUST_CUTASV.out.fasta
+            ch_its_summary = ITSXRUST_CUTASV.out.summary
+        } else {
+            ITSX_CUTASV ( ch_full_fasta, outfile )
+            ch_versions = ch_versions.mix(ITSX_CUTASV.out.versions)
+            ch_its_fasta = ITSX_CUTASV.out.fasta
+            ch_its_summary = ITSX_CUTASV.out.summary
+        }
+
+        FILTER_LEN_ITSX ( ch_its_fasta, ch_dada2_asv.ifEmpty( [] ) )
         ch_fasta = FILTER_LEN_ITSX.out.fasta
         ch_dada2_asv = FILTER_LEN_ITSX.out.asv
     }
@@ -682,16 +708,16 @@ workflow AMPLISEQ {
             //standard ref taxonomy input from conf/ref_databases.config
             FORMAT_TAXONOMY ( ch_dada_ref_taxonomy.collect(), val_dada_ref_taxonomy )
             ch_versions = ch_versions.mix(FORMAT_TAXONOMY.out.versions)
-            ch_assigntax = FORMAT_TAXONOMY.out.assigntax
-            ch_addspecies = FORMAT_TAXONOMY.out.addspecies
+            ch_dada_assigntax = FORMAT_TAXONOMY.out.assigntax
+            ch_dada_addspecies = FORMAT_TAXONOMY.out.addspecies
         }
         DADA2_TAXONOMY_WF (
-            ch_assigntax,
-            ch_addspecies,
+            ch_dada_assigntax,
+            ch_dada_addspecies,
             val_dada_ref_taxonomy,
             ch_fasta,
             ch_full_fasta,
-            taxlevels,
+            val_dada_taxlevels,
             params.dada_assign_chunksize
         ).tax.set { ch_dada2_tax }
         ch_versions = ch_versions.mix(DADA2_TAXONOMY_WF.out.versions)
@@ -706,7 +732,7 @@ workflow AMPLISEQ {
             ch_kraken2_ref_taxonomy,
             val_kraken2_ref_taxonomy,
             ch_fasta,
-            kraken2_taxlevels
+            val_kraken2_taxlevels
         ).qiime2_tsv.set { ch_kraken2_tax }
         ch_versions = ch_versions.mix(KRAKEN2_TAXONOMY_WF.out.versions)
         ch_tax_for_robject = ch_tax_for_robject.mix ( ch_kraken2_tax.map { it -> [ "kraken2", file(it) ] } )
@@ -721,7 +747,7 @@ workflow AMPLISEQ {
             val_sintax_ref_taxonomy,
             ch_fasta,
             ch_full_fasta,
-            sintax_taxlevels
+            val_sintax_taxlevels
         ).tax.set { ch_sintax_tax }
         ch_versions = ch_versions.mix(SINTAX_TAXONOMY_WF.out.versions)
         ch_tax_for_robject = ch_tax_for_robject.mix ( ch_sintax_tax.map { it -> [ "sintax", file(it) ] } )
@@ -1182,7 +1208,7 @@ workflow AMPLISEQ {
             params.min_len_asv || params.max_len_asv ? FILTER_LEN_ASV.out.len_orig.ifEmpty( [] ) : [],
             params.filter_codons ? FILTER_CODONS.out.fasta.ifEmpty( [] ) : [],
             params.filter_codons ? FILTER_CODONS.out.stats.ifEmpty( [] ) : [],
-            params.cut_its != "none" ? ITSX_CUTASV.out.summary.ifEmpty( [] ) : [],
+            params.cut_its != "none" ? ch_its_summary.ifEmpty( [] ) : [],
             !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy ? ch_dada2_tax.ifEmpty( [] ) : [],
             !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy ? DADA2_TAXONOMY_WF.out.cut_tax.ifEmpty( [[],[]] ) : [[],[]],
             !params.skip_taxonomy && params.sintax_ref_taxonomy ? ch_sintax_tax.ifEmpty( [] ) : [],

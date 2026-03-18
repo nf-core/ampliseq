@@ -14,6 +14,7 @@
     - [ASV/OTU fasta input](#asvotu-fasta-input)
     - [Direct FASTQ input](#direct-fastq-input)
   - [Regions of variable length e.g. ITS](#regions-of-variable-length-eg-its)
+    - [ITS extraction tool](#its-extraction-tool)
   - [Decontamination](#decontamination)
   - [Taxonomic classification](#taxonomic-classification)
   - [Multiple region analysis with Sidle](#multiple-region-analysis-with-sidle)
@@ -221,6 +222,18 @@ Please note the following additional requirements:
 
 Special considerations should be made when pre-processing reads for regions of variable length, e.g. ITS for fungal barcoding. For ITS regions e.g. ITS1 or ITS2, it is recommended to use the `--illumina_pe_its` parameter for paired-end Illumina reads, which disables fixed-length read truncation. Also consider adjusting `--truncq` to a value higher than the default value of 2 if you find that a high proportion of reads is excluded by DADA2 filtering.
 
+#### ITS extraction tool
+
+By default, [ITSx](https://microbiology.se/software/itsx/) is used for ITS region extraction (`--its_extractor itsx`). As an alternative, [ITSxRust](https://github.com/ayobi/ITSxRust) can be used, which is optimized for long-read amplicon data from Oxford Nanopore and PacBio HiFi platforms:
+
+```bash
+--its_extractor itsxrust
+```
+
+ITSxRust automatically selects platform-appropriate presets: `--preset ont` by default, or `--preset hifi` when `--pacbio` is set. The required HMM profile is bundled in the container and Bioconda package, so no additional files need to be provided.
+
+ITSxRust produces the same output files as ITSx and is fully compatible with all downstream steps including `--cut_its` and `--its_partial`.
+
 #### Decontamination
 
 [Decontam](https://doi.org/10.1186/s40168-018-0605-2) performs simple statistical identification and removal of contaminant sequences. Decontam is most useful with low biomass samples, where contamination removal is particularly impactful. The limitations and applications of Decontam have been extensively described in its [publication](https://doi.org/10.1186/s40168-018-0605-2) and [R package description](https://benjjneb.github.io/decontam/vignettes/decontam_intro.html). [Fierer et al. 2025](https://doi.org/10.1038/s41564-025-02035-2) compare concepts and methods for decontamiation including Decontam. Next, a brief explanation on how to use Decontam in the context of nf-core/ampliseq.
@@ -271,6 +284,10 @@ Special features of taxonomic classification tools:
 - Phyloplace assigns taxonomy by placement on reference phylogenies provided with the database, see [Placement in database provided phylogenies](#placement-in-database-provided-phylogenies).
 
 Parameter guidance is given in [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#taxonomic-assignment). Citations are listed in [`CITATIONS.md`](CITATIONS.md).
+
+> [!TIP]
+> Taxonomic reference databases can be stored and shared locally with [--ref_taxonomy_storage](https://nf-co.re/ampliseq/parameters/#ref_taxonomy_storage).
+> That way, remote files will be downloaded only if they are not available in the storage directory.
 
 ### Multiple region analysis with Sidle
 

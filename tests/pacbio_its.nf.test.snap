@@ -57,8 +57,8 @@
                 "FORMAT_TAXRESULTS_SINTAX": {
                     "python": "3.9.1"
                 },
-                "ITSX_CUTASV": {
-                    "ITSx": "1.1.3"
+                "ITSXRUST_CUTASV": {
+                    "ITSxRust": "0.2.2"
                 },
                 "MERGE_STATS_STD": {
                     "R": "4.4.3"
@@ -132,13 +132,15 @@
                 "input/Metadata_pacbio_ITS.tsv",
                 "input/Samplesheet_pacbio_ITS.tsv",
                 "itsx",
+                "itsx/ASV_ITS_seqs.ITS1.fasta",
+                "itsx/ASV_ITS_seqs.ITS2.fasta",
                 "itsx/ASV_ITS_seqs.full.fasta",
                 "itsx/ASV_ITS_seqs.summary.txt",
                 "itsx/ASV_len_filt.tsv",
                 "itsx/ASV_len_orig.tsv",
                 "itsx/ASV_seqs.len.fasta",
                 "itsx/ASV_table.len.tsv",
-                "itsx/ITSx.args.txt",
+                "itsx/ITSxRust.args.txt",
                 "multiqc",
                 "multiqc/multiqc_data",
                 "multiqc/multiqc_data/cutadapt_filtered_reads_plot.txt",
@@ -259,8 +261,8 @@
             "DADA2_table.tsv:md5,7e7aab7ae9a3b20fb08f3fe7f8b0430c",
             "Samplesheet_pacbio_ITS.tsv:md5,905b0fc4850149d6457c9da7076c2c2d",
             "Metadata_pacbio_ITS.tsv:md5,51d81b0fe29f6377fa21ce8399fc5ae0",
-            "ASV_ITS_seqs.full.fasta:md5,dab051f759c877a79adf47f5729f5665",
-            "ITSx.args.txt:md5,32430f2c36d83c08273352bad45857e8",
+            "ASV_ITS_seqs.full.fasta:md5,e8b75bc17937d18009094a8805e648d0",
+            "ITSxRust.args.txt:md5,5edc28029c799b9112f3d66731b9347a",
             "multiqc_fastqc.txt:md5,f11936dbbf1718301ceba86050e24799",
             "multiqc_general_stats.txt:md5,1fef8358fe3cc974bf05e2f27fc7e250",
             "multiqc_cutadapt.txt:md5,160135fece18361e17bef9e8d04cf0b9",

@@ -385,7 +385,7 @@ For hmm files with multiple profiles, the `extract_hmm` specifies which profile 
 Finally, you can specify `min_bitscore` to set a minimum score for a sequence to be included in further processing.
 
 > [!NOTE]
-For different reasons, taxonomies created by phylogenetic placement in multiple reference trees are currently not used as taxonomy for downstream analyses such as QIIME2.
+> For different reasons, taxonomies created by phylogenetic placement in multiple reference trees are currently not used as taxonomy for downstream analyses such as QIIME2.
 
 ```csv title="pplace_sheet.csv"
 target,alignmethod,hmm,extract_hmm,refseqfile,refphylogeny,model,taxonomy

@@ -297,7 +297,7 @@ workflow AMPLISEQ {
     } else if (params.sidle_ref_taxonomy) {
         //standard ref taxonomy input from params.sidle_ref_taxonomy & conf/ref_databases.config
         ch_sidle_ref_taxonomy_url = channel.fromList(params.sidle_ref_databases[params.sidle_ref_taxonomy]["file"])
-        ch_sidle_ref_taxonomy = 
+        ch_sidle_ref_taxonomy =
             params.ref_taxonomy_storage ? DOWNLOAD_REFERENCE_SIDLE( ch_sidle_ref_taxonomy_url ).db.collect() :
                 ch_sidle_ref_taxonomy_url.map { it -> file(it) }
         ch_sidle_ref_taxonomy_tree =
@@ -330,7 +330,7 @@ workflow AMPLISEQ {
         //standard ref taxonomy input from params.dada_ref_taxonomy & conf/ref_databases.config
         // database files
         ch_dada_ref_taxonomy_url = channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["file"])
-        ch_dada_ref_taxonomy = 
+        ch_dada_ref_taxonomy =
             params.ref_taxonomy_storage ? DOWNLOAD_REFERENCE_DADA( ch_dada_ref_taxonomy_url ).db.collect() :
                 ch_dada_ref_taxonomy_url.map { it -> file(it) }
         // name
@@ -368,7 +368,7 @@ workflow AMPLISEQ {
         val_qiime_ref_taxonomy = "user"
     } else if (params.qiime_ref_taxonomy && run_qiime2_taxonomy) {
         ch_qiime_ref_taxonomy_url = channel.fromList(params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"])
-        ch_qiime_ref_taxonomy = 
+        ch_qiime_ref_taxonomy =
             params.ref_taxonomy_storage ? DOWNLOAD_REFERENCE_QIIME( ch_qiime_ref_taxonomy_url ).db.collect() :
                 ch_qiime_ref_taxonomy_url.map { it -> file(it) }
         val_qiime_ref_taxonomy = params.qiime_ref_taxonomy.replace('=','_').replace('.','_')
@@ -382,7 +382,7 @@ workflow AMPLISEQ {
     if (params.sintax_ref_taxonomy && !params.skip_taxonomy) {
         // database files
         ch_sintax_ref_taxonomy_url = channel.fromList(params.sintax_ref_databases[params.sintax_ref_taxonomy]["file"])
-        ch_sintax_ref_taxonomy = 
+        ch_sintax_ref_taxonomy =
             params.ref_taxonomy_storage ? DOWNLOAD_REFERENCE_SINTAX( ch_sintax_ref_taxonomy_url ).db.collect() :
                 ch_sintax_ref_taxonomy_url.map { it -> file(it) }
         // name
@@ -406,7 +406,7 @@ workflow AMPLISEQ {
         //standard ref taxonomy input from params.dada_ref_taxonomy & conf/ref_databases.config
         // database files
         ch_kraken2_ref_taxonomy_url = channel.fromList(params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["file"])
-        ch_kraken2_ref_taxonomy = 
+        ch_kraken2_ref_taxonomy =
             params.ref_taxonomy_storage ? DOWNLOAD_REFERENCE_KRAKEN( ch_kraken2_ref_taxonomy_url ).db :
                 ch_kraken2_ref_taxonomy_url.map { it -> file(it) }
         // name

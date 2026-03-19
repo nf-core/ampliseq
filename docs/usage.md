@@ -384,6 +384,9 @@ The latter can be used to attract false positive sequences away from being place
 For hmm files with multiple profiles, the `extract_hmm` specifies which profile to use.
 Finally, you can specify `min_bitscore` to set a minimum score for a sequence to be included in further processing.
 
+> [!NOTE]
+For different reasons, taxonomies created by phylogenetic placement in multiple reference trees are currently not used as taxonomy for downstream analyses such as QIIME2.
+
 ```csv title="pplace_sheet.csv"
 target,alignmethod,hmm,extract_hmm,refseqfile,refphylogeny,model,taxonomy
 archaea16s,clustalo,https://raw.githubusercontent.com/tseemann/barrnap/master/db/arc.hmm,16S_rRNA,archaea.newick,archaea.alnfna,GTR+F+I+G4,archaea.taxonomy.tsv
@@ -395,7 +398,7 @@ euk18s,clustalo,https://raw.githubusercontent.com/tseemann/barrnap/master/db/euk
 
 Reference databases for taxonomy can provide reference phylogenies for placement (currently only SBDI-GTDB from release R10-RS226-2).
 This is not run by default since it takes quite a lot of resources.
-If you want to enable this, set `--skip_pplace false`.
+If you want to enable this, set `--run_pplace`.
 
 > [!NOTE]
 > Since phylogenetic placement requires a lot of memory when the reference phylogeny is large, we have set the minimum memory for two processes to 60 GiB in order to work with the GTDB bacterial tree.

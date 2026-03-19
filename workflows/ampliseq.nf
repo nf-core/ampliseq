@@ -297,12 +297,16 @@ workflow AMPLISEQ {
     } else if (params.sidle_ref_taxonomy) {
         //standard ref taxonomy input from params.sidle_ref_taxonomy & conf/ref_databases.config
         ch_sidle_ref_taxonomy_url = channel.fromList(params.sidle_ref_databases[params.sidle_ref_taxonomy]["file"])
-        ch_sidle_ref_taxonomy = DOWNLOAD_REFERENCE_SIDLE( ch_sidle_ref_taxonomy_url ).db.collect()
+        ch_sidle_ref_taxonomy = 
+            params.ref_taxonomy_storage ? DOWNLOAD_REFERENCE_SIDLE( ch_sidle_ref_taxonomy_url ).db.collect() :
+                ch_sidle_ref_taxonomy_url.map { it -> file(it) }
         ch_sidle_ref_taxonomy_tree =
             params.sidle_ref_tree_custom ? channel.fromPath("${params.sidle_ref_tree_custom}", checkIfExists: true) :
-                params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] ?
+                params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] && params.ref_taxonomy_storage ?
                     DOWNLOAD_REFERENCE_SIDLE_TREE( channel.fromList( params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] ) ).db :
-                        channel.empty()
+                        params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] && !params.ref_taxonomy_storage ?
+                            channel.fromList( params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] ).map { it -> file(it) } :
+                                channel.empty()
         val_sidle_ref_taxonomy = params.sidle_ref_taxonomy.replace('=','_').replace('.','_')
     }
 
@@ -325,15 +329,15 @@ workflow AMPLISEQ {
     } else if (params.dada_ref_taxonomy && !params.skip_dada_taxonomy && !params.skip_taxonomy) {
         //standard ref taxonomy input from params.dada_ref_taxonomy & conf/ref_databases.config
         // database files
-        ch_dada_ref_taxonomy_url = params.dada_ref_databases.containsKey(params.dada_ref_taxonomy) ?
-            channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["file"]) :
-                channel.empty()
-        ch_dada_ref_taxonomy = DOWNLOAD_REFERENCE_DADA( ch_dada_ref_taxonomy_url ).db.collect()
+        ch_dada_ref_taxonomy_url = channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["file"])
+        ch_dada_ref_taxonomy = 
+            params.ref_taxonomy_storage ? DOWNLOAD_REFERENCE_DADA( ch_dada_ref_taxonomy_url ).db.collect() :
+                ch_dada_ref_taxonomy_url.map { it -> file(it) }
         // name
         val_dada_ref_taxonomy = params.dada_ref_taxonomy.replace('=','_').replace('.','_')
         // taxlevels
         val_dada_taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" :
-            params.dada_ref_databases.containsKey(params.dada_ref_taxonomy) && params.dada_ref_databases[params.dada_ref_taxonomy]["taxlevels"] ?
+            params.dada_ref_databases[params.dada_ref_taxonomy]["taxlevels"] ?
                 params.dada_ref_databases[params.dada_ref_taxonomy]["taxlevels"] : ""
     }
 
@@ -363,9 +367,10 @@ workflow AMPLISEQ {
         }
         val_qiime_ref_taxonomy = "user"
     } else if (params.qiime_ref_taxonomy && run_qiime2_taxonomy) {
-        ch_qiime_ref_taxonomy_url = params.qiime_ref_databases.containsKey(params.qiime_ref_taxonomy) ?
-            channel.fromList(params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"]) : channel.empty()
-        ch_qiime_ref_taxonomy = DOWNLOAD_REFERENCE_QIIME( ch_qiime_ref_taxonomy_url ).db.collect()
+        ch_qiime_ref_taxonomy_url = channel.fromList(params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"])
+        ch_qiime_ref_taxonomy = 
+            params.ref_taxonomy_storage ? DOWNLOAD_REFERENCE_QIIME( ch_qiime_ref_taxonomy_url ).db.collect() :
+                ch_qiime_ref_taxonomy_url.map { it -> file(it) }
         val_qiime_ref_taxonomy = params.qiime_ref_taxonomy.replace('=','_').replace('.','_')
     }
 
@@ -376,13 +381,14 @@ workflow AMPLISEQ {
 
     if (params.sintax_ref_taxonomy && !params.skip_taxonomy) {
         // database files
-        ch_sintax_ref_taxonomy_url = params.sintax_ref_databases.containsKey(params.sintax_ref_taxonomy) ?
-            channel.fromList(params.sintax_ref_databases[params.sintax_ref_taxonomy]["file"]) : channel.empty()
-        ch_sintax_ref_taxonomy = DOWNLOAD_REFERENCE_SINTAX( ch_sintax_ref_taxonomy_url ).db.collect()
+        ch_sintax_ref_taxonomy_url = channel.fromList(params.sintax_ref_databases[params.sintax_ref_taxonomy]["file"])
+        ch_sintax_ref_taxonomy = 
+            params.ref_taxonomy_storage ? DOWNLOAD_REFERENCE_SINTAX( ch_sintax_ref_taxonomy_url ).db.collect() :
+                ch_sintax_ref_taxonomy_url.map { it -> file(it) }
         // name
         val_sintax_ref_taxonomy = params.sintax_ref_taxonomy.replace('=','_').replace('.','_')
         // taxlevels
-        val_sintax_taxlevels = params.sintax_ref_databases.containsKey(params.sintax_ref_taxonomy) && params.sintax_ref_databases[params.sintax_ref_taxonomy]["taxlevels"] ?
+        val_sintax_taxlevels = params.sintax_ref_databases[params.sintax_ref_taxonomy]["taxlevels"] ?
             params.sintax_ref_databases[params.sintax_ref_taxonomy]["taxlevels"] : ""
     }
 
@@ -399,14 +405,15 @@ workflow AMPLISEQ {
     } else if (params.kraken2_ref_taxonomy && !params.skip_taxonomy) {
         //standard ref taxonomy input from params.dada_ref_taxonomy & conf/ref_databases.config
         // database files
-        ch_kraken2_ref_taxonomy_url = params.kraken2_ref_databases.containsKey(params.kraken2_ref_taxonomy) ?
-            channel.fromList(params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["file"]) : channel.empty()
-        ch_kraken2_ref_taxonomy = DOWNLOAD_REFERENCE_KRAKEN( ch_kraken2_ref_taxonomy_url ).db
+        ch_kraken2_ref_taxonomy_url = channel.fromList(params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["file"])
+        ch_kraken2_ref_taxonomy = 
+            params.ref_taxonomy_storage ? DOWNLOAD_REFERENCE_KRAKEN( ch_kraken2_ref_taxonomy_url ).db :
+                ch_kraken2_ref_taxonomy_url.map { it -> file(it) }
         // name
         val_kraken2_ref_taxonomy = params.kraken2_ref_taxonomy.replace('=','_').replace('.','_')
         // taxlevels
         val_kraken2_taxlevels = params.kraken2_assign_taxlevels ? "${params.kraken2_assign_taxlevels}" :
-            params.kraken2_ref_databases.containsKey(params.kraken2_ref_taxonomy) && params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["taxlevels"] ?
+            params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["taxlevels"] ?
                 params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["taxlevels"] : ""
     }
 

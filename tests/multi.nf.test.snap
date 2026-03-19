@@ -299,10 +299,10 @@
             "descriptive_stats.tsv:md5,f6c6527f32005a005fef4d1830874a3e",
             "seven_number_summary.tsv:md5,4b177ed9a865e3320953b69860a435ef"
         ],
+        "timestamp": "2026-03-12T08:53:15.184666793",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-22T19:49:00.719435899"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
     }
 }

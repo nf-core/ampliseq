@@ -94,10 +94,10 @@
             "ref_taxonomy.rdp_18.txt:md5,c20d8e186e2893ba7818a0115edb013e",
             "ASV_seqs.fasta:md5,39b0d4ad96b37fa68d4ee5c21b667fed"
         ],
+        "timestamp": "2026-03-12T08:44:29.251548534",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-22T19:41:53.09580214"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
     }
 }

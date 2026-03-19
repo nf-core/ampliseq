@@ -2233,6 +2233,10 @@
             "DADA2_stats.tsv:md5,54a1ac8d6c5a3ff15f700c4b2dd40c86",
             "DADA2_table.rds:md5,d095501019ce7ebccfa0eb801db1ed29",
             "DADA2_table.tsv:md5,5c9fb0bfd70da165f0ce6a361bfe0b43",
+            "decontaminated.tsv:md5,a8b1235efe3cf3b215ab8bafa2c0996c",
+            "decontaminated_counts.tsv:md5,f519211d0ac2cb979b09d3803e8ca3fa",
+            313,
+            "decontaminated_log.tsv:md5,e4af6016bd48a5eda8f1aa9aad3ed712",
             "Samplesheet.tsv:md5,51ff46f4b431730e41b6950ae3b20e35",
             "Metadata.tsv:md5,060b56528bb566eed71f6dfdb52cc395",
             "multiqc_fastqc.txt:md5,7d23984b06e4251f17e1cfce7a04aaae",
@@ -2241,20 +2245,14 @@
             "dna.tsv:md5,46bb52a05204ade2d571ac089f732012",
             "emof.tsv:md5,52ff7d226c79b1f78d5f4895d748f915",
             "event.tsv:md5,d275c5c0d7dbf7a5b2c61082fbce486d",
-            [
-                "decontaminated.tsv:md5,a8b1235efe3cf3b215ab8bafa2c0996c",
-                "decontaminated_counts.tsv:md5,f519211d0ac2cb979b09d3803e8ca3fa",
-                "decontaminated_details.tsv:md5,a652dc83ba98d453ddb7ce4d836a6869",
-                "decontaminated_log.tsv:md5,e4af6016bd48a5eda8f1aa9aad3ed712"
-            ],
             "ASV_post_clustering_filtered.fna:md5,57379771c59df16d0c0164db34e8f148",
             "ASV_post_clustering_filtered.stats.tsv:md5,222f6a7cdbf2d4b3f745a49359a61c0d",
             "ASV_post_clustering_filtered.table.tsv:md5,e607469a32d490bbe139e9196ff4a47d"
         ],
+        "timestamp": "2026-03-17T14:57:00.573485146",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-22T19:25:44.809666243"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
     }
 }

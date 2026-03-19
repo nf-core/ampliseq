@@ -8,10 +8,12 @@
 // MODULE & SUBWORKFLOW: Installed directly from nf-core/modules & nf-core/subworkflows
 //
 
-include { FASTQC                            } from '../modules/nf-core/fastqc/main'
-include { MULTIQC                           } from '../modules/nf-core/multiqc/main'
-include { VSEARCH_CLUSTER                   } from '../modules/nf-core/vsearch/cluster/main'
-include { FASTA_NEWICK_EPANG_GAPPA          } from '../subworkflows/nf-core/fasta_newick_epang_gappa/main'
+include { FASTQC                                        } from '../modules/nf-core/fastqc/main'
+include { MULTIQC                                       } from '../modules/nf-core/multiqc/main'
+include { VSEARCH_CLUSTER                               } from '../modules/nf-core/vsearch/cluster/main'
+include { FASTA_HMMSEARCH_RANK_FASTAS                   } from '../subworkflows/nf-core/fasta_hmmsearch_rank_fastas'
+include { FASTA_NEWICK_EPANG_GAPPA as PPLACE_STANDARD   } from '../subworkflows/nf-core/fasta_newick_epang_gappa/main'
+include { FASTA_NEWICK_EPANG_GAPPA as PPLACE_SHEET      } from '../subworkflows/nf-core/fasta_newick_epang_gappa/main'
 
 //
 // MODULE: Installed directly from nf-core/modules
@@ -55,7 +57,8 @@ include { QIIME2_TABLEFILTERTAXA        } from '../modules/local/qiime2_tablefil
 include { QIIME2_SEQFILTERTABLE         } from '../modules/local/qiime2_seqfiltertable'
 include { QIIME2_INASV                  } from '../modules/local/qiime2_inasv'
 include { QIIME2_INTREE                 } from '../modules/local/qiime2_intree'
-include { FORMAT_PPLACETAX              } from '../modules/local/format_pplacetax'
+include { FORMAT_PPLACETAX as PPLACEFORMATTAX_STANDARD  } from '../modules/local/format_pplacetax'
+include { FORMAT_PPLACETAX as PPLACEFORMATTAX_SHEET     } from '../modules/local/format_pplacetax'
 include { FILTER_STATS                  } from '../modules/local/filter_stats'
 include { MERGE_STATS as MERGE_STATS_FILTERTAXA } from '../modules/local/merge_stats'
 include { QIIME2_BARPLOT                } from '../modules/local/qiime2_barplot'
@@ -69,6 +72,7 @@ include { SUMMARY_REPORT                } from '../modules/local/summary_report'
 include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_PPLACE } from '../modules/local/phyloseq_intax'
 include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_QIIME2 } from '../modules/local/phyloseq_intax'
 include { FILTER_CLUSTERS               } from '../modules/local/filter_clusters'
+include { HMMER_HMMEXTRACT              } from '../modules/local/hmmer/hmmextract'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
@@ -179,6 +183,30 @@ workflow AMPLISEQ {
         ch_input_reads = PARSE_INPUT.out.reads
     } else {
         error("One of `--input`, `--input_fasta`, `--input_folder` must be provided!")
+    }
+
+    // Parse the --pplace_sheet file if present
+    ch_pplace_sheet = channel.empty()
+    if ( params.pplace_sheet ) {
+        ch_pplace_sheet = Channel.fromPath(params.pplace_sheet)
+            .splitCsv(header: true)
+            .map { it ->
+                [
+                    meta: [
+                        id: it.target,
+                        min_bitscore: it.min_bitscore
+                    ],
+                    data: [
+                        alignmethod:    it.alignmethod  ? it.alignmethod                             : 'hmmer',
+                        hmm:            file(it.hmm,  checkIfExists: true),
+                        extract_hmm:    it.extract_hmm,
+                        refseqfile:     it.refseqfile   ? file(it.refseqfile,   checkIfExists: true) : [],
+                        refphylogeny:   it.refphylogeny ? file(it.refphylogeny, checkIfExists: true) : [],
+                        model:          it.model,
+                        taxonomy:       it.taxonomy     ? file(it.taxonomy,     checkIfExists: true) : []
+                    ]
+                ]
+            }
     }
 
     //
@@ -727,7 +755,14 @@ workflow AMPLISEQ {
         ch_sintax_tax = channel.empty()
     }
 
-    // Phylo placement
+    //
+    // Phylogenetic placement
+    //
+
+    //
+    // Single reference variant
+    //
+
     if ( params.pplace_tree ) {
         ch_pp_data = ch_fasta.map { it ->
             [ meta: [ id: params.pplace_name ?: 'user_tree' ],
@@ -741,12 +776,74 @@ workflow AMPLISEQ {
                 taxonomy:     params.pplace_taxonomy ? file( params.pplace_taxonomy, checkIfExists: true ) : []
             ] ]
         }
-        FASTA_NEWICK_EPANG_GAPPA ( ch_pp_data )
-        ch_versions = ch_versions.mix( FASTA_NEWICK_EPANG_GAPPA.out.versions )
-        ch_pplace_tax = FORMAT_PPLACETAX ( FASTA_NEWICK_EPANG_GAPPA.out.taxonomy_per_query ).tsv
+        PPLACE_STANDARD ( ch_pp_data )
+        ch_versions = ch_versions.mix( PPLACE_STANDARD.out.versions )
+        ch_pplace_tax = PPLACEFORMATTAX_STANDARD ( PPLACE_STANDARD.out.taxonomy_per_query ).tsv
         ch_tax_for_robject = ch_tax_for_robject.mix ( PHYLOSEQ_INTAX_PPLACE ( ch_pplace_tax ).tsv.map { it -> [ "pplace", file(it) ] } )
     } else {
         ch_pplace_tax = channel.empty()
+    }
+
+    //
+    // Multiple references with hmms
+    //
+
+    // For search entries with a named hmm to extract, call extraction
+    ch_pplace_sheet
+        .filter { it.data.extract_hmm }
+        .map { [ it.meta, it.data.hmm, it.data.extract_hmm ] }
+        .set { ch_hmmextract }
+
+    HMMER_HMMEXTRACT(ch_hmmextract)
+    ch_versions = ch_versions.mix(HMMER_HMMEXTRACT.out.versions)
+
+    // Create an input channel for FASTA_HMMSEARCH_RANK_FASTAS by adding the non-keyed entries from the original channel to the output of the extracted
+    ch_search_profiles = HMMER_HMMEXTRACT.out.hmm
+        .mix(
+            ch_pplace_sheet
+                .filter { it -> ! it.data.extract_hmm }
+                .map { it -> [ it.meta, it.data.hmm ] }
+        )
+
+    //
+    // SUBWORKFLOW: Search the ASV fasta with the hmms for phyloplacement
+    //
+    FASTA_HMMSEARCH_RANK_FASTAS(ch_search_profiles, ch_fasta)
+    ch_versions = ch_versions.mix(FASTA_HMMSEARCH_RANK_FASTAS.out.versions)
+
+    ch_phyloplace_data = FASTA_HMMSEARCH_RANK_FASTAS.out.seqfastas
+        .join(
+            ch_pplace_sheet
+                .filter { it -> it.data.alignmethod && it.data.refseqfile && it.data.refphylogeny }
+                .map { it -> [ [ id: it.meta.id ], it ] }
+        )
+        .map { it -> [
+            meta: it[2].meta,
+            data: [
+                alignmethod: it[2].data.alignmethod,
+                queryseqfile: it[1],
+                refseqfile: it[2].data.refseqfile,
+                refphylogeny: it[2].data.refphylogeny,
+                model: it[2].data.model,
+                taxonomy: it[2].data.taxonomy
+            ]
+        ] }
+
+    //
+    // SUBWORKFLOW: Run phylogenetic placement
+    //
+    PPLACE_SHEET(ch_phyloplace_data)
+    ch_versions = ch_versions.mix(PPLACE_SHEET.out.versions)
+
+    PPLACEFORMATTAX_SHEET(PPLACE_SHEET.out.taxonomy_per_query)
+    ch_versions = ch_versions.mix(PPLACEFORMATTAX_SHEET.out.versions)
+
+    // Currently, this channel used only for QIIME2_EXPORT and not QIIME2_INTAX since the call to the latter is wrapped in an if clause checking params.pplace_tree
+    if ( ! params.pplace_tree ) {
+        ch_pplace_tax = PPLACEFORMATTAX_SHEET.out.tsv
+            .splitCsv(sep: '\t', header: true)
+            .map { r -> "${r.ASV_ID}\t${r.taxonomy}\n" }
+            .collectFile(name: 'concatenated_taxonomy.tsv', seed: "ASV_ID\ttaxonomy\n")
     }
 
     //QIIME2
@@ -792,7 +889,7 @@ workflow AMPLISEQ {
 
         // Import phylogenetic tree into QIIME2
         if ( params.pplace_tree ) {
-            ch_tree = QIIME2_INTREE ( FASTA_NEWICK_EPANG_GAPPA.out.grafted_phylogeny ).qza
+            ch_tree = QIIME2_INTREE ( PPLACE_STANDARD.out.grafted_phylogeny ).qza
             ch_versions = ch_versions.mix( QIIME2_INTREE.out.versions )
         } else if (params.multiregion) {
             ch_tree = SIDLE_WF.out.tree_qza
@@ -809,7 +906,7 @@ workflow AMPLISEQ {
             log.info "Use multi-region SIDLE taxonomy classification"
             val_used_taxonomy = "SIDLE"
             ch_tax = SIDLE_WF.out.tax_qza
-        } else if ( params.pplace_tree && params.pplace_taxonomy) {
+        } else if ( params.pplace_tree && params.pplace_taxonomy ) {
             log.info "Use EPA-NG / GAPPA taxonomy classification"
             val_used_taxonomy = "phylogenetic placement"
             ch_tax = QIIME2_INTAX ( ch_pplace_tax, "parse_dada2_taxonomy.r" ).qza
@@ -966,7 +1063,7 @@ workflow AMPLISEQ {
     //
     if ( !params.skip_taxonomy && ( !params.skip_phyloseq || !params.skip_tse ) ) {
         if ( params.pplace_tree ) {
-            ch_tree_for_robject = FASTA_NEWICK_EPANG_GAPPA.out.grafted_phylogeny.map { it -> it[1] }.first()
+            ch_tree_for_robject = PPLACE_STANDARD.out.grafted_phylogeny.map { it -> it[1] }.first()
         } else if (params.multiregion) {
             ch_tree_for_robject = SIDLE_WF.out.tree_nwk
         } else if ( run_qiime2 && params.metadata && (!params.skip_alpha_rarefaction || !params.skip_diversity_indices) ) {
@@ -1117,7 +1214,7 @@ workflow AMPLISEQ {
             !params.skip_taxonomy && params.sintax_ref_taxonomy ? ch_sintax_tax.ifEmpty( [] ) : [],
             !params.skip_taxonomy && ( params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom ) ? KRAKEN2_TAXONOMY_WF.out.tax_tsv.ifEmpty( [] ) : [],
             !params.skip_taxonomy && params.pplace_tree ? ch_pplace_tax.ifEmpty( [] ) : [],
-            !params.skip_taxonomy && params.pplace_tree ? FASTA_NEWICK_EPANG_GAPPA.out.heattree.ifEmpty( [[],[]] ) : [[],[]],
+            !params.skip_taxonomy && params.pplace_tree ? PPLACE_STANDARD.out.heattree.ifEmpty( [[],[]] ) : [[],[]],
             !params.skip_taxonomy && ( params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier ) && run_qiime2_taxonomy ? QIIME2_TAXONOMY.out.tsv.ifEmpty( [] ) : [],
             run_qiime2,
             run_qiime2 ? val_used_taxonomy : "",

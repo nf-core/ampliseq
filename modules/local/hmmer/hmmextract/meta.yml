@@ -1,0 +1,49 @@
+name: hmmer_hmmextract
+description: extract HMM profile(s) from a set of profiles
+keywords:
+  - Hidden Markov Model
+  - HMM
+  - hmmer
+  - hmmextract
+tools:
+  - hmmer:
+      description: Biosequence analysis using profile hidden Markov models
+      homepage: http://hmmer.org/
+      documentation: http://hmmer.org/documentation.html
+      tool_dev_url: https://github.com/EddyRivasLab/hmmer
+      doi: "10.1371/journal.pcbi.1002195"
+      licence: ["BSD"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - hmm:
+        type: file
+        description: A set of one or more HMM profiles created with hmmbuild
+        pattern: "*.{hmm,hmm.gz}"
+    - key:
+        type: string
+        description: The name of the HMM to be extracted
+output:
+  - hmm:
+      - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*.hmm":
+          type: file
+          description: Extracted HMM profile.
+          pattern: "*.hmm"
+  - versions:
+      - versions.yml:
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+authors:
+  - "@erikrikarddaniel"
+maintainers:
+  - "@erikrikarddaniel"

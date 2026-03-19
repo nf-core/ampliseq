@@ -1,6 +1,6 @@
 process GAPPA_EXAMINEASSIGN {
     tag "$meta.id"
-    label 'process_medium'
+    label 'process_medium_memory'
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -33,6 +33,18 @@ process GAPPA_EXAMINEASSIGN {
         --jplace-path $jplace \\
         --taxon-file $taxonomy \\
         --file-prefix ${prefix}.
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gappa: \$(echo \$(gappa --version 2>&1 | sed 's/v//' ))
+    END_VERSIONS
+    """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch ${prefix}.profile.tsv
+    touch ${prefix}.labelled_tree.newick
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

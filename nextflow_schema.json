@@ -542,6 +542,16 @@
                     "description": "ASV fasta will be subset into chunks of this size for classification",
                     "default": 10000
                 },
+                "pplace_sheet": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/tsv",
+                    "pattern": "^\\S+\\.(tsv|csv|yml|yaml|txt)$",
+                    "fa_icon": "fas fa-dna",
+                    "description": "Spreadsheet with phylogenetic placement information. Possible columns: target, alignmethod, hmm, extract_hmm, align_hmm, align_extract_hmm, refseqfile, refphylogeny, model, taxonomy.",
+                    "help_text": "This specifies parameters for phylogenetic placement of sequences onto a reference phylogeny after first using HMMER to search through ASV sequences in contrast to the other `--pplace_*` parameters with which all ASVs are placed in the same reference phylogeny. The file needs to have at least two columns that specifies search HMM profiles ('target' and 'hmm') and at least three columns specifying the reference phylogenies ('refseqfile', 'refphylogeny' and 'model') for placement of search results. (Decoy profiles, i.e. profiles only used for searches, not placements, are allowed. Specify only 'target' and 'hmm' for these.) See [usage docs](https://nf-co.re/ampliseq/usage#multiple-reference-phylogenetic-placement).",
+                    "schema": "assets/schema_pplace_sheet.json"
+                },
                 "pplace_tree": {
                     "type": "string",
                     "description": "Newick file with reference phylogenetic tree. Requires also `--pplace_aln` and `--pplace_model`."
@@ -556,9 +566,9 @@
                 },
                 "pplace_alnmethod": {
                     "type": "string",
-                    "description": "Method used for alignment, \"hmmer\" or \"mafft\"",
-                    "default": "hmmer",
-                    "enum": ["hmmer", "mafft"]
+                    "description": "Method used for alignment, \"clustalo\", \"hmmer\" or \"mafft\"",
+                    "default": "clustalo",
+                    "enum": ["clustalo", "hmmer", "mafft"]
                 },
                 "pplace_taxonomy": {
                     "type": "string",
@@ -888,6 +898,20 @@
             },
             "fa_icon": "fas fa-book-open"
         },
+        "running_specific_steps": {
+            "title": "Running specific steps",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "run_pplace": {
+                    "type": "boolean",
+                    "description": "Run phylogenetic placement when reference trees are specified by the selected `--dada_ref_taxonomy`",
+                    "default": false
+                }
+            },
+            "fa_icon": "fas fa-hand-paper"
+        },
         "skipping_specific_steps": {
             "title": "Skipping specific steps",
             "type": "object",
@@ -1170,6 +1194,9 @@
         },
         {
             "$ref": "#/$defs/pipeline_report"
+        },
+        {
+            "$ref": "#/$defs/running_specific_steps"
         },
         {
             "$ref": "#/$defs/skipping_specific_steps"

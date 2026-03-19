@@ -20,6 +20,10 @@
   - [Multiple region analysis with Sidle](#multiple-region-analysis-with-sidle)
   - [Metadata](#metadata)
   - [Differential abundance analysis](#differential-abundance-analysis)
+  - [Phylogenetic placement](#phylogenetic-placement)
+    - [Single reference phylogenetic placement](#single-reference-phylogenetic-placement)
+    - [Multiple reference phylogenetic placement](#multiple-reference-phylogenetic-placement)
+    - [Placement in database-provided phylogenies](#placement-in-database-provided-phylogenies)
   - [Updating the pipeline](#updating-the-pipeline)
   - [Reproducibility](#reproducibility)
 - [Core Nextflow arguments](#core-nextflow-arguments)
@@ -252,22 +256,22 @@ Default setting for taxonomic classification is DADA2 with the SILVA reference t
 
 Pre-configured reference taxonomy databases are:
 
-| Database key | DADA2 | SINTAX | Kraken2 | QIIME2 | Target genes                                  |
-| ------------ | ----- | ------ | ------- | ------ | --------------------------------------------- |
-| silva        | +¹    | -      | +       | +      | 16S rRNA                                      |
-| gtdb         | +²    | -      | -       | -      | 16S rRNA                                      |
-| sbdi-gtdb    | +     | -      | -       | -      | 16S rRNA                                      |
-| rdp          | +     | -      | +       | -      | 16S rRNA                                      |
-| greengenes   | -     | -      | +       | (+)³   | 16S rRNA                                      |
-| greengenes2  | +     | -      | -       | +      | 16S rRNA                                      |
-| pr2          | +     | -      | -       | -      | 18S rRNA                                      |
-| unite-fungi  | +     | +      | -       | -      | eukaryotic nuclear ribosomal ITS region       |
-| unite-alleuk | +     | +      | -       | -      | eukaryotic nuclear ribosomal ITS region       |
-| coidb        | +     | +      | -       | -      | eukaryotic Cytochrome Oxidase I (COI)         |
-| midori2-co1  | +     | -      | -       | -      | eukaryotic Cytochrome Oxidase I (COI)         |
-| phytoref     | +     | -      | -       | -      | eukaryotic plastid 16S rRNA                   |
-| zehr-nifh    | +     | -      | -       | -      | Nitrogenase iron protein NifH                 |
-| standard     | -     | -      | +       | -      | any in genomes of archaea, bacteria, viruses⁴ |
+| Database key | DADA2 | SINTAX | Kraken2 | QIIME2 | Phyloplace | Target genes                                  |
+| ------------ | ----- | ------ | ------- | ------ | ---------- | --------------------------------------------- |
+| silva        | +¹    | -      | +       | +      | -          | 16S rRNA                                      |
+| gtdb         | +²    | -      | -       | -      | -          | 16S rRNA                                      |
+| sbdi-gtdb    | +     | -      | -       | -      | +          | 16S rRNA                                      |
+| rdp          | +     | -      | +       | -      | -          | 16S rRNA                                      |
+| greengenes   | -     | -      | +       | (+)³   | -          | 16S rRNA                                      |
+| greengenes2  | +     | -      | -       | +      | -          | 16S rRNA                                      |
+| pr2          | +     | -      | -       | -      | -          | 18S rRNA                                      |
+| unite-fungi  | +     | +      | -       | -      | -          | eukaryotic nuclear ribosomal ITS region       |
+| unite-alleuk | +     | +      | -       | -      | -          | eukaryotic nuclear ribosomal ITS region       |
+| coidb        | +     | +      | -       | -      | -          | eukaryotic Cytochrome Oxidase I (COI)         |
+| midori2-co1  | +     | -      | -       | -      | -          | eukaryotic Cytochrome Oxidase I (COI)         |
+| phytoref     | +     | -      | -       | -      | -          | eukaryotic plastid 16S rRNA                   |
+| zehr-nifh    | +     | -      | -       | -      | -          | Nitrogenase iron protein NifH                 |
+| standard     | -     | -      | +       | -      | -          | any in genomes of archaea, bacteria, viruses⁴ |
 
 ¹: As of Silva version 138 optimized for classification of Bacteria and Archaea, not suitable for Eukaryotes; ²[`--dada_taxonomy_rc`](https://nf-co.re/ampliseq/parameters#dada_taxonomy_rc) is recommended; ³: de-replicated at 85%, only for testing purposes; ⁴: quality of results might vary
 
@@ -277,6 +281,7 @@ Special features of taxonomic classification tools:
 - Kraken2 is very fast and can use large databases containing complete genomes.
 - QIIME2's reference taxonomy databases will have regions matching the amplicon extracted with primer sequences.
 - DADA2, Kraken2, and QIIME2 have specific parameters to accept custom databases (but theoretically possible with all classifiers)
+- Phyloplace assigns taxonomy by placement on reference phylogenies provided with the database, see [Placement in database provided phylogenies](#placement-in-database-provided-phylogenies).
 
 Parameter guidance is given in [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#taxonomic-assignment). Citations are listed in [`CITATIONS.md`](CITATIONS.md).
 
@@ -357,9 +362,51 @@ The columns which are to be assessed can be specified by `--metadata_category`. 
 
 Differential abundance analysis for relative abundance from microbial community analysis are plagued by multiple issues that aren't fully solved yet. But some approaches seem promising, for example Analysis of Composition of Microbiomes with Bias Correction ([ANCOM-BC](https://pubmed.ncbi.nlm.nih.gov/32665548/)). [ANCOM](https://pubmed.ncbi.nlm.nih.gov/26028277/) and ANCOM-BC are integrated into the pipeline, but only executed on request via `--ancom` and `--ancombc`, more details in the [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#differential-abundance-analysis).
 
+### Phylogenetic placement
+
+The pipeline can perform phylogenetic placement of ASV sequences in reference trees using [EPA-NG](https://github.com/pierrebarbera/epa-ng) using the same code as [nf-core/phyloplace](https://nf-co.re/phyloplace).
+This can be done either a single reference for all ASV sequences, or multiple references, see below.
+
+#### Single reference phylogenetic placement
+
+Adding the parameters `--pplace_tree`, `--place_aln`, `--pplace_alnmethod`, `--place_model`, `--pplace_taxonomy` and `--pplace_name` will perform phylogenetic placement of ASV sequences in the specified reference phylogeny.
+See the [nf-core/ampliseq parameter documentation](https://nf-co.re/ampliseq/parameters) for more information about the parameters.
+
+#### Multiple reference phylogenetic placement
+
+The pipeline can select reference trees for placement from a set by first running [HMMER](http://hmmer.org/).
+The set is provided with a spreadsheet passed to the [`--pplace_sheet`](https://nf-co.re/ampliseq/parameters#pplace_sheet), see example below.
+Each row in the spreadsheet needs to specify at least `target` and `hmm`.
+For each ASV sequence, the best matching hmm profile decides which reference phylogeny, if any, will be used for placement.
+When there's a `refseqfile`, `refphylogeny`, `model` and `taxonomy`, best matching ASV sequences will be placed in the specified phylogeny.
+If there is no reference tree information, ASV sequences matching these hmm profiles best will not be placed.
+The latter can be used to attract false positive sequences away from being placed in any of the trees.
+For hmm files with multiple profiles, the `extract_hmm` specifies which profile to use.
+Finally, you can specify `min_bitscore` to set a minimum score for a sequence to be included in further processing.
+
+> [!NOTE]
+> For different reasons, taxonomies created by phylogenetic placement in multiple reference trees are currently not used as taxonomy for downstream analyses such as QIIME2.
+
+```csv title="pplace_sheet.csv"
+target,alignmethod,hmm,extract_hmm,refseqfile,refphylogeny,model,taxonomy
+archaea16s,clustalo,https://raw.githubusercontent.com/tseemann/barrnap/master/db/arc.hmm,16S_rRNA,archaea.newick,archaea.alnfna,GTR+F+I+G4,archaea.taxonomy.tsv
+bacteria16s,clustalo,https://raw.githubusercontent.com/tseemann/barrnap/master/db/bac.hmm,16S_rRNA,bacteria.newick,bacteria.alnfna,GTR+F+I+G4,bacteria.taxonomy.tsv
+euk18s,clustalo,https://raw.githubusercontent.com/tseemann/barrnap/master/db/euk.hmm,18S_rRNA,,,,
+```
+
+#### Placement in database-provided phylogenies
+
+Reference databases for taxonomy can provide reference phylogenies for placement (currently only SBDI-GTDB from release R10-RS226-2).
+This is not run by default since it takes quite a lot of resources.
+If you want to enable this, set `--run_pplace`.
+
+> [!NOTE]
+> Since phylogenetic placement requires a lot of memory when the reference phylogeny is large, we have set the minimum memory for two processes to 60 GiB in order to work with the GTDB bacterial tree.
+> If your tree is smaller, the setting can be lowered for the `EPANG_PLACE` and `GAPPA_ASSIGN` processes, see [resource requests](#resource-requests) below.
+
 ### Updating the pipeline
 
-When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
+When you run the below command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
 
 ```bash
 nextflow pull nf-core/ampliseq

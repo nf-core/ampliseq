@@ -242,10 +242,10 @@
             "multiqc_general_stats.txt:md5,ded4ce8dd8c11463dd34317fb736e2ec",
             "multiqc_cutadapt.txt:md5,1409f3286d810cdc14d8e672556d9226"
         ],
+        "timestamp": "2026-03-12T08:46:54.877184346",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-22T19:43:36.553308501"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
     }
 }

@@ -608,10 +608,10 @@
             "multiqc_general_stats.txt:md5,68f2972dd2d44e499d5afac6cf8624c8",
             "multiqc_cutadapt.txt:md5,d845cb0bde470ed3b7ba32edb2e76f83"
         ],
+        "timestamp": "2026-03-11T21:16:18.208303054",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-22T19:59:11.718025642"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
     }
 }

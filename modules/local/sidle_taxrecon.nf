@@ -30,7 +30,7 @@ process SIDLE_TAXRECON {
         $args \\
         --o-reconstructed-taxonomy reconstruction_taxonomy.qza
 
-    #export visualisation test
+    #export visualisation
     qiime metadata tabulate \\
         --m-input-file reconstruction_taxonomy.qza \\
         --o-visualization reconstruction_taxonomy.qzv

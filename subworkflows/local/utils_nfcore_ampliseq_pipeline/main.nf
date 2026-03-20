@@ -271,10 +271,10 @@ def validateInputParameters() {
     ]
     if (params.sbdiexport){
         if (params.sintax_ref_taxonomy ) {
-            if ( !Arrays.stream(sbdi_compatible_databases).any{ entry -> params.sintax_ref_taxonomy.toString().equals(entry) } ) {
+            if ( !sbdi_compatible_databases.contains(params.sintax_ref_taxonomy) ) {
                 error("Incompatible parameters: `--sbdiexport` does not work with the chosen database of `--sintax_ref_taxonomy` because the expected taxonomic levels do not match.")
             }
-        } else if ( !Arrays.stream(sbdi_compatible_databases).any{ entry -> params.dada_ref_taxonomy.toString().equals(entry) } ) {
+        } else if ( !sbdi_compatible_databases.contains(params.dada_ref_taxonomy) ) {
             error("Incompatible parameters: `--sbdiexport` does not work with the chosen database of `--dada_ref_taxonomy` because the expected taxonomic levels do not match.")
         }
     }

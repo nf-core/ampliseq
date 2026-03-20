@@ -23,15 +23,6 @@ process SIDLE_TAXRECON {
     export MPLCONFIGDIR="./mplconfigdir"
     export NUMBA_CACHE_DIR="./numbacache"
 
-    #understand input args
-    echo "Args:"
-    echo "$args"
-    echo "___"
-
-    #visualize arguments
-    echo "$args" > args.txt
-    cat args.txt
-
     #reconstruct taxonomy
     qiime sidle reconstruct-taxonomy \\
         --i-reconstruction-map ${reconstruction_map} \\

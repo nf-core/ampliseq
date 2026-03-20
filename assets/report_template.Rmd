@@ -547,7 +547,7 @@ if ( params$flag_single_end ) {
     # Stack columns for both stacked barcharts
     n_samples <- length(dada_stats_p$sample)
     samples_t <- c(rep(dada_stats_p$sample, 7))
-    steps_t <- c(rep("excluded by filtering", n_samples), 
+    steps_t <- c(rep("excluded by filtering", n_samples),
                 rep("forward not denoised", n_samples),
                 rep("reverse not denoised", n_samples),
                 rep("one read not denoised", n_samples),

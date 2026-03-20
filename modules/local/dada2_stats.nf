@@ -42,7 +42,7 @@ process DADA2_STATS {
 
         #track reads through pipeline
         getN <- function(x) sum(getUniques(x))
-        get_acc <- function(x) sum(x\$abundance[x\$accept]) 
+        get_acc <- function(x) sum(x\$abundance[x\$accept])
         if ( nrow(filter_and_trim) == 1 ) {
             track <- cbind(filter_and_trim, getN(dadaFs), getN(dadaRs), getN(mergers), get_acc(mergers), rowSums(nochim))
         } else {

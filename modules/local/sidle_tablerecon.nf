@@ -23,14 +23,19 @@ process SIDLE_TABLERECON {
     def region_input = ""
     // input must be sorted already by regions
     def df = [region, aligned_map, table].transpose()
+    def minCounts = task.ext.min_counts ?: 0
+
     df.each { i ->
-        region_input += " --p-region "+i[0]+" --i-regional-alignment "+i[1]+" --i-regional-table "+i[2]
+        def table_base = i[2].toString().replaceAll(/\.qza$/, '')
+        region_input += " --p-region ${i[0]} --i-regional-alignment ${i[1]} --i-regional-table ${table_base}.filtered.qza"
     }
     """
     #https://q2-sidle.readthedocs.io/en/latest/reconstruction.html#table-reconstruction
     export XDG_CONFIG_HOME="./xdgconfig"
     export MPLCONFIGDIR="./mplconfigdir"
     export NUMBA_CACHE_DIR="./numbacache"
+
+    prefilter_sidle_tablerecon.sh "${minCounts}" ${table}
 
     qiime sidle reconstruct-counts \\
         --p-n-workers $task.cpus \\

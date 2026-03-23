@@ -261,7 +261,7 @@
             "DADA2_table.tsv:md5,a4f790561f01ed078ed95a505295b528",
             "Samplesheet_pacbio_ITS.tsv:md5,905b0fc4850149d6457c9da7076c2c2d",
             "Metadata_pacbio_ITS.tsv:md5,51d81b0fe29f6377fa21ce8399fc5ae0",
-            "ASV_ITS_seqs.full.fasta:md5,e8b75bc17937d18009094a8805e648d0",
+            "ASV_ITS_seqs.full.fasta:md5,1ba189e0f7474b660cf8d6d9afd2c720",
             "ITSxRust.args.txt:md5,5edc28029c799b9112f3d66731b9347a",
             "multiqc_fastqc.txt:md5,f11936dbbf1718301ceba86050e24799",
             "multiqc_general_stats.txt:md5,1fef8358fe3cc974bf05e2f27fc7e250",

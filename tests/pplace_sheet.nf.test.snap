@@ -430,7 +430,7 @@
                 "treesummarizedexperiment",
                 "treesummarizedexperiment/qiime2_TreeSummarizedExperiment.rds"
             ],
-            "overall_summary.tsv:md5,88a323d5ab4374cd1c2c823f112a696e",
+            "overall_summary.tsv:md5,8494c77afeed68d417cb4a1fd25a47d9",
             "rrna.arc.gff:md5,6dae470aace9293d5eb8c318584852dd",
             "rrna.bac.gff:md5,439a9084f089120f700f938dfb58fa41",
             "rrna.euk.gff:md5,c9bc1d9d8fb77dc19c95dee2d53840eb",
@@ -445,12 +445,12 @@
             "multiqc_general_stats.txt:md5,885c19ff3e53d16bfe7937d6694268d7",
             "multiqc_cutadapt.txt:md5,3dce058d2d6c85a3cca7314ae19c5586",
             506,
-            2886,
+            2443,
             1,
             610,
             73,
             1,
-            4469,
+            3826,
             276
         ],
         "timestamp": "2026-03-12T21:41:16.174265927",

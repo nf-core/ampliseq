@@ -179,11 +179,11 @@
                 "summary_report/summary_report.html",
                 "summary_report/versions.yml"
             ],
-            "ASV_seqs.fasta:md5,7b11038ff5eb3c795fc60ddf1cd17156",
-            "ASV_table.tsv:md5,9735aeef0ecad9ea66e7bf2222a3ffb4",
-            "DADA2_stats.tsv:md5,f509e598009556e0730b558022e75278",
+            "ASV_seqs.fasta:md5,0ed4ce8c63b31ee3968232ded3da9875",
+            "ASV_table.tsv:md5,0eb7bf14dc36f52adb15fb7afc5c67fa",
+            "DADA2_stats.tsv:md5,96df9d670428ff2431e370710335bb86",
             "DADA2_table.rds:md5,a475a9459dc32195e67e1e78ab048da4",
-            "DADA2_table.tsv:md5,cb47a29726b9fa4671e022428d2825cd",
+            "DADA2_table.tsv:md5,5625fa73b6c83f9ab00b6a775dd7d2db",
             "Samplesheet_novaseq.tsv:md5,bcca78fe24736f4ee4ea26fdbd47ee64",
             "multiqc_fastqc.txt:md5,a99548124efd185a7d4e33245edcb81b",
             "multiqc_general_stats.txt:md5,92648df79061fa3b17fea104fe1b7641"

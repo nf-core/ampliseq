@@ -2,9 +2,7 @@ process DECONTAM {
     label 'process_single'
 
     conda "bioconda::bioconductor-decontam=1.3.0"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/bioconductor-decontam:1.30.0--r45hdfd78af_0' :
-        'biocontainers/bioconductor-decontam:1.30.0--r45hdfd78af_0' }"
+    container 'biocontainers/bioconductor-decontam:1.30.0--r45hdfd78af_0'
 
     input:
     path(abundances_tsv)                   // first column with feature ids, other columns with numbers; first row with header

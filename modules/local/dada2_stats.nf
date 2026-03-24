@@ -42,21 +42,24 @@ process DADA2_STATS {
 
         #track reads through pipeline
         getN <- function(x) sum(getUniques(x))
+        get_acc <- function(x) sum(x\$abundance[x\$accept])
         if ( nrow(filter_and_trim) == 1 ) {
-            track <- cbind(filter_and_trim, getN(dadaFs), getN(dadaRs), getN(mergers), rowSums(nochim))
+            track <- cbind(filter_and_trim, getN(dadaFs), getN(dadaRs), getN(mergers), get_acc(mergers), rowSums(nochim))
         } else {
             dadaFs_getN <- data.frame( sapply(dadaFs, getN) )
             dadaRs_getN <- data.frame( sapply(dadaRs, getN) )
             mergers_getN <- data.frame( sapply(mergers, getN) )
+            mergers_acc <- data.frame( sapply(mergers, get_acc) )
             nochim_rowSums <- data.frame( rowSums(nochim) )
             track <- cbind(
                 filter_and_trim[order(rownames(filter_and_trim)), ],
                 dadaFs_getN[order(rownames(dadaFs_getN)), ],
                 dadaRs_getN[order(rownames(dadaRs_getN)), ],
                 mergers_getN[order(rownames(mergers_getN)), ],
+                mergers_acc[order(rownames(mergers_acc)), ],
                 nochim_rowSums[order(rownames(nochim_rowSums)), ] )
         }
-        colnames(track) <- c("DADA2_input", "filtered", "denoisedF", "denoisedR", "merged", "nonchim")
+        colnames(track) <- c("DADA2_input", "filtered", "denoisedF", "denoisedR", "denoisedPairs", "merged", "nonchim")
         rownames(track) <- sub(pattern = "_1.fastq.gz\$", replacement = "", rownames(track)) #this is when cutadapt is skipped!
         track <- cbind(sample = sub(pattern = "(.*?)\\\\..*\$", replacement = "\\\\1", rownames(track)), track)
         write.table( track, file = "${prefix}.stats.tsv", sep = "\\t", row.names = FALSE, quote = FALSE, na = '')

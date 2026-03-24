@@ -467,6 +467,7 @@ if ( params$flag_single_end ) {
 } else {
     cat("Processing stages are: input - read pairs into DADA2, filtered - read pairs passed quality filtering, ",
         "denoisedF - forward reads after denoising, denoisedR - reverse reads after denoising, ",
+        "denoisedPairs - read pairs considered for merging, ",
         "merged - successfully merged read pairs, nonchim - read pairs in non-chimeric sequences (final ASVs).")
     if ( params$mergepairs_strategy == "consensus" ) {
         cat(" ASVs were unified by conditional merging or concatenation based on the overlap between reads.")
@@ -517,8 +518,8 @@ if ( params$flag_single_end ) {
     # Stack columns for both stacked barcharts
     n_samples <- length(dada_stats_p$sample)
     samples_t <- c(rep(dada_stats_p$sample, 4))
-    steps_t <- c(rep("excluded by filtering", n_samples), rep("excluded by denoised", n_samples),
-                rep("excluded by nonchim", n_samples), rep("reads in final ASVs", n_samples))
+    steps_t <- c(rep("excluded by filtering", n_samples), rep("not denoised", n_samples),
+                rep("suspected bimera", n_samples), rep("reads in final ASVs", n_samples))
     # stack the column for percentage of asvs
     asvs_p_t <- as.array(flatten_dbl(dada_stats_p[3:6]))
     dada_stats_p_t <- data.frame(samples_t, steps_t, asvs_p_t)
@@ -531,10 +532,11 @@ if ( params$flag_single_end ) {
                             filtered = dada_stats$DADA2_input-dada_stats$filtered,
                             denoisedF = (dada_stats$filtered-dada_stats$denoisedF)/2,
                             denoisedR = (dada_stats$filtered-dada_stats$denoisedR)/2,
-                            merged = (dada_stats$denoisedF+dada_stats$denoisedR)/2-dada_stats$merged,
+                            denoisedPairs = (dada_stats$denoisedF+dada_stats$denoisedR)/2-dada_stats$denoisedPairs,
+                            merged = dada_stats$denoisedPairs-dada_stats$merged,
                             nonchim = dada_stats$merged-dada_stats$nonchim,
                             analysis = dada_stats$nonchim)
-    dada_stats_p <- data.frame(sample = dada_stats_ex$sample, round(dada_stats_ex[2:8]/dada_stats_ex$DADA2_input*100, 2))
+    dada_stats_p <- data.frame(sample = dada_stats_ex$sample, round(dada_stats_ex[2:9]/dada_stats_ex$DADA2_input*100, 2))
     dada_stats_p_analysis_average <- round(sum(dada_stats_p$analysis)/length(dada_stats_p$analysis), 1)
     # If more than 20 sample only display subset!
     if ( nrow(dada_stats_p)>=20 ) {
@@ -544,12 +546,16 @@ if ( params$flag_single_end ) {
     }
     # Stack columns for both stacked barcharts
     n_samples <- length(dada_stats_p$sample)
-    samples_t <- c(rep(dada_stats_p$sample, 6))
-    steps_t <- c(rep("excluded by filtering", n_samples), rep("excluded by denoisedF", n_samples),
-                rep("excluded by denoisedR", n_samples), rep("excluded by merged", n_samples),
-                rep("excluded by nonchim", n_samples), rep("reads in final ASVs", n_samples))
+    samples_t <- c(rep(dada_stats_p$sample, 7))
+    steps_t <- c(rep("excluded by filtering", n_samples),
+                rep("forward not denoised", n_samples),
+                rep("reverse not denoised", n_samples),
+                rep("one read not denoised", n_samples),
+                rep("not merged", n_samples),
+                rep("suspected bimera", n_samples),
+                rep("reads in final ASVs", n_samples))
     # stack the column for percentage of asvs
-    asvs_p_t <- as.array(flatten_dbl(dada_stats_p[3:8]))
+    asvs_p_t <- as.array(flatten_dbl(dada_stats_p[3:9]))
     dada_stats_p_t <- data.frame(samples_t, steps_t, asvs_p_t)
 }
 cat(":\n\n")

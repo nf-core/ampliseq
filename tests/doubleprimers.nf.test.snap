@@ -288,19 +288,19 @@
                 "treesummarizedexperiment",
                 "treesummarizedexperiment/kraken2_TreeSummarizedExperiment.rds"
             ],
-            "overall_summary.tsv:md5,19d8b19b8f406d238011c2b3d384b7d3",
+            "overall_summary.tsv:md5,322ed52cc3f867fb61c510e85e53bc74",
             "rrna.arc.gff:md5,fbe6bb4c5527c0099577af622e35af67",
             "rrna.bac.gff:md5,05ddde74c06bb7377f2087a90e3ee1c3",
             "rrna.euk.gff:md5,df19e1b84ba6f691d20c72b397c88abf",
             "rrna.mito.gff:md5,04be33c4213eb82f66cf0652fe9e32d8",
             "cutadapt_summary.tsv:md5,ba0452e3edde6300fd111ad0e5b8e206",
-            "ASV_seqs.fasta:md5,bde6052256e9994a8ba6d4dd45d992e3",
-            "ASV_table.tsv:md5,223eb043a32a1ce932e2e515c00125e6",
-            "DADA2_stats.tsv:md5,89a8bbd8f229ba75268098078fb254de",
-            "DADA2_table.rds:md5,e527269819e4056eed063dca9f25e3e7",
-            "DADA2_table.tsv:md5,d30d5d392665181abddcf8ba5bdda102",
+            "ASV_seqs.fasta:md5,729fc8d22c03cc694364c0facd33bdcb",
+            "ASV_table.tsv:md5,a78cfe6eb6e31fdea975af829f6b3939",
+            "DADA2_stats.tsv:md5,bf62ec6262ed990544122dd968c601bc",
+            "DADA2_table.rds:md5,9d086e887b423201e8ae7366035317bc",
+            "DADA2_table.tsv:md5,c332cae4d4936e236bab006fca741223",
             "Samplesheet_double_primer.tsv:md5,cd63754fefa6e844a758efb893660f97",
-            "ASV_tax.greengenes.kraken2.classifiedreads.txt:md5,9cbbe5e45608f14fe4d8ca32c3ad6518",
+            "ASV_tax.greengenes.kraken2.classifiedreads.txt:md5,ae8832342484b1aa9c980a14a28491bf",
             "ASV_tax.greengenes.kraken2.complete.tsv:md5,cbdd1db05ba897ac9972b106a8138956",
             "ASV_tax.greengenes.kraken2.tsv:md5,87f748440bf5b3ce1c73029c495ff6e9",
             "multiqc_general_stats.txt:md5,87461482b83b797b1c6b139a0cf3164e",
@@ -308,8 +308,8 @@
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
+            "nextflow": "25.10.4"
         },
-        "timestamp": "2026-01-22T19:31:31.442049151"
+        "timestamp": "2026-03-23T15:38:31.479170754"
     }
 }

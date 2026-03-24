@@ -39,7 +39,7 @@ nextflow_pipeline {
                     path("$outputDir/dada2/ASV_table.tsv"),
                     path("$outputDir/dada2/ref_taxonomy.gtdb_R07-RS207.txt"),
                     path("$outputDir/dada2/DADA2_stats.tsv"),
-                    path("$outputDir/dada2/DADA2_table.rds"),
+                    path("$outputDir/dada2/DADA2_table.rds"), // change in md5sum might be only ASV sorting!
                     path("$outputDir/dada2/DADA2_table.tsv"),
                     path("$outputDir/decontam/decontaminated.tsv"),
                     path("$outputDir/decontam/decontaminated_counts.tsv"),

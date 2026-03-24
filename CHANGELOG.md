@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#959](https://github.com/nf-core/ampliseq/pull/959) - Add archaeal and bacterial reference trees for phylogenetic placement to `sbdi-gtdb` reference database (see [usage doc](https://github.com/nf-core/ampliseq/docs/usage.md#placement-in-database-provided-phylogenies); only for the current release, i.e. R10-RS226-2).
 - [#957](https://github.com/nf-core/ampliseq/pull/957) - Added ITSxRust as an optional alternative to ITSx for ITS region extraction via `--its_extractor itsxrust`.
 - [#964](https://github.com/nf-core/ampliseq/pull/964),[#968](https://github.com/nf-core/ampliseq/pull/968) - Enabled local reference storage directory with `--ref_taxonomy_storage`.
+- [#972](https://github.com/nf-core/ampliseq/pull/972) - Amended information about merging in the `overall_summary.tsv` and the summary report.
 
 ### `Changed`
 

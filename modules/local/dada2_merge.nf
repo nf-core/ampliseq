@@ -53,6 +53,9 @@ process DADA2_MERGE {
     df\$ASV_ID <- sapply(df\$sequence, digest, algo='md5', serialize = FALSE)
     df <- df[,c(ncol(df),3:ncol(df)-1,1)]
 
+    # order ASV table by ASV_ID (md5sum of sequence), previously sorted decreasing by total counts (ASVs of same counts were randomly sorted)
+    df <- df[order(df\$ASV_ID),]
+
     # file to publish
     write.table(df, file = "DADA2_table.tsv", sep = "\\t", row.names = FALSE, quote = FALSE, na = '')
 

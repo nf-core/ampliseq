@@ -27,6 +27,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Dependencies`
 
+| software | previously | now    |
+| -------- | ---------- | ------ |
+| decontam |            | 1.30.0 |
+
 ### `Removed`
 
 ## nf-core/ampliseq version 2.16.1 - 2026-01-23

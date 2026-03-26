@@ -1,7 +1,7 @@
 process DECONTAM {
     label 'process_single'
 
-    conda "bioconda::bioconductor-decontam=1.3.0 conda-forge::r-base=4.5.2"
+    conda "bioconda::bioconductor-decontam=1.30.0 conda-forge::r-base=4.5.2"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/37/375f1cd63fd980cd23dd3ed56e77fbb40d0bca26bfb8137eef60d473123f2426/data' :
         'community.wave.seqera.io/library/bioconductor-decontam_r-base:b0f82fb5ac5f1dc2' }"

@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | software | previously | now    |
 | -------- | ---------- | ------ |
 | decontam |            | 1.30.0 |
+| DADA2    | 1.34.0     | 1.38.0 |
 
 ### `Removed`
 

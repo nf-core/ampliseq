@@ -89,19 +89,19 @@
                     "gappa": "0.8.0"
                 },
                 "MERGE_STATS_FILTERSSU": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "MERGE_STATS_FILTERTAXA": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "MERGE_STATS_STD": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "METADATA_ALL": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "METADATA_PAIRWISE": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "PHYLOSEQ": {
                     "R": "4.4.2",
@@ -1179,7 +1179,6 @@
             "ASV_seqs.fasta:md5,e3cdcd93bdce761152085a7c797763c3",
             "ASV_table.tsv:md5,d3f7d98b8750dfb3b486b32cc5d32414",
             "DADA2_stats.tsv:md5,b61a945febb806ed63729bcaa8ae0575",
-            "DADA2_table.rds:md5,7b9ac1317f9708e3feaae9c2d7cb7f89",
             "DADA2_table.tsv:md5,7ec2214a627e7492d31ac2672f82f94d",
             "Samplesheet.tsv:md5,51ff46f4b431730e41b6950ae3b20e35",
             "Metadata.tsv:md5,060b56528bb566eed71f6dfdb52cc395",

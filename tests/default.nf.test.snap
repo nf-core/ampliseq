@@ -101,22 +101,22 @@
                     "sed": 4.7
                 },
                 "MERGE_STATS_DECONTAM": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "MERGE_STATS_FILTERSSU": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "MERGE_STATS_FILTERTAXA": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "MERGE_STATS_STD": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "METADATA_ALL": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "METADATA_PAIRWISE": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "PHYLOSEQ": {
                     "R": "4.4.2",
@@ -2231,7 +2231,6 @@
             "ASV_table.tsv:md5,d3f7d98b8750dfb3b486b32cc5d32414",
             "ref_taxonomy.gtdb_R07-RS207.txt:md5,965c6b1f9097128572a5ec2b8e9cef06",
             "DADA2_stats.tsv:md5,b61a945febb806ed63729bcaa8ae0575",
-            "DADA2_table.rds:md5,7b9ac1317f9708e3feaae9c2d7cb7f89",
             "DADA2_table.tsv:md5,7ec2214a627e7492d31ac2672f82f94d",
             "decontaminated.tsv:md5,3c94a1d7c56657fcbfaea344f0eae09e",
             "decontaminated_counts.tsv:md5,f519211d0ac2cb979b09d3803e8ca3fa",

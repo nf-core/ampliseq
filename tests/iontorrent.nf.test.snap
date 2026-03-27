@@ -58,7 +58,7 @@
                     "python": "3.9.1"
                 },
                 "MERGE_STATS_STD": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "PHYLOSEQ": {
                     "R": "4.4.2",
@@ -235,7 +235,6 @@
             "ASV_seqs.fasta:md5,89a56962b673b670da10e1164460cce7",
             "ASV_table.tsv:md5,307a10158a63bbc31477a74455f0d4ec",
             "DADA2_stats.tsv:md5,259dae4928fe3d4d543d6886fd9da609",
-            "DADA2_table.rds:md5,e19dfd42ae0d68dbe9006b0c489e74ad",
             "DADA2_table.tsv:md5,1100b5d937edb368b64c69fc21cdfc69",
             "Samplesheet_it_SE_ITS.tsv:md5,929870dea597430aaeee2a52283b427f",
             "multiqc_fastqc.txt:md5,3f5a64bd44351c6289d4392538132748",

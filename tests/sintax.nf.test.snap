@@ -71,16 +71,16 @@
                     "ITSx": "1.1.3"
                 },
                 "MERGE_STATS_FILTERTAXA": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "MERGE_STATS_STD": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "METADATA_ALL": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "METADATA_PAIRWISE": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "PHYLOSEQ": {
                     "R": "4.4.2",
@@ -1489,7 +1489,6 @@
             "ASV_seqs.fasta:md5,91fd58a4148eb3f9320f60e266b87e38",
             "ASV_table.tsv:md5,51e15e9cb15087ee91ff8691c451daf7",
             "DADA2_stats.tsv:md5,4bbde0bbf579f60e692bd32d14034f0d",
-            "DADA2_table.rds:md5,a36558c04a7b21050bb6e479b09bd483",
             "DADA2_table.tsv:md5,a4f790561f01ed078ed95a505295b528",
             "descriptive_stats.tsv:md5,f857c6de0bcb1080a0d6fabd7e87c283",
             "seven_number_summary.tsv:md5,ef0fd839c0f691c0bbf478de3e724d34",

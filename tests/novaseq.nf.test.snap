@@ -44,7 +44,7 @@
                     "pandas": "1.1.5"
                 },
                 "MERGE_STATS_CODONS": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "RENAME_RAW_DATA_FILES": {
                     "sed": 4.7
@@ -182,7 +182,6 @@
             "ASV_seqs.fasta:md5,0ed4ce8c63b31ee3968232ded3da9875",
             "ASV_table.tsv:md5,0eb7bf14dc36f52adb15fb7afc5c67fa",
             "DADA2_stats.tsv:md5,96df9d670428ff2431e370710335bb86",
-            "DADA2_table.rds:md5,a475a9459dc32195e67e1e78ab048da4",
             "DADA2_table.tsv:md5,5625fa73b6c83f9ab00b6a775dd7d2db",
             "Samplesheet_novaseq.tsv:md5,bcca78fe24736f4ee4ea26fdbd47ee64",
             "multiqc_fastqc.txt:md5,a99548124efd185a7d4e33245edcb81b",

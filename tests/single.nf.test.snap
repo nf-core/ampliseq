@@ -66,7 +66,7 @@
                     "sed": 4.7
                 },
                 "MERGE_STATS_STD": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "PHYLOSEQ": {
                     "R": "4.4.2",
@@ -251,7 +251,6 @@
             "ASV_table.tsv:md5,ed8cc43113f147eed6077d2873c3b76f",
             "ref_taxonomy.rdp_18.txt:md5,c20d8e186e2893ba7818a0115edb013e",
             "DADA2_stats.tsv:md5,ce4ebd6936bd78f337870c04ee671070",
-            "DADA2_table.rds:md5,ef8051d016bb7a868401528982e9920f",
             "DADA2_table.tsv:md5,a7a5618f792a38c01478043b80808239",
             "Samplesheet.tsv:md5,51ff46f4b431730e41b6950ae3b20e35",
             "multiqc_fastqc.txt:md5,75d0463a8b94a5dec14c3fb5b82169cd",

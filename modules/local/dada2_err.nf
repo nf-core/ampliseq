@@ -74,6 +74,8 @@ process DADA2_ERR {
         suppressPackageStartupMessages(library(dada2))
         set.seed($seed) # Initialize random number generator for reproducibility
 
+        ${cmd_errfun}
+
         fnFs <- sort(list.files(".", pattern = ".filt.fastq.gz", full.names = TRUE))
 
         sink(file = "${prefix}.err.log")

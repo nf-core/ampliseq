@@ -33,7 +33,6 @@ nextflow_pipeline {
                     path("$outputDir/dada2/ASV_seqs.fasta"),
                     path("$outputDir/dada2/ASV_table.tsv"),
                     path("$outputDir/dada2/DADA2_stats.tsv"),
-                    path("$outputDir/dada2/DADA2_table.rds"), // change in md5sum might be only ASV sorting!
                     path("$outputDir/dada2/DADA2_table.tsv"),
                     path("$outputDir/sidle/reconstructed/reconstructed_merged.tsv"),
                     path("$outputDir/multiqc/multiqc_data/multiqc_fastqc.txt"),

@@ -27,9 +27,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Dependencies`
 
+- [#977](https://github.com/nf-core/ampliseq/pull/977) - Updated DADA2 1.34.0 to 1.38.0
+
 | software | previously | now    |
 | -------- | ---------- | ------ |
 | decontam |            | 1.30.0 |
+| DADA2    | 1.34.0     | 1.38.0 |
 
 ### `Removed`
 

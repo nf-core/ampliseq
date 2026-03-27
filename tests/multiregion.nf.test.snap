@@ -9,41 +9,41 @@
                     "python": "Python 3.8.3"
                 },
                 "DADA2_DENOISING": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_ERR": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_FILTNTRIM": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_MERGE": {
-                    "R": "4.1.1",
-                    "dada2": "1.22.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_QUALITY1": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0",
-                    "ShortRead": "1.64.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0",
+                    "ShortRead": "1.68.0"
                 },
                 "DADA2_QUALITY2": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0",
-                    "ShortRead": "1.64.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0",
+                    "ShortRead": "1.68.0"
                 },
                 "DADA2_RMCHIMERA": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_SPLITREGIONS": {
                     "R": "4.2.1"
                 },
                 "DADA2_STATS": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "FASTQC": {
                     "fastqc": "0.12.1"
@@ -56,16 +56,16 @@
                     "sed": 4.7
                 },
                 "MERGE_STATS_FILTERTAXA": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "MERGE_STATS_STD": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "METADATA_ALL": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "METADATA_PAIRWISE": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "QIIME2_ANCOM_ASV": {
                     "qiime2": "2024.10.1"
@@ -601,7 +601,6 @@
             "ASV_seqs.fasta:md5,21d34ca1dc46a6d86e5a1b9f18fb3b1b",
             "ASV_table.tsv:md5,4bf4c299ca7c7c95ecfb54f885eb9a57",
             "DADA2_stats.tsv:md5,f315a1b44f7ea406ddecaf4a7406db8b",
-            "DADA2_table.rds:md5,6358376bb6f42ed782cda2be1564d3d8",
             "DADA2_table.tsv:md5,2eb4b48aeb1b52e6e1dbd0af1777bc9b",
             "reconstructed_merged.tsv:md5,984b750dce7c876f3d4a780708f87848",
             "multiqc_fastqc.txt:md5,9468ae91af1a841c5e1369f11f704604",

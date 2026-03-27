@@ -15,38 +15,38 @@
                     "python": "Python 3.8.3"
                 },
                 "DADA2_DENOISING": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_ERR": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_FILTNTRIM": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_MERGE": {
-                    "R": "4.1.1",
-                    "dada2": "1.22.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_QUALITY1": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0",
-                    "ShortRead": "1.64.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0",
+                    "ShortRead": "1.68.0"
                 },
                 "DADA2_QUALITY2": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0",
-                    "ShortRead": "1.64.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0",
+                    "ShortRead": "1.68.0"
                 },
                 "DADA2_RMCHIMERA": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_STATS": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "FASTQC": {
                     "fastqc": "0.12.1"
@@ -61,7 +61,7 @@
                     "ITSxRust": "0.2.2"
                 },
                 "MERGE_STATS_STD": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "RENAME_RAW_DATA_FILES": {
                     "sed": 4.7
@@ -257,7 +257,6 @@
             "ASV_seqs.fasta:md5,91fd58a4148eb3f9320f60e266b87e38",
             "ASV_table.tsv:md5,51e15e9cb15087ee91ff8691c451daf7",
             "DADA2_stats.tsv:md5,4bbde0bbf579f60e692bd32d14034f0d",
-            "DADA2_table.rds:md5,a36558c04a7b21050bb6e479b09bd483",
             "DADA2_table.tsv:md5,a4f790561f01ed078ed95a505295b528",
             "Samplesheet_pacbio_ITS.tsv:md5,905b0fc4850149d6457c9da7076c2c2d",
             "Metadata_pacbio_ITS.tsv:md5,51d81b0fe29f6377fa21ce8399fc5ae0",

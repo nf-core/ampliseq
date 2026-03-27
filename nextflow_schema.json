@@ -100,9 +100,9 @@
             "description": "",
             "default": "",
             "properties": {
-                "illumina_novaseq": {
-                    "type": "boolean",
-                    "description": "If data has binned quality scores such as Illumina NovaSeq",
+                "binned_quality": {
+                    "type": "string",
+                    "description": "Comma separated quality bins. If data has binned quality scores. For example '2,11,25,37'.",
                     "fa_icon": "fas fa-align-justify"
                 },
                 "pacbio": {

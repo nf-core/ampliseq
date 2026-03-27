@@ -21,6 +21,7 @@ process DADA2_ERR {
 
 
     script:
+    def cmd_errfun = task.ext.cmd_errfun ?: ""
     def prefix = task.ext.prefix ?: "prefix"
     def args = task.ext.args ?: ''
     def seed = task.ext.seed ?: '100'
@@ -29,6 +30,8 @@ process DADA2_ERR {
         #!/usr/bin/env Rscript
         suppressPackageStartupMessages(library(dada2))
         set.seed($seed) # Initialize random number generator for reproducibility
+
+        ${cmd_errfun}
 
         fnFs <- list.files(".", pattern = "_1.filt.fastq.gz", full.names = TRUE)
         fnRs <- sub("_1.filt.fastq.gz", "_2.filt.fastq.gz", fnFs)

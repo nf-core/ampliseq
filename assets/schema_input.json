@@ -2,33 +2,26 @@
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://raw.githubusercontent.com/nf-core/ampliseq/master/assets/schema_input.json",
     "title": "nf-core/ampliseq pipeline - params.input schema",
-    "description": "Schema for the file provided with params.input. Supports both new format (sample/fastq_1/fastq_2) and legacy format (sampleID/forwardReads/reverseReads).",
+    "description": "Schema for the file provided with params.input",
     "type": "array",
     "items": {
         "type": "object",
         "properties": {
-            "sample": {
-                "type": "string",
-                "pattern": "^[a-zA-Z][a-zA-Z0-9_]+$",
-                "errorMessage": "Unique sample ID must be provided: Must start with a letter, and can only contain letters, numbers or underscores; Regex: '^[a-zA-Z][a-zA-Z0-9_]+$'",
-                "meta": [
-                    "sample"
-                ]
-            },
             "sampleID": {
                 "type": "string",
                 "pattern": "^[a-zA-Z][a-zA-Z0-9_]+$",
-                "errorMessage": "Unique sample ID must be provided: Must start with a letter, and can only contain letters, numbers or underscores; Regex: '^[a-zA-Z][a-zA-Z0-9_]+$'",
+                "errorMessage": "Sample ID must start with a letter and contain only letters, numbers or underscores",
                 "meta": [
                     "sample"
                 ]
             },
-            "fastq_1": {
+            "sample": {
                 "type": "string",
-                "format": "file-path",
-                "exists": true,
-                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "pattern": "^[a-zA-Z][a-zA-Z0-9_]+$",
+                "errorMessage": "Sample ID must start with a letter and contain only letters, numbers or underscores",
+                "meta": [
+                    "sample"
+                ]
             },
             "forwardReads": {
                 "type": "string",
@@ -37,14 +30,21 @@
                 "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
                 "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
             },
-            "fastq_2": {
+            "fastq_1": {
+                "type": "string",
+                "format": "file-path",
+                "exists": true,
+                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
+                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+            },
+            "reverseReads": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
                 "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
                 "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
             },
-            "reverseReads": {
+            "fastq_2": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
@@ -62,47 +62,21 @@
                     "run"
                 ],
                 "default": "1"
-            },
-            "control": {
-                "type": [
-                    "string"
-                ],
-                "enum": [
-                    "control",
-                    "sample"
-                ],
-                "errorMessage": "Must be 'control' or 'sample'",
-                "meta": [
-                    "control"
-                ]
-            },
-            "quant_reading": {
-                "type": [
-                    "number"
-                ],
-                "errorMessage": "Quantification must be a number",
-                "meta": [
-                    "quant_reading"
-                ]
             }
         },
         "anyOf": [
             {
                 "required": [
-                    "sample",
-                    "fastq_1"
+                    "sampleID",
+                    "forwardReads"
                 ]
             },
             {
                 "required": [
-                    "sampleID",
-                    "forwardReads"
+                    "sample",
+                    "fastq_1"
                 ]
             }
         ]
-    },
-    "uniqueEntries": [
-        "sample",
-        "sampleID"
-    ]
+    }
 }

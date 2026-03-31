@@ -22,52 +22,52 @@ nextflow_pipeline {
             assertAll(
                 // Verify workflow completed successfully
                 { assert workflow.success },
-                
+
                 // Verify samplesheet format detection log message
-                { assert workflow.stdout.contains("Detected new samplesheet format") || 
-                         workflow.stdout.contains("Use DADA2 taxonomy classification") : 
+                { assert workflow.stdout.contains("Detected new samplesheet format") ||
+                         workflow.stdout.contains("Use DADA2 taxonomy classification") :
                          "Expected format detection message in stdout" },
-                
+
                 // Snapshot tests for key output files
                 { assert snapshot(
                     // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
                     removeNextflowVersion("$outputDir/pipeline_info/software_versions.yml"),
-                    
+
                     // All stable path names, with relative paths
                     stable_name,
-                    
+
                     // Overall summary
                     path("$outputDir/overall_summary.tsv"),
-                    
+
                     // Cutadapt results
                     path("$outputDir/cutadapt/cutadapt_summary.tsv"),
-                    
+
                     // DADA2 outputs - core ASV analysis
                     path("$outputDir/dada2/ASV_seqs.fasta"),
                     path("$outputDir/dada2/ASV_table.tsv"),
                     path("$outputDir/dada2/DADA2_stats.tsv"),
                     path("$outputDir/dada2/DADA2_table.tsv"),
-                    
+
                     // MultiQC outputs
                     path("$outputDir/multiqc/multiqc_data/multiqc_fastqc.txt"),
                     path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt"),
                     path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt")
                 ).match() },
-                
+
                 // Verify DADA2 produced valid outputs
                 {
                     def asvTable = path("$outputDir/dada2/DADA2_table.tsv")
                     assert asvTable.exists() : "DADA2 table should exist"
                     assert asvTable.readLines().size() > 1 : "DADA2 table should contain data"
                 },
-                
+
                 // Verify overall summary exists
                 {
                     def summary = path("$outputDir/overall_summary.tsv")
                     assert summary.exists() : "Overall summary should exist"
                     assert summary.readLines().size() > 1 : "Overall summary should contain data"
                 },
-                
+
                 // Verify MultiQC ran successfully
                 {
                     def multiqc = path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt")

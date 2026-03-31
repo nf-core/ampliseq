@@ -498,15 +498,15 @@ def validateInputSamplesheet(input) {
 //
 def detectSamplesheetFormat(csvFile) {
     def firstLine = csvFile.readLines()[0]
-    
+
     // Check for new format (sample, fastq_1, fastq_2)
     if (firstLine.contains('sample') && firstLine.contains('fastq_1')) {
         return 'new'
-    } 
+    }
     // Check for legacy format (sampleID, forwardReads, reverseReads)
     else if (firstLine.contains('sampleID') && firstLine.contains('forwardReads')) {
         return 'legacy'
-    } 
+    }
     // Unknown format
     else {
         error("Unknown samplesheet format. Expected headers:\n" +

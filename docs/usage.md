@@ -135,12 +135,12 @@ The sample sheet file can be tab-separated (.tsv), comma-separated (.csv), or in
 
 For example, the tab-separated samplesheet may contain:
 
-| sample   | fastq_1                   | fastq_2                   | run | control | quant_reading |
-| -------- | ------------------------- | ------------------------- | --- | ------- | ------------- |
-| sample1  | ./data/S1_R1_001.fastq.gz | ./data/S1_R2_001.fastq.gz | A   | control | 1000          |
-| sample2  | ./data/S2_fw.fastq.gz     | ./data/S2_rv.fastq.gz     | A   | sample  | 10000         |
-| sample3  | ./S4x.fastq.gz            | ./S4y.fastq.gz            | B   | control | 1100          |
-| sample4  | ./a.fastq.gz              | ./b.fastq.gz              | B   | sample  | 11000         |
+| sample  | fastq_1                   | fastq_2                   | run | control | quant_reading |
+| ------- | ------------------------- | ------------------------- | --- | ------- | ------------- |
+| sample1 | ./data/S1_R1_001.fastq.gz | ./data/S1_R2_001.fastq.gz | A   | control | 1000          |
+| sample2 | ./data/S2_fw.fastq.gz     | ./data/S2_rv.fastq.gz     | A   | sample  | 10000         |
+| sample3 | ./S4x.fastq.gz            | ./S4y.fastq.gz            | B   | control | 1100          |
+| sample4 | ./a.fastq.gz              | ./b.fastq.gz              | B   | sample  | 11000         |
 
 #### Legacy Format
 
@@ -170,6 +170,7 @@ Please note the following requirements:
 - Within one samplesheet, only one type of raw data should be specified (same amplicon & sequencing method)
 
 Example samplesheets have been provided with the pipeline:
+
 - [Standardized format](../assets/samplesheet_standardized.tsv) (recommended)
 - [Legacy format](../assets/samplesheet.tsv)
 

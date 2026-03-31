@@ -171,9 +171,9 @@ workflow AMPLISEQ {
         // See the documentation https://nextflow-io.github.io/nf-schema/2.5.1/samplesheets/samplesheetToList/
         // Detect format
         def format = detectSamplesheetFormat(file(params.input))
-        
+
         // Select schema
-        def schemaFile = format == 'new' 
+        def schemaFile = format == 'new'
             ? "${projectDir}/assets/schema_input_new.json"
             : "${projectDir}/assets/schema_input_legacy.json"
         ch_input_reads = channel.fromList(samplesheetToList(params.input, schemaFile)) // meta: meta.sample, meta.run

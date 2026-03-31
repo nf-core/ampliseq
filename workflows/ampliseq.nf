@@ -101,6 +101,7 @@ include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pi
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_ampliseq_pipeline'
 include { makeComplement         } from '../subworkflows/local/utils_nfcore_ampliseq_pipeline'
+include { detectSamplesheetFormat} from '../subworkflows/local/utils_nfcore_ampliseq_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -168,7 +169,14 @@ workflow AMPLISEQ {
     ch_input_reads = channel.empty()
     if ( params.input ) {
         // See the documentation https://nextflow-io.github.io/nf-schema/2.5.1/samplesheets/samplesheetToList/
-        ch_input_reads = channel.fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json")) // meta: meta.sample, meta.run
+        // Detect format
+        def format = detectSamplesheetFormat(file(params.input))
+        
+        // Select schema
+        def schemaFile = format == 'new' 
+            ? "${projectDir}/assets/schema_input_new.json"
+            : "${projectDir}/assets/schema_input_legacy.json"
+        ch_input_reads = channel.fromList(samplesheetToList(params.input, schemaFile)) // meta: meta.sample, meta.run
             .map{ meta, readfw, readrv ->
                 meta.single_end = single_end.toBoolean()
                 def reads = single_end ? readfw : [readfw,readrv]

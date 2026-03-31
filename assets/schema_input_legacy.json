@@ -10,15 +10,7 @@
             "sampleID": {
                 "type": "string",
                 "pattern": "^[a-zA-Z][a-zA-Z0-9_]+$",
-                "errorMessage": "Sample ID must start with a letter and contain only letters, numbers or underscores",
-                "meta": [
-                    "sample"
-                ]
-            },
-            "sample": {
-                "type": "string",
-                "pattern": "^[a-zA-Z][a-zA-Z0-9_]+$",
-                "errorMessage": "Sample ID must start with a letter and contain only letters, numbers or underscores",
+                "errorMessage": "Unique sample ID must be provided: Must start with a letter, and can only contain letters, numbers or underscores; Regex: '^[a-zA-Z][a-zA-Z0-9_]+$'",
                 "meta": [
                     "sample"
                 ]
@@ -30,21 +22,7 @@
                 "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
                 "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
             },
-            "fastq_1": {
-                "type": "string",
-                "format": "file-path",
-                "exists": true,
-                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
-            },
             "reverseReads": {
-                "type": "string",
-                "format": "file-path",
-                "exists": true,
-                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
-            },
-            "fastq_2": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
@@ -62,21 +40,36 @@
                     "run"
                 ],
                 "default": "1"
-            }
-        },
-        "anyOf": [
-            {
-                "required": [
-                    "sampleID",
-                    "forwardReads"
+            },
+            "control": {
+                "type": [
+                    "string"
+                ],
+                "enum": [
+                    "control",
+                    "sample"
+                ],
+                "errorMessage": "Must be 'control' or 'sample'",
+                "meta": [
+                    "control"
                 ]
             },
-            {
-                "required": [
-                    "sample",
-                    "fastq_1"
+            "quant_reading": {
+                "type": [
+                    "number"
+                ],
+                "errorMessage": "Quantification must be a number",
+                "meta": [
+                    "quant_reading"
                 ]
             }
+        },
+        "required": [
+            "sampleID",
+            "forwardReads"
         ]
-    }
+    },
+    "uniqueEntries": [
+        "sampleID"
+    ]
 }

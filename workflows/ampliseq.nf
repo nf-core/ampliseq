@@ -101,7 +101,6 @@ include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pi
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_ampliseq_pipeline'
 include { makeComplement         } from '../subworkflows/local/utils_nfcore_ampliseq_pipeline'
-include { detectSamplesheetFormat} from '../subworkflows/local/utils_nfcore_ampliseq_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

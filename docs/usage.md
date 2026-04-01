@@ -118,61 +118,46 @@ Optionally, a metadata sheet can be specified for downstream analysis.
 
 #### Samplesheet input
 
-The sample sheet file can be tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml) and can have two to four columns/entries with the following headers:
+The sample sheet file can be tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml). It supports both a legacy and a standardized header layout:
 
-| Column        | Necessity | Description                                                                   |
-| ------------- | --------- | ----------------------------------------------------------------------------- |
-| sample        | required  | Unique sample identifiers (see below for requirements)                        |
-| fastq_1       | required  | Paths to (forward) reads zipped FastQ files                                   |
-| fastq_2       | optional  | Paths to reverse reads zipped FastQ files, required if the data is paired-end |
-| run           | optional  | If the data was produced by multiple sequencing runs, any string              |
-| control       | optional  | "control" or "sample" to allow decontamination with negative controls         |
-| quant_reading | optional  | Quantification reading to allow decontamination based on abundances           |
+| Layout       | Required columns           | Optional columns                                  |
+| ------------ | -------------------------- | ------------------------------------------------- | --- |
+| Legacy       | `sampleID`, `forwardReads` | `reverseReads`, `run`, `control`, `quant_reading` |
+| Standardized | `sample`, `fastq_1`        | `fastq_2`, `run`, `control`, `quant_reading`      |     |
 
 ```bash
 --input 'path/to/samplesheet.tsv'
 ```
 
-For example, the tab-separated samplesheet may contain:
+For example, the tab-separated samplesheet may contain either layout:
+
+**Standardized layout**
 
 | sample  | fastq_1                   | fastq_2                   | run | control | quant_reading |
 | ------- | ------------------------- | ------------------------- | --- | ------- | ------------- |
 | sample1 | ./data/S1_R1_001.fastq.gz | ./data/S1_R2_001.fastq.gz | A   | control | 1000          |
 | sample2 | ./data/S2_fw.fastq.gz     | ./data/S2_rv.fastq.gz     | A   | sample  | 10000         |
-| sample3 | ./S4x.fastq.gz            | ./S4y.fastq.gz            | B   | control | 1100          |
-| sample4 | ./a.fastq.gz              | ./b.fastq.gz              | B   | sample  | 11000         |
 
-#### Legacy Format
+**Legacy layout**
 
-The legacy format uses these column names:
-
-| Column        | Necessity | Description                                                                   |
-| ------------- | --------- | ----------------------------------------------------------------------------- |
-| sampleID      | required  | Unique sample identifiers (see below for requirements)                        |
-| forwardReads  | required  | Paths to (forward) reads zipped FastQ files                                   |
-| reverseReads  | optional  | Paths to reverse reads zipped FastQ files, required if the data is paired-end |
-| run           | optional  | If the data was produced by multiple sequencing runs, any string              |
-| control       | optional  | "control" or "sample" to allow decontamination with negative controls         |
-| quant_reading | optional  | Quantification reading to allow decontamination based on abundances           |
-
-#### Requirements for Both Formats
+| sampleID | forwardReads | reverseReads | run | control | quant_reading |
+| -------- | ------------------------- | ------------------------- | --- | ------- | ------------- | |
+| sample3 | ./S4x.fastq.gz | ./S4y.fastq.gz | B | control | 1100 |
+| sample4 | ./a.fastq.gz | ./b.fastq.gz | B | sample | 11000 |
 
 Please note the following requirements:
 
 - 2 to 6 columns/entries
 - File extensions `.tsv`,`.csv`,`.yml`,`.yaml` specify the file type, otherwise file type will be derived from content, if possible
-- Must contain the header `sample` and `fastq_1`
-- May contain the header `fastq_2`, `run`, `control`, and `quant_reading`
+- Must contain either `sampleID` and `forwardReads` (legacy) OR `sample` and `fastq_1` (standardized)
+- May contain `reverseReads`/`fastq_2`, `run`, `control`, and `quant_reading`
 - Sample IDs must be unique
 - Sample IDs must start with a letter
 - Sample IDs can only contain letters, numbers or underscores
 - FastQ files must be compressed (`.fastq.gz`, `.fq.gz`)
 - Within one samplesheet, only one type of raw data should be specified (same amplicon & sequencing method)
 
-Example samplesheets have been provided with the pipeline:
-
-- [Standardized format](../assets/samplesheet_standardized.tsv) (recommended)
-- [Legacy format](../assets/samplesheet.tsv)
+Examples for both layouts are provided with the pipeline: [legacy](../assets/samplesheet.tsv) and [standardized](../assets/samplesheet_new.tsv).
 
 To avoid producing a sample sheet, [Direct FASTQ input](#direct-fastq-input) may be used instead.
 

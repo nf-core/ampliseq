@@ -15,18 +15,36 @@ process FORMAT_TAXONOMY_SINTAX {
     path "versions.yml"           , emit: versions
 
     script:
-    """
-    ${params.sintax_ref_databases[params.sintax_ref_taxonomy]["fmtscript"]} \\
+    if (params.sintax_ref_tax_custom) {
+        """
+        if [[ "${database}" == *.gz ]] || [[ "${database}" == *.GZ ]]; then
+            cp -fL "${database}" sintaxdb.fa.gz
+        else
+            gzip -c "${database}" > sintaxdb.fa.gz
+        fi
+        echo -e "--sintax_ref_tax_custom: ${params.sintax_ref_tax_custom}\\n" >ref_taxonomy_sintax.txt
+        echo -e "Title: User-supplied SINTAX reference\\n" >>ref_taxonomy_sintax.txt
+        echo -e "Citation: Not specified\\n" >>ref_taxonomy_sintax.txt
+        echo -e "dbversion label: user_supplied\\n" >>ref_taxonomy_sintax.txt
 
-    #Giving out information
-    echo -e "--sintax_ref_taxonomy: ${params.sintax_ref_taxonomy}\\n" >ref_taxonomy_sintax.txt
-    echo -e "Title: ${params.sintax_ref_databases[params.sintax_ref_taxonomy]["title"]}\\n" >>ref_taxonomy_sintax.txt
-    echo -e "Citation: ${params.sintax_ref_databases[params.sintax_ref_taxonomy]["citation"]}\\n" >>ref_taxonomy_sintax.txt
-    echo "All entries: ${params.sintax_ref_databases[params.sintax_ref_taxonomy]}" >>ref_taxonomy_sintax.txt
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+            sed: \$(sed --version 2>&1 | sed -n 1p | sed 's/sed (GNU sed) //')
+        END_VERSIONS
+        """
+    } else {
+        """
+        ${params.sintax_ref_databases[params.sintax_ref_taxonomy]["fmtscript"]}
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        sed: \$(sed --version 2>&1 | sed -n 1p | sed 's/sed (GNU sed) //')
-    END_VERSIONS
-    """
+        echo -e "--sintax_ref_taxonomy: ${params.sintax_ref_taxonomy}\\n" >ref_taxonomy_sintax.txt
+        echo -e "Title: ${params.sintax_ref_databases[params.sintax_ref_taxonomy]["title"]}\\n" >>ref_taxonomy_sintax.txt
+        echo -e "Citation: ${params.sintax_ref_databases[params.sintax_ref_taxonomy]["citation"]}\\n" >>ref_taxonomy_sintax.txt
+        echo "All entries: ${params.sintax_ref_databases[params.sintax_ref_taxonomy]}" >>ref_taxonomy_sintax.txt
+
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+            sed: \$(sed --version 2>&1 | sed -n 1p | sed 's/sed (GNU sed) //')
+        END_VERSIONS
+        """
+    }
 }

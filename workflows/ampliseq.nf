@@ -155,7 +155,7 @@ workflow AMPLISEQ {
     }
 
     //only run QIIME2 downstream analysis when taxonomy is actually calculated and all required data is available
-    if ( !params.skip_taxonomy && !params.skip_qiime && !params.skip_qiime_downstream && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom || params.multiregion) ) {
+    if ( !params.skip_taxonomy && !params.skip_qiime && !params.skip_qiime_downstream && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.sintax_ref_tax_custom || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom || params.multiregion) ) {
         run_qiime2 = true
     } else {
         run_qiime2 = false
@@ -379,7 +379,11 @@ workflow AMPLISEQ {
     val_sintax_ref_taxonomy = "none"
     val_sintax_taxlevels    = ""
 
-    if (params.sintax_ref_taxonomy && !params.skip_taxonomy) {
+    if (params.sintax_ref_tax_custom && !params.skip_taxonomy) {
+        ch_sintax_ref_taxonomy = channel.fromPath("${params.sintax_ref_tax_custom}", checkIfExists: true)
+        val_sintax_ref_taxonomy = "user"
+        val_sintax_taxlevels = params.sintax_assign_taxlevels ? "${params.sintax_assign_taxlevels}" : ""
+    } else if (params.sintax_ref_taxonomy && !params.skip_taxonomy) {
         // database files
         ch_sintax_ref_taxonomy_url = channel.fromList(params.sintax_ref_databases[params.sintax_ref_taxonomy]["file"])
         ch_sintax_ref_taxonomy =
@@ -748,7 +752,7 @@ workflow AMPLISEQ {
     }
 
     // SINTAX
-    if (!params.skip_taxonomy && params.sintax_ref_taxonomy) {
+    if (!params.skip_taxonomy && (params.sintax_ref_taxonomy || params.sintax_ref_tax_custom)) {
         SINTAX_TAXONOMY_WF (
             ch_sintax_ref_taxonomy.collect(),
             val_sintax_ref_taxonomy,
@@ -921,7 +925,7 @@ workflow AMPLISEQ {
             log.info "Use DADA2 taxonomy classification"
             val_used_taxonomy = "DADA2"
             ch_tax = QIIME2_INTAX ( ch_dada2_tax, "parse_dada2_taxonomy.r" ).qza
-        } else if ( params.sintax_ref_taxonomy ) {
+        } else if ( params.sintax_ref_taxonomy || params.sintax_ref_tax_custom ) {
             log.info "Use SINTAX taxonomy classification"
             val_used_taxonomy = "SINTAX"
             ch_tax = QIIME2_INTAX ( ch_sintax_tax, "parse_dada2_taxonomy.r" ).qza
@@ -1041,7 +1045,7 @@ workflow AMPLISEQ {
     // MODULE: Predict functional potential of a bacterial community from marker genes with Picrust2
     //
     if ( params.picrust ) {
-        if ( run_qiime2 && !params.skip_abundance_tables && ( params.dada_ref_taxonomy || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier || params.sintax_ref_taxonomy || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom ) && !params.skip_taxonomy ) {
+        if ( run_qiime2 && !params.skip_abundance_tables && ( params.dada_ref_taxonomy || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier || params.sintax_ref_taxonomy || params.sintax_ref_tax_custom || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom ) && !params.skip_taxonomy ) {
             PICRUST ( QIIME2_EXPORT.out.abs_fasta, QIIME2_EXPORT.out.abs_tsv, "QIIME2", "This Picrust2 analysis is based on filtered reads from QIIME2" )
         } else {
             PICRUST ( ch_fasta, ch_dada2_asv, "DADA2", "This Picrust2 analysis is based on unfiltered reads from DADA2" )
@@ -1218,7 +1222,7 @@ workflow AMPLISEQ {
             params.cut_its != "none" ? ch_its_summary.ifEmpty( [] ) : [],
             !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy ? ch_dada2_tax.ifEmpty( [] ) : [],
             !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy ? DADA2_TAXONOMY_WF.out.cut_tax.ifEmpty( [[],[]] ) : [[],[]],
-            !params.skip_taxonomy && params.sintax_ref_taxonomy ? ch_sintax_tax.ifEmpty( [] ) : [],
+            !params.skip_taxonomy && (params.sintax_ref_taxonomy || params.sintax_ref_tax_custom) ? ch_sintax_tax.ifEmpty( [] ) : [],
             !params.skip_taxonomy && ( params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom ) ? KRAKEN2_TAXONOMY_WF.out.tax_tsv.ifEmpty( [] ) : [],
             !params.skip_taxonomy && params.pplace_tree ? ch_pplace_tax.ifEmpty( [] ) : [],
             !params.skip_taxonomy && params.pplace_tree ? PPLACE_STANDARD.out.heattree.ifEmpty( [[],[]] ) : [[],[]],

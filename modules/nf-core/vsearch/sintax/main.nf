@@ -24,10 +24,10 @@ process VSEARCH_SINTAX {
 
     """
     vsearch \\
+        $args \\
         --sintax $queryfasta \\
         --db $db \\
         --threads $task.cpus \\
-        $args \\
         --tabbedout ${prefix}.tsv
 
     cat <<-END_VERSIONS > versions.yml

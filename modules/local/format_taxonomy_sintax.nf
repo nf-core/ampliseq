@@ -17,7 +17,8 @@ process FORMAT_TAXONOMY_SINTAX {
     script:
     if (params.sintax_ref_tax_custom) {
         """
-        if [[ "${database}" == *.gz ]] || [[ "${database}" == *.GZ ]]; then
+        set -- \$(head -c2 "${database}" | od -An -t u1)
+        if [ "\$#" -ge 2 ] && [ "\$1" = "31" ] && [ "\$2" = "139" ]; then
             cp -fL "${database}" sintaxdb.fa.gz
         else
             gzip -c "${database}" > sintaxdb.fa.gz

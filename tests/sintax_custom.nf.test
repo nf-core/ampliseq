@@ -1,0 +1,45 @@
+nextflow_pipeline {
+
+    name "Test pipeline"
+    script "../main.nf"
+    tag "pipeline"
+    profile "test_sintax_custom"
+
+    test("-profile test_sintax_custom") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
+
+            assert workflow.success
+            assertAll(
+                { assert snapshot(
+                    removeNextflowVersion("$outputDir/pipeline_info/software_versions.yml"),
+                    stable_name,
+                    path("$outputDir/overall_summary.tsv"),
+                    path("$outputDir/barrnap/rrna.arc.gff"),
+                    path("$outputDir/barrnap/rrna.bac.gff"),
+                    path("$outputDir/barrnap/rrna.euk.gff"),
+                    path("$outputDir/barrnap/rrna.mito.gff"),
+                    path("$outputDir/cutadapt/cutadapt_summary.tsv"),
+                    path("$outputDir/dada2/ASV_seqs.fasta"),
+                    path("$outputDir/dada2/ASV_table.tsv"),
+                    path("$outputDir/dada2/DADA2_stats.tsv"),
+                    path("$outputDir/dada2/DADA2_table.rds"),
+                    path("$outputDir/dada2/DADA2_table.tsv"),
+                    path("$outputDir/input/Samplesheet.tsv"),
+                    path("$outputDir/sintax/ref_taxonomy_sintax.txt"),
+                    path("$outputDir/sintax/ASV_tax_sintax.user.tsv"),
+                    path("$outputDir/multiqc/multiqc_data/multiqc_fastqc.txt"),
+                    path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt"),
+                    path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt")
+                ).match() }
+            )
+        }
+    }
+}

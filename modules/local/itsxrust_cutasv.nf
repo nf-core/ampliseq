@@ -19,8 +19,7 @@ process ITSXRUST_CUTASV {
 
     script:
     def args = task.ext.args ?: ''
-    def hmm_path = task.ext.hmm ?: '/usr/local/share/itsxrust/hmm/F.hmm'
-
+    def hmm_path = task.ext.hmm ?: "\${CONDA_PREFIX:-/usr/local}/share/itsxrust/hmm/F.hmm"
     """
     # Run ITSxRust with --region all so we always get full + ITS1 + ITS2 outputs
     # (mirrors ITSx behavior which always writes all region files)

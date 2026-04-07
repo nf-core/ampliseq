@@ -72,12 +72,8 @@
                 "dada2/QC",
                 "dada2/QC/1_1.err.convergence.txt",
                 "dada2/QC/1_1.err.pdf",
-                "dada2/QC/1_1.md.err.convergence.txt",
-                "dada2/QC/1_1.md.err.pdf",
                 "dada2/QC/1_2.err.convergence.txt",
                 "dada2/QC/1_2.err.pdf",
-                "dada2/QC/1_2.md.err.convergence.txt",
-                "dada2/QC/1_2.md.err.pdf",
                 "dada2/QC/2 files were used for FW plotQualityProfile.txt",
                 "dada2/QC/2 files were used for RV plotQualityProfile.txt",
                 "dada2/QC/FW_preprocessed_qual_stats.pdf",
@@ -86,9 +82,7 @@
                 "dada2/QC/RV_qual_stats.pdf",
                 "dada2/QC/svg",
                 "dada2/QC/svg/1_1.err.svg",
-                "dada2/QC/svg/1_1.md.err.svg",
                 "dada2/QC/svg/1_2.err.svg",
-                "dada2/QC/svg/1_2.md.err.svg",
                 "dada2/QC/svg/FW_preprocessed_qual_stats.svg",
                 "dada2/QC/svg/FW_qual_stats.svg",
                 "dada2/QC/svg/RV_preprocessed_qual_stats.svg",
@@ -180,17 +174,17 @@
                 "summary_report/versions.yml"
             ],
             "ASV_seqs.fasta:md5,0ed4ce8c63b31ee3968232ded3da9875",
-            "ASV_table.tsv:md5,0eb7bf14dc36f52adb15fb7afc5c67fa",
-            "DADA2_stats.tsv:md5,96df9d670428ff2431e370710335bb86",
-            "DADA2_table.tsv:md5,5625fa73b6c83f9ab00b6a775dd7d2db",
+            "ASV_table.tsv:md5,0028da02541e474b4229e7776c091586",
+            "DADA2_stats.tsv:md5,4bb143b3aa5532a86e115378e9ffb575",
+            "DADA2_table.tsv:md5,fe7dd1249b7fe1643f13ee6699c6e877",
             "Samplesheet_novaseq.tsv:md5,bcca78fe24736f4ee4ea26fdbd47ee64",
             "multiqc_fastqc.txt:md5,a99548124efd185a7d4e33245edcb81b",
             "multiqc_general_stats.txt:md5,92648df79061fa3b17fea104fe1b7641"
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
+            "nextflow": "25.10.4"
         },
-        "timestamp": "2026-01-22T20:01:15.233917446"
+        "timestamp": "2026-03-27T13:53:45.459270636"
     }
 }

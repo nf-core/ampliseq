@@ -104,7 +104,8 @@
                     "type": "string",
                     "description": "Comma separated quality bins. If data has binned quality scores.",
                     "help_text": "Bins can change over time and vary by sequencer type and software version. For example, at the time of writing, for 'MiSeq i100 Control Software version 1.0' quality bins are documented as '2,12,24,38', for 'MiSeq i100 Control Software version 1.1 and later' as '2,9,23,38', for 'NovaSeq X/X Plus Control Software v1.3' as '2,9,24,40'.",
-                    "fa_icon": "fas fa-align-justify"
+                    "fa_icon": "fas fa-align-justify",
+                    "pattern": "^[0-9]+(,[0-9]+)*$"
                 },
                 "pacbio": {
                     "type": "boolean",

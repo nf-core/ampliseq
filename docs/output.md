@@ -152,8 +152,6 @@ DADA2 reduces sequence errors and dereplicates sequences by quality filtering, d
 
 </details>
 
-For binned quality scores in NovaSeq data, monotonicity in the fitted error model is enforced when using `--illumina_novaseq`. Consequently, additional QC data is generated.
-
 <details markdown="1">
 <summary>Output files</summary>
 

@@ -27,7 +27,6 @@ include { DOWNLOAD_REFERENCE as DOWNLOAD_REFERENCE_SIDLE      } from '../modules
 include { DOWNLOAD_REFERENCE as DOWNLOAD_REFERENCE_SIDLE_TREE } from '../modules/local/download_reference'
 include { RENAME_RAW_DATA_FILES         } from '../modules/local/rename_raw_data_files'
 include { DADA2_ERR                     } from '../modules/local/dada2_err'
-include { NOVASEQ_ERR                   } from '../modules/local/novaseq_err'
 include { DADA2_DENOISING               } from '../modules/local/dada2_denoising'
 include { DADA2_RMCHIMERA               } from '../modules/local/dada2_rmchimera'
 include { DADA2_STATS                   } from '../modules/local/dada2_stats'
@@ -467,16 +466,9 @@ workflow AMPLISEQ {
     //
 
     //run error model
-    if ( !params.illumina_novaseq ) {
-        DADA2_ERR ( ch_filt_reads )
-        ch_errormodel = DADA2_ERR.out.errormodel
-        ch_versions = ch_versions.mix(DADA2_ERR.out.versions)
-    } else {
-        DADA2_ERR ( ch_filt_reads )
-        NOVASEQ_ERR ( DADA2_ERR.out.errormodel )
-        ch_errormodel = NOVASEQ_ERR.out.errormodel
-        ch_versions = ch_versions.mix(DADA2_ERR.out.versions)
-    }
+    DADA2_ERR ( ch_filt_reads )
+    ch_errormodel = DADA2_ERR.out.errormodel
+    ch_versions = ch_versions.mix(DADA2_ERR.out.versions)
 
     //group by meta
     ch_filt_reads

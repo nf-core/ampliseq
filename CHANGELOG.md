@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#957](https://github.com/nf-core/ampliseq/pull/957) - Added ITSxRust as an optional alternative to ITSx for ITS region extraction via `--its_extractor itsxrust`.
 - [#964](https://github.com/nf-core/ampliseq/pull/964),[#968](https://github.com/nf-core/ampliseq/pull/968) - Enabled local reference storage directory with `--ref_taxonomy_storage`.
 - [#972](https://github.com/nf-core/ampliseq/pull/972) - Amended information about merging in the `overall_summary.tsv` and the summary report.
+- [#978](https://github.com/nf-core/ampliseq/pull/978) - `--binned_quality` (string, comma separated quality bins) uses DADA2's built-in function to handle quality binned fastq data.
 - [#982](https://github.com/nf-core/ampliseq/pull/982) - Adds `--sintax_ref_tax_custom` and `--sintax_assign_taxlevels`.
 
 ### `Changed`
@@ -36,6 +37,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | DADA2    | 1.34.0     | 1.38.0 |
 
 ### `Removed`
+
+- [#978](https://github.com/nf-core/ampliseq/pull/978) - `--illumina_novaseq` (boolean) was replaced by `--binned_quality` (string)
 
 ## nf-core/ampliseq version 2.16.1 - 2026-01-23
 

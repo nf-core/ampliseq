@@ -182,6 +182,10 @@ def validateInputParameters() {
         error("Incompatible parameters: `--FW_primer` and `--RV_primer` are required for primer trimming. If primer trimming is not needed, use `--skip_cutadapt`.")
     }
 
+    if ( params.binned_quality && params.pacbio ) {
+        error("Incompatible parameters: `--binned_quality` and `--pacbio` are both used, but only one is allowed. When the data has binned quality scores, use `--binned_quality` instead of `--pacbio`.")
+    }
+
     if ( params.pacbio || params.iontorrent || params.single_end ) {
         if (params.trunclenr) { log.warn "Unused parameter: `--trunclenr` is ignored because the data is single end." }
     } else if (params.trunclenf && !params.trunclenr) {

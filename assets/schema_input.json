@@ -107,7 +107,8 @@
                             ]
                         }
                     ]
-                }
+                },
+                "errorMessage": "When using legacy format (sampleID/forwardReads), do not use standardized fields (sample/fastq_1/fastq_2)"
             },
             {
                 "required": [
@@ -132,7 +133,8 @@
                             ]
                         }
                     ]
-                }
+                },
+                "errorMessage": "When using standardized format (sample/fastq_1), do not use legacy fields (sampleID/forwardReads/reverseReads)"
             }
         ]
     }

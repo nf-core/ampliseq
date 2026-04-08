@@ -182,7 +182,7 @@ workflow AMPLISEQ {
                 if ( !meta.single_end && ( normalized_fw.getSimpleName() == meta.sample || normalized_rv.getSimpleName() == meta.sample ) ) { error("Entry `sampleID` / `sample` cannot be identical to simple name of `forwardReads` / `fastq_1` or `reverseReads` / `fastq_2`, please change the sample name in $params.input for sample $meta.sample") } // sample name and any file name without extensions aren't identical, because rename_raw_data_files.nf would forward 3 files (2 renamed +1 input) instead of 2 in that case
                 if ( meta.single_end && ( normalized_fw.getSimpleName() == meta.sample+"_1" || normalized_fw.getSimpleName() == meta.sample+"_2" ) ) { error("Entry `sampleID` / `sample` + `_1` or `_2` cannot be identical to simple name of `forwardReads` / `fastq_1`, please change the sample name in $params.input for sample $meta.sample") } // sample name and file name without extensions aren't identical, because rename_raw_data_files.nf would forward 2 files (1 renamed +1 input) instead of 1 in that case
                                 return [meta, reads] }
-        
+
         // Check for duplicate sample IDs
         def seen_samples = [] as Set
         ch_input_reads = ch_input_reads.map { meta, reads ->

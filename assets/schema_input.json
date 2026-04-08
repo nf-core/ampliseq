@@ -11,9 +11,7 @@
                 "type": "string",
                 "pattern": "^[a-zA-Z][a-zA-Z0-9_]+$",
                 "errorMessage": "Unique sample ID must be provided: Must start with a letter, and can only contain letters, numbers or underscores; Regex: '^[a-zA-Z][a-zA-Z0-9_]+$'",
-                "meta": [
-                    "sample"
-                ]
+                "meta": ["sample"]
             },
             "forwardReads": {
                 "type": "string",
@@ -49,88 +47,54 @@
                 "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
             },
             "run": {
-                "type": [
-                    "string",
-                    "integer"
-                ],
+                "type": ["string", "integer"],
                 "pattern": "^\\S+$",
                 "errorMessage": "Run name cannot contain spaces",
-                "meta": [
-                    "run"
-                ],
+                "meta": ["run"],
                 "default": "1"
             },
             "control": {
-                "type": [
-                    "string"
-                ],
-                "enum": [
-                    "control",
-                    "sample"
-                ],
+                "type": ["string"],
+                "enum": ["control", "sample"],
                 "errorMessage": "Must be 'control' or 'sample'",
-                "meta": [
-                    "control"
-                ]
+                "meta": ["control"]
             },
             "quant_reading": {
-                "type": [
-                    "number"
-                ],
+                "type": ["number"],
                 "errorMessage": "Quantification must be a number",
-                "meta": [
-                    "quant_reading"
-                ]
+                "meta": ["quant_reading"]
             }
         },
         "oneOf": [
             {
-                "required": [
-                    "sampleID",
-                    "forwardReads"
-                ],
+                "required": ["sampleID", "forwardReads"],
                 "not": {
                     "anyOf": [
                         {
-                            "required": [
-                                "sample"
-                            ]
+                            "required": ["sample"]
                         },
                         {
-                            "required": [
-                                "fastq_1"
-                            ]
+                            "required": ["fastq_1"]
                         },
                         {
-                            "required": [
-                                "fastq_2"
-                            ]
+                            "required": ["fastq_2"]
                         }
                     ]
                 },
                 "errorMessage": "When using legacy format (sampleID/forwardReads), do not use standardized fields (sample/fastq_1/fastq_2)"
             },
             {
-                "required": [
-                    "sample",
-                    "fastq_1"
-                ],
+                "required": ["sample", "fastq_1"],
                 "not": {
                     "anyOf": [
                         {
-                            "required": [
-                                "sampleID"
-                            ]
+                            "required": ["sampleID"]
                         },
                         {
-                            "required": [
-                                "forwardReads"
-                            ]
+                            "required": ["forwardReads"]
                         },
                         {
-                            "required": [
-                                "reverseReads"
-                            ]
+                            "required": ["reverseReads"]
                         }
                     ]
                 },

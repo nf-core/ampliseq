@@ -118,7 +118,7 @@ Optionally, a metadata sheet can be specified for downstream analysis.
 
 #### Samplesheet input
 
-The sample sheet file can be tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml). 
+The sample sheet file can be tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml).
 
 | Column        | Necessity | Description                                                                   |
 | ------------- | --------- | ----------------------------------------------------------------------------- |

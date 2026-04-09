@@ -101,5 +101,13 @@
                 "errorMessage": "When using standardized format (sample/fastq_1), do not use legacy fields (sampleID/forwardReads/reverseReads)"
             }
         ]
-    }
+    },
+    "allOf": [
+        {
+            "uniqueEntries": ["sample"]
+        },
+        {
+            "uniqueEntries": ["sampleID"]
+        }
+    ]
 }

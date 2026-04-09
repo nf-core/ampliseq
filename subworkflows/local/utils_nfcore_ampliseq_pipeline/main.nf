@@ -100,7 +100,7 @@ workflow PIPELINE_INITIALISATION {
     if ( params.dada_ref_taxonomy && !params.skip_taxonomy && !params.skip_dada_taxonomy ) {
         dadareftaxonomyExistsError()
     }
-    if ( params.sintax_ref_taxonomy && !params.skip_taxonomy ) {
+    if ( params.sintax_ref_taxonomy && !params.skip_taxonomy && !params.sintax_ref_tax_custom ) {
         sintaxreftaxonomyExistsError()
     }
     if ( (params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && !params.skip_taxonomy && !params.classifier ) {
@@ -227,7 +227,7 @@ def validateInputParameters() {
         }
     }
 
-    if (params.dada_assign_taxlevels && params.sbdiexport && !params.sintax_ref_taxonomy) {
+    if (params.dada_assign_taxlevels && params.sbdiexport && !params.sintax_ref_taxonomy && !params.sintax_ref_tax_custom) {
         error("Incompatible parameters: `--sbdiexport` expects specific taxonomics ranks (default) and therefore excludes modifying those using `--dada_assign_taxlevels`.")
     }
 
@@ -236,7 +236,7 @@ def validateInputParameters() {
     }
 
     if (params.skip_dada_taxonomy && params.sbdiexport) {
-        if (!params.sintax_ref_taxonomy && (params.skip_qiime || (!params.qiime_ref_taxonomy && !params.qiime_ref_tax_custom))) {
+        if (!params.sintax_ref_taxonomy && !params.sintax_ref_tax_custom && (params.skip_qiime || (!params.qiime_ref_taxonomy && !params.qiime_ref_tax_custom))) {
             error("Incompatible parameters: `--sbdiexport` expects taxa annotation and therefore annotation with either DADA2, SINTAX, or QIIME2 is needed.")
         }
     }
@@ -255,6 +255,18 @@ def validateInputParameters() {
 
     if (params.kraken2_ref_tax_custom && !params.kraken2_assign_taxlevels ) {
         error("Missing parameter: Taxonomic classification with a user provided database via `--kraken2_ref_tax_custom` requires `--kraken2_assign_taxlevels`")
+    }
+
+    if (params.sintax_ref_taxonomy && params.sintax_ref_tax_custom) {
+        error("Incompatible parameters: `--sintax_ref_taxonomy` and `--sintax_ref_tax_custom` cannot be used together.")
+    }
+
+    if (params.sintax_ref_tax_custom && !params.skip_taxonomy && !params.sintax_assign_taxlevels) {
+        error("Missing parameter: Taxonomic classification with `--sintax_ref_tax_custom` requires `--sintax_assign_taxlevels` (comma-separated taxonomic ranks matching the reference labels).")
+    }
+
+    if (params.sbdiexport && params.sintax_ref_tax_custom) {
+        error("Incompatible parameters: `--sbdiexport` does not support `--sintax_ref_tax_custom`; use a catalog `--sintax_ref_taxonomy` key or disable `--sbdiexport`.")
     }
 
     if (params.filter_ssu && params.skip_barrnap) {

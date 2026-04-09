@@ -642,7 +642,7 @@
                 },
                 "sintax_ref_taxonomy": {
                     "type": "string",
-                    "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `coidb=221216`) . This will download the desired database and initiate taxonomic classification with VSEARCH sintax and the chosen database, which if needed is formatted to produce a file that is compatible with VSEARCH sintax.\n\nThe following databases are supported:\n- COIDB - eukaryotic Cytochrome Oxidase I (COI) from The Barcode of Life Data System (BOLD) - COI\n- UNITE - eukaryotic nuclear ribosomal ITS region - ITS\n\nGenerally, using `coidb`, `unite-fungi`, or `unite-alleuk` will select the most recent supported version.",
+                    "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `coidb=221216`) . This will download the desired database and initiate taxonomic classification with VSEARCH sintax and the chosen database, which if needed is formatted to produce a file that is compatible with VSEARCH sintax.\n\nThe following databases are supported:\n- COIDB - eukaryotic Cytochrome Oxidase I (COI) from The Barcode of Life Data System (BOLD) - COI\n- UNITE - eukaryotic nuclear ribosomal ITS region - ITS\n\nGenerally, using `coidb`, `unite-fungi`, or `unite-alleuk` will select the most recent supported version.\n\nCannot be used together with `--sintax_ref_tax_custom`.",
                     "description": "Name of supported database, and optionally also version number",
                     "enum": [
                         "coidb",
@@ -658,6 +658,16 @@
                         "unite-alleuk=8.3",
                         "unite-alleuk=8.2"
                     ]
+                },
+                "sintax_ref_tax_custom": {
+                    "type": "string",
+                    "help_text": "Overwrites `--sintax_ref_taxonomy`. Requires `--sintax_assign_taxlevels`. Plain fasta or gzip-compressed (`.gz`) is accepted. Cannot be used with `--sbdiexport`.",
+                    "description": "Path to a custom SINTAX reference database (fasta)"
+                },
+                "sintax_assign_taxlevels": {
+                    "type": "string",
+                    "help_text": "Comma separated list of taxonomic ranks matching the labels in the custom database. Required with `--sintax_ref_tax_custom`. For example: `Phylum,Class,Order,Family,Genus,Species`.",
+                    "description": "Comma separated list of taxonomic levels used in SINTAX with a custom reference database"
                 },
                 "addsh": {
                     "type": "boolean",

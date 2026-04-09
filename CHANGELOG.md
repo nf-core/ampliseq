@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#964](https://github.com/nf-core/ampliseq/pull/964),[#968](https://github.com/nf-core/ampliseq/pull/968) - Enabled local reference storage directory with `--ref_taxonomy_storage`.
 - [#972](https://github.com/nf-core/ampliseq/pull/972) - Amended information about merging in the `overall_summary.tsv` and the summary report.
 - [#978](https://github.com/nf-core/ampliseq/pull/978) - `--binned_quality` (string, comma separated quality bins) uses DADA2's built-in function to handle quality binned fastq data.
+- [#982](https://github.com/nf-core/ampliseq/pull/982) - Adds `--sintax_ref_tax_custom` and `--sintax_assign_taxlevels`.
 
 ### `Changed`
 

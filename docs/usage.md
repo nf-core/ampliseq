@@ -118,7 +118,18 @@ Optionally, a metadata sheet can be specified for downstream analysis.
 
 #### Samplesheet input
 
-The sample sheet file can be tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml). It supports both a legacy and a standardized header layout:
+The sample sheet file can be tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml). 
+
+| Column        | Necessity | Description                                                                   |
+| ------------- | --------- | ----------------------------------------------------------------------------- |
+| sampleID      | required  | Unique sample identifiers (see below for requirements)                        |
+| forwardReads  | required  | Paths to (forward) reads zipped FastQ files                                   |
+| reverseReads  | optional  | Paths to reverse reads zipped FastQ files, required if the data is paired-end |
+| run           | optional  | If the data was produced by multiple sequencing runs, any string              |
+| control       | optional  | "control" or "sample" to allow decontamination with negative controls         |
+| quant_reading | optional  | Quantification reading to allow decontamination based on abundances           |
+
+It supports both a legacy and a standardized header layout:
 
 | Layout       | Required columns           | Optional columns                                  |
 | ------------ | -------------------------- | ------------------------------------------------- | --- |

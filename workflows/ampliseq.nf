@@ -183,15 +183,6 @@ workflow AMPLISEQ {
                 if ( meta.single_end && ( normalized_fw.getSimpleName() == meta.sample+"_1" || normalized_fw.getSimpleName() == meta.sample+"_2" ) ) { error("Entry `sampleID` / `sample` + `_1` or `_2` cannot be identical to simple name of `forwardReads` / `fastq_1`, please change the sample name in $params.input for sample $meta.sample") } // sample name and file name without extensions aren't identical, because rename_raw_data_files.nf would forward 2 files (1 renamed +1 input) instead of 1 in that case
                                 return [meta, reads] }
 
-        // Check for duplicate sample IDs
-        def seen_samples = [] as Set
-        ch_input_reads = ch_input_reads.map { meta, reads ->
-            if (meta.sample in seen_samples) {
-                error("Duplicate sample identifier detected: '${meta.sample}' appears multiple times in ${params.input}. Each sample must have a unique identifier.")
-            }
-            seen_samples.add(meta.sample)
-            [meta, reads]
-        }
     } else if ( params.input_fasta ) {
         ch_input_fasta = channel.fromPath(params.input_fasta, checkIfExists: true)
     } else if ( params.input_folder ) {

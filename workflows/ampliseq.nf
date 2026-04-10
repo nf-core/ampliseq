@@ -424,7 +424,7 @@ workflow AMPLISEQ {
     // MODULE: Rename files
     //
     RENAME_RAW_DATA_FILES ( ch_reads )
-    ch_versions = ch_versions.mix(RENAME_RAW_DATA_FILES.out.versions.first())
+    ch_versions = ch_versions.mix(RENAME_RAW_DATA_FILES.out.versions)
 
     //
     // MODULE: Run FastQC
@@ -789,63 +789,64 @@ workflow AMPLISEQ {
     //
     // Multiple references with hmms
     //
+    if ( params.pplace_sheet ) {
+        // For search entries with a named hmm to extract, call extraction
+        ch_pplace_sheet
+            .filter { it -> it.data.extract_hmm }
+            .map { it -> [ it.meta, it.data.hmm, it.data.extract_hmm ] }
+            .set { ch_hmmextract }
 
-    // For search entries with a named hmm to extract, call extraction
-    ch_pplace_sheet
-        .filter { it -> it.data.extract_hmm }
-        .map { it -> [ it.meta, it.data.hmm, it.data.extract_hmm ] }
-        .set { ch_hmmextract }
+        HMMER_HMMEXTRACT(ch_hmmextract)
+        ch_versions = ch_versions.mix(HMMER_HMMEXTRACT.out.versions)
 
-    HMMER_HMMEXTRACT(ch_hmmextract)
-    ch_versions = ch_versions.mix(HMMER_HMMEXTRACT.out.versions)
+        // Create an input channel for FASTA_HMMSEARCH_RANK_FASTAS by adding the non-keyed entries from the original channel to the output of the extracted
+        ch_search_profiles = HMMER_HMMEXTRACT.out.hmm
+            .mix(
+                ch_pplace_sheet
+                    .filter { it -> ! it.data.extract_hmm }
+                    .map { it -> [ it.meta, it.data.hmm ] }
+            )
 
-    // Create an input channel for FASTA_HMMSEARCH_RANK_FASTAS by adding the non-keyed entries from the original channel to the output of the extracted
-    ch_search_profiles = HMMER_HMMEXTRACT.out.hmm
-        .mix(
-            ch_pplace_sheet
-                .filter { it -> ! it.data.extract_hmm }
-                .map { it -> [ it.meta, it.data.hmm ] }
-        )
+        //
+        // SUBWORKFLOW: Search the ASV fasta with the hmms for phyloplacement
+        //
+        FASTA_HMMSEARCH_RANK_FASTAS(ch_search_profiles, ch_fasta)
+        ch_versions = ch_versions.mix(FASTA_HMMSEARCH_RANK_FASTAS.out.versions)
 
-    //
-    // SUBWORKFLOW: Search the ASV fasta with the hmms for phyloplacement
-    //
-    FASTA_HMMSEARCH_RANK_FASTAS(ch_search_profiles, ch_fasta)
-    ch_versions = ch_versions.mix(FASTA_HMMSEARCH_RANK_FASTAS.out.versions)
+        ch_phyloplace_data = FASTA_HMMSEARCH_RANK_FASTAS.out.seqfastas
+            .join(
+                ch_pplace_sheet
+                    .filter { it -> it.data.alignmethod && it.data.refseqfile && it.data.refphylogeny }
+                    .map { it -> [ [ id: it.meta.id ], it ] }
+            )
+            .map { it -> [
+                meta: it[2].meta,
+                data: [
+                    alignmethod: it[2].data.alignmethod,
+                    queryseqfile: it[1],
+                    refseqfile: it[2].data.refseqfile,
+                    refphylogeny: it[2].data.refphylogeny,
+                    model: it[2].data.model,
+                    taxonomy: it[2].data.taxonomy
+                ]
+            ] }
 
-    ch_phyloplace_data = FASTA_HMMSEARCH_RANK_FASTAS.out.seqfastas
-        .join(
-            ch_pplace_sheet
-                .filter { it -> it.data.alignmethod && it.data.refseqfile && it.data.refphylogeny }
-                .map { it -> [ [ id: it.meta.id ], it ] }
-        )
-        .map { it -> [
-            meta: it[2].meta,
-            data: [
-                alignmethod: it[2].data.alignmethod,
-                queryseqfile: it[1],
-                refseqfile: it[2].data.refseqfile,
-                refphylogeny: it[2].data.refphylogeny,
-                model: it[2].data.model,
-                taxonomy: it[2].data.taxonomy
-            ]
-        ] }
+        //
+        // SUBWORKFLOW: Run phylogenetic placement
+        //
+        PPLACE_SHEET(ch_phyloplace_data)
+        ch_versions = ch_versions.mix(PPLACE_SHEET.out.versions)
 
-    //
-    // SUBWORKFLOW: Run phylogenetic placement
-    //
-    PPLACE_SHEET(ch_phyloplace_data)
-    ch_versions = ch_versions.mix(PPLACE_SHEET.out.versions)
+        PPLACEFORMATTAX_SHEET(PPLACE_SHEET.out.taxonomy_per_query)
+        ch_versions = ch_versions.mix(PPLACEFORMATTAX_SHEET.out.versions)
 
-    PPLACEFORMATTAX_SHEET(PPLACE_SHEET.out.taxonomy_per_query)
-    ch_versions = ch_versions.mix(PPLACEFORMATTAX_SHEET.out.versions)
-
-    // Currently, this channel used only for QIIME2_EXPORT and not QIIME2_INTAX since the call to the latter is wrapped in an if clause checking params.pplace_tree
-    if ( ! params.pplace_tree ) {
-        ch_pplace_tax = PPLACEFORMATTAX_SHEET.out.tsv
-            .splitCsv(sep: '\t', header: true)
-            .map { r -> "${r.ASV_ID}\t${r.taxonomy}\n" }
-            .collectFile(name: 'concatenated_taxonomy.tsv', seed: "ASV_ID\ttaxonomy\n")
+        // Currently, this channel used only for QIIME2_EXPORT and not QIIME2_INTAX since the call to the latter is wrapped in an if clause checking params.pplace_tree
+        if ( ! params.pplace_tree ) {
+            ch_pplace_tax = PPLACEFORMATTAX_SHEET.out.tsv
+                .splitCsv(sep: '\t', header: true)
+                .map { r -> "${r.ASV_ID}\t${r.taxonomy}\n" }
+                .collectFile(name: 'concatenated_taxonomy.tsv', seed: "ASV_ID\ttaxonomy\n")
+        }
     }
 
     //QIIME2
@@ -1058,7 +1059,7 @@ workflow AMPLISEQ {
             db_version = params.dada_ref_databases[params.dada_ref_taxonomy]["dbversion"]
             SBDIEXPORTREANNOTATE ( ch_dada2_tax, "dada2", db_version, params.cut_its, ch_barrnapsummary.ifEmpty([]) )
         }
-        ch_versions = ch_versions.mix(SBDIEXPORT.out.versions.first())
+        ch_versions = ch_versions.mix(SBDIEXPORT.out.versions)
     }
 
     //

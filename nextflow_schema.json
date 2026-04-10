@@ -362,7 +362,7 @@
                 "decontam": {
                     "type": "string",
                     "description": "Choose whether decontamination with `decontam` is applied to features.",
-                    "help_text": "`decontaminate` assumes that features are **not** contaminants and requires sufficient positive proof a feature is a contaminant before calling it so. Only works with at least one of `control` and/or `quant_reading` columns in the samplesheet. `notcontaminant` assumes that features **are** contaminants and requires sufficient proof a feature is not a contaminant before calling it so. Only works with `control` column in the samplesheet.",
+                    "help_text": "`decontaminate` assumes that features are **not** contaminants and requires sufficient positive proof a feature is a contaminant before calling it so. Only works with at least one of `control` and/or `quant_reading` columns in the sample sheet. `notcontaminant` assumes that features **are** contaminants and requires sufficient proof a feature is not a contaminant before calling it so. Only works with `control` column in the sample sheet.",
                     "default": "none",
                     "enum": ["none", "decontaminate", "notcontaminant"]
                 },

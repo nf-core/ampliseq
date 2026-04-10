@@ -56,7 +56,7 @@ By default, the pipeline currently performs the following:
 
 First, you need to know whether the sequencing files at hand are expected to contain primer sequences (usually yes) and if yes, what primer sequences. In the example below, the paired end sequencing data was produced with 515f (GTGYCAGCMGCCGCGGTAA) and 806r (GGACTACNVGGGTWTCTAAT) primers of the V4 region of the 16S rRNA gene. Please note, that those primer sequences should not contain any sequencing adapter sequences, only the sequence that matches the biological amplicon.
 
-Next, the sequencing data needs to be detailed in a samplesheet or organized in a folder (see [input documentation](https://nf-co.re/ampliseq/usage#input-specifications)).
+Next, the sequencing data needs to be detailed in a sample sheet or organized in a folder (see [input documentation](https://nf-co.re/ampliseq/usage#input-specifications)).
 
 Now, you can run the pipeline using:
 

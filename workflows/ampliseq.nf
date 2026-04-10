@@ -167,14 +167,21 @@ workflow AMPLISEQ {
     ch_input_reads = channel.empty()
     if ( params.input ) {
         // See the documentation https://nextflow-io.github.io/nf-schema/2.5.1/samplesheets/samplesheetToList/
+
         ch_input_reads = channel.fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json")) // meta: meta.sample, meta.run
-            .map{ meta, readfw, readrv ->
+            .map{ meta, readfw, readrv, sample, fastq1, fastq2 ->
+                def normalized_fw = readfw ?: fastq1
+                def normalized_rv = readrv ?: fastq2
+                if ( !meta.sample && sample ) {
+                    meta.sample = sample
+                }
                 meta.single_end = single_end.toBoolean()
-                def reads = single_end ? readfw : [readfw,readrv]
-                if ( !meta.single_end && !readrv ) { error("Entry `reverseReads` is missing in $params.input for $meta.sample, either correct the samplesheet or use `--single_end`, `--pacbio`, or `--iontorrent`") } // make sure that reverse reads are present when single_end isn't specified
-                if ( !meta.single_end && ( readfw.getSimpleName() == meta.sample || readrv.getSimpleName() == meta.sample ) ) { error("Entry `sampleID` cannot be identical to simple name of `forwardReads` or `reverseReads`, please change `sampleID` in $params.input for sample $meta.sample") } // sample name and any file name without extensions aren't identical, because rename_raw_data_files.nf would forward 3 files (2 renamed +1 input) instead of 2 in that case
-                if ( meta.single_end && ( readfw.getSimpleName() == meta.sample+"_1" || readfw.getSimpleName() == meta.sample+"_2" ) ) { error("Entry `sampleID`+ `_1` or `_2` cannot be identical to simple name of `forwardReads`, please change `sampleID` in $params.input for sample $meta.sample") } // sample name and file name without extensions aren't identical, because rename_raw_data_files.nf would forward 2 files (1 renamed +1 input) instead of 1 in that case
-                return [meta, reads] }
+                def reads = single_end ? normalized_fw : [normalized_fw, normalized_rv]
+                if ( !meta.single_end && !normalized_rv ) { error("Entry `reverseReads` / `fastq_2` is missing in $params.input for $meta.sample, either correct the samplesheet or use `--single_end`, `--pacbio`, or `--iontorrent`") } // make sure that reverse reads are present when single_end isn't specified
+                if ( !meta.single_end && ( normalized_fw.getSimpleName() == meta.sample || normalized_rv.getSimpleName() == meta.sample ) ) { error("Entry `sampleID` / `sample` cannot be identical to simple name of `forwardReads` / `fastq_1` or `reverseReads` / `fastq_2`, please change the sample name in $params.input for sample $meta.sample") } // sample name and any file name without extensions aren't identical, because rename_raw_data_files.nf would forward 3 files (2 renamed +1 input) instead of 2 in that case
+                if ( meta.single_end && ( normalized_fw.getSimpleName() == meta.sample+"_1" || normalized_fw.getSimpleName() == meta.sample+"_2" ) ) { error("Entry `sampleID` / `sample` + `_1` or `_2` cannot be identical to simple name of `forwardReads` / `fastq_1`, please change the sample name in $params.input for sample $meta.sample") } // sample name and file name without extensions aren't identical, because rename_raw_data_files.nf would forward 2 files (1 renamed +1 input) instead of 1 in that case
+                                return [meta, reads] }
+
     } else if ( params.input_fasta ) {
         ch_input_fasta = channel.fromPath(params.input_fasta, checkIfExists: true)
     } else if ( params.input_folder ) {

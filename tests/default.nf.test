@@ -44,7 +44,7 @@ nextflow_pipeline {
                     path("$outputDir/decontam/decontaminated_counts.tsv"),
                     path("$outputDir/decontam/decontaminated_details.tsv").readLines().size(),
                     path("$outputDir/decontam/decontaminated_log.tsv"),
-                    path("$outputDir/input/Samplesheet.tsv"),
+                    path("$outputDir/input/Samplesheet_standardized.tsv"),
                     path("$outputDir/input/Metadata.tsv"),
                     path("$outputDir/multiqc/multiqc_data/multiqc_fastqc.txt"),
                     path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt"),

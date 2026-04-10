@@ -858,6 +858,7 @@ workflow AMPLISEQ {
                 params.RV_primer
             )
             ch_qiime_classifier = QIIME2_PREPTAX.out.classifier
+            ch_versions = ch_versions.mix( QIIME2_PREPTAX.out.versions )
         }
         QIIME2_TAXONOMY (
             ch_fasta,

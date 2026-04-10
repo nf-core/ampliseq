@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#966](https://github.com/nf-core/ampliseq/pull/966) - In multiregion analysis, omit samples with few reads across all regions
 - [#969](https://github.com/nf-core/ampliseq/pull/969) - Fix checking for sbdiexport compatibility for newer nextflow versions
 - [#984](https://github.com/nf-core/ampliseq/pull/984) - Adhere to strict syntax, incl. update to nf-core modules
+- [#986](https://github.com/nf-core/ampliseq/pull/986) - Update database links from `https://scilifelab.figshare.com/ndownloader/files/` to `https://ndownloader.figshare.com/files/` to alleviate download issues.
 
 ### `Dependencies`
 

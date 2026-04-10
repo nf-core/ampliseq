@@ -10,7 +10,7 @@
   - [Quick start](#quick-start)
   - [Setting parameters in a file](#setting-parameters-in-a-file)
   - [Input specifications](#input-specifications)
-    - [Samplesheet input](#samplesheet-input)
+    - [Sample sheet input](#sample-sheet-input)
     - [ASV/OTU fasta input](#asvotu-fasta-input)
     - [Direct FASTQ input](#direct-fastq-input)
   - [Regions of variable length e.g. ITS](#regions-of-variable-length-eg-its)
@@ -54,7 +54,7 @@ nextflow run nf-core/ampliseq \
     --outdir "./results"
 ```
 
-In this example, `--input` is the [Samplesheet input](#samplesheet-input), other options are [Direct FASTQ input](#direct-fastq-input) and [ASV/OTU fasta input](#asvotu-fasta-input). For more details on metadata, see [Metadata](#metadata). It is possible to not provide primer sequences (`--FW_primer` & `--RV_primer`) and skip primer trimming using `--skip_cutadapt`, but this is only for data that indeed does not contain any PCR primers in their sequences. Also, metadata (`--metadata`) isnt required, but aids downstream analysis.
+In this example, `--input` is the [Sample sheet input](#sample-sheet-input), other options are [Direct FASTQ input](#direct-fastq-input) and [ASV/OTU fasta input](#asvotu-fasta-input). For more details on metadata, see [Metadata](#metadata). It is possible to not provide primer sequences (`--FW_primer` & `--RV_primer`) and skip primer trimming using `--skip_cutadapt`, but this is only for data that indeed does not contain any PCR primers in their sequences. Also, metadata (`--metadata`) isnt required, but aids downstream analysis.
 
 This will launch the pipeline with the `singularity` configuration profile. See below [`-profile`](#profile) for more information about profiles.
 
@@ -68,10 +68,10 @@ work                # Directory containing the nextflow working files
 ```
 
 > [!TIP]
-> For [Reproducibility](#reproducibility), specify the version to run using `-r` (= release, e.g. 2.15.0, please use the most recent release). See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters) for more information about pipeline specific parameters.
+> For [Reproducibility](#reproducibility), specify the version to run using `-r` (= release, e.g. 2.17.0, please use the most recent release). See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters) for more information about pipeline specific parameters.
 
 > [!NOTE]
-> If the data originates from multiple sequencing runs, the error profile of each of those sequencing runs needs to be considered separately. Using the `run` column in the samplesheet input or adding `--multiple_sequencing_runs` for direct FASTQ input will separate certain processes by the sequencing run. Please see the following example:
+> If the data originates from multiple sequencing runs, the error profile of each of those sequencing runs needs to be considered separately. Using the `run` column in the sample sheet input or adding `--multiple_sequencing_runs` for direct FASTQ input will separate certain processes by the sequencing run. Please see the following example:
 
 <p align="center">
     <img src="images/ampliseq_workflow_multiplesequencingruns.png" alt="nf-core/ampliseq workflow overview with --multiple_sequencing_runs" width="40%">
@@ -110,65 +110,60 @@ You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-c
 The input data can be passed to nf-core/ampliseq in three possible ways using the parameters `--input`, `--input_fasta`, or `--input_folder`.
 The three parameters and input types are mutually exclusive.
 
-- [Samplesheet input](#samplesheet-input) using `--input`: Samplesheet tab-separated, comma-separated, or in YAML format
+- [Sample sheet input](#sample-sheet-input) using `--input`: Sample sheet tab-separated, comma-separated, or in YAML format
 - [ASV/OTU fasta input](#asvotu-fasta-input) using `--input_fasta`: Fasta file with sequences to be taxonomically classified
 - [Direct FASTQ input](#direct-fastq-input) using `--input_folder`: Folder containing zipped FastQ files.
 
 Optionally, a metadata sheet can be specified for downstream analysis.
 
-#### Samplesheet input
+#### Sample sheet input
 
 The sample sheet file can be tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml).
 
 | Column        | Necessity | Description                                                                   |
 | ------------- | --------- | ----------------------------------------------------------------------------- |
-| sampleID      | required  | Unique sample identifiers (see below for requirements)                        |
-| forwardReads  | required  | Paths to (forward) reads zipped FastQ files                                   |
-| reverseReads  | optional  | Paths to reverse reads zipped FastQ files, required if the data is paired-end |
+| sample        | required  | Unique sample identifiers (see below for requirements)                        |
+| fastq_1       | required  | Paths to (forward) reads zipped FastQ files                                   |
+| fastq_2       | optional  | Paths to reverse reads zipped FastQ files, required if the data is paired-end |
 | run           | optional  | If the data was produced by multiple sequencing runs, any string              |
 | control       | optional  | "control" or "sample" to allow decontamination with negative controls         |
 | quant_reading | optional  | Quantification reading to allow decontamination based on abundances           |
 
-It supports both a legacy and a standardized header layout:
-
-| Layout       | Required columns           | Optional columns                                  |
-| ------------ | -------------------------- | ------------------------------------------------- | --- |
-| Legacy       | `sampleID`, `forwardReads` | `reverseReads`, `run`, `control`, `quant_reading` |
-| Standardized | `sample`, `fastq_1`        | `fastq_2`, `run`, `control`, `quant_reading`      |     |
+The sample sheet can be specified with
 
 ```bash
 --input 'path/to/samplesheet.tsv'
 ```
 
-For example, the tab-separated samplesheet may contain either layout:
-
-**Standardized layout**
+For example, the tab-separated sample sheet may contain:
 
 | sample  | fastq_1                   | fastq_2                   | run | control | quant_reading |
 | ------- | ------------------------- | ------------------------- | --- | ------- | ------------- |
 | sample1 | ./data/S1_R1_001.fastq.gz | ./data/S1_R2_001.fastq.gz | A   | control | 1000          |
 | sample2 | ./data/S2_fw.fastq.gz     | ./data/S2_rv.fastq.gz     | A   | sample  | 10000         |
+| sample3 | ./S4x.fastq.gz            | ./S4y.fastq.gz            | B   | control | 1100          |
+| sample4 | ./a.fastq.gz              | ./b.fastq.gz              | B   | sample  | 11000         |
 
-**Legacy layout**
+Two header layouts are supported, a legacy and a standardized layout (the latter is described above):
 
-| sampleID | forwardReads | reverseReads | run | control | quant_reading |
-| -------- | ------------------------- | ------------------------- | --- | ------- | ------------- | |
-| sample3 | ./S4x.fastq.gz | ./S4y.fastq.gz | B | control | 1100 |
-| sample4 | ./a.fastq.gz | ./b.fastq.gz | B | sample | 11000 |
+| Layout       | Required columns           | Optional columns                                  |
+| ------------ | -------------------------- | ------------------------------------------------- |
+| Legacy       | `sampleID`, `forwardReads` | `reverseReads`, `run`, `control`, `quant_reading` |
+| Standardized | `sample`, `fastq_1`        | `fastq_2`, `run`, `control`, `quant_reading`      |
 
 Please note the following requirements:
 
 - 2 to 6 columns/entries
 - File extensions `.tsv`,`.csv`,`.yml`,`.yaml` specify the file type, otherwise file type will be derived from content, if possible
-- Must contain either `sampleID` and `forwardReads` (legacy) OR `sample` and `fastq_1` (standardized)
-- May contain `reverseReads`/`fastq_2`, `run`, `control`, and `quant_reading`
+- Must contain either `sample` and `fastq_1` (standardized) OR `sampleID` and `forwardReads` (legacy)
+- May contain `fastq_2`/`reverseReads`, `run`, `control`, and `quant_reading`
 - Sample IDs must be unique
 - Sample IDs must start with a letter
 - Sample IDs can only contain letters, numbers or underscores
 - FastQ files must be compressed (`.fastq.gz`, `.fq.gz`)
 - Within one samplesheet, only one type of raw data should be specified (same amplicon & sequencing method)
 
-Examples for both layouts are provided with the pipeline: [legacy](../assets/samplesheet.tsv) and [standardized](../assets/samplesheet_new.tsv).
+Examples for both layouts are provided within the pipeline code in folder `assets` as `samplesheet_legacy.tsv` and `samplesheet_standardized.tsv`.
 
 To avoid producing a sample sheet, [Direct FASTQ input](#direct-fastq-input) may be used instead.
 
@@ -252,7 +247,7 @@ ITSxRust produces the same output files as ITSx and is fully compatible with all
 
 [Decontam](https://doi.org/10.1186/s40168-018-0605-2) performs simple statistical identification and removal of contaminant sequences. Decontam is most useful with low biomass samples, where contamination removal is particularly impactful. The limitations and applications of Decontam have been extensively described in its [publication](https://doi.org/10.1186/s40168-018-0605-2) and [R package description](https://benjjneb.github.io/decontam/vignettes/decontam_intro.html). [Fierer et al. 2025](https://doi.org/10.1038/s41564-025-02035-2) compare concepts and methods for decontamiation including Decontam. Next, a brief explanation on how to use Decontam in the context of nf-core/ampliseq.
 
-Decontam is applied to the abundance table with information from the samplesheet after ASV generation (or OTU clustering, if chosen), before ASV filtering by barrnap, length, and such. Required for using Decontam is at least one of DNA quantitation data and negative controls, that can be added in the samplesheet in optional columns `quant_reading` and `control`. Whenever at least one of those two columns is supplied, Decontam is applied to the data and the results are stored, however without further consequences. Filtering for downstream analysis is only applied when additionally specifying `--decontam decotaminate` or `--decontam notcontaminant`.
+Decontam is applied to the abundance table with information from the sample sheet after ASV generation (or OTU clustering, if chosen), before ASV filtering by barrnap, length, and such. Required for using Decontam is at least one of DNA quantitation data and negative controls, that can be added in the sample sheet in optional columns `quant_reading` and `control`. Whenever at least one of those two columns is supplied, Decontam is applied to the data and the results are stored, however without further consequences. Filtering for downstream analysis is only applied when additionally specifying `--decontam decotaminate` or `--decontam notcontaminant`.
 
 Decontam has two methods, the "frequency" method based on the distribution of the frequency of each sequence feature as a function of the input DNA concentration (sample sheet column `quant_reading`) and the "prevalence" method based on the prevalence (presence/absence across samples) of each sequence feature in true positive samples compared to the prevalence in negative controls (sample sheet column `control`). DNA quantitation data for the "frequency" method refers to DNA extraction concentration or to sequencing library input, optimally as standardized fluorescent intensities. The model requires a gradient of concentrations to detect contaminants that are more frequent in samples with low concentration reading than in samples with high quantification reading. The "frequency" method model assumptions are violated if microbial biomass systematically differs between sample groups. For the "prevalence" method, at least 3 negative controls are required, a minimum of 5 is recommended. The "prevalence" method has reduced sensitivity to detect contaminants present only in very few samples or with fewer negative controls.
 
@@ -300,8 +295,7 @@ Special features of taxonomic classification tools:
 Parameter guidance is given in [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#taxonomic-assignment). Citations are listed in [`CITATIONS.md`](CITATIONS.md).
 
 > [!TIP]
-> Taxonomic reference databases can be stored and shared locally with [--ref_taxonomy_storage](https://nf-co.re/ampliseq/parameters/#ref_taxonomy_storage).
-> That way, remote files will be downloaded only if they are not available in the storage directory.
+> Taxonomic reference databases can be stored and shared locally with [`--ref_taxonomy_storage`](https://nf-co.re/ampliseq/parameters/#ref_taxonomy_storage). That way, remote files will be downloaded only if they are not available in the storage directory.
 
 ### Multiple region analysis with Sidle
 
@@ -309,7 +303,7 @@ Instead of relying on one short amplicon, scaffolding multiple regions along a r
 
 For example, multiple variable regions of the 16S rRNA gene were sequenced with various primers and need to be unified. This leads to one unified abundance and taxonomy profile over all variable regions. However, ASV sequences are only available separately, there is no reconstruction of complete de-novo sequences feasible.
 
-Information about sequencing data via [`--input`](#samplesheet-input), region primers length information via [`--multiregion`](https://nf-co.re/ampliseq/parameters#multiregion), and a taxonomic database via [`--sidle_ref_taxonomy`](https://nf-co.re/ampliseq/parameters#sidle_ref_taxonomy) or [`--sidle_ref_tax_custom`](https://nf-co.re/ampliseq/parameters#sidle_ref_tax_custom) with [`--sidle_ref_seq_custom`](https://nf-co.re/ampliseq/parameters#sidle_ref_seq_custom) is required.
+Information about sequencing data via [`--input`](#sample-sheet-input), region primers length information via [`--multiregion`](https://nf-co.re/ampliseq/parameters#multiregion), and a taxonomic database via [`--sidle_ref_taxonomy`](https://nf-co.re/ampliseq/parameters#sidle_ref_taxonomy) or [`--sidle_ref_tax_custom`](https://nf-co.re/ampliseq/parameters#sidle_ref_tax_custom) with [`--sidle_ref_seq_custom`](https://nf-co.re/ampliseq/parameters#sidle_ref_seq_custom) is required.
 
 ```bash
 --input "samplesheet_multiregion.tsv"  --multiregion "regions_multiregion.tsv" --sidle_ref_taxonomy "silva=128"
@@ -335,18 +329,14 @@ For example, the tab-separated `regions_multiregion.tsv` may contain:
 | region5 | GGAGGAAGGTGGGGATGAC   | AAGGCCCGGGAACGTATT   | 150           |
 
 > [!WARNING]
-> Several downstream filtering options are not allowed or disabled when analysing multi region data.
-> Disabled functions are any ASV postprocessing/filtering options that require sequences and also no
-> sample subsetting using the metadata sheet is available (i.e. if provided, the metadata sheet has
-> to include all samples that pass preprocessing).
+> Several downstream filtering options are not allowed or disabled when analysing multi region data. Disabled functions are any ASV postprocessing/filtering options that require sequences and also no sample subsetting using the metadata sheet is available (i.e. if provided, the metadata sheet has to include all samples that pass preprocessing).
 
 ### Metadata
 
 Metadata is optional, but for performing downstream analysis such as barplots, diversity indices or differential abundance testing, a metadata file is essential.
 
 > [!TIP]
-> The metadata defines what samples are entering downstream analysis. For example, when having negative controls in the samplesheet,
-> those can be omitted in the metadata sheet and will not enter downstream analysis with QIIME2.
+> The metadata defines what samples are entering downstream analysis. For example, when having negative controls in the sample sheet, those can be omitted in the metadata sheet and will not enter downstream analysis with QIIME2.
 
 ```bash
 --metadata "path/to/metadata.tsv"
@@ -415,8 +405,7 @@ This is not run by default since it takes quite a lot of resources.
 If you want to enable this, set `--run_pplace`.
 
 > [!NOTE]
-> Since phylogenetic placement requires a lot of memory when the reference phylogeny is large, we have set the minimum memory for two processes to 60 GiB in order to work with the GTDB bacterial tree.
-> If your tree is smaller, the setting can be lowered for the `EPANG_PLACE` and `GAPPA_ASSIGN` processes, see [resource requests](#resource-requests) below.
+> Since phylogenetic placement requires a lot of memory when the reference phylogeny is large, we have set the minimum memory for two processes to 60 GiB in order to work with the GTDB bacterial tree. If your tree is smaller, the setting can be lowered for the `EPANG_PLACE` and `GAPPA_ASSIGN` processes, see [resource requests](#resource-requests) below.
 
 ### Updating the pipeline
 
@@ -430,7 +419,7 @@ nextflow pull nf-core/ampliseq
 
 It is a good idea to specify the pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
 
-First, go to the [nf-core/ampliseq releases page](https://github.com/nf-core/ampliseq/releases) and find the latest pipeline version - numeric only (eg. `2.15.0`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 2.15.0`. Of course, you can switch to another version by changing the number after the `-r` flag.
+First, go to the [nf-core/ampliseq releases page](https://github.com/nf-core/ampliseq/releases) and find the latest pipeline version - numeric only (eg. `2.17.0`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 2.17.0`. Of course, you can switch to another version by changing the number after the `-r` flag.
 
 This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future. For example, at the bottom of the MultiQC reports.
 

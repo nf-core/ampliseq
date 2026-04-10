@@ -54,29 +54,26 @@ By default, the pipeline currently performs the following:
 > [!NOTE]
 > If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.
 
-First, you need to know whether the sequencing files at hand are expected to contain primer sequences (usually yes) and if yes, what primer sequences. In the example below, the paired end sequencing data was produced with 515f (GTGYCAGCMGCCGCGGTAA) and 806r (GGACTACNVGGGTWTCTAAT) primers of the V4 region of the 16S rRNA gene. Please note, that those sequences should not contain any sequencing adapter sequences, only the sequence that matches the biological amplicon.
+First, you need to know whether the sequencing files at hand are expected to contain primer sequences (usually yes) and if yes, what primer sequences. In the example below, the paired end sequencing data was produced with 515f (GTGYCAGCMGCCGCGGTAA) and 806r (GGACTACNVGGGTWTCTAAT) primers of the V4 region of the 16S rRNA gene. Please note, that those primer sequences should not contain any sequencing adapter sequences, only the sequence that matches the biological amplicon.
 
-Next, the data needs to be organized in a folder, here `data`, or detailed in a samplesheet (see [input documentation](https://nf-co.re/ampliseq/usage#input-specifications)).
+Next, the sequencing data needs to be detailed in a samplesheet or organized in a folder (see [input documentation](https://nf-co.re/ampliseq/usage#input-specifications)).
 
 Now, you can run the pipeline using:
 
 ```bash
 nextflow run nf-core/ampliseq \
    -profile <docker/singularity/.../institute> \
-   --input "data" \
+   --input "samplesheet.tsv" \
    --FW_primer "GTGYCAGCMGCCGCGGTAA" \
    --RV_primer "GGACTACNVGGGTWTCTAAT" \
    --outdir <OUTDIR>
 ```
 
 > [!NOTE]
-> Using a samplesheet will increase input flexibility and options considerably.
-
-> [!NOTE]
 > Adding metadata will considerably increase the output, see [metadata documentation](https://nf-co.re/ampliseq/usage#metadata).
 
 > [!TIP]
-> By default the taxonomic assignment will be performed with DADA2 on SILVA database, but there are various tools and databases readily available, see [taxonomic classification documentation](https://nf-co.re/ampliseq/usage#taxonomic-classification). Differential abundance testing with ([ANCOM](https://www.ncbi.nlm.nih.gov/pubmed/26028277)) or ([ANCOM-BC](https://www.ncbi.nlm.nih.gov/pubmed/32665548)) when opting in.
+> By default the taxonomic assignment will be performed with DADA2 on SILVA database, but there are various tools and databases readily available, see [taxonomic classification documentation](https://nf-co.re/ampliseq/usage#taxonomic-classification).
 
 > [!WARNING]
 > Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_; see [docs](https://nf-co.re/docs/usage/getting_started/configuration#custom-configuration-files).
@@ -91,7 +88,7 @@ For more details about the output files and reports, please refer to the
 
 ## Credits
 
-nf-core/ampliseq was originally written by Daniel Straub ([@d4straub](https://github.com/d4straub)) and Alexander Peltzer ([@apeltzer](https://github.com/apeltzer)) for use at the [Quantitative Biology Center (QBiC)](https://www.info.qbic.uni-tuebingen.de/) and [Microbial Ecology, Center for Applied Geosciences](http://www.uni-tuebingen.de/de/104325), part of Eberhard Karls Universität Tübingen (Germany). Daniel Lundin [@erikrikarddaniel](https://github.com/erikrikarddaniel) ([Linnaeus University, Sweden](https://lnu.se/)) joined before pipeline release 2.0.0 and helped to improve the pipeline considerably.
+nf-core/ampliseq was originally written by Daniel Straub ([@d4straub](https://github.com/d4straub)) and Alexander Peltzer ([@apeltzer](https://github.com/apeltzer)) for use at the [Quantitative Biology Center (QBiC)](https://www.info.qbic.uni-tuebingen.de/) and Microbial Ecology, Center for Applied Geosciences, part of [Eberhard Karls Universität Tübingen (Germany)](https://uni-tuebingen.de/). Daniel Lundin [@erikrikarddaniel](https://github.com/erikrikarddaniel) ([Linnaeus University, Sweden](https://lnu.se/)) joined before pipeline release 2.0.0 and helped to improve the pipeline considerably.
 
 We thank the following people for their extensive assistance in the development of this pipeline (in alphabetical order):
 

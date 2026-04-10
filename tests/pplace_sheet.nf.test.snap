@@ -75,6 +75,9 @@
                     "python": "3.9.1",
                     "pandas": "1.1.5"
                 },
+                "FORMAT_TAXONOMY_QIIME": {
+                    "sed": 4.7
+                },
                 "GAPPA_ASSIGN": {
                     "gappa": "0.8.0"
                 },
@@ -123,6 +126,9 @@
                 "QIIME2_EXPORT_RELTAX": {
                     "qiime2": "2024.10.1"
                 },
+                "QIIME2_EXTRACT": {
+                    "qiime2": "2024.10.1"
+                },
                 "QIIME2_INASV": {
                     "qiime2": "2024.10.1"
                 },
@@ -133,6 +139,9 @@
                     "qiime2": "2024.10.1"
                 },
                 "QIIME2_TABLEFILTERTAXA": {
+                    "qiime2": "2024.10.1"
+                },
+                "QIIME2_TRAIN": {
                     "qiime2": "2024.10.1"
                 },
                 "RENAME_RAW_DATA_FILES": {

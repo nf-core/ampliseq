@@ -46,7 +46,6 @@ workflow KRAKEN2_TAXONOMY_WF {
                 [ meta, fasta ] }
         .set { ch_fasta_kraken2 }
     KRAKEN2_KRAKEN2( ch_fasta_kraken2, ch_kraken2db, false, true )
-    ch_versions_kraken2_taxonomy = ch_versions_kraken2_taxonomy.mix(KRAKEN2_KRAKEN2.out.versions)
 
     // convert kraken2 output to ASV taxonomy table
     FORMAT_TAXRESULTS_KRAKEN2( KRAKEN2_KRAKEN2.out.report, KRAKEN2_KRAKEN2.out.classified_reads_assignment, kraken2_taxlevels )

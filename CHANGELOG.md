@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#706](https://github.com/nf-core/ampliseq/pull/706) - Ensure paired FASTQ files stay aligned by generating reverse paths from forward files instead of sorting independently
 - [#958](https://github.com/nf-core/ampliseq/pull/958),[#970](https://github.com/nf-core/ampliseq/pull/970),[#971](https://github.com/nf-core/ampliseq/pull/971) - Fix AWS tests
 - [#969](https://github.com/nf-core/ampliseq/pull/969) - Fix checking for sbdiexport compatibility for newer nextflow versions
+- [#984](https://github.com/nf-core/ampliseq/pull/984) - Adhere to strict syntax, incl. update to nf-core modules
 
 ### `Dependencies`
 

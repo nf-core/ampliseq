@@ -371,7 +371,7 @@ def validateInputParameters() {
     def allFiles = [:]
     params.each { sectionName, sectionValue ->
         // Check if this section contains database configurations (nested maps with 'file' key)
-        if (sectionValue instanceof Map && sectionValue.any { it.value instanceof Map && it.value.containsKey('file') }) {
+        if (sectionValue instanceof Map && sectionValue.any { it -> it.value instanceof Map && it.value.containsKey('file') }) {
             sectionValue.each { dbKey, dbConfig ->
                 if (dbConfig.containsKey('file')) {
                     dbConfig.file.each { fileUrl ->
@@ -405,7 +405,7 @@ def validateInputParameters() {
             } else {
                 // This is allowed: same database 'file' under different keys
                 passed_duplication << "  - File '${fileName}' with multiple keys: " +
-                    occurrences.collect { "${it.section}['${it.key}']" }.join(", ")
+                    occurrences.collect { it -> "${it.section}['${it.key}']" }.join(", ")
             }
         }
     }

@@ -187,7 +187,7 @@ workflow AMPLISEQ {
     // Parse the --pplace_sheet file if present
     ch_pplace_sheet = channel.empty()
     if ( params.pplace_sheet ) {
-        ch_pplace_sheet = Channel.fromPath(params.pplace_sheet)
+        ch_pplace_sheet = channel.fromPath(params.pplace_sheet)
             .splitCsv(header: true)
             .map { it ->
                 [
@@ -556,7 +556,6 @@ workflow AMPLISEQ {
                     meta.id = "ASV_post_clustering"
                     [ meta, fasta ] }
         VSEARCH_CLUSTER ( ch_fasta_for_clustering )
-        ch_versions = ch_versions.mix(VSEARCH_CLUSTER.out.versions)
         FILTER_CLUSTERS ( VSEARCH_CLUSTER.out.clusters, ch_dada2_asv )
         ch_versions = ch_versions.mix(FILTER_CLUSTERS.out.versions)
         ch_dada2_fasta = FILTER_CLUSTERS.out.fasta
@@ -793,8 +792,8 @@ workflow AMPLISEQ {
 
     // For search entries with a named hmm to extract, call extraction
     ch_pplace_sheet
-        .filter { it.data.extract_hmm }
-        .map { [ it.meta, it.data.hmm, it.data.extract_hmm ] }
+        .filter { it -> it.data.extract_hmm }
+        .map { it -> [ it.meta, it.data.hmm, it.data.extract_hmm ] }
         .set { ch_hmmextract }
 
     HMMER_HMMEXTRACT(ch_hmmextract)

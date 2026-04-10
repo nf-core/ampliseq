@@ -100,6 +100,9 @@
                 "FORMAT_TAXONOMY": {
                     "sed": 4.7
                 },
+                "FORMAT_TAXONOMY_QIIME": {
+                    "sed": 4.7
+                },
                 "MERGE_STATS_DECONTAM": {
                     "R": "4.5.2"
                 },
@@ -164,6 +167,9 @@
                 "QIIME2_EXPORT_RELTAX": {
                     "qiime2": "2024.10.1"
                 },
+                "QIIME2_EXTRACT": {
+                    "qiime2": "2024.10.1"
+                },
                 "QIIME2_FEATURETABLE_GROUP": {
                     "qiime2": "2024.10.1"
                 },
@@ -183,6 +189,9 @@
                     "qiime2": "2024.10.1"
                 },
                 "QIIME2_TABLEFILTERTAXA": {
+                    "qiime2": "2024.10.1"
+                },
+                "QIIME2_TRAIN": {
                     "qiime2": "2024.10.1"
                 },
                 "QIIME2_TREE": {

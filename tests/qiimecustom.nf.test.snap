@@ -62,10 +62,19 @@
                     "R": "4.4.2",
                     "phyloseq": "1.50.0"
                 },
+                "PIGZ_UNCOMPRESS": {
+                    "pigz": 2.8
+                },
                 "QIIME2_CLASSIFY": {
                     "qiime2": "2024.10.1"
                 },
+                "QIIME2_EXTRACT": {
+                    "qiime2": "2024.10.1"
+                },
                 "QIIME2_INSEQ": {
+                    "qiime2": "2024.10.1"
+                },
+                "QIIME2_TRAIN": {
                     "qiime2": "2024.10.1"
                 },
                 "RENAME_RAW_DATA_FILES": {

@@ -154,7 +154,7 @@ workflow AMPLISEQ {
     }
 
     //only run QIIME2 downstream analysis when taxonomy is actually calculated and all required data is available
-    if ( !params.skip_taxonomy && !params.skip_qiime && !params.skip_qiime_downstream && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.sintax_ref_tax_custom || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom || params.multiregion) ) {
+    if ( !params.skip_taxonomy && !params.skip_qiime && !params.skip_qiime_downstream && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.sintax_ref_tax_custom || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom || params.multiregion) ) {
         run_qiime2 = true
     } else {
         run_qiime2 = false

@@ -23,6 +23,7 @@ process SIDLE_TAXRECON {
     export MPLCONFIGDIR="./mplconfigdir"
     export NUMBA_CACHE_DIR="./numbacache"
 
+    #reconstruct taxonomy
     qiime sidle reconstruct-taxonomy \\
         --i-reconstruction-map ${reconstruction_map} \\
         --i-taxonomy ${tax} \\

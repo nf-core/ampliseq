@@ -1,0 +1,19 @@
+Changes in component 'nf-core/gappa/examineassign'
+'modules/nf-core/gappa/examineassign/environment.yml' is unchanged
+Changes in 'gappa/examineassign/main.nf':
+--- modules/nf-core/gappa/examineassign/main.nf
++++ modules/nf-core/gappa/examineassign/main.nf
+@@ -1,6 +1,6 @@
+ process GAPPA_EXAMINEASSIGN {
+     tag "$meta.id"
+-    label 'process_medium'
++    label 'process_medium_memory'
+ 
+     conda "${moduleDir}/environment.yml"
+     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+
+'modules/nf-core/gappa/examineassign/meta.yml' is unchanged
+'modules/nf-core/gappa/examineassign/tests/nextflow.config' is unchanged
+'modules/nf-core/gappa/examineassign/tests/main.nf.test' is unchanged
+'modules/nf-core/gappa/examineassign/tests/main.nf.test.snap' is unchanged
+************************************************************

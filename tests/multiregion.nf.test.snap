@@ -9,41 +9,41 @@
                     "python": "Python 3.8.3"
                 },
                 "DADA2_DENOISING": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_ERR": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_FILTNTRIM": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_MERGE": {
-                    "R": "4.1.1",
-                    "dada2": "1.22.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_QUALITY1": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0",
-                    "ShortRead": "1.64.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0",
+                    "ShortRead": "1.68.0"
                 },
                 "DADA2_QUALITY2": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0",
-                    "ShortRead": "1.64.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0",
+                    "ShortRead": "1.68.0"
                 },
                 "DADA2_RMCHIMERA": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_SPLITREGIONS": {
                     "R": "4.2.1"
                 },
                 "DADA2_STATS": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "FASTQC": {
                     "fastqc": "0.12.1"
@@ -56,16 +56,16 @@
                     "sed": 4.7
                 },
                 "MERGE_STATS_FILTERTAXA": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "MERGE_STATS_STD": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "METADATA_ALL": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "METADATA_PAIRWISE": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "QIIME2_ANCOM_ASV": {
                     "qiime2": "2024.10.1"
@@ -150,7 +150,7 @@
                     "pandas": "1.1.5"
                 },
                 "Workflow": {
-                    "nf-core/ampliseq": "v2.16.1"
+                    "nf-core/ampliseq": "v2.17.0"
                 }
             },
             [
@@ -596,22 +596,21 @@
             "samplesheet_multiregion.tsv:md5,b5b34bd6bb19f5a130b2328811e03bb8",
             "metadata_multiregion.tsv:md5,e2671821f0cf64f15a50d3ddac8f20d1",
             "regions_multiregion.tsv:md5,d0ca51b297f896e7b397509497e8264c",
-            "overall_summary.tsv:md5,38ffc548e8d7c0da5ed09c290131f0b5",
+            "overall_summary.tsv:md5,1787dfe91289e6d8982f33424bf90181",
             "cutadapt_summary.tsv:md5,1ad83d6d36ac9177d89af4e5caa7dedc",
-            "ASV_seqs.fasta:md5,485d6c6f8c82c17fbd679b2a9032a541",
-            "ASV_table.tsv:md5,336bd44a6ff10c638ab95f7488030baa",
-            "DADA2_stats.tsv:md5,e56236955a435abbfdc92d514c9c5443",
-            "DADA2_table.rds:md5,6358376bb6f42ed782cda2be1564d3d8",
-            "DADA2_table.tsv:md5,f14f4e62f9898e6a0755e2d1621bcc3b",
+            "ASV_seqs.fasta:md5,21d34ca1dc46a6d86e5a1b9f18fb3b1b",
+            "ASV_table.tsv:md5,4bf4c299ca7c7c95ecfb54f885eb9a57",
+            "DADA2_stats.tsv:md5,f315a1b44f7ea406ddecaf4a7406db8b",
+            "DADA2_table.tsv:md5,2eb4b48aeb1b52e6e1dbd0af1777bc9b",
             "reconstructed_merged.tsv:md5,984b750dce7c876f3d4a780708f87848",
             "multiqc_fastqc.txt:md5,9468ae91af1a841c5e1369f11f704604",
             "multiqc_general_stats.txt:md5,68f2972dd2d44e499d5afac6cf8624c8",
             "multiqc_cutadapt.txt:md5,d845cb0bde470ed3b7ba32edb2e76f83"
         ],
+        "timestamp": "2026-03-11T21:16:18.208303054",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-22T19:59:11.718025642"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
     }
 }

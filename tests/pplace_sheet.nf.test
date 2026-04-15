@@ -1,0 +1,65 @@
+nextflow_pipeline {
+
+    name "Test pipeline"
+    script "../main.nf"
+    tag "pipeline"
+    profile "test_pplace_sheet"
+
+    test("-profile test_pplace_sheet") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            // stable_name: All files + folders in ${params.outdir}/ with a stable name
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
+
+            assert workflow.success
+            assertAll(
+                { assert snapshot(
+                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/software_versions.yml"),
+                    // All stable path name, with a relative path
+                    stable_name,
+                    // Manually chosen files for content checks
+                    path("$outputDir/overall_summary.tsv"),
+                    path("$outputDir/barrnap/rrna.arc.gff"),
+                    path("$outputDir/barrnap/rrna.bac.gff"),
+                    path("$outputDir/barrnap/rrna.euk.gff"),
+                    path("$outputDir/barrnap/rrna.mito.gff"),
+                    path("$outputDir/cutadapt/cutadapt_summary.tsv"),
+                    path("$outputDir/dada2/ASV_seqs.fasta"),
+                    path("$outputDir/dada2/ASV_table.tsv"),
+                    path("$outputDir/dada2/DADA2_stats.tsv"),
+                    path("$outputDir/dada2/DADA2_table.tsv"),
+                    path("$outputDir/input/Samplesheet.tsv"),
+                    path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt"),
+                    path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt"),
+                    path("$outputDir/pplace/epang/arc.epa_result.jplace.gz").linesGzip.size(),
+                    path("$outputDir/pplace/epang/bac16s.epa_result.jplace.gz").linesGzip.size(),
+                    path("$outputDir/pplace/arc.graft.arc.epa_result.newick").readLines().size(),
+                    path("$outputDir/pplace/arc.taxonomy.per_query.tsv").readLines().size(),
+                    path("$outputDir/pplace/arc.taxonomy.per_query_unique.tsv").readLines().size(),
+                    path("$outputDir/pplace/bac16s.graft.bac16s.epa_result.newick").readLines().size(),
+                    path("$outputDir/pplace/bac16s.taxonomy.per_query.tsv").readLines().size(),
+                    path("$outputDir/pplace/bac16s.taxonomy.per_query_unique.tsv").readLines().size(),
+                ).match() },
+                { assert path("$outputDir/pplace/arc.taxonomy.per_query.tsv").csv(sep: '\t', header: true).columns["aLWR"].sum() > 350 },
+                { assert path("$outputDir/pplace/arc.taxonomy.per_query.tsv").csv(sep: '\t', header: true).columns["LWR"].sum() > 60 },
+                { assert path("$outputDir/pplace/arc.taxonomy.per_query_unique.tsv").csv(sep: '\t', header: true).columns["aLWR"].sum() > 60 },
+                { assert path("$outputDir/pplace/arc.taxonomy.per_query_unique.tsv").csv(sep: '\t', header: true).columns["LWR"].sum() > 50 },
+                { assert path("$outputDir/pplace/gappa/arc.taxonomy.profile.tsv").csv(sep: '\t', header: true).columns["aLWR"].sum() > 5.0 },
+                { assert path("$outputDir/pplace/gappa/arc.taxonomy.profile.tsv").csv(sep: '\t', header: true).columns["LWR"].sum() > 0.95 },
+                { assert path("$outputDir/pplace/bac16s.taxonomy.per_query.tsv").csv(sep: '\t', header: true).columns["aLWR"].sum() > 800 },
+                { assert path("$outputDir/pplace/bac16s.taxonomy.per_query.tsv").csv(sep: '\t', header: true).columns["LWR"].sum() > 130 },
+                { assert path("$outputDir/pplace/bac16s.taxonomy.per_query_unique.tsv").csv(sep: '\t', header: true).columns["aLWR"].sum() > 95 },
+                { assert path("$outputDir/pplace/bac16s.taxonomy.per_query_unique.tsv").csv(sep: '\t', header: true).columns["LWR"].sum() > 75 },
+                { assert path("$outputDir/pplace/gappa/bac16s.taxonomy.profile.tsv").csv(sep: '\t', header: true).columns["aLWR"].sum() > 5.0 },
+                { assert path("$outputDir/pplace/gappa/bac16s.taxonomy.profile.tsv").csv(sep: '\t', header: true).columns["LWR"].sum() > 0.95 },
+            )
+        }
+    }
+}

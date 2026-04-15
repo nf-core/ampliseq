@@ -100,7 +100,7 @@ workflow PIPELINE_INITIALISATION {
     if ( params.dada_ref_taxonomy && !params.skip_taxonomy && !params.skip_dada_taxonomy ) {
         dadareftaxonomyExistsError()
     }
-    if ( params.sintax_ref_taxonomy && !params.skip_taxonomy ) {
+    if ( params.sintax_ref_taxonomy && !params.skip_taxonomy && !params.sintax_ref_tax_custom ) {
         sintaxreftaxonomyExistsError()
     }
     if ( (params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && !params.skip_taxonomy && !params.classifier ) {
@@ -182,6 +182,10 @@ def validateInputParameters() {
         error("Incompatible parameters: `--FW_primer` and `--RV_primer` are required for primer trimming. If primer trimming is not needed, use `--skip_cutadapt`.")
     }
 
+    if ( params.binned_quality && params.pacbio ) {
+        error("Incompatible parameters: `--binned_quality` and `--pacbio` are both used, but only one is allowed. When the data has binned quality scores, use `--binned_quality` instead of `--pacbio`.")
+    }
+
     if ( params.pacbio || params.iontorrent || params.single_end ) {
         if (params.trunclenr) { log.warn "Unused parameter: `--trunclenr` is ignored because the data is single end." }
     } else if (params.trunclenf && !params.trunclenr) {
@@ -223,7 +227,7 @@ def validateInputParameters() {
         }
     }
 
-    if (params.dada_assign_taxlevels && params.sbdiexport && !params.sintax_ref_taxonomy) {
+    if (params.dada_assign_taxlevels && params.sbdiexport && !params.sintax_ref_taxonomy && !params.sintax_ref_tax_custom) {
         error("Incompatible parameters: `--sbdiexport` expects specific taxonomics ranks (default) and therefore excludes modifying those using `--dada_assign_taxlevels`.")
     }
 
@@ -232,7 +236,7 @@ def validateInputParameters() {
     }
 
     if (params.skip_dada_taxonomy && params.sbdiexport) {
-        if (!params.sintax_ref_taxonomy && (params.skip_qiime || (!params.qiime_ref_taxonomy && !params.qiime_ref_tax_custom))) {
+        if (!params.sintax_ref_taxonomy && !params.sintax_ref_tax_custom && (params.skip_qiime || (!params.qiime_ref_taxonomy && !params.qiime_ref_tax_custom))) {
             error("Incompatible parameters: `--sbdiexport` expects taxa annotation and therefore annotation with either DADA2, SINTAX, or QIIME2 is needed.")
         }
     }
@@ -253,6 +257,18 @@ def validateInputParameters() {
         error("Missing parameter: Taxonomic classification with a user provided database via `--kraken2_ref_tax_custom` requires `--kraken2_assign_taxlevels`")
     }
 
+    if (params.sintax_ref_taxonomy && params.sintax_ref_tax_custom) {
+        error("Incompatible parameters: `--sintax_ref_taxonomy` and `--sintax_ref_tax_custom` cannot be used together.")
+    }
+
+    if (params.sintax_ref_tax_custom && !params.skip_taxonomy && !params.sintax_assign_taxlevels) {
+        error("Missing parameter: Taxonomic classification with `--sintax_ref_tax_custom` requires `--sintax_assign_taxlevels` (comma-separated taxonomic ranks matching the reference labels).")
+    }
+
+    if (params.sbdiexport && params.sintax_ref_tax_custom) {
+        error("Incompatible parameters: `--sbdiexport` does not support `--sintax_ref_tax_custom`; use a catalog `--sintax_ref_taxonomy` key or disable `--sbdiexport`.")
+    }
+
     if (params.filter_ssu && params.skip_barrnap) {
         error("Incompatible parameters: `--filter_ssu` cannot be used with `--skip_barrnap` because filtering for SSU's depends on barrnap.")
     }
@@ -264,17 +280,17 @@ def validateInputParameters() {
         "midori2-co1","midori2-co1=gb250",
         "pr2","pr2=5.1.0","pr2=5.0.0","pr2=4.14.0","pr2=4.13.0",
         "rdp","rdp=18",
-        "sbdi-gtdb","sbdi-gtdb=R10-RS226-1","sbdi-gtdb=R09-RS220-2","sbdi-gtdb=R09-RS220-1", "sbdi-gtdb=R08-RS214-1","sbdi-gtdb=R07-RS207-1",
+        "sbdi-gtdb","sbdi-gtdb=R10-RS226-2","sbdi-gtdb=R09-RS220-2","sbdi-gtdb=R09-RS220-1", "sbdi-gtdb=R08-RS214-1","sbdi-gtdb=R07-RS207-1",
         "silva","silva=138.2","silva=138","silva=132",
         "unite-fungi","unite-fungi=10.0","unite-fungi=9.0","unite-fungi=8.3","unite-fungi=8.2",
         "unite-alleuk","unite-alleuk=10.0","unite-alleuk=9.0","unite-alleuk=8.3","unite-alleuk=8.2"
     ]
     if (params.sbdiexport){
         if (params.sintax_ref_taxonomy ) {
-            if ( !Arrays.stream(sbdi_compatible_databases).any{ entry -> params.sintax_ref_taxonomy.toString().equals(entry) } ) {
+            if ( !sbdi_compatible_databases.contains(params.sintax_ref_taxonomy) ) {
                 error("Incompatible parameters: `--sbdiexport` does not work with the chosen database of `--sintax_ref_taxonomy` because the expected taxonomic levels do not match.")
             }
-        } else if ( !Arrays.stream(sbdi_compatible_databases).any{ entry -> params.dada_ref_taxonomy.toString().equals(entry) } ) {
+        } else if ( !sbdi_compatible_databases.contains(params.dada_ref_taxonomy) ) {
             error("Incompatible parameters: `--sbdiexport` does not work with the chosen database of `--dada_ref_taxonomy` because the expected taxonomic levels do not match.")
         }
     }
@@ -318,6 +334,85 @@ def validateInputParameters() {
         if ( params.vsearch_cluster || params.filter_ssu || params.min_len_asv || params.max_len_asv || params.filter_codons ) {
             log.warn "Incompatible parameters: Multiple region analysis with `--multiregion` ignores any of `--vsearch_cluster`, `--filter_ssu`, `--min_len_asv`, `--max_len_asv`, `--filter_codons`, `--cut_its`"
         }
+    }
+
+    //
+    // Verify that all database files with identical dbversions are unique
+    //
+
+    // Verify that all database entries have "dbversion" fields
+    def requiredFields = ['title', 'file', 'citation', 'fmtscript', 'dbversion']
+    def errors = []
+
+    // Iterate through all params entries
+    params.each { key, value ->
+        if (value instanceof Map) {
+            // Iterate through each entry in the map
+            value.each { dbKey, dbEntry ->
+                if (dbEntry instanceof Map) {
+                    // Check for missing required fields
+                    def missingFields = requiredFields.findAll { field ->
+                        !dbEntry.containsKey(field) || dbEntry[field] == null
+                    }
+                    if (missingFields) {
+                        errors.add("   - params.${key}[${dbKey}]: Missing required fields: ${missingFields.join(', ')}")
+                    }
+                }
+            }
+        }
+    }
+    // Report errors
+    if (errors) {
+        log.error("Reference database validation failed:\n" + errors.join("\n"))
+        error("Missing fields in reference database definitions.")
+    }
+
+    // Collect all files from all database sections
+    def allFiles = [:]
+    params.each { sectionName, sectionValue ->
+        // Check if this section contains database configurations (nested maps with 'file' key)
+        if (sectionValue instanceof Map && sectionValue.any { it -> it.value instanceof Map && it.value.containsKey('file') }) {
+            sectionValue.each { dbKey, dbConfig ->
+                if (dbConfig.containsKey('file')) {
+                    dbConfig.file.each { fileUrl ->
+                        def fileName = fileUrl.split('/')[-1]
+                        if (!allFiles.containsKey(fileName)) {
+                            allFiles[fileName] = []
+                        }
+                        allFiles[fileName] << [
+                            "section": sectionName,
+                            "key": dbKey,
+                            "dbversion": dbConfig.dbversion
+                        ]
+                    }
+                }
+            }
+        }
+    }
+    // Validate: files should be unique, unless they belong to the same database 'file'
+    def validationPassed = true
+    def failed_duplication = []
+    def passed_duplication = []
+    allFiles.each { fileName, occurrences ->
+        if (occurrences.size() > 1) {
+            // Check if all occurrences have the same dbversion
+            def uniqueCateggory = occurrences.collect { it -> it.dbversion }.unique()
+
+            if (uniqueCateggory.size() > 1) {
+                validationPassed = false
+                failed_duplication << "File '${fileName}' is used by different databases:\n" +
+                    occurrences.collect { it -> "  - ${it.section}['${it.key}']: ${it.dbversion}" }.join("\n")
+            } else {
+                // This is allowed: same database 'file' under different keys
+                passed_duplication << "  - File '${fileName}' with multiple keys: " +
+                    occurrences.collect { it -> "${it.section}['${it.key}']" }.join(", ")
+            }
+        }
+    }
+    // Report in case the validation failed
+    if (!validationPassed) {
+        log.error( "Validation failed!\nDuplicated database files with same database dbversion:\n" + passed_duplication.join("\n") + "\nDuplicate database files across different database dbversions detected:\n" + failed_duplication.join("\n\n") )
+        error("Duplicate files across different databases detected")
     }
 }
 

@@ -30,42 +30,46 @@
                     "cutadapt": 5.2
                 },
                 "DADA2_DENOISING": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_ERR": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_FILTNTRIM": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_MERGE": {
-                    "R": "4.1.1",
-                    "dada2": "1.22.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_QUALITY1": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0",
-                    "ShortRead": "1.64.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0",
+                    "ShortRead": "1.68.0"
                 },
                 "DADA2_QUALITY2": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0",
-                    "ShortRead": "1.64.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0",
+                    "ShortRead": "1.68.0"
                 },
                 "DADA2_RMCHIMERA": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_STATS": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_TAXONOMY": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
+                },
+                "DECONTAM": {
+                    "R": "4.5.2",
+                    "decontam": "1.30.0"
                 },
                 "FASTQC": {
                     "fastqc": "0.12.1"
@@ -75,6 +79,13 @@
                     "pandas": "1.1.5"
                 },
                 "FILTER_LEN_ASV": {
+                    "R": "4.0.3",
+                    "Biostrings": "2.58.0"
+                },
+                "FILTER_SAMPLES": {
+                    "R": "4.2.1"
+                },
+                "FILTER_SEQUENCES_ABUNDANCES": {
                     "R": "4.0.3",
                     "Biostrings": "2.58.0"
                 },
@@ -89,20 +100,26 @@
                 "FORMAT_TAXONOMY": {
                     "sed": 4.7
                 },
+                "FORMAT_TAXONOMY_QIIME": {
+                    "sed": 4.7
+                },
+                "MERGE_STATS_DECONTAM": {
+                    "R": "4.5.2"
+                },
                 "MERGE_STATS_FILTERSSU": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "MERGE_STATS_FILTERTAXA": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "MERGE_STATS_STD": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "METADATA_ALL": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "METADATA_PAIRWISE": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "PHYLOSEQ": {
                     "R": "4.4.2",
@@ -150,6 +167,9 @@
                 "QIIME2_EXPORT_RELTAX": {
                     "qiime2": "2024.10.1"
                 },
+                "QIIME2_EXTRACT": {
+                    "qiime2": "2024.10.1"
+                },
                 "QIIME2_FEATURETABLE_GROUP": {
                     "qiime2": "2024.10.1"
                 },
@@ -169,6 +189,9 @@
                     "qiime2": "2024.10.1"
                 },
                 "QIIME2_TABLEFILTERTAXA": {
+                    "qiime2": "2024.10.1"
+                },
+                "QIIME2_TRAIN": {
                     "qiime2": "2024.10.1"
                 },
                 "QIIME2_TREE": {
@@ -192,7 +215,7 @@
                     "vsearch": "2.21.1"
                 },
                 "Workflow": {
-                    "nf-core/ampliseq": "v2.16.1"
+                    "nf-core/ampliseq": "v2.17.0"
                 }
             },
             [
@@ -270,6 +293,11 @@
                 "dada2/log/1.dada.log",
                 "dada2/log/1.err.log",
                 "dada2/ref_taxonomy.gtdb_R07-RS207.txt",
+                "decontam",
+                "decontam/decontaminated.tsv",
+                "decontam/decontaminated_counts.tsv",
+                "decontam/decontaminated_details.tsv",
+                "decontam/decontaminated_log.tsv",
                 "fastqc",
                 "fastqc/sampleID_1_1_fastqc.html",
                 "fastqc/sampleID_1_2_fastqc.html",
@@ -281,7 +309,7 @@
                 "fastqc/sampleID_2a_2_fastqc.html",
                 "input",
                 "input/Metadata.tsv",
-                "input/Samplesheet.tsv",
+                "input/Samplesheet_standardized.tsv",
                 "multiqc",
                 "multiqc/multiqc_data",
                 "multiqc/multiqc_data/cutadapt_filtered_reads_plot.txt",
@@ -374,7 +402,6 @@
                 "qiime2/abundance_tables",
                 "qiime2/abundance_tables/abs-abund-table-2.tsv",
                 "qiime2/abundance_tables/abs-abund-table-3.tsv",
-                "qiime2/abundance_tables/abs-abund-table-4.tsv",
                 "qiime2/abundance_tables/count_table_filter_stats.tsv",
                 "qiime2/abundance_tables/feature-table.biom",
                 "qiime2/abundance_tables/feature-table.tsv",
@@ -496,27 +523,6 @@
                 "qiime2/ancombc/da_barplot/Category-badpairwise10-level-3/q2templateassets/js/child.js",
                 "qiime2/ancombc/da_barplot/Category-badpairwise10-level-3/q2templateassets/js/jquery-3.2.0.min.js",
                 "qiime2/ancombc/da_barplot/Category-badpairwise10-level-3/q2templateassets/js/parent.js",
-                "qiime2/ancombc/da_barplot/Category-badpairwise10-level-4",
-                "qiime2/ancombc/da_barplot/Category-badpairwise10-level-4/index.html",
-                "qiime2/ancombc/da_barplot/Category-badpairwise10-level-4/q2templateassets",
-                "qiime2/ancombc/da_barplot/Category-badpairwise10-level-4/q2templateassets/css",
-                "qiime2/ancombc/da_barplot/Category-badpairwise10-level-4/q2templateassets/css/base-template.css",
-                "qiime2/ancombc/da_barplot/Category-badpairwise10-level-4/q2templateassets/css/bootstrap.min.css",
-                "qiime2/ancombc/da_barplot/Category-badpairwise10-level-4/q2templateassets/css/normalize.css",
-                "qiime2/ancombc/da_barplot/Category-badpairwise10-level-4/q2templateassets/css/tab-parent.css",
-                "qiime2/ancombc/da_barplot/Category-badpairwise10-level-4/q2templateassets/fonts",
-                "qiime2/ancombc/da_barplot/Category-badpairwise10-level-4/q2templateassets/fonts/glyphicons-halflings-regular.eot",
-                "qiime2/ancombc/da_barplot/Category-badpairwise10-level-4/q2templateassets/fonts/glyphicons-halflings-regular.svg",
-                "qiime2/ancombc/da_barplot/Category-badpairwise10-level-4/q2templateassets/fonts/glyphicons-halflings-regular.ttf",
-                "qiime2/ancombc/da_barplot/Category-badpairwise10-level-4/q2templateassets/fonts/glyphicons-halflings-regular.woff",
-                "qiime2/ancombc/da_barplot/Category-badpairwise10-level-4/q2templateassets/fonts/glyphicons-halflings-regular.woff2",
-                "qiime2/ancombc/da_barplot/Category-badpairwise10-level-4/q2templateassets/img",
-                "qiime2/ancombc/da_barplot/Category-badpairwise10-level-4/q2templateassets/img/qiime2-rect-200.png",
-                "qiime2/ancombc/da_barplot/Category-badpairwise10-level-4/q2templateassets/js",
-                "qiime2/ancombc/da_barplot/Category-badpairwise10-level-4/q2templateassets/js/bootstrap.min.js",
-                "qiime2/ancombc/da_barplot/Category-badpairwise10-level-4/q2templateassets/js/child.js",
-                "qiime2/ancombc/da_barplot/Category-badpairwise10-level-4/q2templateassets/js/jquery-3.2.0.min.js",
-                "qiime2/ancombc/da_barplot/Category-badpairwise10-level-4/q2templateassets/js/parent.js",
                 "qiime2/ancombc/da_barplot/Category-mix8-ASV",
                 "qiime2/ancombc/da_barplot/Category-mix8-ASV/index.html",
                 "qiime2/ancombc/da_barplot/Category-mix8-ASV/mix8a-ancombc-barplot.html",
@@ -583,28 +589,6 @@
                 "qiime2/ancombc/da_barplot/Category-mix8-level-3/q2templateassets/js/child.js",
                 "qiime2/ancombc/da_barplot/Category-mix8-level-3/q2templateassets/js/jquery-3.2.0.min.js",
                 "qiime2/ancombc/da_barplot/Category-mix8-level-3/q2templateassets/js/parent.js",
-                "qiime2/ancombc/da_barplot/Category-mix8-level-4",
-                "qiime2/ancombc/da_barplot/Category-mix8-level-4/index.html",
-                "qiime2/ancombc/da_barplot/Category-mix8-level-4/mix8a-ancombc-barplot.html",
-                "qiime2/ancombc/da_barplot/Category-mix8-level-4/q2templateassets",
-                "qiime2/ancombc/da_barplot/Category-mix8-level-4/q2templateassets/css",
-                "qiime2/ancombc/da_barplot/Category-mix8-level-4/q2templateassets/css/base-template.css",
-                "qiime2/ancombc/da_barplot/Category-mix8-level-4/q2templateassets/css/bootstrap.min.css",
-                "qiime2/ancombc/da_barplot/Category-mix8-level-4/q2templateassets/css/normalize.css",
-                "qiime2/ancombc/da_barplot/Category-mix8-level-4/q2templateassets/css/tab-parent.css",
-                "qiime2/ancombc/da_barplot/Category-mix8-level-4/q2templateassets/fonts",
-                "qiime2/ancombc/da_barplot/Category-mix8-level-4/q2templateassets/fonts/glyphicons-halflings-regular.eot",
-                "qiime2/ancombc/da_barplot/Category-mix8-level-4/q2templateassets/fonts/glyphicons-halflings-regular.svg",
-                "qiime2/ancombc/da_barplot/Category-mix8-level-4/q2templateassets/fonts/glyphicons-halflings-regular.ttf",
-                "qiime2/ancombc/da_barplot/Category-mix8-level-4/q2templateassets/fonts/glyphicons-halflings-regular.woff",
-                "qiime2/ancombc/da_barplot/Category-mix8-level-4/q2templateassets/fonts/glyphicons-halflings-regular.woff2",
-                "qiime2/ancombc/da_barplot/Category-mix8-level-4/q2templateassets/img",
-                "qiime2/ancombc/da_barplot/Category-mix8-level-4/q2templateassets/img/qiime2-rect-200.png",
-                "qiime2/ancombc/da_barplot/Category-mix8-level-4/q2templateassets/js",
-                "qiime2/ancombc/da_barplot/Category-mix8-level-4/q2templateassets/js/bootstrap.min.js",
-                "qiime2/ancombc/da_barplot/Category-mix8-level-4/q2templateassets/js/child.js",
-                "qiime2/ancombc/da_barplot/Category-mix8-level-4/q2templateassets/js/jquery-3.2.0.min.js",
-                "qiime2/ancombc/da_barplot/Category-mix8-level-4/q2templateassets/js/parent.js",
                 "qiime2/ancombc/da_barplot/Category-treatment1-ASV",
                 "qiime2/ancombc/da_barplot/Category-treatment1-ASV/index.html",
                 "qiime2/ancombc/da_barplot/Category-treatment1-ASV/q2templateassets",
@@ -671,28 +655,6 @@
                 "qiime2/ancombc/da_barplot/Category-treatment1-level-3/q2templateassets/js/jquery-3.2.0.min.js",
                 "qiime2/ancombc/da_barplot/Category-treatment1-level-3/q2templateassets/js/parent.js",
                 "qiime2/ancombc/da_barplot/Category-treatment1-level-3/treatment1b-ancombc-barplot.html",
-                "qiime2/ancombc/da_barplot/Category-treatment1-level-4",
-                "qiime2/ancombc/da_barplot/Category-treatment1-level-4/index.html",
-                "qiime2/ancombc/da_barplot/Category-treatment1-level-4/q2templateassets",
-                "qiime2/ancombc/da_barplot/Category-treatment1-level-4/q2templateassets/css",
-                "qiime2/ancombc/da_barplot/Category-treatment1-level-4/q2templateassets/css/base-template.css",
-                "qiime2/ancombc/da_barplot/Category-treatment1-level-4/q2templateassets/css/bootstrap.min.css",
-                "qiime2/ancombc/da_barplot/Category-treatment1-level-4/q2templateassets/css/normalize.css",
-                "qiime2/ancombc/da_barplot/Category-treatment1-level-4/q2templateassets/css/tab-parent.css",
-                "qiime2/ancombc/da_barplot/Category-treatment1-level-4/q2templateassets/fonts",
-                "qiime2/ancombc/da_barplot/Category-treatment1-level-4/q2templateassets/fonts/glyphicons-halflings-regular.eot",
-                "qiime2/ancombc/da_barplot/Category-treatment1-level-4/q2templateassets/fonts/glyphicons-halflings-regular.svg",
-                "qiime2/ancombc/da_barplot/Category-treatment1-level-4/q2templateassets/fonts/glyphicons-halflings-regular.ttf",
-                "qiime2/ancombc/da_barplot/Category-treatment1-level-4/q2templateassets/fonts/glyphicons-halflings-regular.woff",
-                "qiime2/ancombc/da_barplot/Category-treatment1-level-4/q2templateassets/fonts/glyphicons-halflings-regular.woff2",
-                "qiime2/ancombc/da_barplot/Category-treatment1-level-4/q2templateassets/img",
-                "qiime2/ancombc/da_barplot/Category-treatment1-level-4/q2templateassets/img/qiime2-rect-200.png",
-                "qiime2/ancombc/da_barplot/Category-treatment1-level-4/q2templateassets/js",
-                "qiime2/ancombc/da_barplot/Category-treatment1-level-4/q2templateassets/js/bootstrap.min.js",
-                "qiime2/ancombc/da_barplot/Category-treatment1-level-4/q2templateassets/js/child.js",
-                "qiime2/ancombc/da_barplot/Category-treatment1-level-4/q2templateassets/js/jquery-3.2.0.min.js",
-                "qiime2/ancombc/da_barplot/Category-treatment1-level-4/q2templateassets/js/parent.js",
-                "qiime2/ancombc/da_barplot/Category-treatment1-level-4/treatment1b-ancombc-barplot.html",
                 "qiime2/ancombc/differentials",
                 "qiime2/ancombc/differentials/Category-badpairwise10-ASV",
                 "qiime2/ancombc/differentials/Category-badpairwise10-ASV/datapackage.json",
@@ -775,33 +737,6 @@
                 "qiime2/ancombc/differentials/Category-badpairwise10-level-3/q_val_slice.csv",
                 "qiime2/ancombc/differentials/Category-badpairwise10-level-3/se_slice.csv",
                 "qiime2/ancombc/differentials/Category-badpairwise10-level-3/w_slice.csv",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4/datapackage.json",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4/index.html",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4/lfc_slice.csv",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4/p_val_slice.csv",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4/q2templateassets",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4/q2templateassets/css",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4/q2templateassets/css/base-template.css",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4/q2templateassets/css/bootstrap.min.css",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4/q2templateassets/css/normalize.css",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4/q2templateassets/css/tab-parent.css",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4/q2templateassets/fonts",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4/q2templateassets/fonts/glyphicons-halflings-regular.eot",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4/q2templateassets/fonts/glyphicons-halflings-regular.svg",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4/q2templateassets/fonts/glyphicons-halflings-regular.ttf",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4/q2templateassets/fonts/glyphicons-halflings-regular.woff",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4/q2templateassets/fonts/glyphicons-halflings-regular.woff2",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4/q2templateassets/img",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4/q2templateassets/img/qiime2-rect-200.png",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4/q2templateassets/js",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4/q2templateassets/js/bootstrap.min.js",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4/q2templateassets/js/child.js",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4/q2templateassets/js/jquery-3.2.0.min.js",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4/q2templateassets/js/parent.js",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4/q_val_slice.csv",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4/se_slice.csv",
-                "qiime2/ancombc/differentials/Category-badpairwise10-level-4/w_slice.csv",
                 "qiime2/ancombc/differentials/Category-mix8-ASV",
                 "qiime2/ancombc/differentials/Category-mix8-ASV/datapackage.json",
                 "qiime2/ancombc/differentials/Category-mix8-ASV/index.html",
@@ -883,33 +818,6 @@
                 "qiime2/ancombc/differentials/Category-mix8-level-3/q_val_slice.csv",
                 "qiime2/ancombc/differentials/Category-mix8-level-3/se_slice.csv",
                 "qiime2/ancombc/differentials/Category-mix8-level-3/w_slice.csv",
-                "qiime2/ancombc/differentials/Category-mix8-level-4",
-                "qiime2/ancombc/differentials/Category-mix8-level-4/datapackage.json",
-                "qiime2/ancombc/differentials/Category-mix8-level-4/index.html",
-                "qiime2/ancombc/differentials/Category-mix8-level-4/lfc_slice.csv",
-                "qiime2/ancombc/differentials/Category-mix8-level-4/p_val_slice.csv",
-                "qiime2/ancombc/differentials/Category-mix8-level-4/q2templateassets",
-                "qiime2/ancombc/differentials/Category-mix8-level-4/q2templateassets/css",
-                "qiime2/ancombc/differentials/Category-mix8-level-4/q2templateassets/css/base-template.css",
-                "qiime2/ancombc/differentials/Category-mix8-level-4/q2templateassets/css/bootstrap.min.css",
-                "qiime2/ancombc/differentials/Category-mix8-level-4/q2templateassets/css/normalize.css",
-                "qiime2/ancombc/differentials/Category-mix8-level-4/q2templateassets/css/tab-parent.css",
-                "qiime2/ancombc/differentials/Category-mix8-level-4/q2templateassets/fonts",
-                "qiime2/ancombc/differentials/Category-mix8-level-4/q2templateassets/fonts/glyphicons-halflings-regular.eot",
-                "qiime2/ancombc/differentials/Category-mix8-level-4/q2templateassets/fonts/glyphicons-halflings-regular.svg",
-                "qiime2/ancombc/differentials/Category-mix8-level-4/q2templateassets/fonts/glyphicons-halflings-regular.ttf",
-                "qiime2/ancombc/differentials/Category-mix8-level-4/q2templateassets/fonts/glyphicons-halflings-regular.woff",
-                "qiime2/ancombc/differentials/Category-mix8-level-4/q2templateassets/fonts/glyphicons-halflings-regular.woff2",
-                "qiime2/ancombc/differentials/Category-mix8-level-4/q2templateassets/img",
-                "qiime2/ancombc/differentials/Category-mix8-level-4/q2templateassets/img/qiime2-rect-200.png",
-                "qiime2/ancombc/differentials/Category-mix8-level-4/q2templateassets/js",
-                "qiime2/ancombc/differentials/Category-mix8-level-4/q2templateassets/js/bootstrap.min.js",
-                "qiime2/ancombc/differentials/Category-mix8-level-4/q2templateassets/js/child.js",
-                "qiime2/ancombc/differentials/Category-mix8-level-4/q2templateassets/js/jquery-3.2.0.min.js",
-                "qiime2/ancombc/differentials/Category-mix8-level-4/q2templateassets/js/parent.js",
-                "qiime2/ancombc/differentials/Category-mix8-level-4/q_val_slice.csv",
-                "qiime2/ancombc/differentials/Category-mix8-level-4/se_slice.csv",
-                "qiime2/ancombc/differentials/Category-mix8-level-4/w_slice.csv",
                 "qiime2/ancombc/differentials/Category-treatment1-ASV",
                 "qiime2/ancombc/differentials/Category-treatment1-ASV/datapackage.json",
                 "qiime2/ancombc/differentials/Category-treatment1-ASV/index.html",
@@ -991,33 +899,6 @@
                 "qiime2/ancombc/differentials/Category-treatment1-level-3/q_val_slice.csv",
                 "qiime2/ancombc/differentials/Category-treatment1-level-3/se_slice.csv",
                 "qiime2/ancombc/differentials/Category-treatment1-level-3/w_slice.csv",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4/datapackage.json",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4/index.html",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4/lfc_slice.csv",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4/p_val_slice.csv",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4/q2templateassets",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4/q2templateassets/css",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4/q2templateassets/css/base-template.css",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4/q2templateassets/css/bootstrap.min.css",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4/q2templateassets/css/normalize.css",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4/q2templateassets/css/tab-parent.css",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4/q2templateassets/fonts",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4/q2templateassets/fonts/glyphicons-halflings-regular.eot",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4/q2templateassets/fonts/glyphicons-halflings-regular.svg",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4/q2templateassets/fonts/glyphicons-halflings-regular.ttf",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4/q2templateassets/fonts/glyphicons-halflings-regular.woff",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4/q2templateassets/fonts/glyphicons-halflings-regular.woff2",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4/q2templateassets/img",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4/q2templateassets/img/qiime2-rect-200.png",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4/q2templateassets/js",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4/q2templateassets/js/bootstrap.min.js",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4/q2templateassets/js/child.js",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4/q2templateassets/js/jquery-3.2.0.min.js",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4/q2templateassets/js/parent.js",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4/q_val_slice.csv",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4/se_slice.csv",
-                "qiime2/ancombc/differentials/Category-treatment1-level-4/w_slice.csv",
                 "qiime2/ancombc_formula",
                 "qiime2/ancombc_formula/da_barplot",
                 "qiime2/ancombc_formula/da_barplot/Category-treatment1-ASV",
@@ -1086,28 +967,6 @@
                 "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-3/q2templateassets/js/jquery-3.2.0.min.js",
                 "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-3/q2templateassets/js/parent.js",
                 "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-3/treatment1a-ancombc-barplot.html",
-                "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-4",
-                "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-4/index.html",
-                "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-4/q2templateassets",
-                "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-4/q2templateassets/css",
-                "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-4/q2templateassets/css/base-template.css",
-                "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-4/q2templateassets/css/bootstrap.min.css",
-                "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-4/q2templateassets/css/normalize.css",
-                "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-4/q2templateassets/css/tab-parent.css",
-                "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-4/q2templateassets/fonts",
-                "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-4/q2templateassets/fonts/glyphicons-halflings-regular.eot",
-                "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-4/q2templateassets/fonts/glyphicons-halflings-regular.svg",
-                "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-4/q2templateassets/fonts/glyphicons-halflings-regular.ttf",
-                "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-4/q2templateassets/fonts/glyphicons-halflings-regular.woff",
-                "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-4/q2templateassets/fonts/glyphicons-halflings-regular.woff2",
-                "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-4/q2templateassets/img",
-                "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-4/q2templateassets/img/qiime2-rect-200.png",
-                "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-4/q2templateassets/js",
-                "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-4/q2templateassets/js/bootstrap.min.js",
-                "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-4/q2templateassets/js/child.js",
-                "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-4/q2templateassets/js/jquery-3.2.0.min.js",
-                "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-4/q2templateassets/js/parent.js",
-                "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-4/treatment1a-ancombc-barplot.html",
                 "qiime2/ancombc_formula/differentials",
                 "qiime2/ancombc_formula/differentials/Category-treatment1-ASV",
                 "qiime2/ancombc_formula/differentials/Category-treatment1-ASV/datapackage.json",
@@ -1190,33 +1049,6 @@
                 "qiime2/ancombc_formula/differentials/Category-treatment1-level-3/q_val_slice.csv",
                 "qiime2/ancombc_formula/differentials/Category-treatment1-level-3/se_slice.csv",
                 "qiime2/ancombc_formula/differentials/Category-treatment1-level-3/w_slice.csv",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4/datapackage.json",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4/index.html",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4/lfc_slice.csv",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4/p_val_slice.csv",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4/q2templateassets",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4/q2templateassets/css",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4/q2templateassets/css/base-template.css",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4/q2templateassets/css/bootstrap.min.css",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4/q2templateassets/css/normalize.css",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4/q2templateassets/css/tab-parent.css",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4/q2templateassets/fonts",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4/q2templateassets/fonts/glyphicons-halflings-regular.eot",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4/q2templateassets/fonts/glyphicons-halflings-regular.svg",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4/q2templateassets/fonts/glyphicons-halflings-regular.ttf",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4/q2templateassets/fonts/glyphicons-halflings-regular.woff",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4/q2templateassets/fonts/glyphicons-halflings-regular.woff2",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4/q2templateassets/img",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4/q2templateassets/img/qiime2-rect-200.png",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4/q2templateassets/js",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4/q2templateassets/js/bootstrap.min.js",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4/q2templateassets/js/child.js",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4/q2templateassets/js/jquery-3.2.0.min.js",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4/q2templateassets/js/parent.js",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4/q_val_slice.csv",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4/se_slice.csv",
-                "qiime2/ancombc_formula/differentials/Category-treatment1-level-4/w_slice.csv",
                 "qiime2/barplot",
                 "qiime2/barplot/dist",
                 "qiime2/barplot/dist/bundle.js",
@@ -1354,7 +1186,7 @@
                 "qiime2/barplot_average/barplot_treatment1/q2templateassets/js/jquery-3.2.0.min.js",
                 "qiime2/barplot_average/barplot_treatment1/q2templateassets/js/parent.js",
                 "qiime2/diversity",
-                "qiime2/diversity/WARNING The sampling depth of 543 seems too small for rarefaction.txt",
+                "qiime2/diversity/WARNING The sampling depth of 514 seems too small for rarefaction.txt",
                 "qiime2/diversity/alpha_diversity",
                 "qiime2/diversity/alpha_diversity/evenness_vector",
                 "qiime2/diversity/alpha_diversity/evenness_vector/column-badpairwise10.jsonp",
@@ -1716,6 +1548,7 @@
                 "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/q2templateassets/js/jquery-3.2.0.min.js",
                 "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/q2templateassets/js/parent.js",
                 "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/raw_data.tsv",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix.tsv",
                 "qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA",
                 "qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA/css",
                 "qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA/css/emperor.css",
@@ -1886,6 +1719,7 @@
                 "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/q2templateassets/js/jquery-3.2.0.min.js",
                 "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/q2templateassets/js/parent.js",
                 "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/raw_data.tsv",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix.tsv",
                 "qiime2/diversity/beta_diversity/jaccard_pcoa_results-PCoA",
                 "qiime2/diversity/beta_diversity/jaccard_pcoa_results-PCoA/css",
                 "qiime2/diversity/beta_diversity/jaccard_pcoa_results-PCoA/css/emperor.css",
@@ -2056,6 +1890,7 @@
                 "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/q2templateassets/js/jquery-3.2.0.min.js",
                 "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/q2templateassets/js/parent.js",
                 "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/raw_data.tsv",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix.tsv",
                 "qiime2/diversity/beta_diversity/unweighted_unifrac_pcoa_results-PCoA",
                 "qiime2/diversity/beta_diversity/unweighted_unifrac_pcoa_results-PCoA/css",
                 "qiime2/diversity/beta_diversity/unweighted_unifrac_pcoa_results-PCoA/css/emperor.css",
@@ -2226,6 +2061,7 @@
                 "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/q2templateassets/js/jquery-3.2.0.min.js",
                 "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/q2templateassets/js/parent.js",
                 "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/raw_data.tsv",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix.tsv",
                 "qiime2/diversity/beta_diversity/weighted_unifrac_pcoa_results-PCoA",
                 "qiime2/diversity/beta_diversity/weighted_unifrac_pcoa_results-PCoA/css",
                 "qiime2/diversity/beta_diversity/weighted_unifrac_pcoa_results-PCoA/css/emperor.css",
@@ -2352,7 +2188,6 @@
                 "qiime2/rel_abundance_tables",
                 "qiime2/rel_abundance_tables/rel-table-2.tsv",
                 "qiime2/rel_abundance_tables/rel-table-3.tsv",
-                "qiime2/rel_abundance_tables/rel-table-4.tsv",
                 "qiime2/rel_abundance_tables/rel-table-ASV.tsv",
                 "qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-tax.tsv",
                 "qiime2/rel_abundance_tables/rel-table-ASV_with-QIIME2-tax.tsv",
@@ -2385,29 +2220,32 @@
                 "vsearch_cluster/ASV_post_clustering_filtered.stats.tsv",
                 "vsearch_cluster/ASV_post_clustering_filtered.table.tsv"
             ],
-            "overall_summary.tsv:md5,a20dea9e5f4ca80723d31494399510fc",
+            "overall_summary.tsv:md5,3d768f4debe056f56535dce2344f620c",
             [
-                "ASV_len_filt.tsv:md5,3099f093f831e21397de2310d4c83ff4",
-                "ASV_len_orig.tsv:md5,5ad596085cdcb600ce32c09bc786a678",
-                "ASV_seqs.len.fasta:md5,1d61dbb2e90956a1f2698718a4dc48c5",
-                "ASV_table.len.tsv:md5,9464eadabcf39ed4b71a75957660e2a7",
-                "stats.len.tsv:md5,9b13b65cf9cc5fd59f6d8717d26202ed"
+                "ASV_len_filt.tsv:md5,e04743370052324731a42a9af8b7b984",
+                "ASV_len_orig.tsv:md5,144e1e811d635b56e3b50027dea78871",
+                "ASV_seqs.len.fasta:md5,e292ec3f982b7f4b4326cc6563557a20",
+                "ASV_table.len.tsv:md5,6fc35ef5a9a332bb17caab215a72537b",
+                "stats.len.tsv:md5,0fabb0be1b66aabf455c4dd038d33860"
             ],
-            "ASV_seqs.ssu.fasta:md5,12ec676f3a7edeb075705430ad8c208e",
-            "ASV_table.ssu.tsv:md5,78df5df258b5e24b1fbcb97a3aeddec0",
-            "rrna.arc.gff:md5,e4c828506e3713c9c74a87d02c941440",
-            "rrna.bac.gff:md5,4a832ff1efb4c8a306c014481033cb09",
-            "rrna.euk.gff:md5,ad8b84800ff3f911db88657fd58b7cd9",
-            "stats.ssu.tsv:md5,dbb23448395135334093edbb3efb1cd0",
+            "ASV_seqs.ssu.fasta:md5,37f289f41d1a1fef30c5ef82792b0be7",
+            "ASV_table.ssu.tsv:md5,8bc2a14c891868da3b58b7ae389508b2",
+            "rrna.arc.gff:md5,5d14670cf12fd76adc44a74c6dfc00ee",
+            "rrna.bac.gff:md5,aeb0ef7708e9941893e1d0bcd7ddfa14",
+            "rrna.euk.gff:md5,59f69bad5215bdd10ba560bd473c200f",
+            "stats.ssu.tsv:md5,461327e95d0c969769a71df5584a19b3",
             "rrna.mito.gff:md5,df19e1b84ba6f691d20c72b397c88abf",
             "cutadapt_summary.tsv:md5,5d02749984a811479e7d534fda75163f",
-            "ASV_seqs.fasta:md5,864c3e0dc9b4a7649beee0c8665dceb5",
-            "ASV_table.tsv:md5,2618251e597593e4d716dd9bed095539",
+            "ASV_seqs.fasta:md5,e3cdcd93bdce761152085a7c797763c3",
+            "ASV_table.tsv:md5,d3f7d98b8750dfb3b486b32cc5d32414",
             "ref_taxonomy.gtdb_R07-RS207.txt:md5,965c6b1f9097128572a5ec2b8e9cef06",
-            "DADA2_stats.tsv:md5,54a1ac8d6c5a3ff15f700c4b2dd40c86",
-            "DADA2_table.rds:md5,d095501019ce7ebccfa0eb801db1ed29",
-            "DADA2_table.tsv:md5,5c9fb0bfd70da165f0ce6a361bfe0b43",
-            "Samplesheet.tsv:md5,dbf8d1a2b7933dab9e5a139f33c2b1f4",
+            "DADA2_stats.tsv:md5,b61a945febb806ed63729bcaa8ae0575",
+            "DADA2_table.tsv:md5,7ec2214a627e7492d31ac2672f82f94d",
+            "decontaminated.tsv:md5,3c94a1d7c56657fcbfaea344f0eae09e",
+            "decontaminated_counts.tsv:md5,f519211d0ac2cb979b09d3803e8ca3fa",
+            313,
+            "decontaminated_log.tsv:md5,e4af6016bd48a5eda8f1aa9aad3ed712",
+            "Samplesheet_standardized.tsv:md5,40895dd2af868c8a55c6c690dbeb9000",
             "Metadata.tsv:md5,060b56528bb566eed71f6dfdb52cc395",
             "multiqc_fastqc.txt:md5,7d23984b06e4251f17e1cfce7a04aaae",
             "multiqc_general_stats.txt:md5,885c19ff3e53d16bfe7937d6694268d7",
@@ -2415,14 +2253,14 @@
             "dna.tsv:md5,46bb52a05204ade2d571ac089f732012",
             "emof.tsv:md5,52ff7d226c79b1f78d5f4895d748f915",
             "event.tsv:md5,d275c5c0d7dbf7a5b2c61082fbce486d",
-            "ASV_post_clustering_filtered.fna:md5,57379771c59df16d0c0164db34e8f148",
+            "ASV_post_clustering_filtered.fna:md5,33486b16d07201703fd93904a5a8429c",
             "ASV_post_clustering_filtered.stats.tsv:md5,222f6a7cdbf2d4b3f745a49359a61c0d",
-            "ASV_post_clustering_filtered.table.tsv:md5,e607469a32d490bbe139e9196ff4a47d"
+            "ASV_post_clustering_filtered.table.tsv:md5,349277d892297b57b1761c88825580de"
         ],
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
+            "nf-test": "0.9.2",
+            "nextflow": "25.04.6"
         },
-        "timestamp": "2026-01-22T19:25:44.809666243"
+        "timestamp": "2026-04-08T21:41:30.770332812"
     }
 }

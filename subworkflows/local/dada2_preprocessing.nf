@@ -55,7 +55,7 @@ workflow DADA2_PREPROCESSING {
         TRUNCLEN.out.trunc
             .toSortedList()
             .set { ch_trunc }
-        ch_versions_dada2_preprocessing = ch_versions_dada2_preprocessing.mix(TRUNCLEN.out.versions.first())
+        ch_versions_dada2_preprocessing = ch_versions_dada2_preprocessing.mix(TRUNCLEN.out.versions)
         //add one more warning or reminder that trunclenf and trunclenr were chosen automatically
         ch_trunc.subscribe { it ->
             if ( "${it[0][1]}".toInteger() + "${it[1][1]}".toInteger() <= 10 ) { log.warn "`--trunclenf` was set to ${it[0][1]} and `--trunclenr` to ${it[1][1]}, this is too low! Please either change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr`." }
@@ -72,7 +72,7 @@ workflow DADA2_PREPROCESSING {
 
     //filter reads
     DADA2_FILTNTRIM ( ch_trimmed_reads.dump(tag: 'into_filtntrim')  )
-    ch_versions_dada2_preprocessing = ch_versions_dada2_preprocessing.mix(DADA2_FILTNTRIM.out.versions.first())
+    ch_versions_dada2_preprocessing = ch_versions_dada2_preprocessing.mix(DADA2_FILTNTRIM.out.versions)
 
     //Filter empty files
     DADA2_FILTNTRIM.out.reads_logs_args

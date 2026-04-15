@@ -28,14 +28,14 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [Barrnap](#barrnap) - Predict ribosomal RNA sequences and optional filtering
   - [Length filter](#length-filter) - Optionally, ASV can be filtered by length thresholds
   - [Codons](#codons) - Optionally the ASVs can be filtered by presence of stop codons.
-  - [ITSx](#itsx) - Optionally, the ITS region can be extracted
+  - [ITSx / ITSxRust](#itsx--itsxrust) - Optionally, the ITS region can be extracted
 - [Taxonomic classification](#taxonomic-classification) - Taxonomic classification of (filtered) ASVs
   - [DADA2](#dada2) - Taxonomic classification with DADA2
   - [assignSH](#assignsh) - Optionally, a UNITE species hypothesis (SH) can be added to the DADA2 taxonomy
   - [SINTAX](#sintax) - Taxonomic classification with SINTAX
   - [Kraken2](#kraken2) - Taxonomic classification with Kraken2
   - [QIIME2](#qiime2) - Taxonomic classification with QIIME2
-- [Phlogenetic placement and taxonomic classification](#phylogenetic-placement-and-taxonomic-classification) - Placing ASVs into a phyloenetic tree
+- [Phylogenetic placement and taxonomic classification](#phylogenetic-placement-and-taxonomic-classification) - Placing ASVs into a phylogenetic tree
 - [Multiple region analysis with Sidle](#multiple-region-analysis-with-sidle) - Scaffolding multiple regions along a reference
 - [Secondary analysis with QIIME2](#secondary-analysis-with-qiime2) - Visualisations, diversity and differential abundance analysis with QIIME2
   - [Abundance tables](#abundance-tables) - Exported abundance tables
@@ -152,8 +152,6 @@ DADA2 reduces sequence errors and dereplicates sequences by quality filtering, d
 
 </details>
 
-For binned quality scores in NovaSeq data, monotonicity in the fitted error model is enforced when using `--illumina_novaseq`. Consequently, additional QC data is generated.
-
 <details markdown="1">
 <summary>Output files</summary>
 
@@ -179,6 +177,23 @@ This directory will hold the centroid fasta file, the filtered asv count table (
   - `ASV_post_clustering_filtered.fna`: Centroid fasta file.
   - `ASV_post_clustering_filtered.stats.tsv`: Stats table.
   - `ASV_post_clustering_filtered.table.tsv`: ASV table.
+
+</details>
+
+#### Decontam
+
+Decontam performs simple statistical identification and removal of contaminant sequences. When the sample sheet includes columns `control` and/or `quant_reading`, decontam is executed. Filtering for downstream tools is only applied when additionally specifying `--decontam decotaminate` or `--decontam notcontaminant`.
+
+Files prepended with `decontaminated` are based on the hypothesis that all sequences are genuine and sufficient proof needs to exist to label an ASV as contamination. `notcontaminant` reverses the hypothesis and assumes that all ASVs are contaminats as long as there is not sufficient proof to identify it as genuine, non-contaminant sequence.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `decontam/`
+  - `[decontaminated/notcontaminant].tsv`: Filtered ASV abundance file.
+  - `[decontaminated/notcontaminant]_counts.tsv`: Tracking read numbers through filtering, for each sample.
+  - `[decontaminated/notcontaminant]_details.tsv`: Statistics file by decontam.
+  - `[decontaminated/notcontaminant]_log.tsv`: Tracking ASV numbers.
 
 </details>
 
@@ -236,9 +251,9 @@ Codon filtering can be activated by `--filter_codons`. By default, the codons ar
 
 </details>
 
-#### ITSx
+#### ITSx / ITSxRust
 
-Optionally, the ITS region can be extracted from each ASV sequence using ITSx, and taxonomic classification is performed based on the ITS sequence. Only sequences with at minimum 50bp in length are retained.
+Optionally, the ITS region can be extracted from each ASV sequence using [ITSx](https://microbiology.se/software/itsx/) (default) or [ITSxRust](https://github.com/ayobi/ITSxRust) (`--its_extractor itsxrust`), and taxonomic classification is performed based on the ITS sequence. Only sequences with at minimum 50bp in length are retained. ITSxRust is optimized for long-read data (ONT, PacBio HiFi) and produces the same output files as ITSx.
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -248,8 +263,8 @@ Optionally, the ITS region can be extracted from each ASV sequence using ITSx, a
   - `ASV_ITS_seqs.ITS1.fasta` or `ASV_ITS_seqs.ITS2.fasta`: If using --cut_its "its1" or --cut_its "its2"; fasta file with ITS1 or ITS2 region from each ASV sequence.
   - `ASV_ITS_seqs.full_and_partial.fasta`: If using --its_partial; fasta file with full and partial ITS regions from each ASV sequence.
   - `ASV_ITS_seqs.ITS1.full_and_partial.fasta` or `ASV_ITS_seqs.ITS2.full_and_partial.fasta`: If using --cut_its "its1" or --cut_its "its2" and --its_partial; fasta file with complete and partial ITS1 or ITS2 regions from each ASV sequence.
-  - `ASV_ITS_seqs.summary.txt`: Summary information from ITSx.
-  - `ITSx.args.txt`: File with parameters passed to ITSx.
+  - `ASV_ITS_seqs.summary.txt`: Summary information from ITSx or ITSxRust.
+  - `ITSx.args.txt`: File with parameters passed to ITSx or ITSxRust.
   - `ASV_seqs.len.fasta`: Fasta file with filtered ASV sequences.
   - `ASV_len_orig.tsv`: ASV length distribution before filtering.
   - `ASV_len_filt.tsv`: ASV length distribution after filtering.
@@ -306,7 +321,7 @@ Optionally, a UNITE species hypothesis (SH) can be added to the DADA2 taxonomy. 
 
 #### SINTAX
 
-Alternatively, ASVs can be taxonomically classified using the SINTAX algorithm as implemented in VSEARCH. Depending on the reference taxonomy database (specified with `sintax_ref_taxonomy`), sequences can be classified down to species rank.
+Alternatively, ASVs can be taxonomically classified using the SINTAX algorithm as implemented in VSEARCH. Depending on the reference taxonomy database (specified with `sintax_ref_taxonomy` or a user file with `sintax_ref_tax_custom`), sequences can be classified down to species rank.
 
 Files when _not_ using ITSx (default):
 
@@ -373,10 +388,11 @@ Phylogenetic placement grafts sequences onto a phylogenetic reference tree and o
 - `pplace/`
   - `*.graft.*.epa_result.newick`: Full phylogeny with query sequences grafted on to the reference phylogeny, in newick format.
   - `*.taxonomy.per_query.tsv`: Tab separated file with taxonomy information per query from classification by `gappa examine examinassign`
-  - `*.per_query_unique.tsv`: Tab separated file with taxonomy information as above, but one row per query, by filtering for lowest LWR (likelihood weight ratio)
+  - `*.taxonomy.per_query_unique.tsv`: Tab separated file with taxonomy information as above, but one row per query, by filtering for lowest LWR (likelihood weight ratio)
   - `*.heattree.tree.svg`: Heattree in SVG format from calling `gappa examine heattree`, see [Gappa documentation](https://github.com/Pbdas/epa-ng/blob/master/README.md) for details.
-  - `pplace/hmmer/`: Contains intermediatary files if HMMER is used
-  - `pplace/mafft/`: Contains intermediatary files if MAFFT is used
+  - `pplace/clustalo/`: Contains intermediary files if Clustal Omega is used
+  - `pplace/hmmer/`: Contains intermedetary files if HMMER is used
+  - `pplace/mafft/`: Contains intermedetary files if MAFFT is used
   - `pplace/epang/`: Output files from EPA-NG.
   - `pplace/gappa/`: Gappa output described in the [Gappa documentation](https://github.com/Pbdas/epa-ng/blob/master/README.md).
 
@@ -540,6 +556,7 @@ Furthermore, ADONIS permutation-based statistical test in vegan-R determine whet
 - `qiime2/diversity/beta_diversity/`
   - `<method>_distance_matrix-<treatment>/index.html`: Box plots and significance analysis (PERMANOVA).
   - `<method>_pcoa_results-PCoA/index.html`: Interactive PCoA plot.
+  - `<method>_distance_matrix.tsv`: Beta diversity distance matrix in tsv format.
 - `qiime2/diversity/beta_diversity/adonis/`
   - `<method>_distance_matrix-<adonis formula>/index.html`: Interactive (and .tsv) table of metadata feature importance and significance.
     - method: bray_curtis, jaccard, unweighted_unifrac, weighted_unifrac
@@ -664,7 +681,6 @@ This report includes information on how many reads per sample passed each pipeli
 - `pipeline_info/`
   - Reports generated by Nextflow: `execution_report.html`, `execution_timeline.html`, `execution_trace.txt` and `pipeline_dag.dot`/`pipeline_dag.svg`.
   - Reports generated by the pipeline: `pipeline_report.html`, `pipeline_report.txt` and `software_versions.yml`. The `pipeline_report*` files will only be present if the `--email` / `--email_on_fail` parameter's are used when running the pipeline.
-  - Reformatted samplesheet files used as input to the pipeline: `samplesheet.valid.csv`.
   - Parameters used by the pipeline run: `params.json`.
 
 </details>

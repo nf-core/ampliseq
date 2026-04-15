@@ -3,12 +3,16 @@ lint:
     - conf/igenomes.config
   files_unchanged:
     - .gitattributes
+    - assets/nf-core-ampliseq_logo_light.png
+    - assets/nf-core-ampliseq_logo_dark.png
+    - docs/images/nf-core-ampliseq_logo_light.png
+    - docs/images/nf-core-ampliseq_logo_dark.png
   nextflow_config:
     - config_defaults:
         - params.report_template
         - params.report_css
         - params.report_logo
-nf_core_version: 3.5.1
+nf_core_version: 3.5.2
 repository_type: pipeline
 template:
   author: Daniel Straub, Alexander Peltzer
@@ -20,7 +24,7 @@ template:
   outdir: .
   skip_features:
     - igenomes
-  version: 2.16.1
+  version: 2.17.0
 update:
   https://github.com/nf-core/modules.git:
     nf-core:

@@ -1,0 +1,19 @@
+Changes in component 'nf-core/epang/place'
+'modules/nf-core/epang/place/environment.yml' is unchanged
+Changes in 'epang/place/main.nf':
+--- modules/nf-core/epang/place/main.nf
++++ modules/nf-core/epang/place/main.nf
+@@ -1,6 +1,6 @@
+ process EPANG_PLACE {
+     tag "$meta.id"
+-    label 'process_high'
++    label 'process_medium_memory'
+ 
+     conda "${moduleDir}/environment.yml"
+     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+
+'modules/nf-core/epang/place/meta.yml' is unchanged
+'modules/nf-core/epang/place/tests/nextflow.config' is unchanged
+'modules/nf-core/epang/place/tests/main.nf.test' is unchanged
+'modules/nf-core/epang/place/tests/main.nf.test.snap' is unchanged
+************************************************************

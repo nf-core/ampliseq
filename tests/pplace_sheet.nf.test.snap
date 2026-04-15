@@ -1,0 +1,470 @@
+{
+    "-profile test_pplace_sheet": {
+        "content": [
+            {
+                "BARRNAP": {
+                    "barrnap": 0.9
+                },
+                "BARRNAPSUMMARY": {
+                    "python": "Python 3.9.1"
+                },
+                "CLUSTALO_ALIGN": {
+                    "clustalo": "1.2.4",
+                    "pigz": 2.8
+                },
+                "COMBINE_TABLE_PPLACE": {
+                    "R": "4.0.3"
+                },
+                "COMBINE_TABLE_QIIME2": {
+                    "R": "4.0.3"
+                },
+                "CUTADAPT_BASIC": {
+                    "cutadapt": 5.2
+                },
+                "CUTADAPT_SUMMARY_STD": {
+                    "python": "Python 3.8.3"
+                },
+                "DADA2_DENOISING": {
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
+                },
+                "DADA2_ERR": {
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
+                },
+                "DADA2_FILTNTRIM": {
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
+                },
+                "DADA2_MERGE": {
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
+                },
+                "DADA2_QUALITY1": {
+                    "R": "4.5.2",
+                    "dada2": "1.38.0",
+                    "ShortRead": "1.68.0"
+                },
+                "DADA2_QUALITY2": {
+                    "R": "4.5.2",
+                    "dada2": "1.38.0",
+                    "ShortRead": "1.68.0"
+                },
+                "DADA2_RMCHIMERA": {
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
+                },
+                "DADA2_STATS": {
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
+                },
+                "DECONTAM": {
+                    "R": "4.5.2",
+                    "decontam": "1.30.0"
+                },
+                "EPANG_PLACE": {
+                    "epang": "0.3.8"
+                },
+                "EPANG_SPLIT_CLUSTALO": {
+                    "epang": "0.3.8"
+                },
+                "FASTQC": {
+                    "fastqc": "0.12.1"
+                },
+                "FILTER_STATS": {
+                    "python": "3.9.1",
+                    "pandas": "1.1.5"
+                },
+                "FORMAT_TAXONOMY_QIIME": {
+                    "sed": 4.7
+                },
+                "GAPPA_ASSIGN": {
+                    "gappa": "0.8.0"
+                },
+                "GAPPA_GRAFT": {
+                    "gappa": "0.8.0"
+                },
+                "GAPPA_HEATTREE": {
+                    "gappa": "0.8.0"
+                },
+                "HMMER_HMMEXTRACT": {
+                    "hmmer": "3.3.2"
+                },
+                "HMMER_HMMRANK": {
+                    "R": "4.2.3",
+                    "tidyverse": "2.0.0"
+                },
+                "HMMER_HMMSEARCH": {
+                    "hmmer": 3.4
+                },
+                "MERGE_STATS_FILTERTAXA": {
+                    "R": "4.5.2"
+                },
+                "MERGE_STATS_STD": {
+                    "R": "4.5.2"
+                },
+                "PHYLOSEQ": {
+                    "R": "4.4.2",
+                    "phyloseq": "1.50.0"
+                },
+                "PPLACEFORMATTAX_SHEET": {
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
+                },
+                "QIIME2_BARPLOT": {
+                    "qiime2": "2024.10.1"
+                },
+                "QIIME2_CLASSIFY": {
+                    "qiime2": "2024.10.1"
+                },
+                "QIIME2_EXPORT_ABSOLUTE": {
+                    "qiime2": "2024.10.1"
+                },
+                "QIIME2_EXPORT_RELASV": {
+                    "qiime2": "2024.10.1"
+                },
+                "QIIME2_EXPORT_RELTAX": {
+                    "qiime2": "2024.10.1"
+                },
+                "QIIME2_EXTRACT": {
+                    "qiime2": "2024.10.1"
+                },
+                "QIIME2_INASV": {
+                    "qiime2": "2024.10.1"
+                },
+                "QIIME2_INSEQ": {
+                    "qiime2": "2024.10.1"
+                },
+                "QIIME2_SEQFILTERTABLE": {
+                    "qiime2": "2024.10.1"
+                },
+                "QIIME2_TABLEFILTERTAXA": {
+                    "qiime2": "2024.10.1"
+                },
+                "QIIME2_TRAIN": {
+                    "qiime2": "2024.10.1"
+                },
+                "RENAME_RAW_DATA_FILES": {
+                    "sed": 4.7
+                },
+                "SEQTK_SUBSEQ": {
+                    "seqtk": "1.4-r122"
+                },
+                "TREESUMMARIZEDEXPERIMENT": {
+                    "R": "4.3.2",
+                    "TreeSummarizedExperiment": "2.10.0"
+                },
+                "TRUNCLEN": {
+                    "python": "3.9.1",
+                    "pandas": "1.1.5"
+                },
+                "Workflow": {
+                    "nf-core/ampliseq": "v2.17.0"
+                }
+            },
+            [
+                "barrnap",
+                "barrnap/rrna.arc.gff",
+                "barrnap/rrna.bac.gff",
+                "barrnap/rrna.euk.gff",
+                "barrnap/rrna.mito.gff",
+                "barrnap/summary.tsv",
+                "cutadapt",
+                "cutadapt/cutadapt_summary.tsv",
+                "cutadapt/sampleID_1.trimmed.cutadapt.log",
+                "cutadapt/sampleID_1a.trimmed.cutadapt.log",
+                "cutadapt/sampleID_2.trimmed.cutadapt.log",
+                "cutadapt/sampleID_2a.trimmed.cutadapt.log",
+                "dada2",
+                "dada2/ASV_seqs.fasta",
+                "dada2/ASV_table.tsv",
+                "dada2/DADA2_stats.tsv",
+                "dada2/DADA2_table.rds",
+                "dada2/DADA2_table.tsv",
+                "dada2/QC",
+                "dada2/QC/1_1.err.convergence.txt",
+                "dada2/QC/1_1.err.pdf",
+                "dada2/QC/1_2.err.convergence.txt",
+                "dada2/QC/1_2.err.pdf",
+                "dada2/QC/4 files were used for FW plotQualityProfile.txt",
+                "dada2/QC/4 files were used for RV plotQualityProfile.txt",
+                "dada2/QC/FW_preprocessed_qual_stats.pdf",
+                "dada2/QC/FW_qual_stats.pdf",
+                "dada2/QC/RV_preprocessed_qual_stats.pdf",
+                "dada2/QC/RV_qual_stats.pdf",
+                "dada2/QC/svg",
+                "dada2/QC/svg/1_1.err.svg",
+                "dada2/QC/svg/1_2.err.svg",
+                "dada2/QC/svg/FW_preprocessed_qual_stats.svg",
+                "dada2/QC/svg/FW_qual_stats.svg",
+                "dada2/QC/svg/RV_preprocessed_qual_stats.svg",
+                "dada2/QC/svg/RV_qual_stats.svg",
+                "dada2/args",
+                "dada2/args/FW_plotQualityProfile.args.txt",
+                "dada2/args/FW_preprocessed_plotQualityProfile.args.txt",
+                "dada2/args/RV_plotQualityProfile.args.txt",
+                "dada2/args/RV_preprocessed_plotQualityProfile.args.txt",
+                "dada2/args/dada.args.txt",
+                "dada2/args/filterAndTrim.args.txt",
+                "dada2/args/learnErrors.args.txt",
+                "dada2/args/mergePairs.args.txt",
+                "dada2/args/removeBimeraDenovo.args.txt",
+                "dada2/log",
+                "dada2/log/1.dada.log",
+                "dada2/log/1.err.log",
+                "decontam",
+                "decontam/decontaminated.tsv",
+                "decontam/decontaminated_counts.tsv",
+                "decontam/decontaminated_details.tsv",
+                "decontam/decontaminated_log.tsv",
+                "fastqc",
+                "fastqc/sampleID_1_1_fastqc.html",
+                "fastqc/sampleID_1_2_fastqc.html",
+                "fastqc/sampleID_1a_1_fastqc.html",
+                "fastqc/sampleID_1a_2_fastqc.html",
+                "fastqc/sampleID_2_1_fastqc.html",
+                "fastqc/sampleID_2_2_fastqc.html",
+                "fastqc/sampleID_2a_1_fastqc.html",
+                "fastqc/sampleID_2a_2_fastqc.html",
+                "input",
+                "input/Samplesheet.tsv",
+                "multiqc",
+                "multiqc/multiqc_data",
+                "multiqc/multiqc_data/cutadapt_filtered_reads_plot.txt",
+                "multiqc/multiqc_data/cutadapt_trimmed_sequences_plot_5_Counts.txt",
+                "multiqc/multiqc_data/cutadapt_trimmed_sequences_plot_5_Obs_Exp.txt",
+                "multiqc/multiqc_data/fastqc-status-check-heatmap.txt",
+                "multiqc/multiqc_data/fastqc_adapter_content_plot.txt",
+                "multiqc/multiqc_data/fastqc_overrepresented_sequences_plot.txt",
+                "multiqc/multiqc_data/fastqc_per_base_n_content_plot.txt",
+                "multiqc/multiqc_data/fastqc_per_base_sequence_quality_plot.txt",
+                "multiqc/multiqc_data/fastqc_per_sequence_gc_content_plot_Counts.txt",
+                "multiqc/multiqc_data/fastqc_per_sequence_gc_content_plot_Percentages.txt",
+                "multiqc/multiqc_data/fastqc_per_sequence_quality_scores_plot.txt",
+                "multiqc/multiqc_data/fastqc_sequence_counts_plot.txt",
+                "multiqc/multiqc_data/fastqc_sequence_duplication_levels_plot.txt",
+                "multiqc/multiqc_data/fastqc_sequence_length_distribution_plot.txt",
+                "multiqc/multiqc_data/fastqc_top_overrepresented_sequences_table.txt",
+                "multiqc/multiqc_data/llms-full.txt",
+                "multiqc/multiqc_data/multiqc.log",
+                "multiqc/multiqc_data/multiqc.parquet",
+                "multiqc/multiqc_data/multiqc_citations.txt",
+                "multiqc/multiqc_data/multiqc_cutadapt.txt",
+                "multiqc/multiqc_data/multiqc_data.json",
+                "multiqc/multiqc_data/multiqc_fastqc.txt",
+                "multiqc/multiqc_data/multiqc_general_stats.txt",
+                "multiqc/multiqc_data/multiqc_sources.txt",
+                "multiqc/multiqc_plots",
+                "multiqc/multiqc_plots/pdf",
+                "multiqc/multiqc_plots/pdf/cutadapt_filtered_reads_plot-cnt.pdf",
+                "multiqc/multiqc_plots/pdf/cutadapt_filtered_reads_plot-pct.pdf",
+                "multiqc/multiqc_plots/pdf/cutadapt_trimmed_sequences_plot_5_Counts.pdf",
+                "multiqc/multiqc_plots/pdf/cutadapt_trimmed_sequences_plot_5_Obs_Exp.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc-status-check-heatmap.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_adapter_content_plot.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_overrepresented_sequences_plot.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_per_base_n_content_plot.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_per_base_sequence_quality_plot.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_per_sequence_gc_content_plot_Counts.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_per_sequence_gc_content_plot_Percentages.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_per_sequence_quality_scores_plot.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_sequence_counts_plot-cnt.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_sequence_counts_plot-pct.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_sequence_duplication_levels_plot.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_sequence_length_distribution_plot.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_top_overrepresented_sequences_table.pdf",
+                "multiqc/multiqc_plots/png",
+                "multiqc/multiqc_plots/png/cutadapt_filtered_reads_plot-cnt.png",
+                "multiqc/multiqc_plots/png/cutadapt_filtered_reads_plot-pct.png",
+                "multiqc/multiqc_plots/png/cutadapt_trimmed_sequences_plot_5_Counts.png",
+                "multiqc/multiqc_plots/png/cutadapt_trimmed_sequences_plot_5_Obs_Exp.png",
+                "multiqc/multiqc_plots/png/fastqc-status-check-heatmap.png",
+                "multiqc/multiqc_plots/png/fastqc_adapter_content_plot.png",
+                "multiqc/multiqc_plots/png/fastqc_overrepresented_sequences_plot.png",
+                "multiqc/multiqc_plots/png/fastqc_per_base_n_content_plot.png",
+                "multiqc/multiqc_plots/png/fastqc_per_base_sequence_quality_plot.png",
+                "multiqc/multiqc_plots/png/fastqc_per_sequence_gc_content_plot_Counts.png",
+                "multiqc/multiqc_plots/png/fastqc_per_sequence_gc_content_plot_Percentages.png",
+                "multiqc/multiqc_plots/png/fastqc_per_sequence_quality_scores_plot.png",
+                "multiqc/multiqc_plots/png/fastqc_sequence_counts_plot-cnt.png",
+                "multiqc/multiqc_plots/png/fastqc_sequence_counts_plot-pct.png",
+                "multiqc/multiqc_plots/png/fastqc_sequence_duplication_levels_plot.png",
+                "multiqc/multiqc_plots/png/fastqc_sequence_length_distribution_plot.png",
+                "multiqc/multiqc_plots/png/fastqc_top_overrepresented_sequences_table.png",
+                "multiqc/multiqc_plots/svg",
+                "multiqc/multiqc_plots/svg/cutadapt_filtered_reads_plot-cnt.svg",
+                "multiqc/multiqc_plots/svg/cutadapt_filtered_reads_plot-pct.svg",
+                "multiqc/multiqc_plots/svg/cutadapt_trimmed_sequences_plot_5_Counts.svg",
+                "multiqc/multiqc_plots/svg/cutadapt_trimmed_sequences_plot_5_Obs_Exp.svg",
+                "multiqc/multiqc_plots/svg/fastqc-status-check-heatmap.svg",
+                "multiqc/multiqc_plots/svg/fastqc_adapter_content_plot.svg",
+                "multiqc/multiqc_plots/svg/fastqc_overrepresented_sequences_plot.svg",
+                "multiqc/multiqc_plots/svg/fastqc_per_base_n_content_plot.svg",
+                "multiqc/multiqc_plots/svg/fastqc_per_base_sequence_quality_plot.svg",
+                "multiqc/multiqc_plots/svg/fastqc_per_sequence_gc_content_plot_Counts.svg",
+                "multiqc/multiqc_plots/svg/fastqc_per_sequence_gc_content_plot_Percentages.svg",
+                "multiqc/multiqc_plots/svg/fastqc_per_sequence_quality_scores_plot.svg",
+                "multiqc/multiqc_plots/svg/fastqc_sequence_counts_plot-cnt.svg",
+                "multiqc/multiqc_plots/svg/fastqc_sequence_counts_plot-pct.svg",
+                "multiqc/multiqc_plots/svg/fastqc_sequence_duplication_levels_plot.svg",
+                "multiqc/multiqc_plots/svg/fastqc_sequence_length_distribution_plot.svg",
+                "multiqc/multiqc_plots/svg/fastqc_top_overrepresented_sequences_table.svg",
+                "multiqc/multiqc_report.html",
+                "overall_summary.tsv",
+                "phyloseq",
+                "phyloseq/qiime2_phyloseq.rds",
+                "pipeline_info",
+                "pipeline_info/software_versions.yml",
+                "pplace",
+                "pplace/arc.graft.arc.epa_result.newick",
+                "pplace/arc.heattree.tree.svg",
+                "pplace/arc.taxonomy.per_query.tsv",
+                "pplace/arc.taxonomy.per_query_unique.tsv",
+                "pplace/bac16s.graft.bac16s.epa_result.newick",
+                "pplace/bac16s.heattree.tree.svg",
+                "pplace/bac16s.taxonomy.per_query.tsv",
+                "pplace/bac16s.taxonomy.per_query_unique.tsv",
+                "pplace/clustalo",
+                "pplace/clustalo/arc.aln",
+                "pplace/clustalo/bac16s.aln",
+                "pplace/epang",
+                "pplace/epang/arc.epa_info.log",
+                "pplace/epang/arc.epa_result.jplace.gz",
+                "pplace/epang/bac16s.epa_info.log",
+                "pplace/epang/bac16s.epa_result.jplace.gz",
+                "pplace/gappa",
+                "pplace/gappa/arc.graft.arc.epa_result.newick",
+                "pplace/gappa/arc.heattree.colours.txt",
+                "pplace/gappa/arc.heattree.log",
+                "pplace/gappa/arc.heattree.tree.nexus",
+                "pplace/gappa/arc.heattree.tree.phyloxml",
+                "pplace/gappa/arc.heattree.tree.svg",
+                "pplace/gappa/arc.taxonomy.krona.profile",
+                "pplace/gappa/arc.taxonomy.labelled_tree.newick",
+                "pplace/gappa/arc.taxonomy.per_query.tsv",
+                "pplace/gappa/arc.taxonomy.profile.tsv",
+                "pplace/gappa/arc.taxonomy.sativa.tsv",
+                "pplace/gappa/bac16s.graft.bac16s.epa_result.newick",
+                "pplace/gappa/bac16s.heattree.colours.txt",
+                "pplace/gappa/bac16s.heattree.log",
+                "pplace/gappa/bac16s.heattree.tree.nexus",
+                "pplace/gappa/bac16s.heattree.tree.phyloxml",
+                "pplace/gappa/bac16s.heattree.tree.svg",
+                "pplace/gappa/bac16s.taxonomy.krona.profile",
+                "pplace/gappa/bac16s.taxonomy.labelled_tree.newick",
+                "pplace/gappa/bac16s.taxonomy.per_query.tsv",
+                "pplace/gappa/bac16s.taxonomy.profile.tsv",
+                "pplace/gappa/bac16s.taxonomy.sativa.tsv",
+                "pplace/hmmer",
+                "pplace/hmmer/rank.hmmrank.tsv.gz",
+                "qiime2",
+                "qiime2/abundance_tables",
+                "qiime2/abundance_tables/abs-abund-table-2.tsv",
+                "qiime2/abundance_tables/abs-abund-table-3.tsv",
+                "qiime2/abundance_tables/abs-abund-table-4.tsv",
+                "qiime2/abundance_tables/abs-abund-table-5.tsv",
+                "qiime2/abundance_tables/abs-abund-table-6.tsv",
+                "qiime2/abundance_tables/count_table_filter_stats.tsv",
+                "qiime2/abundance_tables/feature-table.biom",
+                "qiime2/abundance_tables/feature-table.tsv",
+                "qiime2/abundance_tables/filtered-table.qza",
+                "qiime2/barplot",
+                "qiime2/barplot/dist",
+                "qiime2/barplot/dist/bundle.js",
+                "qiime2/barplot/dist/d3-license.txt",
+                "qiime2/barplot/dist/d3-scale-chromatic-license.txt",
+                "qiime2/barplot/dist/thenBy-license.txt",
+                "qiime2/barplot/dist/vendor.bundle.js",
+                "qiime2/barplot/index.html",
+                "qiime2/barplot/level-1.csv",
+                "qiime2/barplot/level-1.jsonp",
+                "qiime2/barplot/level-2.csv",
+                "qiime2/barplot/level-2.jsonp",
+                "qiime2/barplot/level-3.csv",
+                "qiime2/barplot/level-3.jsonp",
+                "qiime2/barplot/level-4.csv",
+                "qiime2/barplot/level-4.jsonp",
+                "qiime2/barplot/level-5.csv",
+                "qiime2/barplot/level-5.jsonp",
+                "qiime2/barplot/level-6.csv",
+                "qiime2/barplot/level-6.jsonp",
+                "qiime2/barplot/level-7.csv",
+                "qiime2/barplot/level-7.jsonp",
+                "qiime2/barplot/q2templateassets",
+                "qiime2/barplot/q2templateassets/css",
+                "qiime2/barplot/q2templateassets/css/base-template.css",
+                "qiime2/barplot/q2templateassets/css/bootstrap.min.css",
+                "qiime2/barplot/q2templateassets/css/normalize.css",
+                "qiime2/barplot/q2templateassets/css/tab-parent.css",
+                "qiime2/barplot/q2templateassets/fonts",
+                "qiime2/barplot/q2templateassets/fonts/glyphicons-halflings-regular.eot",
+                "qiime2/barplot/q2templateassets/fonts/glyphicons-halflings-regular.svg",
+                "qiime2/barplot/q2templateassets/fonts/glyphicons-halflings-regular.ttf",
+                "qiime2/barplot/q2templateassets/fonts/glyphicons-halflings-regular.woff",
+                "qiime2/barplot/q2templateassets/fonts/glyphicons-halflings-regular.woff2",
+                "qiime2/barplot/q2templateassets/img",
+                "qiime2/barplot/q2templateassets/img/qiime2-rect-200.png",
+                "qiime2/barplot/q2templateassets/js",
+                "qiime2/barplot/q2templateassets/js/bootstrap.min.js",
+                "qiime2/barplot/q2templateassets/js/child.js",
+                "qiime2/barplot/q2templateassets/js/jquery-3.2.0.min.js",
+                "qiime2/barplot/q2templateassets/js/parent.js",
+                "qiime2/input",
+                "qiime2/input/rep-seqs.qza",
+                "qiime2/input/table.qza",
+                "qiime2/rel_abundance_tables",
+                "qiime2/rel_abundance_tables/rel-table-2.tsv",
+                "qiime2/rel_abundance_tables/rel-table-3.tsv",
+                "qiime2/rel_abundance_tables/rel-table-4.tsv",
+                "qiime2/rel_abundance_tables/rel-table-5.tsv",
+                "qiime2/rel_abundance_tables/rel-table-6.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV_with-PPLACE-tax.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV_with-QIIME2-tax.tsv",
+                "qiime2/representative_sequences",
+                "qiime2/representative_sequences/descriptive_stats.tsv",
+                "qiime2/representative_sequences/filtered-sequences.qza",
+                "qiime2/representative_sequences/rep-seq.fasta",
+                "qiime2/representative_sequences/seven_number_summary.tsv",
+                "qiime2/taxonomy",
+                "qiime2/taxonomy/GTGYCAGCMGCCGCGGTAA-GGACTACNVGGGTWTCTAAT-classifier.qza",
+                "qiime2/taxonomy/ref_taxonomy.txt",
+                "qiime2/taxonomy/taxonomy.tsv",
+                "summary_report",
+                "summary_report/qiime2_taxonomic_classification_per_taxonomy_level.svg",
+                "summary_report/rrna_detection_with_barrnap.svg",
+                "summary_report/stacked_barchart_of_reads.svg",
+                "summary_report/summary_report.html",
+                "summary_report/versions.yml",
+                "treesummarizedexperiment",
+                "treesummarizedexperiment/qiime2_TreeSummarizedExperiment.rds"
+            ],
+            "overall_summary.tsv:md5,8494c77afeed68d417cb4a1fd25a47d9",
+            "rrna.arc.gff:md5,6dae470aace9293d5eb8c318584852dd",
+            "rrna.bac.gff:md5,439a9084f089120f700f938dfb58fa41",
+            "rrna.euk.gff:md5,c9bc1d9d8fb77dc19c95dee2d53840eb",
+            "rrna.mito.gff:md5,df19e1b84ba6f691d20c72b397c88abf",
+            "cutadapt_summary.tsv:md5,5d02749984a811479e7d534fda75163f",
+            "ASV_seqs.fasta:md5,e3cdcd93bdce761152085a7c797763c3",
+            "ASV_table.tsv:md5,d3f7d98b8750dfb3b486b32cc5d32414",
+            "DADA2_stats.tsv:md5,b61a945febb806ed63729bcaa8ae0575",
+            "DADA2_table.tsv:md5,7ec2214a627e7492d31ac2672f82f94d",
+            "Samplesheet.tsv:md5,51ff46f4b431730e41b6950ae3b20e35",
+            "multiqc_general_stats.txt:md5,885c19ff3e53d16bfe7937d6694268d7",
+            "multiqc_cutadapt.txt:md5,3dce058d2d6c85a3cca7314ae19c5586",
+            506,
+            2443,
+            1,
+            610,
+            73,
+            1,
+            3826,
+            276
+        ],
+        "timestamp": "2026-03-12T21:41:16.174265927",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    }
+}

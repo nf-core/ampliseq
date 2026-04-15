@@ -10,14 +10,20 @@
   - [Quick start](#quick-start)
   - [Setting parameters in a file](#setting-parameters-in-a-file)
   - [Input specifications](#input-specifications)
-    - [Samplesheet input](#samplesheet-input)
+    - [Sample sheet input](#sample-sheet-input)
     - [ASV/OTU fasta input](#asvotu-fasta-input)
     - [Direct FASTQ input](#direct-fastq-input)
   - [Regions of variable length e.g. ITS](#regions-of-variable-length-eg-its)
+    - [ITS extraction tool](#its-extraction-tool)
+  - [Decontamination](#decontamination)
   - [Taxonomic classification](#taxonomic-classification)
   - [Multiple region analysis with Sidle](#multiple-region-analysis-with-sidle)
   - [Metadata](#metadata)
   - [Differential abundance analysis](#differential-abundance-analysis)
+  - [Phylogenetic placement](#phylogenetic-placement)
+    - [Single reference phylogenetic placement](#single-reference-phylogenetic-placement)
+    - [Multiple reference phylogenetic placement](#multiple-reference-phylogenetic-placement)
+    - [Placement in database-provided phylogenies](#placement-in-database-provided-phylogenies)
   - [Updating the pipeline](#updating-the-pipeline)
   - [Reproducibility](#reproducibility)
 - [Core Nextflow arguments](#core-nextflow-arguments)
@@ -48,7 +54,7 @@ nextflow run nf-core/ampliseq \
     --outdir "./results"
 ```
 
-In this example, `--input` is the [Samplesheet input](#samplesheet-input), other options are [Direct FASTQ input](#direct-fastq-input) and [ASV/OTU fasta input](#asvotu-fasta-input). For more details on metadata, see [Metadata](#metadata). It is possible to not provide primer sequences (`--FW_primer` & `--RV_primer`) and skip primer trimming using `--skip_cutadapt`, but this is only for data that indeed does not contain any PCR primers in their sequences. Also, metadata (`--metadata`) isnt required, but aids downstream analysis.
+In this example, `--input` is the [Sample sheet input](#sample-sheet-input), other options are [Direct FASTQ input](#direct-fastq-input) and [ASV/OTU fasta input](#asvotu-fasta-input). For more details on metadata, see [Metadata](#metadata). It is possible to not provide primer sequences (`--FW_primer` & `--RV_primer`) and skip primer trimming using `--skip_cutadapt`, but this is only for data that indeed does not contain any PCR primers in their sequences. Also, metadata (`--metadata`) isnt required, but aids downstream analysis.
 
 This will launch the pipeline with the `singularity` configuration profile. See below [`-profile`](#profile) for more information about profiles.
 
@@ -62,10 +68,10 @@ work                # Directory containing the nextflow working files
 ```
 
 > [!TIP]
-> For [Reproducibility](#reproducibility), specify the version to run using `-r` (= release, e.g. 2.15.0, please use the most recent release). See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters) for more information about pipeline specific parameters.
+> For [Reproducibility](#reproducibility), specify the version to run using `-r` (= release, e.g. 2.17.0, please use the most recent release). See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters) for more information about pipeline specific parameters.
 
 > [!NOTE]
-> If the data originates from multiple sequencing runs, the error profile of each of those sequencing runs needs to be considered separately. Using the `run` column in the samplesheet input or adding `--multiple_sequencing_runs` for direct FASTQ input will separate certain processes by the sequencing run. Please see the following example:
+> If the data originates from multiple sequencing runs, the error profile of each of those sequencing runs needs to be considered separately. Using the `run` column in the sample sheet input or adding `--multiple_sequencing_runs` for direct FASTQ input will separate certain processes by the sequencing run. Please see the following example:
 
 <p align="center">
     <img src="images/ampliseq_workflow_multiplesequencingruns.png" alt="nf-core/ampliseq workflow overview with --multiple_sequencing_runs" width="40%">
@@ -104,49 +110,60 @@ You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-c
 The input data can be passed to nf-core/ampliseq in three possible ways using the parameters `--input`, `--input_fasta`, or `--input_folder`.
 The three parameters and input types are mutually exclusive.
 
-- [Samplesheet input](#samplesheet-input) using `--input`: Samplesheet tab-separated, comma-separated, or in YAML format
+- [Sample sheet input](#sample-sheet-input) using `--input`: Sample sheet tab-separated, comma-separated, or in YAML format
 - [ASV/OTU fasta input](#asvotu-fasta-input) using `--input_fasta`: Fasta file with sequences to be taxonomically classified
 - [Direct FASTQ input](#direct-fastq-input) using `--input_folder`: Folder containing zipped FastQ files.
 
 Optionally, a metadata sheet can be specified for downstream analysis.
 
-#### Samplesheet input
+#### Sample sheet input
 
-The sample sheet file can be tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml) and can have two to four columns/entries with the following headers:
+The sample sheet file can be tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml).
 
-| Column       | Necessity | Description                                                                   |
-| ------------ | --------- | ----------------------------------------------------------------------------- |
-| sampleID     | required  | Unique sample identifiers (see below for requirements)                        |
-| forwardReads | required  | Paths to (forward) reads zipped FastQ files                                   |
-| reverseReads | optional  | Paths to reverse reads zipped FastQ files, required if the data is paired-end |
-| run          | optional  | If the data was produced by multiple sequencing runs, any string              |
+| Column        | Necessity | Description                                                                   |
+| ------------- | --------- | ----------------------------------------------------------------------------- |
+| sample        | required  | Unique sample identifiers (see below for requirements)                        |
+| fastq_1       | required  | Paths to (forward) reads zipped FastQ files                                   |
+| fastq_2       | optional  | Paths to reverse reads zipped FastQ files, required if the data is paired-end |
+| run           | optional  | If the data was produced by multiple sequencing runs, any string              |
+| control       | optional  | "control" or "sample" to allow decontamination with negative controls         |
+| quant_reading | optional  | Quantification reading to allow decontamination based on abundances           |
+
+The sample sheet can be specified with
 
 ```bash
 --input 'path/to/samplesheet.tsv'
 ```
 
-For example, the tab-separated samplesheet may contain:
+For example, the tab-separated sample sheet may contain:
 
-| sampleID | forwardReads              | reverseReads              | run |
-| -------- | ------------------------- | ------------------------- | --- |
-| sample1  | ./data/S1_R1_001.fastq.gz | ./data/S1_R2_001.fastq.gz | A   |
-| sample2  | ./data/S2_fw.fastq.gz     | ./data/S2_rv.fastq.gz     | A   |
-| sample3  | ./S4x.fastq.gz            | ./S4y.fastq.gz            | B   |
-| sample4  | ./a.fastq.gz              | ./b.fastq.gz              | B   |
+| sample  | fastq_1                   | fastq_2                   | run | control | quant_reading |
+| ------- | ------------------------- | ------------------------- | --- | ------- | ------------- |
+| sample1 | ./data/S1_R1_001.fastq.gz | ./data/S1_R2_001.fastq.gz | A   | control | 1000          |
+| sample2 | ./data/S2_fw.fastq.gz     | ./data/S2_rv.fastq.gz     | A   | sample  | 10000         |
+| sample3 | ./S4x.fastq.gz            | ./S4y.fastq.gz            | B   | control | 1100          |
+| sample4 | ./a.fastq.gz              | ./b.fastq.gz              | B   | sample  | 11000         |
+
+Two header layouts are supported, a legacy and a standardized layout (the latter is described above):
+
+| Layout       | Required columns           | Optional columns                                  |
+| ------------ | -------------------------- | ------------------------------------------------- |
+| Legacy       | `sampleID`, `forwardReads` | `reverseReads`, `run`, `control`, `quant_reading` |
+| Standardized | `sample`, `fastq_1`        | `fastq_2`, `run`, `control`, `quant_reading`      |
 
 Please note the following requirements:
 
-- 2 to 4 columns/entries
+- 2 to 6 columns/entries
 - File extensions `.tsv`,`.csv`,`.yml`,`.yaml` specify the file type, otherwise file type will be derived from content, if possible
-- Must contain the header `sampleID` and `forwardReads`
-- May contain the header `reverseReads` and `run`
+- Must contain either `sample` and `fastq_1` (standardized) OR `sampleID` and `forwardReads` (legacy)
+- May contain `fastq_2`/`reverseReads`, `run`, `control`, and `quant_reading`
 - Sample IDs must be unique
 - Sample IDs must start with a letter
 - Sample IDs can only contain letters, numbers or underscores
 - FastQ files must be compressed (`.fastq.gz`, `.fq.gz`)
 - Within one samplesheet, only one type of raw data should be specified (same amplicon & sequencing method)
 
-An [example samplesheet](../assets/samplesheet.tsv) has been provided with the pipeline.
+Examples for both layouts are provided within the pipeline code in folder `assets` as `samplesheet_legacy.tsv` and `samplesheet_standardized.tsv`.
 
 To avoid producing a sample sheet, [Direct FASTQ input](#direct-fastq-input) may be used instead.
 
@@ -214,6 +231,30 @@ Please note the following additional requirements:
 
 Special considerations should be made when pre-processing reads for regions of variable length, e.g. ITS for fungal barcoding. For ITS regions e.g. ITS1 or ITS2, it is recommended to use the `--illumina_pe_its` parameter for paired-end Illumina reads, which disables fixed-length read truncation. Also consider adjusting `--truncq` to a value higher than the default value of 2 if you find that a high proportion of reads is excluded by DADA2 filtering.
 
+#### ITS extraction tool
+
+By default, [ITSx](https://microbiology.se/software/itsx/) is used for ITS region extraction (`--its_extractor itsx`). As an alternative, [ITSxRust](https://github.com/ayobi/ITSxRust) can be used, which is optimized for long-read amplicon data from Oxford Nanopore and PacBio HiFi platforms:
+
+```bash
+--its_extractor itsxrust
+```
+
+ITSxRust automatically selects platform-appropriate presets: `--preset ont` by default, or `--preset hifi` when `--pacbio` is set. The required HMM profile is bundled in the container and Bioconda package, so no additional files need to be provided.
+
+ITSxRust produces the same output files as ITSx and is fully compatible with all downstream steps including `--cut_its` and `--its_partial`.
+
+#### Decontamination
+
+[Decontam](https://doi.org/10.1186/s40168-018-0605-2) performs simple statistical identification and removal of contaminant sequences. Decontam is most useful with low biomass samples, where contamination removal is particularly impactful. The limitations and applications of Decontam have been extensively described in its [publication](https://doi.org/10.1186/s40168-018-0605-2) and [R package description](https://benjjneb.github.io/decontam/vignettes/decontam_intro.html). [Fierer et al. 2025](https://doi.org/10.1038/s41564-025-02035-2) compare concepts and methods for decontamiation including Decontam. Next, a brief explanation on how to use Decontam in the context of nf-core/ampliseq.
+
+Decontam is applied to the abundance table with information from the sample sheet after ASV generation (or OTU clustering, if chosen), before ASV filtering by barrnap, length, and such. Required for using Decontam is at least one of DNA quantitation data and negative controls, that can be added in the sample sheet in optional columns `quant_reading` and `control`. Whenever at least one of those two columns is supplied, Decontam is applied to the data and the results are stored, however without further consequences. Filtering for downstream analysis is only applied when additionally specifying `--decontam decotaminate` or `--decontam notcontaminant`.
+
+Decontam has two methods, the "frequency" method based on the distribution of the frequency of each sequence feature as a function of the input DNA concentration (sample sheet column `quant_reading`) and the "prevalence" method based on the prevalence (presence/absence across samples) of each sequence feature in true positive samples compared to the prevalence in negative controls (sample sheet column `control`). DNA quantitation data for the "frequency" method refers to DNA extraction concentration or to sequencing library input, optimally as standardized fluorescent intensities. The model requires a gradient of concentrations to detect contaminants that are more frequent in samples with low concentration reading than in samples with high quantification reading. The "frequency" method model assumptions are violated if microbial biomass systematically differs between sample groups. For the "prevalence" method, at least 3 negative controls are required, a minimum of 5 is recommended. The "prevalence" method has reduced sensitivity to detect contaminants present only in very few samples or with fewer negative controls.
+
+Furthermore, Decontam tests two hypothesis, whether features [_are_ contaminants](https://rdrr.io/bioc/decontam/man/isContaminant.html) or are [_not_ contaminants](https://rdrr.io/bioc/decontam/man/isNotContaminant.html) (called "non-contaminants"). The former assumes all features are not contaminants and requires sufficient positive proof a feature is a "contaminant" before calling it so. The latter assumes that features are contaminants and requires sufficient proof a feature is not a contaminant before calling it "non-contaminant". Contaminants are identified based on the "frequency" method (sample sheet column `quant_reading`) or the "prevalence" method (sample sheet column `control`), or a combination of both, adjustable with `--decontam_decontaminate_method` (default: `auto` that chooses `frequency`, `prevalence` or `combined` based on the input). Non-contaminants are identified solely based on the "prevalence" method (sample sheet column `control`). The p-value thresholds can be adjusted with `--decontam_decontaminate_threshold` and `--decontam_notcontaminant_threshold`.
+
+By default, the information of contaminants or non-contaminants are not further used. However, contaminants are removed with `--decontam decotaminate` from subsequent analysis or only non-contaminants are retained with `--decontam notcontaminant`.
+
 ### Taxonomic classification
 
 Taxonomic classification of ASVs can be performed with tools DADA2, SINTAX, Kraken2 or QIIME2. Multiple taxonomic reference databases are pre-configured for those tools, but user supplied databases are also supported for some tools. Alternatively (or in addition), phylogenetic placement can be used to extract taxonomic classifications.
@@ -224,22 +265,22 @@ Default setting for taxonomic classification is DADA2 with the SILVA reference t
 
 Pre-configured reference taxonomy databases are:
 
-| Database key | DADA2 | SINTAX | Kraken2 | QIIME2 | Target genes                                  |
-| ------------ | ----- | ------ | ------- | ------ | --------------------------------------------- |
-| silva        | +¹    | -      | +       | +      | 16S rRNA                                      |
-| gtdb         | +²    | -      | -       | -      | 16S rRNA                                      |
-| sbdi-gtdb    | +     | -      | -       | -      | 16S rRNA                                      |
-| rdp          | +     | -      | +       | -      | 16S rRNA                                      |
-| greengenes   | -     | -      | +       | (+)³   | 16S rRNA                                      |
-| greengenes2  | +     | -      | -       | +      | 16S rRNA                                      |
-| pr2          | +     | -      | -       | -      | 18S rRNA                                      |
-| unite-fungi  | +     | +      | -       | -      | eukaryotic nuclear ribosomal ITS region       |
-| unite-alleuk | +     | +      | -       | -      | eukaryotic nuclear ribosomal ITS region       |
-| coidb        | +     | +      | -       | -      | eukaryotic Cytochrome Oxidase I (COI)         |
-| midori2-co1  | +     | -      | -       | -      | eukaryotic Cytochrome Oxidase I (COI)         |
-| phytoref     | +     | -      | -       | -      | eukaryotic plastid 16S rRNA                   |
-| zehr-nifh    | +     | -      | -       | -      | Nitrogenase iron protein NifH                 |
-| standard     | -     | -      | +       | -      | any in genomes of archaea, bacteria, viruses⁴ |
+| Database key | DADA2 | SINTAX | Kraken2 | QIIME2 | Phyloplace | Target genes                                  |
+| ------------ | ----- | ------ | ------- | ------ | ---------- | --------------------------------------------- |
+| silva        | +¹    | -      | +       | +      | -          | 16S rRNA                                      |
+| gtdb         | +²    | -      | -       | -      | -          | 16S rRNA                                      |
+| sbdi-gtdb    | +     | -      | -       | -      | +          | 16S rRNA                                      |
+| rdp          | +     | -      | +       | -      | -          | 16S rRNA                                      |
+| greengenes   | -     | -      | +       | (+)³   | -          | 16S rRNA                                      |
+| greengenes2  | +     | -      | -       | +      | -          | 16S rRNA                                      |
+| pr2          | +     | -      | -       | -      | -          | 18S rRNA                                      |
+| unite-fungi  | +     | +      | -       | -      | -          | eukaryotic nuclear ribosomal ITS region       |
+| unite-alleuk | +     | +      | -       | -      | -          | eukaryotic nuclear ribosomal ITS region       |
+| coidb        | +     | +      | -       | -      | -          | eukaryotic Cytochrome Oxidase I (COI)         |
+| midori2-co1  | +     | -      | -       | -      | -          | eukaryotic Cytochrome Oxidase I (COI)         |
+| phytoref     | +     | -      | -       | -      | -          | eukaryotic plastid 16S rRNA                   |
+| zehr-nifh    | +     | -      | -       | -      | -          | Nitrogenase iron protein NifH                 |
+| standard     | -     | -      | +       | -      | -          | any in genomes of archaea, bacteria, viruses⁴ |
 
 ¹: As of Silva version 138 optimized for classification of Bacteria and Archaea, not suitable for Eukaryotes; ²[`--dada_taxonomy_rc`](https://nf-co.re/ampliseq/parameters#dada_taxonomy_rc) is recommended; ³: de-replicated at 85%, only for testing purposes; ⁴: quality of results might vary
 
@@ -248,9 +289,13 @@ Special features of taxonomic classification tools:
 - DADA2's reference taxonomy databases **can** have regions matching the amplicon extracted with primer sequences.
 - Kraken2 is very fast and can use large databases containing complete genomes.
 - QIIME2's reference taxonomy databases will have regions matching the amplicon extracted with primer sequences.
-- DADA2, Kraken2, and QIIME2 have specific parameters to accept custom databases (but theoretically possible with all classifiers)
+- DADA2, Kraken2, QIIME2, and SINTAX have specific parameters to accept custom databases (but theoretically possible with all classifiers).
+- Phyloplace assigns taxonomy by placement on reference phylogenies provided with the database, see [Placement in database provided phylogenies](#placement-in-database-provided-phylogenies).
 
 Parameter guidance is given in [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#taxonomic-assignment). Citations are listed in [`CITATIONS.md`](CITATIONS.md).
+
+> [!TIP]
+> Taxonomic reference databases can be stored and shared locally with [`--ref_taxonomy_storage`](https://nf-co.re/ampliseq/parameters/#ref_taxonomy_storage). That way, remote files will be downloaded only if they are not available in the storage directory.
 
 ### Multiple region analysis with Sidle
 
@@ -258,7 +303,7 @@ Instead of relying on one short amplicon, scaffolding multiple regions along a r
 
 For example, multiple variable regions of the 16S rRNA gene were sequenced with various primers and need to be unified. This leads to one unified abundance and taxonomy profile over all variable regions. However, ASV sequences are only available separately, there is no reconstruction of complete de-novo sequences feasible.
 
-Information about sequencing data via [`--input`](#samplesheet-input), region primers length information via [`--multiregion`](https://nf-co.re/ampliseq/parameters#multiregion), and a taxonomic database via [`--sidle_ref_taxonomy`](https://nf-co.re/ampliseq/parameters#sidle_ref_taxonomy) or [`--sidle_ref_tax_custom`](https://nf-co.re/ampliseq/parameters#sidle_ref_tax_custom) with [`--sidle_ref_seq_custom`](https://nf-co.re/ampliseq/parameters#sidle_ref_seq_custom) is required.
+Information about sequencing data via [`--input`](#sample-sheet-input), region primers length information via [`--multiregion`](https://nf-co.re/ampliseq/parameters#multiregion), and a taxonomic database via [`--sidle_ref_taxonomy`](https://nf-co.re/ampliseq/parameters#sidle_ref_taxonomy) or [`--sidle_ref_tax_custom`](https://nf-co.re/ampliseq/parameters#sidle_ref_tax_custom) with [`--sidle_ref_seq_custom`](https://nf-co.re/ampliseq/parameters#sidle_ref_seq_custom) is required.
 
 ```bash
 --input "samplesheet_multiregion.tsv"  --multiregion "regions_multiregion.tsv" --sidle_ref_taxonomy "silva=128"
@@ -283,9 +328,15 @@ For example, the tab-separated `regions_multiregion.tsv` may contain:
 | region4 | GGAGCATGTGGWTTAATTCGA | CGTTGCGGGACTTAACCC   | 115           |
 | region5 | GGAGGAAGGTGGGGATGAC   | AAGGCCCGGGAACGTATT   | 150           |
 
+> [!WARNING]
+> Several downstream filtering options are not allowed or disabled when analysing multi region data. Disabled functions are any ASV postprocessing/filtering options that require sequences and also no sample subsetting using the metadata sheet is available (i.e. if provided, the metadata sheet has to include all samples that pass preprocessing).
+
 ### Metadata
 
 Metadata is optional, but for performing downstream analysis such as barplots, diversity indices or differential abundance testing, a metadata file is essential.
+
+> [!TIP]
+> The metadata defines what samples are entering downstream analysis. For example, when having negative controls in the sample sheet, those can be omitted in the metadata sheet and will not enter downstream analysis with QIIME2.
 
 ```bash
 --metadata "path/to/metadata.tsv"
@@ -315,9 +366,50 @@ The columns which are to be assessed can be specified by `--metadata_category`. 
 
 Differential abundance analysis for relative abundance from microbial community analysis are plagued by multiple issues that aren't fully solved yet. But some approaches seem promising, for example Analysis of Composition of Microbiomes with Bias Correction ([ANCOM-BC](https://pubmed.ncbi.nlm.nih.gov/32665548/)). [ANCOM](https://pubmed.ncbi.nlm.nih.gov/26028277/) and ANCOM-BC are integrated into the pipeline, but only executed on request via `--ancom` and `--ancombc`, more details in the [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#differential-abundance-analysis).
 
+### Phylogenetic placement
+
+The pipeline can perform phylogenetic placement of ASV sequences in reference trees using [EPA-NG](https://github.com/pierrebarbera/epa-ng) using the same code as [nf-core/phyloplace](https://nf-co.re/phyloplace).
+This can be done either a single reference for all ASV sequences, or multiple references, see below.
+
+#### Single reference phylogenetic placement
+
+Adding the parameters `--pplace_tree`, `--place_aln`, `--pplace_alnmethod`, `--place_model`, `--pplace_taxonomy` and `--pplace_name` will perform phylogenetic placement of ASV sequences in the specified reference phylogeny.
+See the [nf-core/ampliseq parameter documentation](https://nf-co.re/ampliseq/parameters) for more information about the parameters.
+
+#### Multiple reference phylogenetic placement
+
+The pipeline can select reference trees for placement from a set by first running [HMMER](http://hmmer.org/).
+The set is provided with a spreadsheet passed to the [`--pplace_sheet`](https://nf-co.re/ampliseq/parameters#pplace_sheet), see example below.
+Each row in the spreadsheet needs to specify at least `target` and `hmm`.
+For each ASV sequence, the best matching hmm profile decides which reference phylogeny, if any, will be used for placement.
+When there's a `refseqfile`, `refphylogeny`, `model` and `taxonomy`, best matching ASV sequences will be placed in the specified phylogeny.
+If there is no reference tree information, ASV sequences matching these hmm profiles best will not be placed.
+The latter can be used to attract false positive sequences away from being placed in any of the trees.
+For hmm files with multiple profiles, the `extract_hmm` specifies which profile to use.
+Finally, you can specify `min_bitscore` to set a minimum score for a sequence to be included in further processing.
+
+> [!NOTE]
+> For different reasons, taxonomies created by phylogenetic placement in multiple reference trees are currently not used as taxonomy for downstream analyses such as QIIME2.
+
+```csv title="pplace_sheet.csv"
+target,alignmethod,hmm,extract_hmm,refseqfile,refphylogeny,model,taxonomy
+archaea16s,clustalo,https://raw.githubusercontent.com/tseemann/barrnap/master/db/arc.hmm,16S_rRNA,archaea.newick,archaea.alnfna,GTR+F+I+G4,archaea.taxonomy.tsv
+bacteria16s,clustalo,https://raw.githubusercontent.com/tseemann/barrnap/master/db/bac.hmm,16S_rRNA,bacteria.newick,bacteria.alnfna,GTR+F+I+G4,bacteria.taxonomy.tsv
+euk18s,clustalo,https://raw.githubusercontent.com/tseemann/barrnap/master/db/euk.hmm,18S_rRNA,,,,
+```
+
+#### Placement in database-provided phylogenies
+
+Reference databases for taxonomy can provide reference phylogenies for placement (currently only SBDI-GTDB from release R10-RS226-2).
+This is not run by default since it takes quite a lot of resources.
+If you want to enable this, set `--run_pplace`.
+
+> [!NOTE]
+> Since phylogenetic placement requires a lot of memory when the reference phylogeny is large, we have set the minimum memory for two processes to 60 GiB in order to work with the GTDB bacterial tree. If your tree is smaller, the setting can be lowered for the `EPANG_PLACE` and `GAPPA_ASSIGN` processes, see [resource requests](#resource-requests) below.
+
 ### Updating the pipeline
 
-When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
+When you run the below command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
 
 ```bash
 nextflow pull nf-core/ampliseq
@@ -327,7 +419,7 @@ nextflow pull nf-core/ampliseq
 
 It is a good idea to specify the pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
 
-First, go to the [nf-core/ampliseq releases page](https://github.com/nf-core/ampliseq/releases) and find the latest pipeline version - numeric only (eg. `2.15.0`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 2.15.0`. Of course, you can switch to another version by changing the number after the `-r` flag.
+First, go to the [nf-core/ampliseq releases page](https://github.com/nf-core/ampliseq/releases) and find the latest pipeline version - numeric only (eg. `2.17.0`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 2.17.0`. Of course, you can switch to another version by changing the number after the `-r` flag.
 
 This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future. For example, at the bottom of the MultiQC reports.
 

@@ -1,6 +1,6 @@
 process EPANG_PLACE {
     tag "$meta.id"
-    label 'process_high'
+    label 'process_medium_memory'
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -45,6 +45,18 @@ process EPANG_PLACE {
         cp epa_result.jplace.gz ${prefix}.epa_result.jplace.gz
     fi
     [ -e epa_info.log ]      && cp epa_info.log ${prefix}.epa_info.log
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        epang: \$(echo \$(epa-ng --version 2>&1) | sed 's/^EPA-ng v//')
+    END_VERSIONS
+    """
+
+    stub:
+    def prefix     = task.ext.prefix ?: "${meta.id}"
+    if ( binaryfile && ( referencealn || referencetree ) ) error "[EPANG] Cannot supply both binary and reference MSA or reference tree. Check input"
+    """
+    touch ${prefix}.epa_info.log
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

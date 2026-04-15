@@ -27,6 +27,11 @@ process SUMMARY_REPORT  {
     path(dada_stats)
     val(mergepairs_strategy)
     path(vsearch_cluster)
+    val(decontam)
+    path(decontaminated_counts)
+    path(notcontaminant_counts)
+    path(decontaminated_details)
+    path(notcontaminant_details)
     path(barrnap_summary)
     path(filter_ssu_stats)
     path(filter_ssu_asv)
@@ -104,6 +109,8 @@ process SUMMARY_REPORT  {
         dada_stats ? "dada_stats_path='$dada_stats'" : "",
         "mergepairs_strategy='$mergepairs_strategy'",
         vsearch_cluster ? "vsearch_cluster='$vsearch_cluster',vsearch_cluster_id='$params.vsearch_cluster_id'" : "",
+        decontaminated_counts ? "decontam='$decontam',decontaminated_counts='$decontaminated_counts',decontaminated_details='$decontaminated_details'" : "",
+        notcontaminant_counts ? "notcontaminant_counts='$notcontaminant_counts',notcontaminant_details='$notcontaminant_details'" : "",
         params.skip_barrnap ? "" : "path_barrnap_sum='$barrnap_summary'",
         filter_ssu_stats ? "filter_ssu_stats='$filter_ssu_stats'" : "",
         filter_ssu_asv ? "filter_ssu_asv='$filter_ssu_asv',filter_ssu='$params.filter_ssu'" : "",
@@ -118,7 +125,8 @@ process SUMMARY_REPORT  {
         dada2_tax ? "dada2_taxonomy='$dada2_tax'" : "",
         dada2_tax && !params.dada_ref_tax_custom ? "dada2_ref_tax_title='${params.dada_ref_databases[params.dada_ref_taxonomy]["title"]}',dada2_ref_tax_file='${params.dada_ref_databases[params.dada_ref_taxonomy]["file"]}',dada2_ref_tax_citation='${params.dada_ref_databases[params.dada_ref_taxonomy]["citation"]}'" : "",
         cut_dada_ref_taxonomy ? "cut_dada_ref_taxonomy='$cut_dada_ref_taxonomy'" : "",
-        sintax_tax ? "sintax_taxonomy='$sintax_tax',sintax_ref_tax_title='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["title"]}',sintax_ref_tax_file='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["file"]}',sintax_ref_tax_citation='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["citation"]}'" : "",
+        sintax_tax && !params.sintax_ref_tax_custom ? "sintax_taxonomy='$sintax_tax',sintax_ref_tax_title='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["title"]}',sintax_ref_tax_file='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["file"]}',sintax_ref_tax_citation='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["citation"]}'" : "",
+        sintax_tax && params.sintax_ref_tax_custom ? "sintax_taxonomy='$sintax_tax',sintax_ref_tax_title='User-supplied SINTAX reference',sintax_ref_tax_file='${params.sintax_ref_tax_custom}',sintax_ref_tax_citation='Not specified'" : "",
         kraken2_tax ? "kraken2_taxonomy='$kraken2_tax',kraken2_confidence='$params.kraken2_confidence'" : "",
         kraken2_tax && !params.kraken2_ref_tax_custom ? "kraken2_ref_tax_title='${params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["title"]}',kraken2_ref_tax_file='${params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["file"]}',kraken2_ref_tax_citation='${params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["citation"]}'" : "",
         pplace_tax ? "pplace_taxonomy='$pplace_tax',pplace_heattree='$pplace_heattree'" : "",

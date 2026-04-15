@@ -15,6 +15,7 @@ process QIIME2_DIVERSITY_CORE {
     path("diversity_core/*_pcoa_results.qza")   , emit: pcoa
     path("diversity_core/*_vector.qza")         , emit: vector
     path("diversity_core/*_distance_matrix.qza"), emit: distance
+    path("*_distance_matrix.tsv")               , emit: distance_tsv
     path "versions.yml"                         , emit: versions
     path("*rarefaction.txt")                    , emit: depth
 
@@ -50,6 +51,16 @@ process QIIME2_DIVERSITY_CORE {
         --output-dir diversity_core \\
         --p-n-jobs-or-threads ${task.cpus} \\
         --verbose
+
+    # export matrix files to tsv
+    qiime tools export --input-path diversity_core/bray_curtis_distance_matrix.qza --output-path matrix/
+    mv matrix/distance-matrix.tsv bray_curtis_distance_matrix.tsv
+    qiime tools export --input-path diversity_core/jaccard_distance_matrix.qza --output-path matrix/
+    mv matrix/distance-matrix.tsv jaccard_distance_matrix.tsv
+    qiime tools export --input-path diversity_core/unweighted_unifrac_distance_matrix.qza --output-path matrix/
+    mv matrix/distance-matrix.tsv unweighted_unifrac_distance_matrix.tsv
+    qiime tools export --input-path diversity_core/weighted_unifrac_distance_matrix.qza --output-path matrix/
+    mv matrix/distance-matrix.tsv weighted_unifrac_distance_matrix.tsv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

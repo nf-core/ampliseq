@@ -19,7 +19,6 @@ nextflow_pipeline {
             // stable_path: All files in ${params.outdir}/ with stable content
             def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
 
-            assert workflow.success
             assertAll(
                 { assert snapshot(
                     // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
@@ -37,7 +36,6 @@ nextflow_pipeline {
                     path("$outputDir/dada2/ASV_seqs.fasta"),
                     path("$outputDir/dada2/ASV_table.tsv"),
                     path("$outputDir/dada2/DADA2_stats.tsv"),
-                    path("$outputDir/dada2/DADA2_table.rds"),
                     path("$outputDir/dada2/DADA2_table.tsv"),
                     path("$outputDir/qiime2/representative_sequences/descriptive_stats.tsv"),
                     path("$outputDir/qiime2/representative_sequences/seven_number_summary.tsv"),

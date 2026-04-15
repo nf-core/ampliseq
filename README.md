@@ -12,7 +12,7 @@
 [![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.1493841-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.1493841)[![Cite Publication](https://img.shields.io/badge/Cite%20Us!-Cite%20Publication-important?labelColor=000000)](https://doi.org/10.3389/fmicb.2020.550420)
 
 [![Nextflow](https://img.shields.io/badge/version-%E2%89%A525.04.8-green?style=flat&logo=nextflow&logoColor=white&color=%230DC09D&link=https%3A%2F%2Fnextflow.io)](https://www.nextflow.io/)
-[![nf-core template version](https://img.shields.io/badge/nf--core_template-3.5.1-green?style=flat&logo=nfcore&logoColor=white&color=%2324B064&link=https%3A%2F%2Fnf-co.re)](https://github.com/nf-core/tools/releases/tag/3.5.1)
+[![nf-core template version](https://img.shields.io/badge/nf--core_template-3.5.2-green?style=flat&logo=nfcore&logoColor=white&color=%2324B064&link=https%3A%2F%2Fnf-co.re)](https://github.com/nf-core/tools/releases/tag/3.5.2)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
@@ -40,6 +40,7 @@ By default, the pipeline currently performs the following:
 - Trimming of reads ([Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200))
 - Infer Amplicon Sequence Variants (ASVs) ([DADA2](https://doi.org/10.1038/nmeth.3869))
 - Optional post-clustering with [VSEARCH](https://github.com/torognes/vsearch)
+- Decontamination with [decontam](https://pubmed.ncbi.nlm.nih.gov/30558668/), if any controls or quantification information is given
 - Predict whether ASVs are ribosomal RNA sequences ([Barrnap](https://github.com/tseemann/barrnap))
 - Phylogenetic placement ([EPA-NG](https://github.com/Pbdas/epa-ng))
 - Taxonomical classification using DADA2; alternatives are [SINTAX](https://doi.org/10.1101/074161), [Kraken2](https://doi.org/10.1186/s13059-019-1891-0), and [QIIME2](https://www.nature.com/articles/s41587-019-0209-9)
@@ -53,16 +54,16 @@ By default, the pipeline currently performs the following:
 > [!NOTE]
 > If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.
 
-First, you need to know whether the sequencing files at hand are expected to contain primer sequences (usually yes) and if yes, what primer sequences. In the example below, the paired end sequencing data was produced with 515f (GTGYCAGCMGCCGCGGTAA) and 806r (GGACTACNVGGGTWTCTAAT) primers of the V4 region of the 16S rRNA gene. Please note, that those sequences should not contain any sequencing adapter sequences, only the sequence that matches the biological amplicon.
+First, you need to know whether the sequencing files at hand are expected to contain primer sequences (usually yes) and if yes, what primer sequences. In the example below, the paired end sequencing data was produced with 515f (GTGYCAGCMGCCGCGGTAA) and 806r (GGACTACNVGGGTWTCTAAT) primers of the V4 region of the 16S rRNA gene. Please note, that those primer sequences should not contain any sequencing adapter sequences, only the sequence that matches the biological amplicon.
 
-Next, the data needs to be organized in a folder, here `data`, or detailed in a samplesheet (see [input documentation](https://nf-co.re/ampliseq/usage#input-specifications)).
+Next, the sequencing data needs to be detailed in a sample sheet or organized in a folder (see [input documentation](https://nf-co.re/ampliseq/usage#input-specifications)).
 
 Now, you can run the pipeline using:
 
 ```bash
 nextflow run nf-core/ampliseq \
    -profile <docker/singularity/.../institute> \
-   --input "data" \
+   --input "samplesheet.tsv" \
    --FW_primer "GTGYCAGCMGCCGCGGTAA" \
    --RV_primer "GGACTACNVGGGTWTCTAAT" \
    --outdir <OUTDIR>
@@ -72,7 +73,7 @@ nextflow run nf-core/ampliseq \
 > Adding metadata will considerably increase the output, see [metadata documentation](https://nf-co.re/ampliseq/usage#metadata).
 
 > [!TIP]
-> By default the taxonomic assignment will be performed with DADA2 on SILVA database, but there are various tools and databases readily available, see [taxonomic classification documentation](https://nf-co.re/ampliseq/usage#taxonomic-classification). Differential abundance testing with ([ANCOM](https://www.ncbi.nlm.nih.gov/pubmed/26028277)) or ([ANCOM-BC](https://www.ncbi.nlm.nih.gov/pubmed/32665548)) when opting in.
+> By default the taxonomic assignment will be performed with DADA2 on SILVA database, but there are various tools and databases readily available, see [taxonomic classification documentation](https://nf-co.re/ampliseq/usage#taxonomic-classification).
 
 > [!WARNING]
 > Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_; see [docs](https://nf-co.re/docs/usage/getting_started/configuration#custom-configuration-files).
@@ -87,7 +88,7 @@ For more details about the output files and reports, please refer to the
 
 ## Credits
 
-nf-core/ampliseq was originally written by Daniel Straub ([@d4straub](https://github.com/d4straub)) and Alexander Peltzer ([@apeltzer](https://github.com/apeltzer)) for use at the [Quantitative Biology Center (QBiC)](https://www.info.qbic.uni-tuebingen.de/) and [Microbial Ecology, Center for Applied Geosciences](http://www.uni-tuebingen.de/de/104325), part of Eberhard Karls Universität Tübingen (Germany). Daniel Lundin [@erikrikarddaniel](https://github.com/erikrikarddaniel) ([Linnaeus University, Sweden](https://lnu.se/)) joined before pipeline release 2.0.0 and helped to improve the pipeline considerably.
+nf-core/ampliseq was originally written by Daniel Straub ([@d4straub](https://github.com/d4straub)) and Alexander Peltzer ([@apeltzer](https://github.com/apeltzer)) for use at the [Quantitative Biology Center (QBiC)](https://www.info.qbic.uni-tuebingen.de/) and Microbial Ecology, Center for Applied Geosciences, part of [Eberhard Karls Universität Tübingen (Germany)](https://uni-tuebingen.de/). Daniel Lundin [@erikrikarddaniel](https://github.com/erikrikarddaniel) ([Linnaeus University, Sweden](https://lnu.se/)) joined before pipeline release 2.0.0 and helped to improve the pipeline considerably.
 
 We thank the following people for their extensive assistance in the development of this pipeline (in alphabetical order):
 

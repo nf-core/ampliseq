@@ -18,41 +18,44 @@
                     "python": "Python 3.8.3"
                 },
                 "DADA2_DENOISING": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_ERR": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_FILTNTRIM": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_MERGE": {
-                    "R": "4.1.1",
-                    "dada2": "1.22.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_QUALITY1": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0",
-                    "ShortRead": "1.64.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0",
+                    "ShortRead": "1.68.0"
                 },
                 "DADA2_QUALITY2": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0",
-                    "ShortRead": "1.64.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0",
+                    "ShortRead": "1.68.0"
                 },
                 "DADA2_RMCHIMERA": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_STATS": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "FASTQC": {
                     "fastqc": "0.12.1"
+                },
+                "FILTER_SAMPLES": {
+                    "R": "4.2.1"
                 },
                 "FILTER_STATS": {
                     "python": "3.9.1",
@@ -68,16 +71,16 @@
                     "ITSx": "1.1.3"
                 },
                 "MERGE_STATS_FILTERTAXA": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "MERGE_STATS_STD": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "METADATA_ALL": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "METADATA_PAIRWISE": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "PHYLOSEQ": {
                     "R": "4.4.2",
@@ -157,7 +160,7 @@
                     "vsearch": "2.21.1"
                 },
                 "Workflow": {
-                    "nf-core/ampliseq": "v2.16.1"
+                    "nf-core/ampliseq": "v2.17.0"
                 }
             },
             [
@@ -973,6 +976,7 @@
                 "qiime2/diversity/beta_diversity/adonis/weighted_unifrac_distance_matrix-var2/q2templateassets/js/child.js",
                 "qiime2/diversity/beta_diversity/adonis/weighted_unifrac_distance_matrix-var2/q2templateassets/js/jquery-3.2.0.min.js",
                 "qiime2/diversity/beta_diversity/adonis/weighted_unifrac_distance_matrix-var2/q2templateassets/js/parent.js",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix.tsv",
                 "qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA",
                 "qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA/css",
                 "qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA/css/emperor.css",
@@ -1089,6 +1093,7 @@
                 "qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA/vendor/js/three.js-plugins/SelectionHelper.js",
                 "qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA/vendor/js/three.min.js",
                 "qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA/vendor/js/underscore-min.js",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix.tsv",
                 "qiime2/diversity/beta_diversity/jaccard_pcoa_results-PCoA",
                 "qiime2/diversity/beta_diversity/jaccard_pcoa_results-PCoA/css",
                 "qiime2/diversity/beta_diversity/jaccard_pcoa_results-PCoA/css/emperor.css",
@@ -1205,6 +1210,7 @@
                 "qiime2/diversity/beta_diversity/jaccard_pcoa_results-PCoA/vendor/js/three.js-plugins/SelectionHelper.js",
                 "qiime2/diversity/beta_diversity/jaccard_pcoa_results-PCoA/vendor/js/three.min.js",
                 "qiime2/diversity/beta_diversity/jaccard_pcoa_results-PCoA/vendor/js/underscore-min.js",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix.tsv",
                 "qiime2/diversity/beta_diversity/unweighted_unifrac_pcoa_results-PCoA",
                 "qiime2/diversity/beta_diversity/unweighted_unifrac_pcoa_results-PCoA/css",
                 "qiime2/diversity/beta_diversity/unweighted_unifrac_pcoa_results-PCoA/css/emperor.css",
@@ -1321,6 +1327,7 @@
                 "qiime2/diversity/beta_diversity/unweighted_unifrac_pcoa_results-PCoA/vendor/js/three.js-plugins/SelectionHelper.js",
                 "qiime2/diversity/beta_diversity/unweighted_unifrac_pcoa_results-PCoA/vendor/js/three.min.js",
                 "qiime2/diversity/beta_diversity/unweighted_unifrac_pcoa_results-PCoA/vendor/js/underscore-min.js",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix.tsv",
                 "qiime2/diversity/beta_diversity/weighted_unifrac_pcoa_results-PCoA",
                 "qiime2/diversity/beta_diversity/weighted_unifrac_pcoa_results-PCoA/css",
                 "qiime2/diversity/beta_diversity/weighted_unifrac_pcoa_results-PCoA/css/emperor.css",
@@ -1479,11 +1486,10 @@
             "rrna.euk.gff:md5,8ae155cbe43335084a0c9a2ccd655cb3",
             "rrna.mito.gff:md5,df19e1b84ba6f691d20c72b397c88abf",
             "cutadapt_summary.tsv:md5,d185ccd02c22b859fcaf2e5158ce70c6",
-            "ASV_seqs.fasta:md5,a2632b1cc533d290db19ceedaf350dcd",
-            "ASV_table.tsv:md5,6de5507a0fcb0c9b03f8fec0270440be",
+            "ASV_seqs.fasta:md5,91fd58a4148eb3f9320f60e266b87e38",
+            "ASV_table.tsv:md5,51e15e9cb15087ee91ff8691c451daf7",
             "DADA2_stats.tsv:md5,4bbde0bbf579f60e692bd32d14034f0d",
-            "DADA2_table.rds:md5,a36558c04a7b21050bb6e479b09bd483",
-            "DADA2_table.tsv:md5,7e7aab7ae9a3b20fb08f3fe7f8b0430c",
+            "DADA2_table.tsv:md5,a4f790561f01ed078ed95a505295b528",
             "descriptive_stats.tsv:md5,f857c6de0bcb1080a0d6fabd7e87c283",
             "seven_number_summary.tsv:md5,ef0fd839c0f691c0bbf478de3e724d34",
             "Samplesheet_pacbio_ITS.tsv:md5,905b0fc4850149d6457c9da7076c2c2d",

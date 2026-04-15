@@ -21,46 +21,49 @@
                     "cutadapt": 5.2
                 },
                 "DADA2_DENOISING": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_ERR": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_FILTNTRIM": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_MERGE": {
-                    "R": "4.1.1",
-                    "dada2": "1.22.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_QUALITY1": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0",
-                    "ShortRead": "1.64.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0",
+                    "ShortRead": "1.68.0"
                 },
                 "DADA2_QUALITY2": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0",
-                    "ShortRead": "1.64.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0",
+                    "ShortRead": "1.68.0"
                 },
                 "DADA2_RMCHIMERA": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_STATS": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_TAXONOMY": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "FILTER_LEN_ASV": {
                     "R": "4.0.3",
                     "Biostrings": "2.58.0"
+                },
+                "FILTER_SAMPLES": {
+                    "R": "4.2.1"
                 },
                 "FILTER_SSU": {
                     "R": "4.0.3",
@@ -71,19 +74,19 @@
                     "pandas": "1.1.5"
                 },
                 "MERGE_STATS_FILTERSSU": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "MERGE_STATS_FILTERTAXA": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "MERGE_STATS_STD": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "METADATA_ALL": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "METADATA_PAIRWISE": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "PHYLOSEQ": {
                     "R": "4.4.2",
@@ -96,9 +99,6 @@
                     "qiime2": "2024.10.1"
                 },
                 "QIIME2_DIVERSITY_ALPHA": {
-                    "qiime2": "2024.10.1"
-                },
-                "QIIME2_DIVERSITY_BETA": {
                     "qiime2": "2024.10.1"
                 },
                 "QIIME2_DIVERSITY_BETAORD": {
@@ -143,7 +143,7 @@
                     "pandas": "1.1.5"
                 },
                 "Workflow": {
-                    "nf-core/ampliseq": "v2.16.1"
+                    "nf-core/ampliseq": "v2.17.0"
                 }
             },
             [
@@ -334,7 +334,7 @@
                 "qiime2/barplot/q2templateassets/js/jquery-3.2.0.min.js",
                 "qiime2/barplot/q2templateassets/js/parent.js",
                 "qiime2/diversity",
-                "qiime2/diversity/WARNING The sampling depth of 500 seems too small for rarefaction.txt",
+                "qiime2/diversity/WARNING The sampling depth of 581 seems too small for rarefaction.txt",
                 "qiime2/diversity/alpha_diversity",
                 "qiime2/diversity/alpha_diversity/evenness_vector",
                 "qiime2/diversity/alpha_diversity/evenness_vector/column-treatment1.jsonp",
@@ -449,33 +449,7 @@
                 "qiime2/diversity/alpha_diversity/shannon_vector/q2templateassets/js/jquery-3.2.0.min.js",
                 "qiime2/diversity/alpha_diversity/shannon_vector/q2templateassets/js/parent.js",
                 "qiime2/diversity/beta_diversity",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/a-boxplots.pdf",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/a-boxplots.png",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/b-boxplots.pdf",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/b-boxplots.png",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/index.html",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/permanova-pairwise.csv",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/q2templateassets",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/q2templateassets/css",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/q2templateassets/css/base-template.css",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/q2templateassets/css/bootstrap.min.css",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/q2templateassets/css/normalize.css",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/q2templateassets/css/tab-parent.css",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/q2templateassets/fonts",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/q2templateassets/fonts/glyphicons-halflings-regular.eot",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/q2templateassets/fonts/glyphicons-halflings-regular.svg",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/q2templateassets/fonts/glyphicons-halflings-regular.ttf",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/q2templateassets/fonts/glyphicons-halflings-regular.woff",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/q2templateassets/fonts/glyphicons-halflings-regular.woff2",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/q2templateassets/img",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/q2templateassets/img/qiime2-rect-200.png",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/q2templateassets/js",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/q2templateassets/js/bootstrap.min.js",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/q2templateassets/js/child.js",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/q2templateassets/js/jquery-3.2.0.min.js",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/q2templateassets/js/parent.js",
-                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/raw_data.tsv",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix.tsv",
                 "qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA",
                 "qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA/css",
                 "qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA/css/emperor.css",
@@ -592,33 +566,7 @@
                 "qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA/vendor/js/three.js-plugins/SelectionHelper.js",
                 "qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA/vendor/js/three.min.js",
                 "qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA/vendor/js/underscore-min.js",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/a-boxplots.pdf",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/a-boxplots.png",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/b-boxplots.pdf",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/b-boxplots.png",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/index.html",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/permanova-pairwise.csv",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/q2templateassets",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/q2templateassets/css",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/q2templateassets/css/base-template.css",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/q2templateassets/css/bootstrap.min.css",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/q2templateassets/css/normalize.css",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/q2templateassets/css/tab-parent.css",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/q2templateassets/fonts",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/q2templateassets/fonts/glyphicons-halflings-regular.eot",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/q2templateassets/fonts/glyphicons-halflings-regular.svg",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/q2templateassets/fonts/glyphicons-halflings-regular.ttf",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/q2templateassets/fonts/glyphicons-halflings-regular.woff",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/q2templateassets/fonts/glyphicons-halflings-regular.woff2",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/q2templateassets/img",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/q2templateassets/img/qiime2-rect-200.png",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/q2templateassets/js",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/q2templateassets/js/bootstrap.min.js",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/q2templateassets/js/child.js",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/q2templateassets/js/jquery-3.2.0.min.js",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/q2templateassets/js/parent.js",
-                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/raw_data.tsv",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix.tsv",
                 "qiime2/diversity/beta_diversity/jaccard_pcoa_results-PCoA",
                 "qiime2/diversity/beta_diversity/jaccard_pcoa_results-PCoA/css",
                 "qiime2/diversity/beta_diversity/jaccard_pcoa_results-PCoA/css/emperor.css",
@@ -735,33 +683,7 @@
                 "qiime2/diversity/beta_diversity/jaccard_pcoa_results-PCoA/vendor/js/three.js-plugins/SelectionHelper.js",
                 "qiime2/diversity/beta_diversity/jaccard_pcoa_results-PCoA/vendor/js/three.min.js",
                 "qiime2/diversity/beta_diversity/jaccard_pcoa_results-PCoA/vendor/js/underscore-min.js",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/a-boxplots.pdf",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/a-boxplots.png",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/b-boxplots.pdf",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/b-boxplots.png",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/index.html",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/permanova-pairwise.csv",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/q2templateassets",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/q2templateassets/css",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/q2templateassets/css/base-template.css",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/q2templateassets/css/bootstrap.min.css",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/q2templateassets/css/normalize.css",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/q2templateassets/css/tab-parent.css",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/q2templateassets/fonts",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/q2templateassets/fonts/glyphicons-halflings-regular.eot",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/q2templateassets/fonts/glyphicons-halflings-regular.svg",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/q2templateassets/fonts/glyphicons-halflings-regular.ttf",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/q2templateassets/fonts/glyphicons-halflings-regular.woff",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/q2templateassets/fonts/glyphicons-halflings-regular.woff2",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/q2templateassets/img",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/q2templateassets/img/qiime2-rect-200.png",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/q2templateassets/js",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/q2templateassets/js/bootstrap.min.js",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/q2templateassets/js/child.js",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/q2templateassets/js/jquery-3.2.0.min.js",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/q2templateassets/js/parent.js",
-                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/raw_data.tsv",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix.tsv",
                 "qiime2/diversity/beta_diversity/unweighted_unifrac_pcoa_results-PCoA",
                 "qiime2/diversity/beta_diversity/unweighted_unifrac_pcoa_results-PCoA/css",
                 "qiime2/diversity/beta_diversity/unweighted_unifrac_pcoa_results-PCoA/css/emperor.css",
@@ -878,33 +800,7 @@
                 "qiime2/diversity/beta_diversity/unweighted_unifrac_pcoa_results-PCoA/vendor/js/three.js-plugins/SelectionHelper.js",
                 "qiime2/diversity/beta_diversity/unweighted_unifrac_pcoa_results-PCoA/vendor/js/three.min.js",
                 "qiime2/diversity/beta_diversity/unweighted_unifrac_pcoa_results-PCoA/vendor/js/underscore-min.js",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/a-boxplots.pdf",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/a-boxplots.png",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/b-boxplots.pdf",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/b-boxplots.png",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/index.html",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/permanova-pairwise.csv",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/q2templateassets",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/q2templateassets/css",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/q2templateassets/css/base-template.css",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/q2templateassets/css/bootstrap.min.css",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/q2templateassets/css/normalize.css",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/q2templateassets/css/tab-parent.css",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/q2templateassets/fonts",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/q2templateassets/fonts/glyphicons-halflings-regular.eot",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/q2templateassets/fonts/glyphicons-halflings-regular.svg",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/q2templateassets/fonts/glyphicons-halflings-regular.ttf",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/q2templateassets/fonts/glyphicons-halflings-regular.woff",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/q2templateassets/fonts/glyphicons-halflings-regular.woff2",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/q2templateassets/img",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/q2templateassets/img/qiime2-rect-200.png",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/q2templateassets/js",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/q2templateassets/js/bootstrap.min.js",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/q2templateassets/js/child.js",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/q2templateassets/js/jquery-3.2.0.min.js",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/q2templateassets/js/parent.js",
-                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/raw_data.tsv",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix.tsv",
                 "qiime2/diversity/beta_diversity/weighted_unifrac_pcoa_results-PCoA",
                 "qiime2/diversity/beta_diversity/weighted_unifrac_pcoa_results-PCoA/css",
                 "qiime2/diversity/beta_diversity/weighted_unifrac_pcoa_results-PCoA/css/emperor.css",
@@ -1055,7 +951,7 @@
                 "treesummarizedexperiment",
                 "treesummarizedexperiment/dada2_TreeSummarizedExperiment.rds"
             ],
-            "overall_summary.tsv:md5,8d55a3a54a5269cf372b1830d3d30d8e",
+            "overall_summary.tsv:md5,efdf360b6d3268a1cddc2b7e997a21f8",
             [
                 "ASV_len_filt.tsv:md5,a0a6de452999953191b5df29d0b3176a",
                 "ASV_len_orig.tsv:md5,09a300b31acf0eee817367dad5083f48",
@@ -1068,13 +964,12 @@
             "rrna.euk.gff:md5,c9bc1d9d8fb77dc19c95dee2d53840eb",
             "rrna.mito.gff:md5,df19e1b84ba6f691d20c72b397c88abf",
             "cutadapt_summary.tsv:md5,7450bede1c0242da8586845b90343ee0",
-            "ASV_seqs.fasta:md5,864c3e0dc9b4a7649beee0c8665dceb5",
-            "ASV_table.tsv:md5,2618251e597593e4d716dd9bed095539",
-            "DADA2_stats.tsv:md5,54a1ac8d6c5a3ff15f700c4b2dd40c86",
-            "DADA2_table.rds:md5,d095501019ce7ebccfa0eb801db1ed29",
-            "DADA2_table.tsv:md5,5c9fb0bfd70da165f0ce6a361bfe0b43",
-            "descriptive_stats.tsv:md5,666279e79355dd60a0f5c7c8bb77618d",
-            "seven_number_summary.tsv:md5,e087b59678e7e9ade87e0a7349f54e2e",
+            "ASV_seqs.fasta:md5,e3cdcd93bdce761152085a7c797763c3",
+            "ASV_table.tsv:md5,d3f7d98b8750dfb3b486b32cc5d32414",
+            "DADA2_stats.tsv:md5,b61a945febb806ed63729bcaa8ae0575",
+            "DADA2_table.tsv:md5,7ec2214a627e7492d31ac2672f82f94d",
+            "descriptive_stats.tsv:md5,c1ca796e1e20dc190dec562fab58f65b",
+            "seven_number_summary.tsv:md5,722dd2c505b2d525554416174d2fe1a2",
             "multiqc_general_stats.txt:md5,0d19dc786ef0263939502acd5caa29de",
             "multiqc_cutadapt.txt:md5,5660c331eff9d7ff9ac702804d3801f3"
         ],

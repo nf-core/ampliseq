@@ -8,6 +8,10 @@
                 "BARRNAPSUMMARY": {
                     "python": "Python 3.9.1"
                 },
+                "CLUSTALO_ALIGN": {
+                    "clustalo": "1.2.4",
+                    "pigz": 2.8
+                },
                 "COMBINE_TABLE_PPLACE": {
                     "R": "4.0.3"
                 },
@@ -21,41 +25,51 @@
                     "python": "Python 3.8.3"
                 },
                 "DADA2_DENOISING": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_ERR": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_FILTNTRIM": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_MERGE": {
-                    "R": "4.1.1",
-                    "dada2": "1.22.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_QUALITY1": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0",
-                    "ShortRead": "1.64.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0",
+                    "ShortRead": "1.68.0"
                 },
                 "DADA2_QUALITY2": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0",
-                    "ShortRead": "1.64.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0",
+                    "ShortRead": "1.68.0"
                 },
                 "DADA2_RMCHIMERA": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_STATS": {
-                    "R": "4.4.3",
-                    "dada2": "1.34.0"
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
+                },
+                "DECONTAM": {
+                    "R": "4.5.2",
+                    "decontam": "1.30.0"
                 },
                 "EPANG_PLACE": {
                     "epang": "0.3.8"
+                },
+                "EPANG_SPLIT_CLUSTALO": {
+                    "epang": "0.3.8"
+                },
+                "FILTER_SAMPLES": {
+                    "R": "4.2.1"
                 },
                 "FILTER_SSU": {
                     "R": "4.0.3",
@@ -64,6 +78,9 @@
                 "FILTER_STATS": {
                     "python": "3.9.1",
                     "pandas": "1.1.5"
+                },
+                "FORMAT_TAXONOMY_QIIME": {
+                    "sed": 4.7
                 },
                 "GAPPA_ASSIGN": {
                     "gappa": "0.8.0"
@@ -74,44 +91,20 @@
                 "GAPPA_HEATTREE": {
                     "gappa": "0.8.0"
                 },
-                "HMMER_AFAFORMATQUERY": {
-                    "hmmer/easel": 0.48
-                },
-                "HMMER_AFAFORMATREF": {
-                    "hmmer/easel": 0.48
-                },
-                "HMMER_HMMALIGNQUERY": {
-                    "hmmer": "3.3.2"
-                },
-                "HMMER_HMMALIGNREF": {
-                    "hmmer": "3.3.2"
-                },
-                "HMMER_HMMBUILD": {
-                    "hmmer": "3.3.2"
-                },
-                "HMMER_MASKQUERY": {
-                    "hmmer/easel": 0.48
-                },
-                "HMMER_MASKREF": {
-                    "hmmer/easel": 0.48
-                },
-                "HMMER_UNALIGNREF": {
-                    "hmmer/easel": 0.48
-                },
                 "MERGE_STATS_FILTERSSU": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "MERGE_STATS_FILTERTAXA": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "MERGE_STATS_STD": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "METADATA_ALL": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "METADATA_PAIRWISE": {
-                    "R": "4.4.3"
+                    "R": "4.5.2"
                 },
                 "PHYLOSEQ": {
                     "R": "4.4.2",
@@ -144,6 +137,9 @@
                 "QIIME2_EXPORT_RELTAX": {
                     "qiime2": "2024.10.1"
                 },
+                "QIIME2_EXTRACT": {
+                    "qiime2": "2024.10.1"
+                },
                 "QIIME2_INASV": {
                     "qiime2": "2024.10.1"
                 },
@@ -159,6 +155,9 @@
                 "QIIME2_TABLEFILTERTAXA": {
                     "qiime2": "2024.10.1"
                 },
+                "QIIME2_TRAIN": {
+                    "qiime2": "2024.10.1"
+                },
                 "RENAME_RAW_DATA_FILES": {
                     "sed": 4.7
                 },
@@ -171,7 +170,7 @@
                     "pandas": "1.1.5"
                 },
                 "Workflow": {
-                    "nf-core/ampliseq": "v2.16.1"
+                    "nf-core/ampliseq": "v2.17.0"
                 }
             },
             [
@@ -228,6 +227,11 @@
                 "dada2/log",
                 "dada2/log/1.dada.log",
                 "dada2/log/1.err.log",
+                "decontam",
+                "decontam/decontaminated.tsv",
+                "decontam/decontaminated_counts.tsv",
+                "decontam/decontaminated_details.tsv",
+                "decontam/decontaminated_log.tsv",
                 "input",
                 "input/Metadata.tsv",
                 "input/Samplesheet.tsv",
@@ -268,6 +272,8 @@
                 "pipeline_info",
                 "pipeline_info/software_versions.yml",
                 "pplace",
+                "pplace/clustalo",
+                "pplace/clustalo/test_pplace.aln",
                 "pplace/epang",
                 "pplace/epang/test_pplace.epa_info.log",
                 "pplace/epang/test_pplace.epa_result.jplace.gz",
@@ -283,16 +289,6 @@
                 "pplace/gappa/test_pplace.taxonomy.per_query.tsv",
                 "pplace/gappa/test_pplace.taxonomy.profile.tsv",
                 "pplace/gappa/test_pplace.taxonomy.sativa.tsv",
-                "pplace/hmmer",
-                "pplace/hmmer/test_pplace.query.hmmalign.masked.afa.gz",
-                "pplace/hmmer/test_pplace.query.hmmalign.masked.sthlm.gz",
-                "pplace/hmmer/test_pplace.query.hmmalign.sthlm.gz",
-                "pplace/hmmer/test_pplace.ref.hmm.gz",
-                "pplace/hmmer/test_pplace.ref.hmmalign.masked.afa.gz",
-                "pplace/hmmer/test_pplace.ref.hmmalign.masked.sthlm.gz",
-                "pplace/hmmer/test_pplace.ref.hmmalign.sthlm.gz",
-                "pplace/hmmer/test_pplace.ref.hmmbuild.txt",
-                "pplace/hmmer/test_pplace.ref.unaligned.afa.gz",
                 "pplace/test_pplace.graft.test_pplace.epa_result.newick",
                 "pplace/test_pplace.heattree.tree.svg",
                 "pplace/test_pplace.taxonomy.per_query.tsv",
@@ -517,6 +513,7 @@
                 "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/q2templateassets/js/jquery-3.2.0.min.js",
                 "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/q2templateassets/js/parent.js",
                 "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/raw_data.tsv",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix.tsv",
                 "qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA",
                 "qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA/css",
                 "qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA/css/emperor.css",
@@ -687,6 +684,7 @@
                 "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/q2templateassets/js/jquery-3.2.0.min.js",
                 "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/q2templateassets/js/parent.js",
                 "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/raw_data.tsv",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix.tsv",
                 "qiime2/diversity/beta_diversity/jaccard_pcoa_results-PCoA",
                 "qiime2/diversity/beta_diversity/jaccard_pcoa_results-PCoA/css",
                 "qiime2/diversity/beta_diversity/jaccard_pcoa_results-PCoA/css/emperor.css",
@@ -857,6 +855,7 @@
                 "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/q2templateassets/js/jquery-3.2.0.min.js",
                 "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/q2templateassets/js/parent.js",
                 "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/raw_data.tsv",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix.tsv",
                 "qiime2/diversity/beta_diversity/unweighted_unifrac_pcoa_results-PCoA",
                 "qiime2/diversity/beta_diversity/unweighted_unifrac_pcoa_results-PCoA/css",
                 "qiime2/diversity/beta_diversity/unweighted_unifrac_pcoa_results-PCoA/css/emperor.css",
@@ -1027,6 +1026,7 @@
                 "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/q2templateassets/js/jquery-3.2.0.min.js",
                 "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/q2templateassets/js/parent.js",
                 "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/raw_data.tsv",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix.tsv",
                 "qiime2/diversity/beta_diversity/weighted_unifrac_pcoa_results-PCoA",
                 "qiime2/diversity/beta_diversity/weighted_unifrac_pcoa_results-PCoA/css",
                 "qiime2/diversity/beta_diversity/weighted_unifrac_pcoa_results-PCoA/css/emperor.css",
@@ -1179,28 +1179,27 @@
                 "treesummarizedexperiment/pplace_TreeSummarizedExperiment.rds",
                 "treesummarizedexperiment/qiime2_TreeSummarizedExperiment.rds"
             ],
-            "overall_summary.tsv:md5,f6bf53e90e5d2efc4f62a0e4c789bbec",
+            "overall_summary.tsv:md5,b173e5650f0062c663cb10d55f849afa",
             "rrna.arc.gff:md5,6dae470aace9293d5eb8c318584852dd",
             "rrna.bac.gff:md5,439a9084f089120f700f938dfb58fa41",
             "rrna.euk.gff:md5,c9bc1d9d8fb77dc19c95dee2d53840eb",
             "rrna.mito.gff:md5,df19e1b84ba6f691d20c72b397c88abf",
             "cutadapt_summary.tsv:md5,5d02749984a811479e7d534fda75163f",
-            "ASV_seqs.fasta:md5,864c3e0dc9b4a7649beee0c8665dceb5",
-            "ASV_table.tsv:md5,2618251e597593e4d716dd9bed095539",
-            "DADA2_stats.tsv:md5,54a1ac8d6c5a3ff15f700c4b2dd40c86",
-            "DADA2_table.rds:md5,d095501019ce7ebccfa0eb801db1ed29",
-            "DADA2_table.tsv:md5,5c9fb0bfd70da165f0ce6a361bfe0b43",
-            "Samplesheet.tsv:md5,dbf8d1a2b7933dab9e5a139f33c2b1f4",
+            "ASV_seqs.fasta:md5,e3cdcd93bdce761152085a7c797763c3",
+            "ASV_table.tsv:md5,d3f7d98b8750dfb3b486b32cc5d32414",
+            "DADA2_stats.tsv:md5,b61a945febb806ed63729bcaa8ae0575",
+            "DADA2_table.tsv:md5,7ec2214a627e7492d31ac2672f82f94d",
+            "Samplesheet.tsv:md5,51ff46f4b431730e41b6950ae3b20e35",
             "Metadata.tsv:md5,060b56528bb566eed71f6dfdb52cc395",
             "descriptive_stats.tsv:md5,666279e79355dd60a0f5c7c8bb77618d",
             "seven_number_summary.tsv:md5,e087b59678e7e9ade87e0a7349f54e2e",
             "multiqc_general_stats.txt:md5,7a395be7984aaa0f9154de4abed5d824",
             "multiqc_cutadapt.txt:md5,3dce058d2d6c85a3cca7314ae19c5586"
         ],
+        "timestamp": "2026-03-11T17:39:39.331356202",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-01-22T20:12:36.255222869"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
     }
 }

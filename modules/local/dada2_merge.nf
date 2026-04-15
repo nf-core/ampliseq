@@ -2,10 +2,10 @@ process DADA2_MERGE {
     label 'process_low'
 
     // https://depot.galaxyproject.org/singularity/bioconductor-dada2=1.28.0--r43hf17093f_0 doesnt contain 'digest', so keep here v1.22.0
-    conda "bioconda::bioconductor-dada2=1.22.0  conda-forge::r-base=4.1.1 conda-forge::r-digest=0.6.30"
+    conda "bioconda::bioconductor-dada2=1.38.0 conda-forge::r-base=4.5.2 conda-forge::r-digest=0.6.39 conda-forge::tbb=2022.3.0"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.22.0--r41h399db7b_0' :
-        'biocontainers/bioconductor-dada2:1.22.0--r41h399db7b_0' }"
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/81/81153df5d53322e6d91b2c4c9bc4da50774fb1d101ead002fe75bb75fc6f036c/data' :
+        'community.wave.seqera.io/library/bioconductor-dada2_r-base_r-digest_tbb:38acac09bac46f36' }"
 
     input:
     path(files)
@@ -52,6 +52,9 @@ process DADA2_MERGE {
     # Create an md5 sum of the sequences as ASV_ID and rearrange columns
     df\$ASV_ID <- sapply(df\$sequence, digest, algo='md5', serialize = FALSE)
     df <- df[,c(ncol(df),3:ncol(df)-1,1)]
+
+    # order ASV table by ASV_ID (md5sum of sequence), previously sorted decreasing by total counts (ASVs of same counts were randomly sorted)
+    df <- df[order(df\$ASV_ID),]
 
     # file to publish
     write.table(df, file = "DADA2_table.tsv", sep = "\\t", row.names = FALSE, quote = FALSE, na = '')

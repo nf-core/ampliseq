@@ -2,10 +2,10 @@ process DADA2_STATS {
     tag "$meta.run"
     label 'process_low'
 
-    conda "bioconda::bioconductor-dada2=1.34.0 conda-forge::r-base=4.4.3 conda-forge::tbb=2020.2"
+    conda "bioconda::bioconductor-dada2=1.38.0 conda-forge::r-base=4.5.2 conda-forge::r-digest=0.6.39 conda-forge::tbb=2022.3.0"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.34.0--r44he5774e6_2' :
-        'biocontainers/bioconductor-dada2:1.34.0--r44he5774e6_2' }"
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/81/81153df5d53322e6d91b2c4c9bc4da50774fb1d101ead002fe75bb75fc6f036c/data' :
+        'community.wave.seqera.io/library/bioconductor-dada2_r-base_r-digest_tbb:38acac09bac46f36' }"
 
     input:
     tuple val(meta), path("filter_and_trim_files/*"), path(denoised), path(mergers), path(seqtab_nochim)
@@ -42,21 +42,24 @@ process DADA2_STATS {
 
         #track reads through pipeline
         getN <- function(x) sum(getUniques(x))
+        get_acc <- function(x) sum(x\$abundance[x\$accept])
         if ( nrow(filter_and_trim) == 1 ) {
-            track <- cbind(filter_and_trim, getN(dadaFs), getN(dadaRs), getN(mergers), rowSums(nochim))
+            track <- cbind(filter_and_trim, getN(dadaFs), getN(dadaRs), getN(mergers), get_acc(mergers), rowSums(nochim))
         } else {
             dadaFs_getN <- data.frame( sapply(dadaFs, getN) )
             dadaRs_getN <- data.frame( sapply(dadaRs, getN) )
             mergers_getN <- data.frame( sapply(mergers, getN) )
+            mergers_acc <- data.frame( sapply(mergers, get_acc) )
             nochim_rowSums <- data.frame( rowSums(nochim) )
             track <- cbind(
                 filter_and_trim[order(rownames(filter_and_trim)), ],
                 dadaFs_getN[order(rownames(dadaFs_getN)), ],
                 dadaRs_getN[order(rownames(dadaRs_getN)), ],
                 mergers_getN[order(rownames(mergers_getN)), ],
+                mergers_acc[order(rownames(mergers_acc)), ],
                 nochim_rowSums[order(rownames(nochim_rowSums)), ] )
         }
-        colnames(track) <- c("DADA2_input", "filtered", "denoisedF", "denoisedR", "merged", "nonchim")
+        colnames(track) <- c("DADA2_input", "filtered", "denoisedF", "denoisedR", "denoisedPairs", "merged", "nonchim")
         rownames(track) <- sub(pattern = "_1.fastq.gz\$", replacement = "", rownames(track)) #this is when cutadapt is skipped!
         track <- cbind(sample = sub(pattern = "(.*?)\\\\..*\$", replacement = "\\\\1", rownames(track)), track)
         write.table( track, file = "${prefix}.stats.tsv", sep = "\\t", row.names = FALSE, quote = FALSE, na = '')

@@ -2,10 +2,10 @@ process DADA2_ERR {
     tag "$meta.run"
     label 'process_medium'
 
-    conda "bioconda::bioconductor-dada2=1.34.0 conda-forge::r-base=4.4.3 conda-forge::tbb=2020.2"
+    conda "bioconda::bioconductor-dada2=1.38.0 conda-forge::r-base=4.5.2 conda-forge::r-digest=0.6.39 conda-forge::tbb=2022.3.0"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/bioconductor-dada2:1.34.0--r44he5774e6_2' :
-        'biocontainers/bioconductor-dada2:1.34.0--r44he5774e6_2' }"
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/81/81153df5d53322e6d91b2c4c9bc4da50774fb1d101ead002fe75bb75fc6f036c/data' :
+        'community.wave.seqera.io/library/bioconductor-dada2_r-base_r-digest_tbb:38acac09bac46f36' }"
 
     input:
     tuple val(meta), path(reads)
@@ -21,6 +21,7 @@ process DADA2_ERR {
 
 
     script:
+    def cmd_errfun = task.ext.cmd_errfun ?: ""
     def prefix = task.ext.prefix ?: "prefix"
     def args = task.ext.args ?: ''
     def seed = task.ext.seed ?: '100'
@@ -30,8 +31,10 @@ process DADA2_ERR {
         suppressPackageStartupMessages(library(dada2))
         set.seed($seed) # Initialize random number generator for reproducibility
 
-        fnFs <- sort(list.files(".", pattern = "_1.filt.fastq.gz", full.names = TRUE), method = "radix")
-        fnRs <- sort(list.files(".", pattern = "_2.filt.fastq.gz", full.names = TRUE), method = "radix")
+        ${cmd_errfun}
+
+        fnFs <- list.files(".", pattern = "_1.filt.fastq.gz", full.names = TRUE)
+        fnRs <- sub("_1.filt.fastq.gz", "_2.filt.fastq.gz", fnFs)
 
         sink(file = "${prefix}.err.log")
         errF <- learnErrors(fnFs, $args, multithread = $task.cpus, verbose = TRUE)
@@ -70,6 +73,8 @@ process DADA2_ERR {
         #!/usr/bin/env Rscript
         suppressPackageStartupMessages(library(dada2))
         set.seed($seed) # Initialize random number generator for reproducibility
+
+        ${cmd_errfun}
 
         fnFs <- sort(list.files(".", pattern = ".filt.fastq.gz", full.names = TRUE))
 

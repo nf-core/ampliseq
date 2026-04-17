@@ -16,8 +16,6 @@ workflow QIIME2_PREPTAX {
     RV_primer //val
 
     main:
-    ch_qiime2_preptax_versions = channel.empty()
-
     if (params.qiime_ref_tax_custom) {
         // Handle case where we have been provided a pair of filepaths.
         if ("${params.qiime_ref_tax_custom}".contains(",")) {
@@ -59,8 +57,6 @@ workflow QIIME2_PREPTAX {
                             def meta = [:]
                             meta.id = val_qiime_ref_taxonomy
                             [ meta, db ] } )
-            ch_qiime2_preptax_versions = ch_qiime2_preptax_versions.mix(UNTAR.out.versions)
-
             ch_qiime_db_dir = UNTAR.out.untar.map{ it -> it[1] }
             ch_qiime_db_dir = ch_qiime_db_dir.mix(ch_qiime_ref_tax_branched.dir)
 
@@ -98,5 +94,4 @@ workflow QIIME2_PREPTAX {
 
     emit:
     classifier = QIIME2_TRAIN.out.qza
-    versions   = ch_qiime2_preptax_versions
 }

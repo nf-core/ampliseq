@@ -712,7 +712,6 @@ workflow AMPLISEQ {
             ch_fasta,
             val_kraken2_taxlevels
         ).qiime2_tsv.set { ch_kraken2_tax }
-        ch_versions = ch_versions.mix(KRAKEN2_TAXONOMY_WF.out.versions)
         ch_tax_for_robject = ch_tax_for_robject.mix ( ch_kraken2_tax.map { it -> [ "kraken2", file(it) ] } )
     } else {
         ch_kraken2_tax = channel.empty()

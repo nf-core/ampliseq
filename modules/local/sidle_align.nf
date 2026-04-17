@@ -10,7 +10,7 @@ process SIDLE_ALIGN {
 
     output:
     tuple val(meta), path("*rep-seqs_align-map.qza"), emit: aligned_map
-    path "versions.yml"                             , emit: versions
+    path "versions.yml"                             , emit: versions_sidle_align, topic: versions
 
     script:
     def args = task.ext.args ?: ''

@@ -15,7 +15,7 @@ process QIIME2_TABLEFILTERTAXA {
     output:
     path("filtered-table.qza"), emit: qza
     path("filtered-table.tsv"), emit: tsv
-    path "versions.yml"       , emit: versions
+    path "versions.yml"       , emit: versions_qiime2_tablefiltertaxa, topic: versions
 
     script:
     """

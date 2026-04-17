@@ -14,10 +14,10 @@ process DADA2_TAXONOMY {
     val(taxlevels_input)
 
     output:
-    path("*${outfile}.tsv")    , emit: tsv
+    path("*${outfile}.tsv")  , emit: tsv
     path( "*${outfile}.rds" ), emit: rds
-    path "versions.yml"  , emit: versions
-    path "*.args.txt"    , emit: args
+    path "versions.yml"      , emit: versions_dada2_taxonomy, topic: versions
+    path "*.args.txt"        , emit: args
 
     script:
     def args = task.ext.args ?: ''

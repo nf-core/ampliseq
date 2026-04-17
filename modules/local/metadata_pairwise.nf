@@ -12,7 +12,7 @@ process METADATA_PAIRWISE {
 
     output:
     stdout               emit: category
-    path "versions.yml", emit: versions
+    path "versions.yml", emit: versions_metadata_pairwise, topic: versions
 
     script:
     """

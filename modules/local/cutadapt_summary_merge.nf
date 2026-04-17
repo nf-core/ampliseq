@@ -13,7 +13,7 @@ process CUTADAPT_SUMMARY_MERGE {
 
     output:
     path("cutadapt_summary.tsv")      , emit: tsv
-    path "versions.yml", optional:true, emit: versions
+    path "versions.yml", optional:true, emit: versions_cutadapt_summary_merge, topic: versions
 
 
     script:

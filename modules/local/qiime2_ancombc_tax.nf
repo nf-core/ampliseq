@@ -14,7 +14,7 @@ process QIIME2_ANCOMBC_TAX {
     path("differentials/*"), emit: differentials
     path("*.qza")          , emit: qza, optional: true
     path("*.qzv")          , emit: qzv, optional: true
-    path "versions.yml"    , emit: versions
+    path "versions.yml"    , emit: versions_qiime2_ancombc_tax, topic: versions
 
     script:
     def args        = task.ext.args ?: ''

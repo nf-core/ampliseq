@@ -13,7 +13,7 @@ process QIIME2_ANCOM_ASV {
 
     output:
     path("ancom/*")     , emit: ancom
-    path "versions.yml" , emit: versions
+    path "versions.yml" , emit: versions_qiime2_ancom_asv, topic: versions
 
     script:
     """

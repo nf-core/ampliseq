@@ -13,7 +13,7 @@ process FORMAT_PPLACETAX {
     output:
     path("*.per_query_unique.tsv"), emit: unique
     path("*.taxonomy.tsv")        , emit: tsv
-    path "versions.yml"           , emit: versions
+    path "versions.yml"           , emit: versions_format_pplacetax, topic: versions
 
     script:
     """

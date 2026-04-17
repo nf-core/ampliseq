@@ -69,7 +69,7 @@ process SUMMARY_REPORT  {
     output:
     path "*.svg"               , emit: svg, optional: true
     path "summary_report.html" , emit: report
-    path "versions.yml"        , emit: versions
+    path "versions.yml"        , emit: versions // This may not be added to the versions topic otherwise the pipeline hangs forever!
 
     script:
     // make named R list (comma separated)

@@ -16,7 +16,7 @@ process FILTER_SEQUENCES_ABUNDANCES {
     path( "filtered_abundances.tsv" ) , emit: abund
     path( "stats_counts.tsv" )        , emit: stats_counts
     path( "stats_features.tsv" )      , emit: stats_features
-    path "versions.yml"               , emit: versions
+    path "versions.yml"               , emit: versions_filter_sequence_abundance, topic: versions
 
     script:
     """

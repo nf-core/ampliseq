@@ -16,7 +16,7 @@ process FORMAT_TAXRESULTS_KRAKEN2 {
     path("*.kraken2.complete.tsv")   , emit: complete_tsv
     path("*.kraken2.tsv")            , emit: tsv
     path("*.kraken2.into-qiime2.tsv"), emit: qiime2_tsv
-    path "versions.yml"              , emit: versions
+    path "versions.yml"              , emit: versions_format_taxresults_kraken2, topic: versions
 
     script:
     def taxlevels = taxlevels_input ? taxlevels_input : "D,P,C,O,F,G,S"

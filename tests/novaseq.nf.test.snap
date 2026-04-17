@@ -167,7 +167,7 @@
                 "multiqc/multiqc_report.html",
                 "overall_summary.tsv",
                 "pipeline_info",
-                "pipeline_info/software_versions.yml",
+                "pipeline_info/nf_core_ampliseq_software_mqc_versions.yml",
                 "summary_report",
                 "summary_report/stacked_barchart_of_reads.svg",
                 "summary_report/summary_report.html",

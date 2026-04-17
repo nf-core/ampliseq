@@ -11,7 +11,7 @@ process QIIME2_TRAIN {
 
     output:
     path("*-classifier.qza"), emit: qza
-    path "versions.yml"     , emit: versions
+    path "versions.yml"     , emit: versions_qiime2_train, topic: versions
 
     script:
     """

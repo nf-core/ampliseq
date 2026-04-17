@@ -11,7 +11,7 @@ process PHYLOSEQ_INASV {
 
     output:
     path( "*.tsv" )          , emit: tsv
-    path "versions.yml"      , emit: versions
+    path "versions.yml"      , emit: versions_phyloseq_inasv, topic: versions
 
     script:
     """

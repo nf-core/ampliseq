@@ -16,7 +16,7 @@ process FILTER_CODONS {
     path( "ASV_codon_filtered.fna"        ) , emit: fasta
     path( "ASV_codon_filtered.list"       ) , emit: list
     path( "codon.filtered.stats.tsv"      ) , emit: stats, optional: true
-    path( "versions.yml"                  ) , emit: versions
+    path( "versions.yml"                  ) , emit: versions_filter_codons, topic: versions
 
     script:
     def args = task.ext.args ?: ''

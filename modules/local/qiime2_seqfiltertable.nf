@@ -11,7 +11,7 @@ process QIIME2_SEQFILTERTABLE {
 
     output:
     path("filtered-sequences.qza"), emit: qza
-    path "versions.yml"           , emit: versions
+    path "versions.yml"           , emit: versions_qiime2_seqfiltertable, topic: versions
 
     script:
     """

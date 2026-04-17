@@ -270,7 +270,7 @@
                 "phyloseq/pplace_phyloseq.rds",
                 "phyloseq/qiime2_phyloseq.rds",
                 "pipeline_info",
-                "pipeline_info/software_versions.yml",
+                "pipeline_info/nf_core_ampliseq_software_mqc_versions.yml",
                 "pplace",
                 "pplace/clustalo",
                 "pplace/clustalo/test_pplace.aln",

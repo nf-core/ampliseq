@@ -16,7 +16,7 @@ process QIIME2_DIVERSITY_CORE {
     path("diversity_core/*_vector.qza")         , emit: vector
     path("diversity_core/*_distance_matrix.qza"), emit: distance
     path("*_distance_matrix.tsv")               , emit: distance_tsv
-    path "versions.yml"                         , emit: versions
+    path "versions.yml"                         , emit: versions_qiime2_diversity_core, topic: versions
     path("*rarefaction.txt")                    , emit: depth
 
     script:

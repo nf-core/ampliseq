@@ -73,7 +73,7 @@
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
-                "pipeline_info/software_versions.yml",
+                "pipeline_info/nf_core_ampliseq_software_mqc_versions.yml",
                 "summary_report",
                 "summary_report/asv_length_profile_before_length_filter.svg",
                 "summary_report/dada2_taxonomic_classification_per_taxonomy_level.svg",

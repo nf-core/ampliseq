@@ -2020,7 +2020,7 @@ cat(paste0("
 if ( !isFALSE(params$mqc_plot) ) {
     cat("in [MultiQC's report section Software Versions](../multiqc/multiqc_report.html#software_versions) or ")
 }
-cat("in folder [pipeline_info](../pipeline_info) file `software_versions.yml`.")
+cat("in folder [pipeline_info](../pipeline_info) file `nf_core_ampliseq_software_mqc_versions.yml`.")
 ```
 
 <!-- Subsection on taxonomic databases -->
@@ -2089,7 +2089,7 @@ cat(paste0("
 ## Nextflow and pipeline information
 
 Technical information to the pipeline run are collected in folder [pipeline_info](../pipeline_info),
-including software versions collected at runtime in file `software_versions.yml` (can be viewed with a text editor),
+including software versions collected at runtime in file `nf_core_ampliseq_software_mqc_versions.yml` (can be viewed with a text editor),
 all parameter settings in file `params_{date}_{time}.json` (can be viewed with a text editor),
 execution report in file `execution_report_{date}_{time}.html`,
 execution trace in file `execution_trace_{date}_{time}.txt`,

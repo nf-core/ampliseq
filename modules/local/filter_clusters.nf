@@ -15,7 +15,7 @@ process FILTER_CLUSTERS {
     path( "ASV_post_clustering_filtered.table.tsv") , emit: asv
     path( "ASV_post_clustering_filtered.fna"      ) , emit: fasta
     path( "ASV_post_clustering_filtered.stats.tsv") , emit: stats
-    path( "versions.yml"                          ) , emit: versions
+    path( "versions.yml"                          ) , emit: versions_filter_clusters, topic: versions
 
     script:
     def prefix   = task.ext.prefix ?: "'$meta.id'"

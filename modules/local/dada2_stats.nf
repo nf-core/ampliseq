@@ -12,7 +12,7 @@ process DADA2_STATS {
 
     output:
     tuple val(meta), path("*.stats.tsv"), emit: stats
-    path "versions.yml"                 , emit: versions
+    path "versions.yml"                 , emit: versions_dada2_stats, topic: versions
 
     script:
     def prefix = task.ext.prefix ?: "prefix"

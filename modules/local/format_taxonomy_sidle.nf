@@ -15,7 +15,7 @@ process FORMAT_TAXONOMY_SIDLE {
     path( "*.alnseq.fasta")       , emit: alnseq
     path( "*.tax.txt")            , emit: tax
     path( "ref_taxonomy.*.txt")   , emit: ref_tax_info
-    path "versions.yml"           , emit: versions
+    path "versions.yml"           , emit: versions_format_taxonomy_sidle, topic: versions
 
     script:
     def derep = params.sidle_ref_databases[params.sidle_ref_taxonomy]["derep"] ?: "99"

@@ -212,7 +212,7 @@
                 "phyloseq",
                 "phyloseq/sintax_phyloseq.rds",
                 "pipeline_info",
-                "pipeline_info/software_versions.yml",
+                "pipeline_info/nf_core_ampliseq_software_mqc_versions.yml",
                 "sintax",
                 "sintax/ASV_tax_sintax.user.raw.tsv",
                 "sintax/ASV_tax_sintax.user.tsv",

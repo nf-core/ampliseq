@@ -16,8 +16,6 @@ workflow DADA2_PREPROCESSING {
     trunclenr
 
     main:
-    ch_versions_dada2_preprocessing = channel.empty()
-
     //plot unprocessed, aggregated quality profile for forward and reverse reads separately
     if (single_end) {
         ch_trimmed_reads
@@ -44,7 +42,6 @@ workflow DADA2_PREPROCESSING {
     ch_DADA2_QUALITY1_SVG = channel.empty()
     if ( !params.skip_dada_quality ) {
         DADA2_QUALITY1 ( ch_all_trimmed_reads.dump(tag: 'into_dada2_quality') )
-        ch_versions_dada2_preprocessing = ch_versions_dada2_preprocessing.mix(DADA2_QUALITY1.out.versions)
         DADA2_QUALITY1.out.warning.subscribe { it -> if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","DADA2_QUALITY1: ") }
         ch_DADA2_QUALITY1_SVG = DADA2_QUALITY1.out.svg
     }
@@ -55,7 +52,6 @@ workflow DADA2_PREPROCESSING {
         TRUNCLEN.out.trunc
             .toSortedList()
             .set { ch_trunc }
-        ch_versions_dada2_preprocessing = ch_versions_dada2_preprocessing.mix(TRUNCLEN.out.versions)
         //add one more warning or reminder that trunclenf and trunclenr were chosen automatically
         ch_trunc.subscribe { it ->
             if ( "${it[0][1]}".toInteger() + "${it[1][1]}".toInteger() <= 10 ) { log.warn "`--trunclenf` was set to ${it[0][1]} and `--trunclenr` to ${it[1][1]}, this is too low! Please either change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr`." }
@@ -72,7 +68,6 @@ workflow DADA2_PREPROCESSING {
 
     //filter reads
     DADA2_FILTNTRIM ( ch_trimmed_reads.dump(tag: 'into_filtntrim')  )
-    ch_versions_dada2_preprocessing = ch_versions_dada2_preprocessing.mix(DADA2_FILTNTRIM.out.versions)
 
     //Filter empty files
     DADA2_FILTNTRIM.out.reads_logs_args
@@ -132,7 +127,6 @@ workflow DADA2_PREPROCESSING {
     ch_DADA2_QUALITY2_SVG = channel.empty()
     if ( !params.skip_dada_quality ) {
         DADA2_QUALITY2 ( ch_all_preprocessed_reads.dump(tag: 'into_dada2_quality2') )
-        ch_versions_dada2_preprocessing = ch_versions_dada2_preprocessing.mix(DADA2_QUALITY2.out.versions)
         DADA2_QUALITY2.out.warning.subscribe { it -> if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","DADA2_QUALITY2: ") }
         ch_DADA2_QUALITY2_SVG = DADA2_QUALITY2.out.svg
     }
@@ -171,5 +165,4 @@ workflow DADA2_PREPROCESSING {
     args                = ch_dada2_filtntrim_args_passed
     qc_svg              = ch_DADA2_QUALITY1_SVG.collect()
     qc_svg_preprocessed = ch_DADA2_QUALITY2_SVG.collect()
-    versions            = ch_versions_dada2_preprocessing
 }

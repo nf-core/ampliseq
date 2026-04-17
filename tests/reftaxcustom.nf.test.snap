@@ -264,7 +264,7 @@
                 "phyloseq/kraken2_phyloseq.rds",
                 "phyloseq/qiime2_phyloseq.rds",
                 "pipeline_info",
-                "pipeline_info/software_versions.yml",
+                "pipeline_info/nf_core_ampliseq_software_mqc_versions.yml",
                 "qiime2",
                 "qiime2/input",
                 "qiime2/input/rep-seqs.qza",

@@ -10,7 +10,7 @@ process QIIME2_FEATURETABLE_GROUP {
 
     output:
     path("${category}.qza"), emit: qza
-    path "versions.yml"    , emit: versions
+    path "versions.yml"    , emit: versions_qiime2_featuretable_group, topic: versions
 
     script:
     """

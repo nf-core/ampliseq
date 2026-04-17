@@ -11,7 +11,7 @@ process SIDLE_TRIM {
     output:
     tuple val(meta), path("*_table.qza")    , emit: table
     tuple val(meta), path("*_rep-seqs.qza") , emit: seq
-    path "versions.yml"                     , emit: versions
+    path "versions.yml"                     , emit: versions_sidle_trim, topic: versions
 
     script:
     def prefix = task.ext.prefix ?: "${meta.region}"

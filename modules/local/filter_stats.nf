@@ -12,7 +12,7 @@ process FILTER_STATS {
 
     output:
     path("count_table_filter_stats.tsv"), emit: tsv
-    path "versions.yml"                 , emit: versions
+    path "versions.yml"                 , emit: versions_filter_stats, topic: versions
 
     script:
     """

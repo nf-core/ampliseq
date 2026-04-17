@@ -15,8 +15,6 @@ workflow ROBJECT_WORKFLOW {
     run_qiime2
 
     main:
-    ch_versions_robject_workflow = channel.empty()
-
     if ( run_qiime2 ) {
         if ( params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1 ) {
             ch_robject_inasv = PHYLOSEQ_INASV ( ch_tsv ).tsv
@@ -40,16 +38,13 @@ workflow ROBJECT_WORKFLOW {
 
     if ( !params.skip_phyloseq ) {
         PHYLOSEQ ( ch_for_r_objects )
-        ch_versions_robject_workflow = ch_versions_robject_workflow.mix(PHYLOSEQ.out.versions)
     }
 
     if ( !params.skip_tse ) {
         TREESUMMARIZEDEXPERIMENT ( ch_for_r_objects )
-        ch_versions_robject_workflow = ch_versions_robject_workflow.mix(TREESUMMARIZEDEXPERIMENT.out.versions)
     }
 
     emit:
     phyloseq = !params.skip_phyloseq ? PHYLOSEQ.out.rds : []
     tse      = !params.skip_tse ? TREESUMMARIZEDEXPERIMENT.out.rds : []
-    versions = ch_versions_robject_workflow
 }

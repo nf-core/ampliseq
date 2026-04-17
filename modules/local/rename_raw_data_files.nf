@@ -12,7 +12,7 @@ process RENAME_RAW_DATA_FILES {
 
     output:
     tuple val(meta), path("${meta.id}{_1,_2,}.fastq.gz", includeInputs: true), emit: fastq
-    path "versions.yml"                                                      , emit: versions
+    path "versions.yml"                                                      , emit: versions_rename_raw_data_files, topic: versions
 
     script:
     // Add soft-links to original FastQs for consistent naming in pipeline

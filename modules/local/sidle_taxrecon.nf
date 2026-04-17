@@ -12,7 +12,7 @@ process SIDLE_TAXRECON {
     path("reconstruction_taxonomy.qza"), emit: qza
     path("reconstruction_taxonomy/*")  , emit: visualisation
     path("reconstruction_taxonomy.tsv"), emit: tsv
-    path "versions.yml"                , emit: versions
+    path "versions.yml"                , emit: versions_sidle_taxrecon, topic: versions
 
     script:
     def args = task.ext.args ?: ''

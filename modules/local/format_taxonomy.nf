@@ -14,7 +14,7 @@ process FORMAT_TAXONOMY {
     path( "*assignTaxonomy.fna*" ), emit: assigntax
     path( "*addSpecies.fna*")     , emit: addspecies
     path( "ref_taxonomy.*.txt")   , emit: ref_tax_info
-    path "versions.yml"           , emit: versions
+    path "versions.yml"           , emit: versions_format_taxonomy, topic: versions
 
     script:
     """

@@ -13,7 +13,7 @@ process DADA2_SPLITREGIONS {
     output:
     tuple val(meta), path( "DADA2_table_*.tsv" )                          , emit: dada2asv
     tuple val(meta), path( "ASV_table_*.tsv" ), path( "ASV_seqs_*.fasta" ), emit: for_sidle
-    path "versions.yml"                                                   , emit: versions
+    path "versions.yml"                                                   , emit: versions_dada2_splitregions, topic: versions
 
     script:
     // Make groovy map to R list; requirement: Values may not be false,true,null

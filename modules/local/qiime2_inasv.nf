@@ -10,7 +10,7 @@ process QIIME2_INASV {
 
     output:
     path("table.qza")    , emit: qza
-    path "versions.yml"  , emit: versions
+    path "versions.yml"  , emit: versions_qiime2_inasv, topic: versions
 
     script:
     """

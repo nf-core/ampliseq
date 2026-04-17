@@ -14,7 +14,7 @@ process FORMAT_TAXONOMY_QIIME {
     path( "*.tax" )          , emit: tax
     path( "*.fna" )          , emit: fasta
     path( "ref_taxonomy.txt"), emit: ref_tax_info
-    path "versions.yml"      , emit: versions
+    path "versions.yml"      , emit: versions_format_taxonomy_qiime, topic: versions
 
     script:
     """

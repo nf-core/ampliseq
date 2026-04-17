@@ -11,7 +11,7 @@ process QIIME2_DIVERSITY_ADONIS {
     output:
     path("adonis/*")     , emit: html
     path("*.qzv")        , emit: qzv
-    path "versions.yml"  , emit: versions
+    path "versions.yml"  , emit: versions_qiime2_diversity_adonis, topic: versions
 
     script:
     def args = task.ext.args ?: ''

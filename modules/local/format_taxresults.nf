@@ -13,7 +13,7 @@ process FORMAT_TAXRESULTS {
 
     output:
     path(outfile)      , emit: tsv
-    path "versions.yml", emit: versions
+    path "versions.yml", emit: versions_format_taxresults, topic: versions
 
     script:
     """

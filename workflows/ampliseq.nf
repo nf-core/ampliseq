@@ -431,7 +431,6 @@ workflow AMPLISEQ {
     // MODULE: Rename files
     //
     RENAME_RAW_DATA_FILES ( ch_reads )
-    ch_versions = ch_versions.mix(RENAME_RAW_DATA_FILES.out.versions)
 
     //
     // MODULE: Run FastQC
@@ -451,7 +450,6 @@ workflow AMPLISEQ {
             params.double_primer
         ).reads.set { ch_trimmed_reads }
         ch_multiqc_files = ch_multiqc_files.mix(CUTADAPT_WORKFLOW.out.logs.collect{ it -> it[1] })
-        ch_versions = ch_versions.mix(CUTADAPT_WORKFLOW.out.versions)
     } else {
         ch_trimmed_reads = RENAME_RAW_DATA_FILES.out.fastq
     }
@@ -466,7 +464,6 @@ workflow AMPLISEQ {
         trunclenf,
         trunclenr
     ).reads.set { ch_filt_reads }
-    ch_versions = ch_versions.mix(DADA2_PREPROCESSING.out.versions)
 
     //
     // MODULES: ASV generation with DADA2
@@ -475,17 +472,13 @@ workflow AMPLISEQ {
     //run error model
     DADA2_ERR ( ch_filt_reads )
     ch_errormodel = DADA2_ERR.out.errormodel
-    ch_versions = ch_versions.mix(DADA2_ERR.out.versions)
 
     //group by meta
     ch_filt_reads
         .join( ch_errormodel )
         .set { ch_derep_errormodel }
     DADA2_DENOISING ( ch_derep_errormodel.dump(tag: 'into_denoising')  )
-    ch_versions = ch_versions.mix(DADA2_DENOISING.out.versions)
-
     DADA2_RMCHIMERA ( DADA2_DENOISING.out.seqtab )
-    ch_versions = ch_versions.mix(DADA2_RMCHIMERA.out.versions)
 
     //group by sequencing run & group by meta
     DADA2_PREPROCESSING.out.logs
@@ -494,19 +487,16 @@ workflow AMPLISEQ {
         .join( DADA2_RMCHIMERA.out.rds )
         .set { ch_track_numbers }
     DADA2_STATS ( ch_track_numbers )
-    ch_versions = ch_versions.mix(DADA2_STATS.out.versions)
 
     //merge if several runs, otherwise just publish
     DADA2_MERGE (
         DADA2_STATS.out.stats.map { _meta, stats -> stats }.collect(),
         DADA2_RMCHIMERA.out.rds.map { _meta, rds -> rds }.collect() )
-    ch_versions = ch_versions.mix(DADA2_MERGE.out.versions)
 
     //merge cutadapt_summary and dada_stats files
     if (!params.skip_cutadapt) {
         MERGE_STATS_STD (CUTADAPT_WORKFLOW.out.summary, DADA2_MERGE.out.dada2stats)
         ch_stats = MERGE_STATS_STD.out.tsv
-        ch_versions = ch_versions.mix(MERGE_STATS_STD.out.versions)
     } else {
         ch_stats = DADA2_MERGE.out.dada2stats
     }
@@ -526,7 +516,6 @@ workflow AMPLISEQ {
                         [ meta, inf2 ] }
                 .groupTuple(by: 0 ).dump(tag:'DADA2_SPLITREGIONS:meta'),
             DADA2_MERGE.out.dada2asv )
-        ch_versions = ch_versions.mix(DADA2_SPLITREGIONS.out.versions)
 
         // run q2-sidle
         SIDLE_WF (
@@ -535,7 +524,6 @@ workflow AMPLISEQ {
             val_sidle_ref_taxonomy,
             ch_sidle_ref_taxonomy_tree
         )
-        ch_versions = ch_versions.mix(SIDLE_WF.out.versions)
 
         // forward results to downstream analysis if multi region
         ch_dada2_asv = SIDLE_WF.out.table_tsv
@@ -564,7 +552,6 @@ workflow AMPLISEQ {
                     [ meta, fasta ] }
         VSEARCH_CLUSTER ( ch_fasta_for_clustering )
         FILTER_CLUSTERS ( VSEARCH_CLUSTER.out.clusters, ch_dada2_asv )
-        ch_versions = ch_versions.mix(FILTER_CLUSTERS.out.versions)
         ch_dada2_fasta = FILTER_CLUSTERS.out.fasta
         ch_dada2_asv = FILTER_CLUSTERS.out.asv
     }
@@ -579,24 +566,19 @@ workflow AMPLISEQ {
         params.decontam_decontaminate_threshold,
         params.decontam_notcontaminant_threshold
     )
-    ch_versions = ch_versions.mix(DECONTAM.out.versions)
     if (params.decontam == "decontaminate") {
         ch_dada2_asv = DECONTAM.out.decontaminated_abundances
             .filter { it -> it.countLines() > 1 }
             .ifEmpty{ error("\nDecontamination removed all features, please adjust settings.\n") }
         FILTER_SEQUENCES_ABUNDANCES ( ch_dada2_fasta, ch_dada2_asv )
-        ch_versions = ch_versions.mix(FILTER_SEQUENCES_ABUNDANCES.out.versions)
         ch_dada2_fasta = FILTER_SEQUENCES_ABUNDANCES.out.seq
         ch_stats = MERGE_STATS_DECONTAM ( ch_stats, DECONTAM.out.decontaminated_counts ).tsv
-        ch_versions = ch_versions.mix(MERGE_STATS_DECONTAM.out.versions)
     } else if (params.decontam == "notcontaminant") {
         ch_dada2_asv = DECONTAM.out.notcontaminant_abundances
             .ifEmpty{ error("\nNo non-contaminant features were identified, please check control samples (column 'control' in samplesheet).\n") }
         FILTER_SEQUENCES_ABUNDANCES ( ch_dada2_fasta, ch_dada2_asv )
-        ch_versions = ch_versions.mix(FILTER_SEQUENCES_ABUNDANCES.out.versions)
         ch_dada2_fasta = FILTER_SEQUENCES_ABUNDANCES.out.seq
         ch_stats = MERGE_STATS_DECONTAM ( ch_stats, DECONTAM.out.notcontaminant_counts ).tsv
-        ch_versions = ch_versions.mix(MERGE_STATS_DECONTAM.out.versions)
     }
 
     //
@@ -605,7 +587,6 @@ workflow AMPLISEQ {
     if ( params.input_fasta ) {
         FORMAT_FASTAINPUT( ch_input_fasta )
         ch_unfiltered_fasta = FORMAT_FASTAINPUT.out.fasta
-        ch_versions = ch_versions.mix(FORMAT_FASTAINPUT.out.versions)
     } else {
         ch_unfiltered_fasta = ch_dada2_fasta
     }
@@ -615,9 +596,7 @@ workflow AMPLISEQ {
     //
     if ( !params.skip_barrnap && params.filter_ssu && !params.multiregion ) {
         BARRNAP ( ch_unfiltered_fasta )
-        ch_versions = ch_versions.mix(BARRNAP.out.versions)
         BARRNAPSUMMARY ( BARRNAP.out.gff.collect() )
-        ch_versions = ch_versions.mix(BARRNAPSUMMARY.out.versions)
         BARRNAPSUMMARY.out.warning.subscribe { it ->
             if ( it.baseName.toString().startsWith("WARNING") ) {
                 error("Barrnap could not identify any rRNA in the ASV sequences! This will result in all sequences being removed with SSU filtering.")
@@ -625,9 +604,7 @@ workflow AMPLISEQ {
         }
         ch_barrnapsummary = BARRNAPSUMMARY.out.summary
         FILTER_SSU ( ch_unfiltered_fasta, ch_dada2_asv.ifEmpty( [] ), BARRNAPSUMMARY.out.summary )
-        ch_versions = ch_versions.mix(FILTER_SSU.out.versions)
         MERGE_STATS_FILTERSSU ( ch_stats, FILTER_SSU.out.stats )
-        ch_versions = ch_versions.mix(MERGE_STATS_FILTERSSU.out.versions)
         ch_stats = MERGE_STATS_FILTERSSU.out.tsv
         ch_dada2_fasta = FILTER_SSU.out.fasta
         ch_dada2_asv = FILTER_SSU.out.asv
@@ -636,8 +613,6 @@ workflow AMPLISEQ {
         BARRNAPSUMMARY ( BARRNAP.out.gff.collect() )
         BARRNAPSUMMARY.out.warning.subscribe { it -> if ( it.baseName.toString().startsWith("WARNING") ) log.warn "Barrnap could not identify any rRNA in the ASV sequences. We recommended to use the --skip_barrnap option for these sequences." }
         ch_barrnapsummary = BARRNAPSUMMARY.out.summary
-        ch_versions = ch_versions.mix(BARRNAP.out.versions)
-        ch_versions = ch_versions.mix(BARRNAPSUMMARY.out.versions)
         ch_dada2_fasta = ch_unfiltered_fasta
     } else {
         ch_barrnapsummary = channel.empty()
@@ -649,7 +624,6 @@ workflow AMPLISEQ {
     //
     if ( (params.min_len_asv || params.max_len_asv) && !params.multiregion ) {
         FILTER_LEN_ASV ( ch_dada2_fasta, ch_dada2_asv.ifEmpty( [] ) )
-        ch_versions = ch_versions.mix(FILTER_LEN_ASV.out.versions)
         MERGE_STATS_FILTERLENASV ( ch_stats, FILTER_LEN_ASV.out.stats )
         ch_stats = MERGE_STATS_FILTERLENASV.out.tsv
         ch_dada2_fasta = FILTER_LEN_ASV.out.fasta
@@ -663,9 +637,7 @@ workflow AMPLISEQ {
     //
     if ( params.filter_codons && !params.multiregion ) {
         FILTER_CODONS ( ch_dada2_fasta, ch_dada2_asv.ifEmpty( [] ) )
-        ch_versions = ch_versions.mix(FILTER_CODONS.out.versions)
         MERGE_STATS_CODONS( ch_stats, FILTER_CODONS.out.stats )
-        ch_versions = ch_versions.mix(MERGE_STATS_CODONS.out.versions)
         ch_stats = MERGE_STATS_CODONS.out.tsv
         ch_dada2_fasta = FILTER_CODONS.out.fasta
         ch_dada2_asv = FILTER_CODONS.out.asv
@@ -692,12 +664,10 @@ workflow AMPLISEQ {
 
         if (params.its_extractor == "itsxrust") {
             ITSXRUST_CUTASV ( ch_full_fasta, outfile )
-            ch_versions = ch_versions.mix(ITSXRUST_CUTASV.out.versions)
             ch_its_fasta = ITSXRUST_CUTASV.out.fasta
             ch_its_summary = ITSXRUST_CUTASV.out.summary
         } else {
             ITSX_CUTASV ( ch_full_fasta, outfile )
-            ch_versions = ch_versions.mix(ITSX_CUTASV.out.versions)
             ch_its_fasta = ITSX_CUTASV.out.fasta
             ch_its_summary = ITSX_CUTASV.out.summary
         }
@@ -716,7 +686,6 @@ workflow AMPLISEQ {
         if (!params.dada_ref_tax_custom) {
             //standard ref taxonomy input from conf/ref_databases.config
             FORMAT_TAXONOMY ( ch_dada_ref_taxonomy.collect(), val_dada_ref_taxonomy )
-            ch_versions = ch_versions.mix(FORMAT_TAXONOMY.out.versions)
             ch_dada_assigntax = FORMAT_TAXONOMY.out.assigntax
             ch_dada_addspecies = FORMAT_TAXONOMY.out.addspecies
         }
@@ -758,7 +727,6 @@ workflow AMPLISEQ {
             ch_full_fasta,
             val_sintax_taxlevels
         ).tax.set { ch_sintax_tax }
-        ch_versions = ch_versions.mix(SINTAX_TAXONOMY_WF.out.versions)
         ch_tax_for_robject = ch_tax_for_robject.mix ( ch_sintax_tax.map { it -> [ "sintax", file(it) ] } )
     } else {
         ch_sintax_tax = channel.empty()
@@ -804,7 +772,6 @@ workflow AMPLISEQ {
             .set { ch_hmmextract }
 
         HMMER_HMMEXTRACT(ch_hmmextract)
-        ch_versions = ch_versions.mix(HMMER_HMMEXTRACT.out.versions)
 
         // Create an input channel for FASTA_HMMSEARCH_RANK_FASTAS by adding the non-keyed entries from the original channel to the output of the extracted
         ch_search_profiles = HMMER_HMMEXTRACT.out.hmm
@@ -866,13 +833,11 @@ workflow AMPLISEQ {
                 params.RV_primer
             )
             ch_qiime_classifier = QIIME2_PREPTAX.out.classifier
-            ch_versions = ch_versions.mix( QIIME2_PREPTAX.out.versions )
         }
         QIIME2_TAXONOMY (
             ch_fasta,
             ch_qiime_classifier
         )
-        ch_versions = ch_versions.mix( QIIME2_TAXONOMY.out.versions )
         ch_qiime2_tax = QIIME2_TAXONOMY.out.tsv
         ch_tax_for_robject = ch_tax_for_robject.mix ( PHYLOSEQ_INTAX_QIIME2 ( ch_qiime2_tax ).tsv.map { it -> [ "qiime2", file(it) ] } )
     } else {
@@ -886,7 +851,6 @@ workflow AMPLISEQ {
         // Filter metadata and/or abundances so that they match: (1) samples lost during preprocessing, (2) intentional data subsetting for downstream analysis
         if ( params.metadata && !params.multiregion ) {
             FILTER_SAMPLES ( ch_metadata, ch_dada2_asv )
-            ch_versions = ch_versions.mix( FILTER_SAMPLES.out.versions )
             ch_metadata = FILTER_SAMPLES.out.metadata
             ch_dada2_asv = FILTER_SAMPLES.out.abundances
             FILTER_SAMPLES.out.log.collect().subscribe{ it -> log.warn "${it.baseName.toString()}" }
@@ -894,14 +858,11 @@ workflow AMPLISEQ {
 
         // Import ASV abundance table and sequences into QIIME2
         QIIME2_INASV ( ch_dada2_asv )
-        ch_versions = ch_versions.mix( QIIME2_INASV.out.versions )
         QIIME2_INSEQ ( ch_fasta )
-        ch_versions = ch_versions.mix( QIIME2_INSEQ.out.versions )
 
         // Import phylogenetic tree into QIIME2
         if ( params.pplace_tree ) {
             ch_tree = QIIME2_INTREE ( PPLACE_STANDARD.out.grafted_phylogeny ).qza
-            ch_versions = ch_versions.mix( QIIME2_INTREE.out.versions )
         } else if (params.multiregion) {
             ch_tree = SIDLE_WF.out.tree_qza
         } else { ch_tree = [] }
@@ -954,13 +915,9 @@ workflow AMPLISEQ {
                 params.min_samples,
                 params.exclude_taxa
             )
-            ch_versions = ch_versions.mix( QIIME2_TABLEFILTERTAXA.out.versions )
             QIIME2_SEQFILTERTABLE ( QIIME2_TABLEFILTERTAXA.out.qza, QIIME2_INSEQ.out.qza )
-            ch_versions = ch_versions.mix( QIIME2_SEQFILTERTABLE.out.versions )
             FILTER_STATS ( ch_dada2_asv, QIIME2_TABLEFILTERTAXA.out.tsv )
-            ch_versions = ch_versions.mix( FILTER_STATS.out.versions )
             MERGE_STATS_FILTERTAXA (ch_stats, FILTER_STATS.out.tsv)
-            ch_versions = ch_versions.mix( MERGE_STATS_FILTERTAXA.out.versions )
             ch_asv = QIIME2_TABLEFILTERTAXA.out.qza
             ch_seq = QIIME2_SEQFILTERTABLE.out.qza
             ch_tsv = QIIME2_TABLEFILTERTAXA.out.tsv
@@ -972,35 +929,29 @@ workflow AMPLISEQ {
         //Export various ASV tables
         if (!params.skip_abundance_tables) {
             QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, ch_qiime2_tax, ch_dada2_tax, ch_pplace_tax, ch_sintax_tax, tax_agglom_min, tax_agglom_max )
-            ch_versions = ch_versions.mix( QIIME2_EXPORT.out.versions )
         }
 
         if (!params.skip_barplot) {
             QIIME2_BARPLOT ( ch_metadata.ifEmpty([]), ch_asv, ch_tax, '' )
-            ch_versions = ch_versions.mix( QIIME2_BARPLOT.out.versions )
         }
 
         if (params.metadata_category_barplot) {
             QIIME2_BARPLOTAVG ( ch_metadata, QIIME2_EXPORT.out.rel_tsv, ch_tax, params.metadata_category_barplot )
-            ch_versions = ch_versions.mix( QIIME2_BARPLOTAVG.out.versions )
         }
 
         //Select metadata categories for diversity analysis & ancom
         if (params.metadata_category) {
             ch_metacolumn_all = channel.fromList(params.metadata_category.tokenize(','))
             METADATA_PAIRWISE ( ch_metadata ).category.set { ch_metacolumn_pairwise }
-            ch_versions = ch_versions.mix( METADATA_PAIRWISE.out.versions )
             ch_metacolumn_pairwise = ch_metacolumn_pairwise.splitCsv().flatten()
             ch_metacolumn_pairwise = ch_metacolumn_all.join(ch_metacolumn_pairwise)
         } else if (params.ancom || params.ancombc || !params.skip_diversity_indices) {
             METADATA_ALL ( ch_metadata ).category.set { ch_metacolumn_all }
-            ch_versions = ch_versions.mix( METADATA_ALL.out.versions )
             //return empty channel if no appropriate column was found
             ch_metacolumn_all.branch { it -> passed: it != "" }.set { result }
             ch_metacolumn_all = result.passed
             ch_metacolumn_all = ch_metacolumn_all.splitCsv().flatten()
             METADATA_PAIRWISE ( ch_metadata ).category.set { ch_metacolumn_pairwise }
-            ch_versions = ch_versions.mix( METADATA_PAIRWISE.out.versions )
             ch_metacolumn_pairwise = ch_metacolumn_pairwise.splitCsv().flatten()
         } else {
             ch_metacolumn_all = channel.empty()
@@ -1021,7 +972,6 @@ workflow AMPLISEQ {
                 params.skip_diversity_indices,
                 params.diversity_rarefaction_depth
             )
-            ch_versions = ch_versions.mix( QIIME2_DIVERSITY.out.versions )
         }
 
         //Perform ANCOM and ANCOMBC tests
@@ -1035,7 +985,6 @@ workflow AMPLISEQ {
                 tax_agglom_max,
                 params.ancombc_formula
             )
-            ch_versions = ch_versions.mix( QIIME2_ANCOM.out.versions )
         }
     } else {
         ch_tsv = ch_dada2_asv
@@ -1050,7 +999,6 @@ workflow AMPLISEQ {
         } else {
             PICRUST ( ch_fasta, ch_dada2_asv, "DADA2", "This Picrust2 analysis is based on unfiltered reads from DADA2" )
         }
-        ch_versions = ch_versions.mix(PICRUST.out.versions)
     }
 
     //
@@ -1066,7 +1014,6 @@ workflow AMPLISEQ {
             db_version = params.dada_ref_databases[params.dada_ref_taxonomy]["dbversion"]
             SBDIEXPORTREANNOTATE ( ch_dada2_tax, "dada2", db_version, params.cut_its, ch_barrnapsummary.ifEmpty([]) )
         }
-        ch_versions = ch_versions.mix(SBDIEXPORT.out.versions)
     }
 
     //
@@ -1090,7 +1037,6 @@ workflow AMPLISEQ {
             ch_tree_for_robject,
             run_qiime2
         )
-        ch_versions = ch_versions.mix(ROBJECT_WORKFLOW.out.versions)
     }
 
     //
@@ -1117,7 +1063,7 @@ workflow AMPLISEQ {
         .mix(topic_versions_string)
         .collectFile(
             storeDir: "${params.outdir}/pipeline_info",
-            name: 'software_versions.yml',
+            name: 'nf_core_' + 'ampliseq_software_' + 'mqc_' + 'versions.yml',
             sort: true,
             newLine: true
         ).set { ch_collated_versions }

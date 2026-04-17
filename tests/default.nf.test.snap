@@ -397,7 +397,7 @@
                 "phyloseq/dada2_phyloseq.rds",
                 "phyloseq/qiime2_phyloseq.rds",
                 "pipeline_info",
-                "pipeline_info/software_versions.yml",
+                "pipeline_info/nf_core_ampliseq_software_mqc_versions.yml",
                 "qiime2",
                 "qiime2/abundance_tables",
                 "qiime2/abundance_tables/abs-abund-table-2.tsv",

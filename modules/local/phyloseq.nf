@@ -12,7 +12,7 @@ process PHYLOSEQ {
 
     output:
     tuple val(prefix), path("*phyloseq.rds"), emit: rds
-    path "versions.yml"                     , emit: versions
+    path "versions.yml"                     , emit: versions_phyloseq, topic: versions
 
     script:
     """

@@ -16,7 +16,7 @@ process PICRUST {
     output:
     path("all_output/*") , emit: outfolder
     path("*_descrip.tsv"), emit: pathways
-    path "versions.yml"  , emit: versions
+    path "versions.yml"  , emit: versions_picrust, topic: versions
     path "*.args.txt"    , emit: args
     path "${message}.txt", emit: message
 

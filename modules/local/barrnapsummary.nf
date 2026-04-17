@@ -12,7 +12,7 @@ process BARRNAPSUMMARY {
     output:
     path "summary.tsv" , emit: summary
     path "*warning.txt", emit: warning
-    path "versions.yml", emit: versions
+    path "versions.yml", emit: versions_barrnapsummary, topic: versions
 
 
     script:

@@ -16,7 +16,7 @@ process QIIME2_ANCOMBC_ASV {
     path("differentials/*"), emit: differentials
     path("*.qza")          , emit: qza
     path("*.qzv")          , emit: qzv
-    path "versions.yml"    , emit: versions
+    path "versions.yml"    , emit: versions_qiime2_ancombc_asv, topic: versions
 
     script:
     def args        = task.ext.args ?: ''

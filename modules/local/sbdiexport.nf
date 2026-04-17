@@ -14,7 +14,7 @@ process SBDIEXPORT {
 
     output:
     path "*.tsv"       , emit: sbditables
-    path "versions.yml", emit: versions
+    path "versions.yml", emit: versions_sbdiexport, topic: versions
 
     script:
     def args = task.ext.args ?: ''

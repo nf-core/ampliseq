@@ -231,7 +231,7 @@
                 "phyloseq",
                 "phyloseq/dada2_phyloseq.rds",
                 "pipeline_info",
-                "pipeline_info/software_versions.yml",
+                "pipeline_info/nf_core_ampliseq_software_mqc_versions.yml",
                 "summary_report",
                 "summary_report/dada2_taxonomic_classification_per_taxonomy_level.svg",
                 "summary_report/rrna_detection_with_barrnap.svg",

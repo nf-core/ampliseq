@@ -17,7 +17,7 @@ process FILTER_LEN {
     path( "ASV_seqs.len.fasta" ) , emit: fasta
     path( "ASV_len_orig.tsv" )   , emit: len_orig
     path( "ASV_len_filt.tsv" )   , emit: len_filt
-    path "versions.yml"          , emit: versions
+    path "versions.yml"          , emit: versions_filter_len, topic: versions
 
     script:
     def min_len_asv = task.ext.min_len_asv ?: '1'

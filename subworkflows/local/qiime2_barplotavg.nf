@@ -14,12 +14,10 @@ workflow QIIME2_BARPLOTAVG {
     metadata_category_barplot
 
     main:
-    ch_versions_qiime2_barplotavg = channel.empty()
     ch_metadata_category_barplot = channel.fromList(metadata_category_barplot.tokenize(','))
 
     //Import raltive ASV table
     QIIME2_INASV_BPAVG ( ch_rel_tsv )
-    ch_versions_qiime2_barplotavg = ch_versions_qiime2_barplotavg.mix(QIIME2_INASV_BPAVG.out.versions)
 
     //group by metadata category (ch_metadata_category_barplot)
     QIIME2_FEATURETABLE_GROUP (
@@ -27,12 +25,7 @@ workflow QIIME2_BARPLOTAVG {
         .combine(ch_metadata)
         .combine(ch_metadata_category_barplot)
     )
-    ch_versions_qiime2_barplotavg = ch_versions_qiime2_barplotavg.mix(QIIME2_FEATURETABLE_GROUP.out.versions)
 
     //Barplot
     QIIME2_BPAVG ( [], QIIME2_FEATURETABLE_GROUP.out.qza, ch_tax.collect(), 'average' )
-    ch_versions_qiime2_barplotavg = ch_versions_qiime2_barplotavg.mix(QIIME2_BPAVG.out.versions)
-
-    emit:
-    versions = ch_versions_qiime2_barplotavg
 }

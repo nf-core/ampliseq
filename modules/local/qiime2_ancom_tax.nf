@@ -11,7 +11,7 @@ process QIIME2_ANCOM_TAX {
 
     output:
     path "ancom/*"      , emit: ancom
-    path "versions.yml" , emit: versions
+    path "versions.yml" , emit: versions_qiime2_ancom_tax, topic: versions
 
     script:
     """

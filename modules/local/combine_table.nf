@@ -14,7 +14,7 @@ process COMBINE_TABLE {
 
     output:
     path("${outfile}")  , emit: tsv
-    path "versions.yml" , emit: versions
+    path "versions.yml" , emit: versions_combine_table, topic: versions
 
 
     script:

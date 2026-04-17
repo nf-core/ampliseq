@@ -13,7 +13,7 @@ process BARRNAP {
     output:
     path( "*.matches.txt" ) , emit: matches
     path( "rrna.*.gff" )    , emit: gff
-    path "versions.yml"     , emit: versions
+    path "versions.yml"     , emit: versions_barrnap, topic: versions
 
 
     script:

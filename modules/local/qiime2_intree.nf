@@ -10,7 +10,7 @@ process QIIME2_INTREE {
 
     output:
     path("tree.qza")   , emit: qza
-    path "versions.yml", emit: versions
+    path "versions.yml", emit: versions_qiime2_intree, topic: versions
 
     script:
     """

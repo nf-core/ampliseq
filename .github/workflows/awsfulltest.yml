@@ -32,7 +32,6 @@ jobs:
           workdir: s3://${{ vars.AWS_S3_BUCKET }}/work/ampliseq/work-${{ steps.revision.outputs.revision }}
           parameters: |
             {
-              "hook_url": "${{ secrets.MEGATESTS_ALERTS_SLACK_HOOK_URL }}",
               "outdir": "s3://${{ vars.AWS_S3_BUCKET }}/ampliseq/results-${{ steps.revision.outputs.revision }}"
             }
           profiles: test_full,aws_scratch

@@ -38,16 +38,16 @@ jobs:
               enabled = true
               bot {
                 token = '${{ secrets.NFSLACK_BOT_TOKEN }}'
-                channel = 'taxprofiler'
+                channel = 'ampliseq'
               }
               onStart {
                 enabled = false
               }
               onComplete {
-                message = ':white_check_mark: *taxprofiler/test_full* completed successfully! :tada:'
+                message = ':white_check_mark: *ampliseq/test_full* completed successfully! :tada:'
               }
               onError {
-                message = ':x: */taxprofiler/test_full* failed :crying_cat_face:'
+                message = ':x: */ampliseq/test_full* failed :crying_cat_face:'
               }
             }
           parameters: |

@@ -31,7 +31,7 @@
                     "sed": 4.7
                 },
                 "Workflow": {
-                    "nf-core/ampliseq": "v2.17.0"
+                    "nf-core/ampliseq": "v2.18.0dev"
                 }
             },
             [

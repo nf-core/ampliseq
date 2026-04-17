@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#992](https://github.com/nf-core/ampliseq/pull/992) - Slack notification on status of AWS full test
+
 ### `Changed`
 
 ### `Fixed`
@@ -14,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Dependencies`
 
 ### `Removed`
+
+- [#992](https://github.com/nf-core/ampliseq/pull/992) - Remove hook_url from the pipeline configuration
 
 ## nf-core/ampliseq version 2.17.0 - 2026-04-13
 

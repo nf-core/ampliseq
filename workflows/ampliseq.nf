@@ -810,7 +810,6 @@ workflow AMPLISEQ {
         ch_versions = ch_versions.mix(PPLACE_SHEET.out.versions)
 
         PPLACEFORMATTAX_SHEET(PPLACE_SHEET.out.taxonomy_per_query)
-        ch_versions = ch_versions.mix(PPLACEFORMATTAX_SHEET.out.versions)
 
         // Currently, this channel used only for QIIME2_EXPORT and not QIIME2_INTAX since the call to the latter is wrapped in an if clause checking params.pplace_tree
         if ( ! params.pplace_tree ) {

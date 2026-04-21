@@ -29,6 +29,10 @@
                 "CUTADAPT_TAXONOMY": {
                     "cutadapt": 5.2
                 },
+                "DADA2_ADDSPECIES": {
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
+                },
                 "DADA2_DENOISING": {
                     "R": "4.5.2",
                     "dada2": "1.38.0"
@@ -106,6 +110,9 @@
                 "MERGE_STATS_DECONTAM": {
                     "R": "4.5.2"
                 },
+                "MERGE_STATS_FILTERLENASV": {
+                    "R": "4.5.2"
+                },
                 "MERGE_STATS_FILTERSSU": {
                     "R": "4.5.2"
                 },
@@ -124,6 +131,13 @@
                 "PHYLOSEQ": {
                     "R": "4.4.2",
                     "phyloseq": "1.50.0"
+                },
+                "PHYLOSEQ_INASV": {
+                    "sed": 4.7
+                },
+                "PHYLOSEQ_INTAX_QIIME2": {
+                    "python": "3.9.1",
+                    "pandas": "1.1.5"
                 },
                 "QIIME2_ALPHARAREFACTION": {
                     "qiime2": "2024.10.1"
@@ -185,6 +199,9 @@
                 "QIIME2_INSEQ": {
                     "qiime2": "2024.10.1"
                 },
+                "QIIME2_INTAX": {
+                    "qiime2": "2024.10.1"
+                },
                 "QIIME2_SEQFILTERTABLE": {
                     "qiime2": "2024.10.1"
                 },
@@ -201,6 +218,9 @@
                     "sed": 4.7
                 },
                 "SBDIEXPORT": {
+                    "R": "3.6.3"
+                },
+                "SBDIEXPORTREANNOTATE": {
                     "R": "3.6.3"
                 },
                 "TREESUMMARIZEDEXPERIMENT": {
@@ -335,6 +355,7 @@
                 "multiqc/multiqc_data/multiqc_data.json",
                 "multiqc/multiqc_data/multiqc_fastqc.txt",
                 "multiqc/multiqc_data/multiqc_general_stats.txt",
+                "multiqc/multiqc_data/multiqc_software_versions.txt",
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_plots",
                 "multiqc/multiqc_plots/pdf",
@@ -2258,9 +2279,9 @@
             "ASV_post_clustering_filtered.table.tsv:md5,349277d892297b57b1761c88825580de"
         ],
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.4"
         },
-        "timestamp": "2026-04-08T21:41:30.770332812"
+        "timestamp": "2026-04-21T10:31:19.174227332"
     }
 }

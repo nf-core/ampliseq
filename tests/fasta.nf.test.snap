@@ -8,6 +8,10 @@
                 "BARRNAPSUMMARY": {
                     "python": "Python 3.9.1"
                 },
+                "DADA2_ADDSPECIES": {
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
+                },
                 "DADA2_TAXONOMY": {
                     "R": "4.5.2",
                     "dada2": "1.38.0"
@@ -70,6 +74,7 @@
                 "multiqc/multiqc_data/multiqc.parquet",
                 "multiqc/multiqc_data/multiqc_citations.txt",
                 "multiqc/multiqc_data/multiqc_data.json",
+                "multiqc/multiqc_data/multiqc_software_versions.txt",
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
@@ -94,10 +99,10 @@
             "ref_taxonomy.rdp_18.txt:md5,c20d8e186e2893ba7818a0115edb013e",
             "ASV_seqs.fasta:md5,39b0d4ad96b37fa68d4ee5c21b667fed"
         ],
-        "timestamp": "2026-03-12T08:44:29.251548534",
         "meta": {
-            "nf-test": "0.9.4",
+            "nf-test": "0.9.3",
             "nextflow": "25.10.4"
-        }
+        },
+        "timestamp": "2026-04-21T08:55:06.518243143"
     }
 }

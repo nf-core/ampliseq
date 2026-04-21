@@ -107,6 +107,13 @@
                     "R": "4.4.2",
                     "phyloseq": "1.50.0"
                 },
+                "PHYLOSEQ_INASV": {
+                    "sed": 4.7
+                },
+                "PHYLOSEQ_INTAX_QIIME2": {
+                    "python": "3.9.1",
+                    "pandas": "1.1.5"
+                },
                 "PPLACEFORMATTAX_SHEET": {
                     "R": "4.5.2",
                     "dada2": "1.38.0"
@@ -253,6 +260,7 @@
                 "multiqc/multiqc_data/multiqc_data.json",
                 "multiqc/multiqc_data/multiqc_fastqc.txt",
                 "multiqc/multiqc_data/multiqc_general_stats.txt",
+                "multiqc/multiqc_data/multiqc_software_versions.txt",
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_plots",
                 "multiqc/multiqc_plots/pdf",
@@ -461,10 +469,10 @@
             3826,
             276
         ],
-        "timestamp": "2026-03-12T21:41:16.174265927",
         "meta": {
-            "nf-test": "0.9.4",
+            "nf-test": "0.9.3",
             "nextflow": "25.10.4"
-        }
+        },
+        "timestamp": "2026-04-21T15:28:30.117584083"
     }
 }

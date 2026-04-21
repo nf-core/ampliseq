@@ -110,6 +110,21 @@
                     "R": "4.4.2",
                     "phyloseq": "1.50.0"
                 },
+                "PHYLOSEQ_INASV": {
+                    "sed": 4.7
+                },
+                "PHYLOSEQ_INTAX_PPLACE": {
+                    "python": "3.9.1",
+                    "pandas": "1.1.5"
+                },
+                "PHYLOSEQ_INTAX_QIIME2": {
+                    "python": "3.9.1",
+                    "pandas": "1.1.5"
+                },
+                "PPLACEFORMATTAX_STANDARD": {
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
+                },
                 "QIIME2_BARPLOT": {
                     "qiime2": "2024.10.1"
                 },
@@ -144,6 +159,9 @@
                     "qiime2": "2024.10.1"
                 },
                 "QIIME2_INSEQ": {
+                    "qiime2": "2024.10.1"
+                },
+                "QIIME2_INTAX": {
                     "qiime2": "2024.10.1"
                 },
                 "QIIME2_INTREE": {
@@ -247,6 +265,7 @@
                 "multiqc/multiqc_data/multiqc_cutadapt.txt",
                 "multiqc/multiqc_data/multiqc_data.json",
                 "multiqc/multiqc_data/multiqc_general_stats.txt",
+                "multiqc/multiqc_data/multiqc_software_versions.txt",
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_plots",
                 "multiqc/multiqc_plots/pdf",
@@ -1196,10 +1215,10 @@
             "multiqc_general_stats.txt:md5,7a395be7984aaa0f9154de4abed5d824",
             "multiqc_cutadapt.txt:md5,3dce058d2d6c85a3cca7314ae19c5586"
         ],
-        "timestamp": "2026-03-11T17:39:39.331356202",
         "meta": {
-            "nf-test": "0.9.4",
+            "nf-test": "0.9.3",
             "nextflow": "25.10.4"
-        }
+        },
+        "timestamp": "2026-04-21T13:11:50.389289893"
     }
 }

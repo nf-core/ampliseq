@@ -51,6 +51,10 @@
                 "FASTQC": {
                     "fastqc": "0.12.1"
                 },
+                "FILTER_LEN_ITSX": {
+                    "R": "4.0.3",
+                    "Biostrings": "2.58.0"
+                },
                 "FORMAT_TAXONOMY_SINTAX": {
                     "sed": 4.7
                 },
@@ -67,6 +71,9 @@
                     "sed": 4.7
                 },
                 "SBDIEXPORT": {
+                    "R": "3.6.3"
+                },
+                "SBDIEXPORTREANNOTATE": {
                     "R": "3.6.3"
                 },
                 "TREESUMMARIZEDEXPERIMENT": {
@@ -168,6 +175,7 @@
                 "multiqc/multiqc_data/multiqc_data.json",
                 "multiqc/multiqc_data/multiqc_fastqc.txt",
                 "multiqc/multiqc_data/multiqc_general_stats.txt",
+                "multiqc/multiqc_data/multiqc_software_versions.txt",
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_plots",
                 "multiqc/multiqc_plots/pdf",
@@ -271,8 +279,8 @@
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
+            "nextflow": "25.10.4"
         },
-        "timestamp": "2026-01-22T20:05:15.329256833"
+        "timestamp": "2026-04-21T09:19:33.698156989"
     }
 }

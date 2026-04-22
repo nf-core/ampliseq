@@ -17,7 +17,7 @@ process DADA2_DENOISING {
     tuple val(meta), path("*.seqtab.rds") , emit: seqtab
     tuple val(meta), path("*.mergers.rds"), emit: mergers
     tuple val(meta), path("*.log")        , emit: log
-    path "versions.yml"                   , emit: versions
+    path "versions.yml"                   , emit: versions_dada2_denoising, topic: versions
     path "*.args.txt"                     , emit: args
 
 

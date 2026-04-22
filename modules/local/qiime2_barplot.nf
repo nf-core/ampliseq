@@ -12,7 +12,7 @@ process QIIME2_BARPLOT {
 
     output:
     path("barplot${suffix}/*"), emit: folder
-    path "versions.yml"       , emit: versions
+    path "versions.yml"       , emit: versions_qiime2_barplot, topic: versions
 
     script:
     suffix = setting ? "_${table.baseName}" : ""

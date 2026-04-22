@@ -15,7 +15,7 @@ process ASSIGNSH {
 
     output:
     path outtable        , emit: tsv
-    path "versions.yml"  , emit: versions
+    path "versions.yml"  , emit: versions_assignsh, topic: versions
 
 
     script:

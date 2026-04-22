@@ -11,7 +11,7 @@ process FORMAT_FASTAINPUT {
 
     output:
     path "input.mod.fasta"  , emit: fasta
-    path "versions.yml"     , emit: versions
+    path "versions.yml"     , emit: versions_format_fastainput, topic: versions
 
     script:
     """

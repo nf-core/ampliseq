@@ -10,7 +10,7 @@ process QIIME2_FILTERSAMPLES {
 
     output:
     path("*.qza")       , emit: qza
-    path "versions.yml" , emit: versions
+    path "versions.yml" , emit: versions_qiime2_filtersamples, topic: versions
 
     script:
     def args = task.ext.args ?: "--p-where \'${filter}<>\"\"\'"

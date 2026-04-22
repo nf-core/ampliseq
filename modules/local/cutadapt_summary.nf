@@ -13,7 +13,7 @@ process CUTADAPT_SUMMARY {
 
     output:
     path("*_summary.tsv") , emit: tsv
-    path "versions.yml"   , emit: versions
+    path "versions.yml"   , emit: versions_cutadapt_summary, topic: versions
 
 
     script:

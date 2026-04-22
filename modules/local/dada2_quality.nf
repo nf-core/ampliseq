@@ -14,7 +14,7 @@ process DADA2_QUALITY {
     path "*_qual_stats.pdf"                  , emit: pdf
     path "*_qual_stats.svg"                  , emit: svg
     tuple val(meta), path("*_qual_stats.tsv"), emit: tsv
-    path "versions.yml"                      , emit: versions
+    path "versions.yml"                      , emit: versions_dada2_quality, topic: versions
     path "*.args.txt"                        , emit: args
     path "*plotQualityProfile.txt"           , emit: warning
 

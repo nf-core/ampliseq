@@ -22,7 +22,7 @@ process DECONTAM {
     path("notcontaminant_counts.tsv") , emit: notcontaminant_counts, optional: true
     path("notcontaminant_log.tsv")    , emit: notcontaminant_log, optional: true
     path("notcontaminant_details.tsv"), emit: notcontaminant_details, optional: true
-    path "versions.yml"               , emit: versions
+    path "versions.yml"               , emit: versions_decontam, topic: versions
 
     when:
     task.ext.when == null || task.ext.when

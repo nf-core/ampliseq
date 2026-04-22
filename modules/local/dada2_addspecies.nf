@@ -16,7 +16,7 @@ process DADA2_ADDSPECIES {
 
     output:
     path("${taxtable.baseName}.species.tsv")   , emit: tsv
-    path "versions.yml" , emit: versions
+    path "versions.yml" , emit: versions_dada2_addspecies, topic: versions
     path "*.args.txt"   , emit: args
 
 

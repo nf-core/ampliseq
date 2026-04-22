@@ -14,7 +14,7 @@ process SIDLE_SEQRECON {
     path("reconstruction_fragments.qza") , emit: qza
     path("reconstruction_fragments/*")   , emit: visualisation
     path("reconstructed_fragments.fasta"), emit: fasta
-    path "versions.yml"                  , emit: versions
+    path "versions.yml"                  , emit: versions_sidle_sqrecon, topic: versions
 
     script:
     """

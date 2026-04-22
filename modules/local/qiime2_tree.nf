@@ -10,7 +10,7 @@ process QIIME2_TREE {
     output:
     path("rooted-tree.qza"), emit: qza
     path("tree.nwk")       , emit: nwk
-    path "versions.yml"    , emit: versions
+    path "versions.yml"    , emit: versions_qiime2_tree, topic: versions
 
     script:
     """

@@ -12,7 +12,7 @@ process QIIME2_CLASSIFY {
     output:
     path("taxonomy.qza"), emit: qza
     path("taxonomy.tsv"), emit: tsv
-    path "versions.yml" , emit: versions
+    path "versions.yml" , emit: versions_qiime2_classify, topic: versions
 
     script:
     """

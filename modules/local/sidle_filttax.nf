@@ -12,7 +12,7 @@ process SIDLE_FILTTAX {
     output:
     path("reconstructed_taxonomy.tsv"), emit: filtered
     path("reconstructed_merged.tsv")  , emit: merged
-    path "versions.yml"               , emit: versions
+    path "versions.yml"               , emit: versions_sidle_filttax, topic: versions
 
     script:
     """

@@ -13,7 +13,7 @@ process QIIME2_ALPHARAREFACTION {
     output:
     path("alpha-rarefaction/*"), emit: rarefaction
     path("*.qzv")              , emit: qzv
-    path "versions.yml"        , emit: versions
+    path "versions.yml"        , emit: versions_qiime2_alphararefaction, topic: versions
 
     script:
     """

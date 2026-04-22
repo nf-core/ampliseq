@@ -10,7 +10,7 @@ process SIDLE_IN {
 
     output:
     tuple val(meta), path("*_table.qza"), path("*_rep-seqs.qza"), emit: table_seq
-    path "versions.yml"                 , emit: versions
+    path "versions.yml"                                         , emit: versions_sidle_in, topic: versions
 
     script:
     def prefix = task.ext.prefix ?: "${meta.region}"

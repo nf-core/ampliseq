@@ -10,7 +10,7 @@ process QIIME2_INSEQ {
 
     output:
     path("rep-seqs.qza"), emit: qza
-    path "versions.yml", emit: versions
+    path "versions.yml", emit: versions_qiime2_inseq, topic: versions
 
     script:
     """

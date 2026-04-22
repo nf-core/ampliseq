@@ -11,7 +11,7 @@ process SIDLE_INDB {
     output:
     path("db_sequences.qza"), emit: seq
     path("db_taxonomy.qza") , emit: tax
-    path "versions.yml"     , emit: versions
+    path "versions.yml"     , emit: versions_sidle_indb, topic: versions
 
     script:
     """

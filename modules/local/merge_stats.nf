@@ -12,7 +12,7 @@ process MERGE_STATS {
 
     output:
     path("overall_summary.tsv") , emit: tsv
-    path "versions.yml"         , emit: versions
+    path "versions.yml"         , emit: versions_merge_stats, topic: versions
 
     script:
     """

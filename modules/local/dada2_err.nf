@@ -16,7 +16,7 @@ process DADA2_ERR {
     tuple val(meta), path("*.err.svg"), emit: svg
     tuple val(meta), path("*.err.log"), emit: log
     tuple val(meta), path("*.err.convergence.txt"), emit: convergence
-    path "versions.yml"               , emit: versions
+    path "versions.yml"               , emit: versions_dada2_err, topic: versions
     path "*.args.txt"                 , emit: args
 
 

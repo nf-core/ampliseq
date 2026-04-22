@@ -22,7 +22,7 @@ nextflow_pipeline {
             assertAll(
                 { assert snapshot(
                     // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
-                    removeNextflowVersion("$outputDir/pipeline_info/software_versions.yml"),
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_ampliseq_software_mqc_versions.yml"),
                     // All stable path name, with a relative path
                     stable_name,
                     // Manually chosen files for content checks

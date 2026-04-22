@@ -10,9 +10,9 @@ process FORMAT_TAXONOMY_SINTAX {
     path(database)
 
     output:
-    path( "sintaxdb.fa.gz" ), emit: db
-    path( "ref_taxonomy_sintax.txt")     , emit: ref_tax_info
-    path "versions.yml"           , emit: versions
+    path( "sintaxdb.fa.gz" )        , emit: db
+    path( "ref_taxonomy_sintax.txt"), emit: ref_tax_info
+    path "versions.yml"             , emit: versions_format_taxonomy_sintax, topic: versions
 
     script:
     if (params.sintax_ref_tax_custom) {

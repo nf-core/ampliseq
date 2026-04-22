@@ -11,11 +11,11 @@ process ITSX_CUTASV {
     val outfile
 
     output:
-    path outfile         , emit: fasta
+    path outfile                   , emit: fasta
     path "ASV_ITS_seqs.summary.txt", emit: summary
-    path "ASV_ITS_seqs.*fasta", emit: fastas
-    path "versions.yml"  , emit: versions
-    path "*.args.txt"    , emit: args
+    path "ASV_ITS_seqs.*fasta"     , emit: fastas
+    path "versions.yml"            , emit: versions_itsx_cutasv, topic: versions
+    path "*.args.txt"              , emit: args
 
     script:
     def args = task.ext.args ?: ''

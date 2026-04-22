@@ -11,7 +11,7 @@ process QIIME2_INTAX {
 
     output:
     path("taxonomy.qza") , emit: qza
-    path "versions.yml"  , emit: versions
+    path "versions.yml"  , emit: versions_qiime2_intax, topic: versions
 
     script:
     def script_cmd = script ? "$script $tax" : "cp $tax tax.tsv"

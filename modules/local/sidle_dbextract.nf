@@ -12,7 +12,7 @@ process SIDLE_DBEXTRACT {
     output:
     tuple val(meta), path("db_*_kmers.qza"), emit: kmers
     tuple val(meta), path("db_*_map.qza")  , emit: kmer_map
-    path "versions.yml"                    , emit: versions
+    path "versions.yml"                    , emit: versions_sidle_dbextract, topic: versions
 
     script:
     def args = task.ext.args ?: ''

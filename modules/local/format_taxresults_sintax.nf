@@ -14,7 +14,7 @@ process FORMAT_TAXRESULTS_SINTAX {
 
     output:
     path(outfile)      , emit: tsv
-    path "versions.yml", emit: versions
+    path "versions.yml", emit: versions_format_taxresults_sintax, topic: versions
 
     script:
     def taxlevels = taxlevels_input ? taxlevels_input : "Kingdom,Phylum,Class,Order,Family,Genus,Species"

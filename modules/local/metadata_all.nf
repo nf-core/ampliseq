@@ -12,7 +12,7 @@ process METADATA_ALL {
 
     output:
     stdout               emit: category
-    path "versions.yml", emit: versions
+    path "versions.yml", emit: versions_metadata_all, topic: versions
 
     script:
     """

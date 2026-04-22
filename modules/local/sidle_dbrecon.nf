@@ -13,7 +13,7 @@ process SIDLE_DBRECON {
     path("reconstruction_map.qza")    , emit: reconstruction_map
     path("reconstruction_summary.qza"), emit: reconstruction_summary
     path("reconstruction_summary/*")  , emit: visualisation
-    path "versions.yml"               , emit: versions
+    path "versions.yml"               , emit: versions_sidle_dbrecon, topic: versions
 
     script:
     def args = task.ext.args ?: ''

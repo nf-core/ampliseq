@@ -18,7 +18,7 @@ process QIIME2_EXPORT_ABSOLUTE {
     path("seven_number_summary.tsv") , emit: summary
     path("descriptive_stats.tsv")    , emit: descr
     path("abs-abund-table-*.tsv")    , emit: abundtable
-    path "versions.yml"              , emit: versions
+    path "versions.yml"              , emit: versions_qiime2_export_absolute, topic: versions
 
     script:
     """

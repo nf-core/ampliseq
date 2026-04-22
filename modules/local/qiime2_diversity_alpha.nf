@@ -11,7 +11,7 @@ process QIIME2_DIVERSITY_ALPHA {
     output:
     path("alpha_diversity/*"), emit: alpha
     path("*.qzv")            , emit: qzv
-    path "versions.yml"      , emit: versions
+    path "versions.yml"      , emit: versions_qiime2_diversity_alpha, topic: versions
 
     script:
     """

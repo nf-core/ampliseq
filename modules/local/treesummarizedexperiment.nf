@@ -12,7 +12,7 @@ process TREESUMMARIZEDEXPERIMENT {
 
     output:
     tuple val(prefix), path("*TreeSummarizedExperiment.rds"), emit: rds
-    path "versions.yml"                                     , emit: versions
+    path "versions.yml"                                     , emit: versions_treesummarizedexperiment, topic: versions
 
     script:
     """

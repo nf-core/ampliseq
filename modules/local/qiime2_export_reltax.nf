@@ -12,7 +12,7 @@ process QIIME2_EXPORT_RELTAX {
 
     output:
     path("*.tsv")        , emit: tsv
-    path "versions.yml"  , emit: versions
+    path "versions.yml"  , emit: versions_qiime2_export_reltax, topic: versions
 
     script:
     """

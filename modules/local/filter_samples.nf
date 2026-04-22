@@ -14,7 +14,7 @@ process FILTER_SAMPLES {
     path("metadata.tsv"), emit: metadata
     path("table.tsv")   , emit: abundances
     path("*.log")       , emit: log, optional: true
-    path "versions.yml" , emit: versions
+    path "versions.yml" , emit: versions_filter_samples, topic: versions
 
     script:
     """

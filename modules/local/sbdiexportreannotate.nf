@@ -16,7 +16,7 @@ process SBDIEXPORTREANNOTATE {
 
     output:
     path "*.tsv"       , emit: sbdiannottables
-    path "versions.yml", emit: versions
+    path "versions.yml", emit: versions_sbdiexportreannotate, topic: versions
 
     script:
     """

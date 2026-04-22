@@ -14,6 +14,10 @@
                 "CUTADAPT_SUMMARY_STD": {
                     "python": "Python 3.8.3"
                 },
+                "DADA2_ADDSPECIES": {
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
+                },
                 "DADA2_DENOISING": {
                     "R": "4.5.2",
                     "dada2": "1.38.0"
@@ -59,6 +63,9 @@
                 "FASTQC": {
                     "fastqc": "0.12.1"
                 },
+                "FORMAT_TAXRESULTS_KRAKEN2": {
+                    "R": "4.2.1"
+                },
                 "KRAKEN2_KRAKEN2": {
                     "kraken2": "2.1.6",
                     "pigz": 2.8
@@ -69,6 +76,10 @@
                 "PHYLOSEQ": {
                     "R": "4.4.2",
                     "phyloseq": "1.50.0"
+                },
+                "PHYLOSEQ_INTAX_QIIME2": {
+                    "python": "3.9.1",
+                    "pandas": "1.1.5"
                 },
                 "QIIME2_CLASSIFY": {
                     "qiime2": "2024.10.1"
@@ -201,6 +212,7 @@
                 "multiqc/multiqc_data/multiqc_data.json",
                 "multiqc/multiqc_data/multiqc_fastqc.txt",
                 "multiqc/multiqc_data/multiqc_general_stats.txt",
+                "multiqc/multiqc_data/multiqc_software_versions.txt",
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_plots",
                 "multiqc/multiqc_plots/pdf",
@@ -264,7 +276,7 @@
                 "phyloseq/kraken2_phyloseq.rds",
                 "phyloseq/qiime2_phyloseq.rds",
                 "pipeline_info",
-                "pipeline_info/software_versions.yml",
+                "pipeline_info/nf_core_ampliseq_software_mqc_versions.yml",
                 "qiime2",
                 "qiime2/input",
                 "qiime2/input/rep-seqs.qza",
@@ -298,10 +310,10 @@
             "multiqc_general_stats.txt:md5,885c19ff3e53d16bfe7937d6694268d7",
             "multiqc_cutadapt.txt:md5,3dce058d2d6c85a3cca7314ae19c5586"
         ],
-        "timestamp": "2026-03-03T13:17:02.177858732",
         "meta": {
-            "nf-test": "0.9.4",
+            "nf-test": "0.9.3",
             "nextflow": "25.10.4"
-        }
+        },
+        "timestamp": "2026-04-21T09:34:22.645485658"
     }
 }

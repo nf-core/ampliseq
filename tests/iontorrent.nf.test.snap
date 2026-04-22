@@ -148,6 +148,7 @@
                 "multiqc/multiqc_data/multiqc_data.json",
                 "multiqc/multiqc_data/multiqc_fastqc.txt",
                 "multiqc/multiqc_data/multiqc_general_stats.txt",
+                "multiqc/multiqc_data/multiqc_software_versions.txt",
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_plots",
                 "multiqc/multiqc_plots/pdf",
@@ -212,7 +213,7 @@
                 "phyloseq",
                 "phyloseq/sintax_phyloseq.rds",
                 "pipeline_info",
-                "pipeline_info/software_versions.yml",
+                "pipeline_info/nf_core_ampliseq_software_mqc_versions.yml",
                 "sintax",
                 "sintax/ASV_tax_sintax.user.raw.tsv",
                 "sintax/ASV_tax_sintax.user.tsv",
@@ -241,10 +242,10 @@
             "multiqc_general_stats.txt:md5,ded4ce8dd8c11463dd34317fb736e2ec",
             "multiqc_cutadapt.txt:md5,1409f3286d810cdc14d8e672556d9226"
         ],
-        "timestamp": "2026-04-08T11:30:21.881286",
         "meta": {
-            "nf-test": "0.9.5",
+            "nf-test": "0.9.3",
             "nextflow": "25.10.4"
-        }
+        },
+        "timestamp": "2026-04-21T08:56:57.256395967"
     }
 }

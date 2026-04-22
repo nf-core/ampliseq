@@ -11,7 +11,7 @@ process SIDLE_DBFILT {
     output:
     path("db_filtered_sequences.qza")     , emit: seq
     path("db_filtered_sequences_tax.qza") , emit: tax
-    path "versions.yml"                   , emit: versions
+    path "versions.yml"                   , emit: versions_sidle_dbfilt, topic: versions
 
     script:
     def args = task.ext.args ?: ''

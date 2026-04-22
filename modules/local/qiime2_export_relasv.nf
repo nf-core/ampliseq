@@ -9,7 +9,7 @@ process QIIME2_EXPORT_RELASV {
 
     output:
     path("rel-table-ASV.tsv"), emit: tsv
-    path "versions.yml"      , emit: versions
+    path "versions.yml"      , emit: versions_qiime2_export_relasv, topic: versions
 
     script:
     """

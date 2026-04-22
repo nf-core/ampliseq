@@ -12,7 +12,7 @@ process TRUNCLEN {
 
     output:
     tuple val(meta), stdout, emit: trunc
-    path "versions.yml"    , emit: versions
+    path "versions.yml"    , emit: versions_trunclen, topic: versions
 
     script:
     def args = task.ext.args ?: ''

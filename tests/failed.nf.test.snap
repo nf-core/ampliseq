@@ -73,6 +73,9 @@
                     "python": "3.9.1",
                     "pandas": "1.1.5"
                 },
+                "MERGE_STATS_FILTERLENASV": {
+                    "R": "4.5.2"
+                },
                 "MERGE_STATS_FILTERSSU": {
                     "R": "4.5.2"
                 },
@@ -91,6 +94,9 @@
                 "PHYLOSEQ": {
                     "R": "4.4.2",
                     "phyloseq": "1.50.0"
+                },
+                "PHYLOSEQ_INASV": {
+                    "sed": 4.7
                 },
                 "QIIME2_ALPHARAREFACTION": {
                     "qiime2": "2024.10.1"
@@ -120,6 +126,9 @@
                     "qiime2": "2024.10.1"
                 },
                 "QIIME2_INSEQ": {
+                    "qiime2": "2024.10.1"
+                },
+                "QIIME2_INTAX": {
                     "qiime2": "2024.10.1"
                 },
                 "QIIME2_SEQFILTERTABLE": {
@@ -227,6 +236,7 @@
                 "multiqc/multiqc_data/multiqc_cutadapt.txt",
                 "multiqc/multiqc_data/multiqc_data.json",
                 "multiqc/multiqc_data/multiqc_general_stats.txt",
+                "multiqc/multiqc_data/multiqc_software_versions.txt",
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_plots",
                 "multiqc/multiqc_plots/pdf",
@@ -249,7 +259,7 @@
                 "phyloseq",
                 "phyloseq/dada2_phyloseq.rds",
                 "pipeline_info",
-                "pipeline_info/software_versions.yml",
+                "pipeline_info/nf_core_ampliseq_software_mqc_versions.yml",
                 "qiime2",
                 "qiime2/abundance_tables",
                 "qiime2/abundance_tables/abs-abund-table-2.tsv",
@@ -975,8 +985,8 @@
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
+            "nextflow": "25.10.4"
         },
-        "timestamp": "2026-01-22T19:40:21.245507133"
+        "timestamp": "2026-04-21T12:04:36.209559248"
     }
 }

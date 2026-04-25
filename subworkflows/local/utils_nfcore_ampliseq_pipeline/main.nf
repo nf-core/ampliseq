@@ -257,7 +257,11 @@ def validateInputParameters() {
     }
 
     if (params.sintax_ref_tax_custom && !params.skip_taxonomy && !params.sintax_assign_taxlevels) {
-        error("Missing parameter: Taxonomic classification with `--sintax_ref_tax_custom` requires `--sintax_assign_taxlevels` (comma-separated taxonomic ranks matching the reference labels).")
+        error("Missing parameter: Taxonomic classification with `--sintax_ref_tax_custom` requires `--sintax_assign_taxlevels` (comma-separated taxonomic ranks matching the reference database labels).")
+    }
+
+    if (params.vsearch_lca_ref_tax_custom && !params.skip_taxonomy && !params.vsearch_lca_assign_taxlevels) {
+        error("Missing parameter: Taxonomic classification with `--vsearch_lca_ref_tax_custom` requires `--vsearch_lca_assign_taxlevels` (comma-separated taxonomic ranks matching the reference database labels).")
     }
 
     if (params.sbdiexport && params.sintax_ref_tax_custom) {

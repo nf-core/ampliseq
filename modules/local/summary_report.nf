@@ -43,6 +43,7 @@ process SUMMARY_REPORT  {
     path(dada2_tax)
     tuple val(meta_ref), path(cut_dada_ref_taxonomy) // cutadapt log when params.cut_dada_ref_taxonomy
     path(sintax_tax)
+    path(vsearch_lca_tax)
     path(kraken2_tax)
     path(pplace_tax)
     tuple val(meta_pplace), path(pplace_heattree)
@@ -127,6 +128,7 @@ process SUMMARY_REPORT  {
         cut_dada_ref_taxonomy ? "cut_dada_ref_taxonomy='$cut_dada_ref_taxonomy'" : "",
         sintax_tax && !params.sintax_ref_tax_custom ? "sintax_taxonomy='$sintax_tax',sintax_ref_tax_title='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["title"]}',sintax_ref_tax_file='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["file"]}',sintax_ref_tax_citation='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["citation"]}'" : "",
         sintax_tax && params.sintax_ref_tax_custom ? "sintax_taxonomy='$sintax_tax',sintax_ref_tax_title='User-supplied SINTAX reference',sintax_ref_tax_file='${params.sintax_ref_tax_custom}',sintax_ref_tax_citation='Not specified'" : "",
+        vsearch_lca_tax ? "vsearch_lca_taxonomy='$vsearch_lca_tax',vsearch_lca_ref_tax_title='User-supplied VSEARCH LCA reference',vsearch_lca_ref_tax_file='${params.vsearch_lca_ref_tax_custom}',vsearch_lca_ref_tax_citation='Not specified'" : "",
         kraken2_tax ? "kraken2_taxonomy='$kraken2_tax',kraken2_confidence='$params.kraken2_confidence'" : "",
         kraken2_tax && !params.kraken2_ref_tax_custom ? "kraken2_ref_tax_title='${params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["title"]}',kraken2_ref_tax_file='${params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["file"]}',kraken2_ref_tax_citation='${params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["citation"]}'" : "",
         pplace_tax ? "pplace_taxonomy='$pplace_tax',pplace_heattree='$pplace_heattree'" : "",

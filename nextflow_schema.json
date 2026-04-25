@@ -669,6 +669,16 @@
                     "help_text": "Comma separated list of taxonomic ranks matching the labels in the custom database. Required with `--sintax_ref_tax_custom`. For example: `Phylum,Class,Order,Family,Genus,Species`.",
                     "description": "Comma separated list of taxonomic levels used in SINTAX with a custom reference database"
                 },
+                "vsearch_lca_ref_tax_custom": {
+                    "type": "string",
+                    "help_text": "Path to a custom VSEARCH LCA reference database. Requires `--vsearch_lca_assign_taxlevels`.",
+                    "description": "Path to a custom VSEARCH LCA reference database"
+                },
+                "vsearch_lca_assign_taxlevels": {
+                    "type": "string",
+                    "help_text": "Comma separated list of taxonomic ranks matching the labels in the custom database. Required with `--vsearch_lca_ref_tax_custom`. For example: `Phylum,Class,Order,Family,Genus,Species`.",
+                    "description": "Comma separated list of taxonomic levels for VSEARCH LCA with a custom reference database"
+                },
                 "addsh": {
                     "type": "boolean",
                     "description": "If ASVs should be assigned to UNITE species hypotheses (SHs). Only relevant for ITS data."

@@ -4,8 +4,8 @@ process VSEARCH_SINTAX {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/vsearch:2.21.1--h95f258a_0':
-        'biocontainers/vsearch:2.21.1--h95f258a_0' }"
+        'https://depot.galaxyproject.org/singularity/vsearch:2.30.0--hd6d6fdc_0':
+        'biocontainers/vsearch:2.30.0--hd6d6fdc_0' }"
 
     input:
     tuple val(meta), path(queryfasta)

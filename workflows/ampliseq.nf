@@ -405,10 +405,10 @@ workflow AMPLISEQ {
 
     // VSEARCH LCA
     ch_vsearch_lca_ref_taxonomy = channel.empty()
-    val_vsearch_lca_taxlevels = ""
+    val_vsearch_lca_taxlevels = params.vsearch_lca_assign_taxlevels ?: ""
+    val_vsearch_lca_id = params.vsearch_lca_id
     if (params.vsearch_lca_ref_tax_custom && !params.skip_taxonomy) {
         ch_vsearch_lca_ref_taxonomy = channel.fromPath("${params.vsearch_lca_ref_tax_custom}", checkIfExists: true)
-        val_vsearch_lca_taxlevels = params.vsearch_lca_assign_taxlevels ? "${params.vsearch_lca_assign_taxlevels}" : ""
     }
 
     // KRAKEN2
@@ -745,7 +745,8 @@ workflow AMPLISEQ {
             ch_vsearch_lca_ref_taxonomy,
             ch_fasta,
             ch_full_fasta,
-            val_vsearch_lca_taxlevels
+            val_vsearch_lca_taxlevels,
+            val_vsearch_lca_id
         )
         ch_vsearch_lca_raw = VSEARCH_LCA_TAXONOMY_WF.out.raw_lca
         ch_vsearch_lca_tax = VSEARCH_LCA_TAXONOMY_WF.out.tax

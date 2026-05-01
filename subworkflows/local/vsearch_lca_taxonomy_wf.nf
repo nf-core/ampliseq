@@ -11,6 +11,7 @@ workflow VSEARCH_LCA_TAXONOMY_WF {
     ch_fasta
     ch_full_fasta
     vsearch_lca_taxlevels
+    vsearch_lca_id
 
     main:
     if (params.cut_its == "none") {
@@ -29,7 +30,7 @@ workflow VSEARCH_LCA_TAXONOMY_WF {
         }
         .set { ch_fasta_map }
 
-    VSEARCH_USEARCHGLOBAL_LCA( ch_fasta_map, ch_ref_taxonomy, 1.0, 'lcaout', "" )
+    VSEARCH_USEARCHGLOBAL_LCA( ch_fasta_map, ch_ref_taxonomy, vsearch_lca_id, 'lcaout', "" )
     FORMAT_TAXRESULTS_VSEARCH_LCA( VSEARCH_USEARCHGLOBAL_LCA.out.lca, ch_full_fasta, ASV_tax_name2 + ".tsv", vsearch_lca_taxlevels )
 
     emit:

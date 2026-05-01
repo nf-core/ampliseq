@@ -679,6 +679,32 @@
                     "help_text": "Comma separated list of taxonomic ranks matching the labels in the custom database. Required with `--vsearch_lca_ref_tax_custom`. For example: `Phylum,Class,Order,Family,Genus,Species`.",
                     "description": "Comma separated list of taxonomic levels for VSEARCH LCA with a custom reference database"
                 },
+                "vsearch_lca_id": {
+                    "type": "number",
+                    "default": 1.0,
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "VSEARCH usearch_global identity cutoff (`--id`) used for VSEARCH LCA."
+                },
+                "vsearch_lca_maxaccepts": {
+                    "type": "integer",
+                    "default": 100,
+                    "minimum": 0,
+                    "description": "Maximum number of target sequences to accept per query for VSEARCH LCA (`--maxaccepts`)."
+                },
+                "vsearch_lca_maxrejects": {
+                    "type": "integer",
+                    "default": 0,
+                    "minimum": 0,
+                    "description": "Maximum number of non-matching target sequences to reject per query for VSEARCH LCA (`--maxrejects`)."
+                },
+                "vsearch_lca_lca_cutoff": {
+                    "type": "number",
+                    "default": 1.0,
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "LCA support threshold for VSEARCH LCA (`--lca_cutoff`)."
+                },
                 "addsh": {
                     "type": "boolean",
                     "description": "If ASVs should be assigned to UNITE species hypotheses (SHs). Only relevant for ITS data."

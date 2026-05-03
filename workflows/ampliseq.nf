@@ -913,10 +913,6 @@ workflow AMPLISEQ {
             log.info "Use SINTAX taxonomy classification"
             val_used_taxonomy = "SINTAX"
             ch_tax = QIIME2_INTAX ( ch_sintax_tax, "parse_dada2_taxonomy.r" ).qza
-        } else if ( params.vsearch_lca_ref_tax_custom ) {
-            log.info "Use VSEARCH LCA taxonomy classification"
-            val_used_taxonomy = "VSEARCH LCA"
-            ch_tax = QIIME2_INTAX ( ch_vsearch_lca_tax, "parse_dada2_taxonomy.r" ).qza
         } else if ( params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom ) {
             log.info "Use Kraken2 taxonomy classification"
             val_used_taxonomy = "Kraken2"
@@ -925,6 +921,10 @@ workflow AMPLISEQ {
             log.info "Use QIIME2 taxonomy classification"
             val_used_taxonomy = "QIIME2"
             ch_tax = QIIME2_TAXONOMY.out.qza
+        } else if ( params.vsearch_lca_ref_tax_custom ) {
+            log.info "Use VSEARCH LCA taxonomy classification"
+            val_used_taxonomy = "VSEARCH LCA"
+            ch_tax = QIIME2_INTAX ( ch_vsearch_lca_tax, "parse_dada2_taxonomy.r" ).qza
         } else {
             log.info "Use no taxonomy classification"
             val_used_taxonomy = "none"

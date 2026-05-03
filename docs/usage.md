@@ -257,30 +257,30 @@ By default, the information of contaminants or non-contaminants are not further 
 
 ### Taxonomic classification
 
-Taxonomic classification of ASVs can be performed with tools DADA2, SINTAX, Kraken2 or QIIME2. Multiple taxonomic reference databases are pre-configured for those tools, but user supplied databases are also supported for some tools. Alternatively (or in addition), phylogenetic placement can be used to extract taxonomic classifications.
+Taxonomic classification of ASVs can be performed with tools DADA2, SINTAX, Kraken2, QIIME2, or VSEARCH. Multiple taxonomic reference databases are pre-configured for those tools, but user supplied databases are also supported for some tools. Alternatively (or in addition), phylogenetic placement can be used to extract taxonomic classifications.
 
-In case multiple tools for taxonomic classification are executed in one pipeline run, only the taxonomic classification result of one tool is forwarded to downstream analysis with QIIME2. The priority is `phylogenetic placement` > `DADA2` > `SINTAX` > `Kraken2` > `QIIME2`, that is by no means a recommendation for a specific tool but a technical limitation.
+In case multiple tools for taxonomic classification are executed in one pipeline run, only the taxonomic classification result of one tool is forwarded to downstream analysis with QIIME2. The priority is `SIDLE` (multi-region) > `phylogenetic placement` > `DADA2` > `SINTAX` > `Kraken2` > `QIIME2` > `VSEARCH`, that is by no means a recommendation for a specific tool but a technical limitation.
 
 Default setting for taxonomic classification is DADA2 with the SILVA reference taxonomy database.
 
 Pre-configured reference taxonomy databases are:
 
-| Database key | DADA2 | SINTAX | Kraken2 | QIIME2 | Phyloplace | Target genes                                  |
-| ------------ | ----- | ------ | ------- | ------ | ---------- | --------------------------------------------- |
-| silva        | +¹    | -      | +       | +      | -          | 16S rRNA                                      |
-| gtdb         | +²    | -      | -       | -      | -          | 16S rRNA                                      |
-| sbdi-gtdb    | +     | -      | -       | -      | +          | 16S rRNA                                      |
-| rdp          | +     | -      | +       | -      | -          | 16S rRNA                                      |
-| greengenes   | -     | -      | +       | (+)³   | -          | 16S rRNA                                      |
-| greengenes2  | +     | -      | -       | +      | -          | 16S rRNA                                      |
-| pr2          | +     | -      | -       | -      | -          | 18S rRNA                                      |
-| unite-fungi  | +     | +      | -       | -      | -          | eukaryotic nuclear ribosomal ITS region       |
-| unite-alleuk | +     | +      | -       | -      | -          | eukaryotic nuclear ribosomal ITS region       |
-| coidb        | +     | +      | -       | -      | -          | eukaryotic Cytochrome Oxidase I (COI)         |
-| midori2-co1  | +     | -      | -       | -      | -          | eukaryotic Cytochrome Oxidase I (COI)         |
-| phytoref     | +     | -      | -       | -      | -          | eukaryotic plastid 16S rRNA                   |
-| zehr-nifh    | +     | -      | -       | -      | -          | Nitrogenase iron protein NifH                 |
-| standard     | -     | -      | +       | -      | -          | any in genomes of archaea, bacteria, viruses⁴ |
+| Database key | DADA2 | SINTAX | Kraken2 | QIIME2 | VSEARCH | Phyloplace | Target genes                                  |
+| ------------ | ----- | ------ | ------- | ------ | ----------- | ---------- | --------------------------------------------- |
+| silva        | +¹    | -      | +       | +      | -           | -          | 16S rRNA                                      |
+| gtdb         | +²    | -      | -       | -      | -           | -          | 16S rRNA                                      |
+| sbdi-gtdb    | +     | -      | -       | -      | -           | +          | 16S rRNA                                      |
+| rdp          | +     | -      | +       | -      | -           | -          | 16S rRNA                                      |
+| greengenes   | -     | -      | +       | (+)³   | -           | -          | 16S rRNA                                      |
+| greengenes2  | +     | -      | -       | +      | -           | -          | 16S rRNA                                      |
+| pr2          | +     | -      | -       | -      | -           | -          | 18S rRNA                                      |
+| unite-fungi  | +     | +      | -       | -      | -           | -          | eukaryotic nuclear ribosomal ITS region       |
+| unite-alleuk | +     | +      | -       | -      | -           | -          | eukaryotic nuclear ribosomal ITS region       |
+| coidb        | +     | +      | -       | -      | -           | -          | eukaryotic Cytochrome Oxidase I (COI)         |
+| midori2-co1  | +     | -      | -       | -      | -           | -          | eukaryotic Cytochrome Oxidase I (COI)         |
+| phytoref     | +     | -      | -       | -      | -           | -          | eukaryotic plastid 16S rRNA                   |
+| zehr-nifh    | +     | -      | -       | -      | -           | -          | Nitrogenase iron protein NifH                 |
+| standard     | -     | -      | +       | -      | -           | -          | any in genomes of archaea, bacteria, viruses⁴ |
 
 ¹: As of Silva version 138 optimized for classification of Bacteria and Archaea, not suitable for Eukaryotes; ²[`--dada_taxonomy_rc`](https://nf-co.re/ampliseq/parameters#dada_taxonomy_rc) is recommended; ³: de-replicated at 85%, only for testing purposes; ⁴: quality of results might vary
 
@@ -289,7 +289,7 @@ Special features of taxonomic classification tools:
 - DADA2's reference taxonomy databases **can** have regions matching the amplicon extracted with primer sequences.
 - Kraken2 is very fast and can use large databases containing complete genomes.
 - QIIME2's reference taxonomy databases will have regions matching the amplicon extracted with primer sequences.
-- DADA2, Kraken2, QIIME2, and SINTAX have specific parameters to accept custom databases (but theoretically possible with all classifiers).
+- DADA2, Kraken2, QIIME2, SINTAX, and VSEARCH have specific parameters to accept custom databases (but theoretically possible with all classifiers).
 - Phyloplace assigns taxonomy by placement on reference phylogenies provided with the database, see [Placement in database provided phylogenies](#placement-in-database-provided-phylogenies).
 
 Parameter guidance is given in [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#taxonomic-assignment). Citations are listed in [`CITATIONS.md`](CITATIONS.md).

@@ -446,7 +446,7 @@ Intermediate data imported to QIIME2 is saved as QIIME2 fragments, that can be c
 
 #### Abundance tables
 
-The abundance tables are the final data for further downstream analysis and visualisations. The tables are based on the computed ASVs and taxonomic classification (in the following priotity: phylogenetic placement [EPA-NG, Gappa], DADA2, QIIME2), but after removal of unwanted taxa. Unwanted taxa are often off-targets generated in PCR with primers that are not perfectly specific for the target DNA (can be specified by `--exclude_taxa`), by default mitrochondria and chloroplast sequences are removed because these are frequent unwanted non-bacteria PCR products.
+The abundance tables are the final data for further downstream analysis and visualisations. The tables are based on the computed ASVs and taxonomic classification (in the following priority when several are enabled: SIDLE for multi-region, then phylogenetic placement [EPA-NG, Gappa], DADA2, SINTAX, Kraken2, QIIME2, VSEARCH), but after removal of unwanted taxa. Unwanted taxa are often off-targets generated in PCR with primers that are not perfectly specific for the target DNA (can be specified by `--exclude_taxa`), by default mitrochondria and chloroplast sequences are removed because these are frequent unwanted non-bacteria PCR products.
 
 All following analysis is based on these filtered tables.
 

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 - [#992](https://github.com/nf-core/ampliseq/pull/992) - Slack notification on status of AWS full test
+- [#998](https://github.com/nf-core/ampliseq/pull/998) - Added taxonomic assignment with VSEARCH/LCA
 
 ### `Changed`
 

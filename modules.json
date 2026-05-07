@@ -111,17 +111,17 @@
                     },
                     "vsearch/cluster": {
                         "branch": "master",
-                        "git_sha": "694b2cdc2d695926dc10ac149e59b7b5b563cef9",
+                        "git_sha": "3a0ac08f5e8a748df4bc8b3998623121adec36fe",
                         "installed_by": ["modules"]
                     },
                     "vsearch/sintax": {
                         "branch": "master",
-                        "git_sha": "694b2cdc2d695926dc10ac149e59b7b5b563cef9",
+                        "git_sha": "3a0ac08f5e8a748df4bc8b3998623121adec36fe",
                         "installed_by": ["modules"]
                     },
                     "vsearch/usearchglobal": {
                         "branch": "master",
-                        "git_sha": "694b2cdc2d695926dc10ac149e59b7b5b563cef9",
+                        "git_sha": "3a0ac08f5e8a748df4bc8b3998623121adec36fe",
                         "installed_by": ["modules"]
                     }
                 }

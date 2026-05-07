@@ -688,7 +688,7 @@
                 },
                 "vsearch_lca_maxaccepts": {
                     "type": "integer",
-                    "default": 100,
+                    "default": 0,
                     "minimum": 0,
                     "description": "Maximum number of target sequences to accept per query for VSEARCH LCA (`--maxaccepts`)."
                 },

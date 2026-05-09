@@ -1,0 +1,62 @@
+nextflow_pipeline {
+
+    name "Test Workflow main.nf"
+    script "main.nf"
+    tag "test_vsearch_lca"
+    tag "pipeline"
+
+    name "Test pipeline"
+    script "../main.nf"
+    tag "pipeline"
+    profile "test_vsearch_lca"
+
+    test("-profile test_vsearch_lca (coidb)") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                vsearch_lca_ref_taxonomy = "coidb=221216"
+            }
+        }
+
+        then {
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
+
+            assert workflow.success
+            assertAll(
+                { assert snapshot(
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_ampliseq_software_mqc_versions.yml"),
+                    stable_name,
+                    path("$outputDir/dada2/ASV_seqs.fasta"),
+                    path("$outputDir/vsearch_lca/ASV_tax_vsearch_lca.coidb_221216.tsv"),
+                    path("$outputDir/vsearch_lca/ref_taxonomy_vsearch_lca.txt")
+                ).match() }
+            )
+        }
+    }
+
+    test("-profile test_vsearch_lca (midori2)") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                vsearch_lca_ref_taxonomy = "midori2-co1=gb269"
+            }
+        }
+
+        then {
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
+
+            assert workflow.success
+            assertAll(
+                { assert snapshot(
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_ampliseq_software_mqc_versions.yml"),
+                    stable_name,
+                    path("$outputDir/dada2/ASV_seqs.fasta"),
+                    path("$outputDir/vsearch_lca/ASV_tax_vsearch_lca.midori2-co1_gb269.tsv"),
+                    path("$outputDir/vsearch_lca/ref_taxonomy_vsearch_lca.txt")
+                ).match() }
+            )
+        }
+    }
+}

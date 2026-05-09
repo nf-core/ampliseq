@@ -21,6 +21,7 @@ include { FASTA_NEWICK_EPANG_GAPPA as PPLACE_SHEET      } from '../subworkflows/
 
 include { DOWNLOAD_REFERENCE as DOWNLOAD_REFERENCE_DADA       } from '../modules/local/download_reference'
 include { DOWNLOAD_REFERENCE as DOWNLOAD_REFERENCE_SINTAX     } from '../modules/local/download_reference'
+include { DOWNLOAD_REFERENCE as DOWNLOAD_REFERENCE_VSEARCH_LCA } from '../modules/local/download_reference'
 include { DOWNLOAD_REFERENCE as DOWNLOAD_REFERENCE_KRAKEN     } from '../modules/local/download_reference'
 include { DOWNLOAD_REFERENCE as DOWNLOAD_REFERENCE_QIIME      } from '../modules/local/download_reference'
 include { DOWNLOAD_REFERENCE as DOWNLOAD_REFERENCE_SIDLE      } from '../modules/local/download_reference'
@@ -155,7 +156,7 @@ workflow AMPLISEQ {
     }
 
     //only run QIIME2 downstream analysis when taxonomy is actually calculated and all required data is available
-    if ( !params.skip_taxonomy && !params.skip_qiime && !params.skip_qiime_downstream && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.sintax_ref_tax_custom || params.vsearch_lca_ref_tax_custom || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom || params.multiregion) ) {
+    if ( !params.skip_taxonomy && !params.skip_qiime && !params.skip_qiime_downstream && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.sintax_ref_tax_custom || params.vsearch_lca_ref_taxonomy || params.vsearch_lca_ref_tax_custom || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom || params.multiregion) ) {
         run_qiime2 = true
     } else {
         run_qiime2 = false
@@ -405,10 +406,20 @@ workflow AMPLISEQ {
 
     // VSEARCH LCA
     ch_vsearch_lca_ref_taxonomy = channel.empty()
+    val_vsearch_lca_ref_taxonomy = "none"
     val_vsearch_lca_taxlevels = params.vsearch_lca_assign_taxlevels ?: ""
     val_vsearch_lca_id = params.vsearch_lca_id
     if (params.vsearch_lca_ref_tax_custom && !params.skip_taxonomy) {
         ch_vsearch_lca_ref_taxonomy = channel.fromPath("${params.vsearch_lca_ref_tax_custom}", checkIfExists: true)
+        val_vsearch_lca_ref_taxonomy = "user"
+    } else if (params.vsearch_lca_ref_taxonomy && !params.skip_taxonomy) {
+        ch_vsearch_lca_ref_taxonomy_url = channel.fromList(params.vsearch_lca_ref_databases[params.vsearch_lca_ref_taxonomy]["file"])
+        ch_vsearch_lca_ref_taxonomy =
+            params.ref_taxonomy_storage ? DOWNLOAD_REFERENCE_VSEARCH_LCA( ch_vsearch_lca_ref_taxonomy_url ).db.collect() :
+                ch_vsearch_lca_ref_taxonomy_url.map { it -> file(it) }
+        val_vsearch_lca_ref_taxonomy = params.vsearch_lca_ref_taxonomy.replace('=','_').replace('.','_')
+        val_vsearch_lca_taxlevels = params.vsearch_lca_ref_databases[params.vsearch_lca_ref_taxonomy]["taxlevels"] ?
+            params.vsearch_lca_ref_databases[params.vsearch_lca_ref_taxonomy]["taxlevels"] : ""
     }
 
     // KRAKEN2
@@ -740,9 +751,10 @@ workflow AMPLISEQ {
     }
 
     // VSEARCH LCA
-    if (!params.skip_taxonomy && params.vsearch_lca_ref_tax_custom) {
+    if (!params.skip_taxonomy && (params.vsearch_lca_ref_tax_custom || params.vsearch_lca_ref_taxonomy)) {
         VSEARCH_LCA_TAXONOMY_WF (
-            ch_vsearch_lca_ref_taxonomy,
+            ch_vsearch_lca_ref_taxonomy.collect(),
+            val_vsearch_lca_ref_taxonomy,
             ch_fasta,
             ch_full_fasta,
             val_vsearch_lca_taxlevels,
@@ -921,7 +933,7 @@ workflow AMPLISEQ {
             log.info "Use QIIME2 taxonomy classification"
             val_used_taxonomy = "QIIME2"
             ch_tax = QIIME2_TAXONOMY.out.qza
-        } else if ( params.vsearch_lca_ref_tax_custom ) {
+        } else if ( params.vsearch_lca_ref_tax_custom || params.vsearch_lca_ref_taxonomy ) {
             log.info "Use VSEARCH LCA taxonomy classification"
             val_used_taxonomy = "VSEARCH LCA"
             ch_tax = QIIME2_INTAX ( ch_vsearch_lca_tax, "parse_dada2_taxonomy.r" ).qza
@@ -1021,7 +1033,7 @@ workflow AMPLISEQ {
     // MODULE: Predict functional potential of a bacterial community from marker genes with Picrust2
     //
     if ( params.picrust ) {
-        if ( run_qiime2 && !params.skip_abundance_tables && ( params.dada_ref_taxonomy || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier || params.sintax_ref_taxonomy || params.sintax_ref_tax_custom || params.vsearch_lca_ref_tax_custom || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom ) && !params.skip_taxonomy ) {
+        if ( run_qiime2 && !params.skip_abundance_tables && ( params.dada_ref_taxonomy || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier || params.sintax_ref_taxonomy || params.sintax_ref_tax_custom || params.vsearch_lca_ref_taxonomy || params.vsearch_lca_ref_tax_custom || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom ) && !params.skip_taxonomy ) {
             PICRUST ( QIIME2_EXPORT.out.abs_fasta, QIIME2_EXPORT.out.abs_tsv, "QIIME2", "This Picrust2 analysis is based on filtered reads from QIIME2" )
         } else {
             PICRUST ( ch_fasta, ch_dada2_asv, "DADA2", "This Picrust2 analysis is based on unfiltered reads from DADA2" )
@@ -1196,7 +1208,7 @@ workflow AMPLISEQ {
             !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy ? ch_dada2_tax.ifEmpty( [] ) : [],
             !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy ? DADA2_TAXONOMY_WF.out.cut_tax.ifEmpty( [[],[]] ) : [[],[]],
             !params.skip_taxonomy && (params.sintax_ref_taxonomy || params.sintax_ref_tax_custom) ? ch_sintax_tax.ifEmpty( [] ) : [],
-            !params.skip_taxonomy && params.vsearch_lca_ref_tax_custom ? ch_vsearch_lca_tax.ifEmpty( [] ) : [],
+            !params.skip_taxonomy && (params.vsearch_lca_ref_tax_custom || params.vsearch_lca_ref_taxonomy) ? ch_vsearch_lca_tax.ifEmpty( [] ) : [],
             !params.skip_taxonomy && ( params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom ) ? KRAKEN2_TAXONOMY_WF.out.tax_tsv.ifEmpty( [] ) : [],
             !params.skip_taxonomy && params.pplace_tree ? ch_pplace_tax.ifEmpty( [] ) : [],
             !params.skip_taxonomy && params.pplace_tree ? PPLACE_STANDARD.out.heattree.ifEmpty( [[],[]] ) : [[],[]],

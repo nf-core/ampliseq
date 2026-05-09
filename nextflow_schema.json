@@ -671,8 +671,19 @@
                 },
                 "vsearch_lca_ref_tax_custom": {
                     "type": "string",
-                    "help_text": "Path to a custom VSEARCH LCA reference database. Requires `--vsearch_lca_assign_taxlevels`.",
+                    "help_text": "Path to a custom VSEARCH LCA reference database. Requires `--vsearch_lca_assign_taxlevels`. Cannot be used together with `--vsearch_lca_ref_taxonomy`.",
                     "description": "Path to a custom VSEARCH LCA reference database"
+                },
+                "vsearch_lca_ref_taxonomy": {
+                    "type": "string",
+                    "help_text": "Choose one of the supported built-in databases for VSEARCH LCA. Database and version are separated by an equal sign (`=`, e.g. `midori2-co1=gb269`). This downloads the selected reference and runs VSEARCH usearch_global with `--lcaout`.\n\nThe following built-in databases are currently supported:\n- COIDB - eukaryotic Cytochrome Oxidase I (COI) from BOLD\n- MIDORI2-CO1 - metazoan COI reference sequences in SINTAX format\n\nCannot be used together with `--vsearch_lca_ref_tax_custom`.",
+                    "description": "Name of built-in VSEARCH LCA reference database, and optionally also version number",
+                    "enum": [
+                        "coidb",
+                        "coidb=221216",
+                        "midori2-co1",
+                        "midori2-co1=gb269"
+                    ]
                 },
                 "vsearch_lca_assign_taxlevels": {
                     "type": "string",

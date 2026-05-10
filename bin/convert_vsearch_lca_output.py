@@ -119,7 +119,7 @@ def main():
         asv_id = fields[0].strip()
         raw_taxonomy = infer_taxonomy_field(fields).strip()
         taxonomy = parse_taxonomy(raw_taxonomy, taxlevels)
-        confidence = "1.0" if raw_taxonomy else ""
+        confidence = ""
         sequence = seqs.get(asv_id, "")
         values = [asv_id] + [taxonomy[level] for level in taxlevels] + [confidence, sequence]
         print("\t".join(values), file=args.outfile)

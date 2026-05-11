@@ -182,4 +182,5 @@ If you update images or graphics, follow the nf-core [style guidelines](https://
 
 ## Pipeline specific contribution guidelines
 
-<!-- TODO nf-core: Add any pipeline specific contribution guidelines here, such as coding styles, procedures, checklists etc. -->
+<!-- nf-core: Add any pipeline specific contribution guidelines here, such as coding styles, procedures, checklists etc. -->
+New taxonomic databases are added to file `conf/ref_databases.conf` and require addition to `nextflow_schema.json` in `enum` for the respective receiving parameter and potentially changes in `subworkflows/local/utis_nfcore_ampliseq_pipeline/main.nf` section `sbdi_compatible_databases`.

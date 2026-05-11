@@ -9,3 +9,4 @@ testing*
 null/
 .nf-test*
 .Rproj.user
+.lineage/

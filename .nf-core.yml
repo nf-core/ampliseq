@@ -3,6 +3,7 @@ lint:
     - conf/igenomes.config
   files_unchanged:
     - .gitattributes
+    - .gitignore
     - assets/nf-core-ampliseq_logo_light.png
     - assets/nf-core-ampliseq_logo_dark.png
     - docs/images/nf-core-ampliseq_logo_light.png
@@ -12,7 +13,7 @@ lint:
         - params.report_template
         - params.report_css
         - params.report_logo
-nf_core_version: 3.5.2
+nf_core_version: 4.0.2
 repository_type: pipeline
 template:
   author: Daniel Straub, Alexander Peltzer

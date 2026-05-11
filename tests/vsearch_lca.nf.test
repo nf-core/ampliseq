@@ -40,7 +40,7 @@ nextflow_pipeline {
         when {
             params {
                 outdir = "$outputDir"
-                vsearch_lca_ref_taxonomy = "midori2-co1=gb269"
+                vsearch_lca_ref_taxonomy = "midori2-co1=gb270"
             }
         }
 
@@ -53,7 +53,7 @@ nextflow_pipeline {
                     removeNextflowVersion("$outputDir/pipeline_info/nf_core_ampliseq_software_mqc_versions.yml"),
                     stable_name,
                     path("$outputDir/dada2/ASV_seqs.fasta"),
-                    path("$outputDir/vsearch_lca/ASV_tax_vsearch_lca.midori2-co1_gb269.tsv"),
+                    path("$outputDir/vsearch_lca/ASV_tax_vsearch_lca.midori2-co1_gb270.tsv"),
                     path("$outputDir/vsearch_lca/ref_taxonomy_vsearch_lca.txt")
                 ).match() }
             )

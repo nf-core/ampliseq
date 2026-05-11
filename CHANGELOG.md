@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Dependencies`
 
+- [#999](https://github.com/nf-core/ampliseq/pull/999) - MultiQC 1.33 to 1.34
+
+| software | previously | now  |
+| -------- | ---------- | ---- |
+| MultiQC  | 1.33       | 1.34 |
+
 ### `Removed`
 
 - [#992](https://github.com/nf-core/ampliseq/pull/992) - Remove hook_url from the pipeline configuration

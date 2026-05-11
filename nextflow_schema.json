@@ -722,7 +722,7 @@
                 "vsearch_lca_lca_cutoff": {
                     "type": "number",
                     "default": 1.0,
-                    "minimum": 0,
+                    "minimum": 0.5,
                     "maximum": 1,
                     "description": "LCA support threshold for VSEARCH LCA (`--lca_cutoff`)."
                 },

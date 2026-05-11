@@ -94,67 +94,67 @@
                     "sed": 4.7
                 },
                 "QIIME2_ALPHARAREFACTION": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_ANCOM_ASV": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_ANCOM_TAX": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_BARPLOT": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_BPAVG": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_DIVERSITY_ADONIS": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_DIVERSITY_ALPHA": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_DIVERSITY_BETAORD": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_DIVERSITY_CORE": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_EXPORT_ABSOLUTE": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_EXPORT_RELASV": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_EXPORT_RELTAX": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_FEATURETABLE_GROUP": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_FILTERSAMPLES_ANCOM": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_INASV": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_INASV_BPAVG": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_INSEQ": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_INTAX": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_SEQFILTERTABLE": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_TABLEFILTERTAXA": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_TREE": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "RENAME_RAW_DATA_FILES": {
                     "sed": 4.7

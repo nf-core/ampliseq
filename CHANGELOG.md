@@ -19,10 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Dependencies`
 
 - [#999](https://github.com/nf-core/ampliseq/pull/999) - MultiQC 1.33 to 1.34
+- [#1000](https://github.com/nf-core/ampliseq/pull/1000) - QIIME2 2024.10.1 to 2026.04.0
 
-| software | previously | now  |
-| -------- | ---------- | ---- |
-| MultiQC  | 1.33       | 1.34 |
+| software | previously | now       |
+| -------- | ---------- | --------- |
+| MultiQC  | 1.33       | 1.34      |
+| QIIME2   | 2024.10.1  | 2026.04.0 |
 
 ### `Removed`
 

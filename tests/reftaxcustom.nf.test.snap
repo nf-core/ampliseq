@@ -82,16 +82,16 @@
                     "pandas": "1.1.5"
                 },
                 "QIIME2_CLASSIFY": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_EXTRACT": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_INSEQ": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_TRAIN": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "RENAME_RAW_DATA_FILES": {
                     "sed": 4.7

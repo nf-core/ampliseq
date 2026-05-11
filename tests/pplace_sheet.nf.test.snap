@@ -119,37 +119,37 @@
                     "dada2": "1.38.0"
                 },
                 "QIIME2_BARPLOT": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_CLASSIFY": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_EXPORT_ABSOLUTE": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_EXPORT_RELASV": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_EXPORT_RELTAX": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_EXTRACT": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_INASV": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_INSEQ": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_SEQFILTERTABLE": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_TABLEFILTERTAXA": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "QIIME2_TRAIN": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.04.0"
                 },
                 "RENAME_RAW_DATA_FILES": {
                     "sed": 4.7

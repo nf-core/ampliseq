@@ -726,6 +726,13 @@
                     "maximum": 1,
                     "description": "LCA support threshold for VSEARCH LCA (`--lca_cutoff`)."
                 },
+                "vsearch_lca_query_cov": {
+                    "type": "number",
+                    "default": 1.0,
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Minimum fraction of the query that must align to a target for VSEARCH LCA (`--query_cov`)."
+                },
                 "addsh": {
                     "type": "boolean",
                     "description": "If ASVs should be assigned to UNITE species hypotheses (SHs). Only relevant for ITS data."

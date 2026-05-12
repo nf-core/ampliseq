@@ -11,6 +11,9 @@
                 "COMBINE_TABLE_SINTAX": {
                     "R": "4.0.3"
                 },
+                "COMBINE_TABLE_VSEARCH_LCA": {
+                    "R": "4.0.3"
+                },
                 "CUTADAPT_BASIC": {
                     "cutadapt": 5.2
                 },
@@ -68,7 +71,13 @@
                 "FORMAT_TAXONOMY_SINTAX": {
                     "sed": 4.7
                 },
+                "FORMAT_TAXONOMY_VSEARCH_LCA": {
+                    "sed": 4.7
+                },
                 "FORMAT_TAXRESULTS_SINTAX": {
+                    "python": "3.9.1"
+                },
+                "FORMAT_TAXRESULTS_VSEARCH_LCA": {
                     "python": "3.9.1"
                 },
                 "ITSX_CUTASV": {
@@ -170,6 +179,9 @@
                     "TreeSummarizedExperiment": "2.10.0"
                 },
                 "VSEARCH_SINTAX": {
+                    "vsearch": "2.31.0"
+                },
+                "VSEARCH_USEARCHGLOBAL_LCA": {
                     "vsearch": "2.31.0"
                 },
                 "Workflow": {
@@ -330,6 +342,7 @@
                 "overall_summary.tsv",
                 "phyloseq",
                 "phyloseq/sintax_phyloseq.rds",
+                "phyloseq/vsearch_lca_phyloseq.rds",
                 "pipeline_info",
                 "pipeline_info/nf_core_ampliseq_software_mqc_versions.yml",
                 "qiime2",
@@ -1471,6 +1484,7 @@
                 "qiime2/rel_abundance_tables/rel-table-4.tsv",
                 "qiime2/rel_abundance_tables/rel-table-ASV.tsv",
                 "qiime2/rel_abundance_tables/rel-table-ASV_with-SINTAX-tax.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV_with-VSEARCH-LCA-tax.tsv",
                 "qiime2/representative_sequences",
                 "qiime2/representative_sequences/descriptive_stats.tsv",
                 "qiime2/representative_sequences/filtered-sequences.qza",
@@ -1491,8 +1505,14 @@
                 "summary_report/stacked_barchart_of_reads.svg",
                 "summary_report/summary_report.html",
                 "summary_report/versions.yml",
+                "summary_report/vsearch_lca_taxonomic_classification_per_taxonomy_level.svg",
                 "treesummarizedexperiment",
-                "treesummarizedexperiment/sintax_TreeSummarizedExperiment.rds"
+                "treesummarizedexperiment/sintax_TreeSummarizedExperiment.rds",
+                "treesummarizedexperiment/vsearch_lca_TreeSummarizedExperiment.rds",
+                "vsearch_lca",
+                "vsearch_lca/ASV_ITS_tax_vsearch_lca.unite-fungi.lca",
+                "vsearch_lca/ASV_tax_vsearch_lca.unite-fungi.tsv",
+                "vsearch_lca/ref_taxonomy_vsearch_lca.txt"
             ],
             "overall_summary.tsv:md5,680baf14004fc0591c2a333c7e5e85b3",
             "rrna.arc.gff:md5,6bb50a4c244d80d56e759ecfbb045381",
@@ -1504,6 +1524,8 @@
             "ASV_table.tsv:md5,51e15e9cb15087ee91ff8691c451daf7",
             "DADA2_stats.tsv:md5,4bbde0bbf579f60e692bd32d14034f0d",
             "DADA2_table.tsv:md5,a4f790561f01ed078ed95a505295b528",
+            "ASV_tax_vsearch_lca.unite-fungi.tsv:md5,bcb3aabf00bdd31ddc0183421f5e3278",
+            "ref_taxonomy_vsearch_lca.txt:md5,9f07763e82a87d838588b49b6beb8c8b",
             "descriptive_stats.tsv:md5,f857c6de0bcb1080a0d6fabd7e87c283",
             "seven_number_summary.tsv:md5,ef0fd839c0f691c0bbf478de3e724d34",
             "Samplesheet_pacbio_ITS.tsv:md5,905b0fc4850149d6457c9da7076c2c2d",
@@ -1514,10 +1536,10 @@
             "multiqc_general_stats.txt:md5,1fef8358fe3cc974bf05e2f27fc7e250",
             "multiqc_cutadapt.txt:md5,160135fece18361e17bef9e8d04cf0b9"
         ],
+        "timestamp": "2026-05-12T19:03:55.222061",
         "meta": {
-            "nf-test": "0.9.3",
+            "nf-test": "0.9.5",
             "nextflow": "25.10.4"
-        },
-        "timestamp": "2026-04-21T13:53:20.492437033"
+        }
     }
 }

@@ -88,22 +88,20 @@ workflow QIIME2_ANCOM {
             .combine( QIIME2_FILTERSAMPLES_ANCOM.out.qza )
             .combine( ch_tax )
             .combine( ch_taxlevel )
-            .combine( Channel.fromList([""]) )
+            .combine( channel.fromList([""]) )
             .set{ ch_for_ancombc2_tax }
         QIIME2_ANCOMBC2_TAX ( ch_for_ancombc2_tax )
-        ch_versions_qiime2_ancom = ch_versions_qiime2_ancom.mix(QIIME2_ANCOMBC2_TAX.out.versions)
         QIIME2_ANCOMBC2_TAX.out.plot.subscribe { it -> if ( it.baseName[0].toString().startsWith("WARNING") ) log.warn it.baseName[0].toString().replace("WARNING ","QIIME2_ANCOMBC2_TAX: ") }
 
         //ANCOMBC2 on ASVs
-        QIIME2_ANCOMBC2_ASV ( ch_metadata.combine( QIIME2_FILTERSAMPLES_ANCOM.out.qza.flatten() ).combine( Channel.fromList([""]) ) )
-        ch_versions_qiime2_ancom = ch_versions_qiime2_ancom.mix(QIIME2_ANCOMBC2_ASV.out.versions)
+        QIIME2_ANCOMBC2_ASV ( ch_metadata.combine( QIIME2_FILTERSAMPLES_ANCOM.out.qza.flatten() ).combine( channel.fromList([""]) ) )
     }
 
     if ( ancombc2_formula ) {
-        ch_ancombc2_formula = Channel.fromList( ancombc2_formula.toString().replace(" ","").tokenize(',') )
+        ch_ancombc2_formula = channel.fromList( ancombc2_formula.toString().replace(" ","").tokenize(',') )
 
         //ANCOMBC2 with ancombc2_formula on various taxonomic levels
-        ch_taxlevel = Channel.of( tax_agglom_min..tax_agglom_max )
+        ch_taxlevel = channel.of( tax_agglom_min..tax_agglom_max )
         ch_metadata
             .combine( ch_asv )
             .combine( ch_tax )
@@ -111,12 +109,10 @@ workflow QIIME2_ANCOM {
             .combine( ch_ancombc2_formula )
             .set{ ch_for_ancombc2_tax }
         ANCOMBC2_FORMULA_TAX ( ch_for_ancombc2_tax )
-        ch_versions_qiime2_ancom = ch_versions_qiime2_ancom.mix(ANCOMBC2_FORMULA_TAX.out.versions)
         ANCOMBC2_FORMULA_TAX.out.plot.subscribe { it -> if ( it.baseName[0].toString().startsWith("WARNING") ) log.warn it.baseName[0].toString().replace("WARNING ","QIIME2_ANCOMBC2_TAX: ") }
 
         //ANCOMBC2 with ancombc2_formula on ASVs
         ANCOMBC2_FORMULA_ASV ( ch_metadata.combine( ch_asv ).combine( ch_ancombc2_formula ) )
-        ch_versions_qiime2_ancom = ch_versions_qiime2_ancom.mix(ANCOMBC2_FORMULA_ASV.out.versions)
     }
 
     emit:

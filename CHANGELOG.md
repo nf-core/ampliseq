@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 - [#992](https://github.com/nf-core/ampliseq/pull/992) - Slack notification on status of AWS full test
+- [#1001](https://github.com/nf-core/ampliseq/pull/1001) - Add ANCOM-BC2 alongside ANCOM and ANCOM-BC
 
 ### `Changed`
 

@@ -2,13 +2,8 @@ process QIIME2_CLASSIFY {
     tag "${repseq},${trained_classifier}"
     label 'process_huge'
 
-<<<<<<< HEAD
     conda "${moduleDir}/envs/rachis-qiime2-linux-64-conda.yml"
     container "qiime2/qiime2:2026.4"
-=======
-    conda "${projectDir}/modules/local/envs/qiime2-amplicon-ubuntu-2025.4-conda.yml"
-    container "qiime2/amplicon:2025.4"
->>>>>>> 6a3c9195 (update to QIIME2 2025.4 and add ANCOMBC2)
 
     input:
     path(trained_classifier)

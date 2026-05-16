@@ -671,8 +671,8 @@
                 },
                 "vsearch_lca_ref_tax_custom": {
                     "type": "string",
-                    "help_text": "Path to a custom VSEARCH LCA reference database. Requires `--vsearch_lca_assign_taxlevels`. Cannot be used together with `--vsearch_lca_ref_taxonomy`.",
-                    "description": "Path to a custom VSEARCH LCA reference database"
+                    "help_text": "Path to a custom VSEARCH LCA reference database. Requires `--vsearch_lca_assign_taxlevels`. Expected format: SINTAX-compatible FASTA with semicolon-separated taxonomy labels in sequence headers (same as `--sintax_ref_tax_custom`); plain FASTA or gzip-compressed (`.gz`) is accepted. Cannot be used together with `--vsearch_lca_ref_taxonomy`.",
+                    "description": "Path to a custom VSEARCH LCA reference database (SINTAX-compatible FASTA)"
                 },
                 "vsearch_lca_ref_taxonomy": {
                     "type": "string",

@@ -18,6 +18,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Dependencies`
 
+- [#998](https://github.com/nf-core/ampliseq/pull/998) - Added taxonomic assignment with VSEARCH/LCA
+
+| software | previously | now    |
+| -------- | ---------- | ------ |
+| samtools | 1.16.1     | 1.21.1 |
+| vsearch  | 2.21.1     | 2.31.0 |
+
 ### `Removed`
 
 - [#992](https://github.com/nf-core/ampliseq/pull/992) - Remove hook_url from the pipeline configuration

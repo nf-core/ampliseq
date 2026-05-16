@@ -35,6 +35,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [SINTAX](#sintax) - Taxonomic classification with SINTAX
   - [Kraken2](#kraken2) - Taxonomic classification with Kraken2
   - [QIIME2](#qiime2) - Taxonomic classification with QIIME2
+  - [VSEARCH LCA](#vsearch-lca) - Taxonomic classification with VSEARCH LCA
 - [Phylogenetic placement and taxonomic classification](#phylogenetic-placement-and-taxonomic-classification) - Placing ASVs into a phylogenetic tree
 - [Multiple region analysis with Sidle](#multiple-region-analysis-with-sidle) - Scaffolding multiple regions along a reference
 - [Secondary analysis with QIIME2](#secondary-analysis-with-qiime2) - Visualisations, diversity and differential abundance analysis with QIIME2
@@ -273,7 +274,7 @@ Optionally, the ITS region can be extracted from each ASV sequence using [ITSx](
 
 ### Taxonomic classification
 
-Taxonomic classification of ASVs can be performed with a choice of DADA2, SINTAX, Kraken2 or QIIME2 using supplied databases or user supplied databases (see parameter documentation). By default, DADA2 is used for the classification. The taxonomic classification will be done based on filtered ASV sequences (see above).
+Taxonomic classification of ASVs can be performed with a choice of DADA2, SINTAX, Kraken2, QIIME2, or VSEARCH LCA using supplied databases or user supplied databases (see parameter documentation). By default, DADA2 is used for the classification. The taxonomic classification will be done based on filtered ASV sequences (see above).
 
 #### DADA2
 
@@ -378,6 +379,34 @@ Taxonomic classification with QIIME2 is based on a classifier trained on sequenc
 
 </details>
 
+#### VSEARCH LCA
+
+Alternatively, ASVs can be taxonomically classified with VSEARCH `usearch_global` and the `--lcaout` option: global pairwise alignment against a reference database, then lowest-common-ancestor assignment from accepted hits (see `--vsearch_lca_ref_taxonomy`, `--vsearch_lca_ref_tax_custom`, and related parameters in the schema). Reference databases use the same SINTAX-style FASTA format as SINTAX. Output row order may differ between reruns when using multiple threads.
+
+Files when _not_ using ITSx (default):
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `vsearch_lca/`
+  - `ASV_tax_vsearch_lca.*.lca`: Raw `--lcaout` output from VSEARCH.
+  - `ASV_tax_vsearch_lca.*.tsv`: Taxonomic classification for each ASV sequence in a format similar to DADA2 output.
+  - `ref_taxonomy_vsearch_lca.txt`: Information about the used reference taxonomy, such as title, version, citation.
+
+</details>
+
+Files when using ITSx:
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `vsearch_lca/`
+  - `ASV_ITS_tax_vsearch_lca.*.lca`: Raw `--lcaout` output from VSEARCH, when using cut sequences as input.
+  - `ASV_tax_vsearch_lca.*.tsv`: Taxonomic classification for each ASV sequence, based on the chosen ITS region, in a format similar to DADA2 output.
+  - `ref_taxonomy_vsearch_lca.txt`: Information about the used reference taxonomy, such as title, version, citation.
+
+</details>
+
 ### Phylogenetic placement and taxonomic classification
 
 Phylogenetic placement grafts sequences onto a phylogenetic reference tree and optionally outputs taxonomic annotations. The reference tree is ideally made from full-length high-quality sequences containing better evolutionary signal than short amplicons. It is hence superior to estimating de-novo phylogenetic trees from short amplicon sequences. On providing required reference files, ASV sequences are aligned to the reference alignment with either [HMMER](http://hmmer.org/) (default) or [MAFFT](https://mafft.cbrc.jp/alignment/software/). Subsequently, phylogenetic placement of query sequences is performed with [EPA-NG](https://github.com/Pbdas/epa-ng), and finally a number of summary operations are performed with [Gappa](https://github.com/lczech/gappa). This uses code from [nf-core/phyloplace](https://nf-co.re/phyloplace) in the form of its main [subworkflow](https://github.com/nf-core/modules/tree/master/subworkflows/nf-core/fasta_newick_epang_gappa), therefore its detailed documentation also applies here.
@@ -446,7 +475,7 @@ Intermediate data imported to QIIME2 is saved as QIIME2 fragments, that can be c
 
 #### Abundance tables
 
-The abundance tables are the final data for further downstream analysis and visualisations. The tables are based on the computed ASVs and taxonomic classification (in the following priority when several are enabled: SIDLE for multi-region, then phylogenetic placement [EPA-NG, Gappa], DADA2, SINTAX, Kraken2, QIIME2, VSEARCH), but after removal of unwanted taxa. Unwanted taxa are often off-targets generated in PCR with primers that are not perfectly specific for the target DNA (can be specified by `--exclude_taxa`), by default mitrochondria and chloroplast sequences are removed because these are frequent unwanted non-bacteria PCR products.
+The abundance tables are the final data for further downstream analysis and visualisations. The tables are based on the computed ASVs and taxonomic classification (in the following priority when several are enabled: SIDLE for multi-region, then phylogenetic placement [EPA-NG, Gappa], DADA2, SINTAX, Kraken2, QIIME2, VSEARCH LCA), but after removal of unwanted taxa. Unwanted taxa are often off-targets generated in PCR with primers that are not perfectly specific for the target DNA (can be specified by `--exclude_taxa`), by default mitrochondria and chloroplast sequences are removed because these are frequent unwanted non-bacteria PCR products.
 
 All following analysis is based on these filtered tables.
 

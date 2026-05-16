@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 - [#992](https://github.com/nf-core/ampliseq/pull/992) - Slack notification on status of AWS full test
-- [#998](https://github.com/nf-core/ampliseq/pull/998) - Added taxonomic assignment with VSEARCH/LCA
+- [#998](https://github.com/nf-core/ampliseq/pull/998) - Added taxonomic assignment with VSEARCH/LCA. This adds parameters `--vsearch_lca_ref_taxonomy` for built-in reference databases (supports `coidb`, `midori2-co1`, `unite-fungi`, `unite-alleuk`) and `--vsearch_lca_ref_tax_custom` for custom reference databases, as well as other VSEARCH/LCA related parameters.
 
 ### `Changed`
 
@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Dependencies`
 
-- [#998](https://github.com/nf-core/ampliseq/pull/998) - Added taxonomic assignment with VSEARCH/LCA
+- [#998](https://github.com/nf-core/ampliseq/pull/998) - Added taxonomic assignment with VSEARCH/LCA. Updated samtools and vsearch.
 
 | software | previously | now    |
 | -------- | ---------- | ------ |

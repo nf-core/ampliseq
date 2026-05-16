@@ -28,16 +28,9 @@ process FORMAT_TAXONOMY_VSEARCH_LCA {
         echo -e "Citation: Not specified\\n" >>ref_taxonomy_vsearch_lca.txt
         echo -e "dbversion label: user_supplied\\n" >>ref_taxonomy_vsearch_lca.txt
 
-        sed_version=\$(sed --version 2>/dev/null | sed -n 1p | sed 's/sed (GNU sed) //' || true)
-        if [ -z "\$sed_version" ]; then
-            sed_version=\$(sed -V 2>/dev/null | sed -n 1p || true)
-        fi
-        if [ -z "\$sed_version" ]; then
-            sed_version="unknown"
-        fi
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
-            sed: \$sed_version
+            sed: \$(sed --version 2>&1 | sed -n 1p | sed 's/sed (GNU sed) //')
         END_VERSIONS
         """
     } else {
@@ -49,16 +42,9 @@ process FORMAT_TAXONOMY_VSEARCH_LCA {
         echo -e "Citation: ${params.vsearch_lca_ref_databases[params.vsearch_lca_ref_taxonomy]["citation"]}\\n" >>ref_taxonomy_vsearch_lca.txt
         echo "All entries: ${params.vsearch_lca_ref_databases[params.vsearch_lca_ref_taxonomy]}" >>ref_taxonomy_vsearch_lca.txt
 
-        sed_version=\$(sed --version 2>/dev/null | sed -n 1p | sed 's/sed (GNU sed) //' || true)
-        if [ -z "\$sed_version" ]; then
-            sed_version=\$(sed -V 2>/dev/null | sed -n 1p || true)
-        fi
-        if [ -z "\$sed_version" ]; then
-            sed_version="unknown"
-        fi
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
-            sed: \$sed_version
+            sed: \$(sed --version 2>&1 | sed -n 1p | sed 's/sed (GNU sed) //')
         END_VERSIONS
         """
     }

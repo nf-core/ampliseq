@@ -702,7 +702,7 @@
                 },
                 "vsearch_lca_id": {
                     "type": "number",
-                    "default": 1.0,
+                    "default": 0.9,
                     "minimum": 0,
                     "maximum": 1,
                     "description": "VSEARCH usearch_global identity cutoff (`--id`) used for VSEARCH LCA."
@@ -721,7 +721,7 @@
                 },
                 "vsearch_lca_lca_cutoff": {
                     "type": "number",
-                    "default": 1.0,
+                    "default": 0.9,
                     "minimum": 0.5,
                     "maximum": 1,
                     "description": "LCA support threshold for VSEARCH LCA (`--lca_cutoff`)."

@@ -14,7 +14,7 @@ process SUMMARY_REPORT  {
     path(metadata)
     path(input_samplesheet)
     path(input_fasta)
-    path(mqc_plots)
+    tuple val(meta_mqc), path(mqc_plots)
     path(cutadapt_summary)
     val(find_truncation_values)
     path(dada_filtntrim_args)

@@ -1,9 +1,9 @@
 process QIIME2_DIVERSITY_ADONIS {
     tag "${core.baseName}-${formula}"
-    label 'process_low'
+    label 'process_single'
 
-    conda "${moduleDir}/envs/qiime2-amplicon-2024.10-py310-linux-conda.yml"
-    container "qiime2/amplicon:2024.10"
+    conda "${moduleDir}/envs/rachis-qiime2-linux-64-conda.yml"
+    container "qiime2/qiime2:2026.4"
 
     input:
     tuple path(metadata), path(core), val(formula)
@@ -20,8 +20,9 @@ process QIIME2_DIVERSITY_ADONIS {
     export MPLCONFIGDIR="./mplconfigdir"
     export NUMBA_CACHE_DIR="./numbacache"
 
+    # more than 1 process is failing with QIIME2 2026.4.0!
     qiime diversity adonis \\
-        --p-n-jobs $task.cpus \\
+        --p-n-jobs 1 \\
         --i-distance-matrix ${core} \\
         --m-metadata-file ${metadata} \\
         --o-visualization ${core.baseName}_adonis.qzv \\

@@ -40,8 +40,6 @@ nextflow_pipeline {
                     path("$outputDir/dada2/ASV_table.tsv"),
                     path("$outputDir/dada2/DADA2_stats.tsv"),
                     path("$outputDir/dada2/DADA2_table.tsv"),
-                    path("$outputDir/vsearch_lca/ASV_tax_vsearch_lca.unite-fungi.tsv"),
-                    path("$outputDir/vsearch_lca/ref_taxonomy_vsearch_lca.txt"),
                     path("$outputDir/qiime2/representative_sequences/descriptive_stats.tsv"),
                     path("$outputDir/qiime2/representative_sequences/seven_number_summary.tsv"),
                     path("$outputDir/input/Samplesheet_pacbio_ITS.tsv"),

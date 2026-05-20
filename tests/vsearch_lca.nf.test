@@ -24,7 +24,6 @@ nextflow_pipeline {
                     stable_path,
                     path("$outputDir/vsearch_lca/ASV_tax_vsearch_lca.unite-fungi.tsv"),
                     path("$outputDir/vsearch_lca/ref_taxonomy_vsearch_lca.txt"),
-                    path("$outputDir/qiime2/abundance_tables/feature-table.tsv"),
                     path("$outputDir/dada2/ASV_table.tsv"),
                     path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt")
                 ).match() }

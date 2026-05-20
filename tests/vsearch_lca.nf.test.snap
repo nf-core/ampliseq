@@ -1,5 +1,5 @@
 {
-    "-profile test_pacbio_its": {
+    "-profile test_vsearch_lca": {
         "content": [
             {
                 "BARRNAP": {
@@ -7,6 +7,9 @@
                 },
                 "BARRNAPSUMMARY": {
                     "python": "Python 3.9.1"
+                },
+                "COMBINE_TABLE_VSEARCH_LCA": {
+                    "R": "4.0.3"
                 },
                 "CUTADAPT_BASIC": {
                     "cutadapt": 5.2
@@ -55,32 +58,63 @@
                     "R": "4.0.3",
                     "Biostrings": "2.58.0"
                 },
-                "FORMAT_TAXONOMY_SINTAX": {
+                "FILTER_SAMPLES": {
+                    "R": "4.2.1"
+                },
+                "FILTER_STATS": {
+                    "python": "3.9.1",
+                    "pandas": "1.1.5"
+                },
+                "FORMAT_TAXONOMY_VSEARCH_LCA": {
                     "sed": 4.7
                 },
-                "FORMAT_TAXRESULTS_SINTAX": {
+                "FORMAT_TAXRESULTS_VSEARCH_LCA": {
                     "python": "3.9.1"
                 },
-                "ITSXRUST_CUTASV": {
-                    "ITSxRust": "0.2.2"
+                "ITSX_CUTASV": {
+                    "ITSx": "1.1.3"
+                },
+                "MERGE_STATS_FILTERTAXA": {
+                    "R": "4.5.2"
                 },
                 "MERGE_STATS_STD": {
                     "R": "4.5.2"
                 },
-                "RENAME_RAW_DATA_FILES": {
+                "PHYLOSEQ_INASV": {
                     "sed": 4.7
                 },
-                "SBDIEXPORT": {
-                    "R": "3.6.3"
+                "QIIME2_EXPORT_ABSOLUTE": {
+                    "qiime2": "2026.4.0"
                 },
-                "SBDIEXPORTREANNOTATE": {
-                    "R": "3.6.3"
+                "QIIME2_EXPORT_RELASV": {
+                    "qiime2": "2026.4.0"
+                },
+                "QIIME2_EXPORT_RELTAX": {
+                    "qiime2": "2026.4.0"
+                },
+                "QIIME2_INASV": {
+                    "qiime2": "2026.4.0"
+                },
+                "QIIME2_INSEQ": {
+                    "qiime2": "2026.4.0"
+                },
+                "QIIME2_INTAX": {
+                    "qiime2": "2026.4.0"
+                },
+                "QIIME2_SEQFILTERTABLE": {
+                    "qiime2": "2026.4.0"
+                },
+                "QIIME2_TABLEFILTERTAXA": {
+                    "qiime2": "2026.4.0"
+                },
+                "RENAME_RAW_DATA_FILES": {
+                    "sed": 4.7
                 },
                 "TREESUMMARIZEDEXPERIMENT": {
                     "R": "4.3.2",
                     "TreeSummarizedExperiment": "2.10.0"
                 },
-                "VSEARCH_SINTAX": {
+                "VSEARCH_USEARCHGLOBAL_LCA": {
                     "vsearch": "2.31.0"
                 },
                 "Workflow": {
@@ -88,12 +122,6 @@
                 }
             },
             [
-                "SBDI",
-                "SBDI/annotation.tsv",
-                "SBDI/asv-table.tsv",
-                "SBDI/dna.tsv",
-                "SBDI/emof.tsv",
-                "SBDI/event.tsv",
                 "barrnap",
                 "barrnap/rrna.arc.gff",
                 "barrnap/rrna.bac.gff",
@@ -139,7 +167,6 @@
                 "input/Metadata_pacbio_ITS.tsv",
                 "input/Samplesheet_pacbio_ITS.tsv",
                 "itsx",
-                "itsx/ASV_ITS_seqs.ITS1.fasta",
                 "itsx/ASV_ITS_seqs.ITS2.fasta",
                 "itsx/ASV_ITS_seqs.full.fasta",
                 "itsx/ASV_ITS_seqs.summary.txt",
@@ -147,7 +174,7 @@
                 "itsx/ASV_len_orig.tsv",
                 "itsx/ASV_seqs.len.fasta",
                 "itsx/ASV_table.len.tsv",
-                "itsx/ITSxRust.args.txt",
+                "itsx/ITSx.args.txt",
                 "multiqc",
                 "multiqc/multiqc_data",
                 "multiqc/multiqc_data/cutadapt_filtered_reads_plot.txt",
@@ -242,45 +269,57 @@
                 "overall_summary.tsv",
                 "pipeline_info",
                 "pipeline_info/nf_core_ampliseq_software_mqc_versions.yml",
-                "sintax",
-                "sintax/ASV_ITS_tax_sintax.unite-fungi_8_2.raw.tsv",
-                "sintax/ASV_tax_sintax.unite-fungi_8_2.tsv",
-                "sintax/ref_taxonomy_sintax.txt",
+                "qiime2",
+                "qiime2/abundance_tables",
+                "qiime2/abundance_tables/abs-abund-table-2.tsv",
+                "qiime2/abundance_tables/abs-abund-table-3.tsv",
+                "qiime2/abundance_tables/abs-abund-table-4.tsv",
+                "qiime2/abundance_tables/abs-abund-table-5.tsv",
+                "qiime2/abundance_tables/abs-abund-table-6.tsv",
+                "qiime2/abundance_tables/count_table_filter_stats.tsv",
+                "qiime2/abundance_tables/feature-table.biom",
+                "qiime2/abundance_tables/feature-table.tsv",
+                "qiime2/abundance_tables/filtered-table.qza",
+                "qiime2/input",
+                "qiime2/input/rep-seqs.qza",
+                "qiime2/input/table.qza",
+                "qiime2/input/taxonomy.qza",
+                "qiime2/rel_abundance_tables",
+                "qiime2/rel_abundance_tables/rel-table-2.tsv",
+                "qiime2/rel_abundance_tables/rel-table-3.tsv",
+                "qiime2/rel_abundance_tables/rel-table-4.tsv",
+                "qiime2/rel_abundance_tables/rel-table-5.tsv",
+                "qiime2/rel_abundance_tables/rel-table-6.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV_with-VSEARCH-LCA-tax.tsv",
+                "qiime2/representative_sequences",
+                "qiime2/representative_sequences/descriptive_stats.tsv",
+                "qiime2/representative_sequences/filtered-sequences.qza",
+                "qiime2/representative_sequences/rep-seq.fasta",
+                "qiime2/representative_sequences/seven_number_summary.tsv",
                 "summary_report",
                 "summary_report/itsx_preliminary_origin.svg",
                 "summary_report/rrna_detection_with_barrnap.svg",
-                "summary_report/sintax_taxonomic_classification_per_taxonomy_level.svg",
                 "summary_report/stacked_barchart_of_reads.svg",
                 "summary_report/summary_report.html",
                 "summary_report/versions.yml",
+                "summary_report/vsearch_lca_taxonomic_classification_per_taxonomy_level.svg",
                 "treesummarizedexperiment",
-                "treesummarizedexperiment/sintax_TreeSummarizedExperiment.rds"
+                "treesummarizedexperiment/vsearch_lca_TreeSummarizedExperiment.rds",
+                "vsearch_lca",
+                "vsearch_lca/ASV_ITS_tax_vsearch_lca.unite-fungi.lca",
+                "vsearch_lca/ASV_tax_vsearch_lca.unite-fungi.tsv",
+                "vsearch_lca/ref_taxonomy_vsearch_lca.txt"
             ],
-            "overall_summary.tsv:md5,97a8ee12c40a0bc582ba1cefda117f95",
-            "rrna.arc.gff:md5,6bb50a4c244d80d56e759ecfbb045381",
-            "rrna.bac.gff:md5,7c38dd6692b792ace17142158afeb33e",
-            "rrna.euk.gff:md5,8ae155cbe43335084a0c9a2ccd655cb3",
-            "rrna.mito.gff:md5,df19e1b84ba6f691d20c72b397c88abf",
-            "cutadapt_summary.tsv:md5,d185ccd02c22b859fcaf2e5158ce70c6",
-            "ASV_seqs.fasta:md5,91fd58a4148eb3f9320f60e266b87e38",
+            "ASV_tax_vsearch_lca.unite-fungi.tsv:md5,c72d1a1a27b88bafe240118cc234499f",
+            "ref_taxonomy_vsearch_lca.txt:md5,9f07763e82a87d838588b49b6beb8c8b",
             "ASV_table.tsv:md5,51e15e9cb15087ee91ff8691c451daf7",
-            "DADA2_stats.tsv:md5,4bbde0bbf579f60e692bd32d14034f0d",
-            "DADA2_table.tsv:md5,a4f790561f01ed078ed95a505295b528",
-            "Samplesheet_pacbio_ITS.tsv:md5,905b0fc4850149d6457c9da7076c2c2d",
-            "Metadata_pacbio_ITS.tsv:md5,51d81b0fe29f6377fa21ce8399fc5ae0",
-            "ASV_ITS_seqs.full.fasta:md5,1ba189e0f7474b660cf8d6d9afd2c720",
-            "ITSxRust.args.txt:md5,5edc28029c799b9112f3d66731b9347a",
-            "multiqc_fastqc.txt:md5,f11936dbbf1718301ceba86050e24799",
-            "multiqc_general_stats.txt:md5,1fef8358fe3cc974bf05e2f27fc7e250",
-            "multiqc_cutadapt.txt:md5,160135fece18361e17bef9e8d04cf0b9",
-            "dna.tsv:md5,061ca46725294da75acd8237390f4291",
-            "emof.tsv:md5,c6599c76a70fe5458db56ff8c2e89a37",
-            "event.tsv:md5,bfcf7d8ac2a3c6b48d075d6dc235f0e4"
+            "multiqc_general_stats.txt:md5,1fef8358fe3cc974bf05e2f27fc7e250"
         ],
+        "timestamp": "2026-05-20T09:05:43.531467",
         "meta": {
-            "nf-test": "0.9.3",
+            "nf-test": "0.9.5",
             "nextflow": "25.10.4"
-        },
-        "timestamp": "2026-04-21T09:19:33.698156989"
+        }
     }
 }

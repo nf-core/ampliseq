@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 - [#992](https://github.com/nf-core/ampliseq/pull/992) - Slack notification on status of AWS full test
+- [#998](https://github.com/nf-core/ampliseq/pull/998) - Added taxonomic assignment with VSEARCH/LCA. This adds parameters `--vsearch_lca_ref_taxonomy` for built-in reference databases (supports `coidb`, `midori2-co1`, `unite-fungi`, `unite-alleuk`) and `--vsearch_lca_ref_tax_custom` for custom reference databases, as well as other VSEARCH/LCA related parameters.
 - [#1001](https://github.com/nf-core/ampliseq/pull/1001) - Add ANCOM-BC2 alongside ANCOM and ANCOM-BC
 
 ### `Changed`
@@ -19,13 +20,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Dependencies`
 
+- [#998](https://github.com/nf-core/ampliseq/pull/998) - Added taxonomic assignment with VSEARCH/LCA. Updates samtools and vsearch.
 - [#999](https://github.com/nf-core/ampliseq/pull/999) - MultiQC 1.33 to 1.34
 - [#1000](https://github.com/nf-core/ampliseq/pull/1000) - QIIME2 2024.10.1 to 2026.04.0
+- [#1006](https://github.com/nf-core/ampliseq/pull/1006) - nf-schema from 2.5.1 to 2.7.2
 
 | software | previously | now       |
 | -------- | ---------- | --------- |
 | MultiQC  | 1.33       | 1.34      |
 | QIIME2   | 2024.10.1  | 2026.04.0 |
+| samtools | 1.16.1     | 1.21.1    |
+| vsearch  | 2.21.1     | 2.31.0.   |
 
 ### `Removed`
 

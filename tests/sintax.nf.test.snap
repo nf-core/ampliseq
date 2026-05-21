@@ -170,7 +170,7 @@
                     "TreeSummarizedExperiment": "2.10.0"
                 },
                 "VSEARCH_SINTAX": {
-                    "vsearch": "2.21.1"
+                    "vsearch": "2.31.0"
                 },
                 "Workflow": {
                     "nf-core/ampliseq": "v2.18.0dev"
@@ -1514,10 +1514,10 @@
             "multiqc_general_stats.txt:md5,1fef8358fe3cc974bf05e2f27fc7e250",
             "multiqc_cutadapt.txt:md5,160135fece18361e17bef9e8d04cf0b9"
         ],
+        "timestamp": "2026-05-19T20:54:43.017242",
         "meta": {
-            "nf-test": "0.9.3",
+            "nf-test": "0.9.5",
             "nextflow": "25.10.4"
-        },
-        "timestamp": "2026-04-21T13:53:20.492437033"
+        }
     }
 }

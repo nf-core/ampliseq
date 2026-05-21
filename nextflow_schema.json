@@ -669,6 +669,70 @@
                     "help_text": "Comma separated list of taxonomic ranks matching the labels in the custom database. Required with `--sintax_ref_tax_custom`. For example: `Phylum,Class,Order,Family,Genus,Species`.",
                     "description": "Comma separated list of taxonomic levels used in SINTAX with a custom reference database"
                 },
+                "vsearch_lca_ref_tax_custom": {
+                    "type": "string",
+                    "help_text": "Path to a custom VSEARCH LCA reference database. Requires `--vsearch_lca_assign_taxlevels`. Expected format: SINTAX-compatible FASTA with semicolon-separated taxonomy labels in sequence headers (same as `--sintax_ref_tax_custom`); plain FASTA or gzip-compressed (`.gz`) is accepted. Cannot be used together with `--vsearch_lca_ref_taxonomy`.",
+                    "description": "Path to a custom VSEARCH LCA reference database (SINTAX-compatible FASTA)"
+                },
+                "vsearch_lca_ref_taxonomy": {
+                    "type": "string",
+                    "help_text": "Choose one of the supported built-in databases for VSEARCH LCA. Database and version are separated by an equal sign (`=`, e.g. `midori2-co1=gb270`). This downloads the selected reference and runs VSEARCH usearch_global with `--lcaout`.\n\nThe following built-in databases are currently supported:\n- COIDB - eukaryotic Cytochrome Oxidase I (COI) from BOLD\n- MIDORI2-CO1 - metazoan COI reference sequences in SINTAX format (default: GenBank270 release on reference-midori.info)\n- UNITE (`unite-fungi`, `unite-alleuk`, and pinned versions) - eukaryotic nuclear ribosomal ITS in USEARCH/UTAX (SINTAX-compatible) format\n\nUsing `unite-fungi` or `unite-alleuk` selects the most recent supported release. Cannot be used together with `--vsearch_lca_ref_tax_custom`.",
+                    "description": "Name of built-in VSEARCH LCA reference database, and optionally also version number",
+                    "enum": [
+                        "coidb",
+                        "coidb=221216",
+                        "midori2-co1",
+                        "midori2-co1=gb270",
+                        "unite-fungi",
+                        "unite-fungi=10.0",
+                        "unite-fungi=9.0",
+                        "unite-fungi=8.3",
+                        "unite-fungi=8.2",
+                        "unite-alleuk",
+                        "unite-alleuk=10.0",
+                        "unite-alleuk=9.0",
+                        "unite-alleuk=8.3",
+                        "unite-alleuk=8.2"
+                    ]
+                },
+                "vsearch_lca_assign_taxlevels": {
+                    "type": "string",
+                    "help_text": "Comma separated list of taxonomic ranks matching the labels in the custom database. Required with `--vsearch_lca_ref_tax_custom`. For example: `Phylum,Class,Order,Family,Genus,Species`.",
+                    "description": "Comma separated list of taxonomic levels for VSEARCH LCA with a custom reference database"
+                },
+                "vsearch_lca_id": {
+                    "type": "number",
+                    "default": 0.9,
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "VSEARCH usearch_global identity cutoff (`--id`) used for VSEARCH LCA."
+                },
+                "vsearch_lca_maxaccepts": {
+                    "type": "integer",
+                    "default": 0,
+                    "minimum": 0,
+                    "description": "Maximum number of target sequences to accept per query for VSEARCH LCA (`--maxaccepts`)."
+                },
+                "vsearch_lca_maxrejects": {
+                    "type": "integer",
+                    "default": 0,
+                    "minimum": 0,
+                    "description": "Maximum number of non-matching target sequences to reject per query for VSEARCH LCA (`--maxrejects`)."
+                },
+                "vsearch_lca_lca_cutoff": {
+                    "type": "number",
+                    "default": 0.9,
+                    "minimum": 0.5,
+                    "maximum": 1,
+                    "description": "LCA support threshold for VSEARCH LCA (`--lca_cutoff`)."
+                },
+                "vsearch_lca_query_cov": {
+                    "type": "number",
+                    "default": 1.0,
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Minimum fraction of the query that must align to a target for VSEARCH LCA (`--query_cov`)."
+                },
                 "addsh": {
                     "type": "boolean",
                     "description": "If ASVs should be assigned to UNITE species hypotheses (SHs). Only relevant for ITS data."

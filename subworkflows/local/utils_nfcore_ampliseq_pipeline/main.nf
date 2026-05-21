@@ -109,6 +109,9 @@ workflow PIPELINE_INITIALISATION {
     if ( params.sintax_ref_taxonomy && !params.skip_taxonomy && !params.sintax_ref_tax_custom ) {
         sintaxreftaxonomyExistsError()
     }
+    if ( params.vsearch_lca_ref_taxonomy && !params.skip_taxonomy && !params.vsearch_lca_ref_tax_custom ) {
+        vsearchlcareftaxonomyExistsError()
+    }
     if ( (params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && !params.skip_taxonomy && !params.classifier ) {
         qiimereftaxonomyExistsError()
     }
@@ -263,8 +266,16 @@ def validateInputParameters() {
         error("Incompatible parameters: `--sintax_ref_taxonomy` and `--sintax_ref_tax_custom` cannot be used together.")
     }
 
+    if (params.vsearch_lca_ref_taxonomy && params.vsearch_lca_ref_tax_custom) {
+        error("Incompatible parameters: `--vsearch_lca_ref_taxonomy` and `--vsearch_lca_ref_tax_custom` cannot be used together.")
+    }
+
     if (params.sintax_ref_tax_custom && !params.skip_taxonomy && !params.sintax_assign_taxlevels) {
-        error("Missing parameter: Taxonomic classification with `--sintax_ref_tax_custom` requires `--sintax_assign_taxlevels` (comma-separated taxonomic ranks matching the reference labels).")
+        error("Missing parameter: Taxonomic classification with `--sintax_ref_tax_custom` requires `--sintax_assign_taxlevels` (comma-separated taxonomic ranks matching the reference database labels).")
+    }
+
+    if (params.vsearch_lca_ref_tax_custom && !params.skip_taxonomy && !params.vsearch_lca_assign_taxlevels) {
+        error("Missing parameter: Taxonomic classification with `--vsearch_lca_ref_tax_custom` requires `--vsearch_lca_assign_taxlevels` (comma-separated taxonomic ranks matching the reference database labels).")
     }
 
     if (params.sbdiexport && params.sintax_ref_tax_custom) {
@@ -450,6 +461,20 @@ def sintaxreftaxonomyExistsError() {
             "  SINTAX reference database '${params.sintax_ref_taxonomy}' not found in any config file provided to the pipeline.\n" +
             "  Currently, the available reference taxonomy keys for `--sintax_ref_taxonomy` are:\n" +
             "  ${params.sintax_ref_databases.keySet().join(", ")}\n" +
+            "==================================================================================="
+        error(error_string)
+    }
+}
+
+//
+// Exit pipeline if incorrect --vsearch_lca_ref_taxonomy key provided
+//
+def vsearchlcareftaxonomyExistsError() {
+    if (params.vsearch_lca_ref_databases && params.vsearch_lca_ref_taxonomy && !params.vsearch_lca_ref_databases.containsKey(params.vsearch_lca_ref_taxonomy)) {
+        def error_string = "=============================================================================\n" +
+            "  VSEARCH LCA reference database '${params.vsearch_lca_ref_taxonomy}' not found in any config file provided to the pipeline.\n" +
+            "  Currently, the available reference taxonomy keys for `--vsearch_lca_ref_taxonomy` are:\n" +
+            "  ${params.vsearch_lca_ref_databases.keySet().join(", ")}\n" +
             "==================================================================================="
         error(error_string)
     }

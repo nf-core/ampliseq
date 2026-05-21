@@ -71,8 +71,7 @@ process QIIME2_ANCOMBC2_TAX {
         qiime composition ancombc2-visualizer \\
             --i-data "${prefix}.differentials.qza" \\
             --o-visualization "${prefix}.visualizer.qzv"
-        qiime tools export --input-path "${prefix}.visualizer.qzv" \\
-            --output-path "visualizer/${outfolder}"
+        # 'qiime tools export' does not produce a valid html
     fi
 
     cat <<-END_VERSIONS > versions.yml

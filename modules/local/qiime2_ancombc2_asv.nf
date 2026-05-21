@@ -49,8 +49,7 @@ process QIIME2_ANCOMBC2_ASV {
     qiime composition ancombc2-visualizer \\
         --i-data "${formula}.differentials.qza" \\
         --o-visualization "${formula}.visualizer.qzv"
-    qiime tools export --input-path "${formula}.visualizer.qzv" \\
-        --output-path "visualizer/Category-${formula}-ASV"
+    # 'qiime tools export' does not produce a valid html
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -352,7 +352,33 @@ workflow AMPLISEQ {
         val_dada_taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" :
             params.dada_ref_databases[params.dada_ref_taxonomy]["taxlevels"] ?
                 params.dada_ref_databases[params.dada_ref_taxonomy]["taxlevels"] : ""
+
+        if ( params.run_pplace && params.dada_ref_databases[params.dada_ref_taxonomy]["pplace"] ) {
+            ch_pplace_sheet channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["pplace"])
+            /**
+            ch_pplace_sheet = channel.fromPath(params.pplace_sheet)
+                .splitCsv(header: true)
+                .map { it ->
+                    [
+                        meta: [
+                            id: it.target,
+                            min_bitscore: it.min_bitscore
+                        ],
+                        data: [
+                            alignmethod:    it.alignmethod  ? it.alignmethod                             : 'hmmer',
+                            hmm:            file(it.hmm,  checkIfExists: true),
+                            extract_hmm:    it.extract_hmm,
+                            refseqfile:     it.refseqfile   ? file(it.refseqfile,   checkIfExists: true) : [],
+                            refphylogeny:   it.refphylogeny ? file(it.refphylogeny, checkIfExists: true) : [],
+                            model:          it.model,
+                            taxonomy:       it.taxonomy     ? file(it.taxonomy,     checkIfExists: true) : []
+                        ]
+                    ]
+                }
+                **/
+        }
     }
+    ch_pplace_sheet.view { "pplace_sheet: ${it}" }
 
     //make sure that taxlevels adheres to requirements when mixed with addSpecies
     if ( params.dada_ref_taxonomy && !params.skip_dada_addspecies && !params.skip_dada_taxonomy && !params.skip_taxonomy && val_dada_taxlevels ) {

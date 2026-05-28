@@ -212,7 +212,7 @@ workflow AMPLISEQ {
                         min_bitscore: it.min_bitscore
                     ],
                     data: [
-                        alignmethod:    it.alignmethod  ? it.alignmethod                             : 'hmmer',
+                        alignmethod:    it.alignmethod  ? it.alignmethod                             : 'clustalo',
                         hmm:            file(it.hmm,  checkIfExists: true),
                         extract_hmm:    it.extract_hmm,
                         refseqfile:     it.refseqfile   ? file(it.refseqfile,   checkIfExists: true) : [],
@@ -356,18 +356,15 @@ workflow AMPLISEQ {
                 params.dada_ref_databases[params.dada_ref_taxonomy]["taxlevels"] : ""
 
         if ( params.run_pplace && params.dada_ref_databases[params.dada_ref_taxonomy]["pplace"] ) {
-            ch_pplace_sheet channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["pplace"])
-            /**
-            ch_pplace_sheet = channel.fromPath(params.pplace_sheet)
-                .splitCsv(header: true)
+            ch_pplace_sheet = channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["pplace"])
                 .map { it ->
                     [
                         meta: [
                             id: it.target,
-                            min_bitscore: it.min_bitscore
+                            min_bitscore: it.min_bitscore ? it.min_bitscore : 0
                         ],
                         data: [
-                            alignmethod:    it.alignmethod  ? it.alignmethod                             : 'hmmer',
+                            alignmethod:    it.alignmethod  ? it.alignmethod                             : 'clustalo',
                             hmm:            file(it.hmm,  checkIfExists: true),
                             extract_hmm:    it.extract_hmm,
                             refseqfile:     it.refseqfile   ? file(it.refseqfile,   checkIfExists: true) : [],
@@ -377,7 +374,6 @@ workflow AMPLISEQ {
                         ]
                     ]
                 }
-                **/
         }
     }
     ch_pplace_sheet.view { "pplace_sheet: ${it}" }
@@ -813,7 +809,7 @@ workflow AMPLISEQ {
         ch_pp_data = ch_fasta.map { it ->
             [ meta: [ id: params.pplace_name ?: 'user_tree' ],
             data: [
-                alignmethod:  params.pplace_alnmethod ?: 'hmmer',
+                alignmethod:  params.pplace_alnmethod ?: 'clustalo',
                 queryseqfile: it,
                 refseqfile:   file( params.pplace_aln, checkIfExists: true ),
                 hmmfile:      [],
@@ -833,7 +829,7 @@ workflow AMPLISEQ {
     //
     // Multiple references with hmms
     //
-    if ( params.pplace_sheet ) {
+    if ( params.pplace_sheet || params.run_pplace ) {
         // For search entries with a named hmm to extract, call extraction
         ch_pplace_sheet
             .filter { it -> it.data.extract_hmm }

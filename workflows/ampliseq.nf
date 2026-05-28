@@ -376,7 +376,6 @@ workflow AMPLISEQ {
                 }
         }
     }
-    ch_pplace_sheet.view { "pplace_sheet: ${it}" }
 
     //make sure that taxlevels adheres to requirements when mixed with addSpecies
     if ( params.dada_ref_taxonomy && !params.skip_dada_addspecies && !params.skip_dada_taxonomy && !params.skip_taxonomy && val_dada_taxlevels ) {

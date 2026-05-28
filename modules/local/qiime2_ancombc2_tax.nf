@@ -9,7 +9,7 @@ process QIIME2_ANCOMBC2_TAX {
     tuple path(metadata), path(table), path(taxonomy), val(taxlevel), val(formula_in)
 
     output:
-    path("visualizer/*")         , emit: plot
+    path("visualizations/*")     , emit: plot
     path("differentials/*")      , emit: differentials
     path("*.qza")                , emit: qza, optional: true
     path("*.qzv")                , emit: qzv, optional: true
@@ -17,6 +17,7 @@ process QIIME2_ANCOMBC2_TAX {
 
     script:
     def args        = task.ext.args ?: ''
+    def args2       = task.ext.args2 ?: ''
     def formula     = formula_in ?: "${table.baseName}"
     def prefix      = "lvl${taxlevel}-${formula}"
     def outfolder   = "Category-${formula}-level-${taxlevel}"
@@ -44,8 +45,8 @@ process QIIME2_ANCOMBC2_TAX {
     if [ \$(grep -v '^#' -c "${prefix}.feature-table.tsv") -lt 2 ]; then
         mkdir differentials
         echo ${taxlevel} > differentials/\"WARNING Summing your data at taxonomic level ${taxlevel} produced less than two rows (taxa), ANCOMBC2 can't proceed -- did you specify a bad reference taxonomy?\".txt
-        mkdir visualizer
-        echo ${taxlevel} > visualizer/\"WARNING Summing your data at taxonomic level ${taxlevel} produced less than two rows (taxa), ANCOMBC2 can't proceed -- did you specify a bad reference taxonomy?\".txt
+        mkdir visualizations
+        echo ${taxlevel} > visualizations/\"WARNING Summing your data at taxonomic level ${taxlevel} produced less than two rows (taxa), ANCOMBC2 can't proceed -- did you specify a bad reference taxonomy?\".txt
     else
         qiime composition ancombc2 \\
             --i-table "${prefix}.qza" \\
@@ -72,6 +73,18 @@ process QIIME2_ANCOMBC2_TAX {
             --i-data "${prefix}.differentials.qza" \\
             --o-visualization "${prefix}.visualizer.qzv"
         # 'qiime tools export' does not produce a valid html
+        mkdir -p "visualizations/${outfolder}"
+        mv "${prefix}.visualizer.qzv" "visualizations/${outfolder}/"
+
+        # Generate volcano plot
+        ancombc_volcanoplot.r \\
+            "differentials/${outfolder}/lfc.jsonl" \\
+            "differentials/${outfolder}/q.jsonl" \\
+            $args2 \\
+            "differentials/${outfolder}/p.jsonl" \\
+            "differentials/${outfolder}/se.jsonl" \\
+            "differentials/${outfolder}/passed_ss.jsonl"
+        mv volcano_plot.* "visualizations/${outfolder}/"
     fi
 
     cat <<-END_VERSIONS > versions.yml

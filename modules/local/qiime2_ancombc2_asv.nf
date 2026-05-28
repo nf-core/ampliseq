@@ -11,7 +11,7 @@ process QIIME2_ANCOMBC2_ASV {
     tuple path(metadata), path(table), val(formula_in)
 
     output:
-    path("visualizer/*")         , emit: plot
+    path("visualizations/*")     , emit: plot
     path("differentials/*")      , emit: differentials
     path("*.qza")                , emit: qza
     path("*.qzv")                , emit: qzv
@@ -19,6 +19,7 @@ process QIIME2_ANCOMBC2_ASV {
 
     script:
     def args        = task.ext.args ?: ''
+    def args2       = task.ext.args2 ?: ''
     def formula     = formula_in ?: "${table.baseName}"
     """
     export XDG_CONFIG_HOME="./xdgconfig"
@@ -50,6 +51,18 @@ process QIIME2_ANCOMBC2_ASV {
         --i-data "${formula}.differentials.qza" \\
         --o-visualization "${formula}.visualizer.qzv"
     # 'qiime tools export' does not produce a valid html
+    mkdir -p "visualizations/Category-${formula}-ASV"
+    mv "${formula}.visualizer.qzv" "visualizations/Category-${formula}-ASV/"
+
+    # Generate volcano plot
+    ancombc_volcanoplot.r \\
+        "differentials/Category-${formula}-ASV/lfc.jsonl" \\
+        "differentials/Category-${formula}-ASV/q.jsonl" \\
+        $args2 \\
+        "differentials/Category-${formula}-ASV/p.jsonl" \\
+        "differentials/Category-${formula}-ASV/se.jsonl" \\
+        "differentials/Category-${formula}-ASV/passed_ss.jsonl"
+    mv volcano_plot.* "visualizations/Category-${formula}-ASV/"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -54,7 +54,12 @@ nextflow_pipeline {
                     path("$outputDir/SBDI/event.tsv"),
                     path("$outputDir/vsearch_cluster/ASV_post_clustering_filtered.fna"),
                     path("$outputDir/vsearch_cluster/ASV_post_clustering_filtered.stats.tsv"),
-                    path("$outputDir/vsearch_cluster/ASV_post_clustering_filtered.table.tsv")
+                    path("$outputDir/vsearch_cluster/ASV_post_clustering_filtered.table.tsv"),
+                    path("$outputDir/qiime2/ancombc/differentials/Category-treatment1-ASV/lfc_slice.csv"),
+                    path("$outputDir/qiime2/ancombc2/differentials/Category-treatment1-ASV/lfc.jsonl"),
+                    path("$outputDir/qiime2/ancombc2/visualizations/Category-treatment1-ASV/volcano_plot.treatment1::b.tsv"),
+                    path("$outputDir/qiime2/ancombc2_formula/differentials/Category-treatment1-ASV/lfc.jsonl"),
+                    path("$outputDir/qiime2/ancombc2_formula/visualizations/Category-treatment1-ASV/volcano_plot.treatment1::a.tsv")
                 ).match() },
                 { assert path("$outputDir/decontam/decontaminated_details.tsv").csv(sep: '\t', header: true).columns["freq"].sum() > 0.99999 },
             )

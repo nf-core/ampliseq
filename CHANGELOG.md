@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#992](https://github.com/nf-core/ampliseq/pull/992) - Slack notification on status of AWS full test
 - [#998](https://github.com/nf-core/ampliseq/pull/998) - Added taxonomic assignment with VSEARCH/LCA. This adds parameters `--vsearch_lca_ref_taxonomy` for built-in reference databases (supports `coidb`, `midori2-co1`, `unite-fungi`, `unite-alleuk`) and `--vsearch_lca_ref_tax_custom` for custom reference databases, as well as other VSEARCH/LCA related parameters.
+- [#1009](https://github.com/nf-core/ampliseq/pull/1009) - Add SBDI-GTDB and GTDB databases for release R11-RS232
 
 ### `Changed`
 
@@ -16,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#993](https://github.com/nf-core/ampliseq/pull/993) - Rely on topics for software versions
 - [#999](https://github.com/nf-core/ampliseq/pull/999) - Template update for nf-core/tools version 4.0.2
+- [#1009](https://github.com/nf-core/ampliseq/pull/1009) - Reintroduce phylogenetic placement in SBDI-GTDB trees
+- [#1009](https://github.com/nf-core/ampliseq/pull/1009) - Make sure clustalo is the default alignment program for phylogenetic placement, as the docs say
 
 ### `Dependencies`
 

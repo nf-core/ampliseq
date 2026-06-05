@@ -17,7 +17,7 @@
                 "type": "string",
                 "pattern": "^\\S+$",
                 "enum": ["hmmer", "clustalo", "mafft"],
-                "errorMessage": "Method to use for aligning: 'hmmer' or 'mafft'."
+                "errorMessage": "Method to use for aligning: 'clustalo', 'hmmer' or 'mafft'. Default 'clustalo'."
             },
             "hmm": {
                 "type": "string",

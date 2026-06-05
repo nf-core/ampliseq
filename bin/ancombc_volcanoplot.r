@@ -47,7 +47,7 @@ read_jsonl_table <- function(file) {
             if (is.null(val)) NA else val
         })
         values <- unlist(values)
-    
+
         # Convert to correct type
         if (col_type == "number") {
             df[[col_name]] <- as.numeric(values)
@@ -134,7 +134,7 @@ for (test in colnames(df_lfc)[-(1:2)]) {
     df_full <- merge(df_full, df_se[, c("id", test)], by = "id")
     colnames(df_full) <- c("id", "lfc", "qval", "type", "pval", "se")
     df_full <- df_full[, c("id", "lfc", "se", "pval", "qval", "type")]
-    if (file.exists(passed_ss_file)) { 
+    if (file.exists(passed_ss_file)) {
         df_full <- merge(df_full, df_pass[, c("id", test)], by = "id")
         colnames(df_full) <- c("id", "lfc", "se", "pval", "qval", "type", "passed_ss")
     }

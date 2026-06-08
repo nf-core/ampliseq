@@ -34,27 +34,27 @@ process QIIME2_ANCOMBC2_ASV {
         --m-metadata-file "${metadata}" \\
         $args \\
         --p-fixed-effects-formula '${formula}' \\
-        --o-ancombc2-output "${formula}.differentials.qza" \\
+        --o-ancombc2-output "ASV-${formula}.differentials.qza" \\
         --p-num-processes ${task.cpus}  \\
         --verbose
     qiime tools export \\
-        --input-path "${formula}.differentials.qza" \\
+        --input-path "ASV-${formula}.differentials.qza" \\
         --output-path "${outfolder}/differentials"
 
     # Generate tabular view of ANCOMBC2 output
     qiime composition tabulate \\
-        --i-data "${formula}.differentials.qza" \\
-        --o-visualization "${formula}.differentials.qzv"
+        --i-data "ASV-${formula}.differentials.qza" \\
+        --o-visualization "ASV-${formula}.differentials.qzv"
     qiime tools export \\
-        --input-path "${formula}.differentials.qzv" \\
+        --input-path "ASV-${formula}.differentials.qzv" \\
         --output-path "${outfolder}/differentials"
 
     # Generate bar plot views of ANCOMBC2 output
     qiime composition ancombc2-visualizer \\
-        --i-data "${formula}.differentials.qza" \\
-        --o-visualization "${formula}.visualizer.qzv"
+        --i-data "ASV-${formula}.differentials.qza" \\
+        --o-visualization "ASV-${formula}.visualizer.qzv"
     # 'qiime tools export' does not produce a valid html
-    mv "${formula}.visualizer.qzv" "${outfolder}/"
+    mv "ASV-${formula}.visualizer.qzv" "${outfolder}/"
 
     # Generate volcano plot
     ancombc_volcanoplot.r \\
@@ -63,8 +63,9 @@ process QIIME2_ANCOMBC2_ASV {
         $args2 \\
         "${outfolder}/differentials/p.jsonl" \\
         "${outfolder}/differentials/se.jsonl" \\
-        "${outfolder}/differentials/passed_ss.jsonl"
-    mv volcano_plot.* "${outfolder}/"
+        "${outfolder}/differentials/passed_ss.jsonl" \\
+        "ASV-"
+    mv *.volcano_plot.* "${outfolder}/"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

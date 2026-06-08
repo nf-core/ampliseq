@@ -1241,6 +1241,8 @@ workflow AMPLISEQ {
             run_qiime2 && params.ancom && params.metadata ? QIIME2_ANCOM.out.ancom.collect().ifEmpty( [] ) : [],
             run_qiime2 && params.ancombc && params.metadata ? QIIME2_ANCOM.out.ancombc.collect().ifEmpty( [] ) : [],
             run_qiime2 && params.ancombc_formula && params.metadata ? QIIME2_ANCOM.out.ancombc_formula.collect().ifEmpty( [] ) : [],
+            run_qiime2 && params.ancombc2 && params.metadata ? QIIME2_ANCOM.out.ancombc2.collect().ifEmpty( [] ) : [],
+            run_qiime2 && params.ancombc2_formula && params.metadata ? QIIME2_ANCOM.out.ancombc2_formula.collect().ifEmpty( [] ) : [],
             params.picrust ? PICRUST.out.pathways.ifEmpty( [] ) : [],
             params.sbdiexport ? SBDIEXPORT.out.sbditables.mix(SBDIEXPORTREANNOTATE.out.sbdiannottables).collect().ifEmpty( [] ) : [],
             !params.skip_taxonomy && !params.skip_phyloseq ? ROBJECT_WORKFLOW.out.phyloseq.map{_info,rds -> [rds]}.collect().ifEmpty( [] ) : [],

@@ -12,7 +12,8 @@ defaults <- list(
     n_labels = 0,
     pval_file = "p.jsonl", #"p_val_slice.csv",
     se_file = "se.jsonl", #"se_slice.csv"
-    passed_ss_file = "passed_ss.jsonl" # only for ANCOM-BC2
+    passed_ss_file = "passed_ss.jsonl", # only for ANCOM-BC2
+    prefix = ""
 )
 
 get_arg <- function(i, type = "character") {
@@ -28,6 +29,7 @@ n_labels <- get_arg(5, "numeric")
 pval_file <- get_arg(6)
 se_file <- get_arg(7)
 passed_ss_file <- get_arg(8)
+prefix <- get_arg(9)
 
 # json reader function
 read_jsonl_table <- function(file) {
@@ -117,7 +119,7 @@ for (test in colnames(df_lfc)[-(1:2)]) {
         scale_fill_manual(values = c(up = "#4c78a8", down = "#f58518", ns = "grey"), name = "Change:") +
         scale_size_manual(values = c(up = 1, down = 1, ns = 0.5), name = "Change:") +
         scale_alpha_manual(values = c(up = 1, down = 1, ns = 0.5), name = "Change:") +
-        labs(title = test, x = "log2(fold change)", y = "-log10(adjusted P-value)") +
+        labs(title = paste0(prefix, test), x = "log2(fold change)", y = "-log10(adjusted P-value)") +
         theme_bw()
     # Add labels
     if (n_labels > 0 && nrow(df_sign) > 0) {
@@ -125,7 +127,7 @@ for (test in colnames(df_lfc)[-(1:2)]) {
     }
 
     # Save plot
-    svg(paste0("volcano_plot.", test, ".svg"), height = 3.6, width = 3.6)
+    svg(paste0(prefix, test, ".volcano_plot.svg"), height = 3.6, width = 3.6)
     print(p)
     dev.off()
 
@@ -138,5 +140,5 @@ for (test in colnames(df_lfc)[-(1:2)]) {
         df_full <- merge(df_full, df_pass[, c("id", test)], by = "id")
         colnames(df_full) <- c("id", "lfc", "se", "pval", "qval", "type", "passed_ss")
     }
-    write.table(df_full, paste0("volcano_plot.", test, ".tsv"), sep = "\t", row.names = FALSE, quote = FALSE, na = "")
+    write.table(df_full, paste0(prefix, test, ".volcano_plot.tsv"), sep = "\t", row.names = FALSE, quote = FALSE, na = "")
 }

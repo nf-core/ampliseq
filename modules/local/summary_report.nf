@@ -62,6 +62,8 @@ process SUMMARY_REPORT  {
     path(ancom, stageAs: 'ancom/*')
     path(ancombc, stageAs: 'ancombc/da_barplot/*')
     path(ancombc_formula, stageAs: 'ancombc_formula/da_barplot/*')
+    path(ancombc2, stageAs: 'ancombc2/*')
+    path(ancombc2_formula, stageAs: 'ancombc2_formula/*')
     path(picrust_pathways)
     path(sbdi, stageAs: 'sbdi/*')
     path(phyloseq, stageAs: 'phyloseq/*')
@@ -148,6 +150,8 @@ process SUMMARY_REPORT  {
         ancom ? "ancom='"+ ancom.join(",") +"'" : "",
         ancombc ? "ancombc='"+ ancombc.join(",") +"'" : "",
         ancombc_formula ? "ancombc_formula='"+ ancombc_formula.join(",") +"'" : "",
+        ancombc2 ? "ancombc2='"+ ancombc2.join(",") +"'" : "",
+        ancombc2_formula ? "ancombc2_formula='"+ ancombc2_formula.join(",") +"'" : "",
         sbdi ? "sbdi='"+ sbdi.join(",") +"'" : "",
         phyloseq ? "phyloseq='"+ phyloseq.join(",") +"'" : "",
         tse ? "tse='"+ tse.join(",") +"'" : "",

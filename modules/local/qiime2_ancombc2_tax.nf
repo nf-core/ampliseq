@@ -84,8 +84,9 @@ process QIIME2_ANCOMBC2_TAX {
             $args2 \\
             "${outfolder}/differentials/p.jsonl" \\
             "${outfolder}/differentials/se.jsonl" \\
-            "${outfolder}/differentials/passed_ss.jsonl"
-        mv volcano_plot.* "${outfolder}/"
+            "${outfolder}/differentials/passed_ss.jsonl" \\
+            "lvl${taxlevel}-"
+        mv *.volcano_plot.* "${outfolder}/"
     fi
 
     cat <<-END_VERSIONS > versions.yml

@@ -11,16 +11,19 @@ process QIIME2_ANCOMBC2_ASV {
     tuple path(metadata), path(table), val(formula_in)
 
     output:
-    path("visualizations/*")     , emit: plot
-    path("differentials/*")      , emit: differentials
-    path("*.qza")                , emit: qza
-    path("*.qzv")                , emit: qzv
-    path "versions.yml"          , emit: versions_qiime2_ancombc2_asv, topic: versions
+    path("${outfolder}/*.svg")          , emit: plot
+    path("${outfolder}/*.tsv")          , emit: table
+    path("${outfolder}/*.qzv")          , emit: barplot_qzv
+    path("${outfolder}/differentials/*"), emit: differentials
+    path("*.qza")                       , emit: qza
+    path("*.qzv")                       , emit: qzv
+    path "versions.yml"                 , emit: versions_qiime2_ancombc2_asv, topic: versions
 
     script:
     def args        = task.ext.args ?: ''
     def args2       = task.ext.args2 ?: ''
     def formula     = formula_in ?: "${table.baseName}"
+    outfolder       = "Category-${formula}-ASV"
     """
     export XDG_CONFIG_HOME="./xdgconfig"
     export MPLCONFIGDIR="./mplconfigdir"
@@ -36,7 +39,7 @@ process QIIME2_ANCOMBC2_ASV {
         --verbose
     qiime tools export \\
         --input-path "${formula}.differentials.qza" \\
-        --output-path "differentials/Category-${formula}-ASV"
+        --output-path "${outfolder}/differentials"
 
     # Generate tabular view of ANCOMBC2 output
     qiime composition tabulate \\
@@ -44,25 +47,24 @@ process QIIME2_ANCOMBC2_ASV {
         --o-visualization "${formula}.differentials.qzv"
     qiime tools export \\
         --input-path "${formula}.differentials.qzv" \\
-        --output-path "differentials/Category-${formula}-ASV"
+        --output-path "${outfolder}/differentials"
 
     # Generate bar plot views of ANCOMBC2 output
     qiime composition ancombc2-visualizer \\
         --i-data "${formula}.differentials.qza" \\
         --o-visualization "${formula}.visualizer.qzv"
     # 'qiime tools export' does not produce a valid html
-    mkdir -p "visualizations/Category-${formula}-ASV"
-    mv "${formula}.visualizer.qzv" "visualizations/Category-${formula}-ASV/"
+    mv "${formula}.visualizer.qzv" "${outfolder}/"
 
     # Generate volcano plot
     ancombc_volcanoplot.r \\
-        "differentials/Category-${formula}-ASV/lfc.jsonl" \\
-        "differentials/Category-${formula}-ASV/q.jsonl" \\
+        "${outfolder}/differentials/lfc.jsonl" \\
+        "${outfolder}/differentials/q.jsonl" \\
         $args2 \\
-        "differentials/Category-${formula}-ASV/p.jsonl" \\
-        "differentials/Category-${formula}-ASV/se.jsonl" \\
-        "differentials/Category-${formula}-ASV/passed_ss.jsonl"
-    mv volcano_plot.* "visualizations/Category-${formula}-ASV/"
+        "${outfolder}/differentials/p.jsonl" \\
+        "${outfolder}/differentials/se.jsonl" \\
+        "${outfolder}/differentials/passed_ss.jsonl"
+    mv volcano_plot.* "${outfolder}/"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

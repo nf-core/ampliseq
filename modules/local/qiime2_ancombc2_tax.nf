@@ -9,18 +9,20 @@ process QIIME2_ANCOMBC2_TAX {
     tuple path(metadata), path(table), path(taxonomy), val(taxlevel), val(formula_in)
 
     output:
-    path("visualizations/*")     , emit: plot
-    path("differentials/*")      , emit: differentials
-    path("*.qza")                , emit: qza, optional: true
-    path("*.qzv")                , emit: qzv, optional: true
-    path "versions.yml"          , emit: versions_qiime2_ancombc2_tax, topic: versions
+    path("${outfolder}/*.svg")          , emit: plot
+    path("${outfolder}/*.tsv")          , emit: table
+    path("${outfolder}/*.qzv")          , emit: barplot_qzv
+    path("${outfolder}/differentials/*"), emit: differentials
+    path("*.qza")                       , emit: qza, optional: true
+    path("*.qzv")                       , emit: qzv, optional: true
+    path "versions.yml"                 , emit: versions_qiime2_ancombc2_tax, topic: versions
 
     script:
     def args        = task.ext.args ?: ''
     def args2       = task.ext.args2 ?: ''
     def formula     = formula_in ?: "${table.baseName}"
     def prefix      = "lvl${taxlevel}-${formula}"
-    def outfolder   = "Category-${formula}-level-${taxlevel}"
+    outfolder       = "Category-${formula}-level-${taxlevel}"
     """
     export XDG_CONFIG_HOME="./xdgconfig"
     export MPLCONFIGDIR="./mplconfigdir"
@@ -58,7 +60,7 @@ process QIIME2_ANCOMBC2_TAX {
             --verbose
         qiime tools export \\
             --input-path "${prefix}.differentials.qza" \\
-            --output-path "differentials/${outfolder}"
+            --output-path "${outfolder}/differentials"
 
         # Generate tabular view of ANCOMBC2 output
         qiime composition tabulate \\
@@ -66,25 +68,24 @@ process QIIME2_ANCOMBC2_TAX {
             --o-visualization "${prefix}.differentials.qzv"
         qiime tools export \\
             --input-path "${prefix}.differentials.qzv" \\
-            --output-path "differentials/${outfolder}"
+            --output-path "${outfolder}/differentials"
 
         # Generate bar plot views of ANCOMBC2 output
         qiime composition ancombc2-visualizer \\
             --i-data "${prefix}.differentials.qza" \\
             --o-visualization "${prefix}.visualizer.qzv"
         # 'qiime tools export' does not produce a valid html
-        mkdir -p "visualizations/${outfolder}"
-        mv "${prefix}.visualizer.qzv" "visualizations/${outfolder}/"
+        mv "${prefix}.visualizer.qzv" "${outfolder}/"
 
         # Generate volcano plot
         ancombc_volcanoplot.r \\
-            "differentials/${outfolder}/lfc.jsonl" \\
-            "differentials/${outfolder}/q.jsonl" \\
+            "${outfolder}/differentials/lfc.jsonl" \\
+            "${outfolder}/differentials/q.jsonl" \\
             $args2 \\
-            "differentials/${outfolder}/p.jsonl" \\
-            "differentials/${outfolder}/se.jsonl" \\
-            "differentials/${outfolder}/passed_ss.jsonl"
-        mv volcano_plot.* "visualizations/${outfolder}/"
+            "${outfolder}/differentials/p.jsonl" \\
+            "${outfolder}/differentials/se.jsonl" \\
+            "${outfolder}/differentials/passed_ss.jsonl"
+        mv volcano_plot.* "${outfolder}/"
     fi
 
     cat <<-END_VERSIONS > versions.yml

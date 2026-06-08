@@ -644,13 +644,13 @@ On request (`--ancombc2`), ANCOM-BC2 is applied to each suitable or specified me
 <summary>Output files</summary>
 
 - `qiime2/ancombc2/` or `qiime2/ancombc2_formula/`
-  - `visualisations/Category-<formula>-<taxonomic level>/`
+  - `Category-<formula>-<taxonomic level>/`
     - `*.tsv`: Tab-separated aggregation of statistical results.
     - `*.visualizer.qzv`: Interactive QIIME2 visualisation that can be viewed via https://view.qiime2.org/.
-    - `*.svg*`: Volcano plot in svg format.
-  - `differentials/Category-<formula>-<taxonomic level>/`
-    - `index.html`: Visualised table of statistical results.
-    - `*.jsonl`: Json format of statistical results.
+    - `*.svg`: Volcano plot in svg format.
+    - `differentials/`
+      - `index.html`: Visualised table of statistical results.
+      - `*.jsonl`: Json format of statistical results.
   - formula: metadata category / formula that was tested
   - taxonomic level: level-2 (phylum), level-3 (class), level-4 (order), level-5 (family), level-6 (genus), ASV
   - treatment: Changes for that treatment group

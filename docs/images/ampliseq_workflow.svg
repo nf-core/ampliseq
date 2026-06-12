@@ -265,8 +265,8 @@
      showgrid="false"
      inkscape:current-layer="layer1"
      inkscape:document-units="mm"
-     inkscape:cy="221"
-     inkscape:cx="404"
+     inkscape:cy="383"
+     inkscape:cx="280"
      inkscape:zoom="1"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
@@ -841,9 +841,9 @@
          id="tspan19050-6">Pre-processing</tspan></text>
     <g
        id="g18349"
-       transform="translate(-6.5020209,-10.583356)">
+       transform="translate(-6.5020209,-12.170857)">
       <rect
-         style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-7-0"
          width="32.312801"
          height="4.9341259"
@@ -853,7 +853,7 @@
          rx="2.467063" />
       <text
          xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.17499995px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
          x="105.06666"
          y="107.40818"
          id="text4774-3-1"><tspan
@@ -861,13 +861,13 @@
            id="tspan4772-2-9"
            x="105.06666"
            y="107.40818"
-           style="font-size:3.17499995px;stroke-width:0.26458299">DADA2</tspan></text>
+           style="font-size:3.175px;stroke-width:0.264583">DADA2</tspan></text>
     </g>
     <g
        id="g60531"
-       transform="translate(-1.5875,-27.976339)">
+       transform="translate(-1.5875,-30.012745)">
       <rect
-         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-5-6"
          width="32.161411"
          height="4.9222064"
@@ -877,7 +877,7 @@
          rx="2.4611032" />
       <text
          xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.17499995px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
          x="100.11958"
          y="131.19937"
          id="text4774-8-5-2"><tspan
@@ -885,7 +885,31 @@
            id="tspan4772-5-7-3"
            x="100.11958"
            y="131.19937"
-           style="font-size:3.17499995px;stroke-width:0.26458299">QIIME2</tspan></text>
+           style="font-size:3.175px;stroke-width:0.264583">QIIME2</tspan></text>
+    </g>
+    <g
+       id="g60531-3"
+       transform="translate(-1.5875,-2.2496614)">
+      <rect
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         id="rect4770-6-5-6-6"
+         width="32.161411"
+         height="4.9222064"
+         x="89.415291"
+         y="127.92979"
+         ry="2.4611032"
+         rx="2.4611032" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         x="94.288155"
+         y="131.52571"
+         id="text4774-8-5-2-7"><tspan
+           sodipodi:role="line"
+           id="tspan4772-5-7-3-5"
+           x="94.288155"
+           y="131.52571"
+           style="font-size:3.175px;stroke-width:0.264583">VSEARCH/LCA</tspan></text>
     </g>
     <path
        inkscape:export-ydpi="305.81"
@@ -1744,9 +1768,9 @@
     </g>
     <g
        id="g60531-6"
-       transform="translate(-1.5875,-21.284112)">
+       transform="translate(-1.5875,-23.769422)">
       <rect
-         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-5-6-2"
          width="32.161411"
          height="4.9222064"
@@ -1756,7 +1780,7 @@
          rx="2.4611032" />
       <text
          xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.17499995px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
          x="99.841301"
          y="131.48384"
          id="text4774-8-5-2-9"><tspan
@@ -1764,13 +1788,13 @@
            id="tspan4772-5-7-3-1"
            x="99.841301"
            y="131.48384"
-           style="font-size:3.17499995px;stroke-width:0.26458299">SINTAX</tspan></text>
+           style="font-size:3.175px;stroke-width:0.264583">SINTAX</tspan></text>
     </g>
     <g
        id="g60531-6-1"
-       transform="translate(-1.5875,-14.447919)">
+       transform="translate(-1.5875,-17.382133)">
       <rect
-         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-5-6-2-8"
          width="32.161411"
          height="7.7119999"
@@ -1780,7 +1804,7 @@
          rx="2.4611032" />
       <text
          xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.17499995px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.175px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
          x="105.29136"
          y="130.8752"
          id="text4774-8-5-2-9-7"><tspan
@@ -1788,33 +1812,33 @@
            id="tspan4772-5-7-3-1-9"
            x="105.29136"
            y="130.8752"
-           style="font-size:3.17499995px;text-align:center;text-anchor:middle;stroke-width:0.26458299">Phylogenetic</tspan><tspan
+           style="font-size:3.175px;text-align:center;text-anchor:middle;stroke-width:0.264583">Phylogenetic</tspan><tspan
            sodipodi:role="line"
            x="105.29136"
            y="131.66895"
            id="tspan5559"
-           style="font-size:3.17499995px;text-align:center;text-anchor:middle;stroke-width:0.26458299" /><tspan
+           style="font-size:3.175px;text-align:center;text-anchor:middle;stroke-width:0.264583" /><tspan
            sodipodi:role="line"
            x="105.29136"
            y="132.46269"
            id="tspan5561"
-           style="font-size:3.17499995px;text-align:center;text-anchor:middle;stroke-width:0.26458299" /><tspan
+           style="font-size:3.175px;text-align:center;text-anchor:middle;stroke-width:0.264583" /><tspan
            sodipodi:role="line"
            x="105.29136"
            y="133.25645"
            id="tspan5563"
-           style="font-size:3.17499995px;text-align:center;text-anchor:middle;stroke-width:0.26458299" /><tspan
+           style="font-size:3.175px;text-align:center;text-anchor:middle;stroke-width:0.264583" /><tspan
            sodipodi:role="line"
            x="105.29136"
            y="134.0502"
-           style="font-size:3.17499995px;text-align:center;text-anchor:middle;stroke-width:0.26458299"
+           style="font-size:3.175px;text-align:center;text-anchor:middle;stroke-width:0.264583"
            id="tspan5565">placement</tspan></text>
     </g>
     <g
        id="g60526-3-7"
-       transform="translate(-1.5875,-11.701769)">
+       transform="translate(-1.5875,-15.08488)">
       <rect
-         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-5-6-9-6-6-5"
          width="32.161411"
          height="4.9222064"
@@ -1824,7 +1848,7 @@
          rx="2.4611032" />
       <text
          xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222009px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
          x="99.532791"
          y="138.1176"
          id="text4774-8-5-2-4-1-0-9"><tspan
@@ -1832,7 +1856,7 @@
            id="tspan4772-5-7-3-7-0-6-2"
            x="99.532791"
            y="138.1176"
-           style="font-size:3.17499995px;stroke-width:0.26458299">Kraken2</tspan></text>
+           style="font-size:3.175px;stroke-width:0.264583">Kraken2</tspan></text>
     </g>
     <g
        inkscape:export-ydpi="305.81"
@@ -2095,7 +2119,7 @@
        id="g120175"
        transform="translate(17.58492,-11.649568)">
       <rect
-         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-1-8-6-6-3-6-9"
          width="19.700001"
          height="4.9341259"
@@ -2143,7 +2167,7 @@
        id="g120165"
        transform="translate(-9.3867648,-26.377236)">
       <rect
-         style="fill:#24af63;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-5-6-0"
          width="19.700001"
          height="4.9222064"
@@ -2285,9 +2309,9 @@
     </g>
     <g
        id="g60526-3-7-6"
-       transform="translate(-1.3631716,1.0962371)">
+       transform="translate(-1.3631716,2.1545705)">
       <rect
-         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.30000001;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.3;stroke-linecap:square;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
          id="rect4770-6-5-6-9-6-6-5-2"
          width="32.161411"
          height="4.9222064"
@@ -2297,7 +2321,7 @@
          rx="2.4611032" />
       <text
          xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222009px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;line-height:0.25;font-family:Arial;-inkscape-font-specification:Arial;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
          x="101.96443"
          y="138.1176"
          id="text4774-8-5-2-4-1-0-9-6"><tspan
@@ -2305,34 +2329,34 @@
            id="tspan4772-5-7-3-7-0-6-2-1"
            x="101.96443"
            y="138.1176"
-           style="font-size:3.17499995px;stroke-width:0.26458299">Sidle</tspan></text>
+           style="font-size:3.175px;stroke-width:0.264583">Sidle</tspan></text>
     </g>
     <text
        inkscape:export-ydpi="305.81"
        inkscape:export-xdpi="305.81"
        id="text4732-0-6-5-6-7-3"
-       y="91.003433"
+       y="89.945099"
        x="101.6123"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778029px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        xml:space="preserve"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png"><tspan
          id="tspan5207-9-7"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778029px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.26458299"
-         y="91.003433"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.264583"
+         y="89.945099"
          x="101.6123"
          sodipodi:role="line">Single region</tspan></text>
     <text
        inkscape:export-ydpi="305.81"
        inkscape:export-xdpi="305.81"
        id="text4732-0-6-5-6-7-3-5"
-       y="133.86893"
+       y="134.92725"
        x="100.41082"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778029px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458299"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        xml:space="preserve"
        inkscape:export-filename="C:\Users\fagernaes\Pictures\eager2\eager2_workflow_review.png"><tspan
          id="tspan5207-9-7-9"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778029px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.26458299"
-         y="133.86893"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:3.52778px;line-height:1;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.264583"
+         y="134.92725"
          x="100.41082"
          sodipodi:role="line">Multi region</tspan></text>
     <g

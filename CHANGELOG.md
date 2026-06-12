@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#1010](https://github.com/nf-core/ampliseq/pull/1010) - Profile `apptainer` uses now singularity container instead of converting docker containers
+
 ### `Fixed`
 
 - [#993](https://github.com/nf-core/ampliseq/pull/993) - Rely on topics for software versions

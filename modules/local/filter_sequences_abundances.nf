@@ -3,7 +3,7 @@ process FILTER_SEQUENCES_ABUNDANCES {
     label 'process_single'
 
     conda "bioconda::bioconductor-biostrings=2.58.0 conda-forge::r-base=4.0.3"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/bioconductor-biostrings:2.58.0--r40h037d062_0' :
         'biocontainers/bioconductor-biostrings:2.58.0--r40h037d062_0' }"
 

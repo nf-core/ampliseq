@@ -3,7 +3,7 @@ process PICRUST {
     label 'process_high'
 
     conda "bioconda::picrust2=2.6.3"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/picrust2:2.6.3--pyhdfd78af_0' :
         'biocontainers/picrust2:2.6.3--pyhdfd78af_0' }"
 

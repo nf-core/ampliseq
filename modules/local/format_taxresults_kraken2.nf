@@ -2,7 +2,7 @@ process FORMAT_TAXRESULTS_KRAKEN2 {
     label 'process_single'
 
     conda "conda-forge::r-base=4.2.1"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/r-base:4.2.1' :
         'biocontainers/r-base:4.2.1' }"
 

@@ -44,6 +44,28 @@ workflow DADA2_PREPROCESSING {
         DADA2_QUALITY1 ( ch_all_trimmed_reads.dump(tag: 'into_dada2_quality') )
         DADA2_QUALITY1.out.warning.subscribe { it -> if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","DADA2_QUALITY1: ") }
         ch_DADA2_QUALITY1_SVG = DADA2_QUALITY1.out.svg
+
+        // Warn based on the number of distinct quality scores
+        DADA2_QUALITY1.out.unique_qscores
+            .collectFile(name: 'all_numbers.txt', newLine: true)
+            .map { file ->
+                def uniqueNumbers = file.text
+                    .split('\n')
+                    .findAll { it.trim() }  // Remove empty lines
+                    .collect { it.trim().toInteger() }
+                    .unique()
+                uniqueNumbers }
+            .subscribe { it ->
+                if ( !params.ignore_binned_quality && params.binned_quality && params.binned_quality.tokenize(',').size() < it.size() ) {
+                    error("Over all samples, ${it.size()} $it distinct quality scores were found. Quality scores might not be binned?\nConsider adapting --binned_quality or skip this check with --ignore_binned_quality")
+                } else if ( params.ignore_binned_quality && params.binned_quality && params.binned_quality.tokenize(',').size() < it.size() ) {
+                    log.warn "Over all samples, ${it.size()} $it distinct quality scores were found. Quality scores might not be binned? The issue is ignored\n"
+                } else if ( !params.ignore_binned_quality && !params.binned_quality && it.size() < 6 ) {
+                    error("Over all samples, ${it.size()} $it distinct quality scores were found. Quality scores seem binned!\nConsider using --binned_quality or skip this check with --ignore_binned_quality")
+                } else if ( params.ignore_binned_quality && !params.binned_quality && it.size() < 6 ) {
+                    log.warn "Over all samples, ${it.size()} $it distinct quality scores were found. Quality scores seem binned!\nThe issue is ignored"
+                }
+            }
     }
 
     //find truncation values in case they are not supplied

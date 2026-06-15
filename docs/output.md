@@ -634,6 +634,29 @@ On request (`--ancombc`), ANCOM-BC is applied to each suitable or specified meta
 
 </details>
 
+##### ANCOM-BC2
+
+Analysis of Composition of Microbiomes with Bias Correction 2 ([ANCOM-BC2](https://pubmed.ncbi.nlm.nih.gov/38158428/)) is the successor of ANCOM and ANCOM-BC (see above).
+
+On request (`--ancombc2`), ANCOM-BC2 is applied to each suitable or specified metadata column for 5 taxonomic levels (2-6). Independently, multiple comma separated formula can be submitted to ANCOM-BC2 by `--ancombc2_formula`.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `qiime2/ancombc2/` or `qiime2/ancombc2_formula/`
+  - `Category-<formula>-<taxonomic level>/`
+    - `*.tsv`: Tab-separated aggregation of statistical results.
+    - `*.visualizer.qzv`: Interactive QIIME2 visualisation that can be viewed via https://view.qiime2.org/.
+    - `*.svg`: Volcano plot in svg format.
+    - `differentials/`
+      - `index.html`: Visualised table of statistical results.
+      - `*.jsonl`: Json format of statistical results.
+  - formula: metadata category / formula that was tested
+  - taxonomic level: level-2 (phylum), level-3 (class), level-4 (order), level-5 (family), level-6 (genus), ASV
+  - treatment: Changes for that treatment group
+
+</details>
+
 ### PICRUSt2
 
 PICRUSt2 (Phylogenetic Investigation of Communities by Reconstruction of Unobserved States) is a software for predicting functional abundances based only on marker gene sequences. On demand (`--picrust`), Enzyme Classification numbers (EC), KEGG orthologs (KO) and MetaCyc ontology predictions will be made for each sample.

@@ -1012,7 +1012,7 @@ workflow AMPLISEQ {
             METADATA_PAIRWISE ( ch_metadata ).category.set { ch_metacolumn_pairwise }
             ch_metacolumn_pairwise = ch_metacolumn_pairwise.splitCsv().flatten()
             ch_metacolumn_pairwise = ch_metacolumn_all.join(ch_metacolumn_pairwise)
-        } else if (params.ancom || params.ancombc || !params.skip_diversity_indices) {
+        } else if (params.ancom || params.ancombc || params.ancombc2 || !params.skip_diversity_indices) {
             METADATA_ALL ( ch_metadata ).category.set { ch_metacolumn_all }
             //return empty channel if no appropriate column was found
             ch_metacolumn_all.branch { it -> passed: it != "" }.set { result }
@@ -1042,7 +1042,7 @@ workflow AMPLISEQ {
         }
 
         //Perform ANCOM and ANCOMBC tests
-        if ( ( params.ancom || params.ancombc || params.ancombc_formula ) && params.metadata ) {
+        if ( ( params.ancom || params.ancombc || params.ancombc_formula || params.ancombc2 || params.ancombc2_formula ) && params.metadata ) {
             QIIME2_ANCOM (
                 ch_metadata,
                 ch_asv,
@@ -1050,7 +1050,8 @@ workflow AMPLISEQ {
                 ch_tax,
                 tax_agglom_min,
                 tax_agglom_max,
-                params.ancombc_formula
+                params.ancombc_formula,
+                params.ancombc2_formula
             )
         }
     } else {
@@ -1240,6 +1241,8 @@ workflow AMPLISEQ {
             run_qiime2 && params.ancom && params.metadata ? QIIME2_ANCOM.out.ancom.collect().ifEmpty( [] ) : [],
             run_qiime2 && params.ancombc && params.metadata ? QIIME2_ANCOM.out.ancombc.collect().ifEmpty( [] ) : [],
             run_qiime2 && params.ancombc_formula && params.metadata ? QIIME2_ANCOM.out.ancombc_formula.collect().ifEmpty( [] ) : [],
+            run_qiime2 && params.ancombc2 && params.metadata ? QIIME2_ANCOM.out.ancombc2.collect().ifEmpty( [] ) : [],
+            run_qiime2 && params.ancombc2_formula && params.metadata ? QIIME2_ANCOM.out.ancombc2_formula.collect().ifEmpty( [] ) : [],
             params.picrust ? PICRUST.out.pathways.ifEmpty( [] ) : [],
             params.sbdiexport ? SBDIEXPORT.out.sbditables.mix(SBDIEXPORTREANNOTATE.out.sbdiannottables).collect().ifEmpty( [] ) : [],
             !params.skip_taxonomy && !params.skip_phyloseq ? ROBJECT_WORKFLOW.out.phyloseq.map{_info,rds -> [rds]}.collect().ifEmpty( [] ) : [],

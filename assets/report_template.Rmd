@@ -116,6 +116,8 @@ params:
     ancom: FALSE
     ancombc: FALSE
     ancombc_formula: FALSE
+    ancombc2: FALSE
+    ancombc2_formula: FALSE
     picrust_pathways: FALSE
     sbdi: FALSE
     phyloseq: FALSE
@@ -1734,8 +1736,8 @@ cat(paste0("
 ## ANCOM-BC
 
 [Analysis of Composition of Microbiomes with Bias Correction (ANCOM-BC)](https://www.ncbi.nlm.nih.gov/pubmed/32665548)
-is applied to identify features that are differentially
-abundant across sample groups.
+is applied to identify features that are differentially abundant across sample groups.
+ANCOM-BC has higher sensitivity than its successor ANCOM-BC2, but is also more prone to false positive results.
 Comparisons between groups of samples is performed for specific metadata that can be found in folder
 "))
 
@@ -1767,6 +1769,44 @@ for (folder in ancombc_formula) {
     ancombc_formula_path <- paste0("qiime2/",folder)
     cat("\n- [",ancombc_formula_path,"/index.html](../",ancombc_formula_path,"/index.html)\n", sep="")
 }
+```
+
+<!-- Subsection on ANCOMBC2 results -->
+
+```{r, results='asis'}
+any_ancombc2 <- !isFALSE(params$ancombc2) || !isFALSE(params$ancombc2_formula)
+```
+
+```{r, eval = !isFALSE(any_ancombc2), results='asis'}
+cat(paste0("
+## ANCOM-BC2
+
+[Analysis of Composition of Microbiomes with Bias Correction 2 (ANCOM-BC2)](https://pubmed.ncbi.nlm.nih.gov/38158428/)
+is applied to identify features that are differentially abundant across sample groups.
+ANCOM-BC2 is more conservative than its predecessor ANCOM-BC and can have lower sensitivity.
+Comparisons between groups of samples is performed for specific metadata that can be found in folder
+"))
+
+if ( !isFALSE(params$ancombc2) && !isFALSE(params$ancombc2_formula) ) {
+    cat("[qiime2/ancombc2/](../qiime2/ancombc2/) and [qiime2/ancombc2_formula/](../qiime2/ancombc2_formula/)")
+} else if ( !isFALSE(params$ancombc2) ) {
+    cat("[qiime2/ancombc2/](../qiime2/ancombc2/)")
+} else if ( !isFALSE(params$ancombc2_formula) ) {
+    cat("[qiime2/ancombc2_formula/](../qiime2/ancombc2_formula/)")
+}
+cat(".")
+
+cat(paste0("
+Test results are in separate folders following the scheme `Category-{treatment}-{taxonomic level}`. Here are the volcano plots:
+"))
+```
+
+```{r, eval = !isFALSE(params$ancombc2), out.width="25%", fig.show='hold', fig.align='default'}
+knitr::include_graphics( sort(strsplit( params$ancombc2, ",")[[1]]) )
+```
+
+```{r, eval = !isFALSE(params$ancombc2_formula), out.width="25%", fig.show='hold', fig.align='default'}
+knitr::include_graphics( sort(strsplit( params$ancombc2_formula, ",")[[1]]) )
 ```
 
 <!-- Section on PICRUSt2 results -->
@@ -2065,6 +2105,9 @@ if (!isFALSE(params$barplot) || !isFALSE(params$alpha_rarefaction) || !isFALSE(p
     }
     if (!isFALSE(any_ancombc)) {
         qiime_final <- c(qiime_final,"used to find differential abundant taxa with ANCOM-BC ([Lin and Peddada, 2020](https://pubmed.ncbi.nlm.nih.gov/32665548/))")
+    }
+    if (!isFALSE(any_ancombc2)) {
+        qiime_final <- c(qiime_final,"used to find differential abundant taxa with ANCOM-BC2 ([Lin and Peddada, 2024](https://pubmed.ncbi.nlm.nih.gov/38158428/))")
     }
     cat(paste(qiime_final[1],qiime_final[2]))
     if (length(qiime_final) >= 3) {

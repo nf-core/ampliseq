@@ -1737,7 +1737,7 @@ cat(paste0("
 
 [Analysis of Composition of Microbiomes with Bias Correction (ANCOM-BC)](https://www.ncbi.nlm.nih.gov/pubmed/32665548)
 is applied to identify features that are differentially abundant across sample groups.
-ANCOM-BC has higher sensitivity than its successor ANCOM-BC2, but is also more prone to have false positive results.
+ANCOM-BC has higher sensitivity than its successor ANCOM-BC2, but is also more prone to false positive results.
 Comparisons between groups of samples is performed for specific metadata that can be found in folder
 "))
 

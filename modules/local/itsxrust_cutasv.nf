@@ -2,7 +2,7 @@ process ITSXRUST_CUTASV {
     label 'process_medium'
 
     conda "bioconda::itsxrust=0.2.2 bioconda::hmmer=3.4"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/itsxrust:0.2.2--hdd79491_1' :
         'quay.io/biocontainers/itsxrust:0.2.2--hdd79491_1' }"
 

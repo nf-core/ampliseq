@@ -2,7 +2,7 @@ process ITSX_CUTASV {
     label 'process_medium'
 
     conda "bioconda::itsx=1.1.3"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/itsx:1.1.3--hdfd78af_1' :
         'biocontainers/itsx:1.1.3--hdfd78af_1' }"
 

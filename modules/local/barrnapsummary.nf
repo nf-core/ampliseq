@@ -2,7 +2,7 @@ process BARRNAPSUMMARY {
     label 'process_single'
 
     conda "conda-forge::python=3.9.1"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/python:3.9' :
         'biocontainers/python:3.9' }"
 

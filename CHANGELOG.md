@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#1010](https://github.com/nf-core/ampliseq/pull/1010) - Profile `apptainer` uses now singularity container instead of converting docker containers
 - [#1012](https://github.com/nf-core/ampliseq/pull/1012) - Changed default for `--dada_ref_taxonomy` from `silva=138.2` to `sbdi-gtdb=R11-RS232-1`
 
 ### `Fixed`

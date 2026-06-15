@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#992](https://github.com/nf-core/ampliseq/pull/992) - Slack notification on status of AWS full test
 - [#998](https://github.com/nf-core/ampliseq/pull/998) - Added taxonomic assignment with VSEARCH/LCA. This adds parameters `--vsearch_lca_ref_taxonomy` for built-in reference databases (supports `coidb`, `midori2-co1`, `unite-fungi`, `unite-alleuk`) and `--vsearch_lca_ref_tax_custom` for custom reference databases, as well as other VSEARCH/LCA related parameters.
 - [#1009](https://github.com/nf-core/ampliseq/pull/1009) - Add SBDI-GTDB and GTDB databases for release R11-RS232
-- [#1011](https://github.com/nf-core/ampliseq/pull/1011) - Warn if read quality scores might be binned, but allow override with `--ignore_binned_quality`
+- [#1011](https://github.com/nf-core/ampliseq/pull/1011) - Warn if read quality scores appear binned, but allow override with `--ignore_binned_quality`
 
 ### `Changed`
 

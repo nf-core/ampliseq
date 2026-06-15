@@ -7,30 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-- [#992](https://github.com/nf-core/ampliseq/pull/992) - Slack notification on status of AWS full test
-- [#998](https://github.com/nf-core/ampliseq/pull/998) - Added taxonomic assignment with VSEARCH/LCA. This adds parameters `--vsearch_lca_ref_taxonomy` for built-in reference databases (supports `coidb`, `midori2-co1`, `unite-fungi`, `unite-alleuk`) and `--vsearch_lca_ref_tax_custom` for custom reference databases, as well as other VSEARCH/LCA related parameters.
-- [#1001](https://github.com/nf-core/ampliseq/pull/1001) - Add ANCOM-BC2 alongside ANCOM and ANCOM-BC
-- [#1009](https://github.com/nf-core/ampliseq/pull/1009) - Add SBDI-GTDB and GTDB databases for release R11-RS232
-- [#1011](https://github.com/nf-core/ampliseq/pull/1011) - Warn if read quality scores appear binned, but allow override with `--ignore_binned_quality`
+- [#992](https://github.com/nf-core/ampliseq/pull/992) - Slack notification on status of AWS full test (by @d4straub)
+- [#998](https://github.com/nf-core/ampliseq/pull/998) - Added taxonomic assignment with VSEARCH/LCA. This adds parameters `--vsearch_lca_ref_taxonomy` for built-in reference databases (supports `coidb`, `midori2-co1`, `unite-fungi`, `unite-alleuk`) and `--vsearch_lca_ref_tax_custom` for custom reference databases, as well as other VSEARCH/LCA related parameters. (by @pieterprovoost)
+- [#1001](https://github.com/nf-core/ampliseq/pull/1001) - Add ANCOM-BC2 alongside ANCOM and ANCOM-BC (by @d4straub)
+- [#1009](https://github.com/nf-core/ampliseq/pull/1009),[#1012](https://github.com/nf-core/ampliseq/pull/1012) - Add SBDI-GTDB and GTDB databases for release R11-RS232 (by @erikrikarddaniel)
+- [#1011](https://github.com/nf-core/ampliseq/pull/1011) - Warn if read quality scores appear binned, but allow override with `--ignore_binned_quality` (by @d4straub)
 
 ### `Changed`
 
-- [#1010](https://github.com/nf-core/ampliseq/pull/1010) - Profile `apptainer` uses now singularity container instead of converting docker containers
-- [#1012](https://github.com/nf-core/ampliseq/pull/1012) - Changed default for `--dada_ref_taxonomy` from `silva=138.2` to `sbdi-gtdb=R11-RS232-1`
+- [#1010](https://github.com/nf-core/ampliseq/pull/1010) - Profile `apptainer` uses now singularity container instead of converting docker containers (by @d4straub)
+- [#1012](https://github.com/nf-core/ampliseq/pull/1012) - Changed default for `--dada_ref_taxonomy` from `silva=138.2` to `sbdi-gtdb=R11-RS232-1` (by @d4straub)
+- [#1013](https://github.com/nf-core/ampliseq/pull/1013) - Bump pipeline version and add github handles to change documentation (by @d4straub)
 
 ### `Fixed`
 
-- [#993](https://github.com/nf-core/ampliseq/pull/993) - Rely on topics for software versions
-- [#999](https://github.com/nf-core/ampliseq/pull/999) - Template update for nf-core/tools version 4.0.2
-- [#1009](https://github.com/nf-core/ampliseq/pull/1009) - Reintroduce phylogenetic placement in SBDI-GTDB trees
-- [#1009](https://github.com/nf-core/ampliseq/pull/1009) - Make sure clustalo is the default alignment program for phylogenetic placement, as the docs say
+- [#993](https://github.com/nf-core/ampliseq/pull/993) - Rely on topics for software versions (by @d4straub)
+- [#999](https://github.com/nf-core/ampliseq/pull/999) - Template update for nf-core/tools version 4.0.2 (by @d4straub)
+- [#1009](https://github.com/nf-core/ampliseq/pull/1009) - Reintroduce phylogenetic placement in SBDI-GTDB trees (by @erikrikarddaniel)
+- [#1009](https://github.com/nf-core/ampliseq/pull/1009) - Make sure clustalo is the default alignment program for phylogenetic placement, as the docs say (by @erikrikarddaniel)
 
 ### `Dependencies`
 
-- [#998](https://github.com/nf-core/ampliseq/pull/998) - Added taxonomic assignment with VSEARCH/LCA. Updates samtools and vsearch.
-- [#999](https://github.com/nf-core/ampliseq/pull/999) - MultiQC 1.33 to 1.34
-- [#1000](https://github.com/nf-core/ampliseq/pull/1000) - QIIME2 2024.10.1 to 2026.04.0
-- [#1006](https://github.com/nf-core/ampliseq/pull/1006) - nf-schema from 2.5.1 to 2.7.2
+- [#998](https://github.com/nf-core/ampliseq/pull/998) - Added taxonomic assignment with VSEARCH/LCA. Updates samtools and vsearch. (by @pieterprovoost)
+- [#999](https://github.com/nf-core/ampliseq/pull/999) - MultiQC 1.33 to 1.34 (by @d4straub)
+- [#1000](https://github.com/nf-core/ampliseq/pull/1000) - QIIME2 2024.10.1 to 2026.04.0 (by @d4straub)
+- [#1006](https://github.com/nf-core/ampliseq/pull/1006) - nf-schema from 2.5.1 to 2.7.2 (by @d4straub)
 
 | software | previously | now       |
 | -------- | ---------- | --------- |
@@ -41,7 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Removed`
 
-- [#992](https://github.com/nf-core/ampliseq/pull/992) - Remove hook_url from the pipeline configuration
+- [#992](https://github.com/nf-core/ampliseq/pull/992) - Remove hook_url from the pipeline configuration (by @d4straub)
 
 ## nf-core/ampliseq version 2.17.0 - 2026-04-13
 

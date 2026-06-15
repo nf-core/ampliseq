@@ -107,6 +107,11 @@
                     "fa_icon": "fas fa-align-justify",
                     "pattern": "^[0-9]+(,[0-9]+)*$"
                 },
+                "ignore_binned_quality": {
+                    "type": "boolean",
+                    "description": "Ignore warnings about binned quality scores.",
+                    "fa_icon": "fas fa-arrow-right"
+                },
                 "pacbio": {
                     "type": "boolean",
                     "description": "If data is single-ended PacBio reads instead of Illumina",

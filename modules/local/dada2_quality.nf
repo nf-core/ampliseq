@@ -17,6 +17,7 @@ process DADA2_QUALITY {
     path "versions.yml"                      , emit: versions_dada2_quality, topic: versions
     path "*.args.txt"                        , emit: args
     path "*plotQualityProfile.txt"           , emit: warning
+    path "*QualityScores.txt"                , emit: unique_qscores
 
     script:
     def args = task.ext.args ?: ''
@@ -45,6 +46,10 @@ process DADA2_QUALITY {
 
     plot <- plotQualityProfile(readfiles$args)
     data <- plot\$data
+
+    # collect quality scores
+    quality_scores <- unique( plot\$data\$Score )  |> sort()
+    write.table(paste(quality_scores, sep='\\n'), file = "${prefix}_QualityScores.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
 
     #aggregate data for each sequencing cycle
     df <- data.frame(Cycle=character(), Count=character(), Median=character(), stringsAsFactors=FALSE)

@@ -1,6 +1,6 @@
 process QIIME2_INASV {
     tag "${asv}"
-    label 'process_single'
+    label 'process_low'
 
     conda "${moduleDir}/envs/rachis-qiime2-linux-64-conda.yml"
     container "qiime2/qiime2:2026.4"

@@ -38,7 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | MultiQC  | 1.33       | 1.34      |
 | QIIME2   | 2024.10.1  | 2026.04.0 |
 | samtools | 1.16.1     | 1.21.1    |
-| vsearch  | 2.21.1     | 2.31.0.   |
+| vsearch  | 2.21.1     | 2.31.0    |
 
 ### `Removed`
 

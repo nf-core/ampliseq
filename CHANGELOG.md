@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#1010](https://github.com/nf-core/ampliseq/pull/1010) - Profile `apptainer` uses now singularity container instead of converting docker containers (by @d4straub)
 - [#1012](https://github.com/nf-core/ampliseq/pull/1012) - Changed default for `--dada_ref_taxonomy` from `silva=138.2` to `sbdi-gtdb=R11-RS232-1` (by @d4straub)
 - [#1013](https://github.com/nf-core/ampliseq/pull/1013) - Bump pipeline version and add github handles to change documentation (by @d4straub)
+- [#1016](https://github.com/nf-core/ampliseq/pull/1016) - Increase resources for several resource-limited processes (by @d4straub)
 
 ### `Fixed`
 
@@ -38,7 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | MultiQC  | 1.33       | 1.34      |
 | QIIME2   | 2024.10.1  | 2026.04.0 |
 | samtools | 1.16.1     | 1.21.1    |
-| vsearch  | 2.21.1     | 2.31.0.   |
+| vsearch  | 2.21.1     | 2.31.0    |
 
 ### `Removed`
 

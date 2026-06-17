@@ -2,7 +2,7 @@ process FILTER_SAMPLES {
     label 'process_single'
 
     conda "conda-forge::r-base=4.2.1"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/r-base:4.2.1' :
         'biocontainers/r-base:4.2.1' }"
 
@@ -14,7 +14,7 @@ process FILTER_SAMPLES {
     path("metadata.tsv"), emit: metadata
     path("table.tsv")   , emit: abundances
     path("*.log")       , emit: log, optional: true
-    path "versions.yml" , emit: versions
+    path "versions.yml" , emit: versions_filter_samples, topic: versions
 
     script:
     """

@@ -2,7 +2,7 @@ process ITSX_CUTASV {
     label 'process_medium'
 
     conda "bioconda::itsx=1.1.3"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/itsx:1.1.3--hdfd78af_1' :
         'biocontainers/itsx:1.1.3--hdfd78af_1' }"
 
@@ -11,11 +11,11 @@ process ITSX_CUTASV {
     val outfile
 
     output:
-    path outfile         , emit: fasta
+    path outfile                   , emit: fasta
     path "ASV_ITS_seqs.summary.txt", emit: summary
-    path "ASV_ITS_seqs.*fasta", emit: fastas
-    path "versions.yml"  , emit: versions
-    path "*.args.txt"    , emit: args
+    path "ASV_ITS_seqs.*fasta"     , emit: fastas
+    path "versions.yml"            , emit: versions_itsx_cutasv, topic: versions
+    path "*.args.txt"              , emit: args
 
     script:
     def args = task.ext.args ?: ''

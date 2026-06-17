@@ -67,29 +67,32 @@
                 "METADATA_PAIRWISE": {
                     "R": "4.5.2"
                 },
+                "PHYLOSEQ_INASV": {
+                    "sed": 4.7
+                },
                 "QIIME2_ANCOM_ASV": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.4.0"
                 },
                 "QIIME2_ANCOM_TAX": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.4.0"
                 },
                 "QIIME2_BARPLOT": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.4.0"
                 },
                 "QIIME2_EXPORT_RELASV": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.4.0"
                 },
                 "QIIME2_EXPORT_RELTAX": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.4.0"
                 },
                 "QIIME2_FILTERSAMPLES_ANCOM": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.4.0"
                 },
                 "QIIME2_INASV": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.4.0"
                 },
                 "QIIME2_TABLEFILTERTAXA": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.4.0"
                 },
                 "RENAME_RAW_DATA_FILES": {
                     "sed": 4.7
@@ -150,7 +153,7 @@
                     "pandas": "1.1.5"
                 },
                 "Workflow": {
-                    "nf-core/ampliseq": "v2.17.0"
+                    "nf-core/ampliseq": "v2.18.0"
                 }
             },
             [
@@ -299,6 +302,7 @@
                 "multiqc/multiqc_data/multiqc_data.json",
                 "multiqc/multiqc_data/multiqc_fastqc.txt",
                 "multiqc/multiqc_data/multiqc_general_stats.txt",
+                "multiqc/multiqc_data/multiqc_software_versions.txt",
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_plots",
                 "multiqc/multiqc_plots/pdf",
@@ -355,7 +359,7 @@
                 "multiqc/multiqc_report.html",
                 "overall_summary.tsv",
                 "pipeline_info",
-                "pipeline_info/software_versions.yml",
+                "pipeline_info/nf_core_ampliseq_software_mqc_versions.yml",
                 "qiime2",
                 "qiime2/abundance_tables",
                 "qiime2/abundance_tables/count_table_filter_stats.tsv",
@@ -607,10 +611,10 @@
             "multiqc_general_stats.txt:md5,68f2972dd2d44e499d5afac6cf8624c8",
             "multiqc_cutadapt.txt:md5,d845cb0bde470ed3b7ba32edb2e76f83"
         ],
-        "timestamp": "2026-03-11T21:16:18.208303054",
         "meta": {
-            "nf-test": "0.9.4",
+            "nf-test": "0.9.3",
             "nextflow": "25.10.4"
-        }
+        },
+        "timestamp": "2026-04-21T09:14:37.212333438"
     }
 }

@@ -3,7 +3,7 @@ process PHYLOSEQ {
     label 'process_low'
 
     conda "bioconda::bioconductor-phyloseq=1.50.0 conda-forge::r-base=4.4.2"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/bioconductor-phyloseq:1.50.0--r44hdfd78af_0' :
         'biocontainers/bioconductor-phyloseq:1.50.0--r44hdfd78af_0' }"
 
@@ -12,7 +12,7 @@ process PHYLOSEQ {
 
     output:
     tuple val(prefix), path("*phyloseq.rds"), emit: rds
-    path "versions.yml"                     , emit: versions
+    path "versions.yml"                     , emit: versions_phyloseq, topic: versions
 
     script:
     """

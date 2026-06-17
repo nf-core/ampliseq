@@ -16,7 +16,7 @@ process SIDLE_TABLERECON {
     path("reconstruction_table/*")          , emit: exported
     path("reconstructed_feature-table.biom"), emit: biom
     path("reconstructed_feature-table.tsv") , emit: tsv
-    path "versions.yml"                     , emit: versions
+    path "versions.yml"                     , emit: versions_sidle_tablerecon, topic: versions
 
     script:
     def args = task.ext.args ?: ''

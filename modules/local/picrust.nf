@@ -1,9 +1,10 @@
 process PICRUST {
     tag "${seq},${abund}"
     label 'process_high'
+    label 'process_medium_memory'
 
     conda "bioconda::picrust2=2.6.3"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/picrust2:2.6.3--pyhdfd78af_0' :
         'biocontainers/picrust2:2.6.3--pyhdfd78af_0' }"
 
@@ -16,7 +17,7 @@ process PICRUST {
     output:
     path("all_output/*") , emit: outfolder
     path("*_descrip.tsv"), emit: pathways
-    path "versions.yml"  , emit: versions
+    path "versions.yml"  , emit: versions_picrust, topic: versions
     path "*.args.txt"    , emit: args
     path "${message}.txt", emit: message
 

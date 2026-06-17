@@ -143,6 +143,10 @@
 
   > Lin H, Peddada SD. Analysis of compositions of microbiomes with bias correction. Nat Commun. 2020 Jul 14;11(1):3514. doi: 10.1038/s41467-020-17041-7. PMID: 32665548; PMCID: PMC7360769.
 
+- [ANCOM-BC2](https://pubmed.ncbi.nlm.nih.gov/38158428/)
+
+  > Lin H, Peddada SD. Multigroup analysis of compositions of microbiomes with covariate adjustments and repeated measures. Nat Methods. 2024 Jan;21(1):83-91. doi: 10.1038/s41592-023-02092-7. Epub 2023 Dec 29. PMID: 38158428; PMCID: PMC10776411.
+
 - [Adonis](https://doi.org/10.1111/j.1442-9993.2001.01070.pp.x) and [VEGAN](https://CRAN.R-project.org/package=vegan)
 
   > Marti J Anderson. A new method for non-parametric multivariate analysis of variance. Austral ecology, 26(1):32–46, 2001.

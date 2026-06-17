@@ -84,7 +84,7 @@ If you wish to repeatedly use the same parameters for multiple runs, rather than
 Pipeline settings can be provided in a `yaml` or `json` file via `-params-file <file>`.
 
 > [!WARNING]
-> Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources), other infrastructural tweaks (such as output directories), or module arguments (args).
+> Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/running/run-pipelines#configuring-pipelines), other infrastructural tweaks (such as output directories), or module arguments (args).
 
 The above pipeline run specified with a params file in yaml format:
 
@@ -245,7 +245,7 @@ ITSxRust produces the same output files as ITSx and is fully compatible with all
 
 #### Decontamination
 
-[Decontam](https://doi.org/10.1186/s40168-018-0605-2) performs simple statistical identification and removal of contaminant sequences. Decontam is most useful with low biomass samples, where contamination removal is particularly impactful. The limitations and applications of Decontam have been extensively described in its [publication](https://doi.org/10.1186/s40168-018-0605-2) and [R package description](https://benjjneb.github.io/decontam/vignettes/decontam_intro.html). [Fierer et al. 2025](https://doi.org/10.1038/s41564-025-02035-2) compare concepts and methods for decontamiation including Decontam. Next, a brief explanation on how to use Decontam in the context of nf-core/ampliseq.
+[Decontam](https://doi.org/10.1186/s40168-018-0605-2) performs simple statistical identification and removal of contaminant sequences. Decontam is most useful with low biomass samples, where contamination removal is particularly impactful. The limitations and applications of Decontam have been extensively described in its [publication](https://doi.org/10.1186/s40168-018-0605-2) and [R package description](https://benjjneb.github.io/decontam/vignettes/decontam_intro.html). [Fierer et al. 2025](https://doi.org/10.1038/s41564-025-02035-2) compare concepts and methods for decontamination including Decontam. Next, a brief explanation on how to use Decontam in the context of nf-core/ampliseq.
 
 Decontam is applied to the abundance table with information from the sample sheet after ASV generation (or OTU clustering, if chosen), before ASV filtering by barrnap, length, and such. Required for using Decontam is at least one of DNA quantitation data and negative controls, that can be added in the sample sheet in optional columns `quant_reading` and `control`. Whenever at least one of those two columns is supplied, Decontam is applied to the data and the results are stored, however without further consequences. Filtering for downstream analysis is only applied when additionally specifying `--decontam decotaminate` or `--decontam notcontaminant`.
 
@@ -257,30 +257,30 @@ By default, the information of contaminants or non-contaminants are not further 
 
 ### Taxonomic classification
 
-Taxonomic classification of ASVs can be performed with tools DADA2, SINTAX, Kraken2 or QIIME2. Multiple taxonomic reference databases are pre-configured for those tools, but user supplied databases are also supported for some tools. Alternatively (or in addition), phylogenetic placement can be used to extract taxonomic classifications.
+Taxonomic classification of ASVs can be performed with tools DADA2, SINTAX, Kraken2, QIIME2, or VSEARCH. Multiple taxonomic reference databases are pre-configured for those tools, but user supplied databases are also supported for some tools. Alternatively (or in addition), phylogenetic placement can be used to extract taxonomic classifications.
 
-In case multiple tools for taxonomic classification are executed in one pipeline run, only the taxonomic classification result of one tool is forwarded to downstream analysis with QIIME2. The priority is `phylogenetic placement` > `DADA2` > `SINTAX` > `Kraken2` > `QIIME2`, that is by no means a recommendation for a specific tool but a technical limitation.
+In case multiple tools for taxonomic classification are executed in one pipeline run, only the taxonomic classification result of one tool is forwarded to downstream analysis with QIIME2. The priority is `SIDLE` (multi-region) > `phylogenetic placement` > `DADA2` > `SINTAX` > `Kraken2` > `QIIME2` > `VSEARCH`, that is by no means a recommendation for a specific tool but a technical limitation.
 
 Default setting for taxonomic classification is DADA2 with the SILVA reference taxonomy database.
 
 Pre-configured reference taxonomy databases are:
 
-| Database key | DADA2 | SINTAX | Kraken2 | QIIME2 | Phyloplace | Target genes                                  |
-| ------------ | ----- | ------ | ------- | ------ | ---------- | --------------------------------------------- |
-| silva        | +¹    | -      | +       | +      | -          | 16S rRNA                                      |
-| gtdb         | +²    | -      | -       | -      | -          | 16S rRNA                                      |
-| sbdi-gtdb    | +     | -      | -       | -      | +          | 16S rRNA                                      |
-| rdp          | +     | -      | +       | -      | -          | 16S rRNA                                      |
-| greengenes   | -     | -      | +       | (+)³   | -          | 16S rRNA                                      |
-| greengenes2  | +     | -      | -       | +      | -          | 16S rRNA                                      |
-| pr2          | +     | -      | -       | -      | -          | 18S rRNA                                      |
-| unite-fungi  | +     | +      | -       | -      | -          | eukaryotic nuclear ribosomal ITS region       |
-| unite-alleuk | +     | +      | -       | -      | -          | eukaryotic nuclear ribosomal ITS region       |
-| coidb        | +     | +      | -       | -      | -          | eukaryotic Cytochrome Oxidase I (COI)         |
-| midori2-co1  | +     | -      | -       | -      | -          | eukaryotic Cytochrome Oxidase I (COI)         |
-| phytoref     | +     | -      | -       | -      | -          | eukaryotic plastid 16S rRNA                   |
-| zehr-nifh    | +     | -      | -       | -      | -          | Nitrogenase iron protein NifH                 |
-| standard     | -     | -      | +       | -      | -          | any in genomes of archaea, bacteria, viruses⁴ |
+| Database key | DADA2 | SINTAX | Kraken2 | QIIME2 | VSEARCH | Phyloplace | Target genes                                  |
+| ------------ | ----- | ------ | ------- | ------ | ------- | ---------- | --------------------------------------------- |
+| silva        | +¹    | -      | +       | +      | -       | -          | 16S rRNA                                      |
+| gtdb         | +²    | -      | -       | -      | -       | -          | 16S rRNA                                      |
+| sbdi-gtdb    | +     | -      | -       | -      | -       | +          | 16S rRNA                                      |
+| rdp          | +     | -      | +       | -      | -       | -          | 16S rRNA                                      |
+| greengenes   | -     | -      | +       | (+)³   | -       | -          | 16S rRNA                                      |
+| greengenes2  | +     | -      | -       | +      | -       | -          | 16S rRNA                                      |
+| pr2          | +     | -      | -       | -      | -       | -          | 18S rRNA                                      |
+| unite-fungi  | +     | +      | -       | -      | +       | -          | eukaryotic nuclear ribosomal ITS region       |
+| unite-alleuk | +     | +      | -       | -      | +       | -          | eukaryotic nuclear ribosomal ITS region       |
+| coidb        | +     | +      | -       | -      | +       | -          | eukaryotic Cytochrome Oxidase I (COI)         |
+| midori2-co1  | +     | -      | -       | -      | +       | -          | eukaryotic Cytochrome Oxidase I (COI)         |
+| phytoref     | +     | -      | -       | -      | -       | -          | eukaryotic plastid 16S rRNA                   |
+| zehr-nifh    | +     | -      | -       | -      | -       | -          | Nitrogenase iron protein NifH                 |
+| standard     | -     | -      | +       | -      | -       | -          | any in genomes of archaea, bacteria, viruses⁴ |
 
 ¹: As of Silva version 138 optimized for classification of Bacteria and Archaea, not suitable for Eukaryotes; ²[`--dada_taxonomy_rc`](https://nf-co.re/ampliseq/parameters#dada_taxonomy_rc) is recommended; ³: de-replicated at 85%, only for testing purposes; ⁴: quality of results might vary
 
@@ -289,7 +289,7 @@ Special features of taxonomic classification tools:
 - DADA2's reference taxonomy databases **can** have regions matching the amplicon extracted with primer sequences.
 - Kraken2 is very fast and can use large databases containing complete genomes.
 - QIIME2's reference taxonomy databases will have regions matching the amplicon extracted with primer sequences.
-- DADA2, Kraken2, QIIME2, and SINTAX have specific parameters to accept custom databases (but theoretically possible with all classifiers).
+- DADA2, Kraken2, QIIME2, SINTAX, and VSEARCH have specific parameters to accept custom databases (but theoretically possible with all classifiers).
 - Phyloplace assigns taxonomy by placement on reference phylogenies provided with the database, see [Placement in database provided phylogenies](#placement-in-database-provided-phylogenies).
 
 Parameter guidance is given in [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#taxonomic-assignment). Citations are listed in [`CITATIONS.md`](CITATIONS.md).
@@ -364,7 +364,7 @@ The columns which are to be assessed can be specified by `--metadata_category`. 
 
 ### Differential abundance analysis
 
-Differential abundance analysis for relative abundance from microbial community analysis are plagued by multiple issues that aren't fully solved yet. But some approaches seem promising, for example Analysis of Composition of Microbiomes with Bias Correction ([ANCOM-BC](https://pubmed.ncbi.nlm.nih.gov/32665548/)). [ANCOM](https://pubmed.ncbi.nlm.nih.gov/26028277/) and ANCOM-BC are integrated into the pipeline, but only executed on request via `--ancom` and `--ancombc`, more details in the [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#differential-abundance-analysis).
+Differential abundance analysis for relative abundance from microbial community analysis are plagued by multiple issues that aren't fully solved yet. But some approaches seem promising, for example Analysis of Composition of Microbiomes with Bias Correction ([ANCOM-BC](https://pubmed.ncbi.nlm.nih.gov/32665548/)). [ANCOM](https://pubmed.ncbi.nlm.nih.gov/26028277/), ANCOM-BC, and [ANCOM-BC2](https://pubmed.ncbi.nlm.nih.gov/38158428/) are integrated into the pipeline, but only executed on request via `--ancom`, `--ancombc` or `--ancombc2`, more details in the [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#differential-abundance-analysis).
 
 ### Phylogenetic placement
 
@@ -485,19 +485,19 @@ Specify the path to a specific config file (this is a core Nextflow command). Se
 
 Whilst the default requirements set within the pipeline will hopefully work for most people and with most input data, you may find that you want to customise the compute resources that the pipeline requests. Each step in the pipeline has a default set of requirements for number of CPUs, memory and time. For most of the pipeline steps, if the job exits with any of the error codes specified [here](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/conf/base.config#L18) it will automatically be resubmitted with higher resources request (2 x original, then 3 x original). If it still fails after the third attempt then the pipeline execution is stopped.
 
-To change the resource requests, please see the [max resources](https://nf-co.re/docs/usage/configuration#max-resources) and [tuning workflow resources](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources) section of the nf-core website.
+To change the resource requests, please see the [max resources](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#set-max-resources) and [customise process resources](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#customize-process-resources) section of the nf-core website.
 
 ### Custom Containers
 
 In some cases, you may wish to change the container or conda environment used by a pipeline steps for a particular tool. By default, nf-core pipelines use containers and software from the [biocontainers](https://biocontainers.pro/) or [bioconda](https://bioconda.github.io/) projects. However, in some cases the pipeline specified version maybe out of date.
 
-To use a different container from the default container or conda environment specified in a pipeline, please see the [updating tool versions](https://nf-co.re/docs/usage/configuration#updating-tool-versions) section of the nf-core website.
+To use a different container from the default container or conda environment specified in a pipeline, please see the [updating tool versions](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#update-tool-versions) section of the nf-core website.
 
 ### Custom Tool Arguments
 
 A pipeline might not always support every possible argument or option of a particular tool used in pipeline. Fortunately, nf-core pipelines provide some freedom to users to insert additional parameters that the pipeline does not include by default.
 
-To learn how to provide additional arguments to a particular tool of the pipeline, please see the [customising tool arguments](https://nf-co.re/docs/usage/configuration#customising-tool-arguments) section of the nf-core website.
+To learn how to provide additional arguments to a particular tool of the pipeline, please see the [customising tool arguments](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#modifying-tool-arguments) section of the nf-core website.
 
 ### nf-core/configs
 

@@ -3,7 +3,7 @@ process RENAME_RAW_DATA_FILES {
     label 'process_single'
 
     conda "conda-forge::sed=4.7"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/ubuntu:20.04' :
         'nf-core/ubuntu:20.04' }"
 
@@ -12,7 +12,7 @@ process RENAME_RAW_DATA_FILES {
 
     output:
     tuple val(meta), path("${meta.id}{_1,_2,}.fastq.gz", includeInputs: true), emit: fastq
-    path "versions.yml"                                                      , emit: versions
+    path "versions.yml"                                                      , emit: versions_rename_raw_data_files, topic: versions
 
     script:
     // Add soft-links to original FastQs for consistent naming in pipeline

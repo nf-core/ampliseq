@@ -3,7 +3,7 @@ process DADA2_QUALITY {
     label 'process_low'
 
     conda "bioconda::bioconductor-dada2=1.38.0 conda-forge::r-base=4.5.2 conda-forge::r-digest=0.6.39 conda-forge::tbb=2022.3.0"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/81/81153df5d53322e6d91b2c4c9bc4da50774fb1d101ead002fe75bb75fc6f036c/data' :
         'community.wave.seqera.io/library/bioconductor-dada2_r-base_r-digest_tbb:38acac09bac46f36' }"
 
@@ -14,9 +14,10 @@ process DADA2_QUALITY {
     path "*_qual_stats.pdf"                  , emit: pdf
     path "*_qual_stats.svg"                  , emit: svg
     tuple val(meta), path("*_qual_stats.tsv"), emit: tsv
-    path "versions.yml"                      , emit: versions
+    path "versions.yml"                      , emit: versions_dada2_quality, topic: versions
     path "*.args.txt"                        , emit: args
     path "*plotQualityProfile.txt"           , emit: warning
+    path "*QualityScores.txt"                , emit: unique_qscores
 
     script:
     def args = task.ext.args ?: ''
@@ -45,6 +46,10 @@ process DADA2_QUALITY {
 
     plot <- plotQualityProfile(readfiles$args)
     data <- plot\$data
+
+    # collect quality scores
+    quality_scores <- unique( plot\$data\$Score )  |> sort()
+    write.table(paste(quality_scores, sep='\\n'), file = "${prefix}_QualityScores.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
 
     #aggregate data for each sequencing cycle
     df <- data.frame(Cycle=character(), Count=character(), Median=character(), stringsAsFactors=FALSE)

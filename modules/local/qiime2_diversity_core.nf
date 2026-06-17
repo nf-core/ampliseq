@@ -1,8 +1,8 @@
 process QIIME2_DIVERSITY_CORE {
     label 'process_medium'
 
-    conda "${moduleDir}/envs/qiime2-amplicon-2024.10-py310-linux-conda.yml"
-    container "qiime2/amplicon:2024.10"
+    conda "${moduleDir}/envs/rachis-qiime2-linux-64-conda.yml"
+    container "qiime2/qiime2:2026.4"
 
     input:
     path(metadata)
@@ -16,7 +16,7 @@ process QIIME2_DIVERSITY_CORE {
     path("diversity_core/*_vector.qza")         , emit: vector
     path("diversity_core/*_distance_matrix.qza"), emit: distance
     path("*_distance_matrix.tsv")               , emit: distance_tsv
-    path "versions.yml"                         , emit: versions
+    path "versions.yml"                         , emit: versions_qiime2_diversity_core, topic: versions
     path("*rarefaction.txt")                    , emit: depth
 
     script:

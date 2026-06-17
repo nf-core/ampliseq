@@ -3,7 +3,7 @@ process FILTER_LEN {
     label 'process_single'
 
     conda "bioconda::bioconductor-biostrings=2.58.0 conda-forge::r-base=4.0.3"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/bioconductor-biostrings:2.58.0--r40h037d062_0' :
         'biocontainers/bioconductor-biostrings:2.58.0--r40h037d062_0' }"
 
@@ -17,7 +17,7 @@ process FILTER_LEN {
     path( "ASV_seqs.len.fasta" ) , emit: fasta
     path( "ASV_len_orig.tsv" )   , emit: len_orig
     path( "ASV_len_filt.tsv" )   , emit: len_filt
-    path "versions.yml"          , emit: versions
+    path "versions.yml"          , emit: versions_filter_len, topic: versions
 
     script:
     def min_len_asv = task.ext.min_len_asv ?: '1'

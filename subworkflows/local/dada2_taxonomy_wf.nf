@@ -24,8 +24,6 @@ workflow DADA2_TAXONOMY_WF {
     val_dada_assign_chunksize
 
     main:
-    ch_versions_dada_taxonomy = channel.empty()
-
     // Set cutoff to use for SH assignment and path to SH taxonomy file
     if ( params.addsh ) {
         vsearch_cutoff = 0.985
@@ -63,7 +61,6 @@ workflow DADA2_TAXONOMY_WF {
 
     //DADA2 assignTaxonomy
     DADA2_TAXONOMY ( ch_fasta_chunks, ch_assigntax.collect(), ".${ASV_tax_name}.${val_dada_ref_taxonomy}", taxlevels )
-    ch_versions_dada_taxonomy = ch_versions_dada_taxonomy.mix(DADA2_TAXONOMY.out.versions)
 
     // collect all DADA2_TAXONOMY.out.tsv into one file
     DADA2_TAXONOMY.out.tsv
@@ -73,7 +70,6 @@ workflow DADA2_TAXONOMY_WF {
 
     if (params.cut_its != "none") {
         FORMAT_TAXRESULTS_STD ( ch_dada2_taxonomy_tsv, ch_full_fasta, "ASV_tax.${val_dada_ref_taxonomy}.tsv" )
-        ch_versions_dada_taxonomy = ch_versions_dada_taxonomy.mix( FORMAT_TAXRESULTS_STD.out.versions )
     }
 
     //DADA2 addSpecies
@@ -118,9 +114,7 @@ workflow DADA2_TAXONOMY_WF {
                     [ meta, fasta ] }
             .set { ch_fasta_map }
         VSEARCH_USEARCHGLOBAL( ch_fasta_map, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
-        ch_versions_dada_taxonomy = ch_versions_dada_taxonomy.mix(VSEARCH_USEARCHGLOBAL.out.versions)
         ASSIGNSH( ch_dada2_tax1, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, ASV_SH_name + ".${val_dada_ref_taxonomy}.tsv")
-        ch_versions_dada_taxonomy = ch_versions_dada_taxonomy.mix(ASSIGNSH.out.versions)
         ch_dada2_tax = ASSIGNSH.out.tsv
     } else {
         ch_dada2_tax = ch_dada2_tax1
@@ -129,5 +123,4 @@ workflow DADA2_TAXONOMY_WF {
     emit:
     cut_tax  = params.cut_dada_ref_taxonomy ? CUTADAPT_TAXONOMY.out.log : [[],[]]
     tax      = ch_dada2_tax
-    versions = ch_versions_dada_taxonomy
 }

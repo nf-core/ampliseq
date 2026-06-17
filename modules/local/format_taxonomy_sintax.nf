@@ -2,7 +2,7 @@ process FORMAT_TAXONOMY_SINTAX {
     label 'process_single'
 
     conda "conda-forge::sed=4.7"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://containers.biocontainers.pro/s3/SingImgsRepo/biocontainers/v1.2.0_cv1/biocontainers_v1.2.0_cv1.img' :
         'docker.io/biocontainers/biocontainers:v1.2.0_cv1' }"
 
@@ -10,9 +10,9 @@ process FORMAT_TAXONOMY_SINTAX {
     path(database)
 
     output:
-    path( "sintaxdb.fa.gz" ), emit: db
-    path( "ref_taxonomy_sintax.txt")     , emit: ref_tax_info
-    path "versions.yml"           , emit: versions
+    path( "sintaxdb.fa.gz" )        , emit: db
+    path( "ref_taxonomy_sintax.txt"), emit: ref_tax_info
+    path "versions.yml"             , emit: versions_format_taxonomy_sintax, topic: versions
 
     script:
     if (params.sintax_ref_tax_custom) {

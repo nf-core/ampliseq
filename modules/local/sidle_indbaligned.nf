@@ -9,7 +9,7 @@ process SIDLE_INDBALIGNED {
 
     output:
     path("db_alignedsequences.qza"), emit: seq
-    path "versions.yml"            , emit: versions
+    path "versions.yml"            , emit: versions_sidle_indbalignd, topic: versions
 
     script:
     """

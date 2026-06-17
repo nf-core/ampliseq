@@ -3,7 +3,7 @@ process SBDIEXPORT {
     label 'process_low'
 
     conda "conda-forge::r-tidyverse=1.2.1"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/r-tidyverse:1.2.1' :
         'biocontainers/r-tidyverse:1.2.1' }"
 
@@ -14,7 +14,7 @@ process SBDIEXPORT {
 
     output:
     path "*.tsv"       , emit: sbditables
-    path "versions.yml", emit: versions
+    path "versions.yml", emit: versions_sbdiexport, topic: versions
 
     script:
     def args = task.ext.args ?: ''

@@ -3,7 +3,7 @@ process FILTER_SSU {
     label 'process_single'
 
     conda "bioconda::bioconductor-biostrings=2.58.0 conda-forge::r-base=4.0.3"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/bioconductor-biostrings:2.58.0--r40h037d062_0' :
         'biocontainers/bioconductor-biostrings:2.58.0--r40h037d062_0' }"
 
@@ -17,7 +17,7 @@ process FILTER_SSU {
     path( "stats.ssu.tsv" )      , emit: stats, optional: true
     path( "ASV_table.ssu.tsv" )  , emit: asv, optional: true
     path( "ASV_seqs.ssu.fasta" ) , emit: fasta
-    path "versions.yml"          , emit: versions
+    path "versions.yml"          , emit: versions_filter_ssu, topic: versions
 
     script:
     def kingdom = params.filter_ssu ?: "bac,arc,mito,euk"

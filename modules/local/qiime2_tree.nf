@@ -1,8 +1,8 @@
 process QIIME2_TREE {
     label 'process_medium'
 
-    conda "${moduleDir}/envs/qiime2-amplicon-2024.10-py310-linux-conda.yml"
-    container "qiime2/amplicon:2024.10"
+    conda "${moduleDir}/envs/rachis-qiime2-linux-64-conda.yml"
+    container "qiime2/qiime2:2026.4"
 
     input:
     path(repseq)
@@ -10,7 +10,7 @@ process QIIME2_TREE {
     output:
     path("rooted-tree.qza"), emit: qza
     path("tree.nwk")       , emit: nwk
-    path "versions.yml"    , emit: versions
+    path "versions.yml"    , emit: versions_qiime2_tree, topic: versions
 
     script:
     """

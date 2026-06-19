@@ -2,7 +2,7 @@ process PHYLOSEQ_INASV {
     label 'process_single'
 
     conda "conda-forge::sed=4.7"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/ubuntu:20.04' :
         'nf-core/ubuntu:20.04' }"
 
@@ -11,7 +11,7 @@ process PHYLOSEQ_INASV {
 
     output:
     path( "*.tsv" )          , emit: tsv
-    path "versions.yml"      , emit: versions
+    path "versions.yml"      , emit: versions_phyloseq_inasv, topic: versions
 
     script:
     """

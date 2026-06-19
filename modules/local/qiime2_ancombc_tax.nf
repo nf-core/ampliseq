@@ -3,8 +3,8 @@ process QIIME2_ANCOMBC_TAX {
     label 'process_medium'
     label 'process_cpu_single'
 
-    conda "${moduleDir}/envs/qiime2-amplicon-2024.10-py310-linux-conda.yml"
-    container "qiime2/amplicon:2024.10"
+    conda "${moduleDir}/envs/rachis-qiime2-linux-64-conda.yml"
+    container "qiime2/qiime2:2026.4"
 
     input:
     tuple path(metadata), path(table), path(taxonomy), val(taxlevel), val(formula_in)
@@ -14,7 +14,7 @@ process QIIME2_ANCOMBC_TAX {
     path("differentials/*"), emit: differentials
     path("*.qza")          , emit: qza, optional: true
     path("*.qzv")          , emit: qzv, optional: true
-    path "versions.yml"    , emit: versions
+    path "versions.yml"    , emit: versions_qiime2_ancombc_tax, topic: versions
 
     script:
     def args        = task.ext.args ?: ''

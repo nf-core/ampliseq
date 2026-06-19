@@ -1,15 +1,15 @@
 process QIIME2_EXPORT_RELASV {
-    label 'process_single'
+    label 'process_low'
 
-    conda "${moduleDir}/envs/qiime2-amplicon-2024.10-py310-linux-conda.yml"
-    container "qiime2/amplicon:2024.10"
+    conda "${moduleDir}/envs/rachis-qiime2-linux-64-conda.yml"
+    container "qiime2/qiime2:2026.4"
 
     input:
     path(table)
 
     output:
     path("rel-table-ASV.tsv"), emit: tsv
-    path "versions.yml"      , emit: versions
+    path "versions.yml"      , emit: versions_qiime2_export_relasv, topic: versions
 
     script:
     """

@@ -12,7 +12,7 @@ process SIDLE_TREERECON {
     path("reconstructed_tree.qza")       , emit: qza
     path("reconstruction_placements.qza"), emit: qza_placements
     path("reconstructed_tree.nwk")       , emit: nwk
-    path "versions.yml"                  , emit: versions
+    path "versions.yml"                  , emit: versions_sidle_treerecon, topic: versions
 
     script:
     """

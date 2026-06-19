@@ -3,7 +3,7 @@ process FILTER_CODONS {
     label 'process_single'
 
     conda "conda-forge::pandas=1.1.5 conda-forge::python=3.9.1"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/pandas:1.1.5':
         'biocontainers/pandas:1.1.5' }"
 
@@ -16,7 +16,7 @@ process FILTER_CODONS {
     path( "ASV_codon_filtered.fna"        ) , emit: fasta
     path( "ASV_codon_filtered.list"       ) , emit: list
     path( "codon.filtered.stats.tsv"      ) , emit: stats, optional: true
-    path( "versions.yml"                  ) , emit: versions
+    path( "versions.yml"                  ) , emit: versions_filter_codons, topic: versions
 
     script:
     def args = task.ext.args ?: ''

@@ -1,9 +1,9 @@
 process QIIME2_TABLEFILTERTAXA {
     tag "taxa:${exclude_taxa};min-freq:${min_frequency};min-samples:${min_samples}"
-    label 'process_single'
+    label 'process_low'
 
-    conda "${moduleDir}/envs/qiime2-amplicon-2024.10-py310-linux-conda.yml"
-    container "qiime2/amplicon:2024.10"
+    conda "${moduleDir}/envs/rachis-qiime2-linux-64-conda.yml"
+    container "qiime2/qiime2:2026.4"
 
     input:
     path(table)
@@ -15,7 +15,7 @@ process QIIME2_TABLEFILTERTAXA {
     output:
     path("filtered-table.qza"), emit: qza
     path("filtered-table.tsv"), emit: tsv
-    path "versions.yml"       , emit: versions
+    path "versions.yml"       , emit: versions_qiime2_tablefiltertaxa, topic: versions
 
     script:
     """

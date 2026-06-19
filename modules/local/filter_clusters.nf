@@ -3,7 +3,7 @@ process FILTER_CLUSTERS {
     label 'process_single'
 
     conda "conda-forge::pandas=1.1.5 conda-forge::python=3.9.1"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/pandas:1.1.5':
         'biocontainers/pandas:1.1.5' }"
 
@@ -15,7 +15,7 @@ process FILTER_CLUSTERS {
     path( "ASV_post_clustering_filtered.table.tsv") , emit: asv
     path( "ASV_post_clustering_filtered.fna"      ) , emit: fasta
     path( "ASV_post_clustering_filtered.stats.tsv") , emit: stats
-    path( "versions.yml"                          ) , emit: versions
+    path( "versions.yml"                          ) , emit: versions_filter_clusters, topic: versions
 
     script:
     def prefix   = task.ext.prefix ?: "'$meta.id'"

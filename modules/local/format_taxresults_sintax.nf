@@ -2,7 +2,7 @@ process FORMAT_TAXRESULTS_SINTAX {
     label 'process_single'
 
     conda "conda-forge::python=3.9.1"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/python:3.9' :
         'biocontainers/python:3.9' }"
 
@@ -14,7 +14,7 @@ process FORMAT_TAXRESULTS_SINTAX {
 
     output:
     path(outfile)      , emit: tsv
-    path "versions.yml", emit: versions
+    path "versions.yml", emit: versions_format_taxresults_sintax, topic: versions
 
     script:
     def taxlevels = taxlevels_input ? taxlevels_input : "Kingdom,Phylum,Class,Order,Family,Genus,Species"

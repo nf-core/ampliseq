@@ -14,7 +14,6 @@ include { samplesheetToList         } from 'plugin/nf-schema'
 include { paramsHelp                } from 'plugin/nf-schema'
 include { completionEmail           } from '../../nf-core/utils_nfcore_pipeline'
 include { completionSummary         } from '../../nf-core/utils_nfcore_pipeline'
-include { imNotification            } from '../../nf-core/utils_nfcore_pipeline'
 include { UTILS_NFCORE_PIPELINE     } from '../../nf-core/utils_nfcore_pipeline'
 include { UTILS_NEXTFLOW_PIPELINE   } from '../../nf-core/utils_nextflow_pipeline'
 
@@ -29,7 +28,7 @@ workflow PIPELINE_INITIALISATION {
     take:
     version           // boolean: Display version and exit
     validate_params   // boolean: Boolean whether to validate parameters against the schema at runtime
-    _monochrome_logs  // boolean: Do not use coloured log outputs
+    monochrome_logs   // boolean: Do not use coloured log outputs
     nextflow_cli_args //   array: List of positional nextflow CLI args
     outdir            //  string: The output directory where the results will be saved
     _input            //  string: Path to input samplesheet
@@ -54,6 +53,9 @@ workflow PIPELINE_INITIALISATION {
     //
     // Validate parameters and generate parameter summary to stdout
     //
+
+    def before_text = ""
+    def after_text = ""
     before_text = """
 -\033[2m----------------------------------------------------\033[0m-
                                         \033[0;32m,--.\033[0;30m/\033[0;32m,-.\033[0m
@@ -71,6 +73,10 @@ workflow PIPELINE_INITIALISATION {
 * Software dependencies
     https://github.com/nf-core/ampliseq/blob/master/CITATIONS.md
 """
+    if (monochrome_logs) {
+        before_text = before_text.replaceAll(/\033\[[0-9;]*m/, '')
+    }
+
     command = "nextflow run ${workflow.manifest.name} -profile <docker/singularity/.../institute> --input samplesheet.csv --outdir <OUTDIR>"
 
     UTILS_NFSCHEMA_PLUGIN (
@@ -103,6 +109,9 @@ workflow PIPELINE_INITIALISATION {
     if ( params.sintax_ref_taxonomy && !params.skip_taxonomy && !params.sintax_ref_tax_custom ) {
         sintaxreftaxonomyExistsError()
     }
+    if ( params.vsearch_lca_ref_taxonomy && !params.skip_taxonomy && !params.vsearch_lca_ref_tax_custom ) {
+        vsearchlcareftaxonomyExistsError()
+    }
     if ( (params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && !params.skip_taxonomy && !params.classifier ) {
         qiimereftaxonomyExistsError()
     }
@@ -131,7 +140,6 @@ workflow PIPELINE_COMPLETION {
     plaintext_email // boolean: Send plain-text email instead of HTML
     outdir          //    path: Path to output directory where results will be published
     monochrome_logs // boolean: Disable ANSI colour codes in log output
-    hook_url        //  string: hook URL for notifications
     multiqc_report  //  string: Path to MultiQC report
 
     main:
@@ -155,13 +163,10 @@ workflow PIPELINE_COMPLETION {
         }
 
         completionSummary(monochrome_logs)
-        if (hook_url) {
-            imNotification(summary_params, hook_url)
-        }
     }
 
     workflow.onError {
-        log.error "Pipeline failed. Please refer to troubleshooting docs: https://nf-co.re/docs/usage/troubleshooting"
+        log.error "Pipeline failed. Please refer to troubleshooting docs for common issues: https://nf-co.re/docs/running/troubleshooting"
     }
 }
 
@@ -261,8 +266,16 @@ def validateInputParameters() {
         error("Incompatible parameters: `--sintax_ref_taxonomy` and `--sintax_ref_tax_custom` cannot be used together.")
     }
 
+    if (params.vsearch_lca_ref_taxonomy && params.vsearch_lca_ref_tax_custom) {
+        error("Incompatible parameters: `--vsearch_lca_ref_taxonomy` and `--vsearch_lca_ref_tax_custom` cannot be used together.")
+    }
+
     if (params.sintax_ref_tax_custom && !params.skip_taxonomy && !params.sintax_assign_taxlevels) {
-        error("Missing parameter: Taxonomic classification with `--sintax_ref_tax_custom` requires `--sintax_assign_taxlevels` (comma-separated taxonomic ranks matching the reference labels).")
+        error("Missing parameter: Taxonomic classification with `--sintax_ref_tax_custom` requires `--sintax_assign_taxlevels` (comma-separated taxonomic ranks matching the reference database labels).")
+    }
+
+    if (params.vsearch_lca_ref_tax_custom && !params.skip_taxonomy && !params.vsearch_lca_assign_taxlevels) {
+        error("Missing parameter: Taxonomic classification with `--vsearch_lca_ref_tax_custom` requires `--vsearch_lca_assign_taxlevels` (comma-separated taxonomic ranks matching the reference database labels).")
     }
 
     if (params.sbdiexport && params.sintax_ref_tax_custom) {
@@ -276,11 +289,11 @@ def validateInputParameters() {
     String[] sbdi_compatible_databases = [
         "coidb","coidb=221216",
         "greengenes2","greengenes2=2024.09",
-        "gtdb","gtdb=R10-RS226","gtdb=R09-RS220","gtdb=R08-RS214","gtdb=R07-RS207","gtdb=R06-RS202","gtdb=R05-RS95",
+        "gtdb","gtdb=R11-RS232","gtdb=R10-RS226","gtdb=R09-RS220","gtdb=R08-RS214","gtdb=R07-RS207","gtdb=R06-RS202","gtdb=R05-RS95",
         "midori2-co1","midori2-co1=gb250",
         "pr2","pr2=5.1.0","pr2=5.0.0","pr2=4.14.0","pr2=4.13.0",
         "rdp","rdp=18",
-        "sbdi-gtdb","sbdi-gtdb=R10-RS226-2","sbdi-gtdb=R09-RS220-2","sbdi-gtdb=R09-RS220-1", "sbdi-gtdb=R08-RS214-1","sbdi-gtdb=R07-RS207-1",
+        "sbdi-gtdb","sbdi-gtdb=R11-RS232-1","sbdi-gtdb=R10-RS226-2","sbdi-gtdb=R09-RS220-2","sbdi-gtdb=R09-RS220-1", "sbdi-gtdb=R08-RS214-1","sbdi-gtdb=R07-RS207-1",
         "silva","silva=138.2","silva=138","silva=132",
         "unite-fungi","unite-fungi=10.0","unite-fungi=9.0","unite-fungi=8.3","unite-fungi=8.2",
         "unite-alleuk","unite-alleuk=10.0","unite-alleuk=9.0","unite-alleuk=8.3","unite-alleuk=8.2"
@@ -454,6 +467,20 @@ def sintaxreftaxonomyExistsError() {
 }
 
 //
+// Exit pipeline if incorrect --vsearch_lca_ref_taxonomy key provided
+//
+def vsearchlcareftaxonomyExistsError() {
+    if (params.vsearch_lca_ref_databases && params.vsearch_lca_ref_taxonomy && !params.vsearch_lca_ref_databases.containsKey(params.vsearch_lca_ref_taxonomy)) {
+        def error_string = "=============================================================================\n" +
+            "  VSEARCH LCA reference database '${params.vsearch_lca_ref_taxonomy}' not found in any config file provided to the pipeline.\n" +
+            "  Currently, the available reference taxonomy keys for `--vsearch_lca_ref_taxonomy` are:\n" +
+            "  ${params.vsearch_lca_ref_databases.keySet().join(", ")}\n" +
+            "==================================================================================="
+        error(error_string)
+    }
+}
+
+//
 // Exit pipeline if incorrect --qiime_ref_taxonomy key provided
 //
 def qiimereftaxonomyExistsError() {
@@ -513,7 +540,7 @@ def validateInputSamplesheet(input) {
 // Generate methods description for MultiQC
 //
 def toolCitationText() {
-    // TODO nf-core: Optionally add in-text citation tools to this list.
+    // nf-core: Optionally add in-text citation tools to this list.
     // Can use ternary operators to dynamically construct based conditions, e.g. params["run_xyz"] ? "Tool (Foo et al. 2023)" : "",
     // Uncomment function in methodsDescriptionText to render in MultiQC report
     def citation_text = [
@@ -527,7 +554,7 @@ def toolCitationText() {
 }
 
 def toolBibliographyText() {
-    // TODO nf-core: Optionally add bibliographic entries to this list.
+    // nf-core: Optionally add bibliographic entries to this list.
     // Can use ternary operators to dynamically construct based conditions, e.g. params["run_xyz"] ? "<li>Author (2023) Pub name, Journal, DOI</li>" : "",
     // Uncomment function in methodsDescriptionText to render in MultiQC report
     def reference_text = [
@@ -562,7 +589,7 @@ def methodsDescriptionText(mqc_methods_yaml) {
     meta["tool_citations"] = ""
     meta["tool_bibliography"] = ""
 
-    // TODO nf-core: Only uncomment below if logic in toolCitationText/toolBibliographyText has been filled!
+    // nf-core: Only uncomment below if logic in toolCitationText/toolBibliographyText has been filled!
     // meta["tool_citations"] = toolCitationText().replaceAll(", \\.", ".").replaceAll("\\. \\.", ".").replaceAll(", \\.", ".")
     // meta["tool_bibliography"] = toolBibliographyText()
 

@@ -14,8 +14,6 @@ workflow KRAKEN2_TAXONOMY_WF {
     kraken2_taxlevels
 
     main:
-    ch_versions_kraken2_taxonomy = channel.empty()
-
     // format taxonomy file
     ch_kraken2_ref_taxonomy
         .branch { it ->
@@ -32,7 +30,6 @@ workflow KRAKEN2_TAXONOMY_WF {
                     def meta = [:]
                     meta.id = val_kraken2_ref_taxonomy
                     [ meta, db ] } )
-    ch_versions_kraken2_taxonomy = ch_versions_kraken2_taxonomy.mix(UNTAR.out.versions)
     ch_kraken2db = UNTAR.out.untar.map{ it -> it[1] }
     ch_kraken2db = ch_kraken2db.mix(ch_kraken2_ref_taxonomy.dir)
 
@@ -53,5 +50,4 @@ workflow KRAKEN2_TAXONOMY_WF {
     emit:
     qiime2_tsv = FORMAT_TAXRESULTS_KRAKEN2.out.qiime2_tsv
     tax_tsv    = FORMAT_TAXRESULTS_KRAKEN2.out.tsv
-    versions   = ch_versions_kraken2_taxonomy
 }

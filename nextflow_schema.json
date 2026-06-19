@@ -107,6 +107,11 @@
                     "fa_icon": "fas fa-align-justify",
                     "pattern": "^[0-9]+(,[0-9]+)*$"
                 },
+                "ignore_binned_quality": {
+                    "type": "boolean",
+                    "description": "Ignore warnings about binned quality scores.",
+                    "fa_icon": "fas fa-arrow-right"
+                },
                 "pacbio": {
                     "type": "boolean",
                     "description": "If data is single-ended PacBio reads instead of Illumina",
@@ -452,7 +457,7 @@
                     "type": "string",
                     "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `silva=138`) . This will download the desired database, format it to produce a file that is compatible with DADA2's assignTaxonomy and another file that is compatible with DADA2's addSpecies.\n\nThe following databases are supported:\n- GTDB - Genome Taxonomy Database - 16S rRNA\n- SBDI-GTDB, a Sativa-vetted version of the GTDB 16S rRNA\n- PR2 - Protist Reference Ribosomal Database - 18S rRNA\n- RDP - Ribosomal Database Project - 16S rRNA\n- SILVA ribosomal RNA gene database project - 16S rRNA\n- UNITE - eukaryotic nuclear ribosomal ITS region - ITS\n- COIDB - eukaryotic Cytochrome Oxidase I (COI) from The Barcode of Life Data System (BOLD) - COI\n- GloSED - Global Standardised Soil Eukaryome Dataset - fungal ITS (Note: SH support not available)\n\nGenerally, using `gtdb`, `pr2`, `rdp`, `sbdi-gtdb`, `silva`, `coidb`, `unite-fungi`, or `unite-alleuk` will select the most recent supported version.\n\nPlease note that commercial/non-academic entities [require licensing](https://www.arb-silva.de/silva-license-information) for SILVA v132 database (non-default) but not from v138 on (default).",
                     "description": "Name of supported database, and optionally also version number",
-                    "default": "silva=138.2",
+                    "default": "sbdi-gtdb=R11-RS232-1",
                     "enum": [
                         "coidb",
                         "coidb=221216",
@@ -466,6 +471,7 @@
                         "gtdb=R08-RS214",
                         "gtdb=R09-RS220",
                         "gtdb=R10-RS226",
+                        "gtdb=R11-RS232",
                         "midori2-co1",
                         "midori2-co1=gb250",
                         "pr2",
@@ -476,6 +482,7 @@
                         "rdp",
                         "rdp=18",
                         "sbdi-gtdb",
+                        "sbdi-gtdb=R11-RS232-1",
                         "sbdi-gtdb=R10-RS226-2",
                         "sbdi-gtdb=R09-RS220-2",
                         "sbdi-gtdb=R09-RS220-1",
@@ -669,6 +676,70 @@
                     "type": "string",
                     "help_text": "Comma separated list of taxonomic ranks matching the labels in the custom database. Required with `--sintax_ref_tax_custom`. For example: `Phylum,Class,Order,Family,Genus,Species`.",
                     "description": "Comma separated list of taxonomic levels used in SINTAX with a custom reference database"
+                },
+                "vsearch_lca_ref_tax_custom": {
+                    "type": "string",
+                    "help_text": "Path to a custom VSEARCH LCA reference database. Requires `--vsearch_lca_assign_taxlevels`. Expected format: SINTAX-compatible FASTA with semicolon-separated taxonomy labels in sequence headers (same as `--sintax_ref_tax_custom`); plain FASTA or gzip-compressed (`.gz`) is accepted. Cannot be used together with `--vsearch_lca_ref_taxonomy`.",
+                    "description": "Path to a custom VSEARCH LCA reference database (SINTAX-compatible FASTA)"
+                },
+                "vsearch_lca_ref_taxonomy": {
+                    "type": "string",
+                    "help_text": "Choose one of the supported built-in databases for VSEARCH LCA. Database and version are separated by an equal sign (`=`, e.g. `midori2-co1=gb270`). This downloads the selected reference and runs VSEARCH usearch_global with `--lcaout`.\n\nThe following built-in databases are currently supported:\n- COIDB - eukaryotic Cytochrome Oxidase I (COI) from BOLD\n- MIDORI2-CO1 - metazoan COI reference sequences in SINTAX format (default: GenBank270 release on reference-midori.info)\n- UNITE (`unite-fungi`, `unite-alleuk`, and pinned versions) - eukaryotic nuclear ribosomal ITS in USEARCH/UTAX (SINTAX-compatible) format\n\nUsing `unite-fungi` or `unite-alleuk` selects the most recent supported release. Cannot be used together with `--vsearch_lca_ref_tax_custom`.",
+                    "description": "Name of built-in VSEARCH LCA reference database, and optionally also version number",
+                    "enum": [
+                        "coidb",
+                        "coidb=221216",
+                        "midori2-co1",
+                        "midori2-co1=gb270",
+                        "unite-fungi",
+                        "unite-fungi=10.0",
+                        "unite-fungi=9.0",
+                        "unite-fungi=8.3",
+                        "unite-fungi=8.2",
+                        "unite-alleuk",
+                        "unite-alleuk=10.0",
+                        "unite-alleuk=9.0",
+                        "unite-alleuk=8.3",
+                        "unite-alleuk=8.2"
+                    ]
+                },
+                "vsearch_lca_assign_taxlevels": {
+                    "type": "string",
+                    "help_text": "Comma separated list of taxonomic ranks matching the labels in the custom database. Required with `--vsearch_lca_ref_tax_custom`. For example: `Phylum,Class,Order,Family,Genus,Species`.",
+                    "description": "Comma separated list of taxonomic levels for VSEARCH LCA with a custom reference database"
+                },
+                "vsearch_lca_id": {
+                    "type": "number",
+                    "default": 0.9,
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "VSEARCH usearch_global identity cutoff (`--id`) used for VSEARCH LCA."
+                },
+                "vsearch_lca_maxaccepts": {
+                    "type": "integer",
+                    "default": 0,
+                    "minimum": 0,
+                    "description": "Maximum number of target sequences to accept per query for VSEARCH LCA (`--maxaccepts`)."
+                },
+                "vsearch_lca_maxrejects": {
+                    "type": "integer",
+                    "default": 0,
+                    "minimum": 0,
+                    "description": "Maximum number of non-matching target sequences to reject per query for VSEARCH LCA (`--maxrejects`)."
+                },
+                "vsearch_lca_lca_cutoff": {
+                    "type": "number",
+                    "default": 0.9,
+                    "minimum": 0.5,
+                    "maximum": 1,
+                    "description": "LCA support threshold for VSEARCH LCA (`--lca_cutoff`)."
+                },
+                "vsearch_lca_query_cov": {
+                    "type": "number",
+                    "default": 1.0,
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Minimum fraction of the query that must align to a target for VSEARCH LCA (`--query_cov`)."
                 },
                 "addsh": {
                     "type": "boolean",
@@ -876,6 +947,24 @@
                     "maximum": 1,
                     "description": "Significance threshold for differential abundance barplot for `--ancombc` and `--ancombc_formula`",
                     "fa_icon": "fas fa-greater-than-equal"
+                },
+                "ancombc2": {
+                    "type": "boolean",
+                    "description": "Perform differential abundance analysis with ANCOMBC2",
+                    "help_text": "ANCOMBC2 will be performed on all suitable columns in the metadata sheet. Empty values will be removed, therefore it is possible to perform tests on subsets. The reference level will default to highest alphanumeric group (e.g. in alphabetical or numeric order, as applicable) within each metadata column. Formula for specific tests can be supplied with `--ancombc2_formula`.",
+                    "fa_icon": "fas fa-greater-than-equal"
+                },
+                "ancombc2_formula": {
+                    "type": "string",
+                    "description": "Formula to perform differential abundance analysis with ANCOMBC2",
+                    "help_text": "Comma separated list of model formula(s), e.g. \"treatment1,treatment2\". The reference level will default to highest alphanumeric group (e.g. in alphabetical or numeric order, as applicable) within each formula term. The reference level can be overwritten by `--ancombc2_formula_reflvl`. Model formula should contain only independent terms in the sample metadata. These can be continuous variables or factors, and they can have interactions as in a typical R formula. Essentially, columns in the metadata sheet can be chosen that have no empty values, not only unique values, or not only identical values.\nFor example, \"treatment1+treatment2\" tests whether the data partitions based on \"treatment1\" and \"treatment2\" sample metadata. \"treatment1*treatment2\" test both of those effects as well as their interaction.\nMore examples can be found in the R documentation, https://cran.r-project.org/doc/manuals/r-release/R-intro.html#Formulae-for-statistical-models",
+                    "fa_icon": "fas fa-greater-than-equal"
+                },
+                "ancombc2_formula_reflvl": {
+                    "type": "string",
+                    "description": "Reference level for `--ancombc2_formula`",
+                    "help_text": "This will only affect ANCOMBC2 started by `--ancombc2_formula`, but for all provided model formula, therefore it might be best to restrict `--ancombc2_formula` to one formula. The syntax is as follows: 'column_name::column_value' or for multiple 'column_name1::column_value1 column_name2::column_value2'",
+                    "fa_icon": "fas fa-greater-than-equal"
                 }
             }
         },
@@ -1056,13 +1145,6 @@
                     "type": "boolean",
                     "description": "Do not use coloured log outputs.",
                     "fa_icon": "fas fa-palette",
-                    "hidden": true
-                },
-                "hook_url": {
-                    "type": "string",
-                    "description": "Incoming hook URL for messaging service",
-                    "fa_icon": "fas fa-people-group",
-                    "help_text": "Incoming hook URL for messaging service. Currently, MS Teams and Slack are supported.",
                     "hidden": true
                 },
                 "multiqc_config": {

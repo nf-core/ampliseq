@@ -3,7 +3,7 @@ process FILTER_SEQUENCES_ABUNDANCES {
     label 'process_single'
 
     conda "bioconda::bioconductor-biostrings=2.58.0 conda-forge::r-base=4.0.3"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/bioconductor-biostrings:2.58.0--r40h037d062_0' :
         'biocontainers/bioconductor-biostrings:2.58.0--r40h037d062_0' }"
 
@@ -16,7 +16,7 @@ process FILTER_SEQUENCES_ABUNDANCES {
     path( "filtered_abundances.tsv" ) , emit: abund
     path( "stats_counts.tsv" )        , emit: stats_counts
     path( "stats_features.tsv" )      , emit: stats_features
-    path "versions.yml"               , emit: versions
+    path "versions.yml"               , emit: versions_filter_sequence_abundance, topic: versions
 
     script:
     """

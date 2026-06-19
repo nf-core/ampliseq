@@ -2,7 +2,7 @@ process FILTER_STATS {
     label 'process_single'
 
     conda "conda-forge::pandas=1.1.5 conda-forge::python=3.9.1"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/pandas:1.1.5' :
         'biocontainers/pandas:1.1.5' }"
 
@@ -12,7 +12,7 @@ process FILTER_STATS {
 
     output:
     path("count_table_filter_stats.tsv"), emit: tsv
-    path "versions.yml"                 , emit: versions
+    path "versions.yml"                 , emit: versions_filter_stats, topic: versions
 
     script:
     """

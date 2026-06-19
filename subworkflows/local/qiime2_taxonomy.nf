@@ -17,5 +17,4 @@ workflow QIIME2_TAXONOMY {
     emit:
     qza      = QIIME2_CLASSIFY.out.qza
     tsv      = QIIME2_CLASSIFY.out.tsv
-    versions = QIIME2_INSEQ.out.versions.mix(QIIME2_CLASSIFY.out.versions)
 }

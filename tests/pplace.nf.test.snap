@@ -110,53 +110,71 @@
                     "R": "4.4.2",
                     "phyloseq": "1.50.0"
                 },
+                "PHYLOSEQ_INASV": {
+                    "sed": 4.7
+                },
+                "PHYLOSEQ_INTAX_PPLACE": {
+                    "python": "3.9.1",
+                    "pandas": "1.1.5"
+                },
+                "PHYLOSEQ_INTAX_QIIME2": {
+                    "python": "3.9.1",
+                    "pandas": "1.1.5"
+                },
+                "PPLACEFORMATTAX_STANDARD": {
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
+                },
                 "QIIME2_BARPLOT": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.4.0"
                 },
                 "QIIME2_CLASSIFY": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.4.0"
                 },
                 "QIIME2_DIVERSITY_ALPHA": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.4.0"
                 },
                 "QIIME2_DIVERSITY_BETA": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.4.0"
                 },
                 "QIIME2_DIVERSITY_BETAORD": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.4.0"
                 },
                 "QIIME2_DIVERSITY_CORE": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.4.0"
                 },
                 "QIIME2_EXPORT_ABSOLUTE": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.4.0"
                 },
                 "QIIME2_EXPORT_RELASV": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.4.0"
                 },
                 "QIIME2_EXPORT_RELTAX": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.4.0"
                 },
                 "QIIME2_EXTRACT": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.4.0"
                 },
                 "QIIME2_INASV": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.4.0"
                 },
                 "QIIME2_INSEQ": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.4.0"
+                },
+                "QIIME2_INTAX": {
+                    "qiime2": "2026.4.0"
                 },
                 "QIIME2_INTREE": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.4.0"
                 },
                 "QIIME2_SEQFILTERTABLE": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.4.0"
                 },
                 "QIIME2_TABLEFILTERTAXA": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.4.0"
                 },
                 "QIIME2_TRAIN": {
-                    "qiime2": "2024.10.1"
+                    "qiime2": "2026.4.0"
                 },
                 "RENAME_RAW_DATA_FILES": {
                     "sed": 4.7
@@ -170,7 +188,7 @@
                     "pandas": "1.1.5"
                 },
                 "Workflow": {
-                    "nf-core/ampliseq": "v2.17.0"
+                    "nf-core/ampliseq": "v2.18.0"
                 }
             },
             [
@@ -247,6 +265,7 @@
                 "multiqc/multiqc_data/multiqc_cutadapt.txt",
                 "multiqc/multiqc_data/multiqc_data.json",
                 "multiqc/multiqc_data/multiqc_general_stats.txt",
+                "multiqc/multiqc_data/multiqc_software_versions.txt",
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_plots",
                 "multiqc/multiqc_plots/pdf",
@@ -270,7 +289,7 @@
                 "phyloseq/pplace_phyloseq.rds",
                 "phyloseq/qiime2_phyloseq.rds",
                 "pipeline_info",
-                "pipeline_info/software_versions.yml",
+                "pipeline_info/nf_core_ampliseq_software_mqc_versions.yml",
                 "pplace",
                 "pplace/clustalo",
                 "pplace/clustalo/test_pplace.aln",
@@ -1196,10 +1215,10 @@
             "multiqc_general_stats.txt:md5,7a395be7984aaa0f9154de4abed5d824",
             "multiqc_cutadapt.txt:md5,3dce058d2d6c85a3cca7314ae19c5586"
         ],
-        "timestamp": "2026-03-11T17:39:39.331356202",
         "meta": {
-            "nf-test": "0.9.4",
+            "nf-test": "0.9.3",
             "nextflow": "25.10.4"
-        }
+        },
+        "timestamp": "2026-04-21T13:11:50.389289893"
     }
 }

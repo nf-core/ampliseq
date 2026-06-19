@@ -17,6 +17,10 @@
                 "CUTADAPT_TAXONOMY": {
                     "cutadapt": 5.2
                 },
+                "DADA2_ADDSPECIES": {
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
+                },
                 "DADA2_DENOISING": {
                     "R": "4.5.2",
                     "dada2": "1.38.0"
@@ -80,7 +84,7 @@
                     "TreeSummarizedExperiment": "2.10.0"
                 },
                 "Workflow": {
-                    "nf-core/ampliseq": "v2.17.0"
+                    "nf-core/ampliseq": "v2.18.0"
                 }
             },
             [
@@ -170,6 +174,7 @@
                 "multiqc/multiqc_data/multiqc_data.json",
                 "multiqc/multiqc_data/multiqc_fastqc.txt",
                 "multiqc/multiqc_data/multiqc_general_stats.txt",
+                "multiqc/multiqc_data/multiqc_software_versions.txt",
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_plots",
                 "multiqc/multiqc_plots/pdf",
@@ -231,7 +236,7 @@
                 "phyloseq",
                 "phyloseq/dada2_phyloseq.rds",
                 "pipeline_info",
-                "pipeline_info/software_versions.yml",
+                "pipeline_info/nf_core_ampliseq_software_mqc_versions.yml",
                 "summary_report",
                 "summary_report/dada2_taxonomic_classification_per_taxonomy_level.svg",
                 "summary_report/rrna_detection_with_barrnap.svg",
@@ -257,10 +262,10 @@
             "multiqc_general_stats.txt:md5,1662178e2c1ac6cb0880f95c1746ce81",
             "multiqc_cutadapt.txt:md5,0adee517528dc17cb0c9dfdc9858dc2c"
         ],
-        "timestamp": "2026-03-12T09:43:21.949396076",
         "meta": {
-            "nf-test": "0.9.4",
+            "nf-test": "0.9.3",
             "nextflow": "25.10.4"
-        }
+        },
+        "timestamp": "2026-04-21T09:37:29.018931608"
     }
 }

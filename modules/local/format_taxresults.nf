@@ -2,7 +2,7 @@ process FORMAT_TAXRESULTS {
     label 'process_single'
 
     conda "conda-forge::pandas=1.1.5 conda-forge::python=3.9.1"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/pandas:1.1.5' :
         'biocontainers/pandas:1.1.5' }"
 
@@ -13,7 +13,7 @@ process FORMAT_TAXRESULTS {
 
     output:
     path(outfile)      , emit: tsv
-    path "versions.yml", emit: versions
+    path "versions.yml", emit: versions_format_taxresults, topic: versions
 
     script:
     """

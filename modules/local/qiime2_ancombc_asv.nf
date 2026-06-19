@@ -5,8 +5,8 @@ process QIIME2_ANCOMBC_ASV {
     label 'process_long'
     label 'error_ignore'
 
-    conda "${moduleDir}/envs/qiime2-amplicon-2024.10-py310-linux-conda.yml"
-    container "qiime2/amplicon:2024.10"
+    conda "${moduleDir}/envs/rachis-qiime2-linux-64-conda.yml"
+    container "qiime2/qiime2:2026.4"
 
     input:
     tuple path(metadata), path(table), val(formula_in)
@@ -16,7 +16,7 @@ process QIIME2_ANCOMBC_ASV {
     path("differentials/*"), emit: differentials
     path("*.qza")          , emit: qza
     path("*.qzv")          , emit: qzv
-    path "versions.yml"    , emit: versions
+    path "versions.yml"    , emit: versions_qiime2_ancombc_asv, topic: versions
 
     script:
     def args        = task.ext.args ?: ''

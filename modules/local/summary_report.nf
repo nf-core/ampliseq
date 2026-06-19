@@ -2,7 +2,7 @@ process SUMMARY_REPORT  {
     label 'process_low'
 
     conda "conda-forge::r-base=4.2.3 conda-forge::r-rmarkdown=2.22 conda-forge::r-tidyverse=2.0.0 conda-forge::r-knitr=1.43 conda-forge::r-dt=0.28 conda-forge::r-dtplyr=1.3.1 conda-forge::r-formattable=0.2.1 conda-forge::r-purrr=1.0.1 conda-forge::r-vegan=2.6_4 conda-forge::r-optparse=1.7.3 conda-forge::r-ggplot2=3.4.2 conda-forge::r-dplyr=1.1.2 conda-forge::r-data.table=1.14.8 conda-forge::r-patchwork=1.1.2"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/mulled-v2-b2ec1fea5791d428eebb8c8ea7409c350d31dada:a447f6b7a6afde38352b24c30ae9cd6e39df95c4-1' :
         'biocontainers/mulled-v2-b2ec1fea5791d428eebb8c8ea7409c350d31dada:a447f6b7a6afde38352b24c30ae9cd6e39df95c4-1' }"
 
@@ -14,7 +14,7 @@ process SUMMARY_REPORT  {
     path(metadata)
     path(input_samplesheet)
     path(input_fasta)
-    path(mqc_plots)
+    tuple val(meta_mqc), path(mqc_plots)
     path(cutadapt_summary)
     val(find_truncation_values)
     path(dada_filtntrim_args)
@@ -43,6 +43,7 @@ process SUMMARY_REPORT  {
     path(dada2_tax)
     tuple val(meta_ref), path(cut_dada_ref_taxonomy) // cutadapt log when params.cut_dada_ref_taxonomy
     path(sintax_tax)
+    path(vsearch_lca_tax)
     path(kraken2_tax)
     path(pplace_tax)
     tuple val(meta_pplace), path(pplace_heattree)
@@ -61,6 +62,8 @@ process SUMMARY_REPORT  {
     path(ancom, stageAs: 'ancom/*')
     path(ancombc, stageAs: 'ancombc/da_barplot/*')
     path(ancombc_formula, stageAs: 'ancombc_formula/da_barplot/*')
+    path(ancombc2, stageAs: 'ancombc2/*')
+    path(ancombc2_formula, stageAs: 'ancombc2_formula/*')
     path(picrust_pathways)
     path(sbdi, stageAs: 'sbdi/*')
     path(phyloseq, stageAs: 'phyloseq/*')
@@ -69,7 +72,7 @@ process SUMMARY_REPORT  {
     output:
     path "*.svg"               , emit: svg, optional: true
     path "summary_report.html" , emit: report
-    path "versions.yml"        , emit: versions
+    path "versions.yml"        , emit: versions // This may not be added to the versions topic otherwise the pipeline hangs forever!
 
     script:
     // make named R list (comma separated)
@@ -126,7 +129,9 @@ process SUMMARY_REPORT  {
         dada2_tax && !params.dada_ref_tax_custom ? "dada2_ref_tax_title='${params.dada_ref_databases[params.dada_ref_taxonomy]["title"]}',dada2_ref_tax_file='${params.dada_ref_databases[params.dada_ref_taxonomy]["file"]}',dada2_ref_tax_citation='${params.dada_ref_databases[params.dada_ref_taxonomy]["citation"]}'" : "",
         cut_dada_ref_taxonomy ? "cut_dada_ref_taxonomy='$cut_dada_ref_taxonomy'" : "",
         sintax_tax && !params.sintax_ref_tax_custom ? "sintax_taxonomy='$sintax_tax',sintax_ref_tax_title='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["title"]}',sintax_ref_tax_file='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["file"]}',sintax_ref_tax_citation='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["citation"]}'" : "",
-        sintax_tax && params.sintax_ref_tax_custom ? "sintax_taxonomy='$sintax_tax',sintax_ref_tax_title='User-supplied SINTAX reference',sintax_ref_tax_file='${params.sintax_ref_tax_custom}',sintax_ref_tax_citation='Not specified'" : "",
+        sintax_tax && params.sintax_ref_tax_custom ? "sintax_taxonomy='$sintax_tax',sintax_ref_tax_title='User-supplied reference database',sintax_ref_tax_file='${params.sintax_ref_tax_custom}',sintax_ref_tax_citation='Not specified'" : "",
+        vsearch_lca_tax && params.vsearch_lca_ref_taxonomy ? "vsearch_lca_taxonomy='$vsearch_lca_tax',vsearch_lca_ref_tax_title='${params.vsearch_lca_ref_databases[params.vsearch_lca_ref_taxonomy]["title"]}',vsearch_lca_ref_tax_file='${params.vsearch_lca_ref_databases[params.vsearch_lca_ref_taxonomy]["file"]}',vsearch_lca_ref_tax_citation='${params.vsearch_lca_ref_databases[params.vsearch_lca_ref_taxonomy]["citation"]}'" : "",
+        vsearch_lca_tax && params.vsearch_lca_ref_tax_custom ? "vsearch_lca_taxonomy='$vsearch_lca_tax',vsearch_lca_ref_tax_title='User-supplied reference database',vsearch_lca_ref_tax_file='${params.vsearch_lca_ref_tax_custom}',vsearch_lca_ref_tax_citation='Not specified'" : "",
         kraken2_tax ? "kraken2_taxonomy='$kraken2_tax',kraken2_confidence='$params.kraken2_confidence'" : "",
         kraken2_tax && !params.kraken2_ref_tax_custom ? "kraken2_ref_tax_title='${params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["title"]}',kraken2_ref_tax_file='${params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["file"]}',kraken2_ref_tax_citation='${params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["citation"]}'" : "",
         pplace_tax ? "pplace_taxonomy='$pplace_tax',pplace_heattree='$pplace_heattree'" : "",
@@ -145,6 +150,8 @@ process SUMMARY_REPORT  {
         ancom ? "ancom='"+ ancom.join(",") +"'" : "",
         ancombc ? "ancombc='"+ ancombc.join(",") +"'" : "",
         ancombc_formula ? "ancombc_formula='"+ ancombc_formula.join(",") +"'" : "",
+        ancombc2 ? "ancombc2='"+ ancombc2.join(",") +"'" : "",
+        ancombc2_formula ? "ancombc2_formula='"+ ancombc2_formula.join(",") +"'" : "",
         sbdi ? "sbdi='"+ sbdi.join(",") +"'" : "",
         phyloseq ? "phyloseq='"+ phyloseq.join(",") +"'" : "",
         tse ? "tse='"+ tse.join(",") +"'" : "",

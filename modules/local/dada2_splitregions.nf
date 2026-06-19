@@ -2,7 +2,7 @@ process DADA2_SPLITREGIONS {
     label 'process_low'
 
     conda "conda-forge::r-base=4.2.1"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/r-base:4.2.1' :
         'biocontainers/r-base:4.2.1' }"
 
@@ -13,7 +13,7 @@ process DADA2_SPLITREGIONS {
     output:
     tuple val(meta), path( "DADA2_table_*.tsv" )                          , emit: dada2asv
     tuple val(meta), path( "ASV_table_*.tsv" ), path( "ASV_seqs_*.fasta" ), emit: for_sidle
-    path "versions.yml"                                                   , emit: versions
+    path "versions.yml"                                                   , emit: versions_dada2_splitregions, topic: versions
 
     script:
     // Make groovy map to R list; requirement: Values may not be false,true,null

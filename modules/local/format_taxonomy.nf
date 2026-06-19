@@ -2,7 +2,7 @@ process FORMAT_TAXONOMY {
     label 'process_single'
 
     conda "conda-forge::sed=4.7"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
         'https://containers.biocontainers.pro/s3/SingImgsRepo/biocontainers/v1.2.0_cv1/biocontainers_v1.2.0_cv1.img' :
         'docker.io/biocontainers/biocontainers:v1.2.0_cv1' }"
 
@@ -14,7 +14,7 @@ process FORMAT_TAXONOMY {
     path( "*assignTaxonomy.fna*" ), emit: assigntax
     path( "*addSpecies.fna*")     , emit: addspecies
     path( "ref_taxonomy.*.txt")   , emit: ref_tax_info
-    path "versions.yml"           , emit: versions
+    path "versions.yml"           , emit: versions_format_taxonomy, topic: versions
 
     script:
     """

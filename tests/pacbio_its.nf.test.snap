@@ -56,7 +56,7 @@
                     "Biostrings": "2.58.0"
                 },
                 "FORMAT_TAXONOMY_SINTAX": {
-                    "bash": "5.0.17(1)-release",
+                    "bash": "5.0.16(1)-release",
                     "sed": 4.7
                 },
                 "FORMAT_TAXRESULTS_SINTAX": {

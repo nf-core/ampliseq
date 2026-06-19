@@ -157,7 +157,7 @@ workflow DADA2_PREPROCESSING {
 
     //group logs by sequencing run and region
     //for 'groupTuple', 'size' or 'groupKey' should be used but to produce it we need to know how many elements to group but some can be lost here, so no way knowing before
-    ch_filt_logs = 
+    ch_filt_logs =
         ch_dada2_filtntrim_logs_passed
             .map {
                 info, reads ->

@@ -32,7 +32,7 @@ workflow DADA2_TAXONOMY_WF {
 
     //cut taxonomy to expected amplicon
     if (params.cut_dada_ref_taxonomy) {
-        ch_assigntax = 
+        ch_assigntax =
             ch_assigntax
                 .map {
                     db ->

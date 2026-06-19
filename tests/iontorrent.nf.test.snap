@@ -52,6 +52,7 @@
                     "fastqc": "0.12.1"
                 },
                 "FORMAT_TAXONOMY_SINTAX": {
+                    "bash": "5.0.17(1)-release",
                     "sed": 4.7
                 },
                 "FORMAT_TAXRESULTS_SINTAX": {
@@ -65,7 +66,7 @@
                     "phyloseq": "1.50.0"
                 },
                 "RENAME_RAW_DATA_FILES": {
-                    "sed": 4.7
+                    "bash": "5.0.17(1)-release"
                 },
                 "TREESUMMARIZEDEXPERIMENT": {
                     "R": "4.3.2",

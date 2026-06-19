@@ -108,6 +108,7 @@
                     "pandas": "1.1.5"
                 },
                 "FORMAT_TAXONOMY": {
+                    "bash": "5.0.17(1)-release",
                     "sed": 4.7
                 },
                 "FORMAT_TAXONOMY_QIIME": {
@@ -227,7 +228,7 @@
                     "qiime2": "2026.4.0"
                 },
                 "RENAME_RAW_DATA_FILES": {
-                    "sed": 4.7
+                    "bash": "5.0.17(1)-release"
                 },
                 "SBDIEXPORT": {
                     "R": "3.6.3"

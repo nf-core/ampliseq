@@ -32,6 +32,7 @@
                     "sed": 4.7
                 },
                 "FORMAT_TAXONOMY": {
+                    "bash": "5.0.17(1)-release",
                     "sed": 4.7
                 },
                 "Workflow": {

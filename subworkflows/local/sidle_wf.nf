@@ -54,32 +54,30 @@ workflow SIDLE_WF {
 
     SIDLE_ALIGN ( SIDLE_DBEXTRACT.out.kmers.join(SIDLE_TRIM.out.seq).dump(tag: 'into_SIDLE_ALIGN') )
 
-    SIDLE_DBEXTRACT.out.kmer_map
-        .join(SIDLE_ALIGN.out.aligned_map)
-        .toSortedList( { a, b -> a[0].region <=> b[0].region } )
-        .flatMap()
-        .multiMap { meta, kmer_map, aligned_map ->
-            region: meta.region
-            kmer_map: kmer_map
-            aligned_map: aligned_map
-        }
-        .set { ch_db_reconstruction }
+    ch_db_reconstruction =
+        SIDLE_DBEXTRACT.out.kmer_map
+            .join(SIDLE_ALIGN.out.aligned_map)
+            .toSortedList( { a, b -> a[0].region <=> b[0].region } )
+            .flatMap()
+            .multiMap { meta, kmer_map, aligned_map ->
+                region: meta.region
+                kmer_map: kmer_map
+                aligned_map: aligned_map }
 
     SIDLE_DBRECON (
         ch_db_reconstruction.region.collect(),
         ch_db_reconstruction.kmer_map.collect(),
         ch_db_reconstruction.aligned_map.collect() )
 
-    SIDLE_TRIM.out.table
-        .join(SIDLE_ALIGN.out.aligned_map)
-        .toSortedList( { a, b -> a[0].region <=> b[0].region } )
-        .flatMap()
-        .multiMap { meta, table, aligned_map ->
-            region: meta.region
-            table: table
-            aligned_map: aligned_map
-        }
-        .set { ch_table_reconstruction }
+    ch_table_reconstruction =
+        SIDLE_TRIM.out.table
+            .join(SIDLE_ALIGN.out.aligned_map)
+            .toSortedList( { a, b -> a[0].region <=> b[0].region } )
+            .flatMap()
+            .multiMap { meta, table, aligned_map ->
+                region: meta.region
+                table: table
+                aligned_map: aligned_map }
 
     // Abundance table
     SIDLE_TABLERECON (

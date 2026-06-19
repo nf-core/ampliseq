@@ -15,12 +15,12 @@ workflow KRAKEN2_TAXONOMY_WF {
 
     main:
     // format taxonomy file
-    ch_kraken2_ref_taxonomy
-        .branch { it ->
-            tar: it.isFile() && ( it.getName().endsWith(".tar.gz") || it.getName().endsWith (".tgz") )
-            dir: it.isDirectory()
-            failed: true
-        }.set { ch_kraken2_ref_taxonomy }
+    ch_kraken2_ref_taxonomy =
+        ch_kraken2_ref_taxonomy
+            .branch { it ->
+                tar: it.isFile() && ( it.getName().endsWith(".tar.gz") || it.getName().endsWith (".tgz") )
+                dir: it.isDirectory()
+                failed: true }
     ch_kraken2_ref_taxonomy.failed.subscribe { it -> error "$it is neither a directory nor a file that ends in '.tar.gz' or '.tgz'. Please review input." }
 
     UNTAR (
@@ -34,14 +34,14 @@ workflow KRAKEN2_TAXONOMY_WF {
     ch_kraken2db = ch_kraken2db.mix(ch_kraken2_ref_taxonomy.dir)
 
     // search taxonomy database with kraken2
-    ch_fasta
-        .map {
-            fasta ->
-                def meta = [:]
-                meta.id = "ASV_tax.${val_kraken2_ref_taxonomy}"
-                meta.single_end = true
-                [ meta, fasta ] }
-        .set { ch_fasta_kraken2 }
+    ch_fasta_kraken2 =
+        ch_fasta
+            .map {
+                fasta ->
+                    def meta = [:]
+                    meta.id = "ASV_tax.${val_kraken2_ref_taxonomy}"
+                    meta.single_end = true
+                    [ meta, fasta ] }
     KRAKEN2_KRAKEN2( ch_fasta_kraken2, ch_kraken2db, false, true )
 
     // convert kraken2 output to ASV taxonomy table

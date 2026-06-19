@@ -19,12 +19,12 @@ workflow QIIME2_PREPTAX {
     if (params.qiime_ref_tax_custom) {
         // Handle case where we have been provided a pair of filepaths.
         if ("${params.qiime_ref_tax_custom}".contains(",")) {
-            ch_qiime_ref_taxonomy.flatten()
-                .branch { it ->
-                    compressed: it.isFile() && it.getName().endsWith(".gz")
-                    decompressed: it.isFile() && ( it.getName().endsWith(".fna") || it.getName().endsWith(".tax") )
-                    failed: true
-                }.set { ch_qiime_ref_tax_branched }
+            ch_qiime_ref_tax_branched =
+                ch_qiime_ref_taxonomy.flatten()
+                    .branch { it ->
+                        compressed: it.isFile() && it.getName().endsWith(".gz")
+                        decompressed: it.isFile() && ( it.getName().endsWith(".fna") || it.getName().endsWith(".tax") )
+                        failed: true }
             ch_qiime_ref_tax_branched.failed.subscribe { it -> error "$it is neither a compressed (ends with `.gz`) or decompressed sequence (ends with `.fna`) or taxonomy file (ends with `.tax`). Please review input." }
 
             PIGZ_UNCOMPRESS(ch_qiime_ref_tax_branched.compressed.map{ it -> [[:], it] })
@@ -42,12 +42,12 @@ workflow QIIME2_PREPTAX {
             ch_ref_database = ch_ref_database_fna.combine(ch_ref_database_tax)
         // Handle case we have been provided a single filepath (tarball or directory).
         } else {
-            ch_qiime_ref_taxonomy.flatten()
-                .branch { it ->
-                    tar: it.isFile() && ( it.getName().endsWith(".tar.gz") || it.getName().endsWith (".tgz") )
-                    dir: it.isDirectory()
-                    failed: true
-                }.set { ch_qiime_ref_tax_branched }
+            ch_qiime_ref_tax_branched =
+                ch_qiime_ref_taxonomy.flatten()
+                    .branch { it ->
+                        tar: it.isFile() && ( it.getName().endsWith(".tar.gz") || it.getName().endsWith (".tgz") )
+                        dir: it.isDirectory()
+                        failed: true }
             ch_qiime_ref_tax_branched.failed.subscribe { it -> error "$it is neither a directory nor a file that ends in '.tar.gz' or '.tgz'. Please review input." }
 
             UNTAR (
@@ -80,14 +80,14 @@ workflow QIIME2_PREPTAX {
         ch_ref_database = FORMAT_TAXONOMY_QIIME.out.fasta.combine(FORMAT_TAXONOMY_QIIME.out.tax)
     }
 
-    ch_ref_database
-        .map {
-            db ->
-                def meta = [:]
-                meta.FW_primer = FW_primer
-                meta.RV_primer = RV_primer
-                [ meta, db ] }
-        .set { ch_ref_database }
+    ch_ref_database =
+        ch_ref_database
+            .map {
+                db ->
+                    def meta = [:]
+                    meta.FW_primer = FW_primer
+                    meta.RV_primer = RV_primer
+                    [ meta, db ] }
 
     QIIME2_EXTRACT ( ch_ref_database )
     QIIME2_TRAIN ( QIIME2_EXTRACT.out.qza )

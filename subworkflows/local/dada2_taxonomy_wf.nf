@@ -32,19 +32,19 @@ workflow DADA2_TAXONOMY_WF {
 
     //cut taxonomy to expected amplicon
     if (params.cut_dada_ref_taxonomy) {
-        ch_assigntax
-            .map {
-                db ->
-                    def meta = [:]
-                    meta.single_end = true
-                    meta.id = "assignTaxonomy"
-                    meta.fw_primer = params.FW_primer
-                    meta.rv_primer_revcomp = makeComplement ( "${params.RV_primer}".reverse() )
-                    [ meta, db ] }
-            .set { ch_assigntax }
-        CUTADAPT_TAXONOMY ( ch_assigntax ).reads
-            .map { _meta, db -> db }
-            .set { ch_assigntax }
+        ch_assigntax = 
+            ch_assigntax
+                .map {
+                    db ->
+                        def meta = [:]
+                        meta.single_end = true
+                        meta.id = "assignTaxonomy"
+                        meta.fw_primer = params.FW_primer
+                        meta.rv_primer_revcomp = makeComplement ( "${params.RV_primer}".reverse() )
+                        [ meta, db ] }
+        ch_assigntax =
+            CUTADAPT_TAXONOMY ( ch_assigntax ).reads
+                .map { _meta, db -> db }
     }
 
     //set file name prefix
@@ -55,17 +55,13 @@ workflow DADA2_TAXONOMY_WF {
     }
 
     //split sequences into chunks
-    ch_fasta
-        .splitFasta( by: val_dada_assign_chunksize, file: true )
-        .set { ch_fasta_chunks }
+    ch_fasta_chunks = ch_fasta.splitFasta( by: val_dada_assign_chunksize, file: true )
 
     //DADA2 assignTaxonomy
     DADA2_TAXONOMY ( ch_fasta_chunks, ch_assigntax.collect(), ".${ASV_tax_name}.${val_dada_ref_taxonomy}", taxlevels )
 
     // collect all DADA2_TAXONOMY.out.tsv into one file
-    DADA2_TAXONOMY.out.tsv
-        .collectFile(name: ASV_tax_name+".${val_dada_ref_taxonomy}.tsv", newLine: false, cache: true, keepHeader: true, skip: 1, sort: true)
-        .set { ch_dada2_taxonomy_tsv }
+    ch_dada2_taxonomy_tsv = DADA2_TAXONOMY.out.tsv.collectFile(name: ASV_tax_name+".${val_dada_ref_taxonomy}.tsv", newLine: false, cache: true, keepHeader: true, skip: 1, sort: true)
     ch_dada2_taxonomy_tsv.subscribe{ it -> file(it).copyTo("${params.outdir}/dada2") }
 
     if (params.cut_its != "none") {
@@ -77,9 +73,7 @@ workflow DADA2_TAXONOMY_WF {
         DADA2_ADDSPECIES ( DADA2_TAXONOMY.out.rds, ch_addspecies.collect(), taxlevels )
 
         // collect all DADA2_ADDSPECIES.out.tsv into one file
-        DADA2_ADDSPECIES.out.tsv
-            .collectFile(name: ASV_tax_name+"_species.${val_dada_ref_taxonomy}.tsv", newLine: false, cache: true, keepHeader: true, skip: 1, sort: true)
-            .set { ch_dada2_addspecies_tsv }
+        ch_dada2_addspecies_tsv = DADA2_ADDSPECIES.out.tsv.collectFile(name: ASV_tax_name+"_species.${val_dada_ref_taxonomy}.tsv", newLine: false, cache: true, keepHeader: true, skip: 1, sort: true)
         ch_dada2_addspecies_tsv.subscribe{ it -> file(it).copyTo("${params.outdir}/dada2") }
 
         if (params.cut_its == "none") {
@@ -106,13 +100,13 @@ workflow DADA2_TAXONOMY_WF {
             ASV_SH_name = "ASV_tax_SH"
         }
         //find SHs
-        ch_fasta
-            .map {
-                fasta ->
-                    def meta = [:]
-                    meta.id = ASV_tax_name + ".vsearch"
-                    [ meta, fasta ] }
-            .set { ch_fasta_map }
+        ch_fasta_map =
+            ch_fasta
+                .map {
+                    fasta ->
+                        def meta = [:]
+                        meta.id = ASV_tax_name + ".vsearch"
+                        [ meta, fasta ] }
         VSEARCH_USEARCHGLOBAL( ch_fasta_map, ch_assigntax, vsearch_cutoff, 'blast6out', "" )
         ASSIGNSH( ch_dada2_tax1, ch_shinfo.collect(), VSEARCH_USEARCHGLOBAL.out.txt, ASV_SH_name + ".${val_dada_ref_taxonomy}.tsv")
         ch_dada2_tax = ASSIGNSH.out.tsv

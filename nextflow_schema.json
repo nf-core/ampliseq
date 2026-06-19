@@ -450,12 +450,13 @@
             "properties": {
                 "dada_ref_taxonomy": {
                     "type": "string",
-                    "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `silva=138`) . This will download the desired database, format it to produce a file that is compatible with DADA2's assignTaxonomy and another file that is compatible with DADA2's addSpecies.\n\nThe following databases are supported:\n- GTDB - Genome Taxonomy Database - 16S rRNA\n- SBDI-GTDB, a Sativa-vetted version of the GTDB 16S rRNA\n- PR2 - Protist Reference Ribosomal Database - 18S rRNA\n- RDP - Ribosomal Database Project - 16S rRNA\n- SILVA ribosomal RNA gene database project - 16S rRNA\n- UNITE - eukaryotic nuclear ribosomal ITS region - ITS\n- COIDB - eukaryotic Cytochrome Oxidase I (COI) from The Barcode of Life Data System (BOLD) - COI\n\nGenerally, using `gtdb`, `pr2`, `rdp`, `sbdi-gtdb`, `silva`, `coidb`, `unite-fungi`, or `unite-alleuk` will select the most recent supported version.\n\nPlease note that commercial/non-academic entities [require licensing](https://www.arb-silva.de/silva-license-information) for SILVA v132 database (non-default) but not from v138 on (default).",
+                    "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `silva=138`) . This will download the desired database, format it to produce a file that is compatible with DADA2's assignTaxonomy and another file that is compatible with DADA2's addSpecies.\n\nThe following databases are supported:\n- GTDB - Genome Taxonomy Database - 16S rRNA\n- SBDI-GTDB, a Sativa-vetted version of the GTDB 16S rRNA\n- PR2 - Protist Reference Ribosomal Database - 18S rRNA\n- RDP - Ribosomal Database Project - 16S rRNA\n- SILVA ribosomal RNA gene database project - 16S rRNA\n- UNITE - eukaryotic nuclear ribosomal ITS region - ITS\n- COIDB - eukaryotic Cytochrome Oxidase I (COI) from The Barcode of Life Data System (BOLD) - COI\n- GloSED - Global Standardised Soil Eukaryome Dataset - fungal ITS (Note: SH support not available)\n\nGenerally, using `gtdb`, `pr2`, `rdp`, `sbdi-gtdb`, `silva`, `coidb`, `unite-fungi`, or `unite-alleuk` will select the most recent supported version.\n\nPlease note that commercial/non-academic entities [require licensing](https://www.arb-silva.de/silva-license-information) for SILVA v132 database (non-default) but not from v138 on (default).",
                     "description": "Name of supported database, and optionally also version number",
                     "default": "silva=138.2",
                     "enum": [
                         "coidb",
                         "coidb=221216",
+                        "glosed",
                         "greengenes2",
                         "greengenes2=2024.09",
                         "gtdb",
@@ -671,7 +672,8 @@
                 },
                 "addsh": {
                     "type": "boolean",
-                    "description": "If ASVs should be assigned to UNITE species hypotheses (SHs). Only relevant for ITS data."
+                    "description": "If ASVs should be assigned to UNITE species hypotheses (SHs). Only relevant for ITS data.",
+                    "help_text": "Requires a DADA2 reference database with precomputed SH lookup files. Currently supported for UNITE reference databases. Not currently supported for `--dada_ref_taxonomy glosed`."
                 },
                 "cut_its": {
                     "type": "string",

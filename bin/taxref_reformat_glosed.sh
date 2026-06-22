@@ -43,22 +43,34 @@ NR==1 {
     k = $kingdom; p = $phylum; c = $classcol; o = $ordercol; f = $family; g = $genus; s = $species
     gsub(/ /, "_", k); gsub(/ /, "_", p); gsub(/ /, "_", c); gsub(/ /, "_", o); gsub(/ /, "_", f); gsub(/ /, "_", g); gsub(/ /, "_", s)
 
-    # DADA2 expects a consistent number of taxonomy ranks per reference header.
-    if (k == "." || k == "") k = "NA"
-    if (p == "." || p == "") p = "NA"
-    if (c == "." || c == "") c = "NA"
-    if (o == "." || o == "") o = "NA"
-    if (f == "." || f == "") f = "NA"
-    if (g == "." || g == "") g = "NA"
-    if (s == "." || s == "") s = "NA"
-    tax = k ";" p ";" c ";" o ";" f ";" g ";" s
-
+    tax = ""
+    if (k != "." && k != "") {
+        tax = k ";"
+        if (p != "." && p != "") {
+            tax = tax p ";"
+            if (c != "." && c != "") {
+                tax = tax c ";"
+                if (o != "." && o != "") {
+                    tax = tax o ";"
+                    if (f != "." && f != "") {
+                        tax = tax f ";"
+                        if (g != "." && g != "") {
+                            tax = tax g ";"
+                            if (s != "." && s != "") {
+                                tax = tax s ";"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     print id, tax, g, s
 }
 ' "$TAX_TSV" > "$META_TSV"
 
 gzip -dc "$SEQ_GZ" | awk -F '\t' 'NR==FNR { tax[$1] = $2; next }
-/^>/ { id = substr($0,2); if (id in tax && tax[id] != "") print ">" id " " tax[id]; else print ">" id; next }
+/^>/ { id = substr($0,2); if (id in tax && tax[id] != "") print ">" tax[id]; else print ">" id; next }
 { print }
 ' "$META_TSV" - > assignTaxonomy.fna
 

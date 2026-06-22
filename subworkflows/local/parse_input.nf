@@ -18,35 +18,35 @@ workflow PARSE_INPUT {
     error_message += "In any case, please consult the pipeline documentation.\n"
     if ( single_end ) {
         //Get files - single end
-        channel
-            .fromPath( input + folders + extension )
-            .ifEmpty { error("${error_message}") }
-            .map { read ->
-                    def meta = [:]
-                    meta.sample           = read.baseName.toString().indexOf("_") != -1 ? read.baseName.toString().take(read.baseName.toString().indexOf("_")) : read.baseName
-                    meta.single_end   = single_end.toBoolean()
-                    meta.run          = multiple_sequencing_runs ? read.take(read.findLastIndexOf{"/"})[-1] : "1"
-                    [ meta, read ] }
-            .set { ch_reads }
+        ch_reads =
+            channel
+                .fromPath( input + folders + extension )
+                .ifEmpty { error("${error_message}") }
+                .map { read ->
+                        def meta = [:]
+                        meta.sample           = read.baseName.toString().indexOf("_") != -1 ? read.baseName.toString().take(read.baseName.toString().indexOf("_")) : read.baseName
+                        meta.single_end   = single_end.toBoolean()
+                        meta.run          = multiple_sequencing_runs ? read.take(read.findLastIndexOf{"/"})[-1] : "1"
+                        [ meta, read ] }
     } else {
         //Get files - paired end
-        channel
-            .fromFilePairs( input + folders + extension, size: 2 )
-            .ifEmpty { error("${error_message}") }
-            .map { name, reads ->
-                    def meta = [:]
-                    meta.sample           = name.toString().indexOf("_") != -1 ? name.toString().take(name.toString().indexOf("_")) : name
-                    meta.single_end   = single_end.toBoolean()
-                    meta.run          = multiple_sequencing_runs ? reads[0].take(reads[0].findLastIndexOf{"/"})[-1] : "1"
-                    [ meta, reads ] }
-            .set { ch_reads }
+        ch_reads
+            channel
+                .fromFilePairs( input + folders + extension, size: 2 )
+                .ifEmpty { error("${error_message}") }
+                .map { name, reads ->
+                        def meta = [:]
+                        meta.sample           = name.toString().indexOf("_") != -1 ? name.toString().take(name.toString().indexOf("_")) : name
+                        meta.single_end   = single_end.toBoolean()
+                        meta.run          = multiple_sequencing_runs ? reads[0].take(reads[0].findLastIndexOf{"/"})[-1] : "1"
+                        [ meta, reads ] }
     }
     if (multiple_sequencing_runs) {
         //Get folder information
-        ch_reads
-            .flatMap { meta, _reads -> [ meta.run ] }
-            .unique()
-            .set { ch_folders }
+        ch_folders =
+            ch_reads
+                .flatMap { meta, _reads -> [ meta.run ] }
+                .unique()
         //Report folders with sequencing files
         ch_folders
             .collect()

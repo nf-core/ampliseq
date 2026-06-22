@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
+- [#1019](https://github.com/nf-core/ampliseq/pull/1019) - Improve channel assignment & improve some version reporting (by @d4straub)
+
 ### `Dependencies`
 
 ### `Removed`

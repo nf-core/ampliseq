@@ -212,7 +212,7 @@ workflow AMPLISEQ {
                         min_bitscore: it.min_bitscore
                     ],
                     data: [
-                        alignmethod:    it.alignmethod  ? it.alignmethod                             : 'clustalo',
+                        alignmethod:    it.alignmethod  ?: 'clustalo',
                         hmm:            file(it.hmm,  checkIfExists: true),
                         extract_hmm:    it.extract_hmm,
                         refseqfile:     it.refseqfile   ? file(it.refseqfile,   checkIfExists: true) : [],
@@ -229,40 +229,39 @@ workflow AMPLISEQ {
     //
     if ( params.multiregion ) {
         // is multiple region analysis
-        ch_input_reads
-            .combine( channel.fromList(samplesheetToList(params.multiregion, "${projectDir}/assets/schema_multiregion.json")) )
-            .map{ info, reads, multi ->
-                def meta = info + multi
-                return [ meta, reads ] }
-            .map{ info, reads ->
-                def meta = info +
-                    [id: info.sample+"_"+info.fw_primer+"_"+info.rv_primer] +
-                    [fw_primer_revcomp: makeComplement(info.fw_primer.reverse())] +
-                    [rv_primer_revcomp: makeComplement(info.rv_primer.reverse())]
-                return [ meta, reads ] }
-            .set { ch_input_reads }
+        ch_input_reads =
+            ch_input_reads
+                .combine( channel.fromList(samplesheetToList(params.multiregion, "${projectDir}/assets/schema_multiregion.json")) )
+                .map{ info, reads, multi ->
+                    def meta = info + multi
+                    return [ meta, reads ] }
+                .map{ info, reads ->
+                    def meta = info +
+                        [id: info.sample+"_"+info.fw_primer+"_"+info.rv_primer] +
+                        [fw_primer_revcomp: makeComplement(info.fw_primer.reverse())] +
+                        [rv_primer_revcomp: makeComplement(info.rv_primer.reverse())]
+                    return [ meta, reads ] }
     } else {
         // is single region
-        ch_input_reads
-            .map{ info, reads ->
-                def meta = info +
-                    [region: null, region_length: null] +
-                    [fw_primer: params.FW_primer, rv_primer: params.RV_primer] +
-                    [id: info.sample] +
-                    [fw_primer_revcomp: params.FW_primer ? makeComplement(params.FW_primer.reverse()) : null] +
-                    [rv_primer_revcomp: params.RV_primer ? makeComplement(params.RV_primer.reverse()) : null]
-                return [ meta, reads ] }
-            .set { ch_input_reads }
+        ch_input_reads =
+            ch_input_reads
+                .map{ info, reads ->
+                    def meta = info +
+                        [region: null, region_length: null] +
+                        [fw_primer: params.FW_primer, rv_primer: params.RV_primer] +
+                        [id: info.sample] +
+                        [fw_primer_revcomp: params.FW_primer ? makeComplement(params.FW_primer.reverse()) : null] +
+                        [rv_primer_revcomp: params.RV_primer ? makeComplement(params.RV_primer.reverse()) : null]
+                    return [ meta, reads ] }
     }
 
     //Filter empty files
-    ch_input_reads.dump(tag:'ch_input_reads')
-        .branch { it ->
-            failed: it[0].single_end ? it[1].countFastq() < params.min_read_counts : it[1][0].countFastq() < params.min_read_counts || it[1][1].countFastq() < params.min_read_counts
-            passed: true
-        }
-        .set { ch_reads_result }
-    ch_reads_result.passed.set { ch_reads }
+    ch_reads_result =
+        ch_input_reads.dump(tag:'ch_input_reads')
+            .branch { it ->
+                failed: it[0].single_end ? it[1].countFastq() < params.min_read_counts : it[1][0].countFastq() < params.min_read_counts || it[1][1].countFastq() < params.min_read_counts
+                passed: true }
+    ch_reads = ch_reads_result.passed
     ch_reads_result.failed
         .map { meta, _reads -> [ meta.id ] }
         .collect()
@@ -277,20 +276,19 @@ workflow AMPLISEQ {
     ch_reads.dump(tag: 'ch_reads')
 
     // Extract decontamination information
-    ch_reads // dont use 'storeDir: "${params.outdir}/decontam"' that seems to mess with the cache!
-        .collectFile(keepHeader: true, skip: 1, sort: true, cache: true){ meta, _reads ->
-            meta.control && meta.quant_reading ? ["decontam_metadata.tsv", "sample\tcontrol\tquant_reading\trun\n${meta.sample}\t${meta.control}\t${meta.quant_reading}\t${meta.run}\n"] :
-            meta.control ? ["decontam_metadata.tsv", "sample\tcontrol\trun\n${meta.sample}\t${meta.control}\t${meta.run}\n"] :
-            meta.quant_reading ? ["decontam_metadata.tsv", "sample\tquant_reading\trun\n${meta.sample}\t${meta.quant_reading}\t${meta.run}\n"] :
-                ["decontam_metadata.tsv", "empty\n"]
-            }
-        .filter { it -> it.countLines() > 1 } // only output decontam metadata if thats actually present
-        .set { ch_decontam_metadata }
-    ch_reads
-        .map { info, reads ->
-            def meta = info.subMap( info.keySet() - 'control' - 'quant_reading' ) // remove decontam metadata because it isnt needed any more
-            return [ meta, reads ] }
-        .set { ch_reads }
+    ch_decontam_metadata =
+        ch_reads // dont use 'storeDir: "${params.outdir}/decontam"' that seems to mess with the cache!
+            .collectFile(keepHeader: true, skip: 1, sort: true, cache: true){ meta, _reads ->
+                meta.control && meta.quant_reading ? ["decontam_metadata.tsv", "sample\tcontrol\tquant_reading\trun\n${meta.sample}\t${meta.control}\t${meta.quant_reading}\t${meta.run}\n"] :
+                meta.control ? ["decontam_metadata.tsv", "sample\tcontrol\trun\n${meta.sample}\t${meta.control}\t${meta.run}\n"] :
+                meta.quant_reading ? ["decontam_metadata.tsv", "sample\tquant_reading\trun\n${meta.sample}\t${meta.quant_reading}\t${meta.run}\n"] :
+                    ["decontam_metadata.tsv", "empty\n"] }
+            .filter { it -> it.countLines() > 1 } // only output decontam metadata if thats actually present
+    ch_reads =
+        ch_reads
+            .map { info, reads ->
+                def meta = info.subMap( info.keySet() - 'control' - 'quant_reading' ) // remove decontam metadata because it isnt needed any more
+                return [ meta, reads ] }
 
     //
     // REFERENCE TAXONOMY DATABASES
@@ -303,10 +301,10 @@ workflow AMPLISEQ {
 
     if (params.sidle_ref_tax_custom) {
         //custom ref taxonomy input from params.sidle_ref_tax_custom & params.sidle_ref_seq_custom & [optionally] params.sidle_ref_aln_custom
-        channel.fromPath("${params.sidle_ref_tax_custom}", checkIfExists: true)
-            .combine( channel.fromPath("${params.sidle_ref_seq_custom}", checkIfExists: true) )
-            .combine( params.sidle_ref_aln_custom ? channel.fromPath("${params.sidle_ref_aln_custom}", checkIfExists: true) : channel.of("EMPTY") )
-            .set{ ch_sidle_ref_taxonomy }
+        ch_sidle_ref_taxonomy =
+            channel.fromPath("${params.sidle_ref_tax_custom}", checkIfExists: true)
+                .combine( channel.fromPath("${params.sidle_ref_seq_custom}", checkIfExists: true) )
+                .combine( params.sidle_ref_aln_custom ? channel.fromPath("${params.sidle_ref_aln_custom}", checkIfExists: true) : channel.of("EMPTY") )
         ch_sidle_ref_taxonomy_tree = params.sidle_ref_tree_custom ? channel.fromPath("${params.sidle_ref_tree_custom}", checkIfExists: true) : channel.empty()
         val_sidle_ref_taxonomy = "user"
     } else if (params.sidle_ref_taxonomy) {
@@ -364,7 +362,7 @@ workflow AMPLISEQ {
                             min_bitscore: it.min_bitscore ? it.min_bitscore : 0
                         ],
                         data: [
-                            alignmethod:    it.alignmethod  ? it.alignmethod                             : 'clustalo',
+                            alignmethod:    it.alignmethod  ?: 'clustalo',
                             hmm:            file(it.hmm,  checkIfExists: true),
                             extract_hmm:    it.extract_hmm,
                             refseqfile:     it.refseqfile   ? file(it.refseqfile,   checkIfExists: true) : [],
@@ -492,11 +490,12 @@ workflow AMPLISEQ {
     // MODULE: Cutadapt
     //
     if (!params.skip_cutadapt) {
-        CUTADAPT_WORKFLOW (
-            RENAME_RAW_DATA_FILES.out.fastq,
-            params.illumina_pe_its,
-            params.double_primer
-        ).reads.set { ch_trimmed_reads }
+        ch_trimmed_reads =
+            CUTADAPT_WORKFLOW (
+                RENAME_RAW_DATA_FILES.out.fastq,
+                params.illumina_pe_its,
+                params.double_primer
+            ).reads
         ch_multiqc_files = ch_multiqc_files.mix(CUTADAPT_WORKFLOW.out.logs.collect{ it -> it[1] })
     } else {
         ch_trimmed_reads = RENAME_RAW_DATA_FILES.out.fastq
@@ -505,13 +504,14 @@ workflow AMPLISEQ {
     //
     // SUBWORKFLOW: Read preprocessing & QC plotting with DADA2
     //
-    DADA2_PREPROCESSING (
-        ch_trimmed_reads,
-        single_end,
-        find_truncation_values,
-        trunclenf,
-        trunclenr
-    ).reads.set { ch_filt_reads }
+    ch_filt_reads =
+        DADA2_PREPROCESSING (
+            ch_trimmed_reads,
+            single_end,
+            find_truncation_values,
+            trunclenf,
+            trunclenr
+        ).reads
 
     //
     // MODULES: ASV generation with DADA2
@@ -522,18 +522,16 @@ workflow AMPLISEQ {
     ch_errormodel = DADA2_ERR.out.errormodel
 
     //group by meta
-    ch_filt_reads
-        .join( ch_errormodel )
-        .set { ch_derep_errormodel }
+    ch_derep_errormodel = ch_filt_reads.join( ch_errormodel )
     DADA2_DENOISING ( ch_derep_errormodel.dump(tag: 'into_denoising')  )
     DADA2_RMCHIMERA ( DADA2_DENOISING.out.seqtab )
 
     //group by sequencing run & group by meta
-    DADA2_PREPROCESSING.out.logs
-        .join( DADA2_DENOISING.out.denoised )
-        .join( DADA2_DENOISING.out.mergers )
-        .join( DADA2_RMCHIMERA.out.rds )
-        .set { ch_track_numbers }
+    ch_track_numbers =
+        DADA2_PREPROCESSING.out.logs
+            .join( DADA2_DENOISING.out.denoised )
+            .join( DADA2_DENOISING.out.mergers )
+            .join( DADA2_RMCHIMERA.out.rds )
     DADA2_STATS ( ch_track_numbers )
 
     //merge if several runs, otherwise just publish
@@ -737,15 +735,16 @@ workflow AMPLISEQ {
             ch_dada_assigntax = FORMAT_TAXONOMY.out.assigntax
             ch_dada_addspecies = FORMAT_TAXONOMY.out.addspecies
         }
-        DADA2_TAXONOMY_WF (
-            ch_dada_assigntax,
-            ch_dada_addspecies,
-            val_dada_ref_taxonomy,
-            ch_fasta,
-            ch_full_fasta,
-            val_dada_taxlevels,
-            params.dada_assign_chunksize
-        ).tax.set { ch_dada2_tax }
+        ch_dada2_tax =
+            DADA2_TAXONOMY_WF (
+                ch_dada_assigntax,
+                ch_dada_addspecies,
+                val_dada_ref_taxonomy,
+                ch_fasta,
+                ch_full_fasta,
+                val_dada_taxlevels,
+                params.dada_assign_chunksize
+            ).tax
         ch_tax_for_robject = ch_tax_for_robject.mix ( ch_dada2_tax.map { it -> [ "dada2", file(it) ] } )
     } else {
         ch_dada2_tax = channel.empty()
@@ -753,12 +752,13 @@ workflow AMPLISEQ {
 
     //Kraken2
     if (!params.skip_taxonomy && (params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom) ) {
-        KRAKEN2_TAXONOMY_WF (
-            ch_kraken2_ref_taxonomy,
-            val_kraken2_ref_taxonomy,
-            ch_fasta,
-            val_kraken2_taxlevels
-        ).qiime2_tsv.set { ch_kraken2_tax }
+        ch_kraken2_tax =
+            KRAKEN2_TAXONOMY_WF (
+                ch_kraken2_ref_taxonomy,
+                val_kraken2_ref_taxonomy,
+                ch_fasta,
+                val_kraken2_taxlevels
+            ).qiime2_tsv
         ch_tax_for_robject = ch_tax_for_robject.mix ( ch_kraken2_tax.map { it -> [ "kraken2", file(it) ] } )
     } else {
         ch_kraken2_tax = channel.empty()
@@ -766,13 +766,14 @@ workflow AMPLISEQ {
 
     // SINTAX
     if (!params.skip_taxonomy && (params.sintax_ref_taxonomy || params.sintax_ref_tax_custom)) {
-        SINTAX_TAXONOMY_WF (
-            ch_sintax_ref_taxonomy.collect(),
-            val_sintax_ref_taxonomy,
-            ch_fasta,
-            ch_full_fasta,
-            val_sintax_taxlevels
-        ).tax.set { ch_sintax_tax }
+        ch_sintax_tax =
+            SINTAX_TAXONOMY_WF (
+                ch_sintax_ref_taxonomy.collect(),
+                val_sintax_ref_taxonomy,
+                ch_fasta,
+                ch_full_fasta,
+                val_sintax_taxlevels
+            ).tax
         ch_tax_for_robject = ch_tax_for_robject.mix ( ch_sintax_tax.map { it -> [ "sintax", file(it) ] } )
     } else {
         ch_sintax_tax = channel.empty()
@@ -830,10 +831,10 @@ workflow AMPLISEQ {
     //
     if ( params.pplace_sheet || params.run_pplace ) {
         // For search entries with a named hmm to extract, call extraction
-        ch_pplace_sheet
-            .filter { it -> it.data.extract_hmm }
-            .map { it -> [ it.meta, it.data.hmm, it.data.extract_hmm ] }
-            .set { ch_hmmextract }
+        ch_hmmextract =
+            ch_pplace_sheet
+                .filter { it -> it.data.extract_hmm }
+                .map { it -> [ it.meta, it.data.hmm, it.data.extract_hmm ] }
 
         HMMER_HMMEXTRACT(ch_hmmextract)
 
@@ -1009,17 +1010,14 @@ workflow AMPLISEQ {
         //Select metadata categories for diversity analysis & ancom
         if (params.metadata_category) {
             ch_metacolumn_all = channel.fromList(params.metadata_category.tokenize(','))
-            METADATA_PAIRWISE ( ch_metadata ).category.set { ch_metacolumn_pairwise }
-            ch_metacolumn_pairwise = ch_metacolumn_pairwise.splitCsv().flatten()
+            ch_metacolumn_pairwise = METADATA_PAIRWISE ( ch_metadata ).category.splitCsv().flatten()
             ch_metacolumn_pairwise = ch_metacolumn_all.join(ch_metacolumn_pairwise)
         } else if (params.ancom || params.ancombc || params.ancombc2 || !params.skip_diversity_indices) {
-            METADATA_ALL ( ch_metadata ).category.set { ch_metacolumn_all }
+            ch_metacolumn_all = METADATA_ALL ( ch_metadata ).category
             //return empty channel if no appropriate column was found
-            ch_metacolumn_all.branch { it -> passed: it != "" }.set { result }
-            ch_metacolumn_all = result.passed
-            ch_metacolumn_all = ch_metacolumn_all.splitCsv().flatten()
-            METADATA_PAIRWISE ( ch_metadata ).category.set { ch_metacolumn_pairwise }
-            ch_metacolumn_pairwise = ch_metacolumn_pairwise.splitCsv().flatten()
+            result = ch_metacolumn_all.branch { it -> passed: it != "" }
+            ch_metacolumn_all = result.passed.splitCsv().flatten()
+            ch_metacolumn_pairwise = METADATA_PAIRWISE ( ch_metadata ).category.splitCsv().flatten()
         } else {
             ch_metacolumn_all = channel.empty()
             ch_metacolumn_pairwise = channel.empty()

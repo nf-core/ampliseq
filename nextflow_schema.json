@@ -966,6 +966,36 @@
                 }
             }
         },
+        "benchmarking": {
+            "title": "Benchmarking",
+            "type": "object",
+            "description": "Settings for benchmarking",
+            "default": "",
+            "properties": {
+                "benchmarking_sequences": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/tsv",
+                    "pattern": "^\\S+\\.(fasta|fas|fna|fa|ffn)$",
+                    "description": "Path to file of expected sequences in fasta format"
+                },
+                "benchmarking_region": {
+                    "type": "string",
+                    "description": "What region of the sequence comparison is evaluated",
+                    "help_text": "`alignment`: only the alignment region is evaluated including mismatches and gaps. `query`: alignment region and terminal gaps to the query sequence, i.e. constructed ASV sequence, are evaluated. `target`: alignment region and terminal gaps to the target sequence, i.e. expected sequence, are evaluated.",
+                    "enum": ["alignment", "query", "target"]
+                },
+                "benchmarking_abundances": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/tsv",
+                    "pattern": "^\\S+\\.(tsv|txt)$",
+                    "description": "Path to file of abundances of expected sequences in tsv format",
+                    "help_text": "Tab-separated table with header. First column is sequence IDs corresponding to the fasta file supplied with `--benchmarking_sequences`. All further columns should have names corresponding to the sample names."
+                }
+            },
+            "fa_icon": "fas fa-book-open"
+        },
         "pipeline_report": {
             "title": "Pipeline summary report",
             "type": "object",
@@ -1285,6 +1315,9 @@
         },
         {
             "$ref": "#/$defs/differential_abundance_analysis"
+        },
+        {
+            "$ref": "#/$defs/benchmarking"
         },
         {
             "$ref": "#/$defs/pipeline_report"

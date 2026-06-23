@@ -1,0 +1,151 @@
+#!/usr/bin/env Rscript
+
+# benchmark_matches.r
+
+# Get params and files from the command line
+args            <- commandArgs(trailingOnly=TRUE)
+blast6outFILE   <- args[1] # expected columns: "query+target+id+alnlen+mism+opens+qilo+qihi+tilo+tihi+ids+gaps+ql+tl+qstrand", see https://torognes.github.io/vsearch/misc/vsearch-userfields.7.html
+detabundFILE    <- args[2] # detabundFILE # calculated sequences*
+expabundFILE    <- args[3] # expabundFILE # expected sequences*
+prefix          <- args[4] # prefix string for output files
+similarity_threshold <- as.numeric(args[5]) # similarity threshold for blast6outFILE
+query_or_target <- args[6] # use mismatches to quary or to target?
+# tab-separated file with header: first column with sequences name, following one or many columns (=samples) with numeric values (=abundance), only presence (>0)/absence are used here
+
+# Input
+if (file.exists(expabundFILE)) {
+	print(paste("Compare file",detabundFILE,"to",expabundFILE))
+} else {
+	print(paste("Compare",detabundFILE,"to all sequences"))
+}
+
+# PREPARE
+
+# Read stuff
+blast6out = read.table( blast6outFILE, header = FALSE, sep = "\t", stringsAsFactors = FALSE, check.names = FALSE, strip.white = TRUE)
+colnames(blast6out) <- c("query","target","pident","alnlen","mismatch","gap_openings","qstart","qend","tstart","tend","ids","gaps","qlen","tlen","qstrand")
+res = read.table( detabundFILE, header = TRUE, sep = "\t", stringsAsFactors = FALSE, check.names = FALSE, strip.white = TRUE, comment.char = "", skip=1 )
+colnames(res)[1] <- "ID"
+if (file.exists(expabundFILE)) {
+	exp = read.table( expabundFILE, header = TRUE, sep = "\t", stringsAsFactors = FALSE, check.names = FALSE, strip.white = TRUE)
+	colnames(exp)[1] <- "ID"
+	print(paste( "Expected sequences to samples:", paste( colnames(exp)[2:ncol(exp)] ,collapse=",")))
+}
+
+# Investigate blast6out, required columns: query,target,qlen,tlen,qstart,qend,tstart,tend,gaps,mismatch
+blast6out$qterminalgaps <- blast6out$qlen - (abs(blast6out$qend-blast6out$qstart)+1)
+blast6out$qmismatch <- blast6out$gaps + blast6out$qterminalgaps + blast6out$mismatch
+blast6out$tterminalgaps <- blast6out$tlen - (abs(blast6out$tend-blast6out$tstart)+1)
+blast6out$tmismatch <- blast6out$gaps + blast6out$tterminalgaps + blast6out$mismatch
+if( query_or_target=="query" ) {
+	blast6out$mismatch_final <- blast6out$qmismatch
+} else if( query_or_target=="target" ) {
+	blast6out$mismatch_final <- blast6out$tmismatch
+} else if( query_or_target=="alignment" ) {
+	blast6out$mismatch_final <- blast6out$gaps + blast6out$mismatch
+} else {
+	stop( paste0(query_or_target,"is not valid (valid: query,target,alignment)") )
+}
+
+# add sample info if available
+if (file.exists(expabundFILE)) {
+	blast6out_target <- blast6out$target[blast6out$target != "*"]
+	if( !all(blast6out_target %in% exp$ID) ) {
+		print(paste("WARN - Some expected sequences in alignment results are not in",expabundFILE,". The following are missing:",paste( unique(blast6out_target[!blast6out_target %in% exp$ID]),collapse=",")))
+	}
+	if( !all(exp$ID %in% blast6out$target) ) {
+		print(paste("WARN - Some expected sequences of",expabundFILE,"are not in the alignment results. The following are missing:",paste( unique(exp$ID[!exp$ID %in% blast6out$target]),collapse=",")))
+	}
+	blast6out <- merge(blast6out,exp, by.x='target', by.y='ID', all.x=TRUE, all.y=TRUE)
+	# swap target and query again
+	blast6out <- blast6out[, c("query", "target", setdiff(names(blast6out), c("target", "query")))]
+}
+
+# order for reproducibility
+blast6out <- blast6out[order(blast6out$query, blast6out$target),]
+
+# write file
+outfile <- paste0(prefix,"_nucleotide-differences.tsv")
+print(paste("write",outfile))
+write.table(blast6out, file = outfile, row.names = FALSE, col.names = TRUE, quote = FALSE, na = '', sep="\t")
+
+# ANALYSE
+
+# select matches above threshold
+matches_above_threshold <- blast6out[blast6out$target !="*",]
+
+# select available samples
+res_samples <- colnames(res)[2:ncol(res)]
+print(paste( "Measured samples:", paste(res_samples,collapse=",")))
+
+for (sample in res_samples) {
+	if( file.exists(expabundFILE) ) {
+		# filter expected sequences in that sample (matches_above_threshold$target) with expected abundances (abundance > 0) of exp$ID
+		if( !sample %in% colnames(matches_above_threshold) ) {
+			print(paste("WARN - Skipping sample",sample,"because it was not found in",expabundFILE,". Found only columns",paste(colnames(matches_above_threshold),collapse=",")))
+		}
+		keep_cols <- c("ID",sample)
+		print(paste("Found",nrow(exp),"expected sequences overall in",expabundFILE))
+		s_exp <- subset(exp, select = keep_cols)
+		s_exp = s_exp[s_exp[,2] > 0,]
+		print(paste("Found",nrow(s_exp),"expected sequences in sample", sample,"in",expabundFILE))
+		s_matches <- matches_above_threshold[matches_above_threshold$target %in% s_exp$ID,]
+		if( nrow(s_matches)==0 ) {
+			print(paste("WARN - Skipping sample",sample,"because found no matches to expected sequences"))
+			next
+		} else {
+			print(paste("Found",length(unique(s_matches$query)),"to be expected sequences of",length(unique(matches_above_threshold$query)),"in sample",sample))
+			print(paste("Found",length(unique(s_matches$target)),"matches of",length(unique(matches_above_threshold$target)),"total in sample",sample))
+		}
+	} else {
+		s_matches <- matches_above_threshold
+	}
+
+	# select best match (sort by mismatches and retain only first unique entry)
+	s_matches <- s_matches[order(s_matches$mismatch_final, as.numeric(s_matches$mismatch_final)), ]
+	s_matches <- s_matches[!duplicated(s_matches$query), ]
+	print(paste("Found",length(unique(s_matches$target)),"best matches of",length(unique(matches_above_threshold$target)),"total in sample",sample))
+
+	# filter for ASVs in that sample
+	keep_cols <- c("ID",sample)
+	s_res <- subset(res, select = keep_cols)
+	# keep only detected in that sample (abundance > 0)
+	s_res = s_res[s_res[,2] > 0,]
+	print(paste("Found",nrow(s_res),"ASVs of",nrow(res),"in sample",sample))
+
+	# filter alignment result by detected
+	s_matches <- s_matches[s_matches$query %in% s_res$ID,]
+	print(paste("Found",nrow(s_matches),"ASVs with match in sample",sample))
+	s_below_threshold <- s_res[!s_res$ID %in% s_matches$query,]
+	print(paste("Found",nrow(s_below_threshold),"ASV without match in sample",sample))
+
+	# make barplot
+	df <- as.data.frame( table(s_matches$mismatch_final) )
+	df <- rbind(df, data.frame(Var1 = paste0(">=",(1-similarity_threshold)*100,"%"), Freq = length(unique(s_below_threshold$ID))))
+	colnames(df) <- c("Mismatches to expected sequences","Number of sequences")
+
+	outfile <- paste(prefix,sample,"nucleotide-distance_barplot.svg",sep="_")
+	print(paste("write",outfile))
+	svg(outfile, height = 4, width = 5)
+	barplot(df[,2],
+		names.arg=df[,1],
+		main=paste("Sample",sample,"with",length(unique(s_res$ID)),"detected sequences\n(",length(unique(s_matches$query)),"sequences above",similarity_threshold*100,"% similarity)"),
+		xlab="Mismatches to expected sequences",
+		ylab="Number of sequences")
+	invisible(dev.off())
+
+	outfile <- paste(prefix,sample,"nucleotide-distance_barplot.png",sep="_")
+	print(paste("write",outfile))
+	png(outfile, height = 400, width = 500)
+	barplot(df[,2],
+		names.arg=df[,1],
+		main=paste("Sample",sample,"with",length(unique(s_res$ID)),"detected sequences\n(",length(unique(s_matches$query)),"sequences above",similarity_threshold*100,"% similarity)"),
+		xlab="Mismatches to expected sequences",
+		ylab="Number of sequences")
+	invisible(dev.off())
+
+	# write file
+	outfile <- paste(prefix,sample,"nucleotide-differences_per-sample.tsv",sep="_")
+	print(paste("write",outfile))
+	write.table(df, file = outfile, row.names = FALSE, col.names = TRUE, quote = FALSE, na = '', sep="\t")
+}

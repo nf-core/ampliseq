@@ -45,6 +45,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [Alpha diversity rarefaction curves](#alpha-diversity-rarefaction-curves) - Rarefaction curves for quality control
   - [Diversity analysis](#diversity-analysis) - High level overview with different diversity indices
   - [Differential abundance analysis](#differential-abundance-analysis) - Calling differentially abundant features with ANCOM or ANCOM-BC
+- [Benchmarking](#benchmarking) - Comparing analysis to expected results
 - [PICRUSt2](#picrust2) - Predict the functional potential of a bacterial community
 - [SBDI export](#sbdi-export) - Swedish Biodiversity Infrastructure (SBDI) submission file
 - [R object](#r-objects) - Phyloseq and TreeSummarizedExperiment R objects
@@ -654,6 +655,25 @@ On request (`--ancombc2`), ANCOM-BC2 is applied to each suitable or specified me
   - formula: metadata category / formula that was tested
   - taxonomic level: level-2 (phylum), level-3 (class), level-4 (order), level-5 (family), level-6 (genus), ASV
   - treatment: Changes for that treatment group
+
+</details>
+
+### Benchmarking
+
+Benchmarking compares computed to expected outcome, typically for samples with known outcome, to evaluate data and analysis. Benchmarking steps to evaluate the produced ASVs are implemented into the pipeline.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `benchmarking/vsearch`
+  - `*.tsv`: VSEARCH --usearch_global output for ASV to sequence comparisons.
+- `benchmarking/matches`
+  - `*.md5sum_version`: parameter md5sum and pipeline version that is prefix to all files to identify outcome based on settings.
+  - `*_nucleotide-differences.log`: log file for comparing matches of ASVs to expected sequences
+  - `*_nucleotide-differences.tsv`: tsv table based on VSEARCHresults comparing matches of ASVs to expected sequences
+  - `*_nucleotide-differences_per-sample.tsv`: Number of sequences and mismatches to expected sequences
+  - `*_nucleotide-distance_barplot.png`: Barplot of number of sequences versus number of mismatches
+  - `*_nucleotide-distance_barplot.svg`: Barplot of number of sequences versus number of mismatches
 
 </details>
 

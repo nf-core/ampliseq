@@ -12,10 +12,7 @@
                     "clustalo": "1.2.4",
                     "pigz": 2.8
                 },
-                "COMBINE_TABLE_PPLACE": {
-                    "R": "4.0.3"
-                },
-                "COMBINE_TABLE_QIIME2": {
+                "COMBINE_TABLE": {
                     "R": "4.0.3"
                 },
                 "CUTADAPT_BASIC": {
@@ -427,8 +424,8 @@
                 "qiime2/rel_abundance_tables/rel-table-5.tsv",
                 "qiime2/rel_abundance_tables/rel-table-6.tsv",
                 "qiime2/rel_abundance_tables/rel-table-ASV.tsv",
-                "qiime2/rel_abundance_tables/rel-table-ASV_with-PPLACE-tax.tsv",
-                "qiime2/rel_abundance_tables/rel-table-ASV_with-QIIME2-tax.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV_with-PPLACE-PPLACE-tax.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV_with-QIIME2-greengenes85-tax.tsv",
                 "qiime2/representative_sequences",
                 "qiime2/representative_sequences/descriptive_stats.tsv",
                 "qiime2/representative_sequences/filtered-sequences.qza",

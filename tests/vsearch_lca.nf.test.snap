@@ -8,7 +8,7 @@
                 "BARRNAPSUMMARY": {
                     "python": "Python 3.9.1"
                 },
-                "COMBINE_TABLE_VSEARCH_LCA": {
+                "COMBINE_TABLE": {
                     "R": "4.0.3"
                 },
                 "CUTADAPT_BASIC": {

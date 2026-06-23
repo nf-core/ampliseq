@@ -747,7 +747,7 @@ workflow AMPLISEQ {
                 val_dada_taxlevels,
                 params.dada_assign_chunksize
             ).tax
-        ch_tax_tsv = ch_tax_tsv.mix( ch_dada2_tax.map { it = [ [database:val_dada_ref_taxonomy, classifier:"dada2"], file(it) ] } )
+        ch_tax_tsv = ch_tax_tsv.mix( ch_dada2_tax.map { it = [ [database:val_dada_ref_taxonomy, classifier:"DADA2"], file(it) ] } )
         ch_tax_for_robject = ch_tax_for_robject.mix ( ch_dada2_tax.map { it -> [ "dada2", file(it) ] } )
     } else {
         ch_dada2_tax = channel.empty()
@@ -778,7 +778,7 @@ workflow AMPLISEQ {
                 ch_full_fasta,
                 val_sintax_taxlevels
             ).tax
-        ch_tax_tsv = ch_tax_tsv.mix( ch_sintax_tax.map { it = [ [database:val_sintax_ref_taxonomy, classifier:"sintax"], file(it) ] } )
+        ch_tax_tsv = ch_tax_tsv.mix( ch_sintax_tax.map { it = [ [database:val_sintax_ref_taxonomy, classifier:"SINTAX"], file(it) ] } )
         ch_tax_for_robject = ch_tax_for_robject.mix ( ch_sintax_tax.map { it -> [ "sintax", file(it) ] } )
     } else {
         ch_sintax_tax = channel.empty()
@@ -796,7 +796,7 @@ workflow AMPLISEQ {
         )
         ch_vsearch_lca_raw = VSEARCH_LCA_TAXONOMY_WF.out.raw_lca
         ch_vsearch_lca_tax = VSEARCH_LCA_TAXONOMY_WF.out.tax
-        ch_tax_tsv = ch_tax_tsv.mix( ch_vsearch_lca_tax.map { it = [ [database:val_vsearch_lca_ref_taxonomy, classifier:"vsearch_lca"], file(it) ] } )
+        ch_tax_tsv = ch_tax_tsv.mix( ch_vsearch_lca_tax.map { it = [ [database:val_vsearch_lca_ref_taxonomy, classifier:"VSEARCH-LCA"], file(it) ] } )
         ch_tax_for_robject = ch_tax_for_robject.mix ( ch_vsearch_lca_tax.map { it -> [ "vsearch_lca", file(it) ] } )
     } else {
         ch_vsearch_lca_raw = channel.empty()
@@ -827,7 +827,7 @@ workflow AMPLISEQ {
         PPLACE_STANDARD ( ch_pp_data )
         ch_versions = ch_versions.mix( PPLACE_STANDARD.out.versions )
         ch_pplace_tax = PPLACEFORMATTAX_STANDARD ( PPLACE_STANDARD.out.taxonomy_per_query ).tsv
-        ch_tax_tsv = ch_tax_tsv.mix( ch_pplace_tax.map { it = [ [database: params.pplace_name ?: 'user_tree', classifier:"pplace"], file(it) ] } )
+        ch_tax_tsv = ch_tax_tsv.mix( ch_pplace_tax.map { it = [ [database: params.pplace_name ?: 'user_tree', classifier:"PPLACE"], file(it) ] } )
         ch_tax_for_robject = ch_tax_for_robject.mix ( PHYLOSEQ_INTAX_PPLACE ( ch_pplace_tax ).tsv.map { it -> [ "pplace", file(it) ] } )
     } else {
         ch_pplace_tax = channel.empty()
@@ -891,7 +891,7 @@ workflow AMPLISEQ {
                 .splitCsv(sep: '\t', header: true)
                 .map { r -> "${r.ASV_ID}\t${r.taxonomy}\n" }
                 .collectFile(name: 'concatenated_taxonomy.tsv', seed: "ASV_ID\ttaxonomy\n")
-            ch_tax_tsv = ch_tax_tsv.mix( ch_pplace_tax.map { it = [ [database:"pplace", classifier:"pplace"], file(it) ] } )
+            ch_tax_tsv = ch_tax_tsv.mix( ch_pplace_tax.map { it = [ [database:"PPLACE", classifier:"PPLACE"], file(it) ] } )
         }
     }
 

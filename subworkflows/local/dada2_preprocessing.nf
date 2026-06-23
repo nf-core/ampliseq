@@ -18,25 +18,25 @@ workflow DADA2_PREPROCESSING {
     main:
     //plot unprocessed, aggregated quality profile for forward and reverse reads separately
     if (single_end) {
-        ch_trimmed_reads
-            .map { _meta, reads -> [ reads ] }
-            .collect()
-            .map { reads -> [ "single_end", reads ] }
-            .set { ch_all_trimmed_reads }
+        ch_all_trimmed_reads =
+            ch_trimmed_reads
+                .map { _meta, reads -> [ reads ] }
+                .collect()
+                .map { reads -> [ "single_end", reads ] }
     } else {
-        ch_trimmed_reads
-            .map { _meta, reads -> [ reads[0] ] }
-            .collect()
-            .map { reads -> [ "FW", reads ] }
-            .set { ch_all_trimmed_fw }
-        ch_trimmed_reads
-            .map { _meta, reads -> [ reads[1] ] }
-            .collect()
-            .map { reads -> [ "RV", reads ] }
-            .set { ch_all_trimmed_rv }
-        ch_all_trimmed_fw
-            .mix ( ch_all_trimmed_rv )
-            .set { ch_all_trimmed_reads }
+        ch_all_trimmed_fw =
+            ch_trimmed_reads
+                .map { _meta, reads -> [ reads[0] ] }
+                .collect()
+                .map { reads -> [ "FW", reads ] }
+        ch_all_trimmed_rv =
+            ch_trimmed_reads
+                .map { _meta, reads -> [ reads[1] ] }
+                .collect()
+                .map { reads -> [ "RV", reads ] }
+        ch_all_trimmed_reads =
+            ch_all_trimmed_fw
+                .mix ( ch_all_trimmed_rv )
     }
 
     ch_DADA2_QUALITY1_SVG = channel.empty()
@@ -71,9 +71,7 @@ workflow DADA2_PREPROCESSING {
     //find truncation values in case they are not supplied
     if ( find_truncation_values ) {
         TRUNCLEN ( DADA2_QUALITY1.out.tsv )
-        TRUNCLEN.out.trunc
-            .toSortedList()
-            .set { ch_trunc }
+        ch_trunc = TRUNCLEN.out.trunc.toSortedList()
         //add one more warning or reminder that trunclenf and trunclenr were chosen automatically
         ch_trunc.subscribe { it ->
             if ( "${it[0][1]}".toInteger() + "${it[1][1]}".toInteger() <= 10 ) { log.warn "`--trunclenf` was set to ${it[0][1]} and `--trunclenr` to ${it[1][1]}, this is too low! Please either change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr`." }
@@ -82,23 +80,21 @@ workflow DADA2_PREPROCESSING {
             else log.warn "Probably everything is fine, but this is a reminder that `--trunclenf` was set automatically to ${it[0][1]} and `--trunclenr` to ${it[1][1]}. If this doesnt seem reasonable, then please change `--trunc_qmin` (and `--trunc_rmin`), or set `--trunclenf` and `--trunclenr` directly."
         }
     } else {
-        channel.fromList( [['FW', trunclenf], ['RV', trunclenr]] )
-            .toSortedList()
-            .set { ch_trunc }
+        ch_trunc = channel.fromList( [['FW', trunclenf], ['RV', trunclenr]] ).toSortedList()
     }
-    ch_trimmed_reads.combine(ch_trunc).set { ch_trimmed_reads }
+    ch_trimmed_reads = ch_trimmed_reads.combine(ch_trunc)
 
     //filter reads
     DADA2_FILTNTRIM ( ch_trimmed_reads.dump(tag: 'into_filtntrim')  )
 
     //Filter empty files
-    DADA2_FILTNTRIM.out.reads_logs_args
-        .branch { it ->
-            failed: it[0].single_end ? it[1].countFastq() < params.min_read_counts : it[1][0].countFastq() < params.min_read_counts || it[1][1].countFastq() < params.min_read_counts
-            passed: true
-        }
-        .set { ch_dada2_filtntrim_results }
-    ch_dada2_filtntrim_results.passed.set { ch_dada2_filtntrim_results_passed }
+    ch_dada2_filtntrim_results =
+        DADA2_FILTNTRIM.out.reads_logs_args
+            .branch { it ->
+                failed: it[0].single_end ? it[1].countFastq() < params.min_read_counts : it[1][0].countFastq() < params.min_read_counts || it[1][1].countFastq() < params.min_read_counts
+                passed: true
+            }
+    ch_dada2_filtntrim_results_passed = ch_dada2_filtntrim_results.passed
     ch_dada2_filtntrim_results.failed
         .map { meta, _reads, _logs, _args -> [ meta.id ] }
         .collect()
@@ -113,37 +109,29 @@ workflow DADA2_PREPROCESSING {
 
     // Break apart the reads and logs so that only the samples
     // which pass filtering are retained
-    ch_dada2_filtntrim_results_passed
-        .map{ meta, reads, _logs, _args -> [meta, reads] }
-        .set{ ch_dada2_filtntrim_reads_passed }
-    ch_dada2_filtntrim_results_passed
-        .map{ meta, _reads, logs, _args -> [meta, logs] }
-        .set{ ch_dada2_filtntrim_logs_passed }
-    ch_dada2_filtntrim_results_passed
-        .map{ _meta, _reads, _logs, args -> args }
-        .set{ ch_dada2_filtntrim_args_passed }
+    ch_dada2_filtntrim_reads_passed = ch_dada2_filtntrim_results_passed.map{ meta, reads, _logs, _args -> [meta, reads] }
+    ch_dada2_filtntrim_logs_passed  = ch_dada2_filtntrim_results_passed.map{ meta, _reads, logs, _args -> [meta, logs] }
+    ch_dada2_filtntrim_args_passed  = ch_dada2_filtntrim_results_passed.map{ _meta, _reads, _logs, args -> args }
 
     //plot post-processing, aggregated quality profile for forward and reverse reads separately
     if (single_end) {
-        ch_dada2_filtntrim_reads_passed
-            .map { _meta, reads -> [ reads ] }
-            .collect()
-            .map { reads -> [ "single_end", reads ] }
-            .set { ch_all_preprocessed_reads }
+        ch_all_preprocessed_reads =
+            ch_dada2_filtntrim_reads_passed
+                .map { _meta, reads -> [ reads ] }
+                .collect()
+                .map { reads -> [ "single_end", reads ] }
     } else {
-        ch_dada2_filtntrim_reads_passed
-            .map { _meta, reads -> [ reads[0] ] }
-            .collect()
-            .map { reads -> [ "FW", reads ] }
-            .set { ch_all_preprocessed_fw }
-        ch_dada2_filtntrim_reads_passed
-            .map { _meta, reads -> [ reads[1] ] }
-            .collect()
-            .map { reads -> [ "RV", reads ] }
-            .set { ch_all_preprocessed_rv }
-        ch_all_preprocessed_fw
-            .mix ( ch_all_preprocessed_rv )
-            .set { ch_all_preprocessed_reads }
+        ch_all_preprocessed_fw =
+            ch_dada2_filtntrim_reads_passed
+                .map { _meta, reads -> [ reads[0] ] }
+                .collect()
+                .map { reads -> [ "FW", reads ] }
+        ch_all_preprocessed_rv =
+            ch_dada2_filtntrim_reads_passed
+                .map { _meta, reads -> [ reads[1] ] }
+                .collect()
+                .map { reads -> [ "RV", reads ] }
+        ch_all_preprocessed_reads = ch_all_preprocessed_fw.mix ( ch_all_preprocessed_rv )
     }
 
     ch_DADA2_QUALITY2_SVG = channel.empty()
@@ -155,31 +143,31 @@ workflow DADA2_PREPROCESSING {
 
     // group reads by sequencing run and region
     // 'groupTuple', 'size' or 'groupKey' should be used but to produce it we need to know how many elements to group but some can be lost here, so no way knowing before
-    ch_dada2_filtntrim_reads_passed
-        .map {
-            info, reads ->
-                def meta = info.subMap( info.keySet() - 'id' - 'sample' )
-                [ meta, reads, info.id, info.sample ] }
-        .groupTuple(by: 0 )
-        .map {
-            info, reads, ids, samples ->
-                def meta = info + [id: ids.flatten().sort(), sample: samples.flatten().sort()]
-                [ meta, reads.flatten().sort() ] }
-        .set { ch_filt_reads }
+    ch_filt_reads =
+        ch_dada2_filtntrim_reads_passed
+            .map {
+                info, reads ->
+                    def meta = info.subMap( info.keySet() - 'id' - 'sample' )
+                    [ meta, reads, info.id, info.sample ] }
+            .groupTuple(by: 0 )
+            .map {
+                info, reads, ids, samples ->
+                    def meta = info + [id: ids.flatten().sort(), sample: samples.flatten().sort()]
+                    [ meta, reads.flatten().sort() ] }
 
     //group logs by sequencing run and region
     //for 'groupTuple', 'size' or 'groupKey' should be used but to produce it we need to know how many elements to group but some can be lost here, so no way knowing before
-    ch_dada2_filtntrim_logs_passed
-        .map {
-            info, reads ->
-                def meta = info.subMap( info.keySet() - 'id' - 'sample' )
-                [ meta, reads, info.id, info.sample ] }
-        .groupTuple(by: 0 )
-        .map {
-            info, reads, ids, samples ->
-                def meta = info + [id: ids.flatten().sort(), sample: samples.flatten().sort()]
-                [ meta, reads.flatten().sort() ] }
-        .set { ch_filt_logs }
+    ch_filt_logs =
+        ch_dada2_filtntrim_logs_passed
+            .map {
+                info, reads ->
+                    def meta = info.subMap( info.keySet() - 'id' - 'sample' )
+                    [ meta, reads, info.id, info.sample ] }
+            .groupTuple(by: 0 )
+            .map {
+                info, reads, ids, samples ->
+                    def meta = info + [id: ids.flatten().sort(), sample: samples.flatten().sort()]
+                    [ meta, reads.flatten().sort() ] }
 
     emit:
     reads               = ch_filt_reads

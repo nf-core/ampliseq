@@ -30,7 +30,7 @@ process FORMAT_TAXONOMY_SINTAX {
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
-            sed: \$(sed --version 2>&1 | sed -n 1p | sed 's/sed (GNU sed) //')
+            bash: \$(echo \"\$BASH_VERSION\")
         END_VERSIONS
         """
     } else {
@@ -44,6 +44,7 @@ process FORMAT_TAXONOMY_SINTAX {
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
+            bash: \$(echo \"\$BASH_VERSION\")
             sed: \$(sed --version 2>&1 | sed -n 1p | sed 's/sed (GNU sed) //')
         END_VERSIONS
         """

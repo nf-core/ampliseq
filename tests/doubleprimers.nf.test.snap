@@ -109,7 +109,7 @@
                     "qiime2": "2026.4.0"
                 },
                 "RENAME_RAW_DATA_FILES": {
-                    "sed": 4.7
+                    "bash": "5.0.17(1)-release"
                 },
                 "TREESUMMARIZEDEXPERIMENT": {
                     "R": "4.3.2",

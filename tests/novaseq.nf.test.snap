@@ -47,7 +47,7 @@
                     "R": "4.5.2"
                 },
                 "RENAME_RAW_DATA_FILES": {
-                    "sed": 4.7
+                    "bash": "5.0.17(1)-release"
                 },
                 "TRUNCLEN": {
                     "python": "3.9.1",

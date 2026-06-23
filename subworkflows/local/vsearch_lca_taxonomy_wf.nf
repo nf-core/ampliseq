@@ -27,13 +27,12 @@ workflow VSEARCH_LCA_TAXONOMY_WF {
         ASV_tax_name2 = "ASV_tax_vsearch_lca.${val_ref_taxonomy}"
     }
 
-    ch_fasta
-        .map { fasta ->
-            def meta = [:]
-            meta.id = ASV_tax_name
-            [ meta, fasta ]
-        }
-        .set { ch_fasta_map }
+    ch_fasta_map =
+        ch_fasta
+            .map { fasta ->
+                def meta = [:]
+                meta.id = ASV_tax_name
+                [ meta, fasta ] }
 
     VSEARCH_USEARCHGLOBAL_LCA( ch_fasta_map, ch_lca_db, vsearch_lca_id, 'lcaout', "" )
     FORMAT_TAXRESULTS_VSEARCH_LCA( VSEARCH_USEARCHGLOBAL_LCA.out.lca, ch_full_fasta, ASV_tax_name2 + ".tsv", vsearch_lca_taxlevels )

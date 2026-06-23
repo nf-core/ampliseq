@@ -81,24 +81,28 @@ print(paste( "Measured samples:", paste(res_samples,collapse=",")))
 for (sample in res_samples) {
 	if( file.exists(expabundFILE) ) {
 		# filter expected sequences in that sample (matches_above_threshold$target) with expected abundances (abundance > 0) of exp$ID
-		if( !sample %in% colnames(matches_above_threshold) ) {
-			print(paste("WARN - Skipping sample",sample,"because it was not found in",expabundFILE,". Found only columns",paste(colnames(matches_above_threshold),collapse=",")))
-		}
-		keep_cols <- c("ID",sample)
-		print(paste("Found",nrow(exp),"expected sequences overall in",expabundFILE))
-		s_exp <- subset(exp, select = keep_cols)
-		s_exp = s_exp[s_exp[,2] > 0,]
-		print(paste("Found",nrow(s_exp),"expected sequences in sample", sample,"in",expabundFILE))
-		s_matches <- matches_above_threshold[matches_above_threshold$target %in% s_exp$ID,]
-		if( nrow(s_matches)==0 ) {
-			print(paste("WARN - Skipping sample",sample,"because found no matches to expected sequences"))
-			next
+		if( sample %in% colnames(matches_above_threshold) ) {
+			keep_cols <- c("ID",sample)
+			print(paste("Found",nrow(exp),"expected sequences overall in",expabundFILE))
+			s_exp <- subset(exp, select = keep_cols)
+			s_exp = s_exp[s_exp[,2] > 0,]
+			print(paste("Found",nrow(s_exp),"expected sequences in sample", sample,"in",expabundFILE))
+			s_matches <- matches_above_threshold[matches_above_threshold$target %in% s_exp$ID,]
 		} else {
-			print(paste("Found",length(unique(s_matches$query)),"to be expected sequences of",length(unique(matches_above_threshold$query)),"in sample",sample))
-			print(paste("Found",length(unique(s_matches$target)),"matches of",length(unique(matches_above_threshold$target)),"total in sample",sample))
+			print(paste("WARN - Skipping sample",sample,"because it was not found in",expabundFILE,". Found only columns",paste(colnames(matches_above_threshold),collapse=",")))
+			s_matches <- data.frame()
 		}
 	} else {
 		s_matches <- matches_above_threshold
+	}
+
+	# sample will be skipped if s_matches has no data
+	if( nrow(s_matches)==0 ) {
+		print(paste("WARN - Skipping sample",sample,"because found no matches to expected sequences"))
+		next
+	} else {
+		print(paste("Found",length(unique(s_matches$query)),"to be expected sequences of",length(unique(matches_above_threshold$query)),"in sample",sample))
+		print(paste("Found",length(unique(s_matches$target)),"matches of",length(unique(matches_above_threshold$target)),"total in sample",sample))
 	}
 
 	# select best match (sort by mismatches and retain only first unique entry)

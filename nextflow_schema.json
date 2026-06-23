@@ -977,7 +977,8 @@
                     "format": "file-path",
                     "mimetype": "text/tsv",
                     "pattern": "^\\S+\\.(fasta|fas|fna|fa|ffn)$",
-                    "description": "Path to file of expected sequences in fasta format"
+                    "description": "Path to file of expected sequences in fasta format",
+                    "help_text": "Supplying only sequences will compare ASVs of each sample to the given sequence set. Consider other benchmarking parameters for more comprehensive benchmarking."
                 },
                 "benchmarking_region": {
                     "type": "string",
@@ -991,7 +992,7 @@
                     "mimetype": "text/tsv",
                     "pattern": "^\\S+\\.(tsv|txt)$",
                     "description": "Path to file of abundances of expected sequences in tsv format",
-                    "help_text": "Tab-separated table with header. First column is sequence IDs corresponding to the fasta file supplied with `--benchmarking_sequences`. All further columns should have names corresponding to the sample names."
+                    "help_text": "Tab-separated table with header. First column is sequence IDs corresponding to the fasta file supplied with `--benchmarking_sequences`. All further columns should have names corresponding to the sample names in `--input` or other input options. Sample benchmarking will only be performed on samples that overlap between sequencing data input and benchmarking abundance input. This allows for example to only benchmark mock samples that were added to another data set as controls."
                 }
             },
             "fa_icon": "fas fa-book-open"

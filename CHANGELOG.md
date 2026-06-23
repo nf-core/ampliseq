@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#1021](https://github.com/nf-core/ampliseq/pull/1021) - Benchmarking of retrieved ASVs against expected sequences or their abundance is now available with `--benchmarking_*` parameters (by @d4straub)
+
 ### `Changed`
 
 - [#1018](https://github.com/nf-core/ampliseq/pull/1018) - Change version to 2.19.0dev (by @d4straub)

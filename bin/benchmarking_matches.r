@@ -21,15 +21,44 @@ if (file.exists(expabundFILE)) {
 
 # PREPARE
 
-# Read stuff
+# Read sequence alignment table
 blast6out = read.table( blast6outFILE, header = FALSE, sep = "\t", stringsAsFactors = FALSE, check.names = FALSE, strip.white = TRUE)
 colnames(blast6out) <- c("query","target","pident","alnlen","mismatch","gap_openings","qstart","qend","tstart","tend","ids","gaps","qlen","tlen","qstrand")
-res = read.table( detabundFILE, header = TRUE, sep = "\t", stringsAsFactors = FALSE, check.names = FALSE, strip.white = TRUE, comment.char = "", skip=1 )
+
+# Read pipeline's ASV abundance table (either from QIIME2 [skipping first line] or from previous steps)
+if (grepl("^# Constructed from biom file", readLines(detabundFILE, n = 1))) {
+	res = read.table( detabundFILE, header = TRUE, sep = "\t", stringsAsFactors = FALSE, check.names = FALSE, strip.white = TRUE, comment.char = "", skip=1 )
+} else {
+	res = read.table( detabundFILE, header = TRUE, sep = "\t", stringsAsFactors = FALSE, check.names = FALSE, strip.white = TRUE, comment.char = "" )
+}
 colnames(res)[1] <- "ID"
+
+# select available samples
+res_samples <- colnames(res)[2:ncol(res)]
+print(paste( "Measured samples:", paste(res_samples,collapse=",")))
+SAMPLES <- res_samples
+
+# Read expected abundance table if it exists
 if (file.exists(expabundFILE)) {
 	exp = read.table( expabundFILE, header = TRUE, sep = "\t", stringsAsFactors = FALSE, check.names = FALSE, strip.white = TRUE)
 	colnames(exp)[1] <- "ID"
-	print(paste( "Expected sequences to samples:", paste( colnames(exp)[2:ncol(exp)] ,collapse=",")))
+	# extract samples to analyse
+	exp_samples <- colnames(exp)[2:ncol(exp)]
+	print(paste( "Expected samples:", paste( exp_samples ,collapse=",")))
+	SAMPLES <- exp_samples[exp_samples %in% res_samples]
+	print(paste( "Investigate samples:", paste( SAMPLES ,collapse=",")))
+	# warn if samples are missing due to incomplete overlap
+	if ( !all(res_samples %in% SAMPLES) ) {
+		print(paste("WARN - sample(s) not in",expabundFILE,"and omitted:",paste(res_samples[!res_samples %in% SAMPLES], collapse="," )))
+	}
+	if ( !all(exp_samples %in% SAMPLES) ) {
+		print(paste("WARN - sample(s) not in pipeline output and omitted:",paste(exp_samples[!exp_samples %in% SAMPLES], collapse="," )))
+	}
+}
+
+# check if there are any samples to analyse
+if (length(SAMPLES) == 0) {
+	stop("ERROR - Found no samples to investigate")
 }
 
 # Investigate blast6out, required columns: query,target,qlen,tlen,qstart,qend,tstart,tend,gaps,mismatch
@@ -44,7 +73,7 @@ if( query_or_target=="query" ) {
 } else if( query_or_target=="alignment" ) {
 	blast6out$mismatch_final <- blast6out$gaps + blast6out$mismatch
 } else {
-	stop( paste0(query_or_target,"is not valid (valid: query,target,alignment)") )
+	stop( paste("ERROR -",query_or_target,"is not valid (valid: query,target,alignment)") )
 }
 
 # add sample info if available
@@ -74,24 +103,15 @@ write.table(blast6out, file = outfile, row.names = FALSE, col.names = TRUE, quot
 # select matches above threshold
 matches_above_threshold <- blast6out[blast6out$target !="*",]
 
-# select available samples
-res_samples <- colnames(res)[2:ncol(res)]
-print(paste( "Measured samples:", paste(res_samples,collapse=",")))
-
-for (sample in res_samples) {
+for (sample in SAMPLES) {
 	if( file.exists(expabundFILE) ) {
 		# filter expected sequences in that sample (matches_above_threshold$target) with expected abundances (abundance > 0) of exp$ID
-		if( sample %in% colnames(matches_above_threshold) ) {
-			keep_cols <- c("ID",sample)
-			print(paste("Found",nrow(exp),"expected sequences overall in",expabundFILE))
-			s_exp <- subset(exp, select = keep_cols)
-			s_exp = s_exp[s_exp[,2] > 0,]
-			print(paste("Found",nrow(s_exp),"expected sequences in sample", sample,"in",expabundFILE))
-			s_matches <- matches_above_threshold[matches_above_threshold$target %in% s_exp$ID,]
-		} else {
-			print(paste("WARN - Skipping sample",sample,"because it was not found in",expabundFILE,". Found only columns",paste(colnames(matches_above_threshold),collapse=",")))
-			s_matches <- data.frame()
-		}
+		keep_cols <- c("ID",sample)
+		print(paste("Found",nrow(exp),"expected sequences overall in",expabundFILE))
+		s_exp <- subset(exp, select = keep_cols)
+		s_exp = s_exp[s_exp[,2] > 0,]
+		print(paste("Found",nrow(s_exp),"expected sequences in sample", sample,"in",expabundFILE))
+		s_matches <- matches_above_threshold[matches_above_threshold$target %in% s_exp$ID,]
 	} else {
 		s_matches <- matches_above_threshold
 	}

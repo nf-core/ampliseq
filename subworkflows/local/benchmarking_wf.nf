@@ -23,6 +23,9 @@ workflow BENCHMARKING_WF {
 
     // Investigate mismatches per sample, plus barplot (y = number of sequences, x = number of mismatches)
     BENCHMARKING_MATCHES ( VSEARCH_USEARCHGLOBAL_BM.out.tsv, ch_detected_abundances, ch_expected_abundances.ifEmpty([]), similarity_threshold, query_or_target )
+    BENCHMARKING_MATCHES.out.warnings.subscribe{ it -> 
+            if( it.countLines() > 0 ) { log.warn "about benchmarking\n\n" + it.splitText().join("") }
+        }
 
     // (2) input: val_md5sum_version, "${val_md5sum_version}_nucleotide_differences.tsv", ch_detected_abundances, ch_expected_abundances
     //     -> compare exact matches per sample: "${val_md5sum_version}_nucleotide_differences.tsv" = 0 & prevalence ch_detected_abundances vs ch_expected_abundances

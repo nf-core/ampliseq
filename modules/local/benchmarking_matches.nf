@@ -21,6 +21,7 @@ process BENCHMARKING_MATCHES {
     path("*_per-sample.tsv")                 , emit: matches_per_sample
     path("*nucleotide-differences.log")      , emit: log
     path("*.md5sum_version")                 , emit: md5sum_version
+    path("Warnings.txt")                     , emit: warnings
     path "versions.yml"                      , emit: versions, topic: versions
 
     script:
@@ -35,6 +36,9 @@ process BENCHMARKING_MATCHES {
         "$query_or_target" \\
         >"${prefix}_nucleotide-differences.log"
     echo "md5sum_version $prefix" > "${prefix}.md5sum_version"
+
+    # isolate warnings in plot (when grep find no match, exit code is 1, "|| true" fixes that)
+    grep "WARN -" "${prefix}_nucleotide-differences.log" | sed 's/^\\[1\\] //g' | sed 's/"//g' > Warnings.txt || true
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

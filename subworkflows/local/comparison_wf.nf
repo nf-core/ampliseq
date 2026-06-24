@@ -1,7 +1,7 @@
 include { VSEARCH_USEARCHGLOBAL as VSEARCH_USEARCHGLOBAL_BM } from '../../modules/nf-core/vsearch/usearchglobal/main'
-include { BENCHMARKING_MATCHES       } from '../../modules/local/benchmarking_matches'
+include { COMPARE_SEQUENCES       } from '../../modules/local/compare_sequences'
 
-workflow BENCHMARKING_WF {
+workflow COMPARISON_WF {
     take:
     val_md5sum_version     // md5sum of params appended by pipeline version
     query_or_target        // region to evaluate
@@ -22,22 +22,22 @@ workflow BENCHMARKING_WF {
         "query+target+id+alnlen+mism+opens+qilo+qihi+tilo+tihi+ids+gaps+ql+tl+qstrand" )
 
     // Investigate mismatches per sample, plus barplot (y = number of sequences, x = number of mismatches)
-    BENCHMARKING_MATCHES ( VSEARCH_USEARCHGLOBAL_BM.out.tsv, ch_detected_abundances, ch_expected_abundances.ifEmpty([]), similarity_threshold, query_or_target )
-    BENCHMARKING_MATCHES.out.warnings.subscribe{ it ->
-            if( it.countLines() > 0 ) { log.warn "about benchmarking\n\n" + it.splitText().join("") }
+    COMPARE_SEQUENCES ( VSEARCH_USEARCHGLOBAL_BM.out.tsv, ch_detected_abundances, ch_expected_abundances.ifEmpty([]), similarity_threshold, query_or_target )
+    COMPARE_SEQUENCES.out.warnings.subscribe{ it ->
+            if( it.countLines() > 0 ) { log.warn "about comparing sequences\n\n" + it.splitText().join("") }
         }
 
     // (2) input: val_md5sum_version, "${val_md5sum_version}_nucleotide_differences.tsv", ch_detected_abundances, ch_expected_abundances
     //     -> compare exact matches per sample: "${val_md5sum_version}_nucleotide_differences.tsv" = 0 & prevalence ch_detected_abundances vs ch_expected_abundances
     //     -> per sample count FN/FP/... & calculate F1/...
-    //BENCHMARKING_SEQUENCES ( val_md5sum_version, BENCHMARKING_MATCHES.out.matches, ch_detected_abundances, ch_expected_abundances )
+    //COMPARISON_SEQUENCES ( val_md5sum_version, COMPARE_SEQUENCES.out.matches, ch_detected_abundances, ch_expected_abundances )
 
     // (3) input: val_md5sum_version, "${val_md5sum_version}_matches.txt", ch_detected_abundances, ch_expected_abundances
     //     -> compare abundance of exact matches
     //     -> per sample % total deviation from expected, potentially normalized somehow
-    //BENCHMARKING_ABUNDANCES ( val_md5sum_version, "${val_md5sum_version}_exact_matches.txt", ch_detected_abundances, ch_expected_abundances )
+    //COMPARISON_ABUNDANCES ( val_md5sum_version, "${val_md5sum_version}_exact_matches.txt", ch_detected_abundances, ch_expected_abundances )
 
     emit:
-    mismatch_barplot_png = BENCHMARKING_MATCHES.out.png.collect()
-    mismatch_barplot_svg = BENCHMARKING_MATCHES.out.svg.collect()
+    mismatch_barplot_png = COMPARE_SEQUENCES.out.png.collect()
+    mismatch_barplot_svg = COMPARE_SEQUENCES.out.svg.collect()
 }

@@ -336,9 +336,9 @@ Sample identifiers should be 36 characters long or less, and also contain only A
 
 The columns which are to be assessed can be specified by `--metadata_category`. If `--metadata_category` isn't specified than all columns that fit the specification are automatically chosen.
 
-### Benchmarking
+### Comparison to expected outcomes
 
-To investigate the quality of data generation and/or data analysis, analysis outcome is compared to expected results, so called benchmarking. Benchmarking steps are implemented in the pipeline and can be used with `--benchmarking_*` parameters, details in the [parameter documentation](https://nf-co.re/ampliseq/parameters/#benchmarking).
+To investigate the quality of data generation and/or data analysis, analysis outcome is compared to expected results. Comparison steps are implemented in the pipeline and can be used with `--expected_*` parameters, details in the [parameter documentation](https://nf-co.re/ampliseq/parameters/#comparison).
 
 ### Differential abundance analysis
 

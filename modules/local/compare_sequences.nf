@@ -1,4 +1,4 @@
-process BENCHMARKING_MATCHES {
+process COMPARE_SEQUENCES {
     tag "${prefix}"
     label 'process_single'
 
@@ -10,9 +10,9 @@ process BENCHMARKING_MATCHES {
     input:
     tuple val(meta), path(blast6out) // VSEARCH_USEARCHGLOBAL
     path(detected_abundances)        // ASV table from within pipeline
-    path(expected_abundances)        // ASV table from params.benchmark_abundances
+    path(expected_abundances)        // ASV table from params.expected_abundances
     val(similarity_threshold)        // Similarity threshold for maches of VSEARCH
-    val(query_or_target)             // what reagion to evaluate (query,target,alignment) from params.benchmark_region
+    val(query_or_target)             // what reagion to evaluate (query,target,alignment) from params.expected_sequences_region
 
     output:
     path("*.svg")                            , emit: svg
@@ -27,7 +27,7 @@ process BENCHMARKING_MATCHES {
     script:
     prefix = "${meta.id}"
     """
-    benchmarking_matches.r \\
+    compare_sequences.r \\
         "$blast6out" \\
         "$detected_abundances" \\
         "$expected_abundances" \\

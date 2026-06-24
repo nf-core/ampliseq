@@ -92,7 +92,7 @@ include { QIIME2_BARPLOTAVG             } from '../subworkflows/local/qiime2_bar
 include { QIIME2_DIVERSITY              } from '../subworkflows/local/qiime2_diversity'
 include { QIIME2_ANCOM                  } from '../subworkflows/local/qiime2_ancom'
 include { ROBJECT_WORKFLOW              } from '../subworkflows/local/robject_workflow'
-include { BENCHMARKING_WF               } from '../subworkflows/local/benchmarking_wf'
+include { COMPARISON_WF                 } from '../subworkflows/local/comparison_wf'
 
 //
 // FUNCTIONS
@@ -1115,16 +1115,16 @@ workflow AMPLISEQ {
     }
 
     //
-    // MODULE: Benchmarking
+    // WORKFLOW: Comparison to expected
     //
-    if ( params.benchmarking_sequences ) {
-        BENCHMARKING_WF (
+    if ( params.expected_sequences ) {
+        COMPARISON_WF (
             ( params.findAll{ it.key != 'trace_report_suffix' }.toString().md5() + "_${workflow.manifest.version}" ),  // md5sum of params (without variable time stamp in "trace_report_suffix") appended by pipeline version
-            params.benchmarking_region,
+            params.expected_sequences_region,
             run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.abs_fasta : ch_dada2_fasta,  // detected sequences (fasta)
             run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.rel_tsv : ch_dada2_asv,      // detected sequences (abundance table)
-            params.benchmarking_sequences ? channel.fromPath("${params.benchmarking_sequences}", checkIfExists: true) : channel.empty(),  // expected sequences (fasta)
-            params.benchmarking_abundances ? channel.fromPath("${params.benchmarking_abundances}", checkIfExists: true) : channel.empty() // expected sequences (abundance table)
+            params.expected_sequences ? channel.fromPath("${params.expected_sequences}", checkIfExists: true) : channel.empty(),  // expected sequences (fasta)
+            params.expected_abundances ? channel.fromPath("${params.expected_abundances}", checkIfExists: true) : channel.empty() // expected sequences (abundance table)
         )
     }
 

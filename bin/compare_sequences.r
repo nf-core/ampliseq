@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 
-# benchmark_matches.r
+# compare_sequences.r
 
 # Get params and files from the command line
 args            <- commandArgs(trailingOnly=TRUE)

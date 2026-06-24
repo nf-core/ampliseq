@@ -45,7 +45,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [Alpha diversity rarefaction curves](#alpha-diversity-rarefaction-curves) - Rarefaction curves for quality control
   - [Diversity analysis](#diversity-analysis) - High level overview with different diversity indices
   - [Differential abundance analysis](#differential-abundance-analysis) - Calling differentially abundant features with ANCOM or ANCOM-BC
-- [Benchmarking](#benchmarking) - Comparing analysis to expected results
+- [Compare to expected](#compare-to-expected) - Comparing analysis outcome to expected results
 - [PICRUSt2](#picrust2) - Predict the functional potential of a bacterial community
 - [SBDI export](#sbdi-export) - Swedish Biodiversity Infrastructure (SBDI) submission file
 - [R object](#r-objects) - Phyloseq and TreeSummarizedExperiment R objects
@@ -658,16 +658,16 @@ On request (`--ancombc2`), ANCOM-BC2 is applied to each suitable or specified me
 
 </details>
 
-### Benchmarking
+### Compare to expected
 
-Benchmarking compares computed to expected outcome, typically for samples with known outcome, to evaluate data and analysis. Benchmarking steps to evaluate the produced ASVs are implemented into the pipeline.
+Comparison evaluates observed results against expected outcomes, typically for samples with known composition such as mock communities, to assess the data and analysis. Steps to evaluate the produced ASVs are implemented in the pipeline.
 
 <details markdown="1">
 <summary>Output files</summary>
 
-- `benchmarking/vsearch`
+- `comparison/vsearch`
   - `*.tsv`: VSEARCH --usearch_global output for ASV to sequence comparisons.
-- `benchmarking/matches`
+- `comparison/matches`
   - `*.md5sum_version`: parameter md5sum and pipeline version that is prefix to all files to identify outcome based on settings.
   - `*_nucleotide-differences.log`: log file for comparing matches of ASVs to expected sequences
   - `*_nucleotide-differences.tsv`: tsv table based on VSEARCHresults comparing matches of ASVs to expected sequences

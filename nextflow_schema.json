@@ -966,33 +966,33 @@
                 }
             }
         },
-        "benchmarking": {
-            "title": "Benchmarking",
+        "comparison": {
+            "title": "Comparison of observed to expected results",
             "type": "object",
-            "description": "Settings for benchmarking",
+            "description": "Settings for comparing analysis results to the expected outcome",
             "default": "",
             "properties": {
-                "benchmarking_sequences": {
+                "expected_sequences": {
                     "type": "string",
                     "format": "file-path",
                     "mimetype": "text/tsv",
                     "pattern": "^\\S+\\.(fasta|fas|fna|fa|ffn)$",
                     "description": "Path to file of expected sequences in fasta format",
-                    "help_text": "Supplying only sequences will compare ASVs of each sample to the given sequence set. Consider other benchmarking parameters for more comprehensive benchmarking."
+                    "help_text": "Supplying only sequences will compare ASVs of each sample to the given sequence set. Consider other parameters for more comprehensive comparisons."
                 },
-                "benchmarking_region": {
+                "expected_sequences_region": {
                     "type": "string",
                     "description": "What region of the sequence comparison is evaluated",
                     "help_text": "`alignment`: only the alignment region is evaluated including mismatches and gaps. `query`: alignment region and terminal gaps to the query sequence, i.e. constructed ASV sequence, are evaluated. `target`: alignment region and terminal gaps to the target sequence, i.e. expected sequence, are evaluated.",
                     "enum": ["alignment", "query", "target"]
                 },
-                "benchmarking_abundances": {
+                "expected_abundances": {
                     "type": "string",
                     "format": "file-path",
                     "mimetype": "text/tsv",
                     "pattern": "^\\S+\\.(tsv|txt)$",
                     "description": "Path to file of abundances of expected sequences in tsv format",
-                    "help_text": "Tab-separated table with header. First column is sequence IDs corresponding to the fasta file supplied with `--benchmarking_sequences`. All further columns should have names corresponding to the sample names in `--input` or other input options. Sample benchmarking will only be performed on samples that overlap between sequencing data input and benchmarking abundance input. This allows for example to only benchmark mock samples that were added to another data set as controls."
+                    "help_text": "Tab-separated table with header. First column is sequence IDs corresponding to the fasta file supplied with `--expected_sequences`. All further columns should have names corresponding to the sample names in `--input` or other input options. Samples will only compared to when they are in sequencing data input and the expected abundance input. This allows for example to only compare mock samples that were added to another data set as controls."
                 }
             },
             "fa_icon": "fas fa-book-open"
@@ -1318,7 +1318,7 @@
             "$ref": "#/$defs/differential_abundance_analysis"
         },
         {
-            "$ref": "#/$defs/benchmarking"
+            "$ref": "#/$defs/comparison"
         },
         {
             "$ref": "#/$defs/pipeline_report"

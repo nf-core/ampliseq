@@ -3,12 +3,23 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## nf-core/ampliseq version DEV
+## nf-core/ampliseq version 2.19.0dev - [YYYY-MM-DD]
 
 ### `Added`
 
-- [[#1008](https://github.com/nf-core/ampliseq/issues/1008)] - added new GloSED database for classification of Eukaryotic ITS. Not support for SH numbers as of yet.
+- [[#1022](https://github.com/nf-core/ampliseq/issues/1022)] - added new GloSED database for classification of Eukaryotic ITS. Not support for SH numbers as of yet. (by @tom-brekke)
 
+### `Changed`
+
+- [#1018](https://github.com/nf-core/ampliseq/pull/1018) - Change version to 2.19.0dev (by @d4straub)
+
+### `Fixed`
+
+- [#1019](https://github.com/nf-core/ampliseq/pull/1019) - Improve channel assignment & improve some version reporting (by @d4straub)
+
+### `Dependencies`
+
+### `Removed`
 
 ## nf-core/ampliseq version 2.18.0 - 2026-06-18
 

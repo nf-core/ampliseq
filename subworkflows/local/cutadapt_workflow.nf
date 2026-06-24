@@ -16,31 +16,30 @@ workflow CUTADAPT_WORKFLOW {
     double_primer
 
     main:
-    CUTADAPT_BASIC ( ch_file ).reads.set { ch_trimmed_reads }
-    CUTADAPT_BASIC.out.log
+    ch_trimmed_reads = CUTADAPT_BASIC ( ch_file ).reads
+    ch_cutadapt_logs = CUTADAPT_BASIC.out.log
         .map {
             info, log ->
                 def meta = [:]
                 meta.single_end = info.single_end
                 [ meta, log ] }
         .groupTuple(by: 0 )
-        .set { ch_cutadapt_logs }
     CUTADAPT_SUMMARY_STD ( "cutadapt_standard", ch_cutadapt_logs )
 
     if (illumina_pe_its) {
-        CUTADAPT_READTHROUGH ( ch_trimmed_reads ).reads.set { ch_trimmed_reads }
+        ch_trimmed_reads = CUTADAPT_READTHROUGH ( ch_trimmed_reads ).reads
     }
 
     if (double_primer) {
-        CUTADAPT_DOUBLEPRIMER ( ch_trimmed_reads ).reads.set { ch_trimmed_reads }
-        CUTADAPT_DOUBLEPRIMER.out.log
-            .map {
-                info, log ->
-                    def meta = [:]
-                    meta.single_end = info.single_end
-                    [ meta, log ] }
-            .groupTuple(by: 0 )
-            .set { ch_cutadapt_doubleprimer_logs }
+        ch_trimmed_reads = CUTADAPT_DOUBLEPRIMER ( ch_trimmed_reads ).reads
+        ch_cutadapt_doubleprimer_logs =
+            CUTADAPT_DOUBLEPRIMER.out.log
+                .map {
+                    info, log ->
+                        def meta = [:]
+                        meta.single_end = info.single_end
+                        [ meta, log ] }
+                .groupTuple(by: 0 )
         CUTADAPT_SUMMARY_DOUBLEPRIMER ( "cutadapt_doubleprimer", ch_cutadapt_doubleprimer_logs )
         ch_summaries = CUTADAPT_SUMMARY_STD.out.tsv.combine( CUTADAPT_SUMMARY_DOUBLEPRIMER.out.tsv )
         CUTADAPT_SUMMARY_MERGE ( "merge", ch_summaries )
@@ -49,13 +48,12 @@ workflow CUTADAPT_WORKFLOW {
     }
 
     //Filter empty files
-    ch_trimmed_reads
+    ch_trimmed_reads_result = ch_trimmed_reads
         .branch { it ->
             failed: it[0].single_end ? it[1].countFastq() < params.min_read_counts : it[1][0].countFastq() < params.min_read_counts || it[1][1].countFastq() < params.min_read_counts
             passed: true
         }
-        .set { ch_trimmed_reads_result }
-    ch_trimmed_reads_result.passed.set { ch_trimmed_reads_passed }
+    ch_trimmed_reads_passed = ch_trimmed_reads_result.passed
     ch_trimmed_reads_result.failed
         .map { meta, _reads -> [ meta.id ] }
         .collect()

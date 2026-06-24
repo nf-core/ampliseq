@@ -56,6 +56,7 @@
                     "Biostrings": "2.58.0"
                 },
                 "FORMAT_TAXONOMY_SINTAX": {
+                    "bash": "5.0.16(1)-release",
                     "sed": 4.7
                 },
                 "FORMAT_TAXRESULTS_SINTAX": {
@@ -68,7 +69,7 @@
                     "R": "4.5.2"
                 },
                 "RENAME_RAW_DATA_FILES": {
-                    "sed": 4.7
+                    "bash": "5.0.17(1)-release"
                 },
                 "SBDIEXPORT": {
                     "R": "3.6.3"
@@ -84,7 +85,7 @@
                     "vsearch": "2.31.0"
                 },
                 "Workflow": {
-                    "nf-core/ampliseq": "v2.18.0"
+                    "nf-core/ampliseq": "v2.19.0dev"
                 }
             },
             [

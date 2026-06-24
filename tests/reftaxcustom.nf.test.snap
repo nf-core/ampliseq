@@ -94,7 +94,7 @@
                     "qiime2": "2026.4.0"
                 },
                 "RENAME_RAW_DATA_FILES": {
-                    "sed": 4.7
+                    "bash": "5.0.17(1)-release"
                 },
                 "TRUNCLEN": {
                     "python": "3.9.1",
@@ -104,7 +104,7 @@
                     "untar": 1.34
                 },
                 "Workflow": {
-                    "nf-core/ampliseq": "v2.18.0"
+                    "nf-core/ampliseq": "v2.19.0dev"
                 }
             },
             [

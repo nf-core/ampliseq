@@ -25,16 +25,16 @@ workflow ROBJECT_WORKFLOW {
         ch_robject_inasv = ch_tsv
     }
 
-    ch_tax
-        .combine(ch_robject_inasv)
-        .combine(ch_meta.ifEmpty('EMPTY'))
-        .combine(ch_robject_intree.ifEmpty('EMPTY'))
-        .map {
-            id, tax, tsv, meta, tree ->
-                def meta_new = ( meta != 'EMPTY' ? meta : [] )
-                def tree_new = ( tree != 'EMPTY' ? tree : [] )
-                [ id, tax, tsv, meta_new, tree_new ] }
-        .set { ch_for_r_objects }
+    ch_for_r_objects =
+        ch_tax
+            .combine(ch_robject_inasv)
+            .combine(ch_meta.ifEmpty('EMPTY'))
+            .combine(ch_robject_intree.ifEmpty('EMPTY'))
+            .map {
+                id, tax, tsv, meta, tree ->
+                    def meta_new = ( meta != 'EMPTY' ? meta : [] )
+                    def tree_new = ( tree != 'EMPTY' ? tree : [] )
+                    [ id, tax, tsv, meta_new, tree_new ] }
 
     if ( !params.skip_phyloseq ) {
         PHYLOSEQ ( ch_for_r_objects )

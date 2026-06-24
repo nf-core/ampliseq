@@ -30,13 +30,13 @@ workflow SINTAX_TAXONOMY_WF {
     }
 
     //search taxonomy database with SINTAX
-    ch_fasta
-        .map {
-            fasta ->
-                def meta = [:]
-                meta.id = ASV_tax_name + ".raw"
-                [ meta, fasta ] }
-        .set { ch_fasta_sintax }
+    ch_fasta_sintax =
+        ch_fasta
+            .map {
+                fasta ->
+                    def meta = [:]
+                    meta.id = ASV_tax_name + ".raw"
+                    [ meta, fasta ] }
     VSEARCH_SINTAX( ch_fasta_sintax, ch_sintaxdb )
 
     //convert SINTAX output to DADA2 like taxonomy table

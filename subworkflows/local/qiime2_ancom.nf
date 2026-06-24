@@ -29,19 +29,19 @@ workflow QIIME2_ANCOM {
     ch_taxlevel = channel.of( tax_agglom_min..tax_agglom_max )
 
     //Filter ASV table to get rid of samples that have no metadata values
-    ch_metadata
-        .combine( ch_asv )
-        .combine( ch_metacolumn_all )
-        .set{ ch_for_filtersamples }
+    ch_for_filtersamples =
+        ch_metadata
+            .combine( ch_asv )
+            .combine( ch_metacolumn_all )
     QIIME2_FILTERSAMPLES_ANCOM ( ch_for_filtersamples )
 
     if ( params.ancom ) {
         //ANCOM on various taxonomic levels
-        ch_metadata
-            .combine( QIIME2_FILTERSAMPLES_ANCOM.out.qza )
-            .combine( ch_tax )
-            .combine( ch_taxlevel )
-            .set{ ch_for_ancom_tax }
+        ch_for_ancom_tax =
+            ch_metadata
+                .combine( QIIME2_FILTERSAMPLES_ANCOM.out.qza )
+                .combine( ch_tax )
+                .combine( ch_taxlevel )
         QIIME2_ANCOM_TAX ( ch_for_ancom_tax )
         QIIME2_ANCOM_TAX.out.ancom.subscribe { it -> if ( it.baseName[0].toString().startsWith("WARNING") ) log.warn it.baseName[0].toString().replace("WARNING ","QIIME2_ANCOM_TAX: ") }
 
@@ -51,12 +51,12 @@ workflow QIIME2_ANCOM {
 
     if ( params.ancombc ) {
         //ANCOMBC on various taxonomic levels
-        ch_metadata
-            .combine( QIIME2_FILTERSAMPLES_ANCOM.out.qza )
-            .combine( ch_tax )
-            .combine( ch_taxlevel )
-            .combine( channel.fromList([""]) )
-            .set{ ch_for_ancombc_tax }
+        ch_for_ancombc_tax =
+            ch_metadata
+                .combine( QIIME2_FILTERSAMPLES_ANCOM.out.qza )
+                .combine( ch_tax )
+                .combine( ch_taxlevel )
+                .combine( channel.fromList([""]) )
         QIIME2_ANCOMBC_TAX ( ch_for_ancombc_tax )
         QIIME2_ANCOMBC_TAX.out.da_barplot.subscribe { it -> if ( it.baseName[0].toString().startsWith("WARNING") ) log.warn it.baseName[0].toString().replace("WARNING ","QIIME2_ANCOMBC_TAX: ") }
 
@@ -69,12 +69,12 @@ workflow QIIME2_ANCOM {
 
         //ANCOMBC with ancombc_formula on various taxonomic levels
         ch_taxlevel = channel.of( tax_agglom_min..tax_agglom_max )
-        ch_metadata
-            .combine( ch_asv )
-            .combine( ch_tax )
-            .combine( ch_taxlevel )
-            .combine( ch_ancombc_formula )
-            .set{ ch_for_ancombc_tax }
+        ch_for_ancombc_tax =
+            ch_metadata
+                .combine( ch_asv )
+                .combine( ch_tax )
+                .combine( ch_taxlevel )
+                .combine( ch_ancombc_formula )
         ANCOMBC_FORMULA_TAX ( ch_for_ancombc_tax )
         ANCOMBC_FORMULA_TAX.out.da_barplot.subscribe { it -> if ( it.baseName[0].toString().startsWith("WARNING") ) log.warn it.baseName[0].toString().replace("WARNING ","QIIME2_ANCOMBC_TAX: ") }
 
@@ -84,12 +84,12 @@ workflow QIIME2_ANCOM {
 
     if ( params.ancombc2 ) {
         //ANCOMBC2 on various taxonomic levels
-        ch_metadata
-            .combine( QIIME2_FILTERSAMPLES_ANCOM.out.qza )
-            .combine( ch_tax )
-            .combine( ch_taxlevel )
-            .combine( channel.fromList([""]) )
-            .set{ ch_for_ancombc2_tax }
+        ch_for_ancombc2_tax =
+            ch_metadata
+                .combine( QIIME2_FILTERSAMPLES_ANCOM.out.qza )
+                .combine( ch_tax )
+                .combine( ch_taxlevel )
+                .combine( channel.fromList([""]) )
         QIIME2_ANCOMBC2_TAX ( ch_for_ancombc2_tax )
         QIIME2_ANCOMBC2_TAX.out.plot.subscribe { it -> if ( it.baseName[0].toString().startsWith("WARNING") ) log.warn it.baseName[0].toString().replace("WARNING ","QIIME2_ANCOMBC2_TAX: ") }
 
@@ -102,12 +102,12 @@ workflow QIIME2_ANCOM {
 
         //ANCOMBC2 with ancombc2_formula on various taxonomic levels
         ch_taxlevel = channel.of( tax_agglom_min..tax_agglom_max )
-        ch_metadata
-            .combine( ch_asv )
-            .combine( ch_tax )
-            .combine( ch_taxlevel )
-            .combine( ch_ancombc2_formula )
-            .set{ ch_for_ancombc2_tax }
+        ch_for_ancombc2_tax =
+            ch_metadata
+                .combine( ch_asv )
+                .combine( ch_tax )
+                .combine( ch_taxlevel )
+                .combine( ch_ancombc2_formula )
         ANCOMBC2_FORMULA_TAX ( ch_for_ancombc2_tax )
         ANCOMBC2_FORMULA_TAX.out.plot.subscribe { it -> if ( it.baseName[0].toString().startsWith("WARNING") ) log.warn it.baseName[0].toString().replace("WARNING ","QIIME2_ANCOMBC2_TAX: ") }
 

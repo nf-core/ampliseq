@@ -44,32 +44,28 @@ workflow QIIME2_DIVERSITY {
         QIIME2_DIVERSITY_CORE.out.depth.subscribe { it -> if ( it.baseName.toString().startsWith("WARNING") ) log.warn it.baseName.toString().replace("WARNING ","QIIME2_DIVERSITY_CORE: ") }
 
         //alpha_diversity ( ch_metadata, DIVERSITY_CORE.out.qza )
-        ch_metadata
-            .combine( QIIME2_DIVERSITY_CORE.out.vector.flatten() )
-            .set{ ch_to_diversity_alpha }
+        ch_to_diversity_alpha = ch_metadata.combine( QIIME2_DIVERSITY_CORE.out.vector.flatten() )
         QIIME2_DIVERSITY_ALPHA ( ch_to_diversity_alpha )
 
         //beta_diversity ( ch_metadata, DIVERSITY_CORE.out.qza, ch_metacolumn_pairwise )
-        ch_metadata
-            .combine( QIIME2_DIVERSITY_CORE.out.distance.flatten() )
-            .combine( ch_metacolumn_pairwise )
-            .set{ ch_to_diversity_beta }
+        ch_to_diversity_beta =
+            ch_metadata
+                .combine( QIIME2_DIVERSITY_CORE.out.distance.flatten() )
+                .combine( ch_metacolumn_pairwise )
         QIIME2_DIVERSITY_BETA ( ch_to_diversity_beta )
 
         //adonis ( ch_metadata, DIVERSITY_CORE.out.qza )
         if (params.qiime_adonis_formula) {
             ch_qiime_adonis_formula = channel.fromList(params.qiime_adonis_formula.tokenize(','))
-            ch_metadata
-                .combine( QIIME2_DIVERSITY_CORE.out.distance.flatten() )
-                .combine( ch_qiime_adonis_formula )
-                .set{ ch_to_diversity_beta }
+            ch_to_diversity_beta =
+                ch_metadata
+                    .combine( QIIME2_DIVERSITY_CORE.out.distance.flatten() )
+                    .combine( ch_qiime_adonis_formula )
             QIIME2_DIVERSITY_ADONIS ( ch_to_diversity_beta )
         }
 
         //beta_diversity_ordination ( ch_metadata, DIVERSITY_CORE.out.qza )
-        ch_metadata
-            .combine( QIIME2_DIVERSITY_CORE.out.pcoa.flatten() )
-            .set{ ch_to_diversity_betaord }
+        ch_to_diversity_betaord = ch_metadata.combine( QIIME2_DIVERSITY_CORE.out.pcoa.flatten() )
         QIIME2_DIVERSITY_BETAORD ( ch_to_diversity_betaord )
     }
 

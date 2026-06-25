@@ -1,5 +1,5 @@
 process COMPARE_SEQUENCES {
-    tag "${prefix}"
+    tag "${meta.id}"
     label 'process_single'
 
     conda "conda-forge::r-base=4.2.1"
@@ -17,28 +17,27 @@ process COMPARE_SEQUENCES {
     output:
     path("*.svg")                            , emit: svg
     path("*.png")                            , emit: png
-    path("*_nucleotide-differences.tsv")     , emit: matches
+    path("*nucleotide-differences.tsv")      , emit: matches
     path("*_per-sample.tsv")                 , emit: matches_per_sample
     path("*nucleotide-differences.log")      , emit: log
-    path("*.md5sum_version")                 , emit: md5sum_version
+    path("md5sum_version.txt")               , emit: md5sum_version
     path("Warnings.txt")                     , emit: warnings
     path "versions.yml"                      , emit: versions, topic: versions
 
     script:
-    prefix = "${meta.id}"
     """
     compare_sequences.r \\
         "$blast6out" \\
         "$detected_abundances" \\
         "$expected_abundances" \\
-        "$prefix" \\
+        "" \\
         "$similarity_threshold" \\
         "$query_or_target" \\
-        >"${prefix}_nucleotide-differences.log"
-    echo "md5sum_version $prefix" > "${prefix}.md5sum_version"
+        >"nucleotide-differences.log"
+    echo "md5sum_version ${meta.id}" > "md5sum_version.txt"
 
     # isolate warnings in plot (when grep find no match, exit code is 1, "|| true" fixes that)
-    grep "WARN -" "${prefix}_nucleotide-differences.log" | sed 's/^\\[1\\] //g' | sed 's/"//g' > Warnings.txt || true
+    grep "WARN -" "nucleotide-differences.log" | sed 's/^\\[1\\] //g' | sed 's/"//g' > Warnings.txt || true
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

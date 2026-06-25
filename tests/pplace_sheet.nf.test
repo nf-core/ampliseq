@@ -38,6 +38,7 @@ nextflow_pipeline {
                     path("$outputDir/input/Samplesheet.tsv"),
                     path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt"),
                     path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt"),
+                    path("$outputDir/comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/nucleotide-differences.tsv"),
                     path("$outputDir/pplace/epang/arc.epa_result.jplace.gz").linesGzip.size(),
                     path("$outputDir/pplace/epang/bac16s.epa_result.jplace.gz").linesGzip.size(),
                     path("$outputDir/pplace/arc.graft.arc.epa_result.newick").readLines().size(),

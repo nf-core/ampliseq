@@ -94,7 +94,7 @@ if (file.exists(expabundFILE)) {
 blast6out <- blast6out[order(blast6out$query, blast6out$target),]
 
 # write file
-outfile <- paste0(prefix,"_nucleotide-differences.tsv")
+outfile <- paste0(prefix,"nucleotide-differences.tsv")
 print(paste("write",outfile))
 write.table(blast6out, file = outfile, row.names = FALSE, col.names = TRUE, quote = FALSE, na = '', sep="\t")
 
@@ -148,7 +148,7 @@ for (sample in SAMPLES) {
 	df <- rbind(df, data.frame(Var1 = paste0(">=",(1-similarity_threshold)*100,"%"), Freq = length(unique(s_below_threshold$ID))))
 	colnames(df) <- c("Mismatches to expected sequences","Number of sequences")
 
-	outfile <- paste(prefix,sample,"nucleotide-distance_barplot.svg",sep="_")
+	outfile <- paste0(prefix,sample,"_nucleotide-distance_barplot.svg")
 	print(paste("write",outfile))
 	svg(outfile, height = 4, width = 5)
 	barplot(df[,2],
@@ -158,7 +158,7 @@ for (sample in SAMPLES) {
 		ylab="Number of sequences")
 	invisible(dev.off())
 
-	outfile <- paste(prefix,sample,"nucleotide-distance_barplot.png",sep="_")
+	outfile <- paste0(prefix,sample,"_nucleotide-distance_barplot.png")
 	print(paste("write",outfile))
 	png(outfile, height = 400, width = 500)
 	barplot(df[,2],
@@ -169,7 +169,7 @@ for (sample in SAMPLES) {
 	invisible(dev.off())
 
 	# write file
-	outfile <- paste(prefix,sample,"nucleotide-differences_per-sample.tsv",sep="_")
+	outfile <- paste0(prefix,sample,"_nucleotide-differences_per-sample.tsv")
 	print(paste("write",outfile))
 	write.table(df, file = outfile, row.names = FALSE, col.names = TRUE, quote = FALSE, na = '', sep="\t")
 }

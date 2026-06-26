@@ -4,11 +4,11 @@
 
 # Get params and files from the command line
 args            <- commandArgs(trailingOnly=TRUE)
-blast6outFILE   <- args[1] # expected columns: "query+target+ql+tl+qilo+qihi+tilo+tihi+gaps+mism+qstrand", see https://torognes.github.io/vsearch/misc/vsearch-userfields.7.html
-obsabundFILE    <- args[2] # obsabundFILE # observed abundance*
-expabundFILE    <- args[3] # expabundFILE # expected abundance*
+alignmentFILE   <- args[1] # expected columns: "query+target+ql+tl+qilo+qihi+tilo+tihi+gaps+mism+qstrand", see https://torognes.github.io/vsearch/misc/vsearch-userfields.7.html
+obsabundFILE    <- args[2] # observed abundance*
+expabundFILE    <- args[3] # expected abundance*
 prefix          <- args[4] # prefix string for output files
-similarity_threshold <- as.numeric(args[5]) # similarity threshold for blast6outFILE
+similarity_threshold <- as.numeric(args[5]) # similarity threshold for alignmentFILE
 query_or_target <- args[6] # use mismatches to query or to target?
 # tab-separated file with header: first column with sequences name, following one or many columns (=samples) with numeric values (=abundance), only presence (>0)/absence are used here
 
@@ -22,8 +22,8 @@ if (file.exists(expabundFILE)) {
 # PREPARE
 
 # Read sequence alignment table
-blast6out = read.table( blast6outFILE, header = FALSE, sep = "\t", stringsAsFactors = FALSE, check.names = FALSE, strip.white = TRUE)
-colnames(blast6out) <- c("query","target","ql","tl","qilo","qihi","tilo","tihi","gaps","mism","qstrand")
+alignment = read.table( alignmentFILE, header = FALSE, sep = "\t", stringsAsFactors = FALSE, check.names = FALSE, strip.white = TRUE)
+colnames(alignment) <- c("query","target","ql","tl","qilo","qihi","tilo","tihi","gaps","mism","qstrand")
 
 # Read pipeline's ASV abundance table (either from QIIME2 [skipping first line] or from previous steps)
 if (grepl("^# Constructed from biom file", readLines(obsabundFILE, n = 1))) {
@@ -54,6 +54,14 @@ if (file.exists(expabundFILE)) {
 	if ( !all(exp_samples %in% SAMPLES) ) {
 		print(paste("WARN - sample(s) not observed and omitted:",paste(exp_samples[!exp_samples %in% SAMPLES], collapse="," )))
 	}
+	# warn about missing sequences
+	alignment_target <- alignment$target[alignment$target != "*"]
+	if( !all(alignment_target %in% exp$ID) ) {
+		print(paste("WARN - Some expected sequences in alignment results are not in",expabundFILE,". The following are missing:",paste( unique(alignment_target[!alignment_target %in% exp$ID]),collapse=",")))
+	}
+	if( !all(exp$ID %in% alignment$target) ) {
+		print(paste("WARN - Some expected sequences of",expabundFILE,"are not in the alignment results. The following are missing:",paste( unique(exp$ID[!exp$ID %in% alignment$target]),collapse=",")))
+	}
 }
 
 # check if there are any samples to analyse
@@ -61,53 +69,33 @@ if (length(SAMPLES) == 0) {
 	stop("ERROR - Found no samples to investigate")
 }
 
-# Investigate blast6out, required columns: query,target,ql,tl,qilo,qihi,tilo,tihi,gaps,mism
-blast6out$qterminalgaps <- blast6out$ql - (abs(blast6out$qihi-blast6out$qilo)+1)
-blast6out$qmism <- blast6out$gaps + blast6out$qterminalgaps + blast6out$mism
-blast6out$tterminalgaps <- blast6out$tl - (abs(blast6out$tihi-blast6out$tilo)+1)
-blast6out$tmism <- blast6out$gaps + blast6out$tterminalgaps + blast6out$mism
+# Investigate alignment, required columns: query,target,ql,tl,qilo,qihi,tilo,tihi,gaps,mism
+alignment$qterminalgaps <- alignment$ql - (abs(alignment$qihi-alignment$qilo)+1)
+alignment$qmism <- alignment$gaps + alignment$qterminalgaps + alignment$mism
+alignment$tterminalgaps <- alignment$tl - (abs(alignment$tihi-alignment$tilo)+1)
+alignment$tmism <- alignment$gaps + alignment$tterminalgaps + alignment$mism
 if( query_or_target=="query" ) {
-	blast6out$mismatch_final <- blast6out$qmism
+	alignment$mismatch_final <- alignment$qmism
 } else if( query_or_target=="target" ) {
-	blast6out$mismatch_final <- blast6out$tmism
+	alignment$mismatch_final <- alignment$tmism
 } else if( query_or_target=="alignment" ) {
-	blast6out$mismatch_final <- blast6out$gaps + blast6out$mism
+	alignment$mismatch_final <- alignment$gaps + alignment$mism
 } else {
 	stop( paste("ERROR -",query_or_target,"is not valid (valid: query,target,alignment)") )
 }
 
-# add sample info if available
-if (file.exists(expabundFILE)) {
-	blast6out_target <- blast6out$target[blast6out$target != "*"]
-	# make sure no column names overlap
-	overlap <- intersect( colnames(blast6out), colnames(exp) )
-	if( length(overlap) > 0 ) {
-		stop( paste("ERROR - The following names may not be in sample names:", paste(,collapse=",")) )
-	}
-	# warn about missing sequences
-	if( !all(blast6out_target %in% exp$ID) ) {
-		print(paste("WARN - Some expected sequences in alignment results are not in",expabundFILE,". The following are missing:",paste( unique(blast6out_target[!blast6out_target %in% exp$ID]),collapse=",")))
-	}
-	if( !all(exp$ID %in% blast6out$target) ) {
-		print(paste("WARN - Some expected sequences of",expabundFILE,"are not in the alignment results. The following are missing:",paste( unique(exp$ID[!exp$ID %in% blast6out$target]),collapse=",")))
-	}
-	blast6out <- merge(blast6out,exp, by.x='target', by.y='ID', all.x=TRUE, all.y=TRUE)
-	# swap target and query again
-	blast6out <- blast6out[, c("query", "target", setdiff(names(blast6out), c("target", "query")))]
-}
-
 # order for reproducibility
-blast6out <- blast6out[order(blast6out$query, blast6out$target),]
+alignment <- alignment[order(alignment$query, alignment$target),]
 
 # write file
 outfile <- paste0(prefix,"nucleotide-differences.tsv")
 print(paste("write",outfile))
-write.table(blast6out, file = outfile, row.names = FALSE, col.names = TRUE, quote = FALSE, na = '', sep="\t")
+write.table(alignment, file = outfile, row.names = FALSE, col.names = TRUE, quote = FALSE, na = '', sep="\t")
 
 # ANALYSE
 
 # select matches above threshold
-matches_above_threshold <- blast6out[blast6out$target !="*",]
+matches_above_threshold <- alignment[alignment$target !="*",]
 
 for (sample in SAMPLES) {
 	if( file.exists(expabundFILE) ) {

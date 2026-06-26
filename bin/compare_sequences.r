@@ -4,7 +4,7 @@
 
 # Get params and files from the command line
 args            <- commandArgs(trailingOnly=TRUE)
-blast6outFILE   <- args[1] # expected columns: "query+target+id+alnlen+mism+opens+qilo+qihi+tilo+tihi+ids+gaps+ql+tl+qstrand", see https://torognes.github.io/vsearch/misc/vsearch-userfields.7.html
+blast6outFILE   <- args[1] # expected columns: "query+target+ql+tl+qilo+qihi+tilo+tihi+gaps+mism+qstrand", see https://torognes.github.io/vsearch/misc/vsearch-userfields.7.html
 obsabundFILE    <- args[2] # obsabundFILE # observed abundance*
 expabundFILE    <- args[3] # expabundFILE # expected abundance*
 prefix          <- args[4] # prefix string for output files
@@ -23,7 +23,7 @@ if (file.exists(expabundFILE)) {
 
 # Read sequence alignment table
 blast6out = read.table( blast6outFILE, header = FALSE, sep = "\t", stringsAsFactors = FALSE, check.names = FALSE, strip.white = TRUE)
-colnames(blast6out) <- c("query","target","pident","alnlen","mismatch","gap_openings","qstart","qend","tstart","tend","ids","gaps","qlen","tlen","qstrand")
+colnames(blast6out) <- c("query","target","ql","tl","qilo","qihi","tilo","tihi","gaps","mism","qstrand")
 
 # Read pipeline's ASV abundance table (either from QIIME2 [skipping first line] or from previous steps)
 if (grepl("^# Constructed from biom file", readLines(obsabundFILE, n = 1))) {
@@ -61,17 +61,17 @@ if (length(SAMPLES) == 0) {
 	stop("ERROR - Found no samples to investigate")
 }
 
-# Investigate blast6out, required columns: query,target,qlen,tlen,qstart,qend,tstart,tend,gaps,mismatch
-blast6out$qterminalgaps <- blast6out$qlen - (abs(blast6out$qend-blast6out$qstart)+1)
-blast6out$qmismatch <- blast6out$gaps + blast6out$qterminalgaps + blast6out$mismatch
-blast6out$tterminalgaps <- blast6out$tlen - (abs(blast6out$tend-blast6out$tstart)+1)
-blast6out$tmismatch <- blast6out$gaps + blast6out$tterminalgaps + blast6out$mismatch
+# Investigate blast6out, required columns: query,target,ql,tl,qilo,qihi,tilo,tihi,gaps,mism
+blast6out$qterminalgaps <- blast6out$ql - (abs(blast6out$qihi-blast6out$qilo)+1)
+blast6out$qmism <- blast6out$gaps + blast6out$qterminalgaps + blast6out$mism
+blast6out$tterminalgaps <- blast6out$tl - (abs(blast6out$tihi-blast6out$tilo)+1)
+blast6out$tmism <- blast6out$gaps + blast6out$tterminalgaps + blast6out$mism
 if( query_or_target=="query" ) {
-	blast6out$mismatch_final <- blast6out$qmismatch
+	blast6out$mismatch_final <- blast6out$qmism
 } else if( query_or_target=="target" ) {
-	blast6out$mismatch_final <- blast6out$tmismatch
+	blast6out$mismatch_final <- blast6out$tmism
 } else if( query_or_target=="alignment" ) {
-	blast6out$mismatch_final <- blast6out$gaps + blast6out$mismatch
+	blast6out$mismatch_final <- blast6out$gaps + blast6out$mism
 } else {
 	stop( paste("ERROR -",query_or_target,"is not valid (valid: query,target,alignment)") )
 }
@@ -79,6 +79,12 @@ if( query_or_target=="query" ) {
 # add sample info if available
 if (file.exists(expabundFILE)) {
 	blast6out_target <- blast6out$target[blast6out$target != "*"]
+	# make sure no column names overlap
+	overlap <- intersect( colnames(blast6out), colnames(exp) )
+	if( length(overlap) > 0 ) {
+		stop( paste("ERROR - The following names may not be in sample names:", paste(,collapse=",")) )
+	}
+	# warn about missing sequences
 	if( !all(blast6out_target %in% exp$ID) ) {
 		print(paste("WARN - Some expected sequences in alignment results are not in",expabundFILE,". The following are missing:",paste( unique(blast6out_target[!blast6out_target %in% exp$ID]),collapse=",")))
 	}

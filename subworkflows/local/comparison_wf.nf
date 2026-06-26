@@ -19,7 +19,7 @@ workflow COMPARISON_WF {
         ch_expected_sequences,
         similarity_threshold,
         'userout',
-        "query+target+id+alnlen+mism+opens+qilo+qihi+tilo+tihi+ids+gaps+ql+tl+qstrand" )
+        "query+target+ql+tl+qilo+qihi+tilo+tihi+gaps+mism+qstrand" )
 
     // Investigate mismatches per sample, plus barplot (y = number of sequences, x = number of mismatches)
     COMPARE_SEQUENCES ( VSEARCH_USEARCHGLOBAL_BM.out.tsv, ch_observed_abundances, ch_expected_abundances.ifEmpty([]), similarity_threshold, query_or_target )

@@ -304,7 +304,7 @@
             "multiqc_fastqc.txt:md5,7d23984b06e4251f17e1cfce7a04aaae",
             "multiqc_general_stats.txt:md5,885c19ff3e53d16bfe7937d6694268d7",
             "multiqc_cutadapt.txt:md5,3dce058d2d6c85a3cca7314ae19c5586",
-            "nucleotide-differences.tsv:md5,4c0b10d279508d21c58b0411e4944f6e"
+            "nucleotide-differences.tsv:md5,160f7e62670478d40de6c74a7eae405d"
         ],
         "timestamp": "2026-06-24T15:07:50.576330079",
         "meta": {

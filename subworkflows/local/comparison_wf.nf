@@ -5,24 +5,24 @@ workflow COMPARISON_WF {
     take:
     val_md5sum_version     // md5sum of params appended by pipeline version
     query_or_target        // region to evaluate
-    ch_detected_sequences  // detected sequences (fasta)
-    ch_detected_abundances // detected sequences (abundance table)
+    ch_observed_sequences  // observed sequences (fasta)
+    ch_observed_abundances // observed sequences (abundance table)
     ch_expected_sequences  // expected sequences (fasta)
     ch_expected_abundances // expected sequences (abundance table)
 
     main:
-    // Compare detected sequences to expected sequences (global alignment)
+    // Compare observed sequences to expected sequences (global alignment)
     // alternative:-> "minimap2 -x asm5 -c reference.fasta query.fasta > alignments.paf" where "-cx asm5" are critical params
     def similarity_threshold = "0.80" // similarity threshold for alignment
     VSEARCH_USEARCHGLOBAL_BM (
-        ch_detected_sequences.map { it = [ [id: val_md5sum_version], file(it) ] },
+        ch_observed_sequences.map { it = [ [id: val_md5sum_version], file(it) ] },
         ch_expected_sequences,
         similarity_threshold,
         'userout',
         "query+target+id+alnlen+mism+opens+qilo+qihi+tilo+tihi+ids+gaps+ql+tl+qstrand" )
 
     // Investigate mismatches per sample, plus barplot (y = number of sequences, x = number of mismatches)
-    COMPARE_SEQUENCES ( VSEARCH_USEARCHGLOBAL_BM.out.tsv, ch_detected_abundances, ch_expected_abundances.ifEmpty([]), similarity_threshold, query_or_target )
+    COMPARE_SEQUENCES ( VSEARCH_USEARCHGLOBAL_BM.out.tsv, ch_observed_abundances, ch_expected_abundances.ifEmpty([]), similarity_threshold, query_or_target )
     COMPARE_SEQUENCES.out.warnings.subscribe{ it ->
             if( it.countLines() > 0 ) { log.warn "about comparing sequences\n\n" + it.splitText().join("") }
         }

@@ -5,18 +5,18 @@
 # Get params and files from the command line
 args            <- commandArgs(trailingOnly=TRUE)
 blast6outFILE   <- args[1] # expected columns: "query+target+id+alnlen+mism+opens+qilo+qihi+tilo+tihi+ids+gaps+ql+tl+qstrand", see https://torognes.github.io/vsearch/misc/vsearch-userfields.7.html
-detabundFILE    <- args[2] # detabundFILE # calculated sequences*
-expabundFILE    <- args[3] # expabundFILE # expected sequences*
+obsabundFILE    <- args[2] # obsabundFILE # observed abundance*
+expabundFILE    <- args[3] # expabundFILE # expected abundance*
 prefix          <- args[4] # prefix string for output files
 similarity_threshold <- as.numeric(args[5]) # similarity threshold for blast6outFILE
-query_or_target <- args[6] # use mismatches to quary or to target?
+query_or_target <- args[6] # use mismatches to query or to target?
 # tab-separated file with header: first column with sequences name, following one or many columns (=samples) with numeric values (=abundance), only presence (>0)/absence are used here
 
 # Input
 if (file.exists(expabundFILE)) {
-	print(paste("Compare file",detabundFILE,"to",expabundFILE))
+	print(paste("Compare",obsabundFILE,"to",expabundFILE))
 } else {
-	print(paste("Compare",detabundFILE,"to all sequences"))
+	print(paste("Compare",obsabundFILE,"to all sequences"))
 }
 
 # PREPARE
@@ -26,17 +26,17 @@ blast6out = read.table( blast6outFILE, header = FALSE, sep = "\t", stringsAsFact
 colnames(blast6out) <- c("query","target","pident","alnlen","mismatch","gap_openings","qstart","qend","tstart","tend","ids","gaps","qlen","tlen","qstrand")
 
 # Read pipeline's ASV abundance table (either from QIIME2 [skipping first line] or from previous steps)
-if (grepl("^# Constructed from biom file", readLines(detabundFILE, n = 1))) {
-	res = read.table( detabundFILE, header = TRUE, sep = "\t", stringsAsFactors = FALSE, check.names = FALSE, strip.white = TRUE, comment.char = "", skip=1 )
+if (grepl("^# Constructed from biom file", readLines(obsabundFILE, n = 1))) {
+	observed = read.table( obsabundFILE, header = TRUE, sep = "\t", stringsAsFactors = FALSE, check.names = FALSE, strip.white = TRUE, comment.char = "", skip=1 )
 } else {
-	res = read.table( detabundFILE, header = TRUE, sep = "\t", stringsAsFactors = FALSE, check.names = FALSE, strip.white = TRUE, comment.char = "" )
+	observed = read.table( obsabundFILE, header = TRUE, sep = "\t", stringsAsFactors = FALSE, check.names = FALSE, strip.white = TRUE, comment.char = "" )
 }
-colnames(res)[1] <- "ID"
+colnames(observed)[1] <- "ID"
 
 # select available samples
-res_samples <- colnames(res)[2:ncol(res)]
-print(paste( "Measured samples:", paste(res_samples,collapse=",")))
-SAMPLES <- res_samples
+observed_samples <- colnames(observed)[2:ncol(observed)]
+print(paste( "Observed samples:", paste(observed_samples,collapse=",")))
+SAMPLES <- observed_samples
 
 # Read expected abundance table if it exists
 if (file.exists(expabundFILE)) {
@@ -45,14 +45,14 @@ if (file.exists(expabundFILE)) {
 	# extract samples to analyse
 	exp_samples <- colnames(exp)[2:ncol(exp)]
 	print(paste( "Expected samples:", paste( exp_samples ,collapse=",")))
-	SAMPLES <- exp_samples[exp_samples %in% res_samples]
+	SAMPLES <- exp_samples[exp_samples %in% observed_samples]
 	print(paste( "Investigate samples:", paste( SAMPLES ,collapse=",")))
 	# warn if samples are missing due to incomplete overlap
-	if ( !all(res_samples %in% SAMPLES) ) {
-		print(paste("WARN - sample(s) not in",expabundFILE,"and omitted:",paste(res_samples[!res_samples %in% SAMPLES], collapse="," )))
+	if ( !all(observed_samples %in% SAMPLES) ) {
+		print(paste("WARN - sample(s) not expected (file:",expabundFILE,") and omitted:",paste(observed_samples[!observed_samples %in% SAMPLES], collapse="," )))
 	}
 	if ( !all(exp_samples %in% SAMPLES) ) {
-		print(paste("WARN - sample(s) not in pipeline output and omitted:",paste(exp_samples[!exp_samples %in% SAMPLES], collapse="," )))
+		print(paste("WARN - sample(s) not observed and omitted:",paste(exp_samples[!exp_samples %in% SAMPLES], collapse="," )))
 	}
 }
 
@@ -132,16 +132,16 @@ for (sample in SAMPLES) {
 
 	# filter for ASVs in that sample
 	keep_cols <- c("ID",sample)
-	s_res <- subset(res, select = keep_cols)
-	# keep only detected in that sample (abundance > 0)
-	s_res = s_res[s_res[,2] > 0,]
-	print(paste("Found",nrow(s_res),"ASVs of",nrow(res),"in sample",sample))
+	s_observed <- subset(observed, select = keep_cols)
+	# keep only observed entries in that sample (abundance > 0)
+	s_observed = s_observed[s_observed[,2] > 0,]
+	print(paste("Found",nrow(s_observed),"of",nrow(observed),"observed sequences in sample",sample))
 
-	# filter alignment result by detected
-	s_matches <- s_matches[s_matches$query %in% s_res$ID,]
-	print(paste("Found",nrow(s_matches),"ASVs with match in sample",sample))
-	s_below_threshold <- s_res[!s_res$ID %in% s_matches$query,]
-	print(paste("Found",nrow(s_below_threshold),"ASV without match in sample",sample))
+	# filter alignment result by observed
+	s_matches <- s_matches[s_matches$query %in% s_observed$ID,]
+	print(paste("Found",nrow(s_matches),"observed sequences with match in sample",sample))
+	s_below_threshold <- s_observed[!s_observed$ID %in% s_matches$query,]
+	print(paste("Found",nrow(s_below_threshold),"observed sequences without match in sample",sample))
 
 	# make barplot
 	df <- as.data.frame( table(s_matches$mismatch_final) )
@@ -153,7 +153,7 @@ for (sample in SAMPLES) {
 	svg(outfile, height = 4, width = 5)
 	barplot(df[,2],
 		names.arg=df[,1],
-		main=paste("Sample",sample,"with",length(unique(s_res$ID)),"detected sequences\n(",length(unique(s_matches$query)),"sequences above",similarity_threshold*100,"% similarity)"),
+		main=paste("Sample",sample,"with",length(unique(s_observed$ID)),"observed sequences\n(",length(unique(s_matches$query)),"sequences above",similarity_threshold*100,"% similarity)"),
 		xlab="Mismatches to expected sequences",
 		ylab="Number of sequences")
 	invisible(dev.off())
@@ -163,7 +163,7 @@ for (sample in SAMPLES) {
 	png(outfile, height = 400, width = 500)
 	barplot(df[,2],
 		names.arg=df[,1],
-		main=paste("Sample",sample,"with",length(unique(s_res$ID)),"detected sequences\n(",length(unique(s_matches$query)),"sequences above",similarity_threshold*100,"% similarity)"),
+		main=paste("Sample",sample,"with",length(unique(s_observed$ID)),"observed sequences\n(",length(unique(s_matches$query)),"sequences above",similarity_threshold*100,"% similarity)"),
 		xlab="Mismatches to expected sequences",
 		ylab="Number of sequences")
 	invisible(dev.off())

@@ -4,39 +4,13 @@
 
 > _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
 
-## Table of Contents
+## Introduction
 
-- [Running the pipeline](#running-the-pipeline)
-  - [Quick start](#quick-start)
-  - [Setting parameters in a file](#setting-parameters-in-a-file)
-  - [Input specifications](#input-specifications)
-    - [Sample sheet input](#sample-sheet-input)
-    - [ASV/OTU fasta input](#asvotu-fasta-input)
-    - [Direct FASTQ input](#direct-fastq-input)
-  - [Regions of variable length e.g. ITS](#regions-of-variable-length-eg-its)
-    - [ITS extraction tool](#its-extraction-tool)
-  - [Decontamination](#decontamination)
-  - [Taxonomic classification](#taxonomic-classification)
-  - [Multiple region analysis with Sidle](#multiple-region-analysis-with-sidle)
-  - [Metadata](#metadata)
-  - [Differential abundance analysis](#differential-abundance-analysis)
-  - [Phylogenetic placement](#phylogenetic-placement)
-    - [Single reference phylogenetic placement](#single-reference-phylogenetic-placement)
-    - [Multiple reference phylogenetic placement](#multiple-reference-phylogenetic-placement)
-    - [Placement in database-provided phylogenies](#placement-in-database-provided-phylogenies)
-  - [Updating the pipeline](#updating-the-pipeline)
-  - [Reproducibility](#reproducibility)
-- [Core Nextflow arguments](#core-nextflow-arguments)
-  - [`-profile`](#-profile)
-  - [`-resume`](#-resume)
-  - [`-c`](#-c)
-- [Custom configuration](#custom-configuration)
-  - [Resource requests](#resource-requests)
-  - [Custom Containers](#custom-containers)
-  - [Custom Tool Arguments](#custom-tool-arguments)
-  - [nf-core/configs](#nf-coreconfigs)
-- [Running in the background](#running-in-the-background)
-- [Nextflow memory requirements](#nextflow-memory-requirements)
+The nf-core/ampliseq pipeline is a Nextflow-based workflow for amplicon sequencing analysis, supporting denoising (via DADA2) and taxonomic assignment (via QIIME2) for 16S, ITS, 18S, and other amplicons, with defaults optimized for Illumina paired-end 16S rRNA data.
+By default, it performs quality filtering, denoising, chimera removal, taxonomic classification, and generates diversity metrics, count tables, and interactive visualizations, making it ready to use out-of-the-box for standard microbial community analyses.
+You may want to customize the primer sequences, reference databases, or compute resources to match your data or infrastructure.
+The pipeline also allows overriding default containers or adding custom parameters for specific tools, which is useful for keeping up with rapidly updated databases or specialized analyses.
+For most users, the main sections of interest will be the input parameters (e.g., --input, --FW_primer, --RV_primer, --metadata) and output documentation, as these define how to tailor the pipeline to your project and interpret the results.
 
 ## Running the pipeline
 
@@ -361,6 +335,10 @@ The metadata file must be tab-separated with a header line. The first column in 
 Sample identifiers should be 36 characters long or less, and also contain only ASCII alphanumeric characters (i.e. in the range of [a-z], [A-Z], or [0-9]), or the underscore (\_) character. For downstream analysis, by default all numeric columns, blanks or NA are removed, and only columns with multiple different values but not all unique are selected.
 
 The columns which are to be assessed can be specified by `--metadata_category`. If `--metadata_category` isn't specified than all columns that fit the specification are automatically chosen.
+
+### Comparison to expected outcomes
+
+To investigate the quality of data generation and/or data analysis, analysis outcome is compared to expected results. Comparison steps are implemented in the pipeline and can be used with `--expected_*` parameters, details in the [parameter documentation](https://nf-co.re/ampliseq/parameters/#comparison).
 
 ### Differential abundance analysis
 

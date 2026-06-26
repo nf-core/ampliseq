@@ -8,7 +8,7 @@
                 "BARRNAPSUMMARY": {
                     "python": "Python 3.9.1"
                 },
-                "COMBINE_TABLE_DADA2": {
+                "COMBINE_TABLE": {
                     "R": "4.0.3"
                 },
                 "CUTADAPT_BASIC": {
@@ -941,7 +941,7 @@
                 "qiime2/rel_abundance_tables/rel-table-5.tsv",
                 "qiime2/rel_abundance_tables/rel-table-6.tsv",
                 "qiime2/rel_abundance_tables/rel-table-ASV.tsv",
-                "qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-tax.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-user-tax.tsv",
                 "qiime2/representative_sequences",
                 "qiime2/representative_sequences/descriptive_stats.tsv",
                 "qiime2/representative_sequences/filtered-sequences.qza",

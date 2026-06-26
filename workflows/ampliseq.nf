@@ -1120,6 +1120,7 @@ workflow AMPLISEQ {
     if ( params.expected_sequences ) {
         COMPARISON_WF (
             ( params.findAll{ it.key != 'trace_report_suffix' }.toString().md5() + "_${workflow.manifest.version}" ),  // md5sum of params (without variable time stamp in "trace_report_suffix") appended by pipeline version
+            params.trace_report_suffix, // record this as link to files in pipeline_info
             params.expected_sequences_region,
             run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.abs_fasta : ch_dada2_fasta,  // observed sequences (fasta)
             run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.rel_tsv : ch_dada2_asv,      // observed sequences (abundance table)

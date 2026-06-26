@@ -4,6 +4,7 @@ include { COMPARE_SEQUENCES       } from '../../modules/local/compare_sequences'
 workflow COMPARISON_WF {
     take:
     val_md5sum_version     // md5sum of params appended by pipeline version
+    trace_report_suffix    // params.trace_report_suffix that allows linkage to files in pipeline_info, such as pipeline_info/params_<trace_report_suffix>.json
     query_or_target        // region to evaluate
     ch_observed_sequences  // observed sequences (fasta)
     ch_observed_abundances // observed sequences (abundance table)
@@ -22,7 +23,7 @@ workflow COMPARISON_WF {
         "query+target+ql+tl+qilo+qihi+tilo+tihi+gaps+mism+qstrand" )
 
     // Investigate mismatches per sample, plus barplot (y = number of sequences, x = number of mismatches)
-    COMPARE_SEQUENCES ( VSEARCH_USEARCHGLOBAL_BM.out.tsv, ch_observed_abundances, ch_expected_abundances.ifEmpty([]), similarity_threshold, query_or_target )
+    COMPARE_SEQUENCES ( VSEARCH_USEARCHGLOBAL_BM.out.tsv, ch_observed_abundances, ch_expected_abundances.ifEmpty([]), similarity_threshold, query_or_target, trace_report_suffix )
     COMPARE_SEQUENCES.out.warnings.subscribe{ it ->
             if( it.countLines() > 0 ) { log.warn "about comparing sequences\n\n" + it.splitText().join("") }
         }

@@ -667,13 +667,13 @@ Comparison evaluates observed results against expected outcomes, typically for s
 
 - `comparison/<parameter md5sum>_<pipeline version>`
   - `vsearch_usearchglobal.tsv`: VSEARCH --usearch_global output for ASV to sequence comparisons.
-  - `md5sum_version.txt`: Contains parameter md5sum and pipeline version that is also the folder name.
-  - `nucleotide-differences.log`: Log file for comparing matches of ASVs to expected sequences
-  - `nucleotide-differences.tsv`: Tabl-separated table based on VSEARCH results comparing matches of ASVs to expected sequences
+  - `md5sum_version.txt`: Contains parameter md5sum and pipeline version that is also the folder name, additionally the time stamp used in files in `pipeline_info/`.
+  - `nucleotide-differences.log`: Log file for comparing matches of ASVs to expected sequences.
+  - `nucleotide-differences.tsv`: Tabl-separated table based on VSEARCH results comparing matches of ASVs to expected sequences.
 - `comparison/<parameter md5sum>_<pipeline version>/per-sample`
-  - `<sample>_nucleotide-differences_per-sample.tsv`: Number of sequences and mismatches to expected sequences
-  - `<sample>_nucleotide-distance_barplot.png`: Barplot of number of sequences versus number of mismatches
-  - `<sample>_nucleotide-distance_barplot.svg`: Barplot of number of sequences versus number of mismatches
+  - `<sample>_nucleotide-differences_per-sample.tsv`: Number of sequences and mismatches to expected sequences.
+  - `<sample>_nucleotide-distance_barplot.png`: Barplot of number of sequences versus number of mismatches in png format.
+  - `<sample>_nucleotide-distance_barplot.svg`: Barplot of number of sequences versus number of mismatches in svg format.
 
 </details>
 

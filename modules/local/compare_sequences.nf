@@ -13,6 +13,7 @@ process COMPARE_SEQUENCES {
     path(expected_abundances)        // ASV table from params.expected_abundances
     val(similarity_threshold)        // Similarity threshold for maches of VSEARCH
     val(query_or_target)             // what reagion to evaluate (query,target,alignment) from params.expected_sequences_region
+    val(trace_report_suffix)         // timestamp of pipeline info files
 
     output:
     path("*.svg")                            , emit: svg
@@ -34,9 +35,12 @@ process COMPARE_SEQUENCES {
         "$similarity_threshold" \\
         "$query_or_target" \\
         >"nucleotide-differences.log"
-    echo "md5sum_version ${meta.id}" > "md5sum_version.txt"
 
-    # isolate warnings in plot (when grep find no match, exit code is 1, "|| true" fixes that)
+    # save unique tags to file
+    echo "md5sum_version ${meta.id}" > "md5sum_version.txt"
+    echo "trace_report_suffix ${trace_report_suffix}" >> "md5sum_version.txt"
+
+    # isolate warnings (when grep find no match, exit code is 1, "|| true" fixes that)
     grep "WARN -" "nucleotide-differences.log" | sed 's/^\\[1\\] //g' | sed 's/"//g' > Warnings.txt || true
 
     cat <<-END_VERSIONS > versions.yml

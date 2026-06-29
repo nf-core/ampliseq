@@ -50,7 +50,7 @@ get_stats <- function(i_exp,i_obs,df,sample) {
 		"TPs_exp",
 		"FNs_exp",
 		"FPs_obs"
-		)
+    )
 	values <- c(
 		length(i_obs),
 		length(i_exp),
@@ -66,7 +66,7 @@ get_stats <- function(i_exp,i_obs,df,sample) {
 		paste(head(TP, n=100), collapse=','),
 		paste(head(FN, n=100), collapse=','),
 		paste(head(FP, n=100), collapse=',')
-		)
+	)
 	ids <- rep(sample, length(types))
 
 	df_append <- data.frame(

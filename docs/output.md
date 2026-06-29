@@ -699,6 +699,9 @@ When additionally expected abundances are available, additional performance metr
 > [!NOTE]
 > The F1 score is unreliable with strongly unbalanced data.
 
+> [!WARNING]
+> If the supplied expected sequences are not unique in the region of the alignment with the observed sequences, alignment matches are used to aggregate identical expected sequences. In case there isnt an exact match to a set of identical expected sequences, those will not be aggregated and inflate the number of expected sequences.
+
 The following additional files will be produced:
 
 <details markdown="1">

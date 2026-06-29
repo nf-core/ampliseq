@@ -712,7 +712,6 @@ The following additional files will be produced:
 - `comparison/<parameter md5sum>_<pipeline version>/per-sample`
   - `performance_per-sample.tsv`: Tab-separated table with performance metrics per sample, in long format.
 
-
 </details>
 
 ### PICRUSt2

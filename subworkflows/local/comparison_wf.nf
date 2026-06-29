@@ -1,5 +1,6 @@
 include { VSEARCH_USEARCHGLOBAL as VSEARCH_USEARCHGLOBAL_BM } from '../../modules/nf-core/vsearch/usearchglobal/main'
 include { COMPARE_SEQUENCES       } from '../../modules/local/compare_sequences'
+include { COMPARE_PERFORMANCE     } from '../../modules/local/compare_performance'
 
 workflow COMPARISON_WF {
     take:
@@ -28,10 +29,8 @@ workflow COMPARISON_WF {
             if( it.countLines() > 0 ) { log.warn "about comparing sequences\n\n" + it.splitText().join("") }
         }
 
-    // (2) input: val_md5sum_version, "${val_md5sum_version}_nucleotide_differences.tsv", ch_detected_abundances, ch_expected_abundances
-    //     -> compare exact matches per sample: "${val_md5sum_version}_nucleotide_differences.tsv" = 0 & prevalence ch_detected_abundances vs ch_expected_abundances
-    //     -> per sample count FN/FP/... & calculate F1/...
-    //COMPARISON_SEQUENCES ( val_md5sum_version, COMPARE_SEQUENCES.out.matches, ch_detected_abundances, ch_expected_abundances )
+    // Calculate performance metrics per sample such as precision, recall, F1 score
+    COMPARE_PERFORMANCE ( COMPARE_SEQUENCES.out.matches.map { it = [ [id: val_md5sum_version], file(it) ] }, ch_observed_abundances, ch_expected_abundances )
 
     // (3) input: val_md5sum_version, "${val_md5sum_version}_matches.txt", ch_detected_abundances, ch_expected_abundances
     //     -> compare abundance of exact matches

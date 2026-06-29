@@ -36,7 +36,7 @@ get_stats <- function(i_exp,i_obs,df,sample) {
 
 	# save
 	types <- c(
-		"detected",
+		"observed",
 		"expected",
 		"TP",
 		"FN",
@@ -131,7 +131,7 @@ for (sample in SAMPLES) {
 	s_exp <- subset(exp, select = keep_cols)
 	s_obs <- subset(observed, select = keep_cols)
 
-	# keep only detected (abundance > 0)
+	# keep only observed (abundance > 0)
 	s_exp = s_exp[s_exp[,2] > 0,]
 	s_obs = s_obs[s_obs[,2] > 0,]
 

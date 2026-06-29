@@ -96,18 +96,15 @@ colnames(observed)[1] <- "ID"
 # select available samples
 observed_samples <- colnames(observed)[2:ncol(observed)]
 print(paste( "Observed samples:", paste(observed_samples,collapse=",")))
-SAMPLES <- observed_samples
 
 # Read expected abundance table
-if( file.exists(expabundFILE) ) {
-	exp = read.table( expabundFILE, header = TRUE, sep = "\t", stringsAsFactors = FALSE, check.names = FALSE, strip.white = TRUE)
-	colnames(exp)[1] <- "ID"
-	# extract samples to analyse
-	exp_samples <- colnames(exp)[2:ncol(exp)]
-	print(paste( "Expected samples:", paste( exp_samples ,collapse=",")))
-	SAMPLES <- exp_samples[exp_samples %in% observed_samples]
-	print(paste( "Investigate samples:", paste( SAMPLES ,collapse=",")))
-}
+exp = read.table( expabundFILE, header = TRUE, sep = "\t", stringsAsFactors = FALSE, check.names = FALSE, strip.white = TRUE)
+colnames(exp)[1] <- "ID"
+# extract samples to analyse
+exp_samples <- colnames(exp)[2:ncol(exp)]
+print(paste( "Expected samples:", paste( exp_samples ,collapse=",")))
+SAMPLES <- exp_samples[exp_samples %in% observed_samples]
+print(paste( "Investigate samples:", paste( SAMPLES ,collapse=",")))
 
 # check if there are any samples to analyse
 if (length(SAMPLES) == 0) {

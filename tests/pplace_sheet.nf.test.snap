@@ -15,6 +15,9 @@
                 "COMBINE_TABLE": {
                     "R": "4.0.3"
                 },
+                "COMPARE_PERFORMANCE": {
+                    "R": "4.2.1"
+                },
                 "COMPARE_SEQUENCES": {
                     "R": "4.2.1"
                 },
@@ -185,6 +188,7 @@
                 "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/nucleotide-differences.log",
                 "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/nucleotide-differences.tsv",
                 "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/per-sample",
+                "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/per-sample/performance_per-sample.tsv",
                 "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/per-sample/sampleID_1_nucleotide-differences_per-sample.tsv",
                 "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/per-sample/sampleID_1_nucleotide-distance_barplot.png",
                 "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/per-sample/sampleID_1_nucleotide-distance_barplot.svg",
@@ -194,6 +198,10 @@
                 "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/per-sample/sampleID_2a_nucleotide-differences_per-sample.tsv",
                 "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/per-sample/sampleID_2a_nucleotide-distance_barplot.png",
                 "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/per-sample/sampleID_2a_nucleotide-distance_barplot.svg",
+                "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/performance.log",
+                "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/performance_boxplot.png",
+                "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/performance_boxplot.svg",
+                "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/performance_summary.tsv",
                 "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/vsearch_usearchglobal.tsv",
                 "cutadapt",
                 "cutadapt/cutadapt_summary.tsv",

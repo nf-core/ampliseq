@@ -123,7 +123,7 @@ get_stats_abundance <- function(expected_abund,observed_abund,df,sample) {
 		"jensen-shannon"
 	)
 	values <- c(
-		as.list(pearson_cor$estimate)[[1]], # Spearman's Rank Correlation (rho)
+		as.list(pearson_cor$estimate)[[1]], # Pearson's Correlation (cor)
 		as.list(spearman_rho$estimate)[[1]], # Spearman's Rank Correlation (rho)
 		median(percent_dev, na.rm = TRUE), # Median Percent Abundance Deviation
 		mean(abs(observed_abund - expected_abund), na.rm = TRUE), # Mean Absolute Error (MAE)

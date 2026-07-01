@@ -679,7 +679,8 @@ When expected sequences are supplied, the following files will be produced:
 
 </details>
 
-When additionally expected abundances are available, additional performance metrics will be generated:
+When additionally expected abundances are available, additional performance metrics will be generated.
+Metrics base on presence/absence:
 
 - `observed`: Number of observed sequences
 - `expected`: Number of expected sequences
@@ -696,6 +697,18 @@ When additionally expected abundances are available, additional performance metr
 - `FNs_exp`: FN IDs (max 100) corresponding to expected sequences
 - `FPs_obs`: FP IDs (max 100) corresponding to observed sequences
 
+Metrics based on abundances:
+
+- `pearson_cor`: Pearson's Correlation (cor)
+- `spearman_rho`: Spearman's Rank Correlation (rho)
+- `deviation`: Median Percent Abundance Deviation
+- `mae`: Mean Absolute Error (MAE)
+- `rmse`: Root Mean Square Error (RMSE)
+- `ps`: Proportional Similarity (PS)
+- `bray-curtis`: Bray-Curtis Dissimilarity
+- `hellinger`: Hellinger Distance
+- `jensen-shannon`: Jensen-Shannon Divergence
+
 > [!NOTE]
 > The F1 score is unreliable with strongly unbalanced data.
 
@@ -709,11 +722,15 @@ The following additional files will be produced:
 
 - `comparison/<parameter md5sum>_<pipeline version>`
   - `performance_summary.tsv`: Tab-separated table with aggregated performance metrics.
+  - `performance_per-sample.tsv`: Tab-separated table with performance metrics per sample, in long format.
   - `performance.log`: Log file, complementary to `nucleotide-differences.log`.
   - `performance_boxplot.png`: Boxplot of number of aggregated performance metrics in png format.
   - `performance_boxplot.svg`: Boxplot of number of aggregated performance metrics in svg format.
 - `comparison/<parameter md5sum>_<pipeline version>/per-sample`
-  - `performance_per-sample.tsv`: Tab-separated table with performance metrics per sample, in long format.
+  - `<sample>_abundance_barplot.svg`: Side-by-Side bar plots in svg format.
+  - `<sample>_abundances.tsv`: Tab-separated table with expected and observed abundances.
+  - `<sample>_rank_abundance_curve.svg`: Rank Abundance Curves in svg format.
+  - `<sample>_scatter_loglog.svg`: Scatter plot: Observed vs. Expected Abundance (log-log) in svg format.
 
 </details>
 

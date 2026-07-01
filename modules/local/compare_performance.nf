@@ -17,6 +17,7 @@ process COMPARE_PERFORMANCE {
     path("*.png")                            , emit: png
     path("performance_summary.tsv")          , emit: performance
     path("performance_per-sample.tsv")       , emit: performance_per_sample
+    path("*_abundances.tsv")                 , emit: abundance_table_per_sample
     path("performance.log")                  , emit: log
     path("Warnings.txt")                     , emit: warnings
     path "versions.yml"                      , emit: versions, topic: versions

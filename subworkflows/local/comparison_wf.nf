@@ -29,13 +29,9 @@ workflow COMPARISON_WF {
             if( it.countLines() > 0 ) { log.warn "about comparing sequences\n\n" + it.splitText().join("") }
         }
 
-    // Calculate performance metrics per sample such as precision, recall, F1 score
+    // Calculate absence/presence performance metrics per sample such as precision, recall, F1 score
+    // Calculate abundance performance metrics per sample such as spearman's rho, RMSE, Bray-Curtis distance
     COMPARE_PERFORMANCE ( COMPARE_SEQUENCES.out.matches.map { it = [ [id: val_md5sum_version], file(it) ] }, ch_observed_abundances, ch_expected_abundances )
-
-    // (3) input: val_md5sum_version, "${val_md5sum_version}_matches.txt", ch_detected_abundances, ch_expected_abundances
-    //     -> compare abundance of exact matches
-    //     -> per sample % total deviation from expected, potentially normalized somehow
-    //COMPARISON_ABUNDANCES ( val_md5sum_version, "${val_md5sum_version}_exact_matches.txt", ch_detected_abundances, ch_expected_abundances )
 
     emit:
     mismatch_barplot_png = COMPARE_SEQUENCES.out.png.collect()

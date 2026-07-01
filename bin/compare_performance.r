@@ -79,7 +79,73 @@ get_stats <- function(i_exp,i_obs,df,sample) {
 	return(df)
 }
 
-# PREPARE INPUT
+# function to produce abundance statistics
+get_stats_abundance <- function(expected_abund,observed_abund,df,sample) {
+
+	# if none are expected, skip!
+	if( length(expected_abund)==0 ) {
+		print( paste("No expected abundances in sample",sample, "- skipping") ); next
+	} else {
+		print( paste(length(expected_abund),"expected seq in sample",sample) )
+	}
+
+	# stats
+	pearson_cor <- cor.test(expected_abund, observed_abund, method = "pearson")
+	spearman_rho <- cor.test(expected_abund, observed_abund, method = "spearman")
+	percent_dev <- abs((observed_abund - expected_abund) / expected_abund) * 100
+	jensen_shannon <- function(p, q) {
+		# KL divergence function (with pseudocount to handle zeros)
+		kl_div <- function(x, y, pseudocount = 1e-10) {
+			x <- x + pseudocount
+			y <- y + pseudocount
+			x <- x / sum(x)  # normalize
+			y <- y / sum(y)  # normalize
+			sum(x * log(x / y))
+		}
+		
+		# Midpoint distribution
+		m <- (p + q) / 2
+		
+		# Jensen-Shannon is the square root of the average of two KL divergences
+		sqrt(0.5 * kl_div(p, m) + 0.5 * kl_div(q, m))
+	}
+
+	# save
+	types <- c(
+		"pearson_cor",
+		"spearman_rho",
+		"deviation",
+		"mae",
+		"rmse",
+		"ps",
+		"bray-curtis",
+		"hellinger",
+		"jensen-shannon"
+	)
+	values <- c(
+		as.list(pearson_cor$estimate)[[1]], # Spearman's Rank Correlation (rho)
+		as.list(spearman_rho$estimate)[[1]], # Spearman's Rank Correlation (rho)
+		median(percent_dev, na.rm = TRUE), # Median Percent Abundance Deviation
+		mean(abs(observed_abund - expected_abund), na.rm = TRUE), # Mean Absolute Error (MAE)
+		sqrt(mean((observed_abund - expected_abund)^2, na.rm = TRUE)), # Root Mean Square Error (RMSE)
+		sum(pmin(observed_abund, expected_abund)) / sum(expected_abund), # Proportional Similarity (PS)
+		1 - (2 * sum(pmin(observed_abund, expected_abund))) / (sum(observed_abund) + sum(expected_abund)), # Bray-Curtis Dissimilarity
+		sqrt(sum((sqrt(observed_abund) - sqrt(expected_abund))^2)), # Hellinger Distance
+		jensen_shannon(observed_abund, expected_abund) # Jensen-Shannon Divergence
+	)
+	ids <- rep(sample, length(types))
+
+	df_append <- data.frame(
+		sample=ids,
+		type= types,
+		value= values,
+		stringsAsFactors=FALSE)
+	df <- rbind( df, df_append )
+
+	return(df)
+}
+
+# (A) PREPARE INPUT
 
 # Read sequence alignment table
 alignment = read.table( alignmentFILE, header = TRUE, sep = "\t", stringsAsFactors = FALSE, check.names = FALSE, strip.white = TRUE)
@@ -111,7 +177,7 @@ if (length(SAMPLES) == 0) {
 	stop("ERROR - Found no samples to investigate")
 }
 
-# ANALYSE
+# (B) ANALYSE
 
 # Initialize dataframe
 df <- data.frame(
@@ -123,47 +189,143 @@ df <- data.frame(
 # for each sample
 for (sample in SAMPLES) {
 
+	# (1) FILTER - for presence/absence in that sample
 	# keep only non-empty columns and sample abundances
 	keep_cols <- c("ID",sample)
 	s_exp <- subset(exp, select = keep_cols)
 	s_obs <- subset(observed, select = keep_cols)
-
 	# keep only observed (abundance > 0)
 	s_exp = s_exp[s_exp[,2] > 0,]
 	s_obs = s_obs[s_obs[,2] > 0,]
-
 	# keep only alignments where both, query and target are present
 	s_alignment <- alignment[alignment$query %in% s_obs$ID & alignment$target %in% s_exp$ID,]
 
-	# translate s_obs$ID to alignment$target if available
-	obsIDs <- c()
-	for (obsID in s_obs$ID){
-		i_alignment <- s_alignment[s_alignment$query == obsID,]
-		# collapse several targets if multiple matches
-		if( nrow(i_alignment) > 0 ){
-			target <- paste(i_alignment$target, collapse="-")
-		} else {
-			target <- obsID
-		}
-		obsIDs <- c(obsIDs, target)
-	}
+	# (2) AGGREGATE - combine IDs and abundance if multiple query or targets match each other
+	colnames(s_exp) <- c("ID","expected_abund")
+	colnames(s_obs) <- c("ID","observed_abund")
+	s_alignment <- subset(s_alignment, select = c("query","target"))
+	merged <- merge(s_alignment, s_exp, by.x="target", by.y="ID", all=TRUE)
+	merged <- merge(merged, s_obs, by.x="query", by.y="ID", all=TRUE)
+	merged <- unique(merged)
+	# retain exp without query & obs without target
+	nomatch_exp <- merged[is.na(merged$query),]
+	nomatch_obs <- merged[is.na(merged$target),]
+	# aggregate query target by query (exp without query is lost)
+	merged <- merged[order(merged$target), ]
+	merged_exp <- aggregate(target ~ query, merged, paste, collapse = "-")
+	merged_exp_abund <- aggregate(expected_abund ~ query, merged, sum)
+	data_exp <- merge(merged_exp, merged_exp_abund, by.x="query", by.y="query", all=TRUE)
+	data_exp <- unique( merge(data_exp, s_obs, by.x="query", by.y="ID", all=TRUE) )
+	# aggregate query by target (obs without target is lost)
+	data_exp <- data_exp[order(data_exp$query), ]
+	merged_obs <- aggregate(query ~ target, data_exp, paste, collapse = "-")
+	merged_obs_abund <- aggregate(observed_abund ~ target, data_exp, sum)
+	data <- merge(merged_obs, merged_obs_abund, by="target", all=TRUE)
+	# add exp abundance
+	data_exp_abund <- subset(data_exp, select=c("target","expected_abund"))
+	data_exp_abund <- unique(data_exp_abund[!is.na(data_exp_abund$target),])
+	data <- merge(data, data_exp_abund, by="target", all=TRUE)
+	# re-add exp without query & obs without target
+	data <- rbind(data, nomatch_obs)
+	data <- rbind(data, nomatch_exp)
+	# add ID list
+	ID_list <- ifelse(is.na(data$target), data$query, data$target)
+	data$ID <- factor(ID_list, levels = ID_list)
+	data$expected_abund[is.na(data$expected_abund)] <- 0
+	data$observed_abund[is.na(data$observed_abund)] <- 0
+	# make relative abundances
+	data$expected_abund <- data$expected_abund/sum(data$expected_abund,na.rm=TRUE)
+	data$observed_abund <- data$observed_abund/sum(data$observed_abund,na.rm=TRUE)
+	# Sort by expected abundance
+	data <- data[order(data$expected_abund, decreasing = TRUE), ]
+	# write table
+	outfile <- paste0(sample,"_abundances.tsv")
+	print(paste("write",outfile))
+	write.table(data, file = outfile, row.names = FALSE, col.names = TRUE, quote = FALSE, na = '', sep="\t")
 
-	# aggregate s_exp$ID if several alignment$query match
-	expIDs <- s_exp$ID[!s_exp$ID %in% s_alignment$target]
-	i_alignment <- aggregate(target ~ query, s_alignment, paste, collapse = "-")
-	expIDs <- c(expIDs, i_alignment$target)
+	# (3) STATISTICS
 
-	# calculate stats
-	df <- get_stats( unique(expIDs), unique(obsIDs), df, sample)
+	# calculate absence/presence stats
+	expIDs <- data$target[!is.na(data$target)]
+	obsIDs <- data$ID[!is.na(data$query)]
+	df <- get_stats( expIDs, obsIDs, df, sample)
+
+	# calculate abundance stats, this includes also non-matching sequences
+	df <- get_stats_abundance( data$expected_abund, data$observed_abund, df, sample)
+
+	# (4) PLOTS - pairwise comparisons
+
+	# Side-by-Side Bar Plots
+	outfile <- paste0(sample,"_abundance_barplot.svg")
+	print(paste("write",outfile))
+	svg(outfile, height = 8, width = 10)
+	barplot(
+		rbind(data$expected_abund, data$observed_abund),
+		beside = TRUE,
+		names.arg = data$ID,
+		col = c("skyblue", "salmon"),
+		legend.text = c("Expected", "Observed"),
+		ylab = "Abundance",
+		xlab = "Taxon",
+		main = "Side-by-Side Bar Plot: Expected vs. Observed Abundance",
+		cex.names = 0.7,
+		las = 2
+	)
+	invisible(dev.off())
+
+	# Scatter plot: Observed vs. Expected Abundance (log-log)
+	outfile <- paste0(sample,"_scatter_loglog")
+	print(paste("write",outfile))
+	svg(paste0(outfile,".svg"), width = 8, height = 6)
+	plot(
+		log10(data$expected_abund),
+		log10(data$observed_abund),
+		xlab = "log10(Expected Abundance)",
+		ylab = "log10(Observed Abundance)",
+		main = "Scatter Plot: Observed vs. Expected Abundance (log-log)",
+		pch = 19,
+		col = "blue"
+	)
+	abline(a = 0, b = 1, col = "red", lty = 2)
+	invisible(dev.off())
+
+	# Rank Abundance Curves
+	outfile <- paste0(sample,"_rank_abundance_curve")
+	print(paste("write",outfile))
+	svg(paste0(outfile,".svg"), width = 8, height = 6)
+	plot(
+		1:nrow(data),
+		sort(data$expected_abund, decreasing = TRUE),
+		type = "l",
+		col = "blue",
+		lwd = 2,
+		xlab = "Rank",
+		ylab = "Abundance",
+		main = "Rank Abundance Curves",
+		ylim = c(0, max(data$expected_abund, data$observed_abund))
+	)
+	lines(
+		1:nrow(data),
+		sort(data$observed_abund, decreasing = TRUE),
+		col = "red",
+		lwd = 2
+	)
+	legend(
+		"topright",
+		legend = c("Expected", "Observed"),
+		col = c("blue", "red"),
+		lwd = 2
+	)
+	invisible(dev.off())
 }
+
+# (5) TABLES - metrics overall
 
 # Write detailed output
 outfile <- "performance_per-sample.tsv"
 df$tag <- rep(tag, nrow(df))
 print(paste("write",outfile))
 write.table(df, file = outfile, row.names = FALSE, col.names = TRUE, quote = FALSE, na = '', sep="\t")
-
-
 # Make & write summary output
 outfile <- "performance_summary.tsv"
 df_sum <- data.frame(type=character(), median=numeric(), mean=numeric(), min=numeric(), max=numeric(), count=numeric(), stringsAsFactors=FALSE)
@@ -181,18 +343,18 @@ df_sum$tag <- rep(tag, nrow(df_sum))
 print(paste("write",outfile))
 write.table(df_sum, file = outfile, row.names = FALSE, col.names = TRUE, quote = FALSE, na = '', sep="\t")
 
-# Plot Values
-df_subset <- subset(df, type %in% c("recall","precision","F1","Fbeta","fdr","jaccard") )
+# (6) PLOT - selected metrics, overall
+df_subset <- subset(df, type %in% c("recall","precision","F1","Fbeta","fdr","jaccard","pearson_cor","spearman_rho","mae","rmse","ps","bray-curtis","hellinger","jensen-shannon") )
 df_subset$value <- as.numeric(df_subset$value)
-
 outfile <- "performance_boxplot.svg"
 print(paste("write",outfile))
-svg(outfile, height = 8, width = 10)
-boxplot(value~type, data=df_subset, xlab="Type", ylab="Value", ylim = c(0, 1))
+svg(outfile, height = 8, width = 12)
+par(mar=c(8, 4, 4, 2))
+boxplot(value~type, data=df_subset, xlab="Type", ylab="Value", ylim = c(0, 1), las=2)
 invisible(dev.off())
-
 outfile <- "performance_boxplot.png"
 print(paste("write",outfile))
-png(outfile, height = 400, width = 500)
-boxplot(value~type, data=df_subset, xlab="Type", ylab="Value", ylim = c(0, 1))
+png(outfile, height = 400, width = 600)
+par(mar=c(8, 4, 4, 2)) #First value (8): Bottom margin (increase this if labels are still cut off); Second value (4): Left margin; Third value (4): Top margin; Fourth value (2): Right margin
+boxplot(value~type, data=df_subset, xlab="Type", ylab="Value", ylim = c(0, 1), las=2)
 invisible(dev.off())

@@ -45,6 +45,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [Alpha diversity rarefaction curves](#alpha-diversity-rarefaction-curves) - Rarefaction curves for quality control
   - [Diversity analysis](#diversity-analysis) - High level overview with different diversity indices
   - [Differential abundance analysis](#differential-abundance-analysis) - Calling differentially abundant features with ANCOM or ANCOM-BC
+- [Compare to expected](#compare-to-expected) - Comparing analysis outcome to expected results
 - [PICRUSt2](#picrust2) - Predict the functional potential of a bacterial community
 - [SBDI export](#sbdi-export) - Swedish Biodiversity Infrastructure (SBDI) submission file
 - [R object](#r-objects) - Phyloseq and TreeSummarizedExperiment R objects
@@ -654,6 +655,65 @@ On request (`--ancombc2`), ANCOM-BC2 is applied to each suitable or specified me
   - formula: metadata category / formula that was tested
   - taxonomic level: level-2 (phylum), level-3 (class), level-4 (order), level-5 (family), level-6 (genus), ASV
   - treatment: Changes for that treatment group
+
+</details>
+
+### Compare to expected
+
+Comparison evaluates observed results against expected outcomes, typically for samples with known composition such as mock communities, to assess the data and analysis. Steps to evaluate the produced ASVs are implemented in the pipeline.
+
+When expected sequences are supplied, the following files will be produced:
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `comparison/<parameter md5sum>_<pipeline version>`
+  - `vsearch_usearchglobal.tsv`: VSEARCH --usearch_global output for ASV to sequence comparisons.
+  - `md5sum_version.txt`: Contains parameter md5sum and pipeline version that is also the folder name, additionally the time stamp used in files in `pipeline_info/`.
+  - `nucleotide-differences.log`: Log file for comparing matches of ASVs to expected sequences.
+  - `nucleotide-differences.tsv`: Tab-separated table based on VSEARCH results comparing matches of ASVs to expected sequences.
+- `comparison/<parameter md5sum>_<pipeline version>/per-sample`
+  - `<sample>_nucleotide-differences_per-sample.tsv`: Number of sequences and mismatches to expected sequences.
+  - `<sample>_nucleotide-distance_barplot.png`: Barplot of number of sequences versus number of mismatches in png format.
+  - `<sample>_nucleotide-distance_barplot.svg`: Barplot of number of sequences versus number of mismatches in svg format.
+
+</details>
+
+When additionally expected abundances are available, additional performance metrics will be generated:
+
+- `observed`: Number of observed sequences
+- `expected`: Number of expected sequences
+- `TP`: Number of true positive sequences (observed and expected)
+- `FN`: Number of false negative sequences (not observed but expected)
+- `FP`: Number of false positive sequences (observed but not expected)
+- `recall`: Recall of expected sequences = TP/(TP+FN)
+- `precision`: Precision = TP/(TP+FP)
+- `F1`: F1 score, the harmonic mean of the precision and recall = 2TP/(2TP+FP+FN)
+- `Fbeta`: Fbeta score, the weighted F1 score. By default beta=2, i.e. weighs recall twice higher than precision
+- `fdr`: False discovery rate = FP/(TP+FP)
+- `jaccard`: Jaccard index = TP/(TP+FP+FN)
+- `TPs_exp`: TP IDs (max 100) corresponding to expected sequences
+- `FNs_exp`: FN IDs (max 100) corresponding to expected sequences
+- `FPs_obs`: FP IDs (max 100) corresponding to observed sequences
+
+> [!NOTE]
+> The F1 score is unreliable with strongly unbalanced data.
+
+> [!WARNING]
+> If the supplied expected sequences are not unique in the region of the alignment with the observed sequences, alignment matches are used to aggregate identical expected sequences. In case there isnt an exact match to a set of identical expected sequences, those will not be aggregated and inflate the number of expected sequences.
+
+The following additional files will be produced:
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `comparison/<parameter md5sum>_<pipeline version>`
+  - `performance_summary.tsv`: Tab-separated table with aggregated performance metrics.
+  - `performance.log`: Log file, complementary to `nucleotide-differences.log`.
+  - `performance_boxplot.png`: Boxplot of number of aggregated performance metrics in png format.
+  - `performance_boxplot.svg`: Boxplot of number of aggregated performance metrics in svg format.
+- `comparison/<parameter md5sum>_<pipeline version>/per-sample`
+  - `performance_per-sample.tsv`: Tab-separated table with performance metrics per sample, in long format.
 
 </details>
 

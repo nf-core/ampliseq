@@ -969,6 +969,38 @@
                 }
             }
         },
+        "comparison": {
+            "title": "Comparison of observed to expected results",
+            "type": "object",
+            "description": "Settings for comparing analysis results to the expected outcome",
+            "default": "",
+            "properties": {
+                "expected_sequences": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/tsv",
+                    "pattern": "^\\S+\\.(fasta|fas|fna|fa|ffn)$",
+                    "description": "Path to file of expected sequences in fasta format",
+                    "help_text": "Ideally the expected sequences should be all unique within the alignment region with the observed sequences, because the alignment matches are used to aggregate identical expected sequences and in case there isnt an exact match to a set of identical expected sequences, those will not be aggregated and inflate the number of expected unique sequences. Supplying only sequences will compare ASVs of each sample to the given sequence set. Consider other parameters for more comprehensive comparisons."
+                },
+                "expected_sequences_region": {
+                    "type": "string",
+                    "description": "What region of the sequence comparison is evaluated",
+                    "help_text": "`alignment`: only the alignment region is evaluated including mismatches and gaps. `query`: alignment region and terminal gaps to the query sequence, i.e. constructed ASV sequence, are evaluated. `target`: alignment region and terminal gaps to the target sequence, i.e. expected sequence, are evaluated.",
+                    "default": "query",
+                    "enum": ["alignment", "query", "target"]
+                },
+                "expected_abundances": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/tsv",
+                    "pattern": "^\\S+\\.(tsv|txt)$",
+                    "description": "Path to file of abundances of expected sequences in tsv format",
+                    "help_text": "Tab-separated table with header. First column is sequence IDs corresponding to the fasta file supplied with `--expected_sequences`. All further columns should have names corresponding to the sample names in `--input` or other input options. Samples will only compared to when they are in sequencing data input and the expected abundance input. This allows for example to only compare mock samples that were added to another data set as controls."
+                }
+            },
+            "fa_icon": "fas fa-book-open"
+        },
         "pipeline_report": {
             "title": "Pipeline summary report",
             "type": "object",
@@ -1288,6 +1320,9 @@
         },
         {
             "$ref": "#/$defs/differential_abundance_analysis"
+        },
+        {
+            "$ref": "#/$defs/comparison"
         },
         {
             "$ref": "#/$defs/pipeline_report"

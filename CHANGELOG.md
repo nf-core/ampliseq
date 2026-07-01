@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-- [[#1022](https://github.com/nf-core/ampliseq/issues/1022)] - added new GloSED database for classification of Eukaryotic ITS. Not support for SH numbers as of yet. (by @tom-brekke)
+- [#1022](https://github.com/nf-core/ampliseq/issues/1022) - added new GloSED database for classification of Eukaryotic ITS. Not support for SH numbers as of yet. (by @tom-brekke)
+- [#1021](https://github.com/nf-core/ampliseq/pull/1021),[#1023](https://github.com/nf-core/ampliseq/pull/1023) - Comparison of observed ASVs against expected sequences or their abundance is now available with `--expected_*` parameters (by @d4straub, reviewed by @erikrikarddaniel)
 
 ### `Changed`
 

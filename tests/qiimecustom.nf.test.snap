@@ -8,6 +8,9 @@
                 "BARRNAPSUMMARY": {
                     "python": "Python 3.9.1"
                 },
+                "COMPARE_SEQUENCES": {
+                    "R": "4.2.1"
+                },
                 "CUTADAPT_BASIC": {
                     "cutadapt": 5.2
                 },
@@ -92,6 +95,9 @@
                     "python": "3.9.1",
                     "pandas": "1.1.5"
                 },
+                "VSEARCH_USEARCHGLOBAL_BM": {
+                    "vsearch": "2.31.0"
+                },
                 "Workflow": {
                     "nf-core/ampliseq": "v2.19.0dev"
                 }
@@ -103,6 +109,25 @@
                 "barrnap/rrna.euk.gff",
                 "barrnap/rrna.mito.gff",
                 "barrnap/summary.tsv",
+                "comparison",
+                "comparison/16faf29ec0461d595f0df09ee5da8930_2.19.0dev",
+                "comparison/16faf29ec0461d595f0df09ee5da8930_2.19.0dev/md5sum_version.txt",
+                "comparison/16faf29ec0461d595f0df09ee5da8930_2.19.0dev/nucleotide-differences.log",
+                "comparison/16faf29ec0461d595f0df09ee5da8930_2.19.0dev/nucleotide-differences.tsv",
+                "comparison/16faf29ec0461d595f0df09ee5da8930_2.19.0dev/per-sample",
+                "comparison/16faf29ec0461d595f0df09ee5da8930_2.19.0dev/per-sample/sampleID_1_nucleotide-differences_per-sample.tsv",
+                "comparison/16faf29ec0461d595f0df09ee5da8930_2.19.0dev/per-sample/sampleID_1_nucleotide-distance_barplot.png",
+                "comparison/16faf29ec0461d595f0df09ee5da8930_2.19.0dev/per-sample/sampleID_1_nucleotide-distance_barplot.svg",
+                "comparison/16faf29ec0461d595f0df09ee5da8930_2.19.0dev/per-sample/sampleID_1a_nucleotide-differences_per-sample.tsv",
+                "comparison/16faf29ec0461d595f0df09ee5da8930_2.19.0dev/per-sample/sampleID_1a_nucleotide-distance_barplot.png",
+                "comparison/16faf29ec0461d595f0df09ee5da8930_2.19.0dev/per-sample/sampleID_1a_nucleotide-distance_barplot.svg",
+                "comparison/16faf29ec0461d595f0df09ee5da8930_2.19.0dev/per-sample/sampleID_2_nucleotide-differences_per-sample.tsv",
+                "comparison/16faf29ec0461d595f0df09ee5da8930_2.19.0dev/per-sample/sampleID_2_nucleotide-distance_barplot.png",
+                "comparison/16faf29ec0461d595f0df09ee5da8930_2.19.0dev/per-sample/sampleID_2_nucleotide-distance_barplot.svg",
+                "comparison/16faf29ec0461d595f0df09ee5da8930_2.19.0dev/per-sample/sampleID_2a_nucleotide-differences_per-sample.tsv",
+                "comparison/16faf29ec0461d595f0df09ee5da8930_2.19.0dev/per-sample/sampleID_2a_nucleotide-distance_barplot.png",
+                "comparison/16faf29ec0461d595f0df09ee5da8930_2.19.0dev/per-sample/sampleID_2a_nucleotide-distance_barplot.svg",
+                "comparison/16faf29ec0461d595f0df09ee5da8930_2.19.0dev/vsearch_usearchglobal.tsv",
                 "cutadapt",
                 "cutadapt/cutadapt_summary.tsv",
                 "cutadapt/sampleID_1.trimmed.cutadapt.log",
@@ -278,12 +303,13 @@
             "Samplesheet.tsv:md5,51ff46f4b431730e41b6950ae3b20e35",
             "multiqc_fastqc.txt:md5,7d23984b06e4251f17e1cfce7a04aaae",
             "multiqc_general_stats.txt:md5,885c19ff3e53d16bfe7937d6694268d7",
-            "multiqc_cutadapt.txt:md5,3dce058d2d6c85a3cca7314ae19c5586"
+            "multiqc_cutadapt.txt:md5,3dce058d2d6c85a3cca7314ae19c5586",
+            "nucleotide-differences.tsv:md5,160f7e62670478d40de6c74a7eae405d"
         ],
+        "timestamp": "2026-06-24T15:07:50.576330079",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.4"
-        },
-        "timestamp": "2026-04-21T09:30:09.367229091"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
     }
 }

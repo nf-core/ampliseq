@@ -38,7 +38,8 @@ nextflow_pipeline {
                     path("$outputDir/input/Samplesheet.tsv"),
                     path("$outputDir/multiqc/multiqc_data/multiqc_fastqc.txt"),
                     path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt"),
-                    path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt")
+                    path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt"),
+                    path("$outputDir/comparison/16faf29ec0461d595f0df09ee5da8930_2.19.0dev/nucleotide-differences.tsv")
                 ).match() }
             )
         }

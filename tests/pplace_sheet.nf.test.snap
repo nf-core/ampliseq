@@ -12,11 +12,14 @@
                     "clustalo": "1.2.4",
                     "pigz": 2.8
                 },
-                "COMBINE_TABLE_PPLACE": {
+                "COMBINE_TABLE": {
                     "R": "4.0.3"
                 },
-                "COMBINE_TABLE_QIIME2": {
-                    "R": "4.0.3"
+                "COMPARE_PERFORMANCE": {
+                    "R": "4.2.1"
+                },
+                "COMPARE_SEQUENCES": {
+                    "R": "4.2.1"
                 },
                 "CUTADAPT_BASIC": {
                     "cutadapt": 5.2
@@ -165,6 +168,9 @@
                     "python": "3.9.1",
                     "pandas": "1.1.5"
                 },
+                "VSEARCH_USEARCHGLOBAL_BM": {
+                    "vsearch": "2.31.0"
+                },
                 "Workflow": {
                     "nf-core/ampliseq": "v2.19.0dev"
                 }
@@ -176,6 +182,27 @@
                 "barrnap/rrna.euk.gff",
                 "barrnap/rrna.mito.gff",
                 "barrnap/summary.tsv",
+                "comparison",
+                "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev",
+                "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/md5sum_version.txt",
+                "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/nucleotide-differences.log",
+                "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/nucleotide-differences.tsv",
+                "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/per-sample",
+                "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/per-sample/performance_per-sample.tsv",
+                "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/per-sample/sampleID_1_nucleotide-differences_per-sample.tsv",
+                "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/per-sample/sampleID_1_nucleotide-distance_barplot.png",
+                "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/per-sample/sampleID_1_nucleotide-distance_barplot.svg",
+                "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/per-sample/sampleID_2_nucleotide-differences_per-sample.tsv",
+                "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/per-sample/sampleID_2_nucleotide-distance_barplot.png",
+                "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/per-sample/sampleID_2_nucleotide-distance_barplot.svg",
+                "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/per-sample/sampleID_2a_nucleotide-differences_per-sample.tsv",
+                "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/per-sample/sampleID_2a_nucleotide-distance_barplot.png",
+                "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/per-sample/sampleID_2a_nucleotide-distance_barplot.svg",
+                "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/performance.log",
+                "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/performance_boxplot.png",
+                "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/performance_boxplot.svg",
+                "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/performance_summary.tsv",
+                "comparison/c5a180b4b323d4eeb1123d2654185ca8_2.19.0dev/vsearch_usearchglobal.tsv",
                 "cutadapt",
                 "cutadapt/cutadapt_summary.tsv",
                 "cutadapt/sampleID_1.trimmed.cutadapt.log",
@@ -427,8 +454,8 @@
                 "qiime2/rel_abundance_tables/rel-table-5.tsv",
                 "qiime2/rel_abundance_tables/rel-table-6.tsv",
                 "qiime2/rel_abundance_tables/rel-table-ASV.tsv",
-                "qiime2/rel_abundance_tables/rel-table-ASV_with-PPLACE-tax.tsv",
-                "qiime2/rel_abundance_tables/rel-table-ASV_with-QIIME2-tax.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV_with-PPLACE-PPLACE-tax.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV_with-QIIME2-greengenes85-tax.tsv",
                 "qiime2/representative_sequences",
                 "qiime2/representative_sequences/descriptive_stats.tsv",
                 "qiime2/representative_sequences/filtered-sequences.qza",
@@ -460,6 +487,7 @@
             "Samplesheet.tsv:md5,51ff46f4b431730e41b6950ae3b20e35",
             "multiqc_general_stats.txt:md5,885c19ff3e53d16bfe7937d6694268d7",
             "multiqc_cutadapt.txt:md5,3dce058d2d6c85a3cca7314ae19c5586",
+            "nucleotide-differences.tsv:md5,6446e416e6f778f8e813b8c51dbf5f31",
             506,
             2443,
             1,
@@ -469,10 +497,10 @@
             3826,
             276
         ],
+        "timestamp": "2026-06-24T15:20:11.672168665",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.4"
-        },
-        "timestamp": "2026-04-21T15:28:30.117584083"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
     }
 }

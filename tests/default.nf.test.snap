@@ -20,10 +20,7 @@
                 "BARRNAPSUMMARY": {
                     "python": "Python 3.9.1"
                 },
-                "COMBINE_TABLE_DADA2": {
-                    "R": "4.0.3"
-                },
-                "COMBINE_TABLE_QIIME2": {
+                "COMBINE_TABLE": {
                     "R": "4.0.3"
                 },
                 "CUTADAPT_BASIC": {
@@ -2240,8 +2237,8 @@
                 "qiime2/rel_abundance_tables",
                 "qiime2/rel_abundance_tables/rel-table-2.tsv",
                 "qiime2/rel_abundance_tables/rel-table-ASV.tsv",
-                "qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-tax.tsv",
-                "qiime2/rel_abundance_tables/rel-table-ASV_with-QIIME2-tax.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-gtdb_R07-RS207-tax.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV_with-QIIME2-greengenes85-tax.tsv",
                 "qiime2/representative_sequences",
                 "qiime2/representative_sequences/descriptive_stats.tsv",
                 "qiime2/representative_sequences/filtered-sequences.qza",

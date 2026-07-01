@@ -92,6 +92,7 @@ include { QIIME2_BARPLOTAVG             } from '../subworkflows/local/qiime2_bar
 include { QIIME2_DIVERSITY              } from '../subworkflows/local/qiime2_diversity'
 include { QIIME2_ANCOM                  } from '../subworkflows/local/qiime2_ancom'
 include { ROBJECT_WORKFLOW              } from '../subworkflows/local/robject_workflow'
+include { COMPARISON_WF                 } from '../subworkflows/local/comparison_wf'
 
 //
 // FUNCTIONS
@@ -726,6 +727,7 @@ workflow AMPLISEQ {
     //
     // SUBWORKFLOW / MODULES : Taxonomic classification with DADA2, SINTAX and/or QIIME2
     //
+    ch_tax_tsv = channel.empty()
 
     //DADA2
     if (!params.skip_taxonomy && !params.skip_dada_taxonomy) {
@@ -745,6 +747,7 @@ workflow AMPLISEQ {
                 val_dada_taxlevels,
                 params.dada_assign_chunksize
             ).tax
+        ch_tax_tsv = ch_tax_tsv.mix( ch_dada2_tax.map { it = [ [database:val_dada_ref_taxonomy, classifier:"DADA2"], file(it) ] } )
         ch_tax_for_robject = ch_tax_for_robject.mix ( ch_dada2_tax.map { it -> [ "dada2", file(it) ] } )
     } else {
         ch_dada2_tax = channel.empty()
@@ -759,6 +762,7 @@ workflow AMPLISEQ {
                 ch_fasta,
                 val_kraken2_taxlevels
             ).qiime2_tsv
+        ch_tax_tsv = ch_tax_tsv.mix( KRAKEN2_TAXONOMY_WF.out.tax_tsv.map { it = [ [database:val_kraken2_ref_taxonomy, classifier:"KRAKEN2"], file(it) ] } )
         ch_tax_for_robject = ch_tax_for_robject.mix ( ch_kraken2_tax.map { it -> [ "kraken2", file(it) ] } )
     } else {
         ch_kraken2_tax = channel.empty()
@@ -774,6 +778,7 @@ workflow AMPLISEQ {
                 ch_full_fasta,
                 val_sintax_taxlevels
             ).tax
+        ch_tax_tsv = ch_tax_tsv.mix( ch_sintax_tax.map { it = [ [database:val_sintax_ref_taxonomy, classifier:"SINTAX"], file(it) ] } )
         ch_tax_for_robject = ch_tax_for_robject.mix ( ch_sintax_tax.map { it -> [ "sintax", file(it) ] } )
     } else {
         ch_sintax_tax = channel.empty()
@@ -791,6 +796,7 @@ workflow AMPLISEQ {
         )
         ch_vsearch_lca_raw = VSEARCH_LCA_TAXONOMY_WF.out.raw_lca
         ch_vsearch_lca_tax = VSEARCH_LCA_TAXONOMY_WF.out.tax
+        ch_tax_tsv = ch_tax_tsv.mix( ch_vsearch_lca_tax.map { it = [ [database:val_vsearch_lca_ref_taxonomy, classifier:"VSEARCH-LCA"], file(it) ] } )
         ch_tax_for_robject = ch_tax_for_robject.mix ( ch_vsearch_lca_tax.map { it -> [ "vsearch_lca", file(it) ] } )
     } else {
         ch_vsearch_lca_raw = channel.empty()
@@ -821,6 +827,7 @@ workflow AMPLISEQ {
         PPLACE_STANDARD ( ch_pp_data )
         ch_versions = ch_versions.mix( PPLACE_STANDARD.out.versions )
         ch_pplace_tax = PPLACEFORMATTAX_STANDARD ( PPLACE_STANDARD.out.taxonomy_per_query ).tsv
+        ch_tax_tsv = ch_tax_tsv.mix( ch_pplace_tax.map { it = [ [database: params.pplace_name ?: 'user_tree', classifier:"PPLACE"], file(it) ] } )
         ch_tax_for_robject = ch_tax_for_robject.mix ( PHYLOSEQ_INTAX_PPLACE ( ch_pplace_tax ).tsv.map { it -> [ "pplace", file(it) ] } )
     } else {
         ch_pplace_tax = channel.empty()
@@ -884,6 +891,7 @@ workflow AMPLISEQ {
                 .splitCsv(sep: '\t', header: true)
                 .map { r -> "${r.ASV_ID}\t${r.taxonomy}\n" }
                 .collectFile(name: 'concatenated_taxonomy.tsv', seed: "ASV_ID\ttaxonomy\n")
+            ch_tax_tsv = ch_tax_tsv.mix( ch_pplace_tax.map { it = [ [database:"PPLACE", classifier:"PPLACE"], file(it) ] } )
         }
     }
 
@@ -903,6 +911,7 @@ workflow AMPLISEQ {
             ch_qiime_classifier
         )
         ch_qiime2_tax = QIIME2_TAXONOMY.out.tsv
+        ch_tax_tsv = ch_tax_tsv.mix( ch_qiime2_tax.map { it = [ [database:val_qiime_ref_taxonomy, classifier:"QIIME2"], file(it) ] } )
         ch_tax_for_robject = ch_tax_for_robject.mix ( PHYLOSEQ_INTAX_QIIME2 ( ch_qiime2_tax ).tsv.map { it -> [ "qiime2", file(it) ] } )
     } else {
         ch_qiime2_tax = channel.empty()
@@ -996,7 +1005,7 @@ workflow AMPLISEQ {
         }
         //Export various ASV tables
         if (!params.skip_abundance_tables) {
-            QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, ch_qiime2_tax, ch_dada2_tax, ch_pplace_tax, ch_sintax_tax, ch_vsearch_lca_tax, tax_agglom_min, tax_agglom_max )
+            QIIME2_EXPORT ( ch_asv, ch_seq, ch_tax, ch_tax_tsv, tax_agglom_min, tax_agglom_max )
         }
 
         if (!params.skip_barplot) {
@@ -1102,6 +1111,21 @@ workflow AMPLISEQ {
             ch_metadata,
             ch_tree_for_robject,
             run_qiime2
+        )
+    }
+
+    //
+    // WORKFLOW: Comparison to expected
+    //
+    if ( params.expected_sequences ) {
+        COMPARISON_WF (
+            ( params.findAll{ it.key != 'trace_report_suffix' }.toString().md5() + "_${workflow.manifest.version}" ),  // md5sum of params (without variable time stamp in "trace_report_suffix") appended by pipeline version
+            params.trace_report_suffix, // record this as link to files in pipeline_info
+            params.expected_sequences_region,
+            run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.abs_fasta : ch_dada2_fasta,  // observed sequences (fasta)
+            run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.rel_tsv : ch_dada2_asv,      // observed sequences (abundance table)
+            params.expected_sequences ? channel.fromPath("${params.expected_sequences}", checkIfExists: true) : channel.empty(),  // expected sequences (fasta)
+            params.expected_abundances ? channel.fromPath("${params.expected_abundances}", checkIfExists: true) : channel.empty() // expected sequences (abundance table)
         )
     }
 

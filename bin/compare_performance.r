@@ -102,10 +102,10 @@ get_stats_abundance <- function(expected_abund,observed_abund,df,sample) {
 			y <- y / sum(y)  # normalize
 			sum(x * log(x / y))
 		}
-		
+
 		# Midpoint distribution
 		m <- (p + q) / 2
-		
+
 		# Jensen-Shannon is the square root of the average of two KL divergences
 		sqrt(0.5 * kl_div(p, m) + 0.5 * kl_div(q, m))
 	}

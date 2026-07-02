@@ -344,8 +344,9 @@ The observed sequences will be aligned globally (using `VSEASRCH --usearch_globa
 Depending on the region to analyse (`--expected_sequences_region`) the mismatches and gaps within the alignment will be summarized with or without terminal gaps.
 The nucleotide differences will be evaluated for each observed sequence to its best match.
 
+Observed sequences will be accepted as "match" to an expected sequence (i.e. true positive) if there are no mismatches or gaps in the region (adjustable with `--expected_sequences_mismatches`).
 Expected abundances per sequence (`--expected_abundances`) enable sample specific presence/absence metrics and abundance-based comparisons.
-For those, observed and expected sequences will be aggregated by their analysed region: when one observed sequence matches exactely to several expected sequences, the expected sequence IDs will be concatenated and vice versa.
+For those, observed and expected sequences will be aggregated by their analysed region: when one observed sequence matches to several expected sequences, the expected sequence IDs will be concatenated and vice versa.
 That means, for example, if observed sequences are shorter than expected sequences and the analysed region is "query", each expected sequence (ID) that matches the same observed sequence will be aggregated.
 
 The aggregation of obsevered and expected IDs and abundances based on perfect matches

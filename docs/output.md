@@ -658,9 +658,9 @@ On request (`--ancombc2`), ANCOM-BC2 is applied to each suitable or specified me
 
 </details>
 
-### Compare to expected
+### Compare observed to expected outcome
 
-Comparison evaluates observed results against expected outcomes, typically for samples with known composition such as mock communities, to assess the data and analysis. Steps to evaluate the produced ASVs are implemented in the pipeline.
+The observed results can be compared to expected outcomes per sample, typically for samples with known composition such as mock communities, to assess the performance of the data generation and analysis. Steps to evaluate the produced ASVs are implemented in the pipeline.
 
 When expected sequences are supplied, the following files will be produced:
 

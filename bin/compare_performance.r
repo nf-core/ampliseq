@@ -179,11 +179,19 @@ if (length(SAMPLES) == 0) {
 
 # (B) ANALYSE
 
-# Initialize dataframe
+# Initialize dataframes
 df <- data.frame(
 	sample=character(),
 	type=character(),
 	value=character(),
+	stringsAsFactors=FALSE)
+abundances <- data.frame(
+	sample=character(),
+	ID=character(),
+	query=character(),
+	target=character(),
+	observed_abund=numeric(),
+	expected_abund=numeric(),
 	stringsAsFactors=FALSE)
 
 # for each sample
@@ -238,10 +246,10 @@ for (sample in SAMPLES) {
 	data$observed_abund <- data$observed_abund/sum(data$observed_abund,na.rm=TRUE)
 	# Sort by expected abundance
 	data <- data[order(data$expected_abund, decreasing = TRUE), ]
-	# write table
-	outfile <- paste0(sample,"_abundances.tsv")
-	print(paste("write",outfile))
-	write.table(data, file = outfile, row.names = FALSE, col.names = TRUE, quote = FALSE, na = '', sep="\t")
+	# append sample data to table
+	data$sample <- rep(sample, nrow(data))
+	data <- data[, c("sample", "ID", "query", "target", "observed_abund", "expected_abund")]
+	abundances <- rbind( abundances, data )
 
 	# (3) STATISTICS
 
@@ -274,12 +282,13 @@ for (sample in SAMPLES) {
 	invisible(dev.off())
 
 	# Scatter plot: Observed vs. Expected Abundance (log-log)
+	data_matches <- data[data$observed_abund >0 & data$expected_abund >0,] # only on matched observed to expected
 	outfile <- paste0(sample,"_scatter_loglog")
 	print(paste("write",outfile))
 	svg(paste0(outfile,".svg"), width = 8, height = 6)
 	plot(
-		log10(data$expected_abund),
-		log10(data$observed_abund),
+		log10(data_matches$expected_abund),
+		log10(data_matches$observed_abund),
 		xlab = "log10(Expected Abundance)",
 		ylab = "log10(Observed Abundance)",
 		main = "Scatter Plot: Observed vs. Expected Abundance (log-log)",
@@ -320,6 +329,12 @@ for (sample in SAMPLES) {
 }
 
 # (5) TABLES - metrics overall
+
+# write table
+outfile <- "abundances_per-sample.tsv"
+abundances$tag <- rep(tag, nrow(abundances))
+print(paste("write",outfile))
+write.table(abundances, file = outfile, row.names = FALSE, col.names = TRUE, quote = FALSE, na = '', sep="\t")
 
 # Write detailed output
 outfile <- "performance_per-sample.tsv"

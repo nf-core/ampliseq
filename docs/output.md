@@ -721,6 +721,7 @@ The following additional files will be produced:
 <summary>Output files</summary>
 
 - `comparison/<parameter md5sum>_<pipeline version>`
+  - `abundances_per-sample.tsv`: Tab-separated table with abundance of expected and observed sequences per sample, in long format.
   - `performance_summary.tsv`: Tab-separated table with aggregated performance metrics.
   - `performance_per-sample.tsv`: Tab-separated table with performance metrics per sample, in long format.
   - `performance.log`: Log file, complementary to `nucleotide-differences.log`.
@@ -728,7 +729,6 @@ The following additional files will be produced:
   - `performance_boxplot.svg`: Boxplot of number of aggregated performance metrics in svg format.
 - `comparison/<parameter md5sum>_<pipeline version>/per-sample`
   - `<sample>_abundance_barplot.svg`: Side-by-Side bar plots in svg format.
-  - `<sample>_abundances.tsv`: Tab-separated table with expected and observed abundances.
   - `<sample>_rank_abundance_curve.svg`: Rank Abundance Curves in svg format.
   - `<sample>_scatter_loglog.svg`: Scatter plot: Observed vs. Expected Abundance (log-log) in svg format.
 

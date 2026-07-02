@@ -14,6 +14,7 @@ process COMPARE_SEQUENCES {
     val(similarity_threshold)        // Similarity threshold for maches of VSEARCH
     val(query_or_target)             // what reagion to evaluate (query,target,alignment) from params.expected_sequences_region
     val(trace_report_suffix)         // timestamp of pipeline info files
+    val(val_params_string)           // params map converted to string
 
     output:
     path("*.svg")                            , emit: svg
@@ -39,6 +40,7 @@ process COMPARE_SEQUENCES {
     # save unique tags to file
     echo "md5sum_version ${meta.id}" > "md5sum_version.txt"
     echo "trace_report_suffix ${trace_report_suffix}" >> "md5sum_version.txt"
+    echo "params ${val_params_string}" >> "md5sum_version.txt"
 
     # isolate warnings (when grep find no match, exit code is 1, "|| true" fixes that)
     grep "WARN -" "nucleotide-differences.log" | sed 's/^\\[1\\] //g' | sed 's/"//g' > Warnings.txt || true

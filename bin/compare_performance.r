@@ -14,14 +14,12 @@ mismatch_threshold <- as.numeric(args[6])
 
 # function to produce statistics
 get_stats <- function(i_exp,i_obs,df,sample) {
-
 	# if none are expected, skip!
 	if( length(i_exp)==0 ) {
 		print( paste("No expected seq in sample",sample, "- skipping") ); next
 	} else {
 		print( paste(length(i_exp),"expected seq in sample",sample) )
 	}
-
 	# stats
 	TP <- intersect(i_exp, i_obs)
 	FN <- setdiff(i_exp, i_obs)
@@ -33,7 +31,6 @@ get_stats <- function(i_exp,i_obs,df,sample) {
 		Fone <- 0
 		Fbeta <- 0
 	}
-
 	# save
 	types <- c(
 		"observed",
@@ -67,32 +64,21 @@ get_stats <- function(i_exp,i_obs,df,sample) {
 		paste(head(FN, n=100), collapse=','),
 		paste(head(FP, n=100), collapse=',')
 	)
+	# prepare output
 	ids <- rep(sample, length(types))
-
 	df_append <- data.frame(
 		sample=ids,
 		type= types,
 		value= values,
 		stringsAsFactors=FALSE)
 	df <- rbind( df, df_append )
-
 	return(df)
 }
 
-# function to produce abundance statistics
-get_stats_abundance <- function(expected_abund,observed_abund,df,sample) {
-
-	# if none are expected, skip!
-	if( length(expected_abund)==0 ) {
-		print( paste("No expected abundances in sample",sample, "- skipping") ); next
-	} else {
-		print( paste(length(expected_abund),"expected seq in sample",sample) )
-	}
-
+# function to produce distances based on complete abundance statistics (incl. FN & FP)
+get_stats_distances <- function(expected_abund,observed_abund,df,sample) {
+	if( length(expected_abund)==0 ) { next }
 	# stats
-	pearson_cor <- cor.test(expected_abund, observed_abund, method = "pearson")
-	spearman_rho <- cor.test(expected_abund, observed_abund, method = "spearman")
-	percent_dev <- abs((observed_abund - expected_abund) / expected_abund) * 100
 	jensen_shannon <- function(p, q) {
 		# KL divergence function (with pseudocount to handle zeros)
 		kl_div <- function(x, y, pseudocount = 1e-10) {
@@ -102,14 +88,40 @@ get_stats_abundance <- function(expected_abund,observed_abund,df,sample) {
 			y <- y / sum(y)  # normalize
 			sum(x * log(x / y))
 		}
-
 		# Midpoint distribution
 		m <- (p + q) / 2
-
 		# Jensen-Shannon is the square root of the average of two KL divergences
 		sqrt(0.5 * kl_div(p, m) + 0.5 * kl_div(q, m))
 	}
+	# save
+	types <- c(
+		"bray-curtis",
+		"hellinger",
+		"jensen-shannon"
+	)
+	values <- c(
+		1 - (2 * sum(pmin(observed_abund, expected_abund))) / (sum(observed_abund) + sum(expected_abund)), # Bray-Curtis Dissimilarity
+		sqrt(sum((sqrt(observed_abund) - sqrt(expected_abund))^2)), # Hellinger Distance
+		jensen_shannon(observed_abund, expected_abund) # Jensen-Shannon Divergence
+	)
+	# prepare output
+	ids <- rep(sample, length(types))
+	df_append <- data.frame(
+		sample=ids,
+		type=types,
+		value=values,
+		stringsAsFactors=FALSE)
+	df <- rbind( df, df_append )
+	return(df)
+}
 
+# function to produce abundance statistics based on filtered abundance statistics (excl. FN & FP)
+get_stats_abundance <- function(expected_abund,observed_abund,df,sample) {
+	if( length(expected_abund)==0 ) { next }
+	# stats
+	pearson_cor <- cor.test(expected_abund, observed_abund, method = "pearson")
+	spearman_rho <- cor.test(expected_abund, observed_abund, method = "spearman")
+	percent_dev <- abs((observed_abund - expected_abund) / expected_abund) * 100
 	# save
 	types <- c(
 		"pearson_cor",
@@ -117,10 +129,7 @@ get_stats_abundance <- function(expected_abund,observed_abund,df,sample) {
 		"deviation",
 		"mae",
 		"rmse",
-		"ps",
-		"bray-curtis",
-		"hellinger",
-		"jensen-shannon"
+		"ps"
 	)
 	values <- c(
 		as.list(pearson_cor$estimate)[[1]], # Pearson's Correlation (cor)
@@ -128,20 +137,16 @@ get_stats_abundance <- function(expected_abund,observed_abund,df,sample) {
 		median(percent_dev, na.rm = TRUE), # Median Percent Abundance Deviation
 		mean(abs(observed_abund - expected_abund), na.rm = TRUE), # Mean Absolute Error (MAE)
 		sqrt(mean((observed_abund - expected_abund)^2, na.rm = TRUE)), # Root Mean Square Error (RMSE)
-		sum(pmin(observed_abund, expected_abund)) / sum(expected_abund), # Proportional Similarity (PS)
-		1 - (2 * sum(pmin(observed_abund, expected_abund))) / (sum(observed_abund) + sum(expected_abund)), # Bray-Curtis Dissimilarity
-		sqrt(sum((sqrt(observed_abund) - sqrt(expected_abund))^2)), # Hellinger Distance
-		jensen_shannon(observed_abund, expected_abund) # Jensen-Shannon Divergence
+		sum(pmin(observed_abund, expected_abund)) / sum(expected_abund) # Proportional Similarity (PS)
 	)
+	# prepare output
 	ids <- rep(sample, length(types))
-
 	df_append <- data.frame(
 		sample=ids,
-		type= types,
-		value= values,
+		type=types,
+		value=values,
 		stringsAsFactors=FALSE)
 	df <- rbind( df, df_append )
-
 	return(df)
 }
 
@@ -258,8 +263,12 @@ for (sample in SAMPLES) {
 	obsIDs <- data$ID[!is.na(data$query)]
 	df <- get_stats( expIDs, obsIDs, df, sample)
 
-	# calculate abundance stats, this includes also non-matching sequences
-	df <- get_stats_abundance( data$expected_abund, data$observed_abund, df, sample)
+	# Calculate distance metrics, this *includes* non-matching sequences (FP & FN)
+	df <- get_stats_distances( data$expected_abund, data$observed_abund, df, sample)
+
+	# Calculate relationship and abundance error, this *excludes* non-matching sequences (FP & FN)
+	data_matches <- data[data$observed_abund >0 & data$expected_abund >0,] # only on matched observed to expected
+	df <- get_stats_abundance( data_matches$expected_abund, data_matches$observed_abund, df, sample)
 
 	# (4) PLOTS - pairwise comparisons
 
@@ -282,7 +291,6 @@ for (sample in SAMPLES) {
 	invisible(dev.off())
 
 	# Scatter plot: Observed vs. Expected Abundance (log-log)
-	data_matches <- data[data$observed_abund >0 & data$expected_abund >0,] # only on matched observed to expected
 	outfile <- paste0(sample,"_scatter_loglog")
 	print(paste("write",outfile))
 	svg(paste0(outfile,".svg"), width = 8, height = 6)

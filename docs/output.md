@@ -681,7 +681,7 @@ When expected sequences are supplied, the following files will be produced:
 
 When additionally expected abundances are available, additional performance metrics will be generated.
 
-(1) Metrics base on presence/absence:
+#### Metrics base on presence/absence:
 
 - `observed`: Number of observed sequences
 - `expected`: Number of expected sequences
@@ -698,7 +698,17 @@ When additionally expected abundances are available, additional performance metr
 - `FNs_exp`: FN IDs (max 100) corresponding to expected sequences
 - `FPs_obs`: FP IDs (max 100) corresponding to observed sequences
 
-(2) Metrics based on abundances:
+> [!NOTE]
+> The F1 score is unreliable with strongly unbalanced data.
+
+> [!WARNING]
+> If the supplied expected sequences are not unique in the region of the alignment with the observed sequences, alignment matches are used to aggregate identical expected sequences and vice versa. In case there isnt an exact match to a set of identical expected sequences, those will not be aggregated and inflate the number of expected sequences.
+
+#### Metrics based on abundances:
+
+(1) based on filtered abundance tables, **excluding** non-matching sequences (FP & FN)
+
+These metrics would be inflated, dominated or skewed by false positives and false negatives.
 
 - `pearson_cor`: Pearson's Correlation (cor)
 - `spearman_rho`: Spearman's Rank Correlation (rho)
@@ -706,15 +716,12 @@ When additionally expected abundances are available, additional performance metr
 - `mae`: Mean Absolute Error (MAE)
 - `rmse`: Root Mean Square Error (RMSE)
 - `ps`: Proportional Similarity (PS)
+
+(2) based on complete abundance tables, **including** non-matching sequences (FP & FN)
+
 - `bray-curtis`: Bray-Curtis Dissimilarity
 - `hellinger`: Hellinger Distance
 - `jensen-shannon`: Jensen-Shannon Divergence
-
-> [!NOTE]
-> The F1 score is unreliable with strongly unbalanced data.
-
-> [!WARNING]
-> If the supplied expected sequences are not unique in the region of the alignment with the observed sequences, alignment matches are used to aggregate identical expected sequences. In case there isnt an exact match to a set of identical expected sequences, those will not be aggregated and inflate the number of expected sequences.
 
 The following additional files will be produced:
 

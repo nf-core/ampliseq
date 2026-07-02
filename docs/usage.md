@@ -343,10 +343,12 @@ To investigate the quality of data generation and/or data analysis, analysis out
 The observed sequences will be aligned globally (using `VSEASRCH --usearch_global`) to the expected sequences (`--expected_sequences`).
 Depending on the region to analyse (`--expected_sequences_region`) the mismatches and gaps within the alignment will be summarized with or without terminal gaps.
 The nucleotide differences will be evaluated for each observed sequence to its best match.
-Expected abundances per sequence (`--expected_abundances`) enable sample specific presence/absence metrics and abundance-based comparisons.
-For those, observed and expected sequences will be aggregated by their analysed region: when one observed sequence matches exactely to several expected sequences, the expected sequence IDs (and abundances) will be concatenated and vice versa. That means, for example, if observed sequences are shorter than expected sequences and the analysed region is "query", each expected sequence (ID) that matches the same observed sequence will be aggregated.
 
-The aggregation of obsevered and expected IDs and abundances based on perfect matches:
+Expected abundances per sequence (`--expected_abundances`) enable sample specific presence/absence metrics and abundance-based comparisons.
+For those, observed and expected sequences will be aggregated by their analysed region: when one observed sequence matches exactely to several expected sequences, the expected sequence IDs will be concatenated and vice versa.
+That means, for example, if observed sequences are shorter than expected sequences and the analysed region is "query", each expected sequence (ID) that matches the same observed sequence will be aggregated.
+
+The aggregation of obsevered and expected IDs and abundances based on perfect matches
 
 | obsID | expID | exp_abund | obs_abund |
 | ----- | ----- | --------- | --------- |
@@ -373,7 +375,7 @@ will be transformed to:
 | h     |       | 0         | 1         |
 |       | 4     | 1         | 0         |
 
-This aggregation will not work properly when many sequences are not observed, e.g. in the above axample observed ID "a" links expected IDs "1" and "2", which would not have been aggregated if "a" would not have been observed. This would inflate expected sequences. Therefore, optimal sequence and abundance input are tailored towards the actual sequenced region and de-duplicated.
+This aggregation will not work properly when many sequences are not observed, e.g. in the above example observed ID "a" links expected IDs "1" and "2", which would not have been aggregated if "a" would not have been observed. This would inflate expected sequences. Therefore, optimal sequence and abundance input are tailored towards the actual sequenced region and de-duplicated.
 
 ### Differential abundance analysis
 

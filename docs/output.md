@@ -680,7 +680,8 @@ When expected sequences are supplied, the following files will be produced:
 </details>
 
 When additionally expected abundances are available, additional performance metrics will be generated.
-Metrics base on presence/absence:
+
+(1) Metrics base on presence/absence:
 
 - `observed`: Number of observed sequences
 - `expected`: Number of expected sequences
@@ -697,7 +698,7 @@ Metrics base on presence/absence:
 - `FNs_exp`: FN IDs (max 100) corresponding to expected sequences
 - `FPs_obs`: FP IDs (max 100) corresponding to observed sequences
 
-Metrics based on abundances:
+(2) Metrics based on abundances:
 
 - `pearson_cor`: Pearson's Correlation (cor)
 - `spearman_rho`: Spearman's Rank Correlation (rho)

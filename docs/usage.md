@@ -340,6 +340,44 @@ The columns which are to be assessed can be specified by `--metadata_category`. 
 
 To investigate the quality of data generation and/or data analysis, analysis outcome is compared to expected results. Comparison steps are implemented in the pipeline and can be used with `--expected_*` parameters, details in the [parameter documentation](https://nf-co.re/ampliseq/parameters/#comparison).
 
+The observed sequences will be aligned globally (using `VSEASRCH --usearch_global`) to the expected sequences (`--expected_sequences`).
+Depending on the region to analyse (`--expected_sequences_region`) the mismatches and gaps within the alignment will be summarized with or without terminal gaps.
+The nucleotide differences will be evaluated for each observed sequence to its best match.
+
+Observed sequences will be accepted as "match" to an expected sequence (i.e. true positive) if there are no mismatches or gaps in the region (adjustable with `--expected_sequences_mismatches`).
+Expected abundances per sequence (`--expected_abundances`) enable sample specific presence/absence metrics and abundance-based comparisons.
+For those, observed and expected sequences will be aggregated by their analysed region: when one observed sequence matches to several expected sequences, the expected sequence IDs will be concatenated and vice versa.
+That means, for example, if observed sequences are shorter than expected sequences and the analysed region is "query", each expected sequence (ID) that matches the same observed sequence will be aggregated.
+
+The aggregation of observed and expected IDs and abundances based on perfect matches
+
+| obsID | expID | exp_abund | obs_abund |
+| ----- | ----- | --------- | --------- |
+| a     | 1     | 6         | 2         |
+| a     | 2     | 4         | 2         |
+| c     | 3     | 9         | 4         |
+| d     | 3     | 9         | 3         |
+|       | 4     | 1         | 0         |
+| e     | 5     | 4         | 5         |
+| f     | 6     | 5         | 1         |
+| f     | 7     | 1         | 1         |
+| g     | 6     | 5         | 2         |
+| g     | 7     | 1         | 2         |
+| h     |       | 0         | 1         |
+
+will be transformed to:
+
+| obsID | expID | exp_abund | obs_abund |
+| ----- | ----- | --------- | --------- |
+| a     | 1-2   | 10        | 2         |
+| c-d   | 3     | 9         | 7         |
+| e     | 5     | 4         | 5         |
+| g-f   | 6-7   | 6         | 3         |
+| h     |       | 0         | 1         |
+|       | 4     | 1         | 0         |
+
+This aggregation will not work properly when many sequences are not observed, e.g. in the above example observed ID "a" links expected IDs "1" and "2", which would not have been aggregated if "a" would not have been observed. This would inflate expected sequences. Therefore, optimal sequence and abundance input are tailored towards the actual sequenced region and de-duplicated.
+
 ### Differential abundance analysis
 
 Differential abundance analysis for relative abundance from microbial community analysis are plagued by multiple issues that aren't fully solved yet. But some approaches seem promising, for example Analysis of Composition of Microbiomes with Bias Correction ([ANCOM-BC](https://pubmed.ncbi.nlm.nih.gov/32665548/)). [ANCOM](https://pubmed.ncbi.nlm.nih.gov/26028277/), ANCOM-BC, and [ANCOM-BC2](https://pubmed.ncbi.nlm.nih.gov/38158428/) are integrated into the pipeline, but only executed on request via `--ancom`, `--ancombc` or `--ancombc2`, more details in the [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#differential-abundance-analysis).

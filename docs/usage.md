@@ -349,7 +349,7 @@ Expected abundances per sequence (`--expected_abundances`) enable sample specifi
 For those, observed and expected sequences will be aggregated by their analysed region: when one observed sequence matches to several expected sequences, the expected sequence IDs will be concatenated and vice versa.
 That means, for example, if observed sequences are shorter than expected sequences and the analysed region is "query", each expected sequence (ID) that matches the same observed sequence will be aggregated.
 
-The aggregation of obsevered and expected IDs and abundances based on perfect matches
+The aggregation of observed and expected IDs and abundances based on perfect matches
 
 | obsID | expID | exp_abund | obs_abund |
 | ----- | ----- | --------- | --------- |

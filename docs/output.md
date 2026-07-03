@@ -679,7 +679,7 @@ When expected sequences are supplied, the following files will be produced:
 
 </details>
 
-When additionally expected abundances are available, additional performance metrics will be generated.
+When expected abundances are available, additional performance metrics will be generated.
 
 #### Metrics base on presence/absence:
 
@@ -702,7 +702,7 @@ When additionally expected abundances are available, additional performance metr
 > The F1 score is unreliable with strongly unbalanced data.
 
 > [!WARNING]
-> If the supplied expected sequences are not unique in the region of the alignment with the observed sequences, alignment matches are used to aggregate identical expected sequences and vice versa. In case there isnt an exact match to a set of identical expected sequences, those will not be aggregated and inflate the number of expected sequences.
+> If the supplied expected sequences are not unique in the region of the alignment with the observed sequences, alignment matches are used to aggregate identical expected sequences and vice versa. In case there isn't an exact match to a set of identical expected sequences, those will not be aggregated and inflate the number of expected sequences.
 
 #### Metrics based on abundances:
 

@@ -667,12 +667,12 @@ When expected sequences are supplied, the following files will be produced:
 <details markdown="1">
 <summary>Output files</summary>
 
-- `comparison/<parameter md5sum>_<pipeline version>`
+- `comparison/`
   - `vsearch_usearchglobal.tsv`: VSEARCH --usearch_global output for ASV to sequence comparisons.
-  - `md5sum_version.txt`: Contains parameter md5sum and pipeline version that is also the folder name, additionally the time stamp used in files in `pipeline_info/`.
+  - `md5sum_version.txt`: Contains parameter md5sum and pipeline version, the time stamp used in files in `pipeline_info/`, and the params string.
   - `nucleotide-differences.log`: Log file for comparing matches of ASVs to expected sequences.
   - `nucleotide-differences.tsv`: Tab-separated table based on VSEARCH results comparing matches of ASVs to expected sequences.
-- `comparison/<parameter md5sum>_<pipeline version>/per-sample`
+- `comparison/per-sample`
   - `<sample>_nucleotide-differences_per-sample.tsv`: Number of sequences and mismatches to expected sequences.
   - `<sample>_nucleotide-distance_barplot.png`: Barplot of number of sequences versus number of mismatches in png format.
   - `<sample>_nucleotide-distance_barplot.svg`: Barplot of number of sequences versus number of mismatches in svg format.
@@ -728,14 +728,14 @@ The following additional files will be produced:
 <details markdown="1">
 <summary>Output files</summary>
 
-- `comparison/<parameter md5sum>_<pipeline version>`
+- `comparison/`
   - `abundances_per-sample.tsv`: Tab-separated table with abundance of expected and observed sequences per sample, in long format.
   - `performance_summary.tsv`: Tab-separated table with aggregated performance metrics.
   - `performance_per-sample.tsv`: Tab-separated table with performance metrics per sample, in long format.
   - `performance.log`: Log file, complementary to `nucleotide-differences.log`.
   - `performance_boxplot.png`: Boxplot of number of aggregated performance metrics in png format.
   - `performance_boxplot.svg`: Boxplot of number of aggregated performance metrics in svg format.
-- `comparison/<parameter md5sum>_<pipeline version>/per-sample`
+- `comparison/per-sample`
   - `<sample>_abundance_barplot.svg`: Side-by-Side bar plots in svg format.
   - `<sample>_rank_abundance_curve.svg`: Rank Abundance Curves in svg format.
   - `<sample>_scatter_loglog.svg`: Scatter plot: Observed vs. Expected Abundance (log-log) in svg format.

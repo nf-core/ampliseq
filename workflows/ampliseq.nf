@@ -529,7 +529,7 @@ workflow AMPLISEQ {
         if (params.sample_inference == "pooled") {
             ch_reads_to_savont =
                 ch_reads_trimming
-                    .toList()
+                    .toSortedList { a, b -> a[0].id <=> b[0].id }
                     .map { list ->
                         def reads = list.collect { it[1] }
                         def ids = list.collect { it[0].id }.join("\t")
@@ -545,7 +545,7 @@ workflow AMPLISEQ {
             SAVONT_ASV (ch_reads_to_savont)
             ch_reads_to_savont_export =
                 SAVONT_ASV.out.output_folder
-                    .toList()
+                    .toSortedList { a, b -> a[0].id <=> b[0].id }
                     .map { list ->
                         def folders = list.collect { it[1] }
                         def ids = list.collect { it[0].id }.join(" ")

@@ -14,22 +14,41 @@
 
 ## Pipeline tools
 
-### Core tools
-
-- [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
-
-> Andrews, S. (2010). FastQC: A Quality Control Tool for High Throughput Sequence Data [Online].
+### Preprocessing & QC
 
 - [Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200/479)
 
   > Marcel, M. Cutadapt removes adapter sequences from high-throughput sequencing reads. EMBnet. journal 17.1 (2011): pp-10. doi: 10.14806/ej.17.1.200.
 
+#### Short read tools
+
+- [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
+
+  > Andrews, S. (2010). FastQC: A Quality Control Tool for High Throughput Sequence Data [Online].
+
+- [DADA2](https://pubmed.ncbi.nlm.nih.gov/27214047/)
+
+  > Callahan BJ, McMurdie PJ, Rosen MJ, Han AW, Johnson AJ, Holmes SP. DADA2: High-resolution sample inference from Illumina amplicon data. Nat Methods. 2016 Jul;13(7):581-3. doi: 10.1038/nmeth.3869. Epub 2016 May 23. PMID: 27214047; PMCID: PMC4927377.
+
+#### Long read tools
+
+- [Porechop_ABI](https://pubmed.ncbi.nlm.nih.gov/36698762/)
+
+  > Bonenfant Q, Noé L, Touzet H. Porechop_ABI: discovering unknown adapters in Oxford Nanopore Technology sequencing reads for downstream trimming. Bioinform Adv. 2022 Nov 21;3(1):vbac085. doi: 10.1093/bioadv/vbac085. PMID: 36698762; PMCID: PMC9869717.
+
+- [Chopper](https://pubmed.ncbi.nlm.nih.gov/37171891/)
+
+  > De Coster W, Rademakers R. NanoPack2: population-scale evaluation of long-read sequencing data. Bioinformatics. 2023 May 4;39(5):btad311. doi: 10.1093/bioinformatics/btad311. PMID: 37171891; PMCID: PMC10196664.
+
+- [Savont](https://doi.org/10.64898/2026.05.26.727271)
+
+  > Jim Shaw, Marie Riisgaard-Jensen, Kasper Skytte Andersen, Rasmus Kirkegaard, Morten Kam Dahl Dueholm, Heng Li. Sensitive long-read amplicon sequence variant recovery with savont. bioRxiv 2026.05.26.727271; doi: https://doi.org/10.64898/2026.05.26.727271
+
+### Default broad classification
+
 - [Barrnap](https://github.com/tseemann/barrnap)
 
   > Seemann T. barrnap 0.9 : rapid ribosomal RNA prediction.
-
-- [DADA2](https://pubmed.ncbi.nlm.nih.gov/27214047/)
-  > Callahan BJ, McMurdie PJ, Rosen MJ, Han AW, Johnson AJ, Holmes SP. DADA2: High-resolution sample inference from Illumina amplicon data. Nat Methods. 2016 Jul;13(7):581-3. doi: 10.1038/nmeth.3869. Epub 2016 May 23. PMID: 27214047; PMCID: PMC4927377.
 
 ### Taxonomic classification and databases
 

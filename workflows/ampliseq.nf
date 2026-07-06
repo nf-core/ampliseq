@@ -505,7 +505,23 @@ workflow AMPLISEQ {
     //
     if (params.nanopore && !params.skip_chopper) {
         CHOPPER ( ch_reads_trimming, [] )
-        ch_reads_trimming = CHOPPER.out.fastq
+        ch_reads_trimming_check =
+            CHOPPER.out.fastq
+                .branch { it ->
+                    failed: it[1].countFastq() < params.min_read_counts
+                    passed: true }
+        ch_reads_trimming = ch_reads_trimming_check.passed
+        ch_reads_trimming_check.failed
+            .map { meta, _reads -> [ meta.id ] }
+            .collect()
+            .subscribe { it ->
+                def samples = it.join("\n")
+                if (params.ignore_failed_trimming) {
+                    log.warn "The following samples had too few reads (<$params.min_read_counts) after filtering with Chopper:\n$samples\nIgnoring failed samples and continue!\n"
+                } else {
+                    error("The following samples had too few reads (<$params.min_read_counts) after filtering with Chopper:\n$samples\nThis dataset may have too low read quality to be analysed properly. Ignore that samples using `--ignore_failed_trimming` or adjust the threshold with `--min_read_counts`.")
+                }
+            }
     }
 
     //

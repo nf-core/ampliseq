@@ -527,7 +527,7 @@ workflow AMPLISEQ {
     //
     if (params.nanopore) {
         if (params.sample_inference == "pooled") {
-            ch_reads_to_savont = 
+            ch_reads_to_savont =
                 ch_reads_trimming
                     .toList()
                     .map { list ->
@@ -543,7 +543,7 @@ workflow AMPLISEQ {
                     .map { meta, reads ->
                         [ meta, reads, "ID\t${meta.id}" ] }
             SAVONT_ASV (ch_reads_to_savont)
-            ch_reads_to_savont_export = 
+            ch_reads_to_savont_export =
                 SAVONT_ASV.out.output_folder
                     .toList()
                     .map { list ->
@@ -1266,7 +1266,7 @@ workflow AMPLISEQ {
             !params.nanopore ? DADA2_PREPROCESSING.out.args.first().ifEmpty( [] ) : [],
             !params.nanopore && !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg.ifEmpty( [] ) : [],
             !params.nanopore && !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg_preprocessed.ifEmpty( [] ) : [],
-            !params.nanopore ? 
+            !params.nanopore ?
                 DADA2_ERR.out.svg
                     .map {
                         meta_old, svgs ->

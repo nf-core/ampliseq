@@ -112,6 +112,11 @@
                     "description": "Ignore warnings about binned quality scores.",
                     "fa_icon": "fas fa-arrow-right"
                 },
+                "nanopore": {
+                    "type": "boolean",
+                    "description": "If data is single-ended Nanopore reads instead of Illumina",
+                    "fa_icon": "fas fa-align-justify"
+                },
                 "pacbio": {
                     "type": "boolean",
                     "description": "If data is single-ended PacBio reads instead of Illumina",
@@ -292,6 +297,11 @@
                     "help_text": "If samples are treated independent (lowest sensitivity and lowest resources), pooled (highest sensitivity and resources) or pseudo-pooled (balance between required resources and sensitivity).",
                     "description": "Mode of sample inference: \"independent\", \"pooled\" or \"pseudo\"",
                     "enum": ["independent", "pooled", "pseudo"]
+                },
+                "savont_options": {
+                    "type": "string",
+                    "default": "--fl-16s",
+                    "description": "Options for Savont ONT analysis"
                 },
                 "mergepairs_strategy": {
                     "type": "string",
@@ -1062,6 +1072,14 @@
                 "skip_fastqc": {
                     "type": "boolean",
                     "description": "Skip FastQC"
+                },
+                "skip_porechop_abi": {
+                    "type": "boolean",
+                    "description": "Skip adapter trimming with porechop_ABI (ONT reads)."
+                },
+                "skip_chopper": {
+                    "type": "boolean",
+                    "description": "Skip quality filtering with Chopper (ONT reads)."
                 },
                 "skip_cutadapt": {
                     "type": "boolean",

@@ -9,6 +9,8 @@
 //
 
 include { FASTQC                                        } from '../modules/nf-core/fastqc/main'
+include { PORECHOP_ABI                                  } from '../modules/nf-core/porechop/abi/main'
+include { CHOPPER                                       } from '../modules/nf-core/chopper/main'
 include { MULTIQC                                       } from '../modules/nf-core/multiqc/main'
 include { VSEARCH_CLUSTER                               } from '../modules/nf-core/vsearch/cluster/main'
 include { FASTA_HMMSEARCH_RANK_FASTAS                   } from '../subworkflows/nf-core/fasta_hmmsearch_rank_fastas'
@@ -27,6 +29,8 @@ include { DOWNLOAD_REFERENCE as DOWNLOAD_REFERENCE_QIIME      } from '../modules
 include { DOWNLOAD_REFERENCE as DOWNLOAD_REFERENCE_SIDLE      } from '../modules/local/download_reference'
 include { DOWNLOAD_REFERENCE as DOWNLOAD_REFERENCE_SIDLE_TREE } from '../modules/local/download_reference'
 include { RENAME_RAW_DATA_FILES         } from '../modules/local/rename_raw_data_files'
+include { SAVONT_ASV                    } from '../modules/local/savont_asv'
+include { SAVONT_EXPORT                 } from '../modules/local/savont_export'
 include { DADA2_ERR                     } from '../modules/local/dada2_err'
 include { DADA2_DENOISING               } from '../modules/local/dada2_denoising'
 include { DADA2_RMCHIMERA               } from '../modules/local/dada2_rmchimera'
@@ -141,7 +145,7 @@ workflow AMPLISEQ {
     // Set non-params Variables
 
     single_end = params.single_end
-    if (params.pacbio || params.iontorrent) {
+    if (params.pacbio || params.iontorrent || params.nanopore) {
         single_end = true
     }
 
@@ -187,7 +191,7 @@ workflow AMPLISEQ {
                 }
                 meta.single_end = single_end.toBoolean()
                 def reads = single_end ? normalized_fw : [normalized_fw, normalized_rv]
-                if ( !meta.single_end && !normalized_rv ) { error("Entry `reverseReads` / `fastq_2` is missing in $params.input for $meta.sample, either correct the samplesheet or use `--single_end`, `--pacbio`, or `--iontorrent`") } // make sure that reverse reads are present when single_end isn't specified
+                if ( !meta.single_end && !normalized_rv ) { error("Entry `reverseReads` / `fastq_2` is missing in $params.input for $meta.sample, either correct the samplesheet or use `--single_end`, `--pacbio`, `--iontorrent`, or `--nanopore`") } // make sure that reverse reads are present when single_end isn't specified
                 if ( !meta.single_end && ( normalized_fw.getSimpleName() == meta.sample || normalized_rv.getSimpleName() == meta.sample ) ) { error("Entry `sampleID` / `sample` cannot be identical to simple name of `forwardReads` / `fastq_1` or `reverseReads` / `fastq_2`, please change the sample name in $params.input for sample $meta.sample") } // sample name and any file name without extensions aren't identical, because rename_raw_data_files.nf would forward 3 files (2 renamed +1 input) instead of 2 in that case
                 if ( meta.single_end && ( normalized_fw.getSimpleName() == meta.sample+"_1" || normalized_fw.getSimpleName() == meta.sample+"_2" ) ) { error("Entry `sampleID` / `sample` + `_1` or `_2` cannot be identical to simple name of `forwardReads` / `fastq_1`, please change the sample name in $params.input for sample $meta.sample") } // sample name and file name without extensions aren't identical, because rename_raw_data_files.nf would forward 2 files (1 renamed +1 input) instead of 1 in that case
                                 return [meta, reads] }
@@ -478,6 +482,7 @@ workflow AMPLISEQ {
     // MODULE: Rename files
     //
     RENAME_RAW_DATA_FILES ( ch_reads )
+    ch_reads_trimming = RENAME_RAW_DATA_FILES.out.fastq
 
     //
     // MODULE: Run FastQC
@@ -488,70 +493,125 @@ workflow AMPLISEQ {
     }
 
     //
+    // MODULE: porechop_ABI
+    //
+    if (params.nanopore && !params.skip_porechop_abi) {
+        PORECHOP_ABI ( ch_reads_trimming, [] )
+        ch_reads_trimming = PORECHOP_ABI.out.reads
+    }
+
+    //
+    // MODULE: chopper
+    //
+    if (params.nanopore && !params.skip_chopper) {
+        CHOPPER ( ch_reads_trimming, [] )
+        ch_reads_trimming = CHOPPER.out.fastq
+    }
+
+    //
     // MODULE: Cutadapt
     //
     if (!params.skip_cutadapt) {
-        ch_trimmed_reads =
+        ch_reads_trimming =
             CUTADAPT_WORKFLOW (
                 RENAME_RAW_DATA_FILES.out.fastq,
                 params.illumina_pe_its,
                 params.double_primer
             ).reads
         ch_multiqc_files = ch_multiqc_files.mix(CUTADAPT_WORKFLOW.out.logs.collect{ it -> it[1] })
-    } else {
-        ch_trimmed_reads = RENAME_RAW_DATA_FILES.out.fastq
+        ch_stats = CUTADAPT_WORKFLOW.out.summary
+    }
+
+    //
+    // MODULES: ASV generation with Savont
+    //
+    if (params.nanopore) {
+        if (params.sample_inference == "pooled") {
+            ch_reads_to_savont = 
+                ch_reads_trimming
+                    .toList()
+                    .map { list ->
+                        def reads = list.collect { it[1] }
+                        def ids = list.collect { it[0].id }.join("\t")
+                        [ [id: 'pooled'], reads, "ID\t${ids}" ] }
+            SAVONT_ASV (ch_reads_to_savont)
+            ch_dada2_fasta = SAVONT_ASV.out.fasta
+            ch_dada2_asv = SAVONT_ASV.out.asv
+        } else if (params.sample_inference == "independent") {
+            ch_reads_to_savont =
+                ch_reads_trimming
+                    .map { meta, reads ->
+                        [ meta, reads, "ID\t${meta.id}" ] }
+            SAVONT_ASV (ch_reads_to_savont)
+            ch_reads_to_savont_export = 
+                SAVONT_ASV.out.output_folder
+                    .toList()
+                    .map { list ->
+                        def folders = list.collect { it[1] }
+                        def ids = list.collect { it[0].id }.join(" ")
+                        [ 'independent', folders, ids ] }
+            SAVONT_EXPORT ( ch_reads_to_savont_export )
+            ch_dada2_fasta = SAVONT_EXPORT.out.fasta
+            ch_dada2_asv = SAVONT_EXPORT.out.asv
+        }
+        ch_stats = channel.empty() // TODO: fill that with something!
     }
 
     //
     // SUBWORKFLOW: Read preprocessing & QC plotting with DADA2
     //
-    ch_filt_reads =
-        DADA2_PREPROCESSING (
-            ch_trimmed_reads,
-            single_end,
-            find_truncation_values,
-            trunclenf,
-            trunclenr
-        ).reads
+    if (!params.nanopore) {
+        ch_filt_reads =
+            DADA2_PREPROCESSING (
+                ch_reads_trimming,
+                single_end,
+                find_truncation_values,
+                trunclenf,
+                trunclenr
+            ).reads
+    }
 
     //
     // MODULES: ASV generation with DADA2
     //
+    if (!params.nanopore) {
+        //run error model
+        DADA2_ERR ( ch_filt_reads )
+        ch_errormodel = DADA2_ERR.out.errormodel
 
-    //run error model
-    DADA2_ERR ( ch_filt_reads )
-    ch_errormodel = DADA2_ERR.out.errormodel
+        //group by meta
+        ch_derep_errormodel = ch_filt_reads.join( ch_errormodel )
+        DADA2_DENOISING ( ch_derep_errormodel.dump(tag: 'into_denoising')  )
+        DADA2_RMCHIMERA ( DADA2_DENOISING.out.seqtab )
 
-    //group by meta
-    ch_derep_errormodel = ch_filt_reads.join( ch_errormodel )
-    DADA2_DENOISING ( ch_derep_errormodel.dump(tag: 'into_denoising')  )
-    DADA2_RMCHIMERA ( DADA2_DENOISING.out.seqtab )
+        //group by sequencing run & group by meta
+        ch_track_numbers =
+            DADA2_PREPROCESSING.out.logs
+                .join( DADA2_DENOISING.out.denoised )
+                .join( DADA2_DENOISING.out.mergers )
+                .join( DADA2_RMCHIMERA.out.rds )
+        DADA2_STATS ( ch_track_numbers )
 
-    //group by sequencing run & group by meta
-    ch_track_numbers =
-        DADA2_PREPROCESSING.out.logs
-            .join( DADA2_DENOISING.out.denoised )
-            .join( DADA2_DENOISING.out.mergers )
-            .join( DADA2_RMCHIMERA.out.rds )
-    DADA2_STATS ( ch_track_numbers )
+        //merge if several runs, otherwise just publish
+        DADA2_MERGE (
+            DADA2_STATS.out.stats.map { _meta, stats -> stats }.collect(),
+            DADA2_RMCHIMERA.out.rds.map { _meta, rds -> rds }.collect() )
 
-    //merge if several runs, otherwise just publish
-    DADA2_MERGE (
-        DADA2_STATS.out.stats.map { _meta, stats -> stats }.collect(),
-        DADA2_RMCHIMERA.out.rds.map { _meta, rds -> rds }.collect() )
-
-    //merge cutadapt_summary and dada_stats files
-    if (!params.skip_cutadapt) {
-        MERGE_STATS_STD (CUTADAPT_WORKFLOW.out.summary, DADA2_MERGE.out.dada2stats)
-        ch_stats = MERGE_STATS_STD.out.tsv
-    } else {
-        ch_stats = DADA2_MERGE.out.dada2stats
+        //merge cutadapt_summary and dada_stats files
+        if (!params.skip_cutadapt) {
+            MERGE_STATS_STD (ch_stats, DADA2_MERGE.out.dada2stats)
+            ch_stats = MERGE_STATS_STD.out.tsv
+        } else {
+            ch_stats = DADA2_MERGE.out.dada2stats
+        }
+        ch_dada2_fasta = DADA2_MERGE.out.fasta
+        ch_dada2_asv = DADA2_MERGE.out.asv
     }
 
     //
     // SUBWORKFLOW / MODULES : Taxonomic classification with DADA2, SINTAX and/or QIIME2
     //
-    if ( params.multiregion ) {
+    if ( !params.nanopore && params.multiregion ) {
         // separate sequences and abundances when several regions
         DADA2_SPLITREGIONS (
             //DADA2_DENOISING per run & region -> per run
@@ -581,10 +641,6 @@ workflow AMPLISEQ {
         // Must have params:
         // - solved by '!params.multiregion' for skip_report
         // - solved in 'subworkflows/local/utils_nfcore_ampliseq_pipeline/main.nf': skip_dada_taxonomy
-    } else {
-        // forward results to downstream analysis if single region
-        ch_dada2_fasta = DADA2_MERGE.out.fasta
-        ch_dada2_asv = DADA2_MERGE.out.asv
     }
 
     //
@@ -1207,27 +1263,29 @@ workflow AMPLISEQ {
             !params.input_fasta && !params.skip_fastqc && !params.skip_multiqc ? MULTIQC.out.plots : [[],[]], //.collect().flatten().collectFile(name: "fastqc_per_sequence_quality_scores_plot.svg")
             !params.skip_cutadapt ? CUTADAPT_WORKFLOW.out.summary.collect().ifEmpty( [] ) : [],
             find_truncation_values,
-            DADA2_PREPROCESSING.out.args.first().ifEmpty( [] ),
-            !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg.ifEmpty( [] ) : [],
-            !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg_preprocessed.ifEmpty( [] ) : [],
-            DADA2_ERR.out.svg
-                .map {
-                    meta_old, svgs ->
-                    def meta = [:]
-                    meta.single_end = meta_old.single_end
-                    [ meta, svgs, meta_old.run ] }
-                .groupTuple(by: 0 )
-                .map {
-                    meta_old, svgs, runs ->
-                    def meta = [:]
-                    meta.single_end = meta_old.single_end
-                    meta.run = runs.flatten()
-                    [ meta, svgs.flatten() ]
-                }.ifEmpty( [[],[]] ),
-            DADA2_MERGE.out.asv.ifEmpty( [] ),
+            !params.nanopore ? DADA2_PREPROCESSING.out.args.first().ifEmpty( [] ) : [],
+            !params.nanopore && !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg.ifEmpty( [] ) : [],
+            !params.nanopore && !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg_preprocessed.ifEmpty( [] ) : [],
+            !params.nanopore ? 
+                DADA2_ERR.out.svg
+                    .map {
+                        meta_old, svgs ->
+                        def meta = [:]
+                        meta.single_end = meta_old.single_end
+                        [ meta, svgs, meta_old.run ] }
+                    .groupTuple(by: 0 )
+                    .map {
+                        meta_old, svgs, runs ->
+                        def meta = [:]
+                        meta.single_end = meta_old.single_end
+                        meta.run = runs.flatten()
+                        [ meta, svgs.flatten() ]
+                    }.ifEmpty( [[],[]] )
+                : [[],[]],
+            !params.nanopore ? DADA2_MERGE.out.asv.ifEmpty( [] ) : [],
             ch_unfiltered_fasta.ifEmpty( [] ), // this is identical to DADA2_MERGE.out.fasta if !params.input_fasta
-            DADA2_MERGE.out.dada2asv.ifEmpty( [] ),
-            DADA2_MERGE.out.dada2stats.ifEmpty( [] ),
+            !params.nanopore ? DADA2_MERGE.out.dada2asv.ifEmpty( [] ) : [],
+            !params.nanopore ? DADA2_MERGE.out.dada2stats.ifEmpty( [] ) : [],
             params.mergepairs_strategy,
             params.vsearch_cluster ? FILTER_CLUSTERS.out.asv.ifEmpty( [] ) : [],
             params.decontam,

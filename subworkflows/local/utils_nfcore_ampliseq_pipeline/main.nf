@@ -191,6 +191,10 @@ def validateInputParameters() {
         error("Incompatible parameters: `--binned_quality` and `--pacbio` are both used, but only one is allowed. When the data has binned quality scores, use `--binned_quality` instead of `--pacbio`.")
     }
 
+    if ( params.sample_inference == "pseudo" && params.nanopore ) {
+        error("Incompatible parameters: `--sample_inference pseudo` and `--nanopore` are incompatible. Use `--sample_inference independent` (default) or `--sample_inference pooled` with `--nanopore`.")
+    }
+
     if ( params.pacbio || params.iontorrent || params.single_end ) {
         if (params.trunclenr) { log.warn "Unused parameter: `--trunclenr` is ignored because the data is single end." }
     } else if (params.trunclenf && !params.trunclenr) {

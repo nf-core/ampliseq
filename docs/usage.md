@@ -6,11 +6,13 @@
 
 ## Introduction
 
-The nf-core/ampliseq pipeline is a Nextflow-based workflow for amplicon sequencing analysis, supporting denoising (via DADA2) and taxonomic assignment (via QIIME2) for 16S, ITS, 18S, and other amplicons, with defaults optimized for Illumina paired-end 16S rRNA data.
-By default, it performs quality filtering, denoising, chimera removal, taxonomic classification, and generates diversity metrics, count tables, and interactive visualizations, making it ready to use out-of-the-box for standard microbial community analyses.
-You may want to customize the primer sequences, reference databases, or compute resources to match your data or infrastructure.
-The pipeline also allows overriding default containers or adding custom parameters for specific tools, which is useful for keeping up with rapidly updated databases or specialized analyses.
-For most users, the main sections of interest will be the input parameters (e.g., --input, --FW_primer, --RV_primer, --metadata) and output documentation, as these define how to tailor the pipeline to your project and interpret the results.
+The nf-core/ampliseq pipeline is a Nextflow-based workflow for amplicon sequencing analysis, supporting denoising (via DADA2 for Illumina, IonTorrent, and PacBio HiFi data, or Savont for Oxford Nanopore data) and taxonomic assignment for 16S, ITS, 18S, and other amplicons. Defaults are optimized for Illumina paired-end 16S rRNA data.
+
+By default, the pipeline performs quality filtering, denoising, chimera removal, taxonomic classification, and generates diversity metrics, count tables, and interactive visualizations. This makes it ready to use out-of-the-box for standard microbial community analyses.
+
+Users can customize primer sequences, input data type, reference databases, or compute resources to match their data or infrastructure. The pipeline also allows overriding default containers or adding custom parameters for specific tools, which is useful for keeping up with rapidly updated databases or specialized analyses.
+
+For most users, the main sections of interest will be the **input parameters** (e.g., `--input`, `--FW_primer`, `--RV_primer`, `--metadata`) and **output documentation**, as these define how to tailor the pipeline to a project and interpret the results.
 
 ## Running the pipeline
 
@@ -201,6 +203,16 @@ Please note the following additional requirements:
 - Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique (also across sequencing runs) and only contain letters, numbers or underscores
 - If your data is scattered, produce a sample sheet
 
+### Sequencing data types
+
+The pipeline supports the analysis of multiple sequencing data types: Illumina (paired-end or single-end), IonTorrent, PacBio HiFi, and Oxford Nanopore (ONT).
+
+By default, Illumina paired-end reads are preprocessed with [Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200/479) and Amplicon Sequence Variants (ASVs) are generated with [DADA2](https://pubmed.ncbi.nlm.nih.gov/27214047/). For single-end Illumina data, use the `--single_end` parameter.
+
+IonTorrent and PacBio HiFi data are analyzed similarly to Illumina data, but the `--iontorrent` and `--pacbio` parameters adjust [DADA2](https://pubmed.ncbi.nlm.nih.gov/27214047/) settings accordingly.
+
+To analyze Oxford Nanopore (ONT) R10.4 sequencing reads (preferably with SUP basecalling), use the `--nanopore` parameter. This enables a dedicated workflow, including preprocessing with [Porechop_ABI](https://pubmed.ncbi.nlm.nih.gov/36698762/), [Chopper](https://pubmed.ncbi.nlm.nih.gov/37171891/), and [Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200/479), followed by ASV generation with [Savont](https://doi.org/10.64898/2026.05.26.727271).
+
 ### Regions of variable length (e.g. ITS)
 
 Special considerations should be made when pre-processing reads for regions of variable length, e.g. ITS for fungal barcoding. For ITS regions e.g. ITS1 or ITS2, it is recommended to use the `--illumina_pe_its` parameter for paired-end Illumina reads, which disables fixed-length read truncation. Also consider adjusting `--truncq` to a value higher than the default value of 2 if you find that a high proportion of reads is excluded by DADA2 filtering.
@@ -213,7 +225,7 @@ By default, [ITSx](https://microbiology.se/software/itsx/) is used for ITS regio
 --its_extractor itsxrust
 ```
 
-ITSxRust automatically selects platform-appropriate presets: `--preset ont` by default, or `--preset hifi` when `--pacbio` is set. The required HMM profile is bundled in the container and Bioconda package, so no additional files need to be provided.
+ITSxRust automatically selects platform-appropriate presets: `--preset ont` when `--nanopore` is set, or `--preset hifi` when `--pacbio` is set. The required HMM profile is bundled in the container and Bioconda package, so no additional files need to be provided.
 
 ITSxRust produces the same output files as ITSx and is fully compatible with all downstream steps including `--cut_its` and `--its_partial`.
 

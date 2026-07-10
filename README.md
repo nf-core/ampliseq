@@ -22,7 +22,7 @@
 
 ## Introduction
 
-**nfcore/ampliseq** is a bioinformatics analysis pipeline used for amplicon sequencing, supporting denoising of any amplicon and supports a variety of taxonomic databases for taxonomic assignment including 16S, ITS, CO1 and 18S. Phylogenetic placement is also possible. Multiple region analysis such as 5R is implemented. Supported is paired-end Illumina or single-end Illumina, PacBio and IonTorrent data. Default is the analysis of 16S rRNA gene amplicons sequenced paired-end with Illumina.
+**nfcore/ampliseq** is a bioinformatics analysis pipeline used for amplicon sequencing, supporting denoising of any amplicon and supports a variety of taxonomic databases for taxonomic assignment including 16S, ITS, CO1 and 18S. Phylogenetic placement is also possible. Multiple region analysis such as 5R is implemented. Supported is paired-end Illumina or single-end Illumina, PacBio, IonTorrent, and Oxford Nanopore data. Default is the analysis of 16S rRNA gene amplicons sequenced paired-end with Illumina.
 
 A video about relevance, usage and output of the pipeline (version 2.1.0; 26th Oct. 2021) can also be found in [YouTube](https://youtu.be/a0VOEeAvETs) and [billibilli](https://www.bilibili.com/video/BV1B44y1e7MM), the slides are deposited at [figshare](https://doi.org/10.6084/m9.figshare.16871008.v1).
 
@@ -34,7 +34,7 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 ## Pipeline summary
 
-By default, the pipeline currently performs the following:
+By default, for paired-end Illumina data, the pipeline currently performs the following:
 
 - Sequencing quality control ([FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
 - Trimming of reads ([Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200))
@@ -57,6 +57,8 @@ By default, the pipeline currently performs the following:
 First, you need to know whether the sequencing files at hand are expected to contain primer sequences (usually yes) and if yes, what primer sequences. In the example below, the paired end sequencing data was produced with 515f (GTGYCAGCMGCCGCGGTAA) and 806r (GGACTACNVGGGTWTCTAAT) primers of the V4 region of the 16S rRNA gene. Please note, that those primer sequences should not contain any sequencing adapter sequences, only the sequence that matches the biological amplicon.
 
 Next, the sequencing data needs to be detailed in a sample sheet or organized in a folder (see [input documentation](https://nf-co.re/ampliseq/usage#input-specifications)).
+
+Furthermore, specify what type of sequencing data you have, e.g. Illumina, PacBio, IonTorrent, and Oxford Nanopore data (see [data type documentation](https://nf-co.re/ampliseq/usage#sequencing-data-types)). In the example below paired-end Illumina data is assumed, which is default.
 
 Now, you can run the pipeline using:
 

@@ -94,6 +94,19 @@ A summary report for most pipeline results in html format produced by [R Markdow
 
 </details>
 
+#### Porechop_ABI
+
+[Porechop_ABI](https://pubmed.ncbi.nlm.nih.gov/36698762/) is removing adapters from reads.
+This is important to not have any remaining non-biological remnants in the read data.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `porechop_abi/`
+  - `*.porechop_abi.log`: Log file of Porechop_ABI for each sample.
+
+</details>
+
 #### Cutadapt
 
 [Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200) is trimming primer sequences from sequencing reads. Primer sequences are non-biological sequences that often introduce point mutations that do not reflect sample sequences. This is especially true for degenerated PCR primer. If primer trimming would be omitted, artifactual amplicon sequence variants might be computed by the denoising tool or sequences might be lost due to become labelled as PCR chimera.
@@ -138,15 +151,22 @@ Savont filters reads (98% quality), produces ASVs, and removes apparent PCR chim
 
 - `savont/`
   - `<mode>_final_asvs.fasta`: Fasta file with ASV sequences.
-  - `<mode>_feature-table.tsv`: Counts for each ASV sequence and sample.
+  - `<mode>_feature-table.tsv`: Tab-separated file with counts for each ASV sequence and sample.
   - `<mode>_savont.log`: Log file of Savont.
 
-Where `<mode>` is either `independent` or `pooled`. There will be more output files if `<mode>` is `independent`:
+Where `<mode>` is either `independent` or `pooled`.
+
+Additional output file if `<mode>` is `pooled`:
+
+  - `pooled_stats.tsv`: Tab-separated file with read counts after Savont.
+
+Additional output files if `<mode>` is `independent`:
 
 - `savont/per-sample/`: Directory containing files with all parameters for DADA2 steps.
   - `<sample>_final_asvs.fasta`: Fasta file with ASV sequences.
-  - `<sample>_feature-table.tsv`: Counts for each ASV sequence and sample.
+  - `<sample>_feature-table.tsv`: Tab-separated file with counts for each ASV sequence and sample.
   - `<sample>_savont.log`: Log file of Savont.
+  - `<sample>_stats.tsv`: Tab-separated file with read counts after Savont.
 
 </details>
 

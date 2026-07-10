@@ -111,6 +111,9 @@
                 "FORMAT_TAXONOMY_QIIME": {
                     "sed": 4.7
                 },
+                "MERGE_STATS_DADA": {
+                    "R": "4.5.2"
+                },
                 "MERGE_STATS_DECONTAM": {
                     "R": "4.5.2"
                 },
@@ -121,9 +124,6 @@
                     "R": "4.5.2"
                 },
                 "MERGE_STATS_FILTERTAXA": {
-                    "R": "4.5.2"
-                },
-                "MERGE_STATS_DADA": {
                     "R": "4.5.2"
                 },
                 "METADATA_ALL": {

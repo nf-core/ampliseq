@@ -88,13 +88,13 @@
                 "GAPPA_HEATTREE": {
                     "gappa": "0.8.0"
                 },
+                "MERGE_STATS_DADA": {
+                    "R": "4.5.2"
+                },
                 "MERGE_STATS_FILTERSSU": {
                     "R": "4.5.2"
                 },
                 "MERGE_STATS_FILTERTAXA": {
-                    "R": "4.5.2"
-                },
-                "MERGE_STATS_DADA": {
                     "R": "4.5.2"
                 },
                 "METADATA_ALL": {

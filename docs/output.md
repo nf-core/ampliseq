@@ -158,6 +158,7 @@ Where `<mode>` is either `independent` or `pooled`.
 
 Additional output file if `<mode>` is `pooled`:
 
+- `savont/`
   - `pooled_stats.tsv`: Tab-separated file with read counts after Savont.
 
 Additional output files if `<mode>` is `independent`:

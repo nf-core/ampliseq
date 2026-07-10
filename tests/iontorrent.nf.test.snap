@@ -57,7 +57,7 @@
                 "FORMAT_TAXRESULTS_SINTAX": {
                     "python": "3.9.1"
                 },
-                "MERGE_STATS_STD": {
+                "MERGE_STATS_DADA": {
                     "R": "4.5.2"
                 },
                 "PHYLOSEQ": {

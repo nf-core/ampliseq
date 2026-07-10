@@ -15,6 +15,7 @@ process SAVONT_ASV {
     path("*_feature-table.tsv") , emit: asv
     path("*_final_asvs.fasta")  , emit: fasta
     path("*_final_clusters.tsv"), emit: clusters
+    path("*_stats.tsv")         , emit: stats
     path("savont_asv_*/temp/*") , emit: temp
     tuple val(meta), path("savont_asv_*"), emit: output_folder
     path("*_savont.log")        , emit: log
@@ -33,6 +34,9 @@ process SAVONT_ASV {
 
     # adjust the naming of the samples:
     sed '1s/.*/${sample_string}/' savont_asv_${prefix}/feature-table.tsv > ${prefix}_feature-table.tsv
+
+    # output count per sample
+    savont_asv_stats.sh ${prefix}_feature-table.tsv >${prefix}_stats.tsv
 
     # copy other files to include the prefix
     cp savont_asv_${prefix}/final_asvs.fasta ${prefix}_final_asvs.fasta

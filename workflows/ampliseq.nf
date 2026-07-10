@@ -29,14 +29,17 @@ include { DOWNLOAD_REFERENCE as DOWNLOAD_REFERENCE_QIIME      } from '../modules
 include { DOWNLOAD_REFERENCE as DOWNLOAD_REFERENCE_SIDLE      } from '../modules/local/download_reference'
 include { DOWNLOAD_REFERENCE as DOWNLOAD_REFERENCE_SIDLE_TREE } from '../modules/local/download_reference'
 include { RENAME_RAW_DATA_FILES         } from '../modules/local/rename_raw_data_files'
+include { MERGE_STATS as MERGE_STATS_CUTADAPT } from '../modules/local/merge_stats'
 include { SAVONT_ASV                    } from '../modules/local/savont_asv'
 include { SAVONT_EXPORT                 } from '../modules/local/savont_export'
+include { MERGE_STATS as MERGE_STATS_SAVONT } from '../modules/local/merge_stats'
 include { DADA2_ERR                     } from '../modules/local/dada2_err'
 include { DADA2_DENOISING               } from '../modules/local/dada2_denoising'
 include { DADA2_RMCHIMERA               } from '../modules/local/dada2_rmchimera'
 include { DADA2_STATS                   } from '../modules/local/dada2_stats'
 include { DADA2_MERGE                   } from '../modules/local/dada2_merge'
 include { DADA2_SPLITREGIONS            } from '../modules/local/dada2_splitregions'
+include { MERGE_STATS as MERGE_STATS_DADA } from '../modules/local/merge_stats'
 include { SIDLE_WF                      } from '../subworkflows/local/sidle_wf'
 include { DECONTAM                      } from '../modules/local/decontam'
 include { MERGE_STATS as MERGE_STATS_DECONTAM     } from '../modules/local/merge_stats'
@@ -54,7 +57,6 @@ include { FORMAT_FASTAINPUT             } from '../modules/local/format_fastainp
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
 include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
 include { ITSXRUST_CUTASV               } from '../modules/local/itsxrust_cutasv'
-include { MERGE_STATS as MERGE_STATS_STD} from '../modules/local/merge_stats'
 include { FILTER_SAMPLES                } from '../modules/local/filter_samples'
 include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'
 include { QIIME2_TABLEFILTERTAXA        } from '../modules/local/qiime2_tablefiltertaxa'
@@ -498,6 +500,7 @@ workflow AMPLISEQ {
     if (params.nanopore && !params.skip_porechop_abi) {
         PORECHOP_ABI ( ch_reads_trimming, [] )
         ch_reads_trimming = PORECHOP_ABI.out.reads
+        ch_multiqc_files = ch_multiqc_files.mix(PORECHOP_ABI.out.log.collect{ it -> it[1] })
     }
 
     //
@@ -505,6 +508,15 @@ workflow AMPLISEQ {
     //
     if (params.nanopore && !params.skip_chopper) {
         CHOPPER ( ch_reads_trimming, [] )
+
+        // Count reads of input and output files
+        ch_stats = ch_reads_trimming
+            .map { meta, fastq -> [meta.sample, fastq.countFastq()] }
+            .join( CHOPPER.out.fastq.map { meta, fastq -> [meta.sample, fastq.countFastq()]}, by: 0 )
+            .collectFile(keepHeader: true, skip: 1, sort: true, cache: true) { sample, read_counts_in, read_counts_out ->
+                ["chopper_readcounts.tsv", "sample\tchopper_input\tchopper_output\n${sample}\t${read_counts_in}\t${read_counts_out}\n"] }
+
+        // Filter samples for sufficient reads
         ch_reads_trimming_check =
             CHOPPER.out.fastq
                 .branch { it ->
@@ -530,12 +542,17 @@ workflow AMPLISEQ {
     if (!params.skip_cutadapt) {
         ch_reads_trimming =
             CUTADAPT_WORKFLOW (
-                RENAME_RAW_DATA_FILES.out.fastq,
+                ch_reads_trimming,
                 params.illumina_pe_its,
                 params.double_primer
             ).reads
         ch_multiqc_files = ch_multiqc_files.mix(CUTADAPT_WORKFLOW.out.logs.collect{ it -> it[1] })
-        ch_stats = CUTADAPT_WORKFLOW.out.summary
+        if (params.nanopore && !params.skip_chopper) {
+            MERGE_STATS_CUTADAPT (ch_stats, CUTADAPT_WORKFLOW.out.summary)
+            ch_stats = MERGE_STATS_CUTADAPT.out.tsv
+        } else {
+            ch_stats = CUTADAPT_WORKFLOW.out.summary
+        }
     }
 
     //
@@ -547,12 +564,13 @@ workflow AMPLISEQ {
                 ch_reads_trimming
                     .toSortedList { a, b -> a[0].id <=> b[0].id }
                     .map { list ->
-                        def reads = list.collect { it[1] }
-                        def ids = list.collect { it[0].id }.join("\t")
+                        def reads = list.collect { it -> it[1] }
+                        def ids = list.collect { it -> it[0].id }.join("\t")
                         [ [id: 'pooled'], reads, "ID\t${ids}" ] }
             SAVONT_ASV (ch_reads_to_savont)
             ch_dada2_fasta = SAVONT_ASV.out.fasta
             ch_dada2_asv = SAVONT_ASV.out.asv
+            ch_stats_savont = SAVONT_ASV.out.stats
         } else if (params.sample_inference == "independent") {
             ch_reads_to_savont =
                 ch_reads_trimming
@@ -563,14 +581,22 @@ workflow AMPLISEQ {
                 SAVONT_ASV.out.output_folder
                     .toSortedList { a, b -> a[0].id <=> b[0].id }
                     .map { list ->
-                        def folders = list.collect { it[1] }
-                        def ids = list.collect { it[0].id }.join(" ")
+                        def folders = list.collect { it -> it[1] }
+                        def ids = list.collect { it -> it[0].id }.join(" ")
                         [ 'independent', folders, ids ] }
             SAVONT_EXPORT ( ch_reads_to_savont_export )
             ch_dada2_fasta = SAVONT_EXPORT.out.fasta
             ch_dada2_asv = SAVONT_EXPORT.out.asv
+            ch_stats_savont = SAVONT_ASV.out.stats
+                .collectFile(name: 'savont_stats.tsv', keepHeader: true, sort: true, cache: true, newLine: true)
         }
-        ch_stats = channel.empty() // TODO: fill that with something!
+        // merge stats
+        if (params.skip_cutadapt || (params.nanopore && !params.skip_chopper)) {
+            MERGE_STATS_SAVONT (ch_stats, ch_stats_savont)
+            ch_stats = MERGE_STATS_SAVONT.out.tsv
+        } else {
+            ch_stats = ch_stats_savont
+        }
     }
 
     //
@@ -615,8 +641,8 @@ workflow AMPLISEQ {
 
         //merge cutadapt_summary and dada_stats files
         if (!params.skip_cutadapt) {
-            MERGE_STATS_STD (ch_stats, DADA2_MERGE.out.dada2stats)
-            ch_stats = MERGE_STATS_STD.out.tsv
+            MERGE_STATS_DADA (ch_stats, DADA2_MERGE.out.dada2stats)
+            ch_stats = MERGE_STATS_DADA.out.tsv
         } else {
             ch_stats = DADA2_MERGE.out.dada2stats
         }

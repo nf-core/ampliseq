@@ -70,7 +70,7 @@
                     "kraken2": "2.1.6",
                     "pigz": 2.8
                 },
-                "MERGE_STATS_STD": {
+                "MERGE_STATS_DADA": {
                     "R": "4.5.2"
                 },
                 "PHYLOSEQ": {

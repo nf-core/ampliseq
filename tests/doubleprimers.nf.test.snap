@@ -74,7 +74,7 @@
                 "MERGE_STATS_FILTERTAXA": {
                     "R": "4.5.2"
                 },
-                "MERGE_STATS_STD": {
+                "MERGE_STATS_DADA": {
                     "R": "4.5.2"
                 },
                 "PHYLOSEQ": {

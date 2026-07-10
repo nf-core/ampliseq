@@ -658,28 +658,30 @@ On request (`--ancombc2`), ANCOM-BC2 is applied to each suitable or specified me
 
 </details>
 
-### Compare to expected
+### Compare observed to expected outcome
 
-Comparison evaluates observed results against expected outcomes, typically for samples with known composition such as mock communities, to assess the data and analysis. Steps to evaluate the produced ASVs are implemented in the pipeline.
+The observed results can be compared to expected outcomes per sample, typically for samples with known composition such as mock communities, to assess the performance of the data generation and analysis. Steps to evaluate the produced ASVs are implemented in the pipeline.
 
 When expected sequences are supplied, the following files will be produced:
 
 <details markdown="1">
 <summary>Output files</summary>
 
-- `comparison/<parameter md5sum>_<pipeline version>`
+- `comparison/`
   - `vsearch_usearchglobal.tsv`: VSEARCH --usearch_global output for ASV to sequence comparisons.
-  - `md5sum_version.txt`: Contains parameter md5sum and pipeline version that is also the folder name, additionally the time stamp used in files in `pipeline_info/`.
+  - `md5sum_version.txt`: Contains parameter md5sum and pipeline version, the time stamp used in files in `pipeline_info/`, and the params string.
   - `nucleotide-differences.log`: Log file for comparing matches of ASVs to expected sequences.
   - `nucleotide-differences.tsv`: Tab-separated table based on VSEARCH results comparing matches of ASVs to expected sequences.
-- `comparison/<parameter md5sum>_<pipeline version>/per-sample`
+- `comparison/per-sample`
   - `<sample>_nucleotide-differences_per-sample.tsv`: Number of sequences and mismatches to expected sequences.
   - `<sample>_nucleotide-distance_barplot.png`: Barplot of number of sequences versus number of mismatches in png format.
   - `<sample>_nucleotide-distance_barplot.svg`: Barplot of number of sequences versus number of mismatches in svg format.
 
 </details>
 
-When additionally expected abundances are available, additional performance metrics will be generated:
+When expected abundances are available, additional performance metrics will be generated.
+
+#### Metrics base on presence/absence:
 
 - `observed`: Number of observed sequences
 - `expected`: Number of expected sequences
@@ -700,20 +702,43 @@ When additionally expected abundances are available, additional performance metr
 > The F1 score is unreliable with strongly unbalanced data.
 
 > [!WARNING]
-> If the supplied expected sequences are not unique in the region of the alignment with the observed sequences, alignment matches are used to aggregate identical expected sequences. In case there isnt an exact match to a set of identical expected sequences, those will not be aggregated and inflate the number of expected sequences.
+> If the supplied expected sequences are not unique in the region of the alignment with the observed sequences, alignment matches are used to aggregate identical expected sequences and vice versa. In case there isn't an exact match to a set of identical expected sequences, those will not be aggregated and inflate the number of expected sequences.
+
+#### Metrics based on abundances:
+
+(1) based on filtered abundance tables, **excluding** non-matching sequences (FP & FN)
+
+These metrics would be inflated, dominated or skewed by false positives and false negatives.
+
+- `pearson_cor`: Pearson's Correlation (cor)
+- `spearman_rho`: Spearman's Rank Correlation (rho)
+- `deviation`: Median Percent Abundance Deviation
+- `mae`: Mean Absolute Error (MAE)
+- `rmse`: Root Mean Square Error (RMSE)
+- `ps`: Proportional Similarity (PS)
+
+(2) based on complete abundance tables, **including** non-matching sequences (FP & FN)
+
+- `bray-curtis`: Bray-Curtis Dissimilarity
+- `hellinger`: Hellinger Distance
+- `jensen-shannon`: Jensen-Shannon Divergence
 
 The following additional files will be produced:
 
 <details markdown="1">
 <summary>Output files</summary>
 
-- `comparison/<parameter md5sum>_<pipeline version>`
+- `comparison/`
+  - `abundances_per-sample.tsv`: Tab-separated table with abundance of expected and observed sequences per sample, in long format.
   - `performance_summary.tsv`: Tab-separated table with aggregated performance metrics.
+  - `performance_per-sample.tsv`: Tab-separated table with performance metrics per sample, in long format.
   - `performance.log`: Log file, complementary to `nucleotide-differences.log`.
   - `performance_boxplot.png`: Boxplot of number of aggregated performance metrics in png format.
   - `performance_boxplot.svg`: Boxplot of number of aggregated performance metrics in svg format.
-- `comparison/<parameter md5sum>_<pipeline version>/per-sample`
-  - `performance_per-sample.tsv`: Tab-separated table with performance metrics per sample, in long format.
+- `comparison/per-sample`
+  - `<sample>_abundance_barplot.svg`: Side-by-Side bar plots in svg format.
+  - `<sample>_rank_abundance_curve.svg`: Rank Abundance Curves in svg format.
+  - `<sample>_scatter_loglog.svg`: Scatter plot: Observed vs. Expected Abundance (log-log) in svg format.
 
 </details>
 

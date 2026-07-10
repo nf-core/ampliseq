@@ -5,6 +5,7 @@ include { COMPARE_PERFORMANCE     } from '../../modules/local/compare_performanc
 workflow COMPARISON_WF {
     take:
     val_md5sum_version     // md5sum of params appended by pipeline version
+    val_params_string      // params map converted to string
     trace_report_suffix    // params.trace_report_suffix that allows linkage to files in pipeline_info, such as pipeline_info/params_<trace_report_suffix>.json
     query_or_target        // region to evaluate
     ch_observed_sequences  // observed sequences (fasta)
@@ -24,18 +25,14 @@ workflow COMPARISON_WF {
         "query+target+ql+tl+qilo+qihi+tilo+tihi+gaps+mism+qstrand" )
 
     // Investigate mismatches per sample, plus barplot (y = number of sequences, x = number of mismatches)
-    COMPARE_SEQUENCES ( VSEARCH_USEARCHGLOBAL_BM.out.tsv, ch_observed_abundances, ch_expected_abundances.ifEmpty([]), similarity_threshold, query_or_target, trace_report_suffix )
+    COMPARE_SEQUENCES ( VSEARCH_USEARCHGLOBAL_BM.out.tsv, ch_observed_abundances, ch_expected_abundances.ifEmpty([]), similarity_threshold, query_or_target, trace_report_suffix, val_params_string )
     COMPARE_SEQUENCES.out.warnings.subscribe{ it ->
             if( it.countLines() > 0 ) { log.warn "about comparing sequences\n\n" + it.splitText().join("") }
         }
 
-    // Calculate performance metrics per sample such as precision, recall, F1 score
+    // Calculate absence/presence performance metrics per sample such as precision, recall, F1 score
+    // Calculate abundance performance metrics per sample such as spearman's rho, RMSE, Bray-Curtis distance
     COMPARE_PERFORMANCE ( COMPARE_SEQUENCES.out.matches.map { it = [ [id: val_md5sum_version], file(it) ] }, ch_observed_abundances, ch_expected_abundances )
-
-    // (3) input: val_md5sum_version, "${val_md5sum_version}_matches.txt", ch_detected_abundances, ch_expected_abundances
-    //     -> compare abundance of exact matches
-    //     -> per sample % total deviation from expected, potentially normalized somehow
-    //COMPARISON_ABUNDANCES ( val_md5sum_version, "${val_md5sum_version}_exact_matches.txt", ch_detected_abundances, ch_expected_abundances )
 
     emit:
     mismatch_barplot_png = COMPARE_SEQUENCES.out.png.collect()

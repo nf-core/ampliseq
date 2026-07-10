@@ -990,6 +990,14 @@
                     "default": "query",
                     "enum": ["alignment", "query", "target"]
                 },
+                "expected_sequences_mismatches": {
+                    "type": "integer",
+                    "default": 0,
+                    "minimum": 0,
+                    "description": "Threshold of accepted mismatches and gaps to the expected sequences",
+                    "help_text": "The number of mismatches and gaps that are accepted in the region evaluated by `--expected_sequences_region` to call it a match. For example, `0` means an exact match, 1 allows one mismatch/gap.",
+                    "fa_icon": "fas fa-greater-than-equal"
+                },
                 "expected_abundances": {
                     "type": "string",
                     "format": "file-path",

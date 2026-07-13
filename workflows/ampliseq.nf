@@ -1303,7 +1303,7 @@ workflow AMPLISEQ {
             ch_metadata.ifEmpty( [] ),
             params.input ? file(params.input) : [], // samplesheet input
             ch_input_fasta.ifEmpty( [] ), // fasta input
-            !params.input_fasta && !params.skip_fastqc && !params.skip_multiqc ? MULTIQC.out.plots : [[],[]], //.collect().flatten().collectFile(name: "fastqc_per_sequence_quality_scores_plot.svg")
+            !params.input_fasta && !params.skip_fastqc && !params.skip_multiqc ? MULTIQC.out.plots : [[],[]],
             !params.skip_cutadapt ? CUTADAPT_WORKFLOW.out.summary.collect().ifEmpty( [] ) : [],
             params.nanopore && !params.skip_porechop_abi ? PORECHOP_ABI.out.log.ifEmpty( [[],[]] )  : [[],[]],
             params.nanopore && !params.skip_chopper ? ch_stats_chopper.ifEmpty( [] )  : [],

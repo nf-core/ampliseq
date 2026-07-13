@@ -510,11 +510,12 @@ workflow AMPLISEQ {
         CHOPPER ( ch_reads_trimming, [] )
 
         // Count reads of input and output files
-        ch_stats = ch_reads_trimming
+        ch_stats_chopper = ch_reads_trimming
             .map { meta, fastq -> [meta.sample, fastq.countFastq()] }
             .join( CHOPPER.out.fastq.map { meta, fastq -> [meta.sample, fastq.countFastq()]}, by: 0 )
             .collectFile(keepHeader: true, skip: 1, sort: true, cache: true) { sample, read_counts_in, read_counts_out ->
                 ["chopper_readcounts.tsv", "sample\tchopper_input\tchopper_output\n${sample}\t${read_counts_in}\t${read_counts_out}\n"] }
+        ch_stats = ch_stats_chopper
 
         // Filter samples for sufficient reads
         ch_reads_trimming_check =
@@ -1304,6 +1305,11 @@ workflow AMPLISEQ {
             ch_input_fasta.ifEmpty( [] ), // fasta input
             !params.input_fasta && !params.skip_fastqc && !params.skip_multiqc ? MULTIQC.out.plots : [[],[]], //.collect().flatten().collectFile(name: "fastqc_per_sequence_quality_scores_plot.svg")
             !params.skip_cutadapt ? CUTADAPT_WORKFLOW.out.summary.collect().ifEmpty( [] ) : [],
+            params.nanopore && !params.skip_porechop_abi ? PORECHOP_ABI.out.log.ifEmpty( [] )  : [],
+            params.nanopore && !params.skip_chopper ? ch_stats_chopper.ifEmpty( [] )  : [],
+            params.nanopore && params.sample_inference == "independent" ? SAVONT_EXPORT.out.asv :
+                params.nanopore  && params.sample_inference == "pooled" ? SAVONT_ASV.out.asv : [],
+            params.nanopore ? ch_stats_savont.ifEmpty( [] ) : [],
             find_truncation_values,
             !params.nanopore ? DADA2_PREPROCESSING.out.args.first().ifEmpty( [] ) : [],
             !params.nanopore && !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg.ifEmpty( [] ) : [],

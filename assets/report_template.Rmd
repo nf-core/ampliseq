@@ -74,7 +74,11 @@ params:
     input_fasta: FALSE
     input_folder: FALSE
     mqc_plot: FALSE
+    porechop_abi_log_paths: FALSE
+    chopper_stats_path: FALSE
     cutadapt_summary: FALSE
+    savont_asv_table_path : FALSE
+    savont_stats_path: FALSE
     dada_filtntrim_args: FALSE
     dada_qc_f_path: FALSE
     dada_qc_r_path: ""
@@ -82,7 +86,7 @@ params:
     dada_pp_qc_r_path: ""
     dada_err_path: FALSE
     dada_err_run: ""
-    asv_table_path: FALSE
+    dada_asv_table_path: FALSE
     path_asv_fa: FALSE
     path_dada2_tab: FALSE
     dada_stats_path: FALSE
@@ -272,6 +276,52 @@ _The cause is likely a bug in Kaleido, a dependency of MultiQC. There is no need
 }
 ```
 
+<!-- Subsection on Porechop_ABI -->
+
+```{r, eval = !isFALSE(params$porechop_abi_log_paths), results='asis'}
+cat(paste0("
+## Adapter removal with Porechop_ABI
+
+[Porechop_ABI](https://pubmed.ncbi.nlm.nih.gov/36698762/) removed adapters from reads.
+This is important to not have any remaining non-biological remnants in the read data.
+
+Information about changes to the data can be found in the [MultiQC report](../multiqc/multiqc_report.html) and
+Porechop_ABI log files can be found in folder [porechop_abi](../porechop_abi).
+"))
+```
+
+<!-- Subsection on Chopper -->
+
+```{r, eval = !isFALSE(params$chopper_stats_path), results='asis'}
+cat(paste0("
+## Read filtering with Chopper
+
+[Chopper](https://pubmed.ncbi.nlm.nih.gov/37171891/) filtered reads based on quality cutoffs.
+Reducing the data and number of reads can speed up subsequent steps, but is not strictely required.
+"))
+
+# import tsv
+chopper_stats <- read.table(file = params$chopper_stats_path, header = TRUE, sep = "\t")
+chopper_stats$passing_percent <- chopper_stats$chopper_output / chopper_stats$chopper_input * 100
+chopper_max_discarded <- round( 100 - min(chopper_stats$passing_percent), 1 )
+chopper_avg_passed <- round(mean(chopper_stats$passing_percent),1)
+
+# prep text
+chopper_text <- paste0("Less than ",
+    chopper_max_discarded, "% of the sequences were discarded per sample and a mean of ",
+    chopper_avg_passed, "% of the sequences (",min(chopper_stats$chopper_output)," to ",
+    max(chopper_stats$chopper_output),") per sample passed the filtering.
+")
+cat(chopper_text)
+
+# display table
+datatable(chopper_stats, options = list(
+        scrollX = TRUE,
+        scrollY = "300px",
+        paging = FALSE))
+
+```
+
 <!-- Subsection on Cutadapt -->
 
 ```{r, eval = !isFALSE(params$cutadapt_summary), results='asis'}
@@ -312,6 +362,68 @@ datatable(cutadapt_summary, options = list(
         scrollX = TRUE,
         scrollY = "300px",
         paging = FALSE))
+```
+
+<!-- Subsection on Savont ASVs -->
+
+```{r, eval = !isFALSE(params$savont_asv_table_path) || !isFALSE(params$savont_stats_path), results='asis'}
+cat(paste0("
+# ASV inference using Savont
+
+[Savont](https://doi.org/10.64898/2026.05.26.727271) generates Amplicon Sequence Variants (ASVs) at single-nucleotide resolution
+from long-read amplicon sequencing data such as Oxford Nanopore (ONT) R10.4 sequencing (preferably with SUP basecalling) or PacBio HiFi sequencing.
+
+Savont filters reads (98% quality), produces ASVs, and removes apparent PCR chimera.
+"))
+```
+
+<!-- Subsection on Savont ASVs -->
+
+```{r, eval = !isFALSE(params$savont_asv_table_path), results='asis'}
+cat("## Inferred ASVs\n\n")
+
+#import asv table
+asv_table <- read.table(file = params$savont_asv_table_path, header = TRUE, sep = "\t")
+n_asv <- nrow(asv_table)
+n_asv_final <- nrow(asv_table) #this is to report the original number later in the methods section
+
+# Output text
+cat("Savont generated", n_asv,
+        "amplicon sequence variants (ASVs) across all samples. ")
+if ( params$dada_sample_inference == "independent" ) {
+    cat("The ASVs can be found in [`savont/pooled_final_asvs.fasta`](../savont/). And the corresponding",
+        " quantification of the ASVs across samples is in [`savont/independent_feature-table.tsv`](../savont/).",
+        "ASVs were inferred for each sample independently",
+        "and per-sample information can be found in [`savont/per-sample](../savont/per-sample/). ")
+} else if ( params$dada_sample_inference == "pooled" ) {
+    cat("The ASVs can be found in [`savont/pooled_final_asvs.fasta`](../savont/). And the corresponding",
+        " quantification of the ASVs across samples is in [`savont/pooled_feature-table.tsv`](../savont/).",
+        "ASVs were inferred from pooled sample information. ")
+}
+```
+
+<!-- Subsection on Savont per-sample counts -->
+
+```{r, eval = !isFALSE(params$savont_stats_path), results='asis'}
+cat(paste0("
+## Read counts per sample
+
+The following table shows the read numbers per sample after ASV inference.
+"))
+
+# import tsv
+savont_stats <- read.table(file = params$savont_stats_path, header = TRUE, sep = "\t")
+
+datatable(savont_stats, options = list(
+        scrollX = TRUE,
+        scrollY = "300px",
+        paging = FALSE))
+
+cat(paste0("
+The ASV count table contained in total ",sum(savont_stats$savont_output)," counts,
+at least ",min(savont_stats$savont_output)," and at most ",max(savont_stats$savont_output)," per sample
+(average ",round(sum(savont_stats$savont_output)/length(savont_stats$savont_output),0),").
+"))
 ```
 
 <!-- Subsection on DADA2 QC filtering -->
@@ -401,9 +513,9 @@ that position. Original plots can be found in folder [dada2/QC/](../dada2/QC/) w
 "))
 ```
 
-<!-- Section on sequences / DADA2 ASVs -->
+<!-- Section on DADA2 ASVs -->
 
-```{r, eval = !isFALSE(params$dada_err_path) || !isFALSE(params$dada_stats_path) || !isFALSE(params$asv_table_path), results='asis'}
+```{r, eval = !isFALSE(params$dada_err_path) || !isFALSE(params$dada_stats_path) || !isFALSE(params$dada_asv_table_path), results='asis'}
 cat(paste0("
 # ASV inference using DADA2
 
@@ -595,13 +707,13 @@ Samples that are very different in lost reads (per stage) to the majority of sam
 
 <!-- Subsection on DADA2 ASVs -->
 
-```{r, eval = !isFALSE(params$asv_table_path), results='asis'}
+```{r, eval = !isFALSE(params$dada_asv_table_path), results='asis'}
 cat("## Inferred ASVs\n\n")
 
 #import asv table
-asv_table <- read.table(file = params$asv_table_path, header = TRUE, sep = "\t")
+asv_table <- read.table(file = params$dada_asv_table_path, header = TRUE, sep = "\t")
 n_asv <- length(asv_table$ASV_ID)
-n_asv_dada <- length(asv_table$ASV_ID) #this is to report the original number later in the methods section
+n_asv_final <- length(asv_table$ASV_ID) #this is to report the original number later in the methods section
 
 # Output text
 cat("Finally,", n_asv,
@@ -638,7 +750,7 @@ n_asv_vsearch_cluster <- nrow(vsearch_cluster)
 cat(paste0("
 ## Clustering of ASVs
 
-[VSEARCH](https://peerj.com/articles/2584/) clustered ",n_asv_dada," ASVs into ",n_asv_vsearch_cluster,"
+[VSEARCH](https://peerj.com/articles/2584/) clustered ",n_asv_final," ASVs into ",n_asv_vsearch_cluster,"
 centroids with pairwise identity of ",params$vsearch_cluster_id,".
 Clustered ASV sequences and abundances can be found in folder [vsearch_cluster](../vsearch_cluster).
 "))
@@ -1893,6 +2005,13 @@ Data quality was evaluated with FastQC ([Andrews, 2010](https://www.bioinformati
 and summarized with MultiQC ([Ewels et al., 2016](https://pubmed.ncbi.nlm.nih.gov/27312411/)).
 "))
 ```
+```{r, eval = !isFALSE(params$porechop_abi_log_paths), results='asis'}
+cat("[Porechop_ABI](https://pubmed.ncbi.nlm.nih.gov/36698762/) removed adapters from reads. ")
+```
+```{r, eval = !isFALSE(params$chopper_stats_path), results='asis'}
+cat("[Chopper](https://pubmed.ncbi.nlm.nih.gov/37171891/) filtered reads based on quality cutoffs: ")
+cat(chopper_text)
+```
 ```{r, eval = !isFALSE(params$cutadapt_summary), results='asis'}
 cutadapt_intro = "Cutadapt ([Marcel et al., 2011](https://doi.org/10.14806/ej.17.1.200)) trimmed primers"
 if ( isFALSE(params$flag_retain_untrimmed) ) {
@@ -1900,6 +2019,15 @@ if ( isFALSE(params$flag_retain_untrimmed) ) {
 } else {
     cat(paste0(cutadapt_intro, "."))
 }
+```
+```{r, eval = !isFALSE(params$savont_asv_table_path), results='asis'}
+cat(paste0("
+[Savont](https://doi.org/10.64898/2026.05.26.727271) filtered reads (98% quality), produced ASVs, and removed PCR chimera.
+Ultimately, ",n_asv_final," amplicon sequencing variants (ASVs) were obtained across all samples.
+The ASV count table contained in total ",sum(savont_stats$savont_output)," counts,
+at least ",min(savont_stats$savont_output)," and at most ",max(savont_stats$savont_output)," per sample
+(average ",round(sum(savont_stats$savont_output)/length(savont_stats$savont_output),0),").
+"))
 ```
 ```{r, eval = !isFALSE(params$dada_filtntrim_args), results='asis'}
 if ( !isFALSE(params$cutadapt_summary) && isFALSE(params$flag_retain_untrimmed) ) {
@@ -1952,7 +2080,7 @@ if ( isFALSE(params$flag_single_end) ) {
 }
 cat(paste0("
 and remove polymerase chain reaction (PCR) chimeras;
-ultimately, ",n_asv_dada," amplicon sequencing variants (ASVs) were obtained across all samples.
+ultimately, ",n_asv_final," amplicon sequencing variants (ASVs) were obtained across all samples.
 Between ",min(dada_stats_p$analysis),"% and ",max(dada_stats_p$analysis),"% reads per sample
 (average ",dada_stats_p_analysis_average,"%) were retained.
 The ASV count table contained in total ",sum(dada_stats_ex$analysis)," counts,
@@ -1963,7 +2091,7 @@ at least ",min(dada_stats_ex$analysis)," and at most ",max(dada_stats_ex$analysi
 
 ```{r, eval = !isFALSE(params$vsearch_cluster), results='asis'}
 cat(paste0("
-VSEARCH ([Rognes et al., 2016](https://peerj.com/articles/2584/)) clustered ",n_asv_dada," ASVs into ",n_asv_vsearch_cluster,"
+VSEARCH ([Rognes et al., 2016](https://peerj.com/articles/2584/)) clustered ",n_asv_final," ASVs into ",n_asv_vsearch_cluster,"
 centroids with pairwise identity of ",params$vsearch_cluster_id,"."))
 ```
 ```{r, eval = (params$decontam != "none"), results='asis'}

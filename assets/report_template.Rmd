@@ -394,7 +394,7 @@ if ( params$dada_sample_inference == "independent" ) {
     cat("The ASVs can be found in [`savont/pooled_final_asvs.fasta`](../savont/). And the corresponding",
         " quantification of the ASVs across samples is in [`savont/independent_feature-table.tsv`](../savont/).",
         "ASVs were inferred for each sample independently",
-        "and per-sample information can be found in [`savont/per-sample](../savont/per-sample/). ")
+        "and per-sample information can be found in folder [savont/per-sample/](../savont/per-sample/). ")
 } else if ( params$dada_sample_inference == "pooled" ) {
     cat("The ASVs can be found in [`savont/pooled_final_asvs.fasta`](../savont/). And the corresponding",
         " quantification of the ASVs across samples is in [`savont/pooled_feature-table.tsv`](../savont/).",

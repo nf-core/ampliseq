@@ -10,9 +10,9 @@ The nf-core/ampliseq pipeline is a Nextflow-based workflow for amplicon sequenci
 
 By default, the pipeline performs quality filtering, denoising, chimera removal, taxonomic classification, and generates diversity metrics, count tables, and interactive visualizations. This makes it ready to use out-of-the-box for standard microbial community analyses.
 
-Users can customize primer sequences, input data type, reference databases, or compute resources to match their data or infrastructure. The pipeline also allows overriding default containers or adding custom parameters for specific tools, which is useful for keeping up with rapidly updated databases or specialized analyses.
+For most users, the main sections of interest will be the [Input specifications](#input-specifications), [Sequencing data types](#sequencing-data-types), [Taxonomic classification](#taxonomic-classification), and [Metadata](#metadata), as these define how to tailor the pipeline to a project and interpret the results. Each parameter is listed in the [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/).
 
-For most users, the main sections of interest will be the **input parameters** (e.g., `--input`, `--FW_primer`, `--RV_primer`, `--metadata`) and **output documentation**, as these define how to tailor the pipeline to a project and interpret the results.
+Users can customize also compute resources to match their data or infrastructure. The pipeline also allows overriding default containers or adding custom parameters for specific tools, which is useful for keeping up with rapidly updated databases or specialized analyses.
 
 ## Running the pipeline
 

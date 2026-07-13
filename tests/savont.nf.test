@@ -24,8 +24,6 @@ nextflow_pipeline {
                     removeNextflowVersion("$outputDir/pipeline_info/nf_core_ampliseq_software_mqc_versions.yml"),
                     // All stable path name, with a relative path
                     stable_path,
-                    // Manually chosen files for content checks // TODO
-                    // path("$outputDir/overall_summary.tsv"),
                 ).match() }
             )
         }

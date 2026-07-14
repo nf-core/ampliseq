@@ -9,6 +9,8 @@
 //
 
 include { FASTQC                                        } from '../modules/nf-core/fastqc/main'
+include { PORECHOP_ABI                                  } from '../modules/nf-core/porechop/abi/main'
+include { CHOPPER                                       } from '../modules/nf-core/chopper/main'
 include { MULTIQC                                       } from '../modules/nf-core/multiqc/main'
 include { VSEARCH_CLUSTER                               } from '../modules/nf-core/vsearch/cluster/main'
 include { FASTA_HMMSEARCH_RANK_FASTAS                   } from '../subworkflows/nf-core/fasta_hmmsearch_rank_fastas'
@@ -27,12 +29,17 @@ include { DOWNLOAD_REFERENCE as DOWNLOAD_REFERENCE_QIIME      } from '../modules
 include { DOWNLOAD_REFERENCE as DOWNLOAD_REFERENCE_SIDLE      } from '../modules/local/download_reference'
 include { DOWNLOAD_REFERENCE as DOWNLOAD_REFERENCE_SIDLE_TREE } from '../modules/local/download_reference'
 include { RENAME_RAW_DATA_FILES         } from '../modules/local/rename_raw_data_files'
+include { MERGE_STATS as MERGE_STATS_CUTADAPT } from '../modules/local/merge_stats'
+include { SAVONT_ASV                    } from '../modules/local/savont_asv'
+include { SAVONT_EXPORT                 } from '../modules/local/savont_export'
+include { MERGE_STATS as MERGE_STATS_SAVONT } from '../modules/local/merge_stats'
 include { DADA2_ERR                     } from '../modules/local/dada2_err'
 include { DADA2_DENOISING               } from '../modules/local/dada2_denoising'
 include { DADA2_RMCHIMERA               } from '../modules/local/dada2_rmchimera'
 include { DADA2_STATS                   } from '../modules/local/dada2_stats'
 include { DADA2_MERGE                   } from '../modules/local/dada2_merge'
 include { DADA2_SPLITREGIONS            } from '../modules/local/dada2_splitregions'
+include { MERGE_STATS as MERGE_STATS_DADA } from '../modules/local/merge_stats'
 include { SIDLE_WF                      } from '../subworkflows/local/sidle_wf'
 include { DECONTAM                      } from '../modules/local/decontam'
 include { MERGE_STATS as MERGE_STATS_DECONTAM     } from '../modules/local/merge_stats'
@@ -50,7 +57,6 @@ include { FORMAT_FASTAINPUT             } from '../modules/local/format_fastainp
 include { FORMAT_TAXONOMY               } from '../modules/local/format_taxonomy'
 include { ITSX_CUTASV                   } from '../modules/local/itsx_cutasv'
 include { ITSXRUST_CUTASV               } from '../modules/local/itsxrust_cutasv'
-include { MERGE_STATS as MERGE_STATS_STD} from '../modules/local/merge_stats'
 include { FILTER_SAMPLES                } from '../modules/local/filter_samples'
 include { QIIME2_INSEQ                  } from '../modules/local/qiime2_inseq'
 include { QIIME2_TABLEFILTERTAXA        } from '../modules/local/qiime2_tablefiltertaxa'
@@ -141,7 +147,7 @@ workflow AMPLISEQ {
     // Set non-params Variables
 
     single_end = params.single_end
-    if (params.pacbio || params.iontorrent) {
+    if (params.pacbio || params.iontorrent || params.nanopore) {
         single_end = true
     }
 
@@ -187,7 +193,7 @@ workflow AMPLISEQ {
                 }
                 meta.single_end = single_end.toBoolean()
                 def reads = single_end ? normalized_fw : [normalized_fw, normalized_rv]
-                if ( !meta.single_end && !normalized_rv ) { error("Entry `reverseReads` / `fastq_2` is missing in $params.input for $meta.sample, either correct the samplesheet or use `--single_end`, `--pacbio`, or `--iontorrent`") } // make sure that reverse reads are present when single_end isn't specified
+                if ( !meta.single_end && !normalized_rv ) { error("Entry `reverseReads` / `fastq_2` is missing in $params.input for $meta.sample, either correct the samplesheet or use `--single_end`, `--pacbio`, `--iontorrent`, or `--nanopore`") } // make sure that reverse reads are present when single_end isn't specified
                 if ( !meta.single_end && ( normalized_fw.getSimpleName() == meta.sample || normalized_rv.getSimpleName() == meta.sample ) ) { error("Entry `sampleID` / `sample` cannot be identical to simple name of `forwardReads` / `fastq_1` or `reverseReads` / `fastq_2`, please change the sample name in $params.input for sample $meta.sample") } // sample name and any file name without extensions aren't identical, because rename_raw_data_files.nf would forward 3 files (2 renamed +1 input) instead of 2 in that case
                 if ( meta.single_end && ( normalized_fw.getSimpleName() == meta.sample+"_1" || normalized_fw.getSimpleName() == meta.sample+"_2" ) ) { error("Entry `sampleID` / `sample` + `_1` or `_2` cannot be identical to simple name of `forwardReads` / `fastq_1`, please change the sample name in $params.input for sample $meta.sample") } // sample name and file name without extensions aren't identical, because rename_raw_data_files.nf would forward 2 files (1 renamed +1 input) instead of 1 in that case
                                 return [meta, reads] }
@@ -478,6 +484,7 @@ workflow AMPLISEQ {
     // MODULE: Rename files
     //
     RENAME_RAW_DATA_FILES ( ch_reads )
+    ch_reads_trimming = RENAME_RAW_DATA_FILES.out.fastq
 
     //
     // MODULE: Run FastQC
@@ -488,70 +495,166 @@ workflow AMPLISEQ {
     }
 
     //
+    // MODULE: porechop_ABI
+    //
+    if (params.nanopore && !params.skip_porechop_abi) {
+        PORECHOP_ABI ( ch_reads_trimming, [] )
+        ch_reads_trimming = PORECHOP_ABI.out.reads
+        ch_multiqc_files = ch_multiqc_files.mix(PORECHOP_ABI.out.log.collect{ it -> it[1] })
+    }
+
+    //
+    // MODULE: chopper
+    //
+    if (params.nanopore && !params.skip_chopper) {
+        CHOPPER ( ch_reads_trimming, [] )
+
+        // Count reads of input and output files
+        ch_stats_chopper = ch_reads_trimming
+            .map { meta, fastq -> [meta.sample, fastq.countFastq()] }
+            .join( CHOPPER.out.fastq.map { meta, fastq -> [meta.sample, fastq.countFastq()]}, by: 0 )
+            .collectFile(keepHeader: true, skip: 1, sort: true, cache: true) { sample, read_counts_in, read_counts_out ->
+                ["chopper_readcounts.tsv", "sample\tchopper_input\tchopper_output\n${sample}\t${read_counts_in}\t${read_counts_out}\n"] }
+        ch_stats = ch_stats_chopper
+
+        // Filter samples for sufficient reads
+        ch_reads_trimming_check =
+            CHOPPER.out.fastq
+                .branch { it ->
+                    failed: it[1].countFastq() < params.min_read_counts
+                    passed: true }
+        ch_reads_trimming = ch_reads_trimming_check.passed
+        ch_reads_trimming_check.failed
+            .map { meta, _reads -> [ meta.id ] }
+            .collect()
+            .subscribe { it ->
+                def samples = it.join("\n")
+                if (params.ignore_failed_trimming) {
+                    log.warn "The following samples had too few reads (<$params.min_read_counts) after filtering with Chopper:\n$samples\nIgnoring failed samples and continue!\n"
+                } else {
+                    error("The following samples had too few reads (<$params.min_read_counts) after filtering with Chopper:\n$samples\nThis dataset may have too low read quality to be analysed properly. Ignore that samples using `--ignore_failed_trimming` or adjust the threshold with `--min_read_counts`.")
+                }
+            }
+    }
+
+    //
     // MODULE: Cutadapt
     //
     if (!params.skip_cutadapt) {
-        ch_trimmed_reads =
+        ch_reads_trimming =
             CUTADAPT_WORKFLOW (
-                RENAME_RAW_DATA_FILES.out.fastq,
+                ch_reads_trimming,
                 params.illumina_pe_its,
                 params.double_primer
             ).reads
         ch_multiqc_files = ch_multiqc_files.mix(CUTADAPT_WORKFLOW.out.logs.collect{ it -> it[1] })
-    } else {
-        ch_trimmed_reads = RENAME_RAW_DATA_FILES.out.fastq
+        if (params.nanopore && !params.skip_chopper) {
+            MERGE_STATS_CUTADAPT (ch_stats, CUTADAPT_WORKFLOW.out.summary)
+            ch_stats = MERGE_STATS_CUTADAPT.out.tsv
+        } else {
+            ch_stats = CUTADAPT_WORKFLOW.out.summary
+        }
+    }
+
+    //
+    // MODULES: ASV generation with Savont
+    //
+    if (params.nanopore) {
+        if (params.sample_inference == "pooled") {
+            ch_reads_to_savont =
+                ch_reads_trimming
+                    .toSortedList { a, b -> a[0].id <=> b[0].id }
+                    .map { list ->
+                        def reads = list.collect { it -> it[1] }
+                        def ids = list.collect { it -> it[0].id }.join("\t")
+                        [ [id: 'pooled'], reads, "ID\t${ids}" ] }
+            SAVONT_ASV (ch_reads_to_savont)
+            ch_asv_fasta = SAVONT_ASV.out.fasta
+            ch_asv_table = SAVONT_ASV.out.asv
+            ch_stats_savont = SAVONT_ASV.out.stats
+        } else if (params.sample_inference == "independent") {
+            ch_reads_to_savont =
+                ch_reads_trimming
+                    .map { meta, reads ->
+                        [ meta, reads, "ID\t${meta.id}" ] }
+            SAVONT_ASV (ch_reads_to_savont)
+            ch_reads_to_savont_export =
+                SAVONT_ASV.out.output_folder
+                    .toSortedList { a, b -> a[0].id <=> b[0].id }
+                    .map { list ->
+                        def folders = list.collect { it -> it[1] }
+                        def ids = list.collect { it -> it[0].id }.join(" ")
+                        [ 'independent', folders, ids ] }
+            SAVONT_EXPORT ( ch_reads_to_savont_export )
+            ch_asv_fasta = SAVONT_EXPORT.out.fasta
+            ch_asv_table = SAVONT_EXPORT.out.asv
+            ch_stats_savont = SAVONT_ASV.out.stats
+                .collectFile(name: 'savont_stats.tsv', keepHeader: true, sort: true, cache: true, newLine: true)
+        }
+        // merge stats
+        if (params.skip_cutadapt || (params.nanopore && !params.skip_chopper)) {
+            MERGE_STATS_SAVONT (ch_stats, ch_stats_savont)
+            ch_stats = MERGE_STATS_SAVONT.out.tsv
+        } else {
+            ch_stats = ch_stats_savont
+        }
     }
 
     //
     // SUBWORKFLOW: Read preprocessing & QC plotting with DADA2
     //
-    ch_filt_reads =
-        DADA2_PREPROCESSING (
-            ch_trimmed_reads,
-            single_end,
-            find_truncation_values,
-            trunclenf,
-            trunclenr
-        ).reads
+    if (!params.nanopore) {
+        ch_filt_reads =
+            DADA2_PREPROCESSING (
+                ch_reads_trimming,
+                single_end,
+                find_truncation_values,
+                trunclenf,
+                trunclenr
+            ).reads
+    }
 
     //
     // MODULES: ASV generation with DADA2
     //
+    if (!params.nanopore) {
+        //run error model
+        DADA2_ERR ( ch_filt_reads )
+        ch_errormodel = DADA2_ERR.out.errormodel
 
-    //run error model
-    DADA2_ERR ( ch_filt_reads )
-    ch_errormodel = DADA2_ERR.out.errormodel
+        //group by meta
+        ch_derep_errormodel = ch_filt_reads.join( ch_errormodel )
+        DADA2_DENOISING ( ch_derep_errormodel.dump(tag: 'into_denoising')  )
+        DADA2_RMCHIMERA ( DADA2_DENOISING.out.seqtab )
 
-    //group by meta
-    ch_derep_errormodel = ch_filt_reads.join( ch_errormodel )
-    DADA2_DENOISING ( ch_derep_errormodel.dump(tag: 'into_denoising')  )
-    DADA2_RMCHIMERA ( DADA2_DENOISING.out.seqtab )
+        //group by sequencing run & group by meta
+        ch_track_numbers =
+            DADA2_PREPROCESSING.out.logs
+                .join( DADA2_DENOISING.out.denoised )
+                .join( DADA2_DENOISING.out.mergers )
+                .join( DADA2_RMCHIMERA.out.rds )
+        DADA2_STATS ( ch_track_numbers )
 
-    //group by sequencing run & group by meta
-    ch_track_numbers =
-        DADA2_PREPROCESSING.out.logs
-            .join( DADA2_DENOISING.out.denoised )
-            .join( DADA2_DENOISING.out.mergers )
-            .join( DADA2_RMCHIMERA.out.rds )
-    DADA2_STATS ( ch_track_numbers )
+        //merge if several runs, otherwise just publish
+        DADA2_MERGE (
+            DADA2_STATS.out.stats.map { _meta, stats -> stats }.collect(),
+            DADA2_RMCHIMERA.out.rds.map { _meta, rds -> rds }.collect() )
 
-    //merge if several runs, otherwise just publish
-    DADA2_MERGE (
-        DADA2_STATS.out.stats.map { _meta, stats -> stats }.collect(),
-        DADA2_RMCHIMERA.out.rds.map { _meta, rds -> rds }.collect() )
-
-    //merge cutadapt_summary and dada_stats files
-    if (!params.skip_cutadapt) {
-        MERGE_STATS_STD (CUTADAPT_WORKFLOW.out.summary, DADA2_MERGE.out.dada2stats)
-        ch_stats = MERGE_STATS_STD.out.tsv
-    } else {
-        ch_stats = DADA2_MERGE.out.dada2stats
+        //merge cutadapt_summary and dada_stats files
+        if (!params.skip_cutadapt) {
+            MERGE_STATS_DADA (ch_stats, DADA2_MERGE.out.dada2stats)
+            ch_stats = MERGE_STATS_DADA.out.tsv
+        } else {
+            ch_stats = DADA2_MERGE.out.dada2stats
+        }
+        ch_asv_fasta = DADA2_MERGE.out.fasta
+        ch_asv_table = DADA2_MERGE.out.asv
     }
 
     //
     // SUBWORKFLOW / MODULES : Taxonomic classification with DADA2, SINTAX and/or QIIME2
     //
-    if ( params.multiregion ) {
+    if ( !params.nanopore && params.multiregion ) {
         // separate sequences and abundances when several regions
         DADA2_SPLITREGIONS (
             //DADA2_DENOISING per run & region -> per run
@@ -573,58 +676,54 @@ workflow AMPLISEQ {
         )
 
         // forward results to downstream analysis if multi region
-        ch_dada2_asv = SIDLE_WF.out.table_tsv
-        ch_dada2_fasta = channel.empty()
+        ch_asv_table = SIDLE_WF.out.table_tsv
+        ch_asv_fasta = channel.empty()
         // Any ASV postprocessing is not allowed:
         // - solved by '!params.multiregion' for vsearch_cluster, FILTER_SAMPLES, filter_ssu, min_len_asv, max_len_asv, filter_codons
         // - solved in 'subworkflows/local/utils_nfcore_ampliseq_pipeline/main.nf': cut_its
         // Must have params:
         // - solved by '!params.multiregion' for skip_report
         // - solved in 'subworkflows/local/utils_nfcore_ampliseq_pipeline/main.nf': skip_dada_taxonomy
-    } else {
-        // forward results to downstream analysis if single region
-        ch_dada2_fasta = DADA2_MERGE.out.fasta
-        ch_dada2_asv = DADA2_MERGE.out.asv
     }
 
     //
     // MODULE : ASV post-clustering with VSEARCH
     //
     if (params.vsearch_cluster && !params.multiregion) {
-        ch_fasta_for_clustering = ch_dada2_fasta
+        ch_fasta_for_clustering = ch_asv_fasta
             .map {
                 fasta ->
                     def meta = [:]
                     meta.id = "ASV_post_clustering"
                     [ meta, fasta ] }
         VSEARCH_CLUSTER ( ch_fasta_for_clustering )
-        FILTER_CLUSTERS ( VSEARCH_CLUSTER.out.clusters, ch_dada2_asv )
-        ch_dada2_fasta = FILTER_CLUSTERS.out.fasta
-        ch_dada2_asv = FILTER_CLUSTERS.out.asv
+        FILTER_CLUSTERS ( VSEARCH_CLUSTER.out.clusters, ch_asv_table )
+        ch_asv_fasta = FILTER_CLUSTERS.out.fasta
+        ch_asv_table = FILTER_CLUSTERS.out.asv
     }
 
     //
     // MODULE : ASV decontamination with "decontam"
     //
     DECONTAM (
-        ch_dada2_asv,
+        ch_asv_table,
         ch_decontam_metadata,
         params.decontam_decontaminate_method,
         params.decontam_decontaminate_threshold,
         params.decontam_notcontaminant_threshold
     )
     if (params.decontam == "decontaminate") {
-        ch_dada2_asv = DECONTAM.out.decontaminated_abundances
+        ch_asv_table = DECONTAM.out.decontaminated_abundances
             .filter { it -> it.countLines() > 1 }
             .ifEmpty{ error("\nDecontamination removed all features, please adjust settings.\n") }
-        FILTER_SEQUENCES_ABUNDANCES ( ch_dada2_fasta, ch_dada2_asv )
-        ch_dada2_fasta = FILTER_SEQUENCES_ABUNDANCES.out.seq
+        FILTER_SEQUENCES_ABUNDANCES ( ch_asv_fasta, ch_asv_table )
+        ch_asv_fasta = FILTER_SEQUENCES_ABUNDANCES.out.seq
         ch_stats = MERGE_STATS_DECONTAM ( ch_stats, DECONTAM.out.decontaminated_counts ).tsv
     } else if (params.decontam == "notcontaminant") {
-        ch_dada2_asv = DECONTAM.out.notcontaminant_abundances
+        ch_asv_table = DECONTAM.out.notcontaminant_abundances
             .ifEmpty{ error("\nNo non-contaminant features were identified, please check control samples (column 'control' in samplesheet).\n") }
-        FILTER_SEQUENCES_ABUNDANCES ( ch_dada2_fasta, ch_dada2_asv )
-        ch_dada2_fasta = FILTER_SEQUENCES_ABUNDANCES.out.seq
+        FILTER_SEQUENCES_ABUNDANCES ( ch_asv_fasta, ch_asv_table )
+        ch_asv_fasta = FILTER_SEQUENCES_ABUNDANCES.out.seq
         ch_stats = MERGE_STATS_DECONTAM ( ch_stats, DECONTAM.out.notcontaminant_counts ).tsv
     }
 
@@ -635,7 +734,7 @@ workflow AMPLISEQ {
         FORMAT_FASTAINPUT( ch_input_fasta )
         ch_unfiltered_fasta = FORMAT_FASTAINPUT.out.fasta
     } else {
-        ch_unfiltered_fasta = ch_dada2_fasta
+        ch_unfiltered_fasta = ch_asv_fasta
     }
 
     //
@@ -650,54 +749,54 @@ workflow AMPLISEQ {
             }
         }
         ch_barrnapsummary = BARRNAPSUMMARY.out.summary
-        FILTER_SSU ( ch_unfiltered_fasta, ch_dada2_asv.ifEmpty( [] ), BARRNAPSUMMARY.out.summary )
+        FILTER_SSU ( ch_unfiltered_fasta, ch_asv_table.ifEmpty( [] ), BARRNAPSUMMARY.out.summary )
         MERGE_STATS_FILTERSSU ( ch_stats, FILTER_SSU.out.stats )
         ch_stats = MERGE_STATS_FILTERSSU.out.tsv
-        ch_dada2_fasta = FILTER_SSU.out.fasta
-        ch_dada2_asv = FILTER_SSU.out.asv
+        ch_asv_fasta = FILTER_SSU.out.fasta
+        ch_asv_table = FILTER_SSU.out.asv
     } else if ( !params.skip_barrnap && !params.filter_ssu && !params.multiregion ) {
         BARRNAP ( ch_unfiltered_fasta )
         BARRNAPSUMMARY ( BARRNAP.out.gff.collect() )
         BARRNAPSUMMARY.out.warning.subscribe { it -> if ( it.baseName.toString().startsWith("WARNING") ) log.warn "Barrnap could not identify any rRNA in the ASV sequences. We recommended to use the --skip_barrnap option for these sequences." }
         ch_barrnapsummary = BARRNAPSUMMARY.out.summary
-        ch_dada2_fasta = ch_unfiltered_fasta
+        ch_asv_fasta = ch_unfiltered_fasta
     } else {
         ch_barrnapsummary = channel.empty()
-        ch_dada2_fasta = ch_unfiltered_fasta
+        ch_asv_fasta = ch_unfiltered_fasta
     }
 
     //
     // Modules : amplicon length filtering
     //
     if ( (params.min_len_asv || params.max_len_asv) && !params.multiregion ) {
-        FILTER_LEN_ASV ( ch_dada2_fasta, ch_dada2_asv.ifEmpty( [] ) )
+        FILTER_LEN_ASV ( ch_asv_fasta, ch_asv_table.ifEmpty( [] ) )
         MERGE_STATS_FILTERLENASV ( ch_stats, FILTER_LEN_ASV.out.stats )
         ch_stats = MERGE_STATS_FILTERLENASV.out.tsv
-        ch_dada2_fasta = FILTER_LEN_ASV.out.fasta
-        ch_dada2_asv = FILTER_LEN_ASV.out.asv
+        ch_asv_fasta = FILTER_LEN_ASV.out.fasta
+        ch_asv_table = FILTER_LEN_ASV.out.asv
         // Make sure that not all sequences were removed
-        ch_dada2_fasta.subscribe { it -> if (it.countLines() == 0) error("ASV length filtering activated by '--min_len_asv' or '--max_len_asv' removed all ASVs, please adjust settings.") }
+        ch_asv_fasta.subscribe { it -> if (it.countLines() == 0) error("ASV length filtering activated by '--min_len_asv' or '--max_len_asv' removed all ASVs, please adjust settings.") }
     }
 
     //
     // Modules : Filtering based on codons in an open reading frame
     //
     if ( params.filter_codons && !params.multiregion ) {
-        FILTER_CODONS ( ch_dada2_fasta, ch_dada2_asv.ifEmpty( [] ) )
+        FILTER_CODONS ( ch_asv_fasta, ch_asv_table.ifEmpty( [] ) )
         MERGE_STATS_CODONS( ch_stats, FILTER_CODONS.out.stats )
         ch_stats = MERGE_STATS_CODONS.out.tsv
-        ch_dada2_fasta = FILTER_CODONS.out.fasta
-        ch_dada2_asv = FILTER_CODONS.out.asv
+        ch_asv_fasta = FILTER_CODONS.out.fasta
+        ch_asv_table = FILTER_CODONS.out.asv
         // Make sure that not all sequences were removed
-        ch_dada2_fasta.subscribe { it -> if (it.countLines() == 0) error("ASV codon filtering activated by '--filter_codons' removed all ASVs, please adjust settings.") }
+        ch_asv_fasta.subscribe { it -> if (it.countLines() == 0) error("ASV codon filtering activated by '--filter_codons' removed all ASVs, please adjust settings.") }
     }
 
     //
     // Modules : ITSx / ITSxRust - cut out ITS region if long ITS reads
     //
-    ch_full_fasta = ch_dada2_fasta
+    ch_full_fasta = ch_asv_fasta
     if (params.cut_its == "none") {
-        ch_fasta = ch_dada2_fasta
+        ch_fasta = ch_asv_fasta
     } else {
         if (params.cut_its == "full") {
             outfile = params.its_partial ? "ASV_ITS_seqs.full_and_partial.fasta" : "ASV_ITS_seqs.full.fasta"
@@ -719,9 +818,9 @@ workflow AMPLISEQ {
             ch_its_summary = ITSX_CUTASV.out.summary
         }
 
-        FILTER_LEN_ITSX ( ch_its_fasta, ch_dada2_asv.ifEmpty( [] ) )
+        FILTER_LEN_ITSX ( ch_its_fasta, ch_asv_table.ifEmpty( [] ) )
         ch_fasta = FILTER_LEN_ITSX.out.fasta
-        ch_dada2_asv = FILTER_LEN_ITSX.out.asv
+        ch_asv_table = FILTER_LEN_ITSX.out.asv
     }
 
     //
@@ -923,14 +1022,14 @@ workflow AMPLISEQ {
     if ( run_qiime2 ) {
         // Filter metadata and/or abundances so that they match: (1) samples lost during preprocessing, (2) intentional data subsetting for downstream analysis
         if ( params.metadata && !params.multiregion ) {
-            FILTER_SAMPLES ( ch_metadata, ch_dada2_asv )
+            FILTER_SAMPLES ( ch_metadata, ch_asv_table )
             ch_metadata = FILTER_SAMPLES.out.metadata
-            ch_dada2_asv = FILTER_SAMPLES.out.abundances
+            ch_asv_table = FILTER_SAMPLES.out.abundances
             FILTER_SAMPLES.out.log.collect().subscribe{ it -> log.warn "${it.baseName.toString()}" }
         }
 
         // Import ASV abundance table and sequences into QIIME2
-        QIIME2_INASV ( ch_dada2_asv )
+        QIIME2_INASV ( ch_asv_table )
         QIIME2_INSEQ ( ch_fasta )
 
         // Import phylogenetic tree into QIIME2
@@ -993,7 +1092,7 @@ workflow AMPLISEQ {
                 params.exclude_taxa
             )
             QIIME2_SEQFILTERTABLE ( QIIME2_TABLEFILTERTAXA.out.qza, QIIME2_INSEQ.out.qza )
-            FILTER_STATS ( ch_dada2_asv, QIIME2_TABLEFILTERTAXA.out.tsv )
+            FILTER_STATS ( ch_asv_table, QIIME2_TABLEFILTERTAXA.out.tsv )
             MERGE_STATS_FILTERTAXA (ch_stats, FILTER_STATS.out.tsv)
             ch_asv = QIIME2_TABLEFILTERTAXA.out.qza
             ch_seq = QIIME2_SEQFILTERTABLE.out.qza
@@ -1001,7 +1100,7 @@ workflow AMPLISEQ {
         } else {
             ch_asv = QIIME2_INASV.out.qza
             ch_seq = QIIME2_INSEQ.out.qza
-            ch_tsv = ch_dada2_asv
+            ch_tsv = ch_asv_table
         }
         //Export various ASV tables
         if (!params.skip_abundance_tables) {
@@ -1062,7 +1161,7 @@ workflow AMPLISEQ {
             )
         }
     } else {
-        ch_tsv = ch_dada2_asv
+        ch_tsv = ch_asv_table
     }
 
     //
@@ -1072,7 +1171,7 @@ workflow AMPLISEQ {
         if ( run_qiime2 && !params.skip_abundance_tables && ( params.dada_ref_taxonomy || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier || params.sintax_ref_taxonomy || params.sintax_ref_tax_custom || params.vsearch_lca_ref_taxonomy || params.vsearch_lca_ref_tax_custom || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom ) && !params.skip_taxonomy ) {
             PICRUST ( QIIME2_EXPORT.out.abs_fasta, QIIME2_EXPORT.out.abs_tsv, "QIIME2", "This Picrust2 analysis is based on filtered reads from QIIME2" )
         } else {
-            PICRUST ( ch_fasta, ch_dada2_asv, "DADA2", "This Picrust2 analysis is based on unfiltered reads from DADA2" )
+            PICRUST ( ch_fasta, ch_asv_table, "DADA2", "This Picrust2 analysis is based on unfiltered reads from DADA2" )
         }
     }
 
@@ -1081,11 +1180,11 @@ workflow AMPLISEQ {
     //
     if ( params.sbdiexport ) {
         if ( params.sintax_ref_taxonomy ) {
-            SBDIEXPORT ( ch_dada2_asv, ch_sintax_tax, ch_metadata )
+            SBDIEXPORT ( ch_asv_table, ch_sintax_tax, ch_metadata )
             db_version = params.sintax_ref_databases[params.sintax_ref_taxonomy]["dbversion"]
             SBDIEXPORTREANNOTATE ( ch_sintax_tax, "sintax", db_version, params.cut_its, ch_barrnapsummary.ifEmpty([]) )
         } else {
-            SBDIEXPORT ( ch_dada2_asv, ch_dada2_tax, ch_metadata )
+            SBDIEXPORT ( ch_asv_table, ch_dada2_tax, ch_metadata )
             db_version = params.dada_ref_databases[params.dada_ref_taxonomy]["dbversion"]
             SBDIEXPORTREANNOTATE ( ch_dada2_tax, "dada2", db_version, params.cut_its, ch_barrnapsummary.ifEmpty([]) )
         }
@@ -1124,8 +1223,8 @@ workflow AMPLISEQ {
             val_params_string,
             params.trace_report_suffix, // record this as link to files in pipeline_info
             params.expected_sequences_region,
-            run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.abs_fasta : ch_dada2_fasta,  // observed sequences (fasta)
-            run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.rel_tsv : ch_dada2_asv,      // observed sequences (abundance table)
+            run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.abs_fasta : ch_asv_fasta,  // observed sequences (fasta)
+            run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.rel_tsv : ch_asv_table,      // observed sequences (abundance table)
             params.expected_sequences ? channel.fromPath("${params.expected_sequences}", checkIfExists: true) : channel.empty(),  // expected sequences (fasta)
             params.expected_abundances ? channel.fromPath("${params.expected_abundances}", checkIfExists: true) : channel.empty() // expected sequences (abundance table)
         )
@@ -1204,30 +1303,37 @@ workflow AMPLISEQ {
             ch_metadata.ifEmpty( [] ),
             params.input ? file(params.input) : [], // samplesheet input
             ch_input_fasta.ifEmpty( [] ), // fasta input
-            !params.input_fasta && !params.skip_fastqc && !params.skip_multiqc ? MULTIQC.out.plots : [[],[]], //.collect().flatten().collectFile(name: "fastqc_per_sequence_quality_scores_plot.svg")
+            !params.input_fasta && !params.skip_fastqc && !params.skip_multiqc ? MULTIQC.out.plots : [[],[]],
             !params.skip_cutadapt ? CUTADAPT_WORKFLOW.out.summary.collect().ifEmpty( [] ) : [],
+            params.nanopore && !params.skip_porechop_abi ? PORECHOP_ABI.out.log.ifEmpty( [[],[]] )  : [[],[]],
+            params.nanopore && !params.skip_chopper ? ch_stats_chopper.ifEmpty( [] )  : [],
+            params.nanopore && params.sample_inference == "independent" ? SAVONT_EXPORT.out.asv :
+                params.nanopore  && params.sample_inference == "pooled" ? SAVONT_ASV.out.asv : [],
+            params.nanopore ? ch_stats_savont.ifEmpty( [] ) : [],
             find_truncation_values,
-            DADA2_PREPROCESSING.out.args.first().ifEmpty( [] ),
-            !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg.ifEmpty( [] ) : [],
-            !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg_preprocessed.ifEmpty( [] ) : [],
-            DADA2_ERR.out.svg
-                .map {
-                    meta_old, svgs ->
-                    def meta = [:]
-                    meta.single_end = meta_old.single_end
-                    [ meta, svgs, meta_old.run ] }
-                .groupTuple(by: 0 )
-                .map {
-                    meta_old, svgs, runs ->
-                    def meta = [:]
-                    meta.single_end = meta_old.single_end
-                    meta.run = runs.flatten()
-                    [ meta, svgs.flatten() ]
-                }.ifEmpty( [[],[]] ),
-            DADA2_MERGE.out.asv.ifEmpty( [] ),
+            !params.nanopore ? DADA2_PREPROCESSING.out.args.first().ifEmpty( [] ) : [],
+            !params.nanopore && !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg.ifEmpty( [] ) : [],
+            !params.nanopore && !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg_preprocessed.ifEmpty( [] ) : [],
+            !params.nanopore ?
+                DADA2_ERR.out.svg
+                    .map {
+                        meta_old, svgs ->
+                        def meta = [:]
+                        meta.single_end = meta_old.single_end
+                        [ meta, svgs, meta_old.run ] }
+                    .groupTuple(by: 0 )
+                    .map {
+                        meta_old, svgs, runs ->
+                        def meta = [:]
+                        meta.single_end = meta_old.single_end
+                        meta.run = runs.flatten()
+                        [ meta, svgs.flatten() ]
+                    }.ifEmpty( [[],[]] )
+                : [[],[]],
+            !params.nanopore ? DADA2_MERGE.out.asv.ifEmpty( [] ) : [],
             ch_unfiltered_fasta.ifEmpty( [] ), // this is identical to DADA2_MERGE.out.fasta if !params.input_fasta
-            DADA2_MERGE.out.dada2asv.ifEmpty( [] ),
-            DADA2_MERGE.out.dada2stats.ifEmpty( [] ),
+            !params.nanopore ? DADA2_MERGE.out.dada2asv.ifEmpty( [] ) : [],
+            !params.nanopore ? DADA2_MERGE.out.dada2stats.ifEmpty( [] ) : [],
             params.mergepairs_strategy,
             params.vsearch_cluster ? FILTER_CLUSTERS.out.asv.ifEmpty( [] ) : [],
             params.decontam,
@@ -1253,7 +1359,7 @@ workflow AMPLISEQ {
             !params.skip_taxonomy && ( params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier ) && run_qiime2_taxonomy ? QIIME2_TAXONOMY.out.tsv.ifEmpty( [] ) : [],
             run_qiime2,
             run_qiime2 ? val_used_taxonomy : "",
-            run_qiime2 && ( params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1 ) ? ch_dada2_asv.countLines()+","+QIIME2_TABLEFILTERTAXA.out.tsv.countLines() : "",
+            run_qiime2 && ( params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1 ) ? ch_asv_table.countLines()+","+QIIME2_TABLEFILTERTAXA.out.tsv.countLines() : "",
             run_qiime2 && ( params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1 ) ? FILTER_STATS.out.tsv.ifEmpty( [] ) : [],
             run_qiime2 && !params.skip_barplot ? QIIME2_BARPLOT.out.folder.ifEmpty( [] ) : [],
             run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.abs_tsv.ifEmpty( [] ) : [],

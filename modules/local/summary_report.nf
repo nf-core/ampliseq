@@ -16,6 +16,10 @@ process SUMMARY_REPORT  {
     path(input_fasta)
     tuple val(meta_mqc), path(mqc_plots)
     path(cutadapt_summary)
+    tuple val(meta_porechop_abi), path(porechop_abi_log_paths)
+    path(chopper_stats)
+    path(savont_asv_table)
+    path(savont_stats)
     val(find_truncation_values)
     path(dada_filtntrim_args)
     path(dada_qual_stats)
@@ -94,6 +98,10 @@ process SUMMARY_REPORT  {
         cutadapt_summary ?
             params.retain_untrimmed ? "flag_retain_untrimmed=TRUE,cutadapt_summary='$cutadapt_summary'" :
             "cutadapt_summary='$cutadapt_summary'" : "",
+        porechop_abi_log_paths ? "porechop_abi_log_paths='"+porechop_abi_log_paths.join(',')+"'" : "",
+        chopper_stats ? "chopper_stats_path='$chopper_stats'" : "",
+        savont_asv_table ? "savont_asv_table_path='$savont_asv_table'" : "",
+        savont_stats ? "savont_stats_path='$savont_stats'" : "",
         "truncq=$params.truncq",
         find_truncation_values ? "trunc_qmin=$params.trunc_qmin,trunc_rmin=$params.trunc_rmin" : "",
         "trunclenf='$params.trunclenf'",
@@ -106,7 +114,7 @@ process SUMMARY_REPORT  {
         dada_err_svgs && meta.run.size() == 1 && meta.single_end ?
             "dada_err_path='$dada_err_svgs',dada_err_run='"+meta.run+"'" :
             dada_err_svgs ? "dada_err_path='"+dada_err_svgs.join(',')+"',dada_err_run='"+meta.run.join(',')+"'" : "",
-        dada_asv_table ? "asv_table_path='$dada_asv_table'" : "",
+        dada_asv_table ? "dada_asv_table_path='$dada_asv_table'" : "",
         dada_asv_fa ? "path_asv_fa='$dada_asv_fa'": "",
         dada_tab ? "path_dada2_tab='$dada_tab'" : "",
         dada_stats ? "dada_stats_path='$dada_stats'" : "",

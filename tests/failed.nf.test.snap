@@ -73,6 +73,9 @@
                     "python": "3.9.1",
                     "pandas": "1.1.5"
                 },
+                "MERGE_STATS_DADA": {
+                    "R": "4.5.2"
+                },
                 "MERGE_STATS_FILTERLENASV": {
                     "R": "4.5.2"
                 },
@@ -80,9 +83,6 @@
                     "R": "4.5.2"
                 },
                 "MERGE_STATS_FILTERTAXA": {
-                    "R": "4.5.2"
-                },
-                "MERGE_STATS_STD": {
                     "R": "4.5.2"
                 },
                 "METADATA_ALL": {

@@ -1,10 +1,5 @@
 nextflow_pipeline {
 
-    name "Test Workflow main.nf"
-    script "main.nf"
-    tag "test_sintax"
-    tag "pipeline"
-
     name "Test pipeline"
     script "../main.nf"
     tag "pipeline"

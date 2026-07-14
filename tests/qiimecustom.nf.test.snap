@@ -58,7 +58,7 @@
                 "FASTQC": {
                     "fastqc": "0.12.1"
                 },
-                "MERGE_STATS_STD": {
+                "MERGE_STATS_DADA": {
                     "R": "4.5.2"
                 },
                 "PHYLOSEQ": {

@@ -18,7 +18,7 @@
                     "pattern": "^\\S+\\.(tsv|csv|yml|yaml|txt)$",
                     "fa_icon": "fas fa-dna",
                     "description": "Path to tab-separated sample sheet",
-                    "help_text": "Path to sample sheet, either tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml), that points to compressed fastq files.\n\nThe sample sheet must have at least two entries and supports two header layouts:\n- Legacy layout (required): `sampleID`, `forwardReads`; optional: `reverseReads`, `run`, `control`, `quant_reading`\n- Standardized layout (required): `sample`, `fastq_1`; optional: `fastq_2`, `run`, `control`, `quant_reading`\n\nSample IDs must start with a letter and can only contain letters, numbers or underscores.\n\nRelated parameters are:\n- `--pacbio` and `--iontorrent` if the sequencing data is PacBio data or IonTorrent data (default expected: paired-end Illumina data)\n- `--single_end` if the sequencing data is single-ended Illumina data (default expected: paired-end Illumina data)\n- Choose an appropriate reference taxonomy for the type of amplicon (16S/18S/ITS/CO1) (default: DADA2 assignTaxonomy and 16S rRNA sequence database)",
+                    "help_text": "Path to sample sheet, either tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml), that points to compressed fastq files.\n\nThe sample sheet must have at least two entries and supports two header layouts:\n- Legacy layout (required): `sampleID`, `forwardReads`; optional: `reverseReads`, `run`, `control`, `quant_reading`\n- Standardized layout (required): `sample`, `fastq_1`; optional: `fastq_2`, `run`, `control`, `quant_reading`\n\nSample IDs must start with a letter and can only contain letters, numbers or underscores.\n\nRelated parameters are:\n- `--sequencing_type` to define the data type (default expected: paired-end Illumina data)\n- Choose an appropriate reference taxonomy for the type of amplicon (16S/18S/ITS/CO1) (default: DADA2 assignTaxonomy and 16S rRNA sequence database)",
                     "schema": "assets/schema_input.json"
                 },
                 "input_fasta": {
@@ -35,7 +35,7 @@
                     "format": "directory-path",
                     "fa_icon": "fas fa-dna",
                     "description": "Path to folder containing zipped FastQ files",
-                    "help_text": "Path to folder containing compressed fastq files. Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique. Examples and requirements are in the usage documentation.\n\nRelated parameters: `--extension`, `--multiple_sequencing_runs`, `--pacbio`, `--iontorrent`, `--single_end`."
+                    "help_text": "Path to folder containing compressed fastq files. Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique. Examples and requirements are in the usage documentation.\n\nRelated parameters: `--input_folder_extensions`, `--multiple_sequencing_runs`, `--sequencing_type`."
                 },
                 "FW_primer": {
                     "type": "string",
@@ -97,13 +97,21 @@
         "sequencing_input": {
             "title": "Sequencing input",
             "type": "object",
-            "description": "",
+            "description": "Customize settings to the sequencing input data properties",
             "default": "",
             "properties": {
+                "sequencing_type": {
+                    "type": "string",
+                    "default": "illumina_pe",
+                    "description": "Sequencing technology of the data, determines analyze settings and tools.",
+                    "help_text": "Sets (1) paired-end versus single-end for Cutadapt, (2) error profile model for DADA2 if not overwritten by `--binned_quality`, (3) ASV calling tool DADA2 or Savont if not overwritten by `--asv_calling`, and (4) the prest for ITSxRust.",
+                    "enum": ["illumina_pe", "illumina_se", "iontorrent", "pacbio", "nanopore"],
+                    "fa_icon": "fas fa-align-justify"
+                },
                 "binned_quality": {
                     "type": "string",
-                    "description": "Comma separated quality bins. If data has binned quality scores.",
-                    "help_text": "Bins can change over time and vary by sequencer type and software version. For example, at the time of writing, for 'MiSeq i100 Control Software version 1.0' quality bins are documented as '2,12,24,38', for 'MiSeq i100 Control Software version 1.1 and later' as '2,9,23,38', for 'NovaSeq X/X Plus Control Software v1.3' as '2,9,24,40'.",
+                    "description": "Comma separated quality bins for DADA2. If data has binned quality scores.",
+                    "help_text": "Sets the quality bins for DADA2's error model. Bins can change over time and vary by sequencer type and software version. For example, at the time of writing, for 'MiSeq i100 Control Software version 1.0' quality bins are documented as '2,12,24,38', for 'MiSeq i100 Control Software version 1.1 and later' as '2,9,23,38', for 'NovaSeq X/X Plus Control Software v1.3' as '2,9,24,40'.",
                     "fa_icon": "fas fa-align-justify",
                     "pattern": "^[0-9]+(,[0-9]+)*$"
                 },
@@ -112,37 +120,16 @@
                     "description": "Ignore warnings about binned quality scores.",
                     "fa_icon": "fas fa-arrow-right"
                 },
-                "nanopore": {
+                "illumina_pe_readthrough": {
                     "type": "boolean",
-                    "description": "If data is single-ended Nanopore reads instead of Illumina",
-                    "fa_icon": "fas fa-align-justify"
-                },
-                "pacbio": {
-                    "type": "boolean",
-                    "description": "If data is single-ended PacBio reads instead of Illumina",
-                    "fa_icon": "fas fa-align-justify"
-                },
-                "iontorrent": {
-                    "type": "boolean",
-                    "description": "If data is single-ended IonTorrent reads instead of Illumina",
-                    "fa_icon": "fas fa-align-justify"
-                },
-                "single_end": {
-                    "type": "boolean",
-                    "description": "If data is single-ended Illumina reads instead of paired-end",
-                    "help_text": "When using a sample sheet with `--input` containing forward and reverse reads, specifying `--single_end` will only extract forward reads and treat the data as single ended instead of extracting forward and reverse reads.",
-                    "fa_icon": "fas fa-align-left"
-                },
-                "illumina_pe_its": {
-                    "type": "boolean",
-                    "description": "If analysing ITS amplicons or any other region with large length variability with Illumina paired end reads",
+                    "description": "If analyzing Illumina paired end reads of an amplicon with large length variability such as ITS",
                     "help_text": "This will cause the pipeline to\n- not truncate input reads if not `--trunclenf` and `--trunclenr` are overwriting defaults\n- remove reverse complement primers from the end of reads in case the read length exceeds the amplicon length",
                     "fa_icon": "fas fa-align-justify"
                 },
                 "quality_type": {
                     "type": "string",
                     "default": "Auto",
-                    "description": "Type of quality scores in raw read data",
+                    "description": "Type of quality scores in raw read data for DADA2",
                     "help_text": "From R package 'ShortRead' function 'readFastq': Representation to be used for quality scores, must be one of `Auto` (infer automatically), `FastqQuality` (Phred-like base 33 encoding), `SFastqQuality` (Illumina base 64 encoding).",
                     "enum": ["Auto", "FastqQuality", "SFastqQuality"],
                     "fa_icon": "fab fa-amilia"
@@ -153,11 +140,11 @@
                     "help_text": "Expects one sub-folder per sequencing run in the folder specified by `--input_folder` containing sequencing data of the specific run.\nSample identifiers are taken from sequencing files, specifically the string before the first underscore will be the sample ID. Sample IDs across all sequencing runs (all sequencing files) have to be unique. If this is not the case, please use a sample sheet as input instead.\n\nExample for input data organization:\n\n```bash\ndata\n  |-run1\n  |  |-sample1_1_L001_R1_001.fastq.gz\n  |  |-sample1_1_L001_R2_001.fastq.gz\n  |  |-sample2_1_L001_R1_001.fastq.gz\n  |  |-sample2_1_L001_R2_001.fastq.gz\n  |\n  |-run2\n     |-sample3_1_L001_R1_001.fastq.gz\n     |-sample3_1_L001_R2_001.fastq.gz\n     |-sample4_1_L001_R1_001.fastq.gz\n     |-sample4_1_L001_R2_001.fastq.gz\n```\n\nExample command to analyze this data in one pipeline run:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input_folder \"data\" \\\n    --FW_primer \"GTGYCAGCMGCCGCGGTAA\" \\\n    --RV_primer \"GGACTACNVGGGTWTCTAAT\" \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multiple_sequencing_runs\n```",
                     "fa_icon": "fas fa-running"
                 },
-                "extension": {
+                "input_folder_extensions": {
                     "type": "string",
                     "default": "/*_R{1,2}_001.fastq.gz",
                     "description": "If using `--input_folder`: naming of sequencing files",
-                    "help_text": "Indicates the naming of sequencing files (default: `\"/*_R{1,2}_001.fastq.gz\"`).\n\nPlease note:\n\n1. The prepended slash (`/`) is required\n2. The star (`*`) is the required wildcard for sample names\n3. The curly brackets (`{}`) enclose the orientation for paired end reads, separated by a comma (`,`).\n4. The pattern must be enclosed in quotes\n\nFor example for one sample (name: `1`) with forward (file: `1_a.fastq.gz`) and reverse (file: `1_b.fastq.gz`) reads in folder `data`:\n\n```bash\n--input_folder \"data\" --extension \"/*_{a,b}.fastq.gz\"\n```",
+                    "help_text": "Indicates the naming of sequencing files (default: `\"/*_R{1,2}_001.fastq.gz\"`).\n\nPlease note:\n\n1. The prepended slash (`/`) is required\n2. The star (`*`) is the required wildcard for sample names\n3. The curly brackets (`{}`) enclose the orientation for paired end reads, separated by a comma (`,`).\n4. The pattern must be enclosed in quotes\n\nFor example for one sample (name: `1`) with forward (file: `1_a.fastq.gz`) and reverse (file: `1_b.fastq.gz`) reads in folder `data`:\n\n```bash\n--input_folder \"data\" --input_folder_extensions \"/*_{a,b}.fastq.gz\"\n```",
                     "fa_icon": "fab fa-amilia"
                 },
                 "min_read_counts": {
@@ -216,7 +203,7 @@
             "fa_icon": "fas fa-align-left"
         },
         "read_trimming_and_quality_filtering": {
-            "title": "Read trimming and quality filtering",
+            "title": "DADA2 read trimming and quality filtering",
             "type": "object",
             "description": "Read trimming and quality filtering is supposed to reduce spurious results and aid error correction",
             "default": "",
@@ -291,6 +278,13 @@
             "type": "object",
             "default": "",
             "properties": {
+                "asv_calling": {
+                    "type": "string",
+                    "default": "auto",
+                    "help_text": "DADA2 is recommended for Illumina, IonTorrent, and PacBio HiFi data. Savont is recommended for ONT data but is also applicable to PacBio HiFi data.",
+                    "description": "Tool for ASV calculation.",
+                    "enum": ["dada2", "savont", "auto"]
+                },
                 "sample_inference": {
                     "type": "string",
                     "default": "independent",
@@ -306,44 +300,44 @@
                 "mergepairs_strategy": {
                     "type": "string",
                     "default": "merge",
-                    "description": "Strategy to merge paired end reads. When paired end reads are not sufficiently overlapping for merging, you can use \"concatenate\" (not recommended). When you have a mix of overlapping and non overlapping reads use \"consensus\"",
-                    "help_text": "This parameters specifies how paired-end reads are merged after denoising. By default, read pairs will be merged by overlap. Concatenating read pairs (separated by 10 N's) is an alternative to only analyzing the forward or reverse read in case of non-overlapping paired-end sequencing data, this is not recommended, only if all other options fail. The consensus strategy is merging read pairs by overlap if possible and concatenates non-overlapping read pairs, based on `--mergepairs_consensus_*` parameters.",
+                    "description": "DADA2: Strategy to merge paired end reads. When paired end reads are not sufficiently overlapping for merging, you can use \"concatenate\" (not recommended). When you have a mix of overlapping and non overlapping reads use \"consensus\"",
+                    "help_text": "This parameters specifies how paired-end reads are merged after denoising with DADA2. By default, read pairs will be merged by overlap. Concatenating read pairs (separated by 10 N's) is an alternative to only analyzing the forward or reverse read in case of non-overlapping paired-end sequencing data, this is not recommended, only if all other options fail. The consensus strategy is merging read pairs by overlap if possible and concatenates non-overlapping read pairs, based on `--mergepairs_consensus_*` parameters.",
                     "enum": ["merge", "concatenate", "consensus"]
                 },
                 "mergepairs_consensus_match": {
                     "type": "integer",
                     "default": 1,
-                    "description": "The score assigned for each matching base pair during sequence alignment.",
+                    "description": "DADA2: The score assigned for each matching base pair during sequence alignment.",
                     "help_text": "This parameter specifies the numerical value added to the alignment score for every pair of bases that match between the forward and reverse reads. A higher value increases the preference for alignments with more matching bases."
                 },
                 "mergepairs_consensus_mismatch": {
                     "type": "integer",
                     "default": -2,
-                    "description": "The penalty score assigned for each mismatched base pair during sequence alignment.",
+                    "description": "DADA2: The penalty score assigned for each mismatched base pair during sequence alignment.",
                     "help_text": "This parameter defines the numerical penalty subtracted from the alignment score for each base pair mismatch between the forward and reverse reads. A higher penalty reduces the likelihood of accepting alignments with mismatches."
                 },
                 "mergepairs_consensus_gap": {
                     "type": "integer",
                     "default": -4,
-                    "description": "The penalty score assigned for each gap introduced during sequence alignment.",
+                    "description": "DADA2: The penalty score assigned for each gap introduced during sequence alignment.",
                     "help_text": "This parameter sets the numerical penalty subtracted from the alignment score for each gap (insertion or deletion) introduced to align the forward and reverse reads. A higher penalty discourages alignments that require gaps."
                 },
                 "mergepairs_consensus_minoverlap": {
                     "type": "integer",
                     "default": 12,
-                    "description": "The minimum number of overlapping base pairs required to merge forward and reverse reads.",
+                    "description": "DADA2: The minimum number of overlapping base pairs required to merge forward and reverse reads.",
                     "help_text": "This parameter specifies the smallest number of consecutive base pairs that must overlap between the forward and reverse reads for them to be merged. Ensuring sufficient overlap is crucial for accurate merging."
                 },
                 "mergepairs_consensus_maxmismatch": {
                     "type": "integer",
                     "default": 0,
-                    "description": "The maximum number of mismatches allowed within the overlapping region for merging reads.",
+                    "description": "DADA2: The maximum number of mismatches allowed within the overlapping region for merging reads.",
                     "help_text": "This parameter defines the highest number of mismatched base pairs permitted in the overlap region between forward and reverse reads for a successful merge. Setting this value helps control the stringency of read merging, balancing between sensitivity and accuracy."
                 },
                 "mergepairs_consensus_percentile_cutoff": {
                     "type": "number",
                     "default": 0.001,
-                    "description": "The percentile used to determine a stringent cutoff which will correspond to the minimum observed overlap in the dataset. This ensures that only read pairs with high overlap are merged into consensus sequences. Those with insufficient overlap are concatenated."
+                    "description": "DADA2: The percentile used to determine a stringent cutoff which will correspond to the minimum observed overlap in the dataset. This ensures that only read pairs with high overlap are merged into consensus sequences. Those with insufficient overlap are concatenated."
                 }
             },
             "fa_icon": "fas fa-braille"

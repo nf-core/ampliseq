@@ -12,7 +12,7 @@ include { CUTADAPT_SUMMARY_MERGE                            } from '../../module
 workflow CUTADAPT_WORKFLOW {
     take:
     ch_file
-    illumina_pe_its
+    illumina_pe_readthrough
     double_primer
 
     main:
@@ -26,7 +26,7 @@ workflow CUTADAPT_WORKFLOW {
         .groupTuple(by: 0 )
     CUTADAPT_SUMMARY_STD ( "cutadapt_standard", ch_cutadapt_logs )
 
-    if (illumina_pe_its) {
+    if (illumina_pe_readthrough) {
         ch_trimmed_reads = CUTADAPT_READTHROUGH ( ch_trimmed_reads ).reads
     }
 

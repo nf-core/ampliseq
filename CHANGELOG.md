@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## nf-core/ampliseq version 2.19.0dev - [YYYY-MM-DD]
+## nf-core/ampliseq version 3.0.0dev - [YYYY-MM-DD]
 
 ### `Added`
 
@@ -13,6 +13,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Changed`
 
 - [#1018](https://github.com/nf-core/ampliseq/pull/1018) - Change version to 2.19.0dev (by @d4straub)
+
+| previously        | now                            | comment |
+| ----------------- | ------------------------------ | ------- |
+| --nanopore        | --sequencing_type nanopore     |         |
+| --pacbio          | --sequencing_type pacbio       |         |
+| --iontorrent      | --sequencing_type nanopore     |         |
+| --single_end      | --sequencing_type illumina_se  |         |
+| default           | --sequencing_type illumina_pe  | default |
+|                   | --asv_calling auto             | default |
+| default           | --asv_calling dada2            | new     |
+|                   | --asv_calling savont           | new     |
+| --illumina_pe_its | --illumina_pe_readthrough      |         |
+| --extension       | --input_folder_extensions      |         |
 
 ### `Fixed`
 

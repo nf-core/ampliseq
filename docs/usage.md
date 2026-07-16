@@ -161,7 +161,7 @@ An easy way to input sequencing data to the pipeline is to specify directly the 
 --input_folder 'path/to/data/'
 ```
 
-File names must follow a specific pattern, default is `/*_R{1,2}_001.fastq.gz`, but this can be adjusted with `--extension`.
+File names must follow a specific pattern, default is `/*_R{1,2}_001.fastq.gz`, but this can be adjusted with `--input_folder_extensions`.
 
 For example, the following files in folder `data` would be processed as `sample1` and `sample2`:
 
@@ -197,9 +197,9 @@ Please note the following additional requirements:
 - Files names must be unique
 - Valid file extensions: `.fastq.gz`, `.fq.gz` (files must be compressed)
 - The path must be enclosed in quotes
-- `--extension` must have at least one `*` wildcard character
-- When using the pipeline with paired end data, the `--extension` must use `{1,2}` (or similar) notation to specify read pairs
-- To run single-end data you must additionally specify `--single_end` and `--extension` may not include curly brackets `{}`
+- `--input_folder_extensions` must have at least one `*` wildcard character
+- When using the pipeline with paired end data, the `--input_folder_extensions` must use `{1,2}` (or similar) notation to specify read pairs
+- When a single-ended data type is specified with `--sequencing_type`, `--input_folder_extensions` may not include curly brackets `{}`
 - Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique (also across sequencing runs) and only contain letters, numbers or underscores
 - If your data is scattered, produce a sample sheet
 
@@ -207,15 +207,17 @@ Please note the following additional requirements:
 
 The pipeline supports the analysis of multiple sequencing data types: Illumina (paired-end or single-end), IonTorrent, PacBio HiFi, and Oxford Nanopore (ONT).
 
-By default, Illumina paired-end reads are preprocessed with [Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200/479) and Amplicon Sequence Variants (ASVs) are generated with [DADA2](https://pubmed.ncbi.nlm.nih.gov/27214047/). For single-end Illumina data, use the `--single_end` parameter.
+By default, Illumina paired-end reads are preprocessed with [Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200/479) and Amplicon Sequence Variants (ASVs) are generated with [DADA2](https://pubmed.ncbi.nlm.nih.gov/27214047/). For single-end Illumina data, use `--sequencing_type illumina_se`.
 
-IonTorrent and PacBio HiFi data are analyzed similarly to Illumina data, but the `--iontorrent` and `--pacbio` parameters adjust [DADA2](https://pubmed.ncbi.nlm.nih.gov/27214047/) settings accordingly.
+IonTorrent and PacBio HiFi data are analyzed similarly to Illumina data, but `--sequencing_type iontorrent` and `--sequencing_type pacbio` adjust Cutadapt and DADA2 settings accordingly.
 
-To analyze Oxford Nanopore (ONT) R10.4 sequencing reads (preferably with SUP basecalling), use the `--nanopore` parameter. This enables a dedicated workflow, including preprocessing with [Porechop_ABI](https://pubmed.ncbi.nlm.nih.gov/36698762/), [Chopper](https://pubmed.ncbi.nlm.nih.gov/37171891/), and [Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200/479), followed by ASV generation with [Savont](https://doi.org/10.64898/2026.05.26.727271).
+ASVs for PacBio HiFi data can be generated with [Savont](https://doi.org/10.64898/2026.05.26.727271) instead of DADA2 when choosing `--asv_calling savont`.
+
+To analyze Oxford Nanopore (ONT) R10.4 sequencing reads (preferably with SUP basecalling), use the `--sequencing_type nanopore` parameter. This enables a dedicated workflow, including preprocessing with [Porechop_ABI](https://pubmed.ncbi.nlm.nih.gov/36698762/), [Chopper](https://pubmed.ncbi.nlm.nih.gov/37171891/), and [Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200/479), followed by ASV generation with [Savont](https://doi.org/10.64898/2026.05.26.727271).
 
 ### Regions of variable length (e.g. ITS)
 
-Special considerations should be made when pre-processing reads for regions of variable length, e.g. ITS for fungal barcoding. For ITS regions e.g. ITS1 or ITS2, it is recommended to use the `--illumina_pe_its` parameter for paired-end Illumina reads, which disables fixed-length read truncation. Also consider adjusting `--truncq` to a value higher than the default value of 2 if you find that a high proportion of reads is excluded by DADA2 filtering.
+Special considerations should be made when pre-processing reads for regions of variable length, e.g. ITS for fungal barcoding. For ITS regions e.g. ITS1 or ITS2, it is recommended to use the `--illumina_pe_readthrough` parameter for paired-end Illumina reads, which disables fixed-length read truncation. Also consider adjusting `--truncq` to a value higher than the default value of 2 if you find that a high proportion of reads is excluded by DADA2 filtering.
 
 #### ITS extraction tool
 
@@ -225,7 +227,7 @@ By default, [ITSx](https://microbiology.se/software/itsx/) is used for ITS regio
 --its_extractor itsxrust
 ```
 
-ITSxRust automatically selects platform-appropriate presets: `--preset ont` when `--nanopore` is set, or `--preset hifi` when `--pacbio` is set. The required HMM profile is bundled in the container and Bioconda package, so no additional files need to be provided.
+ITSxRust automatically selects platform-appropriate presets: `--preset ont` when `--sequencing_type nanopore` is set, or `--preset hifi` when `--sequencing_type pacbio` is set. The required HMM profile is bundled in the container and Bioconda package, so no additional files need to be provided.
 
 ITSxRust produces the same output files as ITSx and is fully compatible with all downstream steps including `--cut_its` and `--its_partial`.
 

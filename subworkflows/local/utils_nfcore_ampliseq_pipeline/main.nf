@@ -187,15 +187,15 @@ def validateInputParameters() {
         error("Incompatible parameters: `--FW_primer` and `--RV_primer` are required for primer trimming. If primer trimming is not needed, use `--skip_cutadapt`.")
     }
 
-    if ( params.binned_quality && params.pacbio ) {
+    if ( params.binned_quality && params.pacbio ) { // TODO: THIS DOESNT WORK NOW!
         error("Incompatible parameters: `--binned_quality` and `--pacbio` are both used, but only one is allowed. When the data has binned quality scores, use `--binned_quality` instead of `--pacbio`.")
     }
 
-    if ( params.sample_inference == "pseudo" && params.nanopore ) {
-        error("Incompatible parameters: `--sample_inference pseudo` and `--nanopore` are incompatible. Use `--sample_inference independent` (default) or `--sample_inference pooled` with `--nanopore`.")
+    if ( params.sample_inference == "pseudo" && params.sequencing_type == "nanopore" ) {
+        error("Incompatible parameters: `--sample_inference pseudo` and `--sequencing_type nanopore` are incompatible. Use `--sample_inference independent` (default) or `--sample_inference pooled` with `--sequencing_type nanopore`.")
     }
 
-    if ( params.pacbio || params.iontorrent || params.single_end ) {
+    if ( ["pacbio","iontorrent","illumina_se"].contains(params.sequencing_type) ) {
         if (params.trunclenr) { log.warn "Unused parameter: `--trunclenr` is ignored because the data is single end." }
     } else if (params.trunclenf && !params.trunclenr) {
         error("Invalid command: `--trunclenf` is set, but `--trunclenr` is not. Either both parameters `--trunclenf` and `--trunclenr` must be set or none.")

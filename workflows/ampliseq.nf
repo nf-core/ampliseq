@@ -146,14 +146,15 @@ workflow AMPLISEQ {
 
     // Set non-params Variables
 
-    single_end = params.single_end
-    if (params.pacbio || params.iontorrent || params.nanopore) {
-        single_end = true
-    }
+    single_end = params.sequencing_type == "illumina_pe" ? false : true
+    asv_calling =
+        ["dada2","savont"].contains(params.asv_calling) ? params.asv_calling :
+            ["illumina_pe","illumina_se","pacbio","iontorrent"].contains(params.sequencing_type) ? "dada2" :
+                "savont"
 
     trunclenf = params.trunclenf ?: 0
     trunclenr = params.trunclenr ?: 0
-    if ( !single_end && !params.illumina_pe_its && (params.trunclenf == null || params.trunclenr == null) && !params.input_fasta ) {
+    if ( !single_end && !params.illumina_pe_readthrough && (params.trunclenf == null || params.trunclenr == null) && !params.input_fasta ) {
         find_truncation_values = true
         log.warn "No DADA2 read truncation cutoffs were specified (`--trunclenf` & `--trunclenr`), therefore reads will be truncated where median quality drops below ${params.trunc_qmin} (defined by `--trunc_qmin`) but at least a fraction of ${params.trunc_rmin} (defined by `--trunc_rmin`) of the reads will be retained.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\nThe cutoffs are chosen before any quality score-based read truncation (using `--truncq`) is performed.\n"
     } else { find_truncation_values = false }
@@ -192,8 +193,8 @@ workflow AMPLISEQ {
                     meta.sample = sample
                 }
                 meta.single_end = single_end.toBoolean()
-                def reads = single_end ? normalized_fw : [normalized_fw, normalized_rv]
-                if ( !meta.single_end && !normalized_rv ) { error("Entry `reverseReads` / `fastq_2` is missing in $params.input for $meta.sample, either correct the samplesheet or use `--single_end`, `--pacbio`, `--iontorrent`, or `--nanopore`") } // make sure that reverse reads are present when single_end isn't specified
+                def reads = meta.single_end ? normalized_fw : [normalized_fw, normalized_rv]
+                if ( !meta.single_end && !normalized_rv ) { error("Entry `reverseReads` / `fastq_2` is missing in $params.input for $meta.sample, either correct the samplesheet or choose the appropriate single-ended sequencing type for `--sequencing_type`.") } // make sure that reverse reads are present when single_end isn't specified
                 if ( !meta.single_end && ( normalized_fw.getSimpleName() == meta.sample || normalized_rv.getSimpleName() == meta.sample ) ) { error("Entry `sampleID` / `sample` cannot be identical to simple name of `forwardReads` / `fastq_1` or `reverseReads` / `fastq_2`, please change the sample name in $params.input for sample $meta.sample") } // sample name and any file name without extensions aren't identical, because rename_raw_data_files.nf would forward 3 files (2 renamed +1 input) instead of 2 in that case
                 if ( meta.single_end && ( normalized_fw.getSimpleName() == meta.sample+"_1" || normalized_fw.getSimpleName() == meta.sample+"_2" ) ) { error("Entry `sampleID` / `sample` + `_1` or `_2` cannot be identical to simple name of `forwardReads` / `fastq_1`, please change the sample name in $params.input for sample $meta.sample") } // sample name and file name without extensions aren't identical, because rename_raw_data_files.nf would forward 2 files (1 renamed +1 input) instead of 1 in that case
                                 return [meta, reads] }
@@ -201,7 +202,7 @@ workflow AMPLISEQ {
     } else if ( params.input_fasta ) {
         ch_input_fasta = channel.fromPath(params.input_fasta, checkIfExists: true)
     } else if ( params.input_folder ) {
-        PARSE_INPUT ( params.input_folder, single_end, params.multiple_sequencing_runs, params.extension )
+        PARSE_INPUT ( params.input_folder, single_end, params.multiple_sequencing_runs, params.input_folder_extensions )
         ch_input_reads = PARSE_INPUT.out.reads
     } else {
         error("One of `--input`, `--input_fasta`, `--input_folder` must be provided!")
@@ -497,7 +498,7 @@ workflow AMPLISEQ {
     //
     // MODULE: porechop_ABI
     //
-    if (params.nanopore && !params.skip_porechop_abi) {
+    if (params.sequencing_type == "nanopore" && !params.skip_porechop_abi) {
         PORECHOP_ABI ( ch_reads_trimming, [] )
         ch_reads_trimming = PORECHOP_ABI.out.reads
         ch_multiqc_files = ch_multiqc_files.mix(PORECHOP_ABI.out.log.collect{ it -> it[1] })
@@ -506,7 +507,7 @@ workflow AMPLISEQ {
     //
     // MODULE: chopper
     //
-    if (params.nanopore && !params.skip_chopper) {
+    if (params.sequencing_type == "nanopore" && !params.skip_chopper) {
         CHOPPER ( ch_reads_trimming, [] )
 
         // Count reads of input and output files
@@ -544,11 +545,11 @@ workflow AMPLISEQ {
         ch_reads_trimming =
             CUTADAPT_WORKFLOW (
                 ch_reads_trimming,
-                params.illumina_pe_its,
+                params.illumina_pe_readthrough,
                 params.double_primer
             ).reads
         ch_multiqc_files = ch_multiqc_files.mix(CUTADAPT_WORKFLOW.out.logs.collect{ it -> it[1] })
-        if (params.nanopore && !params.skip_chopper) {
+        if (params.sequencing_type == "nanopore" && !params.skip_chopper) {
             MERGE_STATS_CUTADAPT (ch_stats, CUTADAPT_WORKFLOW.out.summary)
             ch_stats = MERGE_STATS_CUTADAPT.out.tsv
         } else {
@@ -559,7 +560,7 @@ workflow AMPLISEQ {
     //
     // MODULES: ASV generation with Savont
     //
-    if (params.nanopore) {
+    if (asv_calling == "savont") {
         if (params.sample_inference == "pooled") {
             ch_reads_to_savont =
                 ch_reads_trimming
@@ -592,7 +593,7 @@ workflow AMPLISEQ {
                 .collectFile(name: 'savont_stats.tsv', keepHeader: true, sort: true, cache: true, newLine: true)
         }
         // merge stats
-        if (params.skip_cutadapt || (params.nanopore && !params.skip_chopper)) {
+        if (params.skip_cutadapt || (params.sequencing_type == "nanopore" && !params.skip_chopper)) {
             MERGE_STATS_SAVONT (ch_stats, ch_stats_savont)
             ch_stats = MERGE_STATS_SAVONT.out.tsv
         } else {
@@ -603,7 +604,7 @@ workflow AMPLISEQ {
     //
     // SUBWORKFLOW: Read preprocessing & QC plotting with DADA2
     //
-    if (!params.nanopore) {
+    if (asv_calling == "dada2") {
         ch_filt_reads =
             DADA2_PREPROCESSING (
                 ch_reads_trimming,
@@ -617,7 +618,7 @@ workflow AMPLISEQ {
     //
     // MODULES: ASV generation with DADA2
     //
-    if (!params.nanopore) {
+    if (asv_calling == "dada2") {
         //run error model
         DADA2_ERR ( ch_filt_reads )
         ch_errormodel = DADA2_ERR.out.errormodel
@@ -654,7 +655,7 @@ workflow AMPLISEQ {
     //
     // SUBWORKFLOW / MODULES : Taxonomic classification with DADA2, SINTAX and/or QIIME2
     //
-    if ( !params.nanopore && params.multiregion ) {
+    if ( asv_calling == "dada2" && params.multiregion ) {
         // separate sequences and abundances when several regions
         DADA2_SPLITREGIONS (
             //DADA2_DENOISING per run & region -> per run
@@ -1305,16 +1306,16 @@ workflow AMPLISEQ {
             ch_input_fasta.ifEmpty( [] ), // fasta input
             !params.input_fasta && !params.skip_fastqc && !params.skip_multiqc ? MULTIQC.out.plots : [[],[]],
             !params.skip_cutadapt ? CUTADAPT_WORKFLOW.out.summary.collect().ifEmpty( [] ) : [],
-            params.nanopore && !params.skip_porechop_abi ? PORECHOP_ABI.out.log.ifEmpty( [[],[]] )  : [[],[]],
-            params.nanopore && !params.skip_chopper ? ch_stats_chopper.ifEmpty( [] )  : [],
-            params.nanopore && params.sample_inference == "independent" ? SAVONT_EXPORT.out.asv :
-                params.nanopore  && params.sample_inference == "pooled" ? SAVONT_ASV.out.asv : [],
-            params.nanopore ? ch_stats_savont.ifEmpty( [] ) : [],
+            params.sequencing_type == "nanopore" && !params.skip_porechop_abi ? PORECHOP_ABI.out.log.ifEmpty( [[],[]] )  : [[],[]],
+            params.sequencing_type == "nanopore" && !params.skip_chopper ? ch_stats_chopper.ifEmpty( [] )  : [],
+            asv_calling == "savont" && params.sample_inference == "independent" ? SAVONT_EXPORT.out.asv :
+                asv_calling == "savont" && params.sample_inference == "pooled" ? SAVONT_ASV.out.asv : [],
+            asv_calling == "savont" ? ch_stats_savont.ifEmpty( [] ) : [],
             find_truncation_values,
-            !params.nanopore ? DADA2_PREPROCESSING.out.args.first().ifEmpty( [] ) : [],
-            !params.nanopore && !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg.ifEmpty( [] ) : [],
-            !params.nanopore && !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg_preprocessed.ifEmpty( [] ) : [],
-            !params.nanopore ?
+            asv_calling == "dada2" ? DADA2_PREPROCESSING.out.args.first().ifEmpty( [] ) : [],
+            asv_calling == "dada2" && !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg.ifEmpty( [] ) : [],
+            asv_calling == "dada2" && !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg_preprocessed.ifEmpty( [] ) : [],
+            asv_calling == "dada2" ?
                 DADA2_ERR.out.svg
                     .map {
                         meta_old, svgs ->
@@ -1330,10 +1331,10 @@ workflow AMPLISEQ {
                         [ meta, svgs.flatten() ]
                     }.ifEmpty( [[],[]] )
                 : [[],[]],
-            !params.nanopore ? DADA2_MERGE.out.asv.ifEmpty( [] ) : [],
+            asv_calling == "dada2" ? DADA2_MERGE.out.asv.ifEmpty( [] ) : [],
             ch_unfiltered_fasta.ifEmpty( [] ), // this is identical to DADA2_MERGE.out.fasta if !params.input_fasta
-            !params.nanopore ? DADA2_MERGE.out.dada2asv.ifEmpty( [] ) : [],
-            !params.nanopore ? DADA2_MERGE.out.dada2stats.ifEmpty( [] ) : [],
+            asv_calling == "dada2" ? DADA2_MERGE.out.dada2asv.ifEmpty( [] ) : [],
+            asv_calling == "dada2" ? DADA2_MERGE.out.dada2stats.ifEmpty( [] ) : [],
             params.mergepairs_strategy,
             params.vsearch_cluster ? FILTER_CLUSTERS.out.asv.ifEmpty( [] ) : [],
             params.decontam,

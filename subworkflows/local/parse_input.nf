@@ -12,7 +12,7 @@ workflow PARSE_INPUT {
     folders = multiple_sequencing_runs ? "/*" : ""
     error_message = "\nCannot find any reads matching: \"${input}${folders}${extension}\"\n"
     error_message += "Please revise the input folder (\"--input_folder\"): \"${input}\"\n"
-    error_message += "and the input file pattern (\"--extension\"): \"${extension}\"\n"
+    error_message += "and the input file pattern (\"--input_folder_extensions\"): \"${extension}\"\n"
     error_message += "*Please note: Path needs to be enclosed in quotes!*\n"
     error_message += multiple_sequencing_runs ? "If you do not have multiple sequencing runs, please do not use \"--multiple_sequencing_runs\"!\n" : "If you have multiple sequencing runs, please add \"--multiple_sequencing_runs\"!\n"
     error_message += "In any case, please consult the pipeline documentation.\n"

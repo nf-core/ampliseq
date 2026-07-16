@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Changed`
 
 - [#1018](https://github.com/nf-core/ampliseq/pull/1018) - Change version to 2.19.0dev (by @d4straub)
-- [#1027](https://github.com/nf-core/ampliseq/pull/1027) - Changed parameters, including the default of `--sample_inference` from `independent` to `pooled` (by @d4straub)
+- [#1027](https://github.com/nf-core/ampliseq/pull/1027) - Changed parameters, including the default of `--sample_inference` from `independent` to `pooled` and `--dada_taxonomy_rc` isnt enforced with IonTorrent and PacBio any more (by @d4straub)
 
 | previously        | now                           | comment |
 | ----------------- | ----------------------------- | ------- |

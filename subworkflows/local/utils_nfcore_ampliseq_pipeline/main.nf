@@ -187,15 +187,15 @@ def validateInputParameters() {
         error("Incompatible parameters: `--FW_primer` and `--RV_primer` are required for primer trimming. If primer trimming is not needed, use `--skip_cutadapt`.")
     }
 
-    if ( params.binned_quality && params.pacbio ) { // TODO: THIS DOESNT WORK NOW!
-        error("Incompatible parameters: `--binned_quality` and `--pacbio` are both used, but only one is allowed. When the data has binned quality scores, use `--binned_quality` instead of `--pacbio`.")
+    if ( params.binned_quality && params.sequencing_type == "pacbio" ) {
+        error("Incompatible parameters: `--binned_quality` and `--sequencing_type pacbio` are both used, but only one is allowed. When the data has binned quality scores, use `--binned_quality` instead of `--sequencing_type pacbio`.")
     }
 
-    if ( params.sample_inference == "pseudo" && params.sequencing_type == "nanopore" ) {
-        error("Incompatible parameters: `--sample_inference pseudo` and `--sequencing_type nanopore` are incompatible. Use `--sample_inference independent` (default) or `--sample_inference pooled` with `--sequencing_type nanopore`.")
+    if ( params.sample_inference == "pseudo" && ( (params.sequencing_type == "nanopore" && params.asv_calling == "auto") || params.asv_calling == "savont") ) {
+        error("Incompatible parameters: `--sample_inference pseudo` and Savont are incompatible. Use `--sample_inference independent` or `--sample_inference pooled` (default) with Savont (default for `--sequencing_type nanopore`).")
     }
 
-    if ( ["pacbio","iontorrent","illumina_se"].contains(params.sequencing_type) ) {
+    if ( ["nanopore","pacbio","iontorrent","illumina_se"].contains(params.sequencing_type) ) {
         if (params.trunclenr) { log.warn "Unused parameter: `--trunclenr` is ignored because the data is single end." }
     } else if (params.trunclenf && !params.trunclenr) {
         error("Invalid command: `--trunclenf` is set, but `--trunclenr` is not. Either both parameters `--trunclenf` and `--trunclenr` must be set or none.")

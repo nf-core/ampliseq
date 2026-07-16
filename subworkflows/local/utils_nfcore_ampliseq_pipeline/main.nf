@@ -319,7 +319,7 @@ def validateInputParameters() {
                 validDBs += " " + db
             }
         }
-        error("UNITE species hypothesis information is not available for the selected reference database, please use the option `--dada_ref_taxonomy` to select an appropriate database. Currently, the option `--addsh` can only be used together with the following UNITE reference databases:\n" + validDBs + ".")
+        error("Species hypothesis (SH) lookup files are not available for `--dada_ref_taxonomy ${params.dada_ref_taxonomy}`. This currently includes `glosed`. The option `--addsh` can only be used with databases that provide precomputed SH lookup files (currently UNITE reference databases):\n" + validDBs + ".")
     }
 
     if (params.addsh && params.cut_its == "none") {

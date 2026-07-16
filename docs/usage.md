@@ -262,6 +262,7 @@ Pre-configured reference taxonomy databases are:
 | greengenes   | -     | -      | +       | (+)³   | -       | -          | 16S rRNA                                      |
 | greengenes2  | +     | -      | -       | +      | -       | -          | 16S rRNA                                      |
 | pr2          | +     | -      | -       | -      | -       | -          | 18S rRNA                                      |
+| GloSED       | +     | -      | -       | -      | -       | -          | eukaryotic nuclear ribosomal ITS region       |
 | unite-fungi  | +     | +      | -       | -      | +       | -          | eukaryotic nuclear ribosomal ITS region       |
 | unite-alleuk | +     | +      | -       | -      | +       | -          | eukaryotic nuclear ribosomal ITS region       |
 | coidb        | +     | +      | -       | -      | +       | -          | eukaryotic Cytochrome Oxidase I (COI)         |

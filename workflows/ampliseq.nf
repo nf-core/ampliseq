@@ -164,14 +164,14 @@ workflow AMPLISEQ {
     tax_agglom_max = params.tax_agglom_max
 
     // Only run QIIME2 taxonomy classification if needed parameters are passed and we are not skipping taxonomy or qiime steps.
-    if ( !params.skip_taxonomy && !params.skip_qiime && (params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier) ) {
+    if ( !params.skip_taxonomy && !params.skip_qiime && (params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.qiime_classifier) ) {
         run_qiime2_taxonomy = true
     } else {
         run_qiime2_taxonomy = false
     }
 
     //only run QIIME2 downstream analysis when taxonomy is actually calculated and all required data is available
-    if ( !params.skip_taxonomy && !params.skip_qiime && !params.skip_qiime_downstream && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.sintax_ref_tax_custom || params.vsearch_lca_ref_taxonomy || params.vsearch_lca_ref_tax_custom || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom || params.multiregion) ) {
+    if ( !params.skip_taxonomy && !params.skip_qiime && !params.skip_qiime_downstream && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.sintax_ref_tax_custom || params.vsearch_lca_ref_taxonomy || params.vsearch_lca_ref_tax_custom || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.qiime_classifier || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom || params.multiregion) ) {
         run_qiime2 = true
     } else {
         run_qiime2 = false
@@ -256,10 +256,10 @@ workflow AMPLISEQ {
                 .map{ info, reads ->
                     def meta = info +
                         [region: null, region_length: null] +
-                        [fw_primer: params.FW_primer, rv_primer: params.RV_primer] +
+                        [fw_primer: params.fw_primer, rv_primer: params.rv_primer] +
                         [id: info.sample] +
-                        [fw_primer_revcomp: params.FW_primer ? makeComplement(params.FW_primer.reverse()) : null] +
-                        [rv_primer_revcomp: params.RV_primer ? makeComplement(params.RV_primer.reverse()) : null]
+                        [fw_primer_revcomp: params.fw_primer ? makeComplement(params.fw_primer.reverse()) : null] +
+                        [rv_primer_revcomp: params.rv_primer ? makeComplement(params.rv_primer.reverse()) : null]
                     return [ meta, reads ] }
     }
 
@@ -395,8 +395,8 @@ workflow AMPLISEQ {
     val_qiime_ref_taxonomy = "none"
     ch_qiime_classifier    = channel.empty()
 
-    if (params.classifier) {
-        ch_qiime_classifier = channel.fromPath("${params.classifier}", checkIfExists: true)
+    if (params.qiime_classifier) {
+        ch_qiime_classifier = channel.fromPath("${params.qiime_classifier}", checkIfExists: true)
     } else if (params.qiime_ref_tax_custom) {
         if ("${params.qiime_ref_tax_custom}".contains(",")) {
             qiime_ref_paths = "${params.qiime_ref_tax_custom}".split(",")
@@ -997,12 +997,12 @@ workflow AMPLISEQ {
 
     //QIIME2
     if ( run_qiime2_taxonomy ) {
-        if ((params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && !params.classifier) {
+        if ((params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && !params.qiime_classifier) {
             QIIME2_PREPTAX (
                 ch_qiime_ref_taxonomy.collect(),
                 val_qiime_ref_taxonomy,
-                params.FW_primer,
-                params.RV_primer
+                params.fw_primer,
+                params.rv_primer
             )
             ch_qiime_classifier = QIIME2_PREPTAX.out.classifier
         }
@@ -1067,7 +1067,7 @@ workflow AMPLISEQ {
             log.info "Use Kraken2 taxonomy classification"
             val_used_taxonomy = "Kraken2"
             ch_tax = QIIME2_INTAX ( ch_kraken2_tax, "" ).qza
-        } else if ( params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier ) {
+        } else if ( params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.qiime_classifier ) {
             log.info "Use QIIME2 taxonomy classification"
             val_used_taxonomy = "QIIME2"
             ch_tax = QIIME2_TAXONOMY.out.qza
@@ -1169,7 +1169,7 @@ workflow AMPLISEQ {
     // MODULE: Predict functional potential of a bacterial community from marker genes with Picrust2
     //
     if ( params.picrust ) {
-        if ( run_qiime2 && !params.skip_abundance_tables && ( params.dada_ref_taxonomy || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier || params.sintax_ref_taxonomy || params.sintax_ref_tax_custom || params.vsearch_lca_ref_taxonomy || params.vsearch_lca_ref_tax_custom || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom ) && !params.skip_taxonomy ) {
+        if ( run_qiime2 && !params.skip_abundance_tables && ( params.dada_ref_taxonomy || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.qiime_classifier || params.sintax_ref_taxonomy || params.sintax_ref_tax_custom || params.vsearch_lca_ref_taxonomy || params.vsearch_lca_ref_tax_custom || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom ) && !params.skip_taxonomy ) {
             PICRUST ( QIIME2_EXPORT.out.abs_fasta, QIIME2_EXPORT.out.abs_tsv, "QIIME2", "This Picrust2 analysis is based on filtered reads from QIIME2" )
         } else {
             PICRUST ( ch_fasta, ch_asv_table, "DADA2", "This Picrust2 analysis is based on unfiltered reads from DADA2" )
@@ -1357,7 +1357,7 @@ workflow AMPLISEQ {
             !params.skip_taxonomy && ( params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom ) ? KRAKEN2_TAXONOMY_WF.out.tax_tsv.ifEmpty( [] ) : [],
             !params.skip_taxonomy && params.pplace_tree ? ch_pplace_tax.ifEmpty( [] ) : [],
             !params.skip_taxonomy && params.pplace_tree ? PPLACE_STANDARD.out.heattree.ifEmpty( [[],[]] ) : [[],[]],
-            !params.skip_taxonomy && ( params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier ) && run_qiime2_taxonomy ? QIIME2_TAXONOMY.out.tsv.ifEmpty( [] ) : [],
+            !params.skip_taxonomy && ( params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.qiime_classifier ) && run_qiime2_taxonomy ? QIIME2_TAXONOMY.out.tsv.ifEmpty( [] ) : [],
             run_qiime2,
             run_qiime2 ? val_used_taxonomy : "",
             run_qiime2 && ( params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1 ) ? ch_asv_table.countLines()+","+QIIME2_TABLEFILTERTAXA.out.tsv.countLines() : "",

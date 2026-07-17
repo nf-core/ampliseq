@@ -24,13 +24,13 @@ The typical command for running the pipeline is as follows:
 nextflow run nf-core/ampliseq \
     -profile singularity \
     --input "samplesheet.tsv" \
-    --FW_primer GTGYCAGCMGCCGCGGTAA \
-    --RV_primer GGACTACNVGGGTWTCTAAT \
+    --fw_primer GTGYCAGCMGCCGCGGTAA \
+    --rv_primer GGACTACNVGGGTWTCTAAT \
     --metadata "data/Metadata.tsv" \
     --outdir "./results"
 ```
 
-In this example, `--input` is the [Sample sheet input](#sample-sheet-input), other options are [Direct FASTQ input](#direct-fastq-input) and [ASV/OTU fasta input](#asvotu-fasta-input). For more details on metadata, see [Metadata](#metadata). It is possible to not provide primer sequences (`--FW_primer` & `--RV_primer`) and skip primer trimming using `--skip_cutadapt`, but this is only for data that indeed does not contain any PCR primers in their sequences. Also, metadata (`--metadata`) isnt required, but aids downstream analysis.
+In this example, `--input` is the [Sample sheet input](#sample-sheet-input), other options are [Direct FASTQ input](#direct-fastq-input) and [ASV/OTU fasta input](#asvotu-fasta-input). For more details on metadata, see [Metadata](#metadata). It is possible to not provide primer sequences (`--fw_primer` & `--rv_primer`) and skip primer trimming using `--skip_cutadapt`, but this is only for data that indeed does not contain any PCR primers in their sequences. Also, metadata (`--metadata`) isnt required, but aids downstream analysis.
 
 This will launch the pipeline with the `singularity` configuration profile. See below [`-profile`](#profile) for more information about profiles.
 
@@ -72,8 +72,8 @@ with:
 
 ```yaml title="params.yaml"
 input: "samplesheet.tsv"
-FW_primer: "GTGYCAGCMGCCGCGGTAA"
-RV_primer: "GGACTACNVGGGTWTCTAAT"
+fw_primer: "GTGYCAGCMGCCGCGGTAA"
+rv_primer: "GGACTACNVGGGTWTCTAAT"
 metadata: "data/Metadata.tsv"
 outdir: "./results"
 <...>
@@ -304,7 +304,7 @@ The region information file can be tab-separated (.tsv), comma-separated (.csv),
 | ------------- | ------------------------------------------------------------------------- |
 | region        | Unique region identifier                                                  |
 | region_length | Minimum region length, sequences are trimmed and shorter ones are omitted |
-| FW_primer     | Forward primer sequence                                                   |
+| fw_primer     | Forward primer sequence                                                   |
 | RV_primer     | Reverse primer sequence                                                   |
 
 For example, the tab-separated `regions_multiregion.tsv` may contain:

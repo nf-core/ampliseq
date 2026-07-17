@@ -28,6 +28,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 |                   | --asv_calling savont          | new     |
 | --illumina_pe_its | --illumina_pe_readthrough     |         |
 | --extension       | --input_folder_extensions     |         |
+| --FW_primer       | --fw_primer                   |         |
+| --RV_primer       | --rv_primer                   |         |
+| --classifier      | --qiime_classifier            |         |
 
 ### `Fixed`
 

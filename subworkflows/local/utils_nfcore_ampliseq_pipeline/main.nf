@@ -112,7 +112,7 @@ workflow PIPELINE_INITIALISATION {
     if ( params.vsearch_lca_ref_taxonomy && !params.skip_taxonomy && !params.vsearch_lca_ref_tax_custom ) {
         vsearchlcareftaxonomyExistsError()
     }
-    if ( (params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && !params.skip_taxonomy && !params.classifier ) {
+    if ( (params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && !params.skip_taxonomy && !params.qiime_classifier ) {
         qiimereftaxonomyExistsError()
     }
     if ( params.kraken2_ref_taxonomy  && !params.skip_taxonomy ) {
@@ -183,8 +183,8 @@ def validateInputParameters() {
         error("Missing input declaration: One of `--input`, `--input_fasta`, `--input_folder` is required.")
     }
 
-    if ( !params.multiregion && !params.input_fasta && (!params.FW_primer || !params.RV_primer) && !params.skip_cutadapt ) {
-        error("Incompatible parameters: `--FW_primer` and `--RV_primer` are required for primer trimming. If primer trimming is not needed, use `--skip_cutadapt`.")
+    if ( !params.multiregion && !params.input_fasta && (!params.fw_primer || !params.rv_primer) && !params.skip_cutadapt ) {
+        error("Incompatible parameters: `--fw_primer` and `--rv_primer` are required for primer trimming. If primer trimming is not needed, use `--skip_cutadapt`.")
     }
 
     if ( params.binned_quality && params.sequencing_type == "pacbio" ) {
@@ -250,16 +250,16 @@ def validateInputParameters() {
         }
     }
 
-    if ( (!params.FW_primer || !params.RV_primer) && (params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && !params.skip_qiime && !params.skip_taxonomy ) {
-        error("Incompatible parameters: `--FW_primer` and `--RV_primer` are required for cutting the QIIME2 reference database to the amplicon sequences. Please specify primers or do not use `--qiime_ref_taxonomy`.")
+    if ( (!params.fw_primer || !params.rv_primer) && (params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && !params.skip_qiime && !params.skip_taxonomy ) {
+        error("Incompatible parameters: `--fw_primer` and `--rv_primer` are required for cutting the QIIME2 reference database to the amplicon sequences. Please specify primers or do not use `--qiime_ref_taxonomy`.")
     }
 
-    if ( (!params.FW_primer || !params.RV_primer) && params.cut_dada_ref_taxonomy && !params.skip_taxonomy ) {
-        error("Incompatible parameters: `--FW_primer` and `--RV_primer` are required for cutting the DADA2 reference database to the amplicon sequences. Please specify primers or do not use `--cut_dada_ref_taxonomy`.")
+    if ( (!params.fw_primer || !params.rv_primer) && params.cut_dada_ref_taxonomy && !params.skip_taxonomy ) {
+        error("Incompatible parameters: `--fw_primer` and `--rv_primer` are required for cutting the DADA2 reference database to the amplicon sequences. Please specify primers or do not use `--cut_dada_ref_taxonomy`.")
     }
 
-    if ((params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && params.classifier) {
-        error("Incompatible parameters: `--qiime_ref_taxonomy` and `--qiime_ref_tax_custom` will produce a classifier but `--classifier` points to a precomputed classifier, therefore, only use one of those.")
+    if ((params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && params.qiime_classifier) {
+        error("Incompatible parameters: `--qiime_ref_taxonomy` and `--qiime_ref_tax_custom` will produce a classifier but `--qiime_classifier` points to a precomputed classifier, therefore, only use one of those.")
     }
 
     if (params.kraken2_ref_tax_custom && !params.kraken2_assign_taxlevels ) {

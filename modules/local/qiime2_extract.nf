@@ -1,5 +1,5 @@
 process QIIME2_EXTRACT {
-    tag "${meta.FW_primer}-${meta.RV_primer}"
+    tag "${meta.fw_primer}-${meta.rv_primer}"
     label 'process_medium'
     label 'process_long'
 
@@ -34,10 +34,10 @@ process QIIME2_EXTRACT {
     qiime feature-classifier extract-reads \\
         --p-n-jobs ${task.cpus} \\
         --i-sequences ref-seq.qza \\
-        --p-f-primer ${meta.FW_primer} \\
-        --p-r-primer ${meta.RV_primer} \\
+        --p-f-primer ${meta.fw_primer} \\
+        --p-r-primer ${meta.rv_primer} \\
         $args \\
-        --o-reads ${meta.FW_primer}-${meta.RV_primer}-ref-seq.qza \\
+        --o-reads ${meta.fw_primer}-${meta.rv_primer}-ref-seq.qza \\
         --quiet
 
     cat <<-END_VERSIONS > versions.yml

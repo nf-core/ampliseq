@@ -135,7 +135,7 @@ params {
     kraken2_confidence: Float = 0.0
     sintax_ref_taxonomy: String?
     sintax_ref_tax_custom: Path?
-    sintax_assign_taxlevels: Path?
+    sintax_assign_taxlevels: String?
     vsearch_lca_ref_tax_custom: Path?
     vsearch_lca_ref_taxonomy: String?
     vsearch_lca_assign_taxlevels: String?

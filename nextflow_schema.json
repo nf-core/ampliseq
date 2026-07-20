@@ -515,11 +515,13 @@
                 },
                 "dada_ref_tax_custom": {
                     "type": "string",
+                    "format": "file-path",
                     "help_text": "Overwrites `--dada_ref_taxonomy`. Either `--skip_dada_addspecies` (no species annotation) or `--dada_ref_tax_custom_sp` (species annotation) is additionally required. Consider also setting `--dada_assign_taxlevels`.\n\nMust be compatible to DADA2's assignTaxonomy function: 'Can be compressed. This reference fasta file should be formatted so that the id lines correspond to the taxonomy (or classification) of the associated sequence, and each taxonomic level is separated by a semicolon.' See also https://rdrr.io/bioc/dada2/man/assignTaxonomy.html",
                     "description": "Path to a custom DADA2 reference taxonomy database"
                 },
                 "dada_ref_tax_custom_sp": {
                     "type": "string",
+                    "format": "file-path",
                     "help_text": "Requires `--dada_ref_tax_custom`. Must be compatible to DADA2's addSpecies function: 'Can be compressed. This reference fasta file should be formatted so that the id lines correspond to the genus-species binomial of the associated sequence.' See also https://rdrr.io/bioc/dada2/man/addSpecies.html",
                     "description": "Path to a custom DADA2 reference taxonomy database for species assignment"
                 },
@@ -569,10 +571,12 @@
                 },
                 "pplace_tree": {
                     "type": "string",
+                    "format": "file-path",
                     "description": "Newick file with reference phylogenetic tree. Requires also `--pplace_aln` and `--pplace_model`."
                 },
                 "pplace_aln": {
                     "type": "string",
+                    "format": "file-path",
                     "description": "File with reference sequences. Requires also `--pplace_tree` and `--pplace_model`."
                 },
                 "pplace_model": {
@@ -587,6 +591,7 @@
                 },
                 "pplace_taxonomy": {
                     "type": "string",
+                    "format": "file-path",
                     "help_text": "Headerless, tab-separated, first column with tree leaves, second column with taxonomy ranks separated by semicolon `;`. The results take precedence over DADA2 and QIIME2 classifications.",
                     "description": "Tab-separated file with taxonomy assignments of reference sequences."
                 },
@@ -615,6 +620,7 @@
                 },
                 "qiime_classifier": {
                     "type": "string",
+                    "format": "file-path",
                     "description": "Path to QIIME2 trained classifier file (typically *-classifier.qza)",
                     "help_text": "If you have trained a compatible classifier before, from sources such as SILVA (https://www.arb-silva.de/), Greengenes (http://greengenes.secondgenome.com/downloads) or RDP (https://rdp.cme.msu.edu/). \n\nFor example:\n\n```bash\n--qiime_classifier \"fw_primer-rv_primer-qiime_classifier.qza\"\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The classifier is a Naive Bayes classifier produced by `qiime feature-classifier fit-classifier-naive-bayes` (e.g. by this pipeline)\n3. The primer pair for the amplicon PCR and the computing of the classifier are exactly the same (or full-length, potentially lower performance)\n4. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses"
                 },
@@ -637,6 +643,7 @@
                 },
                 "kraken2_ref_tax_custom": {
                     "type": "string",
+                    "format": "file-path",
                     "help_text": "Overwrites `--kraken2_ref_taxonomy`. Consider also setting `--kraken2_assign_taxlevels`. Can be compressed tar archive (.tar.gz|.tgz) or folder containing the database. See also https://benlangmead.github.io/aws-indexes/k2.",
                     "description": "Path to a custom Kraken2 reference taxonomy database (*.tar.gz|*.tgz archive or folder)"
                 },
@@ -674,6 +681,7 @@
                 },
                 "sintax_ref_tax_custom": {
                     "type": "string",
+                    "format": "file-path",
                     "help_text": "Overwrites `--sintax_ref_taxonomy`. Requires `--sintax_assign_taxlevels`. Plain fasta or gzip-compressed (`.gz`) is accepted. Cannot be used with `--sbdiexport`.",
                     "description": "Path to a custom SINTAX reference database (fasta)"
                 },
@@ -684,6 +692,7 @@
                 },
                 "vsearch_lca_ref_tax_custom": {
                     "type": "string",
+                    "format": "file-path",
                     "help_text": "Path to a custom VSEARCH LCA reference database. Requires `--vsearch_lca_assign_taxlevels`. Expected format: SINTAX-compatible FASTA with semicolon-separated taxonomy labels in sequence headers (same as `--sintax_ref_tax_custom`); plain FASTA or gzip-compressed (`.gz`) is accepted. Cannot be used together with `--vsearch_lca_ref_taxonomy`.",
                     "description": "Path to a custom VSEARCH LCA reference database (SINTAX-compatible FASTA)"
                 },
@@ -787,24 +796,28 @@
                 },
                 "sidle_ref_tax_custom": {
                     "type": "string",
+                    "format": "file-path",
                     "help_text": "Use with `--sidle_ref_seq_custom`. Consider also setting `--sidle_ref_aln_custom` and `--sidle_ref_tree_custom`. The taxonomy file must be headerless and follow the format of `qiime tools import`'s `HeaderlessTSVTaxonomyFormat`. Example usage: `--sidle_ref_tax_custom 'taxonomy_99_taxonomy.txt'`",
                     "description": "Path to reference taxonomy strings (headerless, *.txt)",
                     "pattern": "^.*\\.txt$"
                 },
                 "sidle_ref_seq_custom": {
                     "type": "string",
+                    "format": "file-path",
                     "help_text": "Use with `--sidle_ref_tax_custom`. Example usage: `--sidle_ref_seq_custom 'rep_set_99.fasta'`",
                     "description": "Path to reference taxonomy sequences in fasta format",
                     "pattern": "^.*\\.(fasta|fas|fna|fa|ffn)$"
                 },
                 "sidle_ref_aln_custom": {
                     "type": "string",
+                    "format": "file-path",
                     "help_text": "May be used with `--sidle_ref_tax_custom`. Allows sequence reconstruction. Example usage: `--sidle_ref_aln_custom 'rep_set_aligned_99.fasta'`",
                     "description": "Path to multiple sequence alignment of reference taxonomy sequences in fasta format",
                     "pattern": "^.*\\.(fasta|fas|fna|fa|ffn)$"
                 },
                 "sidle_ref_tree_custom": {
                     "type": "string",
+                    "format": "file-path",
                     "help_text": "Use with `--sidle_ref_aln_custom`. Recommended with `--sidle_ref_tax_custom`. Allows phylogenetic tree reconstruction and therefore diversity analysis. Overwrites tree chosen by `--sidle_ref_taxonomy`",
                     "description": "Path to SIDLE reference taxonomy tree (*.qza)",
                     "pattern": "^.*\\.qza$"
@@ -1041,6 +1054,7 @@
                 },
                 "report_abstract": {
                     "type": "string",
+                    "format": "file-path",
                     "description": "Path to Markdown file (md) that replaces the 'Abstract' section"
                 }
             },

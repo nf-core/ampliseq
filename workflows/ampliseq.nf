@@ -135,14 +135,14 @@ workflow AMPLISEQ {
     // INPUT AND VARIABLES
     //
     if (params.metadata) {
-        ch_metadata = channel.fromPath("${params.metadata}", checkIfExists: true)
+        ch_metadata = channel.fromPath( params.metadata )
     } else { ch_metadata = channel.empty() }
 
     // report sources
     ch_report_template = channel.fromPath("${params.report_template}", checkIfExists: true)
     ch_report_css = channel.fromPath("${params.report_css}", checkIfExists: true)
     ch_report_logo = channel.fromPath("${params.report_logo}", checkIfExists: true)
-    ch_report_abstract = params.report_abstract ? channel.fromPath(params.report_abstract, checkIfExists: true) : []
+    ch_report_abstract = params.report_abstract ? channel.fromPath(params.report_abstract) : []
 
     // Set non-params Variables
 
@@ -200,7 +200,7 @@ workflow AMPLISEQ {
                                 return [meta, reads] }
 
     } else if ( params.input_fasta ) {
-        ch_input_fasta = channel.fromPath(params.input_fasta, checkIfExists: true)
+        ch_input_fasta = channel.fromPath(params.input_fasta)
     } else if ( params.input_folder ) {
         PARSE_INPUT ( params.input_folder, single_end, params.multiple_sequencing_runs, params.input_folder_extensions )
         ch_input_reads = PARSE_INPUT.out.reads
@@ -310,10 +310,10 @@ workflow AMPLISEQ {
     if (params.sidle_ref_tax_custom) {
         //custom ref taxonomy input from params.sidle_ref_tax_custom & params.sidle_ref_seq_custom & [optionally] params.sidle_ref_aln_custom
         ch_sidle_ref_taxonomy =
-            channel.fromPath("${params.sidle_ref_tax_custom}", checkIfExists: true)
-                .combine( channel.fromPath("${params.sidle_ref_seq_custom}", checkIfExists: true) )
-                .combine( params.sidle_ref_aln_custom ? channel.fromPath("${params.sidle_ref_aln_custom}", checkIfExists: true) : channel.of("EMPTY") )
-        ch_sidle_ref_taxonomy_tree = params.sidle_ref_tree_custom ? channel.fromPath("${params.sidle_ref_tree_custom}", checkIfExists: true) : channel.empty()
+            channel.fromPath(params.sidle_ref_tax_custom)
+                .combine( channel.fromPath(params.sidle_ref_seq_custom) )
+                .combine( params.sidle_ref_aln_custom ? channel.fromPath(params.sidle_ref_aln_custom) : channel.of("EMPTY") )
+        ch_sidle_ref_taxonomy_tree = params.sidle_ref_tree_custom ? channel.fromPath(params.sidle_ref_tree_custom) : channel.empty()
         val_sidle_ref_taxonomy = "user"
     } else if (params.sidle_ref_taxonomy) {
         //standard ref taxonomy input from params.sidle_ref_taxonomy & conf/ref_databases.config
@@ -322,7 +322,7 @@ workflow AMPLISEQ {
             params.ref_taxonomy_storage ? DOWNLOAD_REFERENCE_SIDLE( ch_sidle_ref_taxonomy_url ).db.collect() :
                 ch_sidle_ref_taxonomy_url.map { it -> file(it) }
         ch_sidle_ref_taxonomy_tree =
-            params.sidle_ref_tree_custom ? channel.fromPath("${params.sidle_ref_tree_custom}", checkIfExists: true) :
+            params.sidle_ref_tree_custom ? channel.fromPath(params.sidle_ref_tree_custom) :
                 params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] && params.ref_taxonomy_storage ?
                     DOWNLOAD_REFERENCE_SIDLE_TREE( channel.fromList( params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] ) ).db :
                         params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] && !params.ref_taxonomy_storage ?
@@ -340,9 +340,9 @@ workflow AMPLISEQ {
 
     if (params.dada_ref_tax_custom) {
         //custom ref taxonomy input from params.dada_ref_tax_custom & params.dada_ref_tax_custom_sp
-        ch_dada_assigntax = channel.fromPath("${params.dada_ref_tax_custom}", checkIfExists: true)
+        ch_dada_assigntax = channel.fromPath(params.dada_ref_tax_custom)
         if (params.dada_ref_tax_custom_sp) {
-            ch_dada_addspecies = channel.fromPath("${params.dada_ref_tax_custom_sp}", checkIfExists: true)
+            ch_dada_addspecies = channel.fromPath(params.dada_ref_tax_custom_sp)
         }
         ch_dada_ref_taxonomy = channel.empty()
         val_dada_ref_taxonomy = "user"
@@ -396,7 +396,7 @@ workflow AMPLISEQ {
     ch_qiime_classifier    = channel.empty()
 
     if (params.qiime_classifier) {
-        ch_qiime_classifier = channel.fromPath("${params.qiime_classifier}", checkIfExists: true)
+        ch_qiime_classifier = channel.fromPath(params.qiime_classifier)
     } else if (params.qiime_ref_tax_custom) {
         if ("${params.qiime_ref_tax_custom}".contains(",")) {
             qiime_ref_paths = "${params.qiime_ref_tax_custom}".split(",")
@@ -422,7 +422,7 @@ workflow AMPLISEQ {
     val_sintax_taxlevels    = ""
 
     if (params.sintax_ref_tax_custom && !params.skip_taxonomy) {
-        ch_sintax_ref_taxonomy = channel.fromPath("${params.sintax_ref_tax_custom}", checkIfExists: true)
+        ch_sintax_ref_taxonomy = channel.fromPath(params.sintax_ref_tax_custom)
         val_sintax_ref_taxonomy = "user"
         val_sintax_taxlevels = params.sintax_assign_taxlevels ? "${params.sintax_assign_taxlevels}" : ""
     } else if (params.sintax_ref_taxonomy && !params.skip_taxonomy) {
@@ -444,7 +444,7 @@ workflow AMPLISEQ {
     val_vsearch_lca_taxlevels = params.vsearch_lca_assign_taxlevels ?: ""
     val_vsearch_lca_id = params.vsearch_lca_id
     if (params.vsearch_lca_ref_tax_custom && !params.skip_taxonomy) {
-        ch_vsearch_lca_ref_taxonomy = channel.fromPath("${params.vsearch_lca_ref_tax_custom}", checkIfExists: true)
+        ch_vsearch_lca_ref_taxonomy = channel.fromPath(params.vsearch_lca_ref_tax_custom)
         val_vsearch_lca_ref_taxonomy = "user"
     } else if (params.vsearch_lca_ref_taxonomy && !params.skip_taxonomy) {
         ch_vsearch_lca_ref_taxonomy_url = channel.fromList(params.vsearch_lca_ref_databases[params.vsearch_lca_ref_taxonomy]["file"])
@@ -463,7 +463,7 @@ workflow AMPLISEQ {
 
     if (params.kraken2_ref_tax_custom) {
         //custom ref taxonomy input from params.kraken2_ref_tax_custom
-        ch_kraken2_ref_taxonomy = channel.fromPath("${params.kraken2_ref_tax_custom}", checkIfExists: true)
+        ch_kraken2_ref_taxonomy = channel.fromPath(params.kraken2_ref_tax_custom)
         val_kraken2_ref_taxonomy = "user"
         val_kraken2_taxlevels = params.kraken2_assign_taxlevels ? "${params.kraken2_assign_taxlevels}" : ""
     } else if (params.kraken2_ref_taxonomy && !params.skip_taxonomy) {
@@ -1226,8 +1226,8 @@ workflow AMPLISEQ {
             params.expected_sequences_region,
             run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.abs_fasta : ch_asv_fasta,  // observed sequences (fasta)
             run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.rel_tsv : ch_asv_table,      // observed sequences (abundance table)
-            params.expected_sequences ? channel.fromPath("${params.expected_sequences}", checkIfExists: true) : channel.empty(),  // expected sequences (fasta)
-            params.expected_abundances ? channel.fromPath("${params.expected_abundances}", checkIfExists: true) : channel.empty() // expected sequences (abundance table)
+            params.expected_sequences ? channel.fromPath( params.expected_sequences ) : channel.empty(),  // expected sequences (fasta)
+            params.expected_abundances ? channel.fromPath( params.expected_abundances ) : channel.empty() // expected sequences (abundance table)
         )
     }
 
@@ -1387,19 +1387,19 @@ workflow AMPLISEQ {
     //
     if ( params.input ) {
         file("${params.outdir}/input").mkdir()
-        file("${params.input}").copyTo("${params.outdir}/input")
+        params.input.copyTo("${params.outdir}/input")
     }
     if ( params.input_fasta ) {
         file("${params.outdir}/input").mkdir()
-        file("${params.input_fasta}").copyTo("${params.outdir}/input")
+        params.input_fasta.copyTo("${params.outdir}/input")
     }
     if ( params.multiregion ) {
         file("${params.outdir}/input").mkdir()
-        file("${params.multiregion}").copyTo("${params.outdir}/input")
+        params.multiregion.copyTo("${params.outdir}/input")
     }
     if ( params.metadata ) {
         file("${params.outdir}/input").mkdir()
-        file("${params.metadata}").copyTo("${params.outdir}/input")
+        params.metadata.copyTo("${params.outdir}/input")
     }
 
     emit:

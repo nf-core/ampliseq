@@ -304,7 +304,7 @@ The region information file can be tab-separated (.tsv), comma-separated (.csv),
 | ------------- | ------------------------------------------------------------------------- |
 | region        | Unique region identifier                                                  |
 | region_length | Minimum region length, sequences are trimmed and shorter ones are omitted |
-| fw_primer     | Forward primer sequence                                                   |
+| FW_primer     | Forward primer sequence                                                   |
 | RV_primer     | Reverse primer sequence                                                   |
 
 For example, the tab-separated `regions_multiregion.tsv` may contain:

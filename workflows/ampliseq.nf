@@ -148,8 +148,8 @@ workflow AMPLISEQ {
 
     single_end = params.sequencing_type == "illumina_pe" ? false : true
     asv_calling =
-        ["dada2","savont"].contains(params.asv_calling) ? params.asv_calling :
-            ["illumina_pe","illumina_se","pacbio","iontorrent"].contains(params.sequencing_type) ? "dada2" :
+        params.asv_calling in ["dada2","savont"] ? params.asv_calling :
+            params.sequencing_type in ["illumina_pe","illumina_se","pacbio","iontorrent"] ? "dada2" :
                 "savont"
 
     trunclenf = params.trunclenf ?: 0

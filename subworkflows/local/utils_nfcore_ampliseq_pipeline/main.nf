@@ -89,7 +89,7 @@ workflow PIPELINE_INITIALISATION {
         before_text,
         after_text,
         command,
-        false
+        null
     )
 
     //
@@ -196,7 +196,7 @@ def validateInputParameters() {
         error("Incompatible parameters: `--sample_inference pseudo` and Savont are incompatible. Use `--sample_inference independent` or `--sample_inference pooled` (default) with Savont (default for `--sequencing_type nanopore`).")
     }
 
-    if ( ["nanopore","pacbio","iontorrent","illumina_se"].contains(params.sequencing_type) ) {
+    if ( params.sequencing_type in ["nanopore","pacbio","iontorrent","illumina_se"] ) {
         if (params.trunclenr) { log.warn "Unused parameter: `--trunclenr` is ignored because the data is single end." }
     } else if (params.trunclenf && !params.trunclenr) {
         error("Invalid command: `--trunclenf` is set, but `--trunclenr` is not. Either both parameters `--trunclenf` and `--trunclenr` must be set or none.")

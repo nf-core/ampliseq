@@ -185,7 +185,7 @@ params {
     report_logo: String = '${projectDir}/assets/nf-core-ampliseq_logo_light_long.png'
     report_title: String = 'Summary of analysis results'
     report_abstract: Path?
-    run_pplace: Boolean = false
+    run_pplace: Boolean
     skip_fastqc: Boolean
     skip_porechop_abi: Boolean
     skip_chopper: Boolean

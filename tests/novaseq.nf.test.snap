@@ -106,7 +106,7 @@
                 "fastqc/S2_1_fastqc.html",
                 "fastqc/S2_2_fastqc.html",
                 "input",
-                "input/Samplesheet_novaseq.tsv",
+                "input/Samplesheet_novaseq_v3.tsv",
                 "multiqc",
                 "multiqc/multiqc_data",
                 "multiqc/multiqc_data/fastqc-status-check-heatmap.txt",
@@ -178,7 +178,7 @@
             "ASV_table.tsv:md5,0028da02541e474b4229e7776c091586",
             "DADA2_stats.tsv:md5,4bb143b3aa5532a86e115378e9ffb575",
             "DADA2_table.tsv:md5,fe7dd1249b7fe1643f13ee6699c6e877",
-            "Samplesheet_novaseq.tsv:md5,bcca78fe24736f4ee4ea26fdbd47ee64",
+            "Samplesheet_novaseq_v3.tsv:md5,bcca78fe24736f4ee4ea26fdbd47ee64",
             "multiqc_fastqc.txt:md5,a99548124efd185a7d4e33245edcb81b",
             "multiqc_general_stats.txt:md5,92648df79061fa3b17fea104fe1b7641"
         ],

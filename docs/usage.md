@@ -120,26 +120,23 @@ For example, the tab-separated sample sheet may contain:
 | sample3 | ./S4x.fastq.gz            | ./S4y.fastq.gz            | B   | control | 1100          |
 | sample4 | ./a.fastq.gz              | ./b.fastq.gz              | B   | sample  | 11000         |
 
-Two header layouts are supported, a legacy and a standardized layout (the latter is described above):
-
-| Layout       | Required columns           | Optional columns                                  |
-| ------------ | -------------------------- | ------------------------------------------------- |
-| Legacy       | `sampleID`, `forwardReads` | `reverseReads`, `run`, `control`, `quant_reading` |
-| Standardized | `sample`, `fastq_1`        | `fastq_2`, `run`, `control`, `quant_reading`      |
+| Required columns           | Optional columns                                  |
+| -------------------------- | ------------------------------------------------- |
+| `sample`, `fastq_1`        | `fastq_2`, `run`, `control`, `quant_reading`      |
 
 Please note the following requirements:
 
 - 2 to 6 columns/entries
 - File extensions `.tsv`,`.csv`,`.yml`,`.yaml` specify the file type, otherwise file type will be derived from content, if possible
-- Must contain either `sample` and `fastq_1` (standardized) OR `sampleID` and `forwardReads` (legacy)
-- May contain `fastq_2`/`reverseReads`, `run`, `control`, and `quant_reading`
+- Must contain either `sample` and `fastq_1`
+- May contain `fastq_2`, `run`, `control`, and `quant_reading`
 - Sample IDs must be unique
 - Sample IDs must start with a letter
 - Sample IDs can only contain letters, numbers or underscores
 - FastQ files must be compressed (`.fastq.gz`, `.fq.gz`)
 - Within one samplesheet, only one type of raw data should be specified (same amplicon & sequencing method)
 
-Examples for both layouts are provided within the pipeline code in folder `assets` as `samplesheet_legacy.tsv` and `samplesheet_standardized.tsv`.
+Examples for the layout is provided within the pipeline code in folder `assets` as `samplesheet.tsv`.
 
 To avoid producing a sample sheet, [Direct FASTQ input](#direct-fastq-input) may be used instead.
 
@@ -295,7 +292,7 @@ For example, multiple variable regions of the 16S rRNA gene were sequenced with 
 Information about sequencing data via [`--input`](#sample-sheet-input), region primers length information via [`--multiregion`](https://nf-co.re/ampliseq/parameters#multiregion), and a taxonomic database via [`--sidle_ref_taxonomy`](https://nf-co.re/ampliseq/parameters#sidle_ref_taxonomy) or [`--sidle_ref_tax_custom`](https://nf-co.re/ampliseq/parameters#sidle_ref_tax_custom) with [`--sidle_ref_seq_custom`](https://nf-co.re/ampliseq/parameters#sidle_ref_seq_custom) is required.
 
 ```bash
---input "samplesheet_multiregion.tsv"  --multiregion "regions_multiregion.tsv" --sidle_ref_taxonomy "silva=128"
+--input "samplesheet_multiregion_v3.tsv"  --multiregion "regions_multiregion_v3.tsv" --sidle_ref_taxonomy "silva=128"
 ```
 
 The region information file can be tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml) and can have two to four columns/entries with the following headers:
@@ -304,12 +301,12 @@ The region information file can be tab-separated (.tsv), comma-separated (.csv),
 | ------------- | ------------------------------------------------------------------------- |
 | region        | Unique region identifier                                                  |
 | region_length | Minimum region length, sequences are trimmed and shorter ones are omitted |
-| FW_primer     | Forward primer sequence                                                   |
-| RV_primer     | Reverse primer sequence                                                   |
+| primer_fwd    | Forward primer sequence                                                   |
+| primer_rev    | Reverse primer sequence                                                   |
 
-For example, the tab-separated `regions_multiregion.tsv` may contain:
+For example, the tab-separated `regions_multiregion_v3.tsv` may contain:
 
-| region  | FW_primer             | RV_primer            | region_length |
+| region  | primer_fwd            | primer_rev           | region_length |
 | ------- | --------------------- | -------------------- | ------------- |
 | region1 | TGGCGAACGGGTGAGTAA    | CCGTGTCTCAGTCCCARTG  | 145           |
 | region2 | ACTCCTACGGGAGGCAGC    | GTATTACCGCGGCTGCTG   | 135           |

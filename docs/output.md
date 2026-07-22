@@ -484,9 +484,9 @@ Additional output includes reconstruction of abundance table and taxonomic infor
 <summary>Output files</summary>
 
 - `sidle/per-region/`
-  - `ASV_seqs_region*_<FW_primer>_<RV_primer>.fasta`: ASV sequences per region
-  - `ASV_table_region*_<FW_primer>_<RV_primer>.fasta`: ASV abundances per region
-  - `DADA2_table_region*_<FW_primer>_<RV_primer>.fasta`: ASV abundances and sequences per region
+  - `ASV_seqs_region*_<primer_fwd>_<primer_rev>.fasta`: ASV sequences per region
+  - `ASV_table_region*_<primer_fwd>_<primer_rev>.fasta`: ASV abundances per region
+  - `DADA2_table_region*_<primer_fwd>_<primer_rev>.fasta`: ASV abundances and sequences per region
 - `sidle/DB/3_reconstructed/reconstruction_summary/index.html`: Information about the reconstructed reference taxonomy database
 - `sidle/reconstructed/`
   - `reconstructed_feature-table.biom`: Unified abundance table in biom format

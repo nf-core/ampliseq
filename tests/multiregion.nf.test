@@ -25,9 +25,9 @@ nextflow_pipeline {
                     // All stable path name, with a relative path
                     stable_path,
                     // Manually chosen files for content checks
-                    path("$outputDir/input/samplesheet_multiregion.tsv"),
+                    path("$outputDir/input/samplesheet_multiregion_v3.tsv"),
                     path("$outputDir/input/metadata_multiregion.tsv"),
-                    path("$outputDir/input/regions_multiregion.tsv"),
+                    path("$outputDir/input/regions_multiregion_v3.tsv"),
                     path("$outputDir/overall_summary.tsv"),
                     path("$outputDir/cutadapt/cutadapt_summary.tsv"),
                     path("$outputDir/dada2/ASV_seqs.fasta"),

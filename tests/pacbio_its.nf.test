@@ -35,7 +35,7 @@ nextflow_pipeline {
                     path("$outputDir/dada2/ASV_table.tsv"),
                     path("$outputDir/dada2/DADA2_stats.tsv"),
                     path("$outputDir/dada2/DADA2_table.tsv"),
-                    path("$outputDir/input/Samplesheet_pacbio_ITS.tsv"),
+                    path("$outputDir/input/Samplesheet_pacbio_ITS_v3.tsv"),
                     path("$outputDir/input/Metadata_pacbio_ITS.tsv"),
                     path("$outputDir/itsx/ASV_ITS_seqs.full.fasta"),
                     path("$outputDir/itsx/ITSxRust.args.txt"),

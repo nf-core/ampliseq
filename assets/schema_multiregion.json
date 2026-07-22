@@ -18,20 +18,20 @@
                 "errorMessage": "Length of region must be an integer",
                 "meta": ["region_length"]
             },
-            "FW_primer": {
+            "primer_fwd": {
                 "type": "string",
                 "pattern": "^[ATUGCYRSWKMBDHVN]*$",
-                "errorMessage": "FW_primer must be provided and may contain only uppercase nucleotide IUPAC code [ATUGCYRSWKMBDHVN]",
+                "errorMessage": "primer_fwd must be provided and may contain only uppercase nucleotide IUPAC code [ATUGCYRSWKMBDHVN]",
                 "meta": ["primer_fwd"]
             },
-            "RV_primer": {
+            "primer_rev": {
                 "type": "string",
                 "pattern": "^[ATUGCYRSWKMBDHVN]*$",
-                "errorMessage": "RV_primer must be provided and may contain only uppercase nucleotide IUPAC code [ATUGCYRSWKMBDHVN]",
+                "errorMessage": "primer_rev must be provided and may contain only uppercase nucleotide IUPAC code [ATUGCYRSWKMBDHVN]",
                 "meta": ["primer_rev"]
             }
         },
-        "required": ["region", "region_length", "FW_primer", "RV_primer"]
+        "required": ["region", "region_length", "primer_fwd", "primer_rev"]
     },
     "uniqueEntries": ["region"]
 }

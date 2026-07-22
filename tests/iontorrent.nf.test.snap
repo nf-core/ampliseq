@@ -121,7 +121,7 @@
                 "fastqc/it2_fastqc.html",
                 "fastqc/it3_fastqc.html",
                 "input",
-                "input/Samplesheet_it_SE_ITS.tsv",
+                "input/Samplesheet_it_SE_ITS_v3.tsv",
                 "multiqc",
                 "multiqc/multiqc_data",
                 "multiqc/multiqc_data/cutadapt_filtered_reads_plot.txt",
@@ -237,7 +237,7 @@
             "ASV_table.tsv:md5,307a10158a63bbc31477a74455f0d4ec",
             "DADA2_stats.tsv:md5,259dae4928fe3d4d543d6886fd9da609",
             "DADA2_table.tsv:md5,1100b5d937edb368b64c69fc21cdfc69",
-            "Samplesheet_it_SE_ITS.tsv:md5,929870dea597430aaeee2a52283b427f",
+            "Samplesheet_it_SE_ITS_v3.tsv:md5,929870dea597430aaeee2a52283b427f",
             "multiqc_fastqc.txt:md5,3f5a64bd44351c6289d4392538132748",
             "multiqc_general_stats.txt:md5,ded4ce8dd8c11463dd34317fb736e2ec",
             "multiqc_cutadapt.txt:md5,1409f3286d810cdc14d8e672556d9226"

@@ -32,6 +32,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | --RV_primer       | --primer_rev                  |         |
 | --classifier      | --qiime_classifier            |         |
 
+- [#1028](https://github.com/nf-core/ampliseq/pull/1028) - Multi-region sample sheet via `--multiregion` had its header changed from `FW_primer` and  `RV_primer` to `primer_fwd` and `primer_rev`, respectively. (by @d4straub)
+
 ### `Fixed`
 
 - [#1019](https://github.com/nf-core/ampliseq/pull/1019) - Improve channel assignment & improve some version reporting (by @d4straub)
@@ -40,6 +42,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Dependencies`
 
 ### `Removed`
+
+- [#1028](https://github.com/nf-core/ampliseq/pull/1028) - Removed support for the legacy sample sheet to simplify parsing (by @d4straub)
 
 ## nf-core/ampliseq version 2.18.0 - 2026-06-18
 

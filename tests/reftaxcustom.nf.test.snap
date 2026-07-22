@@ -302,7 +302,7 @@
             "ASV_table.tsv:md5,d3f7d98b8750dfb3b486b32cc5d32414",
             "DADA2_stats.tsv:md5,b61a945febb806ed63729bcaa8ae0575",
             "DADA2_table.tsv:md5,7ec2214a627e7492d31ac2672f82f94d",
-            "Samplesheet.tsv:md5,51ff46f4b431730e41b6950ae3b20e35",
+            "Samplesheet_v3.tsv:md5,40895dd2af868c8a55c6c690dbeb9000",
             "ASV_tax.user.kraken2.classifiedreads.txt:md5,cc50cb2e3e80c1e79a5b272d9b909dfa",
             "ASV_tax.user.kraken2.complete.tsv:md5,5108096d80a15a467016b7e01fbde53e",
             "ASV_tax.user.kraken2.tsv:md5,5f67ca461f489362683e9638bc65763b",

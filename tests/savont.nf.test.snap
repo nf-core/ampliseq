@@ -210,7 +210,7 @@
                 "fastqc/Std2_fastqc.html",
                 "fastqc/Std3_fastqc.html",
                 "input",
-                "input/Samplesheet_nanopore.tsv",
+                "input/Samplesheet_nanopore_v3.tsv",
                 "multiqc",
                 "multiqc/multiqc_data",
                 "multiqc/multiqc_data/cutadapt_filtered_reads_plot.txt",

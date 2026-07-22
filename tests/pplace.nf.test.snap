@@ -1205,7 +1205,7 @@
             "ASV_table.tsv:md5,d3f7d98b8750dfb3b486b32cc5d32414",
             "DADA2_stats.tsv:md5,b61a945febb806ed63729bcaa8ae0575",
             "DADA2_table.tsv:md5,7ec2214a627e7492d31ac2672f82f94d",
-            "Samplesheet.tsv:md5,51ff46f4b431730e41b6950ae3b20e35",
+            "Samplesheet_v3.tsv:md5,40895dd2af868c8a55c6c690dbeb9000",
             "Metadata.tsv:md5,060b56528bb566eed71f6dfdb52cc395",
             "descriptive_stats.tsv:md5,666279e79355dd60a0f5c7c8bb77618d",
             "seven_number_summary.tsv:md5,e087b59678e7e9ade87e0a7349f54e2e",

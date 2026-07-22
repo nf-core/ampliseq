@@ -17,8 +17,8 @@ process SIDLE_DBEXTRACT {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.region}"
-    def primerfw = "${meta.fw_primer}"
-    def primerrv = "${meta.rv_primer}"
+    def primerfw = "${meta.primer_fwd}"
+    def primerrv = "${meta.primer_rev}"
     def length = "${meta.region_length}"
     """
     # https://q2-sidle.readthedocs.io/en/latest/database_preparation.html#prepare-a-regional-database-for-each-primer-set

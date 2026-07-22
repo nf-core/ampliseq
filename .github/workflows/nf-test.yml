@@ -9,7 +9,7 @@ on:
       - "**/*.svg"
   release:
     types: [published]
-  workflow_dispatch:
+  workflow_dispatch: null
 
 # Cancel if a newer run is started
 concurrency:
@@ -50,7 +50,7 @@ jobs:
         env:
           NFT_VER: ${{ env.NFT_VER }}
         with:
-          max_shards: 17
+          max_shards: 18
 
       - name: debug
         run: |
@@ -79,8 +79,8 @@ jobs:
           - isMain: false
             profile: "singularity"
         NXF_VER:
-          - "25.10.4"
-          - "latest-everything"
+          - 26.04.0
+          - latest-everything
     env:
       NXF_ANSI_LOG: false
       TOTAL_SHARDS: ${{ needs.nf-test-changes.outputs.total_shards }}

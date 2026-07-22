@@ -1,4 +1,6 @@
 lint:
+  nextflow_config: false # TODO: Remove when tools supports parameter types
+  schema_params: false # TODO: Remove when tools supports parameter types
   files_exist:
     - conf/igenomes.config
   files_unchanged:
@@ -8,11 +10,11 @@ lint:
     - assets/nf-core-ampliseq_logo_dark.png
     - docs/images/nf-core-ampliseq_logo_light.png
     - docs/images/nf-core-ampliseq_logo_dark.png
-  nextflow_config:
-    - config_defaults:
-        - params.report_template
-        - params.report_css
-        - params.report_logo
+#  nextflow_config: # TODO: Enable when tools supports parameter types
+#    - config_defaults:
+#        - params.report_template
+#        - params.report_css
+#        - params.report_logo
 nf_core_version: 4.0.2
 repository_type: pipeline
 template:

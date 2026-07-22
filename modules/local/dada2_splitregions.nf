@@ -24,7 +24,7 @@ process DADA2_SPLITREGIONS {
         .replaceAll("\\['","list(")
         .replaceAll("\\[","list(")
         .replaceAll("\\]",")")
-    def suffix = "region" + meta.region + "_" + meta.fw_primer + "_" + meta.rv_primer
+    def suffix = "region" + meta.region + "_" + meta.primer_fwd + "_" + meta.primer_rev
     """
     #!/usr/bin/env Rscript
 

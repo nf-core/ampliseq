@@ -419,7 +419,7 @@ Taxonomic classification with QIIME2 is based on a classifier trained on sequenc
 
 - `qiime2/taxonomy/`
   - `taxonomy.tsv`: Tab-separated table with taxonomic classification for each ASV
-  - `*-classifier.qza`: QIIME2 artefact of the trained classifier. Can be supplied to other pipeline runs with `--classifier`
+  - `*-classifier.qza`: QIIME2 artefact of the trained classifier. Can be supplied to other pipeline runs with `--qiime_classifier`
   - `ref_taxonomy.txt`: Information about the used reference taxonomy, such as title, version, citation.
 
 </details>

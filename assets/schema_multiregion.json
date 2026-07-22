@@ -22,13 +22,13 @@
                 "type": "string",
                 "pattern": "^[ATUGCYRSWKMBDHVN]*$",
                 "errorMessage": "FW_primer must be provided and may contain only uppercase nucleotide IUPAC code [ATUGCYRSWKMBDHVN]",
-                "meta": ["fw_primer"]
+                "meta": ["primer_fwd"]
             },
             "RV_primer": {
                 "type": "string",
                 "pattern": "^[ATUGCYRSWKMBDHVN]*$",
                 "errorMessage": "RV_primer must be provided and may contain only uppercase nucleotide IUPAC code [ATUGCYRSWKMBDHVN]",
-                "meta": ["rv_primer"]
+                "meta": ["primer_rev"]
             }
         },
         "required": ["region", "region_length", "FW_primer", "RV_primer"]

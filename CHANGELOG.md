@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## nf-core/ampliseq version 2.19.0dev - [YYYY-MM-DD]
+## nf-core/ampliseq version 3.0.0dev - [YYYY-MM-DD]
 
 ### `Added`
 
@@ -14,10 +14,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Changed`
 
 - [#1018](https://github.com/nf-core/ampliseq/pull/1018) - Change version to 2.19.0dev (by @d4straub)
+- [#1027](https://github.com/nf-core/ampliseq/pull/1027) - Changed parameters, including the default of `--sample_inference` from `independent` to `pooled` and `--dada_taxonomy_rc` isnt enforced with IonTorrent and PacBio any more (by @d4straub)
+
+| previously        | now                           | comment |
+| ----------------- | ----------------------------- | ------- |
+| --nanopore        | --sequencing_type nanopore    |         |
+| --pacbio          | --sequencing_type pacbio      |         |
+| --iontorrent      | --sequencing_type nanopore    |         |
+| --single_end      | --sequencing_type illumina_se |         |
+| default           | --sequencing_type illumina_pe | default |
+|                   | --asv_calling auto            | default |
+| default           | --asv_calling dada2           | new     |
+|                   | --asv_calling savont          | new     |
+| --illumina_pe_its | --illumina_pe_readthrough     |         |
+| --extension       | --input_folder_extensions     |         |
+| --FW_primer       | --primer_fwd                  |         |
+| --RV_primer       | --primer_rev                  |         |
+| --classifier      | --qiime_classifier            |         |
 
 ### `Fixed`
 
 - [#1019](https://github.com/nf-core/ampliseq/pull/1019) - Improve channel assignment & improve some version reporting (by @d4straub)
+- [#1027](https://github.com/nf-core/ampliseq/pull/1027) - SBDI's file `dna.tsv` recorded "paired" as lib_layout if `--single_end` was not specified alongside `--pacbio` or `--iontorrent`; now reports "single" in that cases (by @d4straub)
 
 ### `Dependencies`
 

@@ -8,11 +8,11 @@ include { QIIME2_CLASSIFY               } from '../../modules/local/qiime2_class
 workflow QIIME2_TAXONOMY {
     take:
     ch_fasta
-    ch_classifier
+    ch_qiime_classifier
 
     main:
     QIIME2_INSEQ ( ch_fasta )
-    QIIME2_CLASSIFY ( ch_classifier, QIIME2_INSEQ.out.qza )
+    QIIME2_CLASSIFY ( ch_qiime_classifier, QIIME2_INSEQ.out.qza )
 
     emit:
     qza      = QIIME2_CLASSIFY.out.qza

@@ -12,8 +12,8 @@ workflow QIIME2_PREPTAX {
     take:
     ch_qiime_ref_taxonomy //channel, list of files
     val_qiime_ref_taxonomy //val
-    FW_primer //val
-    RV_primer //val
+    primer_fwd //val
+    primer_rev //val
 
     main:
     if (params.qiime_ref_tax_custom) {
@@ -85,8 +85,8 @@ workflow QIIME2_PREPTAX {
             .map {
                 db ->
                     def meta = [:]
-                    meta.FW_primer = FW_primer
-                    meta.RV_primer = RV_primer
+                    meta.primer_fwd = primer_fwd
+                    meta.primer_rev = primer_rev
                     [ meta, db ] }
 
     QIIME2_EXTRACT ( ch_ref_database )

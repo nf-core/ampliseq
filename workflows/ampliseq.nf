@@ -135,25 +135,26 @@ workflow AMPLISEQ {
     // INPUT AND VARIABLES
     //
     if (params.metadata) {
-        ch_metadata = channel.fromPath("${params.metadata}", checkIfExists: true)
+        ch_metadata = channel.fromPath( params.metadata )
     } else { ch_metadata = channel.empty() }
 
     // report sources
     ch_report_template = channel.fromPath("${params.report_template}", checkIfExists: true)
     ch_report_css = channel.fromPath("${params.report_css}", checkIfExists: true)
     ch_report_logo = channel.fromPath("${params.report_logo}", checkIfExists: true)
-    ch_report_abstract = params.report_abstract ? channel.fromPath(params.report_abstract, checkIfExists: true) : []
+    ch_report_abstract = params.report_abstract ? channel.fromPath(params.report_abstract) : []
 
     // Set non-params Variables
 
-    single_end = params.single_end
-    if (params.pacbio || params.iontorrent || params.nanopore) {
-        single_end = true
-    }
+    single_end = params.sequencing_type == "illumina_pe" ? false : true
+    asv_calling =
+        params.asv_calling in ["dada2","savont"] ? params.asv_calling :
+            params.sequencing_type in ["illumina_pe","illumina_se","pacbio","iontorrent"] ? "dada2" :
+                "savont"
 
     trunclenf = params.trunclenf ?: 0
     trunclenr = params.trunclenr ?: 0
-    if ( !single_end && !params.illumina_pe_its && (params.trunclenf == null || params.trunclenr == null) && !params.input_fasta ) {
+    if ( !single_end && !params.illumina_pe_readthrough && (params.trunclenf == null || params.trunclenr == null) && !params.input_fasta ) {
         find_truncation_values = true
         log.warn "No DADA2 read truncation cutoffs were specified (`--trunclenf` & `--trunclenr`), therefore reads will be truncated where median quality drops below ${params.trunc_qmin} (defined by `--trunc_qmin`) but at least a fraction of ${params.trunc_rmin} (defined by `--trunc_rmin`) of the reads will be retained.\nThe chosen cutoffs do not account for required overlap for merging, therefore DADA2 might have poor merging efficiency or even fail.\nThe cutoffs are chosen before any quality score-based read truncation (using `--truncq`) is performed.\n"
     } else { find_truncation_values = false }
@@ -163,14 +164,14 @@ workflow AMPLISEQ {
     tax_agglom_max = params.tax_agglom_max
 
     // Only run QIIME2 taxonomy classification if needed parameters are passed and we are not skipping taxonomy or qiime steps.
-    if ( !params.skip_taxonomy && !params.skip_qiime && (params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier) ) {
+    if ( !params.skip_taxonomy && !params.skip_qiime && (params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.qiime_classifier) ) {
         run_qiime2_taxonomy = true
     } else {
         run_qiime2_taxonomy = false
     }
 
     //only run QIIME2 downstream analysis when taxonomy is actually calculated and all required data is available
-    if ( !params.skip_taxonomy && !params.skip_qiime && !params.skip_qiime_downstream && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.sintax_ref_tax_custom || params.vsearch_lca_ref_taxonomy || params.vsearch_lca_ref_tax_custom || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom || params.multiregion) ) {
+    if ( !params.skip_taxonomy && !params.skip_qiime && !params.skip_qiime_downstream && (!params.skip_dada_taxonomy || params.sintax_ref_taxonomy || params.sintax_ref_tax_custom || params.vsearch_lca_ref_taxonomy || params.vsearch_lca_ref_tax_custom || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.qiime_classifier || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom || params.multiregion) ) {
         run_qiime2 = true
     } else {
         run_qiime2 = false
@@ -192,16 +193,16 @@ workflow AMPLISEQ {
                     meta.sample = sample
                 }
                 meta.single_end = single_end.toBoolean()
-                def reads = single_end ? normalized_fw : [normalized_fw, normalized_rv]
-                if ( !meta.single_end && !normalized_rv ) { error("Entry `reverseReads` / `fastq_2` is missing in $params.input for $meta.sample, either correct the samplesheet or use `--single_end`, `--pacbio`, `--iontorrent`, or `--nanopore`") } // make sure that reverse reads are present when single_end isn't specified
+                def reads = meta.single_end ? normalized_fw : [normalized_fw, normalized_rv]
+                if ( !meta.single_end && !normalized_rv ) { error("Entry `reverseReads` / `fastq_2` is missing in $params.input for $meta.sample, either correct the samplesheet or choose the appropriate single-ended sequencing type for `--sequencing_type`.") } // make sure that reverse reads are present when single_end isn't specified
                 if ( !meta.single_end && ( normalized_fw.getSimpleName() == meta.sample || normalized_rv.getSimpleName() == meta.sample ) ) { error("Entry `sampleID` / `sample` cannot be identical to simple name of `forwardReads` / `fastq_1` or `reverseReads` / `fastq_2`, please change the sample name in $params.input for sample $meta.sample") } // sample name and any file name without extensions aren't identical, because rename_raw_data_files.nf would forward 3 files (2 renamed +1 input) instead of 2 in that case
                 if ( meta.single_end && ( normalized_fw.getSimpleName() == meta.sample+"_1" || normalized_fw.getSimpleName() == meta.sample+"_2" ) ) { error("Entry `sampleID` / `sample` + `_1` or `_2` cannot be identical to simple name of `forwardReads` / `fastq_1`, please change the sample name in $params.input for sample $meta.sample") } // sample name and file name without extensions aren't identical, because rename_raw_data_files.nf would forward 2 files (1 renamed +1 input) instead of 1 in that case
                                 return [meta, reads] }
 
     } else if ( params.input_fasta ) {
-        ch_input_fasta = channel.fromPath(params.input_fasta, checkIfExists: true)
+        ch_input_fasta = channel.fromPath(params.input_fasta)
     } else if ( params.input_folder ) {
-        PARSE_INPUT ( params.input_folder, single_end, params.multiple_sequencing_runs, params.extension )
+        PARSE_INPUT ( params.input_folder, single_end, params.multiple_sequencing_runs, params.input_folder_extensions )
         ch_input_reads = PARSE_INPUT.out.reads
     } else {
         error("One of `--input`, `--input_fasta`, `--input_folder` must be provided!")
@@ -244,9 +245,9 @@ workflow AMPLISEQ {
                     return [ meta, reads ] }
                 .map{ info, reads ->
                     def meta = info +
-                        [id: info.sample+"_"+info.fw_primer+"_"+info.rv_primer] +
-                        [fw_primer_revcomp: makeComplement(info.fw_primer.reverse())] +
-                        [rv_primer_revcomp: makeComplement(info.rv_primer.reverse())]
+                        [id: info.sample+"_"+info.primer_fwd+"_"+info.primer_rev] +
+                        [primer_fwd_revcomp: makeComplement(info.primer_fwd.reverse())] +
+                        [primer_rev_revcomp: makeComplement(info.primer_rev.reverse())]
                     return [ meta, reads ] }
     } else {
         // is single region
@@ -255,10 +256,10 @@ workflow AMPLISEQ {
                 .map{ info, reads ->
                     def meta = info +
                         [region: null, region_length: null] +
-                        [fw_primer: params.FW_primer, rv_primer: params.RV_primer] +
+                        [primer_fwd: params.primer_fwd, primer_rev: params.primer_rev] +
                         [id: info.sample] +
-                        [fw_primer_revcomp: params.FW_primer ? makeComplement(params.FW_primer.reverse()) : null] +
-                        [rv_primer_revcomp: params.RV_primer ? makeComplement(params.RV_primer.reverse()) : null]
+                        [primer_fwd_revcomp: params.primer_fwd ? makeComplement(params.primer_fwd.reverse()) : null] +
+                        [primer_rev_revcomp: params.primer_rev ? makeComplement(params.primer_rev.reverse()) : null]
                     return [ meta, reads ] }
     }
 
@@ -309,10 +310,10 @@ workflow AMPLISEQ {
     if (params.sidle_ref_tax_custom) {
         //custom ref taxonomy input from params.sidle_ref_tax_custom & params.sidle_ref_seq_custom & [optionally] params.sidle_ref_aln_custom
         ch_sidle_ref_taxonomy =
-            channel.fromPath("${params.sidle_ref_tax_custom}", checkIfExists: true)
-                .combine( channel.fromPath("${params.sidle_ref_seq_custom}", checkIfExists: true) )
-                .combine( params.sidle_ref_aln_custom ? channel.fromPath("${params.sidle_ref_aln_custom}", checkIfExists: true) : channel.of("EMPTY") )
-        ch_sidle_ref_taxonomy_tree = params.sidle_ref_tree_custom ? channel.fromPath("${params.sidle_ref_tree_custom}", checkIfExists: true) : channel.empty()
+            channel.fromPath(params.sidle_ref_tax_custom)
+                .combine( channel.fromPath(params.sidle_ref_seq_custom) )
+                .combine( params.sidle_ref_aln_custom ? channel.fromPath(params.sidle_ref_aln_custom) : channel.of("EMPTY") )
+        ch_sidle_ref_taxonomy_tree = params.sidle_ref_tree_custom ? channel.fromPath(params.sidle_ref_tree_custom) : channel.empty()
         val_sidle_ref_taxonomy = "user"
     } else if (params.sidle_ref_taxonomy) {
         //standard ref taxonomy input from params.sidle_ref_taxonomy & conf/ref_databases.config
@@ -321,7 +322,7 @@ workflow AMPLISEQ {
             params.ref_taxonomy_storage ? DOWNLOAD_REFERENCE_SIDLE( ch_sidle_ref_taxonomy_url ).db.collect() :
                 ch_sidle_ref_taxonomy_url.map { it -> file(it) }
         ch_sidle_ref_taxonomy_tree =
-            params.sidle_ref_tree_custom ? channel.fromPath("${params.sidle_ref_tree_custom}", checkIfExists: true) :
+            params.sidle_ref_tree_custom ? channel.fromPath(params.sidle_ref_tree_custom) :
                 params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] && params.ref_taxonomy_storage ?
                     DOWNLOAD_REFERENCE_SIDLE_TREE( channel.fromList( params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] ) ).db :
                         params.sidle_ref_databases[params.sidle_ref_taxonomy]["tree_qza"] && !params.ref_taxonomy_storage ?
@@ -339,9 +340,9 @@ workflow AMPLISEQ {
 
     if (params.dada_ref_tax_custom) {
         //custom ref taxonomy input from params.dada_ref_tax_custom & params.dada_ref_tax_custom_sp
-        ch_dada_assigntax = channel.fromPath("${params.dada_ref_tax_custom}", checkIfExists: true)
+        ch_dada_assigntax = channel.fromPath(params.dada_ref_tax_custom)
         if (params.dada_ref_tax_custom_sp) {
-            ch_dada_addspecies = channel.fromPath("${params.dada_ref_tax_custom_sp}", checkIfExists: true)
+            ch_dada_addspecies = channel.fromPath(params.dada_ref_tax_custom_sp)
         }
         ch_dada_ref_taxonomy = channel.empty()
         val_dada_ref_taxonomy = "user"
@@ -394,8 +395,8 @@ workflow AMPLISEQ {
     val_qiime_ref_taxonomy = "none"
     ch_qiime_classifier    = channel.empty()
 
-    if (params.classifier) {
-        ch_qiime_classifier = channel.fromPath("${params.classifier}", checkIfExists: true)
+    if (params.qiime_classifier) {
+        ch_qiime_classifier = channel.fromPath(params.qiime_classifier)
     } else if (params.qiime_ref_tax_custom) {
         if ("${params.qiime_ref_tax_custom}".contains(",")) {
             qiime_ref_paths = "${params.qiime_ref_tax_custom}".split(",")
@@ -421,7 +422,7 @@ workflow AMPLISEQ {
     val_sintax_taxlevels    = ""
 
     if (params.sintax_ref_tax_custom && !params.skip_taxonomy) {
-        ch_sintax_ref_taxonomy = channel.fromPath("${params.sintax_ref_tax_custom}", checkIfExists: true)
+        ch_sintax_ref_taxonomy = channel.fromPath(params.sintax_ref_tax_custom)
         val_sintax_ref_taxonomy = "user"
         val_sintax_taxlevels = params.sintax_assign_taxlevels ? "${params.sintax_assign_taxlevels}" : ""
     } else if (params.sintax_ref_taxonomy && !params.skip_taxonomy) {
@@ -443,7 +444,7 @@ workflow AMPLISEQ {
     val_vsearch_lca_taxlevels = params.vsearch_lca_assign_taxlevels ?: ""
     val_vsearch_lca_id = params.vsearch_lca_id
     if (params.vsearch_lca_ref_tax_custom && !params.skip_taxonomy) {
-        ch_vsearch_lca_ref_taxonomy = channel.fromPath("${params.vsearch_lca_ref_tax_custom}", checkIfExists: true)
+        ch_vsearch_lca_ref_taxonomy = channel.fromPath(params.vsearch_lca_ref_tax_custom)
         val_vsearch_lca_ref_taxonomy = "user"
     } else if (params.vsearch_lca_ref_taxonomy && !params.skip_taxonomy) {
         ch_vsearch_lca_ref_taxonomy_url = channel.fromList(params.vsearch_lca_ref_databases[params.vsearch_lca_ref_taxonomy]["file"])
@@ -462,7 +463,7 @@ workflow AMPLISEQ {
 
     if (params.kraken2_ref_tax_custom) {
         //custom ref taxonomy input from params.kraken2_ref_tax_custom
-        ch_kraken2_ref_taxonomy = channel.fromPath("${params.kraken2_ref_tax_custom}", checkIfExists: true)
+        ch_kraken2_ref_taxonomy = channel.fromPath(params.kraken2_ref_tax_custom)
         val_kraken2_ref_taxonomy = "user"
         val_kraken2_taxlevels = params.kraken2_assign_taxlevels ? "${params.kraken2_assign_taxlevels}" : ""
     } else if (params.kraken2_ref_taxonomy && !params.skip_taxonomy) {
@@ -497,7 +498,7 @@ workflow AMPLISEQ {
     //
     // MODULE: porechop_ABI
     //
-    if (params.nanopore && !params.skip_porechop_abi) {
+    if (params.sequencing_type == "nanopore" && !params.skip_porechop_abi) {
         PORECHOP_ABI ( ch_reads_trimming, [] )
         ch_reads_trimming = PORECHOP_ABI.out.reads
         ch_multiqc_files = ch_multiqc_files.mix(PORECHOP_ABI.out.log.collect{ it -> it[1] })
@@ -506,7 +507,7 @@ workflow AMPLISEQ {
     //
     // MODULE: chopper
     //
-    if (params.nanopore && !params.skip_chopper) {
+    if (params.sequencing_type == "nanopore" && !params.skip_chopper) {
         CHOPPER ( ch_reads_trimming, [] )
 
         // Count reads of input and output files
@@ -544,11 +545,11 @@ workflow AMPLISEQ {
         ch_reads_trimming =
             CUTADAPT_WORKFLOW (
                 ch_reads_trimming,
-                params.illumina_pe_its,
+                params.illumina_pe_readthrough,
                 params.double_primer
             ).reads
         ch_multiqc_files = ch_multiqc_files.mix(CUTADAPT_WORKFLOW.out.logs.collect{ it -> it[1] })
-        if (params.nanopore && !params.skip_chopper) {
+        if (params.sequencing_type == "nanopore" && !params.skip_chopper) {
             MERGE_STATS_CUTADAPT (ch_stats, CUTADAPT_WORKFLOW.out.summary)
             ch_stats = MERGE_STATS_CUTADAPT.out.tsv
         } else {
@@ -559,7 +560,7 @@ workflow AMPLISEQ {
     //
     // MODULES: ASV generation with Savont
     //
-    if (params.nanopore) {
+    if (asv_calling == "savont") {
         if (params.sample_inference == "pooled") {
             ch_reads_to_savont =
                 ch_reads_trimming
@@ -592,7 +593,7 @@ workflow AMPLISEQ {
                 .collectFile(name: 'savont_stats.tsv', keepHeader: true, sort: true, cache: true, newLine: true)
         }
         // merge stats
-        if (params.skip_cutadapt || (params.nanopore && !params.skip_chopper)) {
+        if (params.skip_cutadapt || (params.sequencing_type == "nanopore" && !params.skip_chopper)) {
             MERGE_STATS_SAVONT (ch_stats, ch_stats_savont)
             ch_stats = MERGE_STATS_SAVONT.out.tsv
         } else {
@@ -603,7 +604,7 @@ workflow AMPLISEQ {
     //
     // SUBWORKFLOW: Read preprocessing & QC plotting with DADA2
     //
-    if (!params.nanopore) {
+    if (asv_calling == "dada2") {
         ch_filt_reads =
             DADA2_PREPROCESSING (
                 ch_reads_trimming,
@@ -617,7 +618,7 @@ workflow AMPLISEQ {
     //
     // MODULES: ASV generation with DADA2
     //
-    if (!params.nanopore) {
+    if (asv_calling == "dada2") {
         //run error model
         DADA2_ERR ( ch_filt_reads )
         ch_errormodel = DADA2_ERR.out.errormodel
@@ -654,7 +655,7 @@ workflow AMPLISEQ {
     //
     // SUBWORKFLOW / MODULES : Taxonomic classification with DADA2, SINTAX and/or QIIME2
     //
-    if ( !params.nanopore && params.multiregion ) {
+    if ( asv_calling == "dada2" && params.multiregion ) {
         // separate sequences and abundances when several regions
         DADA2_SPLITREGIONS (
             //DADA2_DENOISING per run & region -> per run
@@ -996,12 +997,12 @@ workflow AMPLISEQ {
 
     //QIIME2
     if ( run_qiime2_taxonomy ) {
-        if ((params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && !params.classifier) {
+        if ((params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && !params.qiime_classifier) {
             QIIME2_PREPTAX (
                 ch_qiime_ref_taxonomy.collect(),
                 val_qiime_ref_taxonomy,
-                params.FW_primer,
-                params.RV_primer
+                params.primer_fwd,
+                params.primer_rev
             )
             ch_qiime_classifier = QIIME2_PREPTAX.out.classifier
         }
@@ -1066,7 +1067,7 @@ workflow AMPLISEQ {
             log.info "Use Kraken2 taxonomy classification"
             val_used_taxonomy = "Kraken2"
             ch_tax = QIIME2_INTAX ( ch_kraken2_tax, "" ).qza
-        } else if ( params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier ) {
+        } else if ( params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.qiime_classifier ) {
             log.info "Use QIIME2 taxonomy classification"
             val_used_taxonomy = "QIIME2"
             ch_tax = QIIME2_TAXONOMY.out.qza
@@ -1168,7 +1169,7 @@ workflow AMPLISEQ {
     // MODULE: Predict functional potential of a bacterial community from marker genes with Picrust2
     //
     if ( params.picrust ) {
-        if ( run_qiime2 && !params.skip_abundance_tables && ( params.dada_ref_taxonomy || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier || params.sintax_ref_taxonomy || params.sintax_ref_tax_custom || params.vsearch_lca_ref_taxonomy || params.vsearch_lca_ref_tax_custom || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom ) && !params.skip_taxonomy ) {
+        if ( run_qiime2 && !params.skip_abundance_tables && ( params.dada_ref_taxonomy || params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.qiime_classifier || params.sintax_ref_taxonomy || params.sintax_ref_tax_custom || params.vsearch_lca_ref_taxonomy || params.vsearch_lca_ref_tax_custom || params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom ) && !params.skip_taxonomy ) {
             PICRUST ( QIIME2_EXPORT.out.abs_fasta, QIIME2_EXPORT.out.abs_tsv, "QIIME2", "This Picrust2 analysis is based on filtered reads from QIIME2" )
         } else {
             PICRUST ( ch_fasta, ch_asv_table, "DADA2", "This Picrust2 analysis is based on unfiltered reads from DADA2" )
@@ -1225,8 +1226,8 @@ workflow AMPLISEQ {
             params.expected_sequences_region,
             run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.abs_fasta : ch_asv_fasta,  // observed sequences (fasta)
             run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.rel_tsv : ch_asv_table,      // observed sequences (abundance table)
-            params.expected_sequences ? channel.fromPath("${params.expected_sequences}", checkIfExists: true) : channel.empty(),  // expected sequences (fasta)
-            params.expected_abundances ? channel.fromPath("${params.expected_abundances}", checkIfExists: true) : channel.empty() // expected sequences (abundance table)
+            params.expected_sequences ? channel.fromPath( params.expected_sequences ) : channel.empty(),  // expected sequences (fasta)
+            params.expected_abundances ? channel.fromPath( params.expected_abundances ) : channel.empty() // expected sequences (abundance table)
         )
     }
 
@@ -1305,16 +1306,16 @@ workflow AMPLISEQ {
             ch_input_fasta.ifEmpty( [] ), // fasta input
             !params.input_fasta && !params.skip_fastqc && !params.skip_multiqc ? MULTIQC.out.plots : [[],[]],
             !params.skip_cutadapt ? CUTADAPT_WORKFLOW.out.summary.collect().ifEmpty( [] ) : [],
-            params.nanopore && !params.skip_porechop_abi ? PORECHOP_ABI.out.log.ifEmpty( [[],[]] )  : [[],[]],
-            params.nanopore && !params.skip_chopper ? ch_stats_chopper.ifEmpty( [] )  : [],
-            params.nanopore && params.sample_inference == "independent" ? SAVONT_EXPORT.out.asv :
-                params.nanopore  && params.sample_inference == "pooled" ? SAVONT_ASV.out.asv : [],
-            params.nanopore ? ch_stats_savont.ifEmpty( [] ) : [],
+            params.sequencing_type == "nanopore" && !params.skip_porechop_abi ? PORECHOP_ABI.out.log.ifEmpty( [[],[]] )  : [[],[]],
+            params.sequencing_type == "nanopore" && !params.skip_chopper ? ch_stats_chopper.ifEmpty( [] )  : [],
+            asv_calling == "savont" && params.sample_inference == "independent" ? SAVONT_EXPORT.out.asv :
+                asv_calling == "savont" && params.sample_inference == "pooled" ? SAVONT_ASV.out.asv : [],
+            asv_calling == "savont" ? ch_stats_savont.ifEmpty( [] ) : [],
             find_truncation_values,
-            !params.nanopore ? DADA2_PREPROCESSING.out.args.first().ifEmpty( [] ) : [],
-            !params.nanopore && !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg.ifEmpty( [] ) : [],
-            !params.nanopore && !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg_preprocessed.ifEmpty( [] ) : [],
-            !params.nanopore ?
+            asv_calling == "dada2" ? DADA2_PREPROCESSING.out.args.first().ifEmpty( [] ) : [],
+            asv_calling == "dada2" && !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg.ifEmpty( [] ) : [],
+            asv_calling == "dada2" && !params.skip_dada_quality ? DADA2_PREPROCESSING.out.qc_svg_preprocessed.ifEmpty( [] ) : [],
+            asv_calling == "dada2" ?
                 DADA2_ERR.out.svg
                     .map {
                         meta_old, svgs ->
@@ -1330,10 +1331,10 @@ workflow AMPLISEQ {
                         [ meta, svgs.flatten() ]
                     }.ifEmpty( [[],[]] )
                 : [[],[]],
-            !params.nanopore ? DADA2_MERGE.out.asv.ifEmpty( [] ) : [],
+            asv_calling == "dada2" ? DADA2_MERGE.out.asv.ifEmpty( [] ) : [],
             ch_unfiltered_fasta.ifEmpty( [] ), // this is identical to DADA2_MERGE.out.fasta if !params.input_fasta
-            !params.nanopore ? DADA2_MERGE.out.dada2asv.ifEmpty( [] ) : [],
-            !params.nanopore ? DADA2_MERGE.out.dada2stats.ifEmpty( [] ) : [],
+            asv_calling == "dada2" ? DADA2_MERGE.out.dada2asv.ifEmpty( [] ) : [],
+            asv_calling == "dada2" ? DADA2_MERGE.out.dada2stats.ifEmpty( [] ) : [],
             params.mergepairs_strategy,
             params.vsearch_cluster ? FILTER_CLUSTERS.out.asv.ifEmpty( [] ) : [],
             params.decontam,
@@ -1356,7 +1357,7 @@ workflow AMPLISEQ {
             !params.skip_taxonomy && ( params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom ) ? KRAKEN2_TAXONOMY_WF.out.tax_tsv.ifEmpty( [] ) : [],
             !params.skip_taxonomy && params.pplace_tree ? ch_pplace_tax.ifEmpty( [] ) : [],
             !params.skip_taxonomy && params.pplace_tree ? PPLACE_STANDARD.out.heattree.ifEmpty( [[],[]] ) : [[],[]],
-            !params.skip_taxonomy && ( params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.classifier ) && run_qiime2_taxonomy ? QIIME2_TAXONOMY.out.tsv.ifEmpty( [] ) : [],
+            !params.skip_taxonomy && ( params.qiime_ref_taxonomy || params.qiime_ref_tax_custom || params.qiime_classifier ) && run_qiime2_taxonomy ? QIIME2_TAXONOMY.out.tsv.ifEmpty( [] ) : [],
             run_qiime2,
             run_qiime2 ? val_used_taxonomy : "",
             run_qiime2 && ( params.exclude_taxa != "none" || params.min_frequency != 1 || params.min_samples != 1 ) ? ch_asv_table.countLines()+","+QIIME2_TABLEFILTERTAXA.out.tsv.countLines() : "",
@@ -1386,19 +1387,19 @@ workflow AMPLISEQ {
     //
     if ( params.input ) {
         file("${params.outdir}/input").mkdir()
-        file("${params.input}").copyTo("${params.outdir}/input")
+        params.input.copyTo("${params.outdir}/input")
     }
     if ( params.input_fasta ) {
         file("${params.outdir}/input").mkdir()
-        file("${params.input_fasta}").copyTo("${params.outdir}/input")
+        params.input_fasta.copyTo("${params.outdir}/input")
     }
     if ( params.multiregion ) {
         file("${params.outdir}/input").mkdir()
-        file("${params.multiregion}").copyTo("${params.outdir}/input")
+        params.multiregion.copyTo("${params.outdir}/input")
     }
     if ( params.metadata ) {
         file("${params.outdir}/input").mkdir()
-        file("${params.metadata}").copyTo("${params.outdir}/input")
+        params.metadata.copyTo("${params.outdir}/input")
     }
 
     emit:

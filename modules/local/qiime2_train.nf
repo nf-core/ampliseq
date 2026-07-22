@@ -1,5 +1,5 @@
 process QIIME2_TRAIN {
-    tag "${meta.fw_primer}-${meta.rv_primer}"
+    tag "${meta.primer_fwd}-${meta.primer_rev}"
     label 'process_huge'
     label 'process_cpu_single'
 
@@ -21,9 +21,9 @@ process QIIME2_TRAIN {
 
     #Train classifier
     qiime feature-classifier fit-classifier-naive-bayes \\
-        --i-reference-reads ${meta.fw_primer}-${meta.rv_primer}-ref-seq.qza \\
+        --i-reference-reads ${meta.primer_fwd}-${meta.primer_rev}-ref-seq.qza \\
         --i-reference-taxonomy ref-taxonomy.qza \\
-        --o-classifier ${meta.fw_primer}-${meta.rv_primer}-classifier.qza \\
+        --o-classifier ${meta.primer_fwd}-${meta.primer_rev}-classifier.qza \\
         --quiet
 
     cat <<-END_VERSIONS > versions.yml

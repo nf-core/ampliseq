@@ -66,8 +66,8 @@ Now, you can run the pipeline using:
 nextflow run nf-core/ampliseq \
    -profile <docker/singularity/.../institute> \
    --input "samplesheet.tsv" \
-   --fw_primer "GTGYCAGCMGCCGCGGTAA" \
-   --rv_primer "GGACTACNVGGGTWTCTAAT" \
+   --primer_fwd "GTGYCAGCMGCCGCGGTAA" \
+   --primer_rev "GGACTACNVGGGTWTCTAAT" \
    --outdir <OUTDIR>
 ```
 

@@ -37,16 +37,16 @@
                     "description": "Path to folder containing zipped FastQ files",
                     "help_text": "Path to folder containing compressed fastq files. Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique. Examples and requirements are in the usage documentation.\n\nRelated parameters: `--input_folder_extensions`, `--multiple_sequencing_runs`, `--sequencing_type`."
                 },
-                "fw_primer": {
+                "primer_fwd": {
                     "type": "string",
                     "description": "Forward primer sequence",
-                    "help_text": "In amplicon sequencing methods, PCR with specific primers produces the amplicon of interest. These primer sequences need to be trimmed from the reads before further processing and are also required for producing an appropriate classifier. Do not use here any technical sequence such as adapter sequences but only the primer sequence that matches the biological amplicon.\n\nFor example:\n\n```bash\n--fw_primer \"GTGYCAGCMGCCGCGGTAA\" --rv_primer \"GGACTACNVGGGTWTCTAAT\"\n```",
+                    "help_text": "In amplicon sequencing methods, PCR with specific primers produces the amplicon of interest. These primer sequences need to be trimmed from the reads before further processing and are also required for producing an appropriate classifier. Do not use here any technical sequence such as adapter sequences but only the primer sequence that matches the biological amplicon.\n\nFor example:\n\n```bash\n--primer_fwd \"GTGYCAGCMGCCGCGGTAA\" --primer_rev \"GGACTACNVGGGTWTCTAAT\"\n```",
                     "fa_icon": "fas fa-arrow-circle-right"
                 },
-                "rv_primer": {
+                "primer_rev": {
                     "type": "string",
                     "description": "Reverse primer sequence",
-                    "help_text": "In amplicon sequencing methods, PCR with specific primers produces the amplicon of interest. These primer sequences need to be trimmed from the reads before further processing and are also required for producing an appropriate classifier. Do not use here any technical sequence such as adapter sequences but only the primer sequence that matches the biological amplicon.\n\nFor example:\n\n```bash\n--fw_primer GTGYCAGCMGCCGCGGTAA --rv_primer GGACTACNVGGGTWTCTAAT\n```",
+                    "help_text": "In amplicon sequencing methods, PCR with specific primers produces the amplicon of interest. These primer sequences need to be trimmed from the reads before further processing and are also required for producing an appropriate classifier. Do not use here any technical sequence such as adapter sequences but only the primer sequence that matches the biological amplicon.\n\nFor example:\n\n```bash\n--primer_fwd GTGYCAGCMGCCGCGGTAA --primer_rev GGACTACNVGGGTWTCTAAT\n```",
                     "fa_icon": "fas fa-arrow-alt-circle-left"
                 },
                 "metadata": {
@@ -137,7 +137,7 @@
                 "multiple_sequencing_runs": {
                     "type": "boolean",
                     "description": "If using `--input_folder`: samples were sequenced in multiple sequencing runs",
-                    "help_text": "Expects one sub-folder per sequencing run in the folder specified by `--input_folder` containing sequencing data of the specific run.\nSample identifiers are taken from sequencing files, specifically the string before the first underscore will be the sample ID. Sample IDs across all sequencing runs (all sequencing files) have to be unique. If this is not the case, please use a sample sheet as input instead.\n\nExample for input data organization:\n\n```bash\ndata\n  |-run1\n  |  |-sample1_1_L001_R1_001.fastq.gz\n  |  |-sample1_1_L001_R2_001.fastq.gz\n  |  |-sample2_1_L001_R1_001.fastq.gz\n  |  |-sample2_1_L001_R2_001.fastq.gz\n  |\n  |-run2\n     |-sample3_1_L001_R1_001.fastq.gz\n     |-sample3_1_L001_R2_001.fastq.gz\n     |-sample4_1_L001_R1_001.fastq.gz\n     |-sample4_1_L001_R2_001.fastq.gz\n```\n\nExample command to analyze this data in one pipeline run:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input_folder \"data\" \\\n    --fw_primer \"GTGYCAGCMGCCGCGGTAA\" \\\n    --rv_primer \"GGACTACNVGGGTWTCTAAT\" \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multiple_sequencing_runs\n```",
+                    "help_text": "Expects one sub-folder per sequencing run in the folder specified by `--input_folder` containing sequencing data of the specific run.\nSample identifiers are taken from sequencing files, specifically the string before the first underscore will be the sample ID. Sample IDs across all sequencing runs (all sequencing files) have to be unique. If this is not the case, please use a sample sheet as input instead.\n\nExample for input data organization:\n\n```bash\ndata\n  |-run1\n  |  |-sample1_1_L001_R1_001.fastq.gz\n  |  |-sample1_1_L001_R2_001.fastq.gz\n  |  |-sample2_1_L001_R1_001.fastq.gz\n  |  |-sample2_1_L001_R2_001.fastq.gz\n  |\n  |-run2\n     |-sample3_1_L001_R1_001.fastq.gz\n     |-sample3_1_L001_R2_001.fastq.gz\n     |-sample4_1_L001_R1_001.fastq.gz\n     |-sample4_1_L001_R2_001.fastq.gz\n```\n\nExample command to analyze this data in one pipeline run:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input_folder \"data\" \\\n    --primer_fwd \"GTGYCAGCMGCCGCGGTAA\" \\\n    --primer_rev \"GGACTACNVGGGTWTCTAAT\" \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multiple_sequencing_runs\n```",
                     "fa_icon": "fas fa-running"
                 },
                 "input_folder_extensions": {
@@ -622,7 +622,7 @@
                     "type": "string",
                     "format": "file-path",
                     "description": "Path to QIIME2 trained classifier file (typically *-classifier.qza)",
-                    "help_text": "If you have trained a compatible classifier before, from sources such as SILVA (https://www.arb-silva.de/), Greengenes (http://greengenes.secondgenome.com/downloads) or RDP (https://rdp.cme.msu.edu/). \n\nFor example:\n\n```bash\n--qiime_classifier \"fw_primer-rv_primer-qiime_classifier.qza\"\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The classifier is a Naive Bayes classifier produced by `qiime feature-classifier fit-classifier-naive-bayes` (e.g. by this pipeline)\n3. The primer pair for the amplicon PCR and the computing of the classifier are exactly the same (or full-length, potentially lower performance)\n4. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses"
+                    "help_text": "If you have trained a compatible classifier before, from sources such as SILVA (https://www.arb-silva.de/), Greengenes (http://greengenes.secondgenome.com/downloads) or RDP (https://rdp.cme.msu.edu/). \n\nFor example:\n\n```bash\n--qiime_classifier \"primer_fwd-primer_rev-qiime_classifier.qza\"\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The classifier is a Naive Bayes classifier produced by `qiime feature-classifier fit-classifier-naive-bayes` (e.g. by this pipeline)\n3. The primer pair for the amplicon PCR and the computing of the classifier are exactly the same (or full-length, potentially lower performance)\n4. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses"
                 },
                 "kraken2_ref_taxonomy": {
                     "type": "string",

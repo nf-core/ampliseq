@@ -245,9 +245,9 @@ workflow AMPLISEQ {
                     return [ meta, reads ] }
                 .map{ info, reads ->
                     def meta = info +
-                        [id: info.sample+"_"+info.fw_primer+"_"+info.rv_primer] +
-                        [fw_primer_revcomp: makeComplement(info.fw_primer.reverse())] +
-                        [rv_primer_revcomp: makeComplement(info.rv_primer.reverse())]
+                        [id: info.sample+"_"+info.primer_fwd+"_"+info.primer_rev] +
+                        [primer_fwd_revcomp: makeComplement(info.primer_fwd.reverse())] +
+                        [primer_rev_revcomp: makeComplement(info.primer_rev.reverse())]
                     return [ meta, reads ] }
     } else {
         // is single region
@@ -256,10 +256,10 @@ workflow AMPLISEQ {
                 .map{ info, reads ->
                     def meta = info +
                         [region: null, region_length: null] +
-                        [fw_primer: params.fw_primer, rv_primer: params.rv_primer] +
+                        [primer_fwd: params.primer_fwd, primer_rev: params.primer_rev] +
                         [id: info.sample] +
-                        [fw_primer_revcomp: params.fw_primer ? makeComplement(params.fw_primer.reverse()) : null] +
-                        [rv_primer_revcomp: params.rv_primer ? makeComplement(params.rv_primer.reverse()) : null]
+                        [primer_fwd_revcomp: params.primer_fwd ? makeComplement(params.primer_fwd.reverse()) : null] +
+                        [primer_rev_revcomp: params.primer_rev ? makeComplement(params.primer_rev.reverse()) : null]
                     return [ meta, reads ] }
     }
 
@@ -1001,8 +1001,8 @@ workflow AMPLISEQ {
             QIIME2_PREPTAX (
                 ch_qiime_ref_taxonomy.collect(),
                 val_qiime_ref_taxonomy,
-                params.fw_primer,
-                params.rv_primer
+                params.primer_fwd,
+                params.primer_rev
             )
             ch_qiime_classifier = QIIME2_PREPTAX.out.classifier
         }

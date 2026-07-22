@@ -55,8 +55,8 @@ params {
     input: Path?
     input_fasta: Path?
     input_folder: Path?
-    fw_primer: String?
-    rv_primer: String?
+    primer_fwd: String?
+    primer_rev: String?
     metadata: Path?
     multiregion: Path?
     outdir: String

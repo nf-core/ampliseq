@@ -184,8 +184,8 @@ def validateInputParameters() {
         error("Missing input declaration: One of `--input`, `--input_fasta`, `--input_folder` is required.")
     }
 
-    if ( !params.multiregion && !params.input_fasta && (!params.fw_primer || !params.rv_primer) && !params.skip_cutadapt ) {
-        error("Incompatible parameters: `--fw_primer` and `--rv_primer` are required for primer trimming. If primer trimming is not needed, use `--skip_cutadapt`.")
+    if ( !params.multiregion && !params.input_fasta && (!params.primer_fwd || !params.primer_rev) && !params.skip_cutadapt ) {
+        error("Incompatible parameters: `--primer_fwd` and `--primer_rev` are required for primer trimming. If primer trimming is not needed, use `--skip_cutadapt`.")
     }
 
     if ( params.binned_quality && params.sequencing_type == "pacbio" ) {
@@ -251,12 +251,12 @@ def validateInputParameters() {
         }
     }
 
-    if ( (!params.fw_primer || !params.rv_primer) && (params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && !params.skip_qiime && !params.skip_taxonomy ) {
-        error("Incompatible parameters: `--fw_primer` and `--rv_primer` are required for cutting the QIIME2 reference database to the amplicon sequences. Please specify primers or do not use `--qiime_ref_taxonomy`.")
+    if ( (!params.primer_fwd || !params.primer_rev) && (params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && !params.skip_qiime && !params.skip_taxonomy ) {
+        error("Incompatible parameters: `--primer_fwd` and `--primer_rev` are required for cutting the QIIME2 reference database to the amplicon sequences. Please specify primers or do not use `--qiime_ref_taxonomy`.")
     }
 
-    if ( (!params.fw_primer || !params.rv_primer) && params.cut_dada_ref_taxonomy && !params.skip_taxonomy ) {
-        error("Incompatible parameters: `--fw_primer` and `--rv_primer` are required for cutting the DADA2 reference database to the amplicon sequences. Please specify primers or do not use `--cut_dada_ref_taxonomy`.")
+    if ( (!params.primer_fwd || !params.primer_rev) && params.cut_dada_ref_taxonomy && !params.skip_taxonomy ) {
+        error("Incompatible parameters: `--primer_fwd` and `--primer_rev` are required for cutting the DADA2 reference database to the amplicon sequences. Please specify primers or do not use `--cut_dada_ref_taxonomy`.")
     }
 
     if ((params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && params.qiime_classifier) {

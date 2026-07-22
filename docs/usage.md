@@ -24,13 +24,13 @@ The typical command for running the pipeline is as follows:
 nextflow run nf-core/ampliseq \
     -profile singularity \
     --input "samplesheet.tsv" \
-    --fw_primer GTGYCAGCMGCCGCGGTAA \
-    --rv_primer GGACTACNVGGGTWTCTAAT \
+    --primer_fwd GTGYCAGCMGCCGCGGTAA \
+    --primer_rev GGACTACNVGGGTWTCTAAT \
     --metadata "data/Metadata.tsv" \
     --outdir "./results"
 ```
 
-In this example, `--input` is the [Sample sheet input](#sample-sheet-input), other options are [Direct FASTQ input](#direct-fastq-input) and [ASV/OTU fasta input](#asvotu-fasta-input). For more details on metadata, see [Metadata](#metadata). It is possible to not provide primer sequences (`--fw_primer` & `--rv_primer`) and skip primer trimming using `--skip_cutadapt`, but this is only for data that indeed does not contain any PCR primers in their sequences. Also, metadata (`--metadata`) isnt required, but aids downstream analysis.
+In this example, `--input` is the [Sample sheet input](#sample-sheet-input), other options are [Direct FASTQ input](#direct-fastq-input) and [ASV/OTU fasta input](#asvotu-fasta-input). For more details on metadata, see [Metadata](#metadata). It is possible to not provide primer sequences (`--primer_fwd` & `--primer_rev`) and skip primer trimming using `--skip_cutadapt`, but this is only for data that indeed does not contain any PCR primers in their sequences. Also, metadata (`--metadata`) isnt required, but aids downstream analysis.
 
 This will launch the pipeline with the `singularity` configuration profile. See below [`-profile`](#profile) for more information about profiles.
 
@@ -72,8 +72,8 @@ with:
 
 ```yaml title="params.yaml"
 input: "samplesheet.tsv"
-fw_primer: "GTGYCAGCMGCCGCGGTAA"
-rv_primer: "GGACTACNVGGGTWTCTAAT"
+primer_fwd: "GTGYCAGCMGCCGCGGTAA"
+primer_rev: "GGACTACNVGGGTWTCTAAT"
 metadata: "data/Metadata.tsv"
 outdir: "./results"
 <...>

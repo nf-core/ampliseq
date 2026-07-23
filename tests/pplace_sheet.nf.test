@@ -35,7 +35,7 @@ nextflow_pipeline {
                     path("$outputDir/dada2/ASV_table.tsv"),
                     path("$outputDir/dada2/DADA2_stats.tsv"),
                     path("$outputDir/dada2/DADA2_table.tsv"),
-                    path("$outputDir/input/Samplesheet.tsv"),
+                    path("$outputDir/input/Samplesheet_v3.tsv"),
                     path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt"),
                     path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt"),
                     path("$outputDir/comparison/nucleotide-differences.tsv"),

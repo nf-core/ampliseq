@@ -75,7 +75,7 @@
                 "fastqc/sampleID_2a_1_fastqc.html",
                 "fastqc/sampleID_2a_2_fastqc.html",
                 "input",
-                "input/Samplesheet.tsv",
+                "input/Samplesheet_v3.tsv",
                 "multiqc",
                 "multiqc/multiqc_data",
                 "multiqc/multiqc_data/cutadapt_filtered_reads_plot.txt",
@@ -184,7 +184,7 @@
             "ref_taxonomy.glosed.txt:md5,efc01de15fca88278b36c231993df7e3",
             "DADA2_stats.tsv:md5,b61a945febb806ed63729bcaa8ae0575",
             "DADA2_table.tsv:md5,7ec2214a627e7492d31ac2672f82f94d",
-            "Samplesheet_v3.tsv:md5,40895dd2af868c8a55c6c690dbeb9000",
+            "Samplesheet_v3.tsv:md5,e03352e42a97a6078b30ec3fcec362a4",
             "multiqc_fastqc.txt:md5,7d23984b06e4251f17e1cfce7a04aaae",
             "multiqc_general_stats.txt:md5,885c19ff3e53d16bfe7937d6694268d7",
             "multiqc_cutadapt.txt:md5,3dce058d2d6c85a3cca7314ae19c5586"

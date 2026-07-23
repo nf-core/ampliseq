@@ -120,9 +120,9 @@ For example, the tab-separated sample sheet may contain:
 | sample3 | ./S4x.fastq.gz            | ./S4y.fastq.gz            | B   | control | 1100          |
 | sample4 | ./a.fastq.gz              | ./b.fastq.gz              | B   | sample  | 11000         |
 
-| Required columns           | Optional columns                                  |
-| -------------------------- | ------------------------------------------------- |
-| `sample`, `fastq_1`        | `fastq_2`, `run`, `control`, `quant_reading`      |
+| Required columns    | Optional columns                             |
+| ------------------- | -------------------------------------------- |
+| `sample`, `fastq_1` | `fastq_2`, `run`, `control`, `quant_reading` |
 
 Please note the following requirements:
 

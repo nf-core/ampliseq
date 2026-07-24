@@ -30,6 +30,17 @@ include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_ampl
 //
 workflow NFCORE_AMPLISEQ {
 
+    take:
+    ch_metadata            // channel: [ path(metadata) ] or empty
+    ch_report_template     // channel: [ path(report_template) ]
+    ch_report_css          // channel: [ path(report_css) ]
+    ch_report_logo         // channel: [ path(report_logo) ]
+    ch_report_abstract     // channel: [ path(report_abstract) ] or []
+    ch_pplace_sheet        // channel: parsed pplace_sheet rows, or empty
+    ch_expected_sequences  // channel: [ path(expected_sequences) ] or empty
+    ch_expected_abundances // channel: [ path(expected_abundances) ] or empty
+    ch_metadata_category   // channel: tokenized metadata_category, or empty
+
     main:
 
     //
@@ -41,6 +52,15 @@ workflow NFCORE_AMPLISEQ {
         params.multiqc_logo,
         params.multiqc_methods_description,
         params.outdir,
+        ch_metadata,
+        ch_report_template,
+        ch_report_css,
+        ch_report_logo,
+        ch_report_abstract,
+        ch_pplace_sheet,
+        ch_expected_sequences,
+        ch_expected_abundances,
+        ch_metadata_category,
     )
     emit:
     multiqc_report = AMPLISEQ.out.multiqc_report // channel: /path/to/multiqc_report.html
@@ -251,7 +271,17 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    NFCORE_AMPLISEQ ()
+    NFCORE_AMPLISEQ (
+        PIPELINE_INITIALISATION.out.metadata,
+        PIPELINE_INITIALISATION.out.report_template,
+        PIPELINE_INITIALISATION.out.report_css,
+        PIPELINE_INITIALISATION.out.report_logo,
+        PIPELINE_INITIALISATION.out.report_abstract,
+        PIPELINE_INITIALISATION.out.pplace_sheet,
+        PIPELINE_INITIALISATION.out.expected_sequences,
+        PIPELINE_INITIALISATION.out.expected_abundances,
+        PIPELINE_INITIALISATION.out.metadata_category,
+    )
 
     //
     // SUBWORKFLOW: Run completion tasks

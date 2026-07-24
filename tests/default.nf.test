@@ -63,4 +63,31 @@ nextflow_pipeline {
             )
         }
     }
+
+    test("-profile test, --report_abstract, --metadata_category") {
+        // Covers 2 params whose channel construction (in PIPELINE_INITIALISATION) isn't
+        // exercised by any other test profile: --report_abstract and --metadata_category.
+        // By default (no --metadata_category), all suitable metadata columns are auto-detected
+        // for diversity/ancom (e.g. both "treatment1" and "mix8" beta-diversity dirs, see
+        // tests/default.nf.test.snap); restricting to "treatment1" here should exclude "mix8".
+        // (Note: alpha-rarefaction plots every metadata column regardless of --metadata_category,
+        // since QIIME2 reads the metadata file directly there, so it isn't a useful signal.)
+
+        when {
+            params {
+                outdir = "$outputDir"
+                report_abstract = "$projectDir/tower.yml"
+                metadata_category = "treatment1"
+            }
+        }
+
+        then {
+            assert workflow.success
+            assertAll(
+                { assert path("$outputDir/summary_report/summary_report.html").text.contains("MultiQC HTML report") },
+                { assert path("$outputDir/qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/index.html").exists() },
+                { assert !file("$outputDir/qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-mix8").exists() },
+            )
+        }
+    }
 }

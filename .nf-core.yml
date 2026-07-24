@@ -1,6 +1,7 @@
 lint:
   files_exist:
     - conf/igenomes.config
+    - .github/workflows/linting_comment.yml
   files_unchanged:
     - .gitattributes
     - .gitignore
@@ -8,6 +9,8 @@ lint:
     - assets/nf-core-ampliseq_logo_dark.png
     - docs/images/nf-core-ampliseq_logo_light.png
     - docs/images/nf-core-ampliseq_logo_dark.png
+    - .github/workflows/branch.yml
+    - .github/workflows/linting.yml
   nextflow_config:
     - config_defaults:
         - params.report_template

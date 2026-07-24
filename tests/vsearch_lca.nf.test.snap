@@ -166,7 +166,7 @@
                 "fastqc/pb3_fastqc.html",
                 "input",
                 "input/Metadata_pacbio_ITS.tsv",
-                "input/Samplesheet_pacbio_ITS.tsv",
+                "input/Samplesheet_pacbio_ITS_v3.tsv",
                 "itsx",
                 "itsx/ASV_ITS_seqs.ITS2.fasta",
                 "itsx/ASV_ITS_seqs.full.fasta",

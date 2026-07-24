@@ -223,7 +223,7 @@
                 "dada2/log/1.err.log",
                 "input",
                 "input/Metadata_failed_sample.tsv",
-                "input/Samplesheet_failed_sample.tsv",
+                "input/Samplesheet_failed_sample_v3.tsv",
                 "multiqc",
                 "multiqc/multiqc_data",
                 "multiqc/multiqc_data/cutadapt_filtered_reads_plot.txt",

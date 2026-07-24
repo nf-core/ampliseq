@@ -35,7 +35,7 @@ nextflow_pipeline {
                     path("$outputDir/dada2/ASV_table.tsv"),
                     path("$outputDir/dada2/DADA2_stats.tsv"),
                     path("$outputDir/dada2/DADA2_table.tsv"),
-                    path("$outputDir/input/Samplesheet.tsv"),
+                    path("$outputDir/input/Samplesheet_v3.tsv"),
                     path("$outputDir/kraken2/ASV_tax.user.kraken2.classifiedreads.txt"),
                     path("$outputDir/kraken2/ASV_tax.user.kraken2.complete.tsv"),
                     path("$outputDir/kraken2/ASV_tax.user.kraken2.tsv"),

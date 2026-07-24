@@ -37,7 +37,7 @@ nextflow_pipeline {
                     path("$outputDir/dada2/DADA2_table.tsv"),
                     path("$outputDir/qiime2/representative_sequences/descriptive_stats.tsv"),
                     path("$outputDir/qiime2/representative_sequences/seven_number_summary.tsv"),
-                    path("$outputDir/input/Samplesheet_pacbio_ITS.tsv"),
+                    path("$outputDir/input/Samplesheet_pacbio_ITS_v3.tsv"),
                     path("$outputDir/input/Metadata_pacbio_ITS.tsv"),
                     path("$outputDir/SBDI/dna.tsv"),
                     path("$outputDir/SBDI/emof.tsv"),

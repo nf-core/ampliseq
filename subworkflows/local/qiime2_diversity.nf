@@ -22,6 +22,7 @@ workflow QIIME2_DIVERSITY {
     skip_alpha_rarefaction
     skip_diversity_indices
     diversity_rarefaction_depth
+    qiime_adonis_formula
 
     main:
     //Phylogenetic tree for beta & alpha diversities
@@ -55,8 +56,8 @@ workflow QIIME2_DIVERSITY {
         QIIME2_DIVERSITY_BETA ( ch_to_diversity_beta )
 
         //adonis ( ch_metadata, DIVERSITY_CORE.out.qza )
-        if (params.qiime_adonis_formula) {
-            ch_qiime_adonis_formula = channel.fromList(params.qiime_adonis_formula.tokenize(','))
+        if (qiime_adonis_formula) {
+            ch_qiime_adonis_formula = channel.fromList(qiime_adonis_formula.tokenize(','))
             ch_to_diversity_beta =
                 ch_metadata
                     .combine( QIIME2_DIVERSITY_CORE.out.distance.flatten() )
@@ -76,5 +77,5 @@ workflow QIIME2_DIVERSITY {
     alpha    = !skip_diversity_indices ? QIIME2_DIVERSITY_ALPHA.out.alpha : []
     beta     = !skip_diversity_indices ? QIIME2_DIVERSITY_BETA.out.beta : []
     betaord  = !skip_diversity_indices ? QIIME2_DIVERSITY_BETAORD.out.beta : []
-    adonis   = !skip_diversity_indices && params.qiime_adonis_formula ? QIIME2_DIVERSITY_ADONIS.out.html : []
+    adonis   = !skip_diversity_indices && qiime_adonis_formula ? QIIME2_DIVERSITY_ADONIS.out.html : []
 }

@@ -1116,7 +1116,8 @@ workflow AMPLISEQ {
                 ch_metacolumn_all,
                 params.skip_alpha_rarefaction,
                 params.skip_diversity_indices,
-                params.diversity_rarefaction_depth
+                params.diversity_rarefaction_depth,
+                params.qiime_adonis_formula
             )
         }
 
@@ -1129,7 +1130,10 @@ workflow AMPLISEQ {
                 ch_tax,
                 tax_agglom_min,
                 tax_agglom_max,
+                params.ancom,
+                params.ancombc,
                 params.ancombc_formula,
+                params.ancombc2,
                 params.ancombc2_formula
             )
         }

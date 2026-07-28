@@ -129,7 +129,7 @@ workflow AMPLISEQ {
     ch_report_css          // channel: [ path(report_css) ]
     ch_report_logo         // channel: [ path(report_logo) ]
     ch_report_abstract     // channel: [ path(report_abstract) ] or []
-    ch_pplace_sheet        // channel: parsed pplace_sheet rows, or empty (may be overwritten below based on --dada_ref_taxonomy)
+    ch_pplace_sheet        // channel: initial value built in PIPELINE_INITIALISATION from --pplace_sheet, or empty; may be overwritten below based on --dada_ref_taxonomy database config (the "pplace" key)
     ch_expected_sequences  // channel: [ path(expected_sequences) ] or empty
     ch_expected_abundances // channel: [ path(expected_abundances) ] or empty
     ch_metadata_category   // channel: tokenized metadata_category, or empty
@@ -202,9 +202,6 @@ workflow AMPLISEQ {
     } else {
         error("One of `--input`, `--input_fasta`, `--input_folder` must be provided!")
     }
-
-    // ch_pplace_sheet: initial value built in PIPELINE_INITIALISATION from --pplace_sheet;
-    // may be overwritten below based on --dada_ref_taxonomy database config (the "pplace" key)
 
     //
     // Add primer info to sequencing files

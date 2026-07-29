@@ -41,7 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Dependencies`
 
-- [#XXXX](https://github.com/nf-core/ampliseq/pull/XXXX) - ITSxRust 0.2.2 to 0.3.0, reducing peak memory approximately six-fold on large inputs; extraction output is unchanged (by @ayobi)
+- [#1035](https://github.com/nf-core/ampliseq/pull/1035) - ITSxRust 0.2.2 to 0.3.0, reducing peak memory approximately six-fold on large inputs; extraction output is unchanged (by @ayobi)
 
 | software | previously | now   |
 | -------- | ---------- | ----- |

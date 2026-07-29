@@ -8,6 +8,10 @@ nextflow_workflow {
     test("taxonomy with # does not break phyloseq or TreeSummarizedExperiment") {
 
         when {
+            params {
+                outdir = "$outputDir"
+            }
+
             def tmp = File.createTempDir("taxonomy_hash_")
             def otu = new File(tmp, "ASV_table.tsv")
             def tax = new File(tmp, "ASV_tax.tsv")
@@ -41,6 +45,8 @@ nextflow_workflow {
             assert workflow.success
             assert path(workflow.out.phyloseq.get(0).get(1)).exists()
             assert path(workflow.out.tse.get(0).get(1)).exists()
+            // Snapshot process versions.yml outputs (PHYLOSEQ + TreeSummarizedExperiment)
+            assert snapshot(workflow.out.versions).match()
         }
     }
 }

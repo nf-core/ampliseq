@@ -1,0 +1,15 @@
+{
+    "taxonomy with # does not break phyloseq or TreeSummarizedExperiment": {
+        "content": [
+            [
+                "versions.yml:md5,d4c5d7155062dc7387368f11411f192e",
+                "versions.yml:md5,f288d71f2c63271b2247aaf7d9a1b62e"
+            ]
+        ],
+        "timestamp": "2026-07-29T22:46:22.924006",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}

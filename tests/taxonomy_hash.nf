@@ -12,4 +12,5 @@ workflow TAXONOMY_HASH {
     emit:
     phyloseq = PHYLOSEQ.out.rds
     tse      = TREESUMMARIZEDEXPERIMENT.out.rds
+    versions = PHYLOSEQ.out.versions_phyloseq.mix(TREESUMMARIZEDEXPERIMENT.out.versions_treesummarizedexperiment)
 }

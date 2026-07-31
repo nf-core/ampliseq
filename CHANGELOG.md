@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#1019](https://github.com/nf-core/ampliseq/pull/1019) - Improve channel assignment & improve some version reporting (by @d4straub)
 - [#1027](https://github.com/nf-core/ampliseq/pull/1027) - SBDI's file `dna.tsv` recorded "paired" as lib_layout if `--single_end` was not specified alongside `--pacbio` or `--iontorrent`; now reports "single" in that cases (by @d4straub)
+- Ensure that the ASV count matrix in exported R objects is consistently stored as integer regardless of the pipeline parameters (by @hindrek)
 
 ### `Dependencies`
 

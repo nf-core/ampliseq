@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#1022](https://github.com/nf-core/ampliseq/issues/1022) - added new GloSED database for classification of Eukaryotic ITS. Not support for SH numbers as of yet. (by @tom-brekke)
 - [#1021](https://github.com/nf-core/ampliseq/pull/1021),[#1023](https://github.com/nf-core/ampliseq/pull/1023),[#1025](https://github.com/nf-core/ampliseq/pull/1025) - Comparison of observed ASVs against expected sequences or their abundance is now available with `--expected_*` parameters (by @d4straub, reviewed by @erikrikarddaniel)
 - [#1026](https://github.com/nf-core/ampliseq/pull/1026) - Add support for Oxford Nanopore Technology (ONT) R10.4 sequencing (preferably with SUP basecalling) with Savont (by @d4straub)
+- [#1041](https://github.com/nf-core/ampliseq/issues/1041) - DADA2 taxonomy tables (`ASV_tax.*.tsv`, `ASV_tax_species.*.tsv`) now include one `<rank>_confidence` column per rank, in addition to the existing overall `confidence` column (by @erikrikarddaniel)
 
 ### `Changed`
 
@@ -38,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#1019](https://github.com/nf-core/ampliseq/pull/1019) - Improve channel assignment & improve some version reporting (by @d4straub)
 - [#1027](https://github.com/nf-core/ampliseq/pull/1027) - SBDI's file `dna.tsv` recorded "paired" as lib_layout if `--single_end` was not specified alongside `--pacbio` or `--iontorrent`; now reports "single" in that cases (by @d4straub)
+- [#1041](https://github.com/nf-core/ampliseq/issues/1041) - DADA2's `confidence` column (and, before this fix, would have been every new per-rank confidence column too) was incorrectly treated as a taxonomic rank when building the taxonomy string imported into QIIME2, corrupting rank-based QIIME2 operations (table filtering, ANCOM, diversity, barplot); no longer included (by @erikrikarddaniel)
 
 ### `Dependencies`
 

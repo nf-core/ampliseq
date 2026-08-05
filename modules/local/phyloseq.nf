@@ -24,6 +24,7 @@ process PHYLOSEQ {
     tax_df  <- read.table("$tax_tsv", sep="\\t", header=TRUE, row.names=1, comment.char = "")
     otu_mat <- as.matrix(otu_df)
     tax_mat <- as.matrix(tax_df)
+    storage.mode(otu_mat) <- "integer"
 
     OTU     <- otu_table(otu_mat, taxa_are_rows=TRUE)
     TAX     <- tax_table(tax_mat)

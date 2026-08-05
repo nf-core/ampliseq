@@ -38,7 +38,8 @@ process DADA2_TAXONOMY {
     # (1) Make a data frame, add ASV_ID from seq
     tx <- data.frame(ASV_ID = names(seq), taxa, sequence = row.names(taxa\$tax), row.names = names(seq))
 
-    # (2) Set confidence to the bootstrap for the most specific taxon
+    # (2) Set confidence to the bootstrap for the most specific taxon, and expose
+    # the per-rank bootstrap too (as a fractional confidence, one column per rank)
     # extract columns with taxonomic values
     tax <- tx[ , grepl( "tax." , names( tx ) ) ]
     # find first occurrence of NA
@@ -49,8 +50,11 @@ process DADA2_TAXONOMY {
     res <- res-1
     # if NA choose last entry
     res[is.na(res)] <- ncol(tax)
-    # extract bootstrap values
+    # extract bootstrap values (0-100) and expose them per rank as fractional confidence (0-1)
     boot <- tx[ , grepl( "boot." , names( tx ) ) ]
+    rank_confidence <- boot / 100
+    colnames(rank_confidence) <- paste0(tolower(sub("boot.", "", colnames(boot))), "_confidence")
+    tx <- cbind(tx, rank_confidence)
     boot\$last_tax <- res
     valid_boot <- apply(boot,1,function(x) x[x[length(x)]][1]/100 )
     # replace missing bootstrap values (NA) with 0
@@ -59,7 +63,7 @@ process DADA2_TAXONOMY {
     tx\$confidence <- valid_boot
 
     # (3) Reorder columns before writing to file
-    expected_order <- c("ASV_ID",paste0("tax.",taxlevels),"confidence","sequence")
+    expected_order <- c("ASV_ID",paste0("tax.",taxlevels),"confidence",colnames(rank_confidence),"sequence")
     expected_order <- intersect(expected_order,colnames(tx))
     taxa_export <- subset(tx, select = expected_order)
     colnames(taxa_export) <- sub("tax.", "", colnames(taxa_export))
@@ -68,7 +72,7 @@ process DADA2_TAXONOMY {
     write.table(taxa_export, file = \"${fasta.baseName}${outfile}.tsv\", sep = "\\t", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '')
 
     # Save a version with rownames for addSpecies
-    taxa_export <- cbind( ASV_ID = tx\$ASV_ID, taxa\$tax, confidence = tx\$confidence)
+    taxa_export <- cbind( ASV_ID = tx\$ASV_ID, taxa\$tax, confidence = tx\$confidence, rank_confidence)
     saveRDS(taxa_export, "${fasta.baseName}${outfile}.rds")
 
     write.table('assignTaxonomy\t$args\ntaxlevels\t$taxlevels\nseed\t$seed', file = "assignTaxonomy.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')

@@ -44,10 +44,30 @@ process DADA2_ADDSPECIES {
     #remove Species annotation from assignTaxonomy
     taxa_nospecies <- taxtable[,!colnames(taxtable) %in% 'Species']
 
-    tx <- addSpecies(taxa_nospecies, \"$database\", $args, verbose=TRUE)
+    # Some ASVs can end up with an identical sequence once trimmed to just the ITS
+    # region (they differ only in flanking rDNA, which gets discarded); since row
+    # names must be unique, R disambiguates the second occurrence by appending
+    # ".N" when this table is built, which addSpecies() then rejects as a
+    # non-ACGT sequence. Recover the true (possibly duplicated) sequence per row,
+    # classify each unique sequence once, then map the result back to every row
+    # that shares it.
+    true_seqs <- sub("\\\\.[0-9]+\$", "", rownames(taxa_nospecies))
+    is_first <- !duplicated(true_seqs)
+    taxa_unique <- taxa_nospecies[is_first, , drop = FALSE]
+    rownames(taxa_unique) <- true_seqs[is_first]
+
+    tx_unique <- addSpecies(taxa_unique, \"$database\", $args, verbose=TRUE)
+
+    # addSpecies() only adds a "Species" column; take that per unique sequence and
+    # map it onto every original row (including rows that shared a sequence above),
+    # while keeping each row's own original columns (ASV_ID, ranks, confidence, ...)
+    # untouched -- rows sharing a sequence get the same Species call, but keep their
+    # own distinct ASV_ID and confidence values.
+    tx <- taxa_nospecies
+    tx\$Species <- tx_unique\$Species[match(true_seqs, rownames(tx_unique))]
 
     # Create a table with specified column order
-    tmp <- data.frame(row.names(tx)) # To separate ASV_ID from sequence
+    tmp <- data.frame(true_seqs) # To separate ASV_ID from sequence
     expected_order <- c("ASV_ID",taxlevels,"confidence",rank_confidence_cols)
     taxa <- as.data.frame( subset(tx, select = expected_order) )
     taxa\$sequence <- tmp[,1]

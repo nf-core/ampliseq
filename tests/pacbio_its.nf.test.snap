@@ -79,7 +79,7 @@
                     "pandas": "1.1.5"
                 },
                 "ITSXRUST_CUTASV": {
-                    "ITSxRust": "0.2.2"
+                    "ITSxRust": "0.3.0"
                 },
                 "MERGE_STATS_DADA": {
                     "R": "4.5.2"

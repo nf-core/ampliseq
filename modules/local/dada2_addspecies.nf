@@ -33,8 +33,8 @@ process DADA2_ADDSPECIES {
 
     #add "Species" if not already in taxlevels
     taxlevels <- $taxlevels
-    # per-rank confidence columns (issue #1041), derived from the *original* assignTaxonomy
-    # taxlevels, before "Species" is force-appended below for the addSpecies output columns
+    # per-rank confidence columns, derived from the *original* assignTaxonomy taxlevels,
+    # before "Species" is force-appended below for the addSpecies output columns
     rank_confidence_cols_all <- paste0(tolower(taxlevels), "_confidence")
     if ( !"Species" %in% taxlevels ) { taxlevels <- c(taxlevels,"Species") }
 

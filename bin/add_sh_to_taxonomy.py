@@ -38,8 +38,8 @@ shtax.loc[:, 9] = ""
 
 # Read taxonomy table
 # Determine taxonomy rank columns from header -- everything except ASV_ID, sequence,
-# the aggregate "confidence" column, and the per-rank "<rank>_confidence" columns
-# (issue #1041), none of which are taxonomy ranks
+# the aggregate "confidence" column, and the per-rank "<rank>_confidence" columns,
+# none of which are taxonomy ranks
 # ASV_ID  Domain  Kingdom Phylum  Class   Order   Family  Genus   confidence  [rank_confidence columns]  sequence
 taxtable = pd.read_csv(sys.argv[3], sep="\t", header=0)
 rank_cols = [

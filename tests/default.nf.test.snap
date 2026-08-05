@@ -1167,8 +1167,6 @@
                 "qiime2/barplot/level-7.jsonp",
                 "qiime2/barplot/level-8.csv",
                 "qiime2/barplot/level-8.jsonp",
-                "qiime2/barplot/level-9.csv",
-                "qiime2/barplot/level-9.jsonp",
                 "qiime2/barplot/q2templateassets",
                 "qiime2/barplot/q2templateassets/css",
                 "qiime2/barplot/q2templateassets/css/base-template.css",
@@ -1213,8 +1211,6 @@
                 "qiime2/barplot_average/barplot_treatment1/level-7.jsonp",
                 "qiime2/barplot_average/barplot_treatment1/level-8.csv",
                 "qiime2/barplot_average/barplot_treatment1/level-8.jsonp",
-                "qiime2/barplot_average/barplot_treatment1/level-9.csv",
-                "qiime2/barplot_average/barplot_treatment1/level-9.jsonp",
                 "qiime2/barplot_average/barplot_treatment1/q2templateassets",
                 "qiime2/barplot_average/barplot_treatment1/q2templateassets/css",
                 "qiime2/barplot_average/barplot_treatment1/q2templateassets/css/base-template.css",
@@ -2308,10 +2304,10 @@
             "lvl2-treatment1::b.volcano_plot.tsv:md5,d2d76d7f8824e748559295224c96d10e",
             "ASV-treatment1::a.volcano_plot.tsv:md5,c999d1f72b221f6502b7b4a3d1112b32"
         ],
-        "timestamp": "2026-06-08T17:17:56.621828533",
+        "timestamp": "2026-08-04T20:21:51.346723842",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.3"
+            "nextflow": "26.04.6"
         }
     }
 }

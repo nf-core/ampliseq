@@ -2,6 +2,10 @@
     "-profile test_pacbio_its": {
         "content": [
             {
+                "ASSIGNSH": {
+                    "python": "3.9.1",
+                    "pandas": "1.1.5"
+                },
                 "BARRNAP": {
                     "barrnap": 0.9
                 },
@@ -48,6 +52,10 @@
                     "R": "4.5.2",
                     "dada2": "1.38.0"
                 },
+                "DADA2_TAXONOMY": {
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
+                },
                 "FASTQC": {
                     "fastqc": "0.12.1"
                 },
@@ -55,12 +63,20 @@
                     "R": "4.0.3",
                     "Biostrings": "2.58.0"
                 },
+                "FORMAT_TAXONOMY": {
+                    "bash": "5.0.16(1)-release",
+                    "sed": 4.7
+                },
                 "FORMAT_TAXONOMY_SINTAX": {
                     "bash": "5.0.16(1)-release",
                     "sed": 4.7
                 },
                 "FORMAT_TAXRESULTS_SINTAX": {
                     "python": "3.9.1"
+                },
+                "FORMAT_TAXRESULTS_STD": {
+                    "python": "3.9.1",
+                    "pandas": "1.1.5"
                 },
                 "ITSXRUST_CUTASV": {
                     "ITSxRust": "0.2.2"
@@ -84,6 +100,9 @@
                 "VSEARCH_SINTAX": {
                     "vsearch": "2.31.0"
                 },
+                "VSEARCH_USEARCHGLOBAL": {
+                    "vsearch": "2.31.0"
+                },
                 "Workflow": {
                     "nf-core/ampliseq": "v2.19.0dev"
                 }
@@ -95,6 +114,9 @@
                 "SBDI/dna.tsv",
                 "SBDI/emof.tsv",
                 "SBDI/event.tsv",
+                "assignsh",
+                "assignsh/ASV_ITS_tax.vsearch.txt",
+                "assignsh/ASV_tax_SH.unite-fungi_8_2.tsv",
                 "barrnap",
                 "barrnap/rrna.arc.gff",
                 "barrnap/rrna.bac.gff",
@@ -107,8 +129,10 @@
                 "cutadapt/pb2.trimmed.cutadapt.log",
                 "cutadapt/pb3.trimmed.cutadapt.log",
                 "dada2",
+                "dada2/ASV_ITS_tax.unite-fungi_8_2.tsv",
                 "dada2/ASV_seqs.fasta",
                 "dada2/ASV_table.tsv",
+                "dada2/ASV_tax.unite-fungi_8_2.tsv",
                 "dada2/DADA2_stats.tsv",
                 "dada2/DADA2_table.rds",
                 "dada2/DADA2_table.tsv",
@@ -123,15 +147,19 @@
                 "dada2/QC/svg/single_end_preprocessed_qual_stats.svg",
                 "dada2/QC/svg/single_end_qual_stats.svg",
                 "dada2/args",
+                "dada2/args/assignTaxonomy.args.txt",
                 "dada2/args/dada.args.txt",
                 "dada2/args/filterAndTrim.args.txt",
                 "dada2/args/learnErrors.args.txt",
                 "dada2/args/removeBimeraDenovo.args.txt",
                 "dada2/args/single_end_plotQualityProfile.args.txt",
                 "dada2/args/single_end_preprocessed_plotQualityProfile.args.txt",
+                "dada2/chunks",
+                "dada2/chunks/ASV_seqs.len.1.ASV_ITS_tax.unite-fungi_8_2.tsv",
                 "dada2/log",
                 "dada2/log/1.dada.log",
                 "dada2/log/1.err.log",
+                "dada2/ref_taxonomy.unite-fungi_8_2.txt",
                 "fastqc",
                 "fastqc/pb1_fastqc.html",
                 "fastqc/pb2_fastqc.html",
@@ -248,6 +276,7 @@
                 "sintax/ASV_tax_sintax.unite-fungi_8_2.tsv",
                 "sintax/ref_taxonomy_sintax.txt",
                 "summary_report",
+                "summary_report/dada2_taxonomic_classification_per_taxonomy_level.svg",
                 "summary_report/itsx_preliminary_origin.svg",
                 "summary_report/rrna_detection_with_barrnap.svg",
                 "summary_report/sintax_taxonomic_classification_per_taxonomy_level.svg",
@@ -255,6 +284,7 @@
                 "summary_report/summary_report.html",
                 "summary_report/versions.yml",
                 "treesummarizedexperiment",
+                "treesummarizedexperiment/dada2_TreeSummarizedExperiment.rds",
                 "treesummarizedexperiment/sintax_TreeSummarizedExperiment.rds"
             ],
             "overall_summary.tsv:md5,97a8ee12c40a0bc582ba1cefda117f95",
@@ -278,10 +308,10 @@
             "emof.tsv:md5,c6599c76a70fe5458db56ff8c2e89a37",
             "event.tsv:md5,bfcf7d8ac2a3c6b48d075d6dc235f0e4"
         ],
+        "timestamp": "2026-08-04T14:42:56.02771259",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.4"
-        },
-        "timestamp": "2026-04-21T09:19:33.698156989"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
     }
 }

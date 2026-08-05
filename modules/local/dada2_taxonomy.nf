@@ -71,8 +71,12 @@ process DADA2_TAXONOMY {
 
     write.table(taxa_export, file = \"${fasta.baseName}${outfile}.tsv\", sep = "\\t", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '')
 
-    # Save a version with rownames for addSpecies
-    taxa_export <- cbind( ASV_ID = tx\$ASV_ID, taxa\$tax, confidence = tx\$confidence, rank_confidence)
+    # Save a version for addSpecies. Row names are ASV_ID (always unique); the actual
+    # sequence is kept as its own column rather than being encoded in row names,
+    # since two different ASVs can share an identical sequence once trimmed to just
+    # the ITS region, and a data.frame's row names must be unique.
+    taxa_export <- cbind( ASV_ID = tx\$ASV_ID, taxa\$tax, confidence = tx\$confidence, rank_confidence, sequence = tx\$sequence)
+    rownames(taxa_export) <- tx\$ASV_ID
     saveRDS(taxa_export, "${fasta.baseName}${outfile}.rds")
 
     write.table('assignTaxonomy\t$args\ntaxlevels\t$taxlevels\nseed\t$seed', file = "assignTaxonomy.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')

@@ -1212,7 +1212,7 @@ workflow AMPLISEQ {
     //
     // WORKFLOW: Comparison to expected
     //
-    if ( params.expected_sequences ) {
+    if ( params.expected_sequences || params.expected_profile ) {
         def val_params_string = params.findAll{ it.key != 'trace_report_suffix' }.toString()
         COMPARISON_WF (
             ( val_params_string.md5() + "_${workflow.manifest.version}" ),  // md5sum of params (without variable time stamp in "trace_report_suffix") appended by pipeline version
@@ -1221,8 +1221,10 @@ workflow AMPLISEQ {
             params.expected_sequences_region,
             run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.abs_fasta : ch_asv_fasta,  // observed sequences (fasta)
             run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.rel_tsv : ch_asv_table,      // observed sequences (abundance table)
+            run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.rel_tax : channel.empty(),   // observed taxonomic profile
             params.expected_sequences ? channel.fromPath( params.expected_sequences ) : channel.empty(),  // expected sequences (fasta)
-            params.expected_abundances ? channel.fromPath( params.expected_abundances ) : channel.empty() // expected sequences (abundance table)
+            params.expected_abundances ? channel.fromPath( params.expected_abundances ) : channel.empty(),// expected sequences (abundance table)
+            params.expected_profile ? channel.fromPath( params.expected_profile ) : channel.empty() // expected taxonomic profile
         )
     }
 

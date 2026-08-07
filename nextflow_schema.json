@@ -1022,6 +1022,14 @@
                     "pattern": "^\\S+\\.(tsv|txt)$",
                     "description": "Path to file of abundances of expected sequences in tsv format",
                     "help_text": "Tab-separated table with header. First column is sequence IDs corresponding to the fasta file supplied with `--expected_sequences`. All further columns should have names corresponding to the sample names in `--input` or other input options. Samples will only compared to when they are in sequencing data input and the expected abundance input. This allows for example to only compare mock samples that were added to another data set as controls."
+                },
+                "expected_profile": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/tsv",
+                    "pattern": "^\\S+\\.(tsv|txt)$",
+                    "description": "Path to file of abundances of expected taxnonomies in tsv format",
+                    "help_text": "Tab-separated table with header. First column is taxonomic string (levels are semicolon-separated). All further columns should have names corresponding to the sample names in `--input` or other input options. Samples will only compared to when they are in sequencing data input and the expected profile input. This allows for example to only compare mock samples that were added to another data set as controls."
                 }
             },
             "fa_icon": "fas fa-book-open"

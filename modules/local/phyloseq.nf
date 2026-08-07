@@ -21,7 +21,7 @@ process PHYLOSEQ {
     suppressPackageStartupMessages(library(phyloseq))
 
     otu_df  <- read.table("$otu_tsv", sep="\\t", header=TRUE, row.names=1)
-    tax_df  <- read.table("$tax_tsv", sep="\\t", header=TRUE, row.names=1)
+    tax_df  <- read.table("$tax_tsv", sep="\\t", header=TRUE, row.names=1, comment.char = "")
     otu_mat <- as.matrix(otu_df)
     tax_mat <- as.matrix(tax_df)
     storage.mode(otu_mat) <- "integer"

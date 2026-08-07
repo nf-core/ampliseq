@@ -1,0 +1,52 @@
+nextflow_workflow {
+
+    name "Test R object exports with hash in taxon name"
+    script "tests/taxonomy_hash.nf"
+    workflow "TAXONOMY_HASH"
+    tag "pipeline"
+
+    test("taxonomy with # does not break phyloseq or TreeSummarizedExperiment") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+
+            def tmp = File.createTempDir("taxonomy_hash_")
+            def otu = new File(tmp, "ASV_table.tsv")
+            def tax = new File(tmp, "ASV_tax.tsv")
+
+            otu.text = [
+                "ASV_ID\tsample1",
+                "asv1\t10",
+                "asv2\t5"
+            ].join("\n") + "\n"
+
+            tax.text = [
+                "ASV_ID\tKingdom\tPhylum\tClass\tOrder\tFamily\tGenus\tSpecies\tconfidence\tsequence",
+                "asv1\tBacteria\tNA\tNA\tNA\tNA\tNA\tuncultured_bacterium_#0319-7L14\t1.00\tACGT",
+                "asv2\tBacteria\tFirmicutes\tBacilli\tNA\tNA\tNA\tLactobacillus_sp\t0.9\tTGCA"
+            ].join("\n") + "\n"
+
+            workflow {
+                """
+                input[0] = Channel.of([
+                    'sintax',
+                    file('${tax}'),
+                    file('${otu}'),
+                    [],
+                    []
+                ])
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert path(workflow.out.phyloseq.get(0).get(1)).exists()
+            assert path(workflow.out.tse.get(0).get(1)).exists()
+            // Snapshot process versions.yml outputs (PHYLOSEQ + TreeSummarizedExperiment)
+            assert snapshot(workflow.out.versions).match()
+        }
+    }
+}

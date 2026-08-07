@@ -54,7 +54,7 @@ get_taxa_by_mode <- function(taxa_vec, level, mode) {
 	})
 }
 
-# Function for classification metrics 
+# Function for classification metrics
 calculate_classification_metrics <- function(tp, fp, fn, fbeta_val) {
 	recall <- if ((tp + fn) > 0) tp / (tp + fn) else NA
 	precision <- if ((tp + fp) > 0) tp / (tp + fp) else NA

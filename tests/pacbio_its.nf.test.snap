@@ -18,6 +18,10 @@
                 "CUTADAPT_SUMMARY_STD": {
                     "python": "Python 3.8.3"
                 },
+                "DADA2_ADDSPECIES": {
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
+                },
                 "DADA2_DENOISING": {
                     "R": "4.5.2",
                     "dada2": "1.38.0"
@@ -71,6 +75,10 @@
                     "bash": "5.0.16(1)-release",
                     "sed": 4.7
                 },
+                "FORMAT_TAXRESULTS_ADDSP": {
+                    "python": "3.9.1",
+                    "pandas": "1.1.5"
+                },
                 "FORMAT_TAXRESULTS_SINTAX": {
                     "python": "3.9.1"
                 },
@@ -116,7 +124,7 @@
                 "SBDI/event.tsv",
                 "assignsh",
                 "assignsh/ASV_ITS_tax.vsearch.txt",
-                "assignsh/ASV_tax_SH.unite-fungi_8_2.tsv",
+                "assignsh/ASV_tax_species_SH.unite-fungi_8_2.tsv",
                 "barrnap",
                 "barrnap/rrna.arc.gff",
                 "barrnap/rrna.bac.gff",
@@ -130,9 +138,11 @@
                 "cutadapt/pb3.trimmed.cutadapt.log",
                 "dada2",
                 "dada2/ASV_ITS_tax.unite-fungi_8_2.tsv",
+                "dada2/ASV_ITS_tax_species.unite-fungi_8_2.tsv",
                 "dada2/ASV_seqs.fasta",
                 "dada2/ASV_table.tsv",
                 "dada2/ASV_tax.unite-fungi_8_2.tsv",
+                "dada2/ASV_tax_species.unite-fungi_8_2.tsv",
                 "dada2/DADA2_stats.tsv",
                 "dada2/DADA2_table.rds",
                 "dada2/DADA2_table.tsv",
@@ -147,6 +157,7 @@
                 "dada2/QC/svg/single_end_preprocessed_qual_stats.svg",
                 "dada2/QC/svg/single_end_qual_stats.svg",
                 "dada2/args",
+                "dada2/args/addSpecies.args.txt",
                 "dada2/args/assignTaxonomy.args.txt",
                 "dada2/args/dada.args.txt",
                 "dada2/args/filterAndTrim.args.txt",
@@ -155,6 +166,7 @@
                 "dada2/args/single_end_plotQualityProfile.args.txt",
                 "dada2/args/single_end_preprocessed_plotQualityProfile.args.txt",
                 "dada2/chunks",
+                "dada2/chunks/ASV_seqs.len.1.ASV_ITS_tax.unite-fungi_8_2.species.tsv",
                 "dada2/chunks/ASV_seqs.len.1.ASV_ITS_tax.unite-fungi_8_2.tsv",
                 "dada2/log",
                 "dada2/log/1.dada.log",
@@ -308,7 +320,7 @@
             "emof.tsv:md5,c6599c76a70fe5458db56ff8c2e89a37",
             "event.tsv:md5,bfcf7d8ac2a3c6b48d075d6dc235f0e4"
         ],
-        "timestamp": "2026-08-04T14:42:56.02771259",
+        "timestamp": "2026-08-05T13:38:48.578799722",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

@@ -106,7 +106,7 @@
                     "bash": "5.0.17(1)-release"
                 },
                 "SAVONT_ASV": {
-                    "savont": "0.6.1"
+                    "savont": "0.6.3"
                 },
                 "TREESUMMARIZEDEXPERIMENT": {
                     "R": "4.3.2",

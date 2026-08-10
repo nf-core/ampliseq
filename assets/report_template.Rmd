@@ -1168,7 +1168,7 @@ if ( !isFALSE(params$cut_dada_ref_taxonomy) ) {
 }
 
 # make statistics of taxonomic classification
-asv_tax <- read.table(params$dada2_taxonomy, header = TRUE, sep = "\t")
+asv_tax <- read.table(params$dada2_taxonomy, header = TRUE, sep = "\t", comment.char = "")
 
 # Calculate the classified numbers/percent of asv
 non_rank_cols <- colnames(asv_tax) %in% c("ASV_ID", "confidence", "sequence") | grepl("_confidence$", colnames(asv_tax))
@@ -1232,7 +1232,7 @@ if ( !isFALSE(params$qiime2_ref_tax_title) ) {
 }
 
 # Read file and prepare table
-asv_tax <- read.table(params$qiime2_taxonomy, header = TRUE, sep = "\t")
+asv_tax <- read.table(params$qiime2_taxonomy, header = TRUE, sep = "\t", comment.char = "")
 #asv_tax <- data.frame(do.call('rbind', strsplit(as.character(asv_tax$Taxon),'; ',fixed=TRUE)))
 asv_tax <- subset(asv_tax, select = Taxon)
 
@@ -1302,7 +1302,7 @@ cat("The taxonomic classification was performed by [SINTAX](https://doi.org/10.1
     using the database: `", params$sintax_ref_tax_title, "`.
     More details about the reference taxonomy database can be found in the ['Methods section'](#methods).\n\n", sep = "")
 
-asv_tax <- read.table(params$sintax_taxonomy, header = TRUE, sep = "\t")
+asv_tax <- read.table(params$sintax_taxonomy, header = TRUE, sep = "\t", comment.char = "")
 
 # Calculate the classified numbers/percent of asv
 non_rank_cols <- colnames(asv_tax) %in% c("ASV_ID", "confidence", "sequence") | grepl("_confidence$", colnames(asv_tax))
@@ -1359,7 +1359,7 @@ cat("The taxonomic classification was performed by [VSEARCH](https://github.com/
     `usearch_global` with `--lcaout`, using the reference database: `", params$vsearch_lca_ref_tax_title, "`.
     More details about the reference taxonomy database can be found in the ['Methods section'](#methods).\n\n", sep = "")
 
-asv_tax <- read.table(params$vsearch_lca_taxonomy, header = TRUE, sep = "\t")
+asv_tax <- read.table(params$vsearch_lca_taxonomy, header = TRUE, sep = "\t", comment.char = "")
 
 # Calculate the classified numbers/percent of asv
 non_rank_cols <- colnames(asv_tax) %in% c("ASV_ID", "confidence", "sequence") | grepl("_confidence$", colnames(asv_tax))
@@ -1423,7 +1423,7 @@ if ( params$kraken2_confidence != "0" ) {
     cat("A confidence score threshold of",params$kraken2_confidence,"was applied for taxonomic classifications.\n\n")
 }
 
-asv_tax <- read.table(params$kraken2_taxonomy, header = TRUE, sep = "\t")
+asv_tax <- read.table(params$kraken2_taxonomy, header = TRUE, sep = "\t", comment.char = "")
 
 # Calculate the classified numbers/percent of asv
 level <- subset(asv_tax, select = -c(ASV_ID,lowest_match))
@@ -1482,7 +1482,7 @@ Extraction of taxonomic classification was performed with [EPA-NG](https://githu
 "))
 
 # Read file and prepare table
-asv_tax <- read.table(params$pplace_taxonomy, header = TRUE, sep = "\t")
+asv_tax <- read.table(params$pplace_taxonomy, header = TRUE, sep = "\t", comment.char = "")
 
 # get maximum amount of taxa levels per ASV
 max_taxa <- lengths(regmatches(asv_tax$taxonomy, gregexpr(";", asv_tax$taxonomy)))+1

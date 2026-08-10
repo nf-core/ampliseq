@@ -44,29 +44,14 @@ process DADA2_ADDSPECIES {
     #remove Species annotation from assignTaxonomy
     taxa_nospecies <- taxtable[,!colnames(taxtable) %in% 'Species']
 
-    # Some ASVs can end up with an identical sequence once trimmed to just the ITS
-    # region (they differ only in flanking rDNA, which gets discarded); addSpecies()
-    # requires unique ACGT row names, so classify each unique sequence once and map
-    # the result back onto every ASV that shares it.
-    is_first <- !duplicated(taxa_nospecies\$sequence)
-    taxa_unique <- taxa_nospecies[is_first, , drop = FALSE]
-    rownames(taxa_unique) <- taxa_unique\$sequence
-    taxa_unique\$sequence <- NULL
-
-    tx_unique <- addSpecies(taxa_unique, \"$database\", $args, verbose=TRUE)
-
-    # addSpecies() only adds a "Species" column; map it onto every original row by
-    # sequence, keeping each row's own original columns (ASV_ID, ranks, confidence,
-    # ...) untouched -- rows sharing a sequence get the same Species call, but
-    # nothing else is merged between them.
-    tx <- taxa_nospecies
-    tx\$Species <- tx_unique\$Species[match(taxa_nospecies\$sequence, rownames(tx_unique))]
+    tx <- addSpecies(taxa_nospecies, \"$database\", $args, verbose=TRUE)
 
     # Create a table with specified column order
+    tmp <- data.frame(row.names(tx)) # To separate ASV_ID from sequence
     expected_order <- c("ASV_ID",taxlevels,"confidence",rank_confidence_cols)
     taxa <- as.data.frame( subset(tx, select = expected_order) )
-    taxa\$sequence <- tx\$sequence
-    row.names(taxa) <- NULL
+    taxa\$sequence <- tmp[,1]
+    row.names(taxa) <- row.names(tmp)
 
     #rename Species annotation to Species_exact
     colnames(taxa)[which(names(taxa) == "Species")] <- "Species_exact"

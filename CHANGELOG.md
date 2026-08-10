@@ -42,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#1027](https://github.com/nf-core/ampliseq/pull/1027) - SBDI's file `dna.tsv` recorded "paired" as lib_layout if `--single_end` was not specified alongside `--pacbio` or `--iontorrent`; now reports "single" in that cases (by @d4straub)
 - [#1042](https://github.com/nf-core/ampliseq/pull/1042) - DADA2's `confidence` column was incorrectly included as an extra, spurious rank when building the taxonomy string imported into QIIME2; no longer included (by @erikrikarddaniel)
 - [#1038](https://github.com/nf-core/ampliseq/pull/1038) - Ensure that the ASV count matrix in exported R objects is consistently stored as integer regardless of the pipeline parameters (by @hindrek)
+- [#1044](https://github.com/nf-core/ampliseq/issues/1044) - Fixed a regression introduced by [#1042](https://github.com/nf-core/ampliseq/pull/1042) (not yet released) that showed the new per-rank `confidence` columns as if they were taxonomic levels in the DADA2/SINTAX/VSEARCH-LCA sections of `summary_report.html` (by @erikrikarddaniel)
 
 ### `Dependencies`
 

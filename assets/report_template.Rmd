@@ -1171,8 +1171,8 @@ if ( !isFALSE(params$cut_dada_ref_taxonomy) ) {
 asv_tax <- read.table(params$dada2_taxonomy, header = TRUE, sep = "\t")
 
 # Calculate the classified numbers/percent of asv
-level <- subset(asv_tax, select = -c(ASV_ID,confidence,sequence))
-level <- colnames(level)
+non_rank_cols <- colnames(asv_tax) %in% c("ASV_ID", "confidence", "sequence") | grepl("_confidence$", colnames(asv_tax))
+level <- colnames(asv_tax)[!non_rank_cols]
 
 n_asv_tax = nrow(asv_tax)
 
@@ -1305,8 +1305,8 @@ cat("The taxonomic classification was performed by [SINTAX](https://doi.org/10.1
 asv_tax <- read.table(params$sintax_taxonomy, header = TRUE, sep = "\t")
 
 # Calculate the classified numbers/percent of asv
-level <- subset(asv_tax, select = -c(ASV_ID,confidence,sequence))
-level <- colnames(level)
+non_rank_cols <- colnames(asv_tax) %in% c("ASV_ID", "confidence", "sequence") | grepl("_confidence$", colnames(asv_tax))
+level <- colnames(asv_tax)[!non_rank_cols]
 
 n_asv_tax = nrow(asv_tax)
 
@@ -1362,8 +1362,8 @@ cat("The taxonomic classification was performed by [VSEARCH](https://github.com/
 asv_tax <- read.table(params$vsearch_lca_taxonomy, header = TRUE, sep = "\t")
 
 # Calculate the classified numbers/percent of asv
-level <- subset(asv_tax, select = -c(ASV_ID,confidence,sequence))
-level <- colnames(level)
+non_rank_cols <- colnames(asv_tax) %in% c("ASV_ID", "confidence", "sequence") | grepl("_confidence$", colnames(asv_tax))
+level <- colnames(asv_tax)[!non_rank_cols]
 
 n_asv_tax = nrow(asv_tax)
 

@@ -17,13 +17,13 @@ if (!(mode %in% c("complete", "level"))) {
 }
 
 # Load data frames from TSV files - with potential biom header
-message("Loading observed taxonomies from ",obsFILE)
+print(paste("Loading observed taxonomies from",obsFILE))
 if (grepl("^# Constructed from biom file", readLines(obsFILE, n = 1))) {
 	observed_taxonomy <- read.table(obsFILE, header = TRUE, sep = "\t", skip = 1, comment.char = "", check.names = FALSE)
 } else {
 	observed_taxonomy <- read.table(obsFILE, header = TRUE, sep = "\t", skip = 0, comment.char = "", check.names = FALSE)
 }
-message("Loading expected taxonomies from ",expFILE)
+print(paste("Loading expected taxonomies from",expFILE))
 if (grepl("^# Constructed from biom file", readLines(expFILE, n = 1))) {
 	expected_taxonomy <- read.table(expFILE, header = TRUE, sep = "\t", skip = 1, comment.char = "", check.names = FALSE)
 } else {
@@ -35,7 +35,7 @@ common_samples <- intersect(colnames(observed_taxonomy)[-1], colnames(expected_t
 if (length(common_samples) == 0) {
 	stop("ERROR: No common samples found between observed and expected taxonomy files.")
 }
-message(paste("Processing", length(common_samples), "common samples:",paste(common_samples,collapse=",")))
+print(paste("Processing", length(common_samples), "common samples:",paste(common_samples,collapse=",")))
 
 # Function to get taxonomic levels based on mode (e.g., complete: L1: x1, L2: x1;x2; level: L1: x1, L2: x2)
 get_taxa_by_mode <- function(taxa_vec, level, mode) {
@@ -131,7 +131,7 @@ calculate_distance_metrics <- function(obs_taxa_at_lev, exp_taxa_at_lev, obs_tax
 max_obs_lev <- max(sapply(strsplit(as.character(observed_taxonomy[, 1]), ";"), length))
 max_exp_lev <- max(sapply(strsplit(as.character(expected_taxonomy[, 1]), ";"), length))
 max_lev <- max(max_obs_lev, max_exp_lev)
-message(paste("Processing", max_lev, "taxonomic levels"))
+print(paste("Processing", max_lev, "taxonomic levels"))
 
 # Use a list to store results
 results_list <- list()
@@ -220,12 +220,12 @@ for (s in common_samples) {
 results <- do.call(rbind, results_list)
 results$tag <- rep(tag, nrow(results))
 outfile <- "profile_per-sample.tsv"
-message(paste("Writing detailed output to:", outfile))
+print(paste("Writing detailed output to:", outfile))
 write.table(results, outfile, sep = "\t", row.names = FALSE, quote = FALSE)
 
 # SUMMARY TABLE
 outfile <- "profile_summary.tsv"
-message(paste("Writing summary table to:", outfile))
+print(paste("Writing summary table to:", outfile))
 df_sum <- data.frame(level=character(), type=character(), median=numeric(), mean=numeric(), standard_error=numeric(), min=numeric(), max=numeric(), count=numeric(), stringsAsFactors=FALSE)
 
 # Convert values to numeric for summary
@@ -277,14 +277,14 @@ draw_line_plot <- function() {
 
 # Plot SVG
 outfile_svg <- "profile_lineplot.svg"
-message(paste("Writing lineplot SVG to:", outfile_svg))
+print(paste("Writing lineplot SVG to:", outfile_svg))
 svg(outfile_svg, height = 8, width = 12)
 draw_line_plot()
 invisible(dev.off())
 
 # Plot PNG
 outfile_png <- "profile_lineplot.png"
-message(paste("Writing lineplot PNG to:", outfile_png))
+print(paste("Writing lineplot PNG to:", outfile_png))
 png(outfile_png, height = 400, width = 600)
 draw_line_plot()
 invisible(dev.off())

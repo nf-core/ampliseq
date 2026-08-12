@@ -1,6 +1,7 @@
 include { VSEARCH_USEARCHGLOBAL as VSEARCH_USEARCHGLOBAL_BM } from '../../modules/nf-core/vsearch/usearchglobal/main'
 include { COMPARE_SEQUENCES       } from '../../modules/local/compare_sequences'
 include { COMPARE_PERFORMANCE     } from '../../modules/local/compare_performance'
+include { COMPARE_PROFILE         } from '../../modules/local/compare_profile'
 
 workflow COMPARISON_WF {
     take:
@@ -10,8 +11,10 @@ workflow COMPARISON_WF {
     query_or_target        // region to evaluate
     ch_observed_sequences  // observed sequences (fasta)
     ch_observed_abundances // observed sequences (abundance table)
+    ch_observed_profile    // observed taxonomic profile
     ch_expected_sequences  // expected sequences (fasta)
     ch_expected_abundances // expected sequences (abundance table)
+    ch_expected_profile    // expected taxonomic profile
 
     main:
     // Compare observed sequences to expected sequences (global alignment)
@@ -25,14 +28,35 @@ workflow COMPARISON_WF {
         "query+target+ql+tl+qilo+qihi+tilo+tihi+gaps+mism+qstrand" )
 
     // Investigate mismatches per sample, plus barplot (y = number of sequences, x = number of mismatches)
-    COMPARE_SEQUENCES ( VSEARCH_USEARCHGLOBAL_BM.out.tsv, ch_observed_abundances, ch_expected_abundances.ifEmpty([]), similarity_threshold, query_or_target, trace_report_suffix, val_params_string )
+    COMPARE_SEQUENCES (
+        VSEARCH_USEARCHGLOBAL_BM.out.tsv,
+        ch_observed_abundances,
+        ch_expected_abundances.ifEmpty([]),
+        similarity_threshold,
+        query_or_target,
+        trace_report_suffix,
+        val_params_string
+    )
     COMPARE_SEQUENCES.out.warnings.subscribe{ it ->
             if( it.countLines() > 0 ) { log.warn "about comparing sequences\n\n" + it.splitText().join("") }
         }
 
     // Calculate absence/presence performance metrics per sample such as precision, recall, F1 score
     // Calculate abundance performance metrics per sample such as spearman's rho, RMSE, Bray-Curtis distance
-    COMPARE_PERFORMANCE ( COMPARE_SEQUENCES.out.matches.map { it = [ [id: val_md5sum_version], file(it) ] }, ch_observed_abundances, ch_expected_abundances )
+    COMPARE_PERFORMANCE (
+        COMPARE_SEQUENCES.out.matches.map { it = [ [id: val_md5sum_version], file(it) ] },
+        ch_observed_abundances,
+        ch_expected_abundances
+    )
+
+    // Compare taxonomic profiles
+    COMPARE_PROFILE (
+        ch_observed_profile
+            .collect(sort: true) // all files originate from same work dir
+            .map { list -> list[-1] } // take only the file with the highest taxonomic level
+            .map { it = [ [id: val_md5sum_version], it ] },
+        ch_expected_profile
+    )
 
     emit:
     mismatch_barplot_png = COMPARE_SEQUENCES.out.png.collect()

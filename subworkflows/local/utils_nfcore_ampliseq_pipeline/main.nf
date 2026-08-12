@@ -41,6 +41,53 @@ workflow PIPELINE_INITIALISATION {
     ch_versions = channel.empty()
 
     //
+    // Build channels from self-contained parameters
+    // (params only used to construct these channels; no other logic depends on how they're built)
+    //
+    if (params.metadata) {
+        ch_metadata = channel.fromPath( params.metadata )
+    } else { ch_metadata = channel.empty() }
+
+    // report sources
+    ch_report_template = channel.fromPath("${params.report_template}", checkIfExists: true)
+    ch_report_css = channel.fromPath("${params.report_css}", checkIfExists: true)
+    ch_report_logo = channel.fromPath("${params.report_logo}", checkIfExists: true)
+    ch_report_abstract = params.report_abstract ? channel.fromPath(params.report_abstract) : []
+
+    // Parse the --pplace_sheet file if present (may be overwritten later in AMPLISEQ based on --dada_ref_taxonomy)
+    ch_pplace_sheet = channel.empty()
+    if ( params.pplace_sheet ) {
+        ch_pplace_sheet = channel.fromPath(params.pplace_sheet)
+            .splitCsv(header: true)
+            .map { it ->
+                [
+                    meta: [
+                        id: it.target,
+                        min_bitscore: it.min_bitscore
+                    ],
+                    data: [
+                        alignmethod:    it.alignmethod  ?: 'clustalo',
+                        hmm:            file(it.hmm,  checkIfExists: true),
+                        extract_hmm:    it.extract_hmm,
+                        refseqfile:     it.refseqfile   ? file(it.refseqfile,   checkIfExists: true) : [],
+                        refphylogeny:   it.refphylogeny ? file(it.refphylogeny, checkIfExists: true) : [],
+                        model:          it.model,
+                        taxonomy:       it.taxonomy     ? file(it.taxonomy,     checkIfExists: true) : []
+                    ]
+                ]
+            }
+    }
+
+    ch_expected_sequences = params.expected_sequences ? channel.fromPath( params.expected_sequences ) : channel.empty()
+    ch_expected_abundances = params.expected_abundances ? channel.fromPath( params.expected_abundances ) : channel.empty()
+    ch_expected_profile = params.expected_profile ? channel.fromPath( params.expected_profile ) : channel.empty()
+
+    // Select metadata categories for diversity analysis & ancom, if explicitly specified
+    if (params.metadata_category) {
+        ch_metadata_category = channel.fromList(params.metadata_category.tokenize(','))
+    } else { ch_metadata_category = channel.empty() }
+
+    //
     // Print version and exit if required and dump pipeline parameters to JSON file
     //
     UTILS_NEXTFLOW_PIPELINE (
@@ -124,7 +171,17 @@ workflow PIPELINE_INITIALISATION {
     }
 
     emit:
-    versions    = ch_versions
+    versions             = ch_versions
+    metadata             = ch_metadata             // channel: [ path(metadata) ] or empty
+    report_template      = ch_report_template       // channel: [ path(report_template) ]
+    report_css           = ch_report_css            // channel: [ path(report_css) ]
+    report_logo          = ch_report_logo           // channel: [ path(report_logo) ]
+    report_abstract      = ch_report_abstract       // channel: [ path(report_abstract) ] or []
+    pplace_sheet         = ch_pplace_sheet          // channel: parsed pplace_sheet rows, or empty
+    expected_sequences   = ch_expected_sequences    // channel: [ path(expected_sequences) ] or empty
+    expected_abundances  = ch_expected_abundances   // channel: [ path(expected_abundances) ] or empty
+    expected_profile     = ch_expected_profile      // channel: [ path(expected_profile) ] or empty
+    metadata_category    = ch_metadata_category     // channel: tokenized metadata_category, or empty
 }
 
 /*

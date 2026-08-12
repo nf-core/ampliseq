@@ -124,6 +124,16 @@ workflow AMPLISEQ {
     multiqc_logo
     multiqc_methods_description
     outdir
+    ch_metadata            // channel: [ path(metadata) ] or empty
+    ch_report_template     // channel: [ path(report_template) ]
+    ch_report_css          // channel: [ path(report_css) ]
+    ch_report_logo         // channel: [ path(report_logo) ]
+    ch_report_abstract     // channel: [ path(report_abstract) ] or []
+    ch_pplace_sheet        // channel: initial value built in PIPELINE_INITIALISATION from --pplace_sheet, or empty; may be overwritten below based on --dada_ref_taxonomy database config (the "pplace" key)
+    ch_expected_sequences  // channel: [ path(expected_sequences) ] or empty
+    ch_expected_abundances // channel: [ path(expected_abundances) ] or empty
+    ch_expected_profile    // channel: [ path(expected_profile) ] or empty
+    ch_metadata_category   // channel: tokenized metadata_category, or empty
 
     main:
     // set empty channels
@@ -134,15 +144,6 @@ workflow AMPLISEQ {
     //
     // INPUT AND VARIABLES
     //
-    if (params.metadata) {
-        ch_metadata = channel.fromPath( params.metadata )
-    } else { ch_metadata = channel.empty() }
-
-    // report sources
-    ch_report_template = channel.fromPath("${params.report_template}", checkIfExists: true)
-    ch_report_css = channel.fromPath("${params.report_css}", checkIfExists: true)
-    ch_report_logo = channel.fromPath("${params.report_logo}", checkIfExists: true)
-    ch_report_abstract = params.report_abstract ? channel.fromPath(params.report_abstract) : []
 
     // Set non-params Variables
 
@@ -201,30 +202,6 @@ workflow AMPLISEQ {
         ch_input_reads = PARSE_INPUT.out.reads
     } else {
         error("One of `--input`, `--input_fasta`, `--input_folder` must be provided!")
-    }
-
-    // Parse the --pplace_sheet file if present
-    ch_pplace_sheet = channel.empty()
-    if ( params.pplace_sheet ) {
-        ch_pplace_sheet = channel.fromPath(params.pplace_sheet)
-            .splitCsv(header: true)
-            .map { it ->
-                [
-                    meta: [
-                        id: it.target,
-                        min_bitscore: it.min_bitscore
-                    ],
-                    data: [
-                        alignmethod:    it.alignmethod  ?: 'clustalo',
-                        hmm:            file(it.hmm,  checkIfExists: true),
-                        extract_hmm:    it.extract_hmm,
-                        refseqfile:     it.refseqfile   ? file(it.refseqfile,   checkIfExists: true) : [],
-                        refphylogeny:   it.refphylogeny ? file(it.refphylogeny, checkIfExists: true) : [],
-                        model:          it.model,
-                        taxonomy:       it.taxonomy     ? file(it.taxonomy,     checkIfExists: true) : []
-                    ]
-                ]
-            }
     }
 
     //
@@ -1113,7 +1090,7 @@ workflow AMPLISEQ {
 
         //Select metadata categories for diversity analysis & ancom
         if (params.metadata_category) {
-            ch_metacolumn_all = channel.fromList(params.metadata_category.tokenize(','))
+            ch_metacolumn_all = ch_metadata_category
             ch_metacolumn_pairwise = METADATA_PAIRWISE ( ch_metadata ).category.splitCsv().flatten()
             ch_metacolumn_pairwise = ch_metacolumn_all.join(ch_metacolumn_pairwise)
         } else if (params.ancom || params.ancombc || params.ancombc2 || !params.skip_diversity_indices) {
@@ -1221,10 +1198,10 @@ workflow AMPLISEQ {
             params.expected_sequences_region,
             run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.abs_fasta : ch_asv_fasta,  // observed sequences (fasta)
             run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.rel_tsv : ch_asv_table,      // observed sequences (abundance table)
-            run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.rel_tax : channel.empty(),   // observed taxonomic profile
-            params.expected_sequences ? channel.fromPath( params.expected_sequences ) : channel.empty(),  // expected sequences (fasta)
-            params.expected_abundances ? channel.fromPath( params.expected_abundances ) : channel.empty(),// expected sequences (abundance table)
-            params.expected_profile ? channel.fromPath( params.expected_profile ) : channel.empty() // expected taxonomic profile
+            run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.rel_tax : channel.empty(), // observed taxonomic profile
+            ch_expected_sequences,  // expected sequences (fasta)
+            ch_expected_abundances, // expected sequences (abundance table)
+            ch_expected_profile     // expected taxonomic profile
         )
     }
 

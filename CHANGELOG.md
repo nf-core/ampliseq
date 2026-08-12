@@ -35,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | --classifier      | --qiime_classifier            |         |
 
 - [#1028](https://github.com/nf-core/ampliseq/pull/1028) - Multi-region sample sheet via `--multiregion` had its header changed from `FW_primer` and `RV_primer` to `primer_fwd` and `primer_rev`, respectively. (by @d4straub)
+- [#1032](https://github.com/nf-core/ampliseq/pull/1032) - Refactor the pipeline's parameter handling and initialization (by @erikrikarddaniel).
 
 ### `Fixed`
 

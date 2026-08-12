@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 - [#1022](https://github.com/nf-core/ampliseq/issues/1022) - added new GloSED database for classification of Eukaryotic ITS. Not support for SH numbers as of yet. (by @tom-brekke)
-- [#1021](https://github.com/nf-core/ampliseq/pull/1021),[#1023](https://github.com/nf-core/ampliseq/pull/1023),[#1025](https://github.com/nf-core/ampliseq/pull/1025) - Comparison of observed ASVs against expected sequences or their abundance is now available with `--expected_*` parameters (by @d4straub, reviewed by @erikrikarddaniel)
+- [#1021](https://github.com/nf-core/ampliseq/pull/1021),[#1023](https://github.com/nf-core/ampliseq/pull/1023),[#1025](https://github.com/nf-core/ampliseq/pull/1025),[#1048](https://github.com/nf-core/ampliseq/pull/1048) - Comparison of observed ASVs and taxonomic profiles against expected data is now available with `--expected_*` parameters (by @d4straub, reviewed by @erikrikarddaniel)
 - [#1026](https://github.com/nf-core/ampliseq/pull/1026),[#1046](https://github.com/nf-core/ampliseq/pull/1046) - Add support for Oxford Nanopore Technology (ONT) R10.4 sequencing (preferably with SUP basecalling) with Savont (by @d4straub)
 - [#1042](https://github.com/nf-core/ampliseq/pull/1042) - DADA2 taxonomy tables (`ASV_tax.*.tsv`, `ASV_tax_species.*.tsv`) now include one `<rank>_confidence` column per rank, in addition to the existing overall `confidence` column (by @erikrikarddaniel)
 - [#1042](https://github.com/nf-core/ampliseq/pull/1042) - Added CI test coverage for `--addsh`, which previously had none (`test_pacbio_its` now also runs DADA2 taxonomy against the UNITE database it already uses for SINTAX) (by @erikrikarddaniel)
@@ -42,7 +42,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#1027](https://github.com/nf-core/ampliseq/pull/1027) - SBDI's file `dna.tsv` recorded "paired" as lib_layout if `--single_end` was not specified alongside `--pacbio` or `--iontorrent`; now reports "single" in that cases (by @d4straub)
 - [#1034](https://github.com/nf-core/ampliseq/pull/1034) - Fix reading taxonomy tables when taxon names contain `#` (by @pieterprovoost)
 - [#1042](https://github.com/nf-core/ampliseq/pull/1042) - DADA2's `confidence` column was incorrectly included as an extra, spurious rank when building the taxonomy string imported into QIIME2; no longer included (by @erikrikarddaniel)
+- [#1045](https://github.com/nf-core/ampliseq/pull/1045) - Fixed a regression introduced by [#1042](https://github.com/nf-core/ampliseq/pull/1042) (not yet released) that made `DADA2_ADDSPECIES` crash with "Non-ACGT characters present in the query sequences" whenever two or more ASVs ended up with an identical sequence (e.g. after `--cut_its` trimming) (by @erikrikarddaniel)
 - [#1038](https://github.com/nf-core/ampliseq/pull/1038) - Ensure that the ASV count matrix in exported R objects is consistently stored as integer regardless of the pipeline parameters (by @hindrek)
+- [#1050](https://github.com/nf-core/ampliseq/pull/1050) - Fixed a regression introduced by [#1042](https://github.com/nf-core/ampliseq/pull/1042) (not yet released) that showed the new per-rank `confidence` columns as if they were taxonomic levels in the DADA2/SINTAX/VSEARCH-LCA sections of `summary_report.html` (by @erikrikarddaniel)
 
 ### `Dependencies`
 
@@ -51,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | software | previously | now   |
 | -------- | ---------- | ----- |
 | ITSxRust | 0.2.2      | 0.3.0 |
+| Savont   |            | 0.6.3 |
 
 ### `Removed`
 

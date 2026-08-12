@@ -71,8 +71,13 @@ process DADA2_TAXONOMY {
 
     write.table(taxa_export, file = \"${fasta.baseName}${outfile}.tsv\", sep = "\\t", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '')
 
-    # Save a version with rownames for addSpecies
-    taxa_export <- cbind( ASV_ID = tx\$ASV_ID, taxa\$tax, confidence = tx\$confidence, rank_confidence)
+    # Save a version with rownames for addSpecies. Coercing rank_confidence to a
+    # matrix keeps this cbind() a plain matrix rather than a data.frame -- matrices
+    # tolerate duplicate row names, data.frames don't. Two different ASVs can end up
+    # with an identical sequence after any sequence-subsetting step (e.g. ITS
+    # trimming), and a data.frame would silently corrupt the second occurrence's
+    # row name to make it unique, which addSpecies() then rejects as non-ACGT.
+    taxa_export <- cbind( ASV_ID = tx\$ASV_ID, taxa\$tax, confidence = tx\$confidence, as.matrix(rank_confidence))
     saveRDS(taxa_export, "${fasta.baseName}${outfile}.rds")
 
     write.table('assignTaxonomy\t$args\ntaxlevels\t$taxlevels\nseed\t$seed', file = "assignTaxonomy.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')

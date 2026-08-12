@@ -180,6 +180,7 @@ params {
     expected_sequences_region: String = 'query'
     expected_sequences_mismatches: Integer = 0
     expected_abundances: Path?
+    expected_profile: Path?
     report_template: String = '${projectDir}/assets/report_template.Rmd'
     report_css: String = '${projectDir}/assets/nf-core_style.css'
     report_logo: String = '${projectDir}/assets/nf-core-ampliseq_logo_light_long.png'

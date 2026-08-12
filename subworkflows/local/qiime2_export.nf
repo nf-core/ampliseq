@@ -34,4 +34,5 @@ workflow QIIME2_EXPORT {
     abs_fasta = QIIME2_EXPORT_ABSOLUTE.out.fasta
     abs_tsv   = QIIME2_EXPORT_ABSOLUTE.out.tsv
     rel_tsv   = QIIME2_EXPORT_RELASV.out.tsv
+    rel_tax   = QIIME2_EXPORT_RELTAX.out.tsv
 }

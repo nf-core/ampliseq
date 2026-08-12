@@ -9,8 +9,8 @@ process COMPARE_PERFORMANCE {
 
     input:
     tuple val(meta), path(alignment) // alignment file with "query,target,mismatch_final"
-    path(observed_abundances)        // ASV table from within pipeline
-    path(expected_abundances)        // ASV table from params.expected_abundances
+    path(observed_abundances, stageAs: 'observed/*') // ASV table from within pipeline
+    path(expected_abundances, stageAs: 'expected/*') // ASV table from params.expected_abundances
 
     output:
     path("*.svg")                            , emit: svg

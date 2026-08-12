@@ -13,8 +13,11 @@ OUT="tax.tsv"
 # read required files
 tax = read.table(tax_file, header = TRUE, sep = "\t", stringsAsFactors = FALSE, comment.char = '', quote = '')
 
-# Join columns 2:ncol(.) - 1, the taxonomy ranks (sequence is the last)
-r <- colnames(tax)[!colnames(tax) %in% c('ASV_ID', 'sequence')]
+# Join the taxonomy rank columns only -- excludes ASV_ID, sequence, the aggregate
+# "confidence" column, and the per-rank "<rank>_confidence" columns, none of which
+# are taxonomic ranks and shouldn't end up in the QIIME2 taxonomy string
+non_rank_cols <- colnames(tax) %in% c('ASV_ID', 'sequence', 'confidence') | grepl('_confidence$', colnames(tax))
+r <- colnames(tax)[!non_rank_cols]
 tax$taxonomy <- do.call(paste, c(tax[r], sep = ';'))
 
 #write

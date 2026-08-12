@@ -3,10 +3,10 @@ process SAVONT_ASV {
     label 'process_medium'
     label 'process_long'
 
-    conda "bioconda::savont=0.6.1c"
+    conda "bioconda::savont=0.6.3"
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/savont:0.6.1c--hec9b1f2_0' :
-        'biocontainers/savont:0.6.1c--hec9b1f2_0' }"
+        'https://depot.galaxyproject.org/singularity/savont:0.6.3--hec9b1f2_0' :
+        'biocontainers/savont:0.6.3--hec9b1f2_0' }"
 
     input:
     tuple val(meta), path(reads), val(sample_string)

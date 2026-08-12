@@ -325,6 +325,8 @@ Taxonomic classification of ASVs can be performed with a choice of DADA2, SINTAX
 
 DADA2 is the default method for taxonomy classification. Depending on the reference taxonomy database, sequences can be classified down to species rank. Species classification is reported in columns "Species" using DADA2's assignTaxonomy function or "Species_exact" using DADA2's addSpecies function, the latter only assigns exact sequence matches. Generally, species assignment without exact matches are much less trustworthy than those with exact matches. With short amplicons, e.g. 16S rRNA gene V4 region, the non-exact species annotation is not recommended to be trusted. The longer the ASVs are, the more acceptable is the non-exact species classification, e.g. PacBio (nearly) full length 16S rRNA gene sequences are thought to be trustworthy.
 
+In addition to the "confidence" column (the bootstrap support for the most specific rank assigned), each taxonomy table also has one `<rank>_confidence` column per rank (e.g. `phylum_confidence`), giving assignTaxonomy's bootstrap support at that specific rank.
+
 Files when _not_ using ITSx (default):
 
 <details markdown="1">
@@ -704,7 +706,10 @@ On request (`--ancombc2`), ANCOM-BC2 is applied to each suitable or specified me
 
 ### Compare observed to expected outcome
 
-The observed results can be compared to expected outcomes per sample, typically for samples with known composition such as mock communities, to assess the performance of the data generation and analysis. Steps to evaluate the produced ASVs are implemented in the pipeline.
+The observed results can be compared to expected outcomes per sample, typically for samples with known composition such as mock communities, to assess the performance of the data generation and analysis.
+Steps to evaluate the produced ASVs and taxonomic profile are implemented in the pipeline.
+
+#### Computed output files
 
 When expected sequences are supplied, the following files will be produced:
 
@@ -723,9 +728,42 @@ When expected sequences are supplied, the following files will be produced:
 
 </details>
 
-When expected abundances are available, additional performance metrics will be generated.
+When expected abundances are available, the following additional files will be produced:
 
-#### Metrics base on presence/absence:
+<details markdown="1">
+<summary>Output files</summary>
+
+- `comparison/`
+  - `abundances_per-sample.tsv`: Tab-separated table with abundance of expected and observed sequences per sample, in long format.
+  - `performance_summary.tsv`: Tab-separated table with aggregated performance metrics.
+  - `performance_per-sample.tsv`: Tab-separated table with performance metrics per sample, in long format.
+  - `performance.log`: Log file, complementary to `nucleotide-differences.log`.
+  - `performance_boxplot.png`: Boxplot of number of aggregated performance metrics in png format.
+  - `performance_boxplot.svg`: Boxplot of number of aggregated performance metrics in svg format.
+- `comparison/per-sample`
+  - `<sample>_abundance_barplot.svg`: Side-by-Side bar plots in svg format.
+  - `<sample>_rank_abundance_curve.svg`: Rank Abundance Curves in svg format.
+  - `<sample>_scatter_loglog.svg`: Scatter plot: Observed vs. Expected Abundance (log-log) in svg format.
+
+</details>
+
+When expected profiles are available, the following files will be produced:
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `comparison/`
+  - `profile_summary.tsv`: Tab-separated table with aggregated performance metrics per taxonomic level.
+  - `profile_per-sample.tsv`: Tab-separated table with performance metrics per sample and taxonomic level, in long format.
+  - `profile.log`: Log file.
+  - `profile_lineplot.png`: Line plot of median F1 score, recall, and precision per taxonomic level in png format.
+  - `profile_lineplot.svg`: Line plot of median F1 score, recall, and precision per taxonomic level in svg format.
+
+</details>
+
+#### Computed comparative metrices within output files
+
+##### Metrics base on presence/absence:
 
 - `observed`: Number of observed sequences
 - `expected`: Number of expected sequences
@@ -748,7 +786,7 @@ When expected abundances are available, additional performance metrics will be g
 > [!WARNING]
 > If the supplied expected sequences are not unique in the region of the alignment with the observed sequences, alignment matches are used to aggregate identical expected sequences and vice versa. In case there isn't an exact match to a set of identical expected sequences, those will not be aggregated and inflate the number of expected sequences.
 
-#### Metrics based on abundances:
+##### Metrics based on abundances:
 
 (1) based on filtered abundance tables, **excluding** non-matching sequences (FP & FN)
 
@@ -766,25 +804,6 @@ These metrics would be inflated, dominated or skewed by false positives and fals
 - `bray-curtis`: Bray-Curtis Dissimilarity
 - `hellinger`: Hellinger Distance
 - `jensen-shannon`: Jensen-Shannon Divergence
-
-The following additional files will be produced:
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `comparison/`
-  - `abundances_per-sample.tsv`: Tab-separated table with abundance of expected and observed sequences per sample, in long format.
-  - `performance_summary.tsv`: Tab-separated table with aggregated performance metrics.
-  - `performance_per-sample.tsv`: Tab-separated table with performance metrics per sample, in long format.
-  - `performance.log`: Log file, complementary to `nucleotide-differences.log`.
-  - `performance_boxplot.png`: Boxplot of number of aggregated performance metrics in png format.
-  - `performance_boxplot.svg`: Boxplot of number of aggregated performance metrics in svg format.
-- `comparison/per-sample`
-  - `<sample>_abundance_barplot.svg`: Side-by-Side bar plots in svg format.
-  - `<sample>_rank_abundance_curve.svg`: Rank Abundance Curves in svg format.
-  - `<sample>_scatter_loglog.svg`: Scatter plot: Observed vs. Expected Abundance (log-log) in svg format.
-
-</details>
 
 ### PICRUSt2
 

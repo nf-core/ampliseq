@@ -535,8 +535,6 @@
                 "qiime2/barplot/level-7.jsonp",
                 "qiime2/barplot/level-8.csv",
                 "qiime2/barplot/level-8.jsonp",
-                "qiime2/barplot/level-9.csv",
-                "qiime2/barplot/level-9.jsonp",
                 "qiime2/barplot/q2templateassets",
                 "qiime2/barplot/q2templateassets/css",
                 "qiime2/barplot/q2templateassets/css/base-template.css",
@@ -581,8 +579,6 @@
                 "qiime2/barplot_average/barplot_var2/level-7.jsonp",
                 "qiime2/barplot_average/barplot_var2/level-8.csv",
                 "qiime2/barplot_average/barplot_var2/level-8.jsonp",
-                "qiime2/barplot_average/barplot_var2/level-9.csv",
-                "qiime2/barplot_average/barplot_var2/level-9.jsonp",
                 "qiime2/barplot_average/barplot_var2/q2templateassets",
                 "qiime2/barplot_average/barplot_var2/q2templateassets/css",
                 "qiime2/barplot_average/barplot_var2/q2templateassets/css/base-template.css",
@@ -626,8 +622,6 @@
                 "qiime2/barplot_average/barplot_var3/level-7.jsonp",
                 "qiime2/barplot_average/barplot_var3/level-8.csv",
                 "qiime2/barplot_average/barplot_var3/level-8.jsonp",
-                "qiime2/barplot_average/barplot_var3/level-9.csv",
-                "qiime2/barplot_average/barplot_var3/level-9.jsonp",
                 "qiime2/barplot_average/barplot_var3/q2templateassets",
                 "qiime2/barplot_average/barplot_var3/q2templateassets/css",
                 "qiime2/barplot_average/barplot_var3/q2templateassets/css/base-template.css",
@@ -1384,7 +1378,7 @@
             "multiqc_general_stats.txt:md5,1fef8358fe3cc974bf05e2f27fc7e250",
             "multiqc_cutadapt.txt:md5,160135fece18361e17bef9e8d04cf0b9"
         ],
-        "timestamp": "2026-07-28T02:02:05.4462003",
+        "timestamp": "2026-08-04T19:44:34.128481848",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

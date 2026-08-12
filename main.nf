@@ -39,6 +39,7 @@ workflow NFCORE_AMPLISEQ {
     ch_pplace_sheet        // channel: parsed pplace_sheet rows, or empty
     ch_expected_sequences  // channel: [ path(expected_sequences) ] or empty
     ch_expected_abundances // channel: [ path(expected_abundances) ] or empty
+    ch_expected_profile    // channel: [ path(expected_profile) ] or empty
     ch_metadata_category   // channel: tokenized metadata_category, or empty
 
     main:
@@ -60,6 +61,7 @@ workflow NFCORE_AMPLISEQ {
         ch_pplace_sheet,
         ch_expected_sequences,
         ch_expected_abundances,
+        ch_expected_profile,
         ch_metadata_category,
     )
     emit:
@@ -200,6 +202,7 @@ params {
     expected_sequences_region: String = 'query'
     expected_sequences_mismatches: Integer = 0
     expected_abundances: Path?
+    expected_profile: Path?
     report_template: String = '${projectDir}/assets/report_template.Rmd'
     report_css: String = '${projectDir}/assets/nf-core_style.css'
     report_logo: String = '${projectDir}/assets/nf-core-ampliseq_logo_light_long.png'
@@ -280,6 +283,7 @@ workflow {
         PIPELINE_INITIALISATION.out.pplace_sheet,
         PIPELINE_INITIALISATION.out.expected_sequences,
         PIPELINE_INITIALISATION.out.expected_abundances,
+        PIPELINE_INITIALISATION.out.expected_profile,
         PIPELINE_INITIALISATION.out.metadata_category,
     )
 

@@ -2,10 +2,10 @@ process SAVONT_EXPORT {
     tag "$prefix"
     label 'process_low'
 
-    conda "bioconda::savont=0.6.1c"
+    conda "bioconda::savont=0.6.3"
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/savont:0.6.1c--hec9b1f2_0' :
-        'biocontainers/savont:0.6.1c--hec9b1f2_0' }"
+        'https://depot.galaxyproject.org/singularity/savont:0.6.3--hec9b1f2_0' :
+        'biocontainers/savont:0.6.3--hec9b1f2_0' }"
 
     input:
     tuple val(prefix), path(output_folders), val(sample_string)

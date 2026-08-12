@@ -80,6 +80,7 @@ workflow PIPELINE_INITIALISATION {
 
     ch_expected_sequences = params.expected_sequences ? channel.fromPath( params.expected_sequences ) : channel.empty()
     ch_expected_abundances = params.expected_abundances ? channel.fromPath( params.expected_abundances ) : channel.empty()
+    ch_expected_profile = params.expected_profile ? channel.fromPath( params.expected_profile ) : channel.empty()
 
     // Select metadata categories for diversity analysis & ancom, if explicitly specified
     if (params.metadata_category) {
@@ -179,6 +180,7 @@ workflow PIPELINE_INITIALISATION {
     pplace_sheet         = ch_pplace_sheet          // channel: parsed pplace_sheet rows, or empty
     expected_sequences   = ch_expected_sequences    // channel: [ path(expected_sequences) ] or empty
     expected_abundances  = ch_expected_abundances   // channel: [ path(expected_abundances) ] or empty
+    expected_profile     = ch_expected_profile      // channel: [ path(expected_profile) ] or empty
     metadata_category    = ch_metadata_category     // channel: tokenized metadata_category, or empty
 }
 

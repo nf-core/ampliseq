@@ -9,8 +9,8 @@ process COMPARE_SEQUENCES {
 
     input:
     tuple val(meta), path(blast6out) // VSEARCH_USEARCHGLOBAL
-    path(observed_abundances)        // ASV table from within pipeline
-    path(expected_abundances)        // ASV table from params.expected_abundances
+    path(observed_abundances, stageAs: 'observed/*') // ASV table from within pipeline
+    path(expected_abundances, stageAs: 'expected/*') // ASV table from params.expected_abundances
     val(similarity_threshold)        // Similarity threshold for maches of VSEARCH
     val(query_or_target)             // what reagion to evaluate (query,target,alignment) from params.expected_sequences_region
     val(trace_report_suffix)         // timestamp of pipeline info files

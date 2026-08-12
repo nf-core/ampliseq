@@ -322,8 +322,6 @@
                 "qiime2/barplot/level-5.jsonp",
                 "qiime2/barplot/level-6.csv",
                 "qiime2/barplot/level-6.jsonp",
-                "qiime2/barplot/level-7.csv",
-                "qiime2/barplot/level-7.jsonp",
                 "qiime2/barplot/q2templateassets",
                 "qiime2/barplot/q2templateassets/css",
                 "qiime2/barplot/q2templateassets/css/base-template.css",
@@ -983,10 +981,10 @@
             "multiqc_general_stats.txt:md5,0d19dc786ef0263939502acd5caa29de",
             "multiqc_cutadapt.txt:md5,5660c331eff9d7ff9ac702804d3801f3"
         ],
+        "timestamp": "2026-08-04T18:22:52.643673583",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.4"
-        },
-        "timestamp": "2026-04-21T12:04:36.209559248"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
     }
 }

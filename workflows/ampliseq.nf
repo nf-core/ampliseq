@@ -132,6 +132,7 @@ workflow AMPLISEQ {
     ch_pplace_sheet        // channel: initial value built in PIPELINE_INITIALISATION from --pplace_sheet, or empty; may be overwritten below based on --dada_ref_taxonomy database config (the "pplace" key)
     ch_expected_sequences  // channel: [ path(expected_sequences) ] or empty
     ch_expected_abundances // channel: [ path(expected_abundances) ] or empty
+    ch_expected_profile    // channel: [ path(expected_profile) ] or empty
     ch_metadata_category   // channel: tokenized metadata_category, or empty
 
     main:
@@ -1188,7 +1189,7 @@ workflow AMPLISEQ {
     //
     // WORKFLOW: Comparison to expected
     //
-    if ( params.expected_sequences ) {
+    if ( params.expected_sequences || params.expected_profile ) {
         def val_params_string = params.findAll{ it.key != 'trace_report_suffix' }.toString()
         COMPARISON_WF (
             ( val_params_string.md5() + "_${workflow.manifest.version}" ),  // md5sum of params (without variable time stamp in "trace_report_suffix") appended by pipeline version
@@ -1197,8 +1198,10 @@ workflow AMPLISEQ {
             params.expected_sequences_region,
             run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.abs_fasta : ch_asv_fasta,  // observed sequences (fasta)
             run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.rel_tsv : ch_asv_table,      // observed sequences (abundance table)
+            run_qiime2 && !params.skip_abundance_tables ? QIIME2_EXPORT.out.rel_tax : channel.empty(), // observed taxonomic profile
             ch_expected_sequences,  // expected sequences (fasta)
-            ch_expected_abundances // expected sequences (abundance table)
+            ch_expected_abundances, // expected sequences (abundance table)
+            ch_expected_profile     // expected taxonomic profile
         )
     }
 

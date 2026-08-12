@@ -24,9 +24,10 @@ process TREESUMMARIZEDEXPERIMENT {
     # represent taxa and columns samples.
     otu_mat  <- read.table("$otu_tsv", sep="\\t", header=TRUE, row.names=1)
     otu_mat <- as.matrix(otu_mat)
+    storage.mode(otu_mat) <- "integer"
     assays <- SimpleList(counts = otu_mat)
     # Read taxonomy table. Correct format for it is DataFrame.
-    taxonomy_table  <- read.table("$tax_tsv", sep="\\t", header=TRUE, row.names=1)
+    taxonomy_table  <- read.table("$tax_tsv", sep="\\t", header=TRUE, row.names=1, comment.char = "")
     taxonomy_table <- DataFrame(taxonomy_table)
 
     # Match rownames between taxonomy table and abundance matrix.

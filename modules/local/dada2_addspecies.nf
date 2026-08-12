@@ -33,9 +33,13 @@ process DADA2_ADDSPECIES {
 
     #add "Species" if not already in taxlevels
     taxlevels <- $taxlevels
+    # per-rank confidence columns, derived from the *original* assignTaxonomy taxlevels,
+    # before "Species" is force-appended below for the addSpecies output columns
+    rank_confidence_cols_all <- paste0(tolower(taxlevels), "_confidence")
     if ( !"Species" %in% taxlevels ) { taxlevels <- c(taxlevels,"Species") }
 
     taxtable <- readRDS(\"$taxtable\")
+    rank_confidence_cols <- intersect(rank_confidence_cols_all, colnames(taxtable))
 
     #remove Species annotation from assignTaxonomy
     taxa_nospecies <- taxtable[,!colnames(taxtable) %in% 'Species']
@@ -44,7 +48,7 @@ process DADA2_ADDSPECIES {
 
     # Create a table with specified column order
     tmp <- data.frame(row.names(tx)) # To separate ASV_ID from sequence
-    expected_order <- c("ASV_ID",taxlevels,"confidence")
+    expected_order <- c("ASV_ID",taxlevels,"confidence",rank_confidence_cols)
     taxa <- as.data.frame( subset(tx, select = expected_order) )
     taxa\$sequence <- tmp[,1]
     row.names(taxa) <- row.names(tmp)

@@ -3,7 +3,7 @@
 # Get params and files from the command line
 args <- commandArgs(trailingOnly=TRUE)
 if (length(args) < 3) {
-	stop("Usage: Rscript compare_profiles.r <tag> <obsFILE> <expFILE> [fbeta_val] [mode]")
+	stop("Usage: Rscript compare_profile.r <tag> <obsFILE> <expFILE> [fbeta_val] [mode]")
 }
 tag <- args[1] # tag for each sample
 obsFILE <- args[2] # observed abundance*, e.g. "abs-abund-table-3.tsv"
@@ -70,8 +70,8 @@ calculate_correlation_metrics <- function(tp_set, obs_taxa_all_lev, exp_taxa_all
 	p_cor <- NA
 	s_rho <- NA
 	if (length(tp_set) > 1) {
-		obs_aggregated <- tapply(obs_vec, obs_taxa_all_lev, sum, NA.rm=TRUE)
-		exp_aggregated <- tapply(exp_vec, exp_taxa_all_lev, sum, NA.rm=TRUE)
+		obs_aggregated <- tapply(obs_vec, obs_taxa_all_lev, sum, na.rm=TRUE)
+		exp_aggregated <- tapply(exp_vec, exp_taxa_all_lev, sum, na.rm=TRUE)
 		obs_vals <- obs_aggregated[tp_set]
 		exp_vals <- exp_aggregated[tp_set]
 		if (sd(obs_vals, na.rm=TRUE) > 0 && sd(exp_vals, na.rm=TRUE) > 0) {
@@ -88,8 +88,8 @@ calculate_distance_metrics <- function(obs_taxa_at_lev, exp_taxa_at_lev, obs_tax
 	res <- list(bray_curtis=NA, hellinger=NA, jensen_shannon=NA, deviation=NA, mae=NA, rmse=NA, ps=NA)
 
 	if (length(all_taxa) > 0) {
-		obs_all_vals <- tapply(obs_vec, obs_taxa_all_lev, sum, NA.rm=TRUE)[all_taxa]
-		exp_all_vals <- tapply(exp_vec, exp_taxa_all_lev, sum, NA.rm=TRUE)[all_taxa]
+		obs_all_vals <- tapply(obs_vec, obs_taxa_all_lev, sum, na.rm=TRUE)[all_taxa]
+		exp_all_vals <- tapply(exp_vec, exp_taxa_all_lev, sum, na.rm=TRUE)[all_taxa]
 		obs_all_vals[is.na(obs_all_vals)] <- 0
 		exp_all_vals[is.na(exp_all_vals)] <- 0
 

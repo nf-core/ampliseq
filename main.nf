@@ -228,6 +228,7 @@ params {
     skip_tse: Boolean
     skip_multiqc: Boolean
     skip_report: Boolean
+    skip_parquet_summary: Boolean
     seed: Integer = 100
     version: Boolean
     publish_dir_mode: String

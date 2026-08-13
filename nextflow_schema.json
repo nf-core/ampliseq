@@ -1163,6 +1163,11 @@
                 "skip_report": {
                     "type": "boolean",
                     "description": "Skip Markdown summary report"
+                },
+                "skip_parquet_summary": {
+                    "type": "boolean",
+                    "description": "Skip writing summary tables as Parquet, alongside the default gzipped tsv",
+                    "hidden": true
                 }
             },
             "fa_icon": "fas fa-hand-paper"

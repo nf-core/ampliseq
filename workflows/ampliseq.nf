@@ -79,6 +79,8 @@ include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_PPLACE } from '../modules/local/phylo
 include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_QIIME2 } from '../modules/local/phyloseq_intax'
 include { FILTER_CLUSTERS               } from '../modules/local/filter_clusters'
 include { HMMER_HMMEXTRACT              } from '../modules/local/hmmer/hmmextract'
+include { SUMMARY_TABLE_COUNTS          } from '../modules/local/summary_table_counts'
+include { DUCKDB_TABLE2PARQUET          } from '../modules/nf-core/duckdb/table2parquet'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
@@ -137,9 +139,10 @@ workflow AMPLISEQ {
 
     main:
     // set empty channels
-    ch_tax_for_robject = channel.empty()
-    ch_versions        = channel.empty()
-    ch_multiqc_files   = channel.empty()
+    ch_tax_for_robject   = channel.empty()
+    ch_versions          = channel.empty()
+    ch_multiqc_files     = channel.empty()
+    ch_summary_tables    = channel.empty()
 
     //
     // INPUT AND VARIABLES
@@ -622,6 +625,12 @@ workflow AMPLISEQ {
         }
         ch_asv_fasta = DADA2_MERGE.out.fasta
         ch_asv_table = DADA2_MERGE.out.asv
+
+        //
+        // MODULE: Long-format ASV counts summary table
+        //
+        SUMMARY_TABLE_COUNTS ( DADA2_MERGE.out.asv )
+        ch_summary_tables = ch_summary_tables.mix( SUMMARY_TABLE_COUNTS.out.tsv )
     }
 
     //
@@ -1206,6 +1215,15 @@ workflow AMPLISEQ {
             ch_expected_sequences,  // expected sequences (fasta)
             ch_expected_abundances, // expected sequences (abundance table)
             ch_expected_profile     // expected taxonomic profile
+        )
+    }
+
+    //
+    // MODULE: Also write the summary tables as Parquet
+    //
+    if ( !params.skip_parquet_summary ) {
+        DUCKDB_TABLE2PARQUET (
+            ch_summary_tables.map { tsv -> [ [ id: tsv.name.replaceAll(/\.tsv(\.gz)?$/, '') ], tsv ] }
         )
     }
 

@@ -40,6 +40,7 @@ nextflow_pipeline {
                     path("$outputDir/dada2/ref_taxonomy.gtdb_R07-RS207.txt"),
                     path("$outputDir/dada2/DADA2_stats.tsv"),
                     path("$outputDir/dada2/DADA2_table.tsv"),
+                    path("$outputDir/summary_tables/ampliseq.counts.tsv.gz").linesGzip.size(),
                     path("$outputDir/decontam/decontaminated.tsv"),
                     path("$outputDir/decontam/decontaminated_counts.tsv"),
                     path("$outputDir/decontam/decontaminated_details.tsv").readLines().size(),
@@ -60,6 +61,8 @@ nextflow_pipeline {
                     path("$outputDir/qiime2/ancombc2_formula/Category-treatment1-ASV/ASV-treatment1::a.volcano_plot.tsv")
                 ).match() },
                 { assert path("$outputDir/decontam/decontaminated_details.tsv").csv(sep: '\t', header: true).columns["freq"].sum() > 0.99999 },
+                { assert path("$outputDir/summary_tables/ampliseq.counts.parquet").exists() },
+                { assert path("$outputDir/summary_tables/ampliseq.counts.parquet").size() > 0 },
             )
         }
     }

@@ -24,6 +24,16 @@ nextflow_pipeline {
                     removeNextflowVersion("$outputDir/pipeline_info/nf_core_ampliseq_software_mqc_versions.yml"),
                     // All stable path name, with a relative path
                     stable_path,
+                    // Manually chosen files for content checks
+                    path("$outputDir/savont/pooled_feature-table.tsv"),
+                    path("$outputDir/savont/pooled_final_asvs.fasta"),
+                    path("$outputDir/savont/pooled_stats.tsv"),
+                    path("$outputDir/overall_summary.tsv"),
+                    path("$outputDir/comparison/vsearch_usearchglobal.tsv"),
+                    path("$outputDir/comparison/nucleotide-differences.log"),
+                    path("$outputDir/comparison/nucleotide-differences.tsv"),
+                    path("$outputDir/comparison/performance.log"),
+                    path("$outputDir/comparison/profile.log"),
                 ).match() }
             )
         }

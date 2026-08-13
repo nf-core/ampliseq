@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#1028](https://github.com/nf-core/ampliseq/pull/1028) - Multi-region sample sheet via `--multiregion` had its header changed from `FW_primer` and `RV_primer` to `primer_fwd` and `primer_rev`, respectively. (by @d4straub)
 - [#1032](https://github.com/nf-core/ampliseq/pull/1032) - Refactor the pipeline's parameter handling and initialization (by @erikrikarddaniel).
+- [#1051](https://github.com/nf-core/ampliseq/pull/1051) - Continue #1032's parameter-handling refactor: `qiime2_ancom` and `qiime2_diversity` subworkflows now take all their flags (`ancom`, `ancombc`, `ancombc2`, `qiime_adonis_formula`) as explicit arguments instead of reading some directly from `params.*`; no behaviour change (by @erikrikarddaniel).
 
 ### `Fixed`
 

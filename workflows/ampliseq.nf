@@ -590,7 +590,7 @@ workflow AMPLISEQ {
                 .collectFile(name: 'savont_stats.tsv', keepHeader: true, sort: true, cache: true, newLine: true)
         }
         // merge stats
-        if (params.skip_cutadapt || (params.sequencing_type == "nanopore" && !params.skip_chopper)) {
+        if (!params.skip_cutadapt || (params.sequencing_type == "nanopore" && !params.skip_chopper)) {
             MERGE_STATS_SAVONT (ch_stats, ch_stats_savont)
             ch_stats = MERGE_STATS_SAVONT.out.tsv
         } else {

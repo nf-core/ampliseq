@@ -13,7 +13,7 @@ process SAVONT_EXPORT {
     output:
     path("*_feature-table.tsv") , emit: asv
     path("*_final_asvs.fasta")  , emit: fasta
-    path("*_savont.log")        , emit: log
+    path("*_savont_export.log") , emit: log
     tuple val("${task.process}"), val('savont'), eval("savont --version 2>&1 | cut -d ' ' -f 2"), topic: versions, emit: versions_savont
 
     script:
@@ -30,6 +30,6 @@ process SAVONT_EXPORT {
     # copy other files to include the prefix
     cp savont_export/merged_feature_table.tsv ${prefix}_feature-table.tsv
     cp savont_export/merged_rep_seqs.fasta ${prefix}_final_asvs.fasta
-    cp savont_export/savont_*.log ${prefix}_savont.log
+    cp savont_export/savont_*.log ${prefix}_savont_export.log
     """
 }

@@ -1256,5 +1256,16 @@
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
         }
+    },
+    "log-checks": {
+        "content": [
+            "savont_asv_logs all contain 'SAVONT COMPLETED SUCCESSFULLY': true",
+            "savont_export_logs contains 'Export complete.': true"
+        ],
+        "timestamp": "2026-08-14T11:58:59.650792044",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
     }
 }

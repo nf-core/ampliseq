@@ -17,6 +17,10 @@ nextflow_pipeline {
             // stable_path: All files + folders in ${params.outdir}/ with a stable path and file name
             def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
 
+            // specific files
+            def savont_asv_logs = getAllFilesFromDir(params.outdir, include: ['savont/*_savont.log'])
+            def savont_export_logs = getAllFilesFromDir(params.outdir, include: ['savont/*_savont_export.log'])
+
             assert workflow.success
             assertAll(
                 { assert snapshot(
@@ -24,7 +28,7 @@ nextflow_pipeline {
                     removeNextflowVersion("$outputDir/pipeline_info/nf_core_ampliseq_software_mqc_versions.yml"),
                     // All stable path name, with a relative path
                     stable_path,
-                    // Manually chosen files for content checks
+                    // Manually chosen files for md5sum checks
                     path("$outputDir/savont/pooled_feature-table.tsv"),
                     path("$outputDir/savont/pooled_final_asvs.fasta"),
                     path("$outputDir/savont/pooled_stats.tsv"),
@@ -33,7 +37,12 @@ nextflow_pipeline {
                     path("$outputDir/comparison/nucleotide-differences.tsv"),
                     path("$outputDir/comparison/performance.log"),
                     path("$outputDir/comparison/profile.log"),
-                ).match() }
+                ).match() },
+
+                { assert snapshot(
+                    "savont_asv_logs contains 'SAVONT COMPLETED SUCCESSFULLY': ${savont_asv_logs.every { log -> log.readLines().any { it.contains('SAVONT COMPLETED SUCCESSFULLY') } }}",
+                    "savont_export_logs contains 'Export complete.': ${savont_export_logs.every { log -> log.readLines().any { it.contains('Export complete.') } }}",
+                ).match("log-checks") },
             )
         }
     }

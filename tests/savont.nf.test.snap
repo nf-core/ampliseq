@@ -1,4 +1,15 @@
 {
+    "log-checks": {
+        "content": [
+            "savont_asv_logs contains 'SAVONT COMPLETED SUCCESSFULLY': true",
+            "savont_export_logs contains 'Export complete.': true"
+        ],
+        "timestamp": "2026-08-14T11:32:37.950407652",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
     "-profile test_savont": {
         "content": [
             {

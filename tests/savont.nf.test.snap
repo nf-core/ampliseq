@@ -1,4 +1,15 @@
 {
+    "comparison-checks": {
+        "content": [
+            "performance_summary.tsv: median F1 > 0.8: true",
+            "profile_summary.tsv: median F1 at level 6 > 0.82: true"
+        ],
+        "timestamp": "2026-08-14T13:34:09.353360077",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
     "log-checks": {
         "content": [
             "savont_asv_logs contains 'SAVONT COMPLETED SUCCESSFULLY': true",

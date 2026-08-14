@@ -1247,7 +1247,7 @@
                 "summary_report/summary_report.html",
                 "summary_report/versions.yml"
             ],
-            "independent_feature-table.tsv:md5,9779dbfafdc06b292a593c695aabb663",
+            "independent_feature-table.tsv:md5,d2fccf196db51fe8f9f55da0ace3fb6c",
             "independent_final_asvs.fasta:md5,819672232d27b40e741882254a7b9322",
             "overall_summary.tsv:md5,d48ea04f973e7a85f857be04e7eb69fc"
         ],

@@ -27,8 +27,9 @@ process SAVONT_EXPORT {
         -o savont_export \\
         --relabel $sample_string
 
-    # copy other files to include the prefix
-    cp savont_export/merged_feature_table.tsv ${prefix}_feature-table.tsv
+    # Rename first header element to mimic DADA2 output
+    sed '1s/^#OTU ID/ASV_ID/' savont_export/merged_feature_table.tsv > ${prefix}_feature-table.tsv
+    # Copy files to include the prefix
     cp savont_export/merged_rep_seqs.fasta ${prefix}_final_asvs.fasta
     cp savont_export/savont_*.log ${prefix}_savont_export.log
     """

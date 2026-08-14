@@ -446,7 +446,7 @@
                 "treesummarizedexperiment",
                 "treesummarizedexperiment/dada2_TreeSummarizedExperiment.rds"
             ],
-            "pooled_feature-table.tsv:md5,f3fe95f1f3b8d8869241ee0b687a0310",
+            "pooled_feature-table.tsv:md5,72a9798c8a2eba9f512ce1db1623bc2e",
             "pooled_final_asvs.fasta:md5,7c1a6481177859d03d7201d0bef79d5d",
             "pooled_stats.tsv:md5,c18004076a0a549f0e8f6f2b51cccd52",
             "overall_summary.tsv:md5,70c98d09d973fd31596cf0a9ff59ebd7",

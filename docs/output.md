@@ -152,18 +152,19 @@ Savont filters reads (98% quality), produces ASVs, and removes apparent PCR chim
 - `savont/`
   - `<mode>_final_asvs.fasta`: Fasta file with ASV sequences.
   - `<mode>_feature-table.tsv`: Tab-separated file with counts for each ASV sequence and sample.
-  - `<mode>_savont.log`: Log file of Savont.
+  - `<mode>_savont_export.log`: Log file of Savont export.
 
 Where `<mode>` is either `independent` or `pooled`.
 
 Additional output file if `<mode>` is `pooled`:
 
 - `savont/`
+  - `<mode>_savont.log`: Log file of Savont.
   - `pooled_stats.tsv`: Tab-separated file with read counts after Savont.
 
 Additional output files if `<mode>` is `independent`:
 
-- `savont/per-sample/`: Directory containing files with all parameters for DADA2 steps.
+- `savont/per-sample/`
   - `<sample>_final_asvs.fasta`: Fasta file with ASV sequences.
   - `<sample>_feature-table.tsv`: Tab-separated file with counts for each ASV sequence and sample.
   - `<sample>_savont.log`: Log file of Savont.

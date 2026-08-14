@@ -29,7 +29,6 @@ nextflow_pipeline {
                     path("$outputDir/savont/pooled_final_asvs.fasta"),
                     path("$outputDir/savont/pooled_stats.tsv"),
                     path("$outputDir/overall_summary.tsv"),
-                    path("$outputDir/comparison/vsearch_usearchglobal.tsv"),
                     path("$outputDir/comparison/nucleotide-differences.log"),
                     path("$outputDir/comparison/nucleotide-differences.tsv"),
                     path("$outputDir/comparison/performance.log"),

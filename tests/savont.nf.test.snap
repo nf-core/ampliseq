@@ -428,7 +428,6 @@
             "pooled_final_asvs.fasta:md5,7c1a6481177859d03d7201d0bef79d5d",
             "pooled_stats.tsv:md5,c18004076a0a549f0e8f6f2b51cccd52",
             "overall_summary.tsv:md5,70c98d09d973fd31596cf0a9ff59ebd7",
-            "vsearch_usearchglobal.tsv:md5,377964de5a6162c932c898e204979adc",
             "nucleotide-differences.log:md5,f24904b2c25c361c0e0847cc702106b8",
             "nucleotide-differences.tsv:md5,b247918365b4cf59f4fbb43ec23001a1",
             "performance.log:md5,f9bb4a453c8582477868ac06a91be572",

@@ -60,6 +60,9 @@
                     "R": "4.5.2",
                     "decontam": "1.30.0"
                 },
+                "DUCKDB_TABLE2PARQUET": {
+                    "duckdb": "1.5.5"
+                },
                 "FASTQC": {
                     "fastqc": "0.12.1"
                 },
@@ -95,6 +98,10 @@
                 },
                 "RENAME_RAW_DATA_FILES": {
                     "bash": "5.0.17(1)-release"
+                },
+                "SUMMARY_TABLE_COUNTS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
                 },
                 "TRUNCLEN": {
                     "python": "3.9.1",
@@ -290,7 +297,10 @@
                 "summary_report/rrna_detection_with_barrnap.svg",
                 "summary_report/stacked_barchart_of_reads.svg",
                 "summary_report/summary_report.html",
-                "summary_report/versions.yml"
+                "summary_report/versions.yml",
+                "summary_tables",
+                "summary_tables/ampliseq.counts.parquet",
+                "summary_tables/ampliseq.counts.tsv.gz"
             ],
             "overall_summary.tsv:md5,788502ac905468319bcc8b1598b7e925",
             "rrna.arc.gff:md5,6dae470aace9293d5eb8c318584852dd",

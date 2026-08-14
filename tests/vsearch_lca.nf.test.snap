@@ -51,6 +51,9 @@
                     "R": "4.5.2",
                     "dada2": "1.38.0"
                 },
+                "DUCKDB_TABLE2PARQUET": {
+                    "duckdb": "1.5.5"
+                },
                 "FASTQC": {
                     "fastqc": "0.12.1"
                 },
@@ -110,6 +113,10 @@
                 },
                 "RENAME_RAW_DATA_FILES": {
                     "bash": "5.0.17(1)-release"
+                },
+                "SUMMARY_TABLE_COUNTS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
                 },
                 "TREESUMMARIZEDEXPERIMENT": {
                     "R": "4.3.2",
@@ -305,6 +312,9 @@
                 "summary_report/summary_report.html",
                 "summary_report/versions.yml",
                 "summary_report/vsearch_lca_taxonomic_classification_per_taxonomy_level.svg",
+                "summary_tables",
+                "summary_tables/ampliseq.counts.parquet",
+                "summary_tables/ampliseq.counts.tsv.gz",
                 "treesummarizedexperiment",
                 "treesummarizedexperiment/vsearch_lca_TreeSummarizedExperiment.rds",
                 "vsearch_lca",

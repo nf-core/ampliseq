@@ -1166,8 +1166,7 @@
                 },
                 "skip_parquet_summary": {
                     "type": "boolean",
-                    "description": "Skip writing summary tables as Parquet, alongside the default gzipped tsv",
-                    "hidden": true
+                    "description": "Skip writing summary tables as Parquet, alongside the default gzipped tsv"
                 }
             },
             "fa_icon": "fas fa-hand-paper"

@@ -169,7 +169,11 @@ observed_samples <- colnames(observed)[2:ncol(observed)]
 print(paste( "Observed samples:", paste(observed_samples,collapse=",")))
 
 # Read expected abundance table
-exp = read.table( expabundFILE, header = TRUE, sep = "\t", stringsAsFactors = FALSE, check.names = FALSE, strip.white = TRUE)
+if (grepl("^# Constructed from biom file", readLines(expabundFILE, n = 1))) {
+	exp = read.table( expabundFILE, header = TRUE, sep = "\t", stringsAsFactors = FALSE, check.names = FALSE, strip.white = TRUE, comment.char = "", skip=1 )
+} else {
+	exp = read.table( expabundFILE, header = TRUE, sep = "\t", stringsAsFactors = FALSE, check.names = FALSE, strip.white = TRUE, comment.char = "" )
+}
 colnames(exp)[1] <- "ID"
 # extract samples to analyse
 exp_samples <- colnames(exp)[2:ncol(exp)]

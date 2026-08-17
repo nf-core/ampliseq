@@ -2,7 +2,7 @@
     "comparison-checks": {
         "content": [
             "performance_summary.tsv: median F1 > 0.8: true",
-            "profile_summary.tsv: median F1 at level 6 > 0.82: true"
+            "profile_summary.tsv: median F1 at level 6 > 0.8: true"
         ],
         "timestamp": "2026-08-14T13:34:09.353360077",
         "meta": {

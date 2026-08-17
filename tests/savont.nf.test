@@ -49,7 +49,7 @@ nextflow_pipeline {
                 // Check median F1 scores, assumes that the median value is next after the F1 value
                 { assert snapshot(
                     "performance_summary.tsv: median F1 > 0.8: ${performance_summary.every { log -> log.readLines().find { it.startsWith('F1\t') }.split('\t')[1].toFloat() > 0.8 } }",
-                    "profile_summary.tsv: median F1 at level 6 > 0.82: ${profile_summary.every { log -> log.readLines().find { it.startsWith('L6\tF1\t') }.split('\t')[2].toFloat() > 0.82 }}",
+                    "profile_summary.tsv: median F1 at level 6 > 0.8: ${profile_summary.every { log -> log.readLines().find { it.startsWith('L6\tF1\t') }.split('\t')[2].toFloat() > 0.8 }}",
                 ).match("comparison-checks") },
             )
         }

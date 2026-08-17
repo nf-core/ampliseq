@@ -179,7 +179,7 @@ print(paste( "Investigate samples:", paste( SAMPLES ,collapse=",")))
 
 # check if there are any samples to analyse
 if (length(SAMPLES) == 0) {
-	stop("ERROR - Found no samples to investigate")
+	stop( paste0("ERROR - Found no samples to investigate. Observed samples (via sequencing data input): ", paste(observed_samples, collapse=","), ". Samples in ", expabundFILE, ": ", paste(exp_samples, collapse=",")) )
 }
 
 # (B) ANALYSE

@@ -9,7 +9,7 @@ process SAVONT_ASV {
         'biocontainers/savont:0.6.3--hec9b1f2_0' }"
 
     input:
-    tuple val(meta), path(reads), val(sample_string)
+    tuple val(meta), path(reads), val(sample_header), val(sample_string)
 
     output:
     path("*_feature-table.tsv") , emit: asv
@@ -17,7 +17,7 @@ process SAVONT_ASV {
     path("*_final_clusters.tsv"), emit: clusters
     path("*_stats.tsv")         , emit: stats
     path("savont_asv_*/temp/*") , emit: temp
-    tuple val(meta), path("savont_asv_*"), emit: output_folder
+    tuple val(meta), path("savont_asv_*"), val(sample_string), emit: output_folder
     path("*_savont.log")        , emit: log
     tuple val("${task.process}"), val('savont'), eval("savont --version 2>&1 | cut -d ' ' -f 2"), topic: versions, emit: versions_savont
 
@@ -33,7 +33,7 @@ process SAVONT_ASV {
         $reads_cmd
 
     # adjust the naming of the samples:
-    sed '1s/.*/${sample_string}/' savont_asv_${prefix}/feature-table.tsv > ${prefix}_feature-table.tsv
+    sed '1s/.*/${sample_header}/' savont_asv_${prefix}/feature-table.tsv > ${prefix}_feature-table.tsv
 
     # output count per sample
     savont_asv_stats.sh ${prefix}_feature-table.tsv >${prefix}_stats.tsv

@@ -40,7 +40,11 @@ SAMPLES <- observed_samples
 
 # Read expected abundance table if it exists
 if (file.exists(expabundFILE)) {
-	exp = read.table( expabundFILE, header = TRUE, sep = "\t", stringsAsFactors = FALSE, check.names = FALSE, strip.white = TRUE)
+	if (grepl("^# Constructed from biom file", readLines(expabundFILE, n = 1))) {
+		exp = read.table( expabundFILE, header = TRUE, sep = "\t", stringsAsFactors = FALSE, check.names = FALSE, strip.white = TRUE, comment.char = "", skip=1 )
+	} else {
+		exp = read.table( expabundFILE, header = TRUE, sep = "\t", stringsAsFactors = FALSE, check.names = FALSE, strip.white = TRUE, comment.char = "" )
+	}
 	colnames(exp)[1] <- "ID"
 	# extract samples to analyse
 	exp_samples <- colnames(exp)[2:ncol(exp)]
@@ -66,7 +70,7 @@ if (file.exists(expabundFILE)) {
 
 # check if there are any samples to analyse
 if (length(SAMPLES) == 0) {
-	stop("ERROR - Found no samples to investigate")
+	stop( paste0("ERROR - Found no samples to investigate. Observed samples (via sequencing data input): ", paste(observed_samples, collapse=","), ". Samples in ", expabundFILE, ": ", paste(exp_samples, collapse=",")) )
 }
 
 # Investigate alignment, required columns: query,target,ql,tl,qilo,qihi,tilo,tihi,gaps,mism

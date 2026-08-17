@@ -538,26 +538,28 @@ workflow AMPLISEQ {
                 ch_reads_trimming
                     .toSortedList { a, b -> a[0].id <=> b[0].id }
                     .map { list ->
-                        def reads = list.collect { it -> it[1] }
-                        def ids = list.collect { it -> it[0].id }.join("\t")
-                        [ [id: 'pooled'], reads, "ID\t${ids}" ] }
+                        def reads = list.collect { _meta, read -> read }
+                        def ids = list.collect { meta, _reads -> meta.id }.join("\t")
+                        def ids_for_export = list.collect { meta, _reads -> meta.id }.join(" ")
+                        [ [id: 'pooled'], reads, "ID\t${ids}", ids_for_export ] }
             SAVONT_ASV (ch_reads_to_savont)
-            ch_asv_fasta = SAVONT_ASV.out.fasta
-            ch_asv_table = SAVONT_ASV.out.asv
+            SAVONT_EXPORT ( SAVONT_ASV.out.output_folder )
+            ch_asv_fasta = SAVONT_EXPORT.out.fasta
+            ch_asv_table = SAVONT_EXPORT.out.asv
             ch_stats_savont = SAVONT_ASV.out.stats
         } else if (params.sample_inference == "independent") {
             ch_reads_to_savont =
                 ch_reads_trimming
                     .map { meta, reads ->
-                        [ meta, reads, "ID\t${meta.id}" ] }
+                        [ meta, reads, "ID\t${meta.id}", meta.id ] }
             SAVONT_ASV (ch_reads_to_savont)
             ch_reads_to_savont_export =
                 SAVONT_ASV.out.output_folder
                     .toSortedList { a, b -> a[0].id <=> b[0].id }
                     .map { list ->
-                        def folders = list.collect { it -> it[1] }
-                        def ids = list.collect { it -> it[0].id }.join(" ")
-                        [ 'independent', folders, ids ] }
+                        def folders = list.collect { _meta, folder, _sample -> folder }
+                        def ids = list.collect { meta, _folder, _sample -> meta.id }.join(" ")
+                        [ [id: 'independent'], folders, ids ] }
             SAVONT_EXPORT ( ch_reads_to_savont_export )
             ch_asv_fasta = SAVONT_EXPORT.out.fasta
             ch_asv_table = SAVONT_EXPORT.out.asv
@@ -565,7 +567,7 @@ workflow AMPLISEQ {
                 .collectFile(name: 'savont_stats.tsv', keepHeader: true, sort: true, cache: true, newLine: true)
         }
         // merge stats
-        if (params.skip_cutadapt || (params.sequencing_type == "nanopore" && !params.skip_chopper)) {
+        if (!params.skip_cutadapt || (params.sequencing_type == "nanopore" && !params.skip_chopper)) {
             MERGE_STATS_SAVONT (ch_stats, ch_stats_savont)
             ch_stats = MERGE_STATS_SAVONT.out.tsv
         } else {

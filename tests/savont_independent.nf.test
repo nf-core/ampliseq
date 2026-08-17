@@ -1,0 +1,44 @@
+nextflow_pipeline {
+
+    name "Test pipeline"
+    script "../main.nf"
+    tag "pipeline"
+    profile "test_savont_independent"
+
+    test("-profile test_savont_independent") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            // stable_path: All files + folders in ${params.outdir}/ with a stable path and file name
+            def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}','savont/intermediate/*/savont_asv_*/savont_*.log'])
+
+            // check log files
+            def savont_asv_logs = getAllFilesFromDir(params.outdir, include: ['savont/per-sample/*_savont.log'])
+            def savont_export_logs = getAllFilesFromDir(params.outdir, include: ['savont/*_savont_export.log'])
+
+            assert workflow.success
+            assertAll(
+                { assert snapshot(
+                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_ampliseq_software_mqc_versions.yml"),
+                    // All stable path name, with a relative path
+                    stable_path,
+                    // Manually chosen files for content checks
+                    path("$outputDir/savont/independent_feature-table.tsv"),
+                    path("$outputDir/savont/independent_final_asvs.fasta"),
+                    path("$outputDir/overall_summary.tsv"),
+                ).match() },
+
+                { assert snapshot(
+                    "savont_asv_logs all contain 'SAVONT COMPLETED SUCCESSFULLY': ${savont_asv_logs.every { log -> log.readLines().any { it.contains('SAVONT COMPLETED SUCCESSFULLY') } }}",
+                    "savont_export_logs contains 'Export complete.': ${savont_export_logs.every { log -> log.readLines().any { it.contains('Export complete.') } }}",
+                ).match("log-checks") },
+            )
+        }
+    }
+}

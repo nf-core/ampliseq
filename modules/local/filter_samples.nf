@@ -21,9 +21,9 @@ process FILTER_SAMPLES {
     #!/usr/bin/env Rscript
 
     # first column in meta has sample id
-    meta <- read.table( "$metadata", header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+    meta <- read.table( "$metadata", header = TRUE, sep = "\\t", stringsAsFactors = FALSE)
     # column names are sample ids, but first column is asv id
-    abund <- read.table( "$table", header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+    abund <- read.table( "$table", header = TRUE, sep = "\\t", stringsAsFactors = FALSE)
 
     # samples that arent in both files are dropped
     meta_filtered <- meta[meta[,1] %in% colnames(abund)[2:length(colnames(abund))],]

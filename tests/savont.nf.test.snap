@@ -1,4 +1,26 @@
 {
+    "comparison-checks": {
+        "content": [
+            "performance_summary.tsv: median F1 > 0.8: true",
+            "profile_summary.tsv: median F1 at level 6 > 0.8: true"
+        ],
+        "timestamp": "2026-08-14T13:34:09.353360077",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "log-checks": {
+        "content": [
+            "savont_asv_logs contains 'SAVONT COMPLETED SUCCESSFULLY': true",
+            "savont_export_logs contains 'Export complete.': true"
+        ],
+        "timestamp": "2026-08-14T11:32:37.950407652",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
     "-profile test_savont": {
         "content": [
             {
@@ -44,10 +66,6 @@
                     "R": "4.0.3",
                     "Biostrings": "2.58.0"
                 },
-                "FILTER_SSU": {
-                    "R": "4.0.3",
-                    "Biostrings": "2.58.0"
-                },
                 "FILTER_STATS": {
                     "python": "3.9.1",
                     "pandas": "1.1.5"
@@ -60,9 +78,6 @@
                     "R": "4.5.2"
                 },
                 "MERGE_STATS_FILTERLENASV": {
-                    "R": "4.5.2"
-                },
-                "MERGE_STATS_FILTERSSU": {
                     "R": "4.5.2"
                 },
                 "MERGE_STATS_FILTERTAXA": {
@@ -111,6 +126,9 @@
                 "SAVONT_ASV": {
                     "savont": "0.6.3"
                 },
+                "SAVONT_EXPORT": {
+                    "savont": "0.6.3"
+                },
                 "TREESUMMARIZEDEXPERIMENT": {
                     "R": "4.3.2",
                     "TreeSummarizedExperiment": "2.10.0"
@@ -130,14 +148,10 @@
                 "asv_length_filter/ASV_table.len.tsv",
                 "asv_length_filter/stats.len.tsv",
                 "barrnap",
-                "barrnap/ASV_seqs.ssu.fasta",
-                "barrnap/ASV_table.ssu.tsv",
-                "barrnap/result.tsv",
                 "barrnap/rrna.arc.gff",
                 "barrnap/rrna.bac.gff",
                 "barrnap/rrna.euk.gff",
                 "barrnap/rrna.mito.gff",
-                "barrnap/stats.ssu.tsv",
                 "barrnap/summary.tsv",
                 "comparison",
                 "comparison/abundances_per-sample.tsv",
@@ -421,6 +435,7 @@
                 "savont/pooled_feature-table.tsv",
                 "savont/pooled_final_asvs.fasta",
                 "savont/pooled_savont.log",
+                "savont/pooled_savont_export.log",
                 "savont/pooled_stats.tsv",
                 "summary_report",
                 "summary_report/asv_length_profile_before_length_filter.svg",
@@ -430,7 +445,15 @@
                 "summary_report/versions.yml",
                 "treesummarizedexperiment",
                 "treesummarizedexperiment/dada2_TreeSummarizedExperiment.rds"
-            ]
+            ],
+            "pooled_feature-table.tsv:md5,72a9798c8a2eba9f512ce1db1623bc2e",
+            "pooled_final_asvs.fasta:md5,7c1a6481177859d03d7201d0bef79d5d",
+            "pooled_stats.tsv:md5,c18004076a0a549f0e8f6f2b51cccd52",
+            "overall_summary.tsv:md5,70c98d09d973fd31596cf0a9ff59ebd7",
+            "nucleotide-differences.log:md5,f24904b2c25c361c0e0847cc702106b8",
+            "nucleotide-differences.tsv:md5,b247918365b4cf59f4fbb43ec23001a1",
+            "performance.log:md5,f9bb4a453c8582477868ac06a91be572",
+            "profile.log:md5,bab94e7a3cc253ade8f78b1fd146d007"
         ],
         "timestamp": "2026-08-04T18:53:20.660667878",
         "meta": {

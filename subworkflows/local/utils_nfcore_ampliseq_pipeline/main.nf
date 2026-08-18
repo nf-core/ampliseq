@@ -367,14 +367,14 @@ def validateInputParameters() {
             }
         // --dada_ref_taxonomy may list several comma-separated databases; only the first-listed one
         // ("the winner") ever feeds SBDI export, so that's the only one that needs to be compatible
-        } else if ( params.dada_ref_taxonomy && !sbdi_compatible_databases.contains(params.dada_ref_taxonomy.tokenize(',')[0]) ) {
+        } else if ( params.dada_ref_taxonomy && !sbdi_compatible_databases.contains(params.dada_ref_taxonomy.tokenize(',')[0].trim()) ) {
             error("Incompatible parameters: `--sbdiexport` does not work with the chosen database of `--dada_ref_taxonomy` because the expected taxonomic levels do not match.")
         }
     }
 
     if (params.addsh && params.dada_ref_taxonomy) {
         // addsh runs once per listed database, so every one of them needs SH lookup files, not just the first
-        def missingSh = params.dada_ref_taxonomy.tokenize(',').findAll { db -> !params.dada_ref_databases[db]["shfile"] }
+        def missingSh = params.dada_ref_taxonomy.tokenize(',')*.trim().findAll { db -> !params.dada_ref_databases[db]["shfile"] }
         if ( missingSh ) {
             def validDBs = ""
             params.dada_ref_databases.keySet().each { db ->
@@ -512,7 +512,8 @@ def makeComplement(seq) {
 def dadareftaxonomyExistsError() {
     if (params.dada_ref_databases && params.dada_ref_taxonomy) {
         // --dada_ref_taxonomy accepts a comma-separated list of databases; every listed one must exist
-        def invalidKeys = params.dada_ref_taxonomy.tokenize(',').findAll { db -> !params.dada_ref_databases.containsKey(db) }
+        def dbKeys = params.dada_ref_taxonomy.tokenize(',')*.trim()
+        def invalidKeys = dbKeys.findAll { db -> !params.dada_ref_databases.containsKey(db) }
         if (invalidKeys) {
             def error_string = "=============================================================================\n" +
                 "  DADA2 reference database(s) '${invalidKeys.join("', '")}' not found in any config file provided to the pipeline.\n" +
@@ -520,6 +521,20 @@ def dadareftaxonomyExistsError() {
                 "  ${params.dada_ref_databases.keySet().join(", ")}\n" +
                 "==================================================================================="
             error(error_string)
+        }
+
+        // Two listed keys that resolve to the exact same underlying reference files (e.g. an alias
+        // like `gtdb` and its pinned equivalent `gtdb=R11-RS232`) would otherwise silently drop one
+        // of them downstream instead of failing -- reject this explicitly instead.
+        def filesToKeys = [:]
+        dbKeys.each { db ->
+            def files = params.dada_ref_databases[db]["file"]
+            filesToKeys[files] = (filesToKeys[files] ?: []) + db
+        }
+        def collisions = filesToKeys.values().findAll { it.size() > 1 }
+        if (collisions) {
+            error("Incompatible parameters: `--dada_ref_taxonomy` lists databases that resolve to the exact same reference files, which is redundant: " +
+                collisions.collect { "'${it.join("', '")}'" }.join(", ") + ". List each database only once.")
         }
     }
 }

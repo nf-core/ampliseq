@@ -327,7 +327,7 @@ workflow AMPLISEQ {
         // --dada_ref_taxonomy accepts a comma-separated list of databases; the first-listed one is the
         // "winner" that feeds every downstream step that expects exactly one DADA2 taxonomy result
         // (real consolidation across databases is planned as a later, separate PR)
-        val_dada_ref_taxonomy_list = params.dada_ref_taxonomy.tokenize(',')
+        val_dada_ref_taxonomy_list = params.dada_ref_taxonomy.tokenize(',')*.trim()
 
         // database files, kept paired with the database they belong to. Looked up from static config,
         // not derived from channel emission order, so this is safe even though DOWNLOAD_REFERENCE_DADA's

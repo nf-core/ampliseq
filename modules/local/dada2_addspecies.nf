@@ -24,6 +24,7 @@ process DADA2_ADDSPECIES {
         'c("' + taxlevels_input.split(",").join('","') + '")' :
         'c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")'
     def seed = task.ext.seed ?: '100'
+    def db_key_safe = db_key.replace('=','_').replace('.','_')
     """
     #!/usr/bin/env Rscript
     suppressPackageStartupMessages(library(dada2))
@@ -64,7 +65,7 @@ process DADA2_ADDSPECIES {
 
     write.table(taxa_export, file = \"${taxtable.baseName}.species.tsv\", sep = "\\t", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '')
 
-    write.table('addSpecies\t$args\ntaxlevels\t$taxlevels\nseed\t$seed', file = "addSpecies.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+    write.table('addSpecies\t$args\ntaxlevels\t$taxlevels\nseed\t$seed', file = "addSpecies_${db_key_safe}.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
     writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
     """
 }

@@ -466,7 +466,7 @@
                 "dada_ref_tax_custom": {
                     "type": "string",
                     "format": "file-path",
-                    "help_text": "Overwrites `--dada_ref_taxonomy`. Either `--skip_dada_addspecies` (no species annotation) or `--dada_ref_tax_custom_sp` (species annotation) is additionally required. Consider also setting `--dada_assign_taxlevels`.\n\nMust be compatible to DADA2's assignTaxonomy function: 'Can be compressed. This reference fasta file should be formatted so that the id lines correspond to the taxonomy (or classification) of the associated sequence, and each taxonomic level is separated by a semicolon.' See also https://rdrr.io/bioc/dada2/man/assignTaxonomy.html",
+                    "help_text": "Overwrites `--dada_ref_taxonomy` entirely -- including every database listed in it, if `--dada_ref_taxonomy` is given a comma-separated list. Only this single custom database is used; `--dada_ref_taxonomy` is not combined with it. Either `--skip_dada_addspecies` (no species annotation) or `--dada_ref_tax_custom_sp` (species annotation) is additionally required. Consider also setting `--dada_assign_taxlevels`.\n\nMust be compatible to DADA2's assignTaxonomy function: 'Can be compressed. This reference fasta file should be formatted so that the id lines correspond to the taxonomy (or classification) of the associated sequence, and each taxonomic level is separated by a semicolon.' See also https://rdrr.io/bioc/dada2/man/assignTaxonomy.html",
                     "description": "Path to a custom DADA2 reference taxonomy database"
                 },
                 "dada_ref_tax_custom_sp": {

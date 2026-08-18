@@ -41,7 +41,13 @@ nextflow_pipeline {
                 // (GTDB's rename to "Pseudomonadota" only landed in later releases), so these two
                 // assertions test the same real-world phylum under the two databases' own classification
                 { assert gtdb_phyla.findAll { it == "Proteobacteria" }.size() >= 40 },
-                { assert rdp_phyla.findAll { it == "Proteobacteria" }.size() >= 60 }
+                { assert rdp_phyla.findAll { it == "Proteobacteria" }.size() >= 60 },
+                // ch_tax (feeding rel-table-2.tsv, phylum level -- tax_agglom_min default is 2) should be
+                // GTDB's classification (33 distinct phyla on this data), not RDP's (only 20 distinct
+                // phyla, and filtering before collapse can only shrink that count further) -- so a row
+                // count above 20 rules out RDP and confirms the first-listed database is really the one
+                // used downstream, not just published alongside the second-listed one
+                { assert ( path("$outputDir/qiime2/rel_abundance_tables/rel-table-2.tsv").readLines().size() - 2 ) > 20 }
             )
         }
     }

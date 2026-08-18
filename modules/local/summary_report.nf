@@ -82,6 +82,9 @@ process SUMMARY_REPORT  {
     // make named R list (comma separated)
     // all non-boolean or non-numeric values must be encumbered by single quotes (')!
     // all elements must have a value, i.e. booleans also need to be set to TRUE
+    // --dada_ref_taxonomy may list several comma-separated databases; only the first-listed one
+    // ("the winner") feeds downstream analysis, so that's the one to report here
+    def dada_ref_taxonomy_winner = params.dada_ref_taxonomy ? params.dada_ref_taxonomy.tokenize(',')[0].trim() : null
     def params_list_named  = [
         "css='$report_styles'",
         "report_logo='$report_logo'",
@@ -134,7 +137,7 @@ process SUMMARY_REPORT  {
         "dada_min_boot=$params.dada_min_boot",
         itsx_cutasv_summary ? "itsx_cutasv_summary='$itsx_cutasv_summary',cut_its='$params.cut_its'" : "",
         dada2_tax ? "dada2_taxonomy='$dada2_tax'" : "",
-        dada2_tax && !params.dada_ref_tax_custom ? "dada2_ref_tax_title='${params.dada_ref_databases[params.dada_ref_taxonomy]["title"]}',dada2_ref_tax_file='${params.dada_ref_databases[params.dada_ref_taxonomy]["file"]}',dada2_ref_tax_citation='${params.dada_ref_databases[params.dada_ref_taxonomy]["citation"]}'" : "",
+        dada2_tax && !params.dada_ref_tax_custom ? "dada2_ref_tax_title='${params.dada_ref_databases[dada_ref_taxonomy_winner]["title"]}',dada2_ref_tax_file='${params.dada_ref_databases[dada_ref_taxonomy_winner]["file"]}',dada2_ref_tax_citation='${params.dada_ref_databases[dada_ref_taxonomy_winner]["citation"]}'" : "",
         cut_dada_ref_taxonomy ? "cut_dada_ref_taxonomy='$cut_dada_ref_taxonomy'" : "",
         sintax_tax && !params.sintax_ref_tax_custom ? "sintax_taxonomy='$sintax_tax',sintax_ref_tax_title='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["title"]}',sintax_ref_tax_file='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["file"]}',sintax_ref_tax_citation='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["citation"]}'" : "",
         sintax_tax && params.sintax_ref_tax_custom ? "sintax_taxonomy='$sintax_tax',sintax_ref_tax_title='User-supplied reference database',sintax_ref_tax_file='${params.sintax_ref_tax_custom}',sintax_ref_tax_citation='Not specified'" : "",

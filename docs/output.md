@@ -23,6 +23,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [Cutadapt](#cutadapt) - Primer trimming
   - [MultiQC](#multiqc) - Aggregate report describing results
 - [ASV inferrence with DADA2](#asv-inferrence-with-dada2) - Infer Amplicon Sequence Variants (ASVs)
+- [Summary tables](#summary-tables) - Consistently-formatted tables for downstream analysis in R, Python, etc.
 - [Optional ASV post processing](#optional-asv-post-processing) - Filter ASVs to optimize downstream analysis
   - [VSEARCH cluster](#vsearch-cluster) - Centroid fasta file, filtered asv table, and stats
   - [Barrnap](#barrnap) - Predict ribosomal RNA sequences and optional filtering
@@ -205,6 +206,19 @@ DADA2 reduces sequence errors and dereplicates sequences by quality filtering, d
 - `dada2/QC/`
   - `*.md.err.convergence.txt`: Convergence values for DADA2's dada command on monotone decreasing (corrected) quality scores, should reduce over several magnitudes and approaching 0.
   - `*.md.err.pdf`: Estimated error rates for each possible transition on monotone decreasing (corrected) quality scores. The black line shows the estimated error rates after convergence of the machine-learning algorithm. The red line shows the error rates expected under the nominal definition of the Q-score. The estimated error rates (black line) should be a good fit to the observed rates (points), and the error rates should drop with increased quality.
+
+</details>
+
+### Summary tables
+
+Tables with consistent, lower-case column names, ready to load into R, Python or another tool of choice without pipeline-specific parsing. These are sourced directly from DADA2's own raw output, before any of the optional post-processing filters below run.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `summary_tables/`
+  - `ampliseq.counts.tsv.gz`: ASV counts in long format (`asv_id`, `sample`, `count`), rows with a count of 0 are dropped.
+  - `ampliseq.counts.parquet`: The same table in [Parquet](https://parquet.apache.org/) format. Skip this file with `--skip_parquet_summary`.
 
 </details>
 

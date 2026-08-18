@@ -78,6 +78,9 @@
                     "R": "4.5.2",
                     "decontam": "1.30.0"
                 },
+                "DUCKDB_TABLE2PARQUET": {
+                    "duckdb": "1.5.5"
+                },
                 "FASTQC": {
                     "fastqc": "0.12.1"
                 },
@@ -232,6 +235,10 @@
                 },
                 "SBDIEXPORTREANNOTATE": {
                     "R": "3.6.3"
+                },
+                "SUMMARY_TABLE_COUNTS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
                 },
                 "TREESUMMARIZEDEXPERIMENT": {
                     "R": "4.3.2",
@@ -2256,6 +2263,9 @@
                 "summary_report/stacked_barchart_of_reads.svg",
                 "summary_report/summary_report.html",
                 "summary_report/versions.yml",
+                "summary_tables",
+                "summary_tables/ampliseq.counts.parquet",
+                "summary_tables/ampliseq.counts.tsv.gz",
                 "treesummarizedexperiment",
                 "treesummarizedexperiment/dada2_TreeSummarizedExperiment.rds",
                 "treesummarizedexperiment/qiime2_TreeSummarizedExperiment.rds",
@@ -2285,6 +2295,7 @@
             "ref_taxonomy.gtdb_R07-RS207.txt:md5,965c6b1f9097128572a5ec2b8e9cef06",
             "DADA2_stats.tsv:md5,b61a945febb806ed63729bcaa8ae0575",
             "DADA2_table.tsv:md5,7ec2214a627e7492d31ac2672f82f94d",
+            439,
             "decontaminated.tsv:md5,3c94a1d7c56657fcbfaea344f0eae09e",
             "decontaminated_counts.tsv:md5,f519211d0ac2cb979b09d3803e8ca3fa",
             313,

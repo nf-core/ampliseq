@@ -59,6 +59,9 @@
                     "R": "4.5.2",
                     "decontam": "1.30.0"
                 },
+                "DUCKDB_TABLE2PARQUET": {
+                    "duckdb": "1.5.5"
+                },
                 "EPANG_PLACE": {
                     "epang": "0.3.8"
                 },
@@ -175,6 +178,10 @@
                 },
                 "RENAME_RAW_DATA_FILES": {
                     "bash": "5.0.17(1)-release"
+                },
+                "SUMMARY_TABLE_COUNTS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
                 },
                 "TREESUMMARIZEDEXPERIMENT": {
                     "R": "4.3.2",
@@ -1191,6 +1198,9 @@
                 "summary_report/stacked_barchart_of_reads.svg",
                 "summary_report/summary_report.html",
                 "summary_report/versions.yml",
+                "summary_tables",
+                "summary_tables/ampliseq.counts.parquet",
+                "summary_tables/ampliseq.counts.tsv.gz",
                 "treesummarizedexperiment",
                 "treesummarizedexperiment/pplace_TreeSummarizedExperiment.rds",
                 "treesummarizedexperiment/qiime2_TreeSummarizedExperiment.rds"

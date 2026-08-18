@@ -45,6 +45,9 @@
                     "R": "4.5.2",
                     "dada2": "1.38.0"
                 },
+                "DUCKDB_TABLE2PARQUET": {
+                    "duckdb": "1.5.5"
+                },
                 "FASTQC": {
                     "fastqc": "0.12.1"
                 },
@@ -148,6 +151,10 @@
                     "qiime2": "2021.4.0",
                     "qiime2 plugin sidle": 2020.08,
                     "q2-sidle": "2021.2.dev0"
+                },
+                "SUMMARY_TABLE_COUNTS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
                 },
                 "TRUNCLEN": {
                     "python": "3.9.1",
@@ -596,7 +603,10 @@
                 "sidle/reconstructed/reconstruction_table/sample-frequencies.pdf",
                 "sidle/reconstructed/reconstruction_table/sample-frequencies.png",
                 "sidle/reconstructed/reconstruction_table/sample-frequency-detail.csv",
-                "sidle/reconstructed/reconstruction_table/sample-frequency-detail.html"
+                "sidle/reconstructed/reconstruction_table/sample-frequency-detail.html",
+                "summary_tables",
+                "summary_tables/ampliseq.counts.parquet",
+                "summary_tables/ampliseq.counts.tsv.gz"
             ],
             "samplesheet_multiregion_v3.tsv:md5,07e00b7352c5ecec1546c20c4d28f62e",
             "metadata_multiregion.tsv:md5,e2671821f0cf64f15a50d3ddac8f20d1",

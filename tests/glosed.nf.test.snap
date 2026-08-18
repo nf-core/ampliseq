@@ -170,6 +170,9 @@
                 "summary_report/stacked_barchart_of_reads.svg",
                 "summary_report/summary_report.html",
                 "summary_report/versions.yml",
+                "summary_tables",
+                "summary_tables/ampliseq.counts.parquet",
+                "summary_tables/ampliseq.counts.tsv.gz",
                 "treesummarizedexperiment",
                 "treesummarizedexperiment/dada2_TreeSummarizedExperiment.rds"
             ],

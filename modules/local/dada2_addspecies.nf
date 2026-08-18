@@ -10,12 +10,10 @@ process DADA2_ADDSPECIES {
         'community.wave.seqera.io/library/bioconductor-dada2_r-base_r-digest_tbb:38acac09bac46f36' }"
 
     input:
-    path(taxtable)
-    path(database)
-    val(taxlevels_input)
+    tuple val(db_key), path(taxtable), path(database), val(taxlevels_input)
 
     output:
-    path("${taxtable.baseName}.species.tsv")   , emit: tsv
+    tuple val(db_key), path("${taxtable.baseName}.species.tsv"), emit: tsv
     path "versions.yml" , emit: versions_dada2_addspecies, topic: versions
     path "*.args.txt"   , emit: args
 

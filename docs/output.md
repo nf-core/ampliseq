@@ -340,6 +340,8 @@ Taxonomic classification of ASVs can be performed with a choice of DADA2, SINTAX
 
 DADA2 is the default method for taxonomy classification. Depending on the reference taxonomy database, sequences can be classified down to species rank. Species classification is reported in columns "Species" using DADA2's assignTaxonomy function or "Species_exact" using DADA2's addSpecies function, the latter only assigns exact sequence matches. Generally, species assignment without exact matches are much less trustworthy than those with exact matches. With short amplicons, e.g. 16S rRNA gene V4 region, the non-exact species annotation is not recommended to be trusted. The longer the ASVs are, the more acceptable is the non-exact species classification, e.g. PacBio (nearly) full length 16S rRNA gene sequences are thought to be trustworthy.
 
+`--dada_ref_taxonomy` accepts a comma-separated list of databases (e.g. `--dada_ref_taxonomy gtdb,silva`) to classify against several databases at once; one full set of the output files below is published per listed database. Only the **first-listed** database feeds every downstream step that expects a single taxonomy (QIIME2 filtering, diversity, barplots, ANCOM, R objects) -- consolidating results across multiple databases into one is planned as a future addition.
+
 In addition to the "confidence" column (the bootstrap support for the most specific rank assigned), each taxonomy table also has one `<rank>_confidence` column per rank (e.g. `phylum_confidence`), giving assignTaxonomy's bootstrap support at that specific rank.
 
 Files when _not_ using ITSx (default):

@@ -365,19 +365,25 @@ def validateInputParameters() {
             if ( !sbdi_compatible_databases.contains(params.sintax_ref_taxonomy) ) {
                 error("Incompatible parameters: `--sbdiexport` does not work with the chosen database of `--sintax_ref_taxonomy` because the expected taxonomic levels do not match.")
             }
-        } else if ( !sbdi_compatible_databases.contains(params.dada_ref_taxonomy) ) {
+        // --dada_ref_taxonomy may list several comma-separated databases; only the first-listed one
+        // ("the winner") ever feeds SBDI export, so that's the only one that needs to be compatible
+        } else if ( params.dada_ref_taxonomy && !sbdi_compatible_databases.contains(params.dada_ref_taxonomy.tokenize(',')[0]) ) {
             error("Incompatible parameters: `--sbdiexport` does not work with the chosen database of `--dada_ref_taxonomy` because the expected taxonomic levels do not match.")
         }
     }
 
-    if (params.addsh && !params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]) {
-        def validDBs = ""
-        params.dada_ref_databases.keySet().each { db ->
-            if (params.dada_ref_databases[db]["shfile"]) {
-                validDBs += " " + db
+    if (params.addsh && params.dada_ref_taxonomy) {
+        // addsh runs once per listed database, so every one of them needs SH lookup files, not just the first
+        def missingSh = params.dada_ref_taxonomy.tokenize(',').findAll { db -> !params.dada_ref_databases[db]["shfile"] }
+        if ( missingSh ) {
+            def validDBs = ""
+            params.dada_ref_databases.keySet().each { db ->
+                if (params.dada_ref_databases[db]["shfile"]) {
+                    validDBs += " " + db
+                }
             }
+            error("Species hypothesis (SH) lookup files are not available for `--dada_ref_taxonomy` database(s): ${missingSh.join(', ')}. This currently includes `glosed`. The option `--addsh` can only be used with databases that provide precomputed SH lookup files (currently UNITE reference databases):\n" + validDBs + ".")
         }
-        error("Species hypothesis (SH) lookup files are not available for `--dada_ref_taxonomy ${params.dada_ref_taxonomy}`. This currently includes `glosed`. The option `--addsh` can only be used with databases that provide precomputed SH lookup files (currently UNITE reference databases):\n" + validDBs + ".")
     }
 
     if (params.addsh && params.cut_its == "none") {
@@ -504,13 +510,17 @@ def makeComplement(seq) {
 // Exit pipeline if incorrect --dada_ref_taxonomy key provided
 //
 def dadareftaxonomyExistsError() {
-    if (params.dada_ref_databases && params.dada_ref_taxonomy && !params.dada_ref_databases.containsKey(params.dada_ref_taxonomy)) {
-        def error_string = "=============================================================================\n" +
-            "  DADA2 reference database '${params.dada_ref_taxonomy}' not found in any config file provided to the pipeline.\n" +
-            "  Currently, the available reference taxonomy keys for `--dada_ref_taxonomy` are:\n" +
-            "  ${params.dada_ref_databases.keySet().join(", ")}\n" +
-            "==================================================================================="
-        error(error_string)
+    if (params.dada_ref_databases && params.dada_ref_taxonomy) {
+        // --dada_ref_taxonomy accepts a comma-separated list of databases; every listed one must exist
+        def invalidKeys = params.dada_ref_taxonomy.tokenize(',').findAll { db -> !params.dada_ref_databases.containsKey(db) }
+        if (invalidKeys) {
+            def error_string = "=============================================================================\n" +
+                "  DADA2 reference database(s) '${invalidKeys.join("', '")}' not found in any config file provided to the pipeline.\n" +
+                "  Currently, the available reference taxonomy keys for `--dada_ref_taxonomy` are:\n" +
+                "  ${params.dada_ref_databases.keySet().join(", ")}\n" +
+                "==================================================================================="
+            error(error_string)
+        }
     }
 }
 

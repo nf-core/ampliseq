@@ -8,13 +8,10 @@ process ASSIGNSH {
         'biocontainers/pandas:1.1.5' }"
 
     input:
-    path asvtable
-    path sh_info
-    tuple val(meta), path(blastfile)
-    val  outtable
+    tuple val(db_key), path(asvtable), path(sh_info), path(blastfile), val(outtable)
 
     output:
-    path outtable        , emit: tsv
+    tuple val(db_key), path(outtable), emit: tsv
     path "versions.yml"  , emit: versions_assignsh, topic: versions
 
 

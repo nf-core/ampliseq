@@ -307,37 +307,55 @@ workflow AMPLISEQ {
     }
 
     // DADA2
-    ch_dada_assigntax     = channel.empty()
-    ch_dada_addspecies    = channel.empty()
-    ch_dada_ref_taxonomy  = channel.empty()
-    val_dada_ref_taxonomy = "none"
-    val_dada_taxlevels    = ""
+    ch_dada_assigntax          = channel.empty()
+    ch_dada_addspecies         = channel.empty()
+    ch_dada_ref_taxonomy       = channel.empty()
+    val_dada_ref_taxonomy_list = []
+    val_dada_taxlevels         = ""
 
     if (params.dada_ref_tax_custom) {
         //custom ref taxonomy input from params.dada_ref_tax_custom & params.dada_ref_tax_custom_sp
-        ch_dada_assigntax = channel.fromPath(params.dada_ref_tax_custom)
+        val_dada_ref_taxonomy_list = [ "user" ]
+        ch_dada_assigntax = channel.fromPath(params.dada_ref_tax_custom).map { f -> [ "user", f ] }
         if (params.dada_ref_tax_custom_sp) {
-            ch_dada_addspecies = channel.fromPath(params.dada_ref_tax_custom_sp)
+            ch_dada_addspecies = channel.fromPath(params.dada_ref_tax_custom_sp).map { f -> [ "user", f ] }
         }
         ch_dada_ref_taxonomy = channel.empty()
-        val_dada_ref_taxonomy = "user"
         val_dada_taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" : ""
     } else if (params.dada_ref_taxonomy && !params.skip_dada_taxonomy && !params.skip_taxonomy) {
         //standard ref taxonomy input from params.dada_ref_taxonomy & conf/ref_databases.config
-        // database files
-        ch_dada_ref_taxonomy_url = channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["file"])
-        ch_dada_ref_taxonomy =
-            params.ref_taxonomy_storage ? DOWNLOAD_REFERENCE_DADA( ch_dada_ref_taxonomy_url ).db.collect() :
-                ch_dada_ref_taxonomy_url.map { it -> file(it) }
-        // name
-        val_dada_ref_taxonomy = params.dada_ref_taxonomy.replace('=','_').replace('.','_')
-        // taxlevels
-        val_dada_taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" :
-            params.dada_ref_databases[params.dada_ref_taxonomy]["taxlevels"] ?
-                params.dada_ref_databases[params.dada_ref_taxonomy]["taxlevels"] : ""
+        // --dada_ref_taxonomy accepts a comma-separated list of databases; the first-listed one is the
+        // "winner" that feeds every downstream step that expects exactly one DADA2 taxonomy result
+        // (real consolidation across databases is planned as a later, separate PR)
+        val_dada_ref_taxonomy_list = params.dada_ref_taxonomy.tokenize(',')
 
-        if ( params.run_pplace && params.dada_ref_databases[params.dada_ref_taxonomy]["pplace"] ) {
-            ch_pplace_sheet = channel.fromList(params.dada_ref_databases[params.dada_ref_taxonomy]["pplace"])
+        // database files, kept paired with the database they belong to. Looked up from static config,
+        // not derived from channel emission order, so this is safe even though DOWNLOAD_REFERENCE_DADA's
+        // own output doesn't carry the database key back.
+        def dbKeyForUrl = [:]
+        val_dada_ref_taxonomy_list.each { db_key ->
+            params.dada_ref_databases[db_key]["file"].each { url -> dbKeyForUrl[ file(url).name ] = db_key }
+        }
+        ch_dada_ref_taxonomy_url = channel.fromList(
+            val_dada_ref_taxonomy_list.collectMany { db_key -> params.dada_ref_databases[db_key]["file"] }
+        )
+        ch_dada_ref_taxonomy =
+            params.ref_taxonomy_storage ?
+                DOWNLOAD_REFERENCE_DADA( ch_dada_ref_taxonomy_url ).db
+                    .map { f -> [ dbKeyForUrl[f.name], f ] }
+                    .groupTuple(by: 0) :
+                ch_dada_ref_taxonomy_url
+                    .map { url -> [ dbKeyForUrl[file(url).name], file(url) ] }
+                    .groupTuple(by: 0)
+
+        // taxlevels (of the winner -- used only by the addSpecies-compatibility check below; every
+        // listed database's own taxlevels are derived independently inside DADA2_TAXONOMY_WF)
+        val_dada_taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" :
+            params.dada_ref_databases[val_dada_ref_taxonomy_list[0]]["taxlevels"] ?
+                params.dada_ref_databases[val_dada_ref_taxonomy_list[0]]["taxlevels"] : ""
+
+        if ( params.run_pplace && params.dada_ref_databases[val_dada_ref_taxonomy_list[0]]["pplace"] ) {
+            ch_pplace_sheet = channel.fromList(params.dada_ref_databases[val_dada_ref_taxonomy_list[0]]["pplace"])
                 .map { it ->
                     [
                         meta: [
@@ -825,24 +843,30 @@ workflow AMPLISEQ {
     if (!params.skip_taxonomy && !params.skip_dada_taxonomy) {
         if (!params.dada_ref_tax_custom) {
             //standard ref taxonomy input from conf/ref_databases.config
-            FORMAT_TAXONOMY ( ch_dada_ref_taxonomy.collect(), val_dada_ref_taxonomy )
+            FORMAT_TAXONOMY ( ch_dada_ref_taxonomy )
             ch_dada_assigntax = FORMAT_TAXONOMY.out.assigntax
             ch_dada_addspecies = FORMAT_TAXONOMY.out.addspecies
         }
-        ch_dada2_tax =
+        ch_dada2_taxonomy_wf =
             DADA2_TAXONOMY_WF (
                 ch_dada_assigntax,
                 ch_dada_addspecies,
-                val_dada_ref_taxonomy,
+                val_dada_ref_taxonomy_list,
                 ch_fasta,
                 ch_full_fasta,
-                val_dada_taxlevels,
                 params.dada_assign_chunksize
-            ).tax
-        ch_tax_tsv = ch_tax_tsv.mix( ch_dada2_tax.map { it = [ [database:val_dada_ref_taxonomy, classifier:"DADA2"], file(it) ] } )
+            )
+        // one entry per listed database -- feeds ch_tax_tsv (already tolerant of multiple entries per classifier)
+        ch_tax_tsv = ch_tax_tsv.mix( ch_dada2_taxonomy_wf.tax.map { db_key, f -> [ [database: db_key.replace('=','_').replace('.','_'), classifier:"DADA2"], file(f) ] } )
+        // the first-listed database is the "winner" that feeds every other downstream consumer, unchanged
+        ch_dada2_tax = ch_dada2_taxonomy_wf.tax.filter { db_key, _f -> db_key == val_dada_ref_taxonomy_list[0] }.map { _db_key, f -> f }
+        ch_dada2_cut_tax = params.cut_dada_ref_taxonomy ?
+            ch_dada2_taxonomy_wf.cut_tax.filter { meta, _log -> meta.db_key == val_dada_ref_taxonomy_list[0] } :
+            ch_dada2_taxonomy_wf.cut_tax
         ch_tax_for_robject = ch_tax_for_robject.mix ( ch_dada2_tax.map { it -> [ "dada2", file(it) ] } )
     } else {
         ch_dada2_tax = channel.empty()
+        ch_dada2_cut_tax = [[],[]]
     }
 
     //Kraken2
@@ -1182,7 +1206,7 @@ workflow AMPLISEQ {
             SBDIEXPORTREANNOTATE ( ch_sintax_tax, "sintax", db_version, params.cut_its, ch_barrnapsummary.ifEmpty([]) )
         } else {
             SBDIEXPORT ( ch_asv_table, ch_dada2_tax, ch_metadata )
-            db_version = params.dada_ref_databases[params.dada_ref_taxonomy]["dbversion"]
+            db_version = params.dada_ref_databases[val_dada_ref_taxonomy_list[0]]["dbversion"]
             SBDIEXPORTREANNOTATE ( ch_dada2_tax, "dada2", db_version, params.cut_its, ch_barrnapsummary.ifEmpty([]) )
         }
     }
@@ -1349,7 +1373,7 @@ workflow AMPLISEQ {
             params.filter_codons ? FILTER_CODONS.out.stats.ifEmpty( [] ) : [],
             params.cut_its != "none" ? ch_its_summary.ifEmpty( [] ) : [],
             !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy ? ch_dada2_tax.ifEmpty( [] ) : [],
-            !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy ? DADA2_TAXONOMY_WF.out.cut_tax.ifEmpty( [[],[]] ) : [[],[]],
+            !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy ? ch_dada2_cut_tax.ifEmpty( [[],[]] ) : [[],[]],
             !params.skip_taxonomy && (params.sintax_ref_taxonomy || params.sintax_ref_tax_custom) ? ch_sintax_tax.ifEmpty( [] ) : [],
             !params.skip_taxonomy && (params.vsearch_lca_ref_tax_custom || params.vsearch_lca_ref_taxonomy) ? ch_vsearch_lca_tax.ifEmpty( [] ) : [],
             !params.skip_taxonomy && ( params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom ) ? KRAKEN2_TAXONOMY_WF.out.tax_tsv.ifEmpty( [] ) : [],

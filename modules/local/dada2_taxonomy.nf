@@ -8,14 +8,11 @@ process DADA2_TAXONOMY {
         'community.wave.seqera.io/library/bioconductor-dada2_r-base_r-digest_tbb:38acac09bac46f36' }"
 
     input:
-    path(fasta)
-    path(database)
-    val(outfile)
-    val(taxlevels_input)
+    tuple val(db_key), path(fasta), path(database), val(outfile), val(taxlevels_input)
 
     output:
-    path("*${outfile}.tsv")  , emit: tsv
-    path( "*${outfile}.rds" ), emit: rds
+    tuple val(db_key), path("*${outfile}.tsv") , emit: tsv
+    tuple val(db_key), path("*${outfile}.rds") , emit: rds
     path "versions.yml"      , emit: versions_dada2_taxonomy, topic: versions
     path "*.args.txt"        , emit: args
 

@@ -1,0 +1,34 @@
+nextflow_pipeline {
+
+    name "Test pipeline"
+    script "../main.nf"
+    tag "pipeline"
+    profile "test_multidb"
+
+    test("-profile test_multidb") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            // stable_path: All files + folders in ${params.outdir}/ with a stable path and file name
+            def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
+
+            assert workflow.success
+            assertAll(
+                { assert snapshot(
+                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_ampliseq_software_mqc_versions.yml"),
+                    // All stable path name, with a relative path -- covers presence of both databases'
+                    // dada2/ output files and both COMBINE_TABLE entries under qiime2/rel_abundance_tables/
+                    stable_path
+                ).match() },
+                // the two databases' results are genuinely different, not both accidentally resolving to the same database
+                { assert path("$outputDir/dada2/ASV_tax.gtdb_R07-RS207.tsv").text != path("$outputDir/dada2/ASV_tax.rdp_18.tsv").text }
+            )
+        }
+    }
+}

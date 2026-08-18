@@ -361,7 +361,7 @@ Expected abundances per sequence (`--expected_abundances`) enable sample specifi
 
 Observed and expected sequences can form one-to-many, many-to-one, and many-to-many matches, depending on `--expected_sequences_region` and `--expected_sequences_mismatches` settings. 
 The parameter `--expected_sequences_merge` determines how observed and expected sequences will be aggregated by their analysed region. By default, when one observed sequence matches to several expected sequences, the expected sequence IDs will be concatenated and vice versa.
-That means, for example, if observed sequences are shorter than expected sequences and the analysed region is "query", each expected sequence (ID) that matches the same observed sequence will be aggregated.
+That means, for example, if observed sequences are shorter than expected sequences and the analysed region is "observed", each expected sequence (ID) that matches the same observed sequence will be aggregated.
 This allows to compare unique comparable sequenced regions and their abundances.
 
 Here an example of the aggregation of observed and expected IDs and abundances, assuming the table represents accepted matches.

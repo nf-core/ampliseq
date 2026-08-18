@@ -78,14 +78,14 @@ alignment$qterminalgaps <- alignment$ql - (abs(alignment$qihi-alignment$qilo)+1)
 alignment$qmism <- alignment$gaps + alignment$qterminalgaps + alignment$mism
 alignment$tterminalgaps <- alignment$tl - (abs(alignment$tihi-alignment$tilo)+1)
 alignment$tmism <- alignment$gaps + alignment$tterminalgaps + alignment$mism
-if( query_or_target=="query" ) {
+if( query_or_target=="observed" ) {
 	alignment$mismatch_final <- alignment$qmism
-} else if( query_or_target=="target" ) {
+} else if( query_or_target=="expected" ) {
 	alignment$mismatch_final <- alignment$tmism
 } else if( query_or_target=="alignment" ) {
 	alignment$mismatch_final <- alignment$gaps + alignment$mism
 } else {
-	stop( paste("ERROR -",query_or_target,"is not valid (valid: query,target,alignment)") )
+	stop( paste("ERROR -",query_or_target,"is not valid (valid: observed,expected,alignment)") )
 }
 
 # order for reproducibility

@@ -1003,9 +1003,9 @@
                 "expected_sequences_region": {
                     "type": "string",
                     "description": "What region of the sequence comparison is evaluated",
-                    "help_text": "`alignment`: only the alignment region is evaluated including mismatches and gaps. `query`: alignment region and terminal gaps to the query sequence, i.e. constructed ASV sequence, are evaluated. `target`: alignment region and terminal gaps to the target sequence, i.e. expected sequence, are evaluated.",
-                    "default": "query",
-                    "enum": ["alignment", "query", "target"]
+                    "help_text": "`alignment`: only the alignment region is evaluated including mismatches and gaps. `observed`: alignment region and terminal gaps to the observed sequence, i.e. constructed ASV sequence, are evaluated. `expected`: alignment region and terminal gaps to the expected sequence, are evaluated.",
+                    "default": "observed",
+                    "enum": ["alignment", "observed", "expected"]
                 },
                 "expected_sequences_mismatches": {
                     "type": "integer",

@@ -631,6 +631,15 @@ workflow AMPLISEQ {
         //
         SUMMARY_TABLE_COUNTS ( DADA2_MERGE.out.asv )
         ch_summary_tables = ch_summary_tables.mix( SUMMARY_TABLE_COUNTS.out.tsv )
+
+        //
+        // MODULE: Also write the summary tables as Parquet
+        //
+        if ( !params.skip_parquet_summary ) {
+            DUCKDB_TABLE2PARQUET (
+                ch_summary_tables.map { tsv -> [ [ id: tsv.name.replaceAll(/\.tsv(\.gz)?$/, '') ], tsv ] }
+            )
+        }
     }
 
     //
@@ -1215,15 +1224,6 @@ workflow AMPLISEQ {
             ch_expected_sequences,  // expected sequences (fasta)
             ch_expected_abundances, // expected sequences (abundance table)
             ch_expected_profile     // expected taxonomic profile
-        )
-    }
-
-    //
-    // MODULE: Also write the summary tables as Parquet
-    //
-    if ( !params.skip_parquet_summary ) {
-        DUCKDB_TABLE2PARQUET (
-            ch_summary_tables.map { tsv -> [ [ id: tsv.name.replaceAll(/\.tsv(\.gz)?$/, '') ], tsv ] }
         )
     }
 

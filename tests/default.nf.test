@@ -61,7 +61,6 @@ nextflow_pipeline {
                     path("$outputDir/qiime2/ancombc2_formula/Category-treatment1-ASV/ASV-treatment1::a.volcano_plot.tsv")
                 ).match() },
                 { assert path("$outputDir/decontam/decontaminated_details.tsv").csv(sep: '\t', header: true).columns["freq"].sum() > 0.99999 },
-                { assert path("$outputDir/summary_tables/ampliseq.counts.parquet").exists() },
                 { assert path("$outputDir/summary_tables/ampliseq.counts.parquet").size() > 0 },
             )
         }

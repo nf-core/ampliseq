@@ -58,9 +58,6 @@
                     "R": "4.5.2",
                     "dada2": "1.38.0"
                 },
-                "DUCKDB_TABLE2PARQUET": {
-                    "duckdb": "1.5.5"
-                },
                 "FILTER_LEN_ASV": {
                     "R": "4.0.3",
                     "Biostrings": "2.58.0"
@@ -964,7 +961,6 @@
                 "summary_report/summary_report.html",
                 "summary_report/versions.yml",
                 "summary_tables",
-                "summary_tables/ampliseq.counts.parquet",
                 "summary_tables/ampliseq.counts.tsv.gz",
                 "treesummarizedexperiment",
                 "treesummarizedexperiment/dada2_TreeSummarizedExperiment.rds"

@@ -10,6 +10,7 @@ nextflow_pipeline {
         when {
             params {
                 outdir = "$outputDir"
+                skip_parquet_summary = true
             }
         }
 
@@ -18,6 +19,7 @@ nextflow_pipeline {
             def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
 
             assertAll(
+                { assert !file("$outputDir/summary_tables/ampliseq.counts.parquet").exists() },
                 { assert snapshot(
                     // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
                     removeNextflowVersion("$outputDir/pipeline_info/nf_core_ampliseq_software_mqc_versions.yml"),

@@ -8,9 +8,14 @@ tag             <- args[1] # tag for each sample
 alignmentFILE   <- args[2] # alignment file; expected columns: query, target, mismatches_final
 obsabundFILE    <- args[3] # observed abundance*
 expabundFILE    <- args[4] # expected abundance*
-fbeta           <- as.numeric(args[5]) # Fbeta weight, default 2; 1=precision and recall equally weighted (=F1 score), 2=weighs recall higher than precision, 0.5=weighs recall lower than precision.
-mismatch_threshold <- as.numeric(args[6])
+fbeta           <- if (length(args) >= 5) as.numeric(args[5]) else 2 # Fbeta weight, default 2; 1=precision and recall equally weighted (=F1 score), 2=weighs recall higher than precision, 0.5=weighs recall lower than precision.
+mismatch_threshold <- if (length(args) >= 6) as.numeric(args[6]) else 0
+merge_mode      <- if (length(args) >= 7) args[7] else "none" # merge query=observed or target=expected IDs based on matches? Allowed: all,observed,expected,none
 # tab-separated file with header: first column with sequences name, following one or many columns (=samples) with numeric values (=abundance), only presence (>0)/absence are used here
+
+if( !merge_mode %in% c("all","observed","expected","none") ) {
+	stop( paste("ERROR -",merge_mode,"is not valid (valid: all,observed,expected,none)") )
+}
 
 # function to produce statistics
 get_stats <- function(i_exp,i_obs,df,sample) {
@@ -119,8 +124,14 @@ get_stats_distances <- function(expected_abund,observed_abund,df,sample) {
 get_stats_abundance <- function(expected_abund,observed_abund,df,sample) {
 	if( length(expected_abund)==0 ) { next }
 	# stats
-	pearson_cor <- cor.test(expected_abund, observed_abund, method = "pearson")
-	spearman_rho <- cor.test(expected_abund, observed_abund, method = "spearman")
+	pearson_cor <- NA
+	spearman_rho <- NA
+	if (length(expected_abund)>2) {
+		pearson_cor <- cor.test(expected_abund, observed_abund, method = "pearson")
+		pearson_cor <- as.list(pearson_cor$estimate)[[1]]
+		spearman_rho <- cor.test(expected_abund, observed_abund, method = "spearman")
+		spearman_rho <- as.list(spearman_rho$estimate)[[1]]
+	}
 	percent_dev <- abs((observed_abund - expected_abund) / expected_abund) * 100
 	# save
 	types <- c(
@@ -132,8 +143,8 @@ get_stats_abundance <- function(expected_abund,observed_abund,df,sample) {
 		"ps"
 	)
 	values <- c(
-		as.list(pearson_cor$estimate)[[1]], # Pearson's Correlation (cor)
-		as.list(spearman_rho$estimate)[[1]], # Spearman's Rank Correlation (rho)
+		pearson_cor, # Pearson's Correlation (cor)
+		spearman_rho, # Spearman's Rank Correlation (rho)
 		median(percent_dev, na.rm = TRUE), # Median Percent Abundance Deviation
 		mean(abs(observed_abund - expected_abund), na.rm = TRUE), # Mean Absolute Error (MAE)
 		sqrt(mean((observed_abund - expected_abund)^2, na.rm = TRUE)), # Root Mean Square Error (RMSE)
@@ -216,10 +227,12 @@ for (sample in SAMPLES) {
 	s_obs = s_obs[s_obs[,2] > 0,]
 	# keep only alignments where both, query and target are present
 	s_alignment <- alignment[alignment$query %in% s_obs$ID & alignment$target %in% s_exp$ID,]
-
-	# (2) AGGREGATE - combine IDs and abundance if multiple query or targets match each other
+	# make relative abundances
 	colnames(s_exp) <- c("ID","expected_abund")
 	colnames(s_obs) <- c("ID","observed_abund")
+	s_exp$expected_abund <- s_exp$expected_abund/sum(s_exp$expected_abund,na.rm=TRUE)
+	s_obs$observed_abund <- s_obs$observed_abund/sum(s_obs$observed_abund,na.rm=TRUE)
+	# merge data
 	s_alignment <- subset(s_alignment, select = c("query","target"))
 	merged <- merge(s_alignment, s_exp, by.x="target", by.y="ID", all=TRUE)
 	merged <- merge(merged, s_obs, by.x="query", by.y="ID", all=TRUE)
@@ -227,51 +240,92 @@ for (sample in SAMPLES) {
 	# retain exp without query & obs without target
 	nomatch_exp <- merged[is.na(merged$query),]
 	nomatch_obs <- merged[is.na(merged$target),]
-	# aggregate query target by query (exp without query is lost)
-	merged <- merged[order(merged$target), ]
-	merged_exp <- aggregate(target ~ query, merged, paste, collapse = "-")
-	merged_exp_abund <- aggregate(expected_abund ~ query, merged, sum)
-	data_exp <- merge(merged_exp, merged_exp_abund, by.x="query", by.y="query", all=TRUE)
-	data_exp <- unique( merge(data_exp, s_obs, by.x="query", by.y="ID", all=TRUE) )
-	# aggregate query by target (obs without target is lost)
-	data_exp <- data_exp[order(data_exp$query), ]
-	merged_obs <- aggregate(query ~ target, data_exp, paste, collapse = "-")
-	merged_obs_abund <- aggregate(observed_abund ~ target, data_exp, sum)
-	data <- merge(merged_obs, merged_obs_abund, by="target", all=TRUE)
-	# add exp abundance
-	data_exp_abund <- subset(data_exp, select=c("target","expected_abund"))
-	data_exp_abund <- unique(data_exp_abund[!is.na(data_exp_abund$target),])
-	data <- merge(data, data_exp_abund, by="target", all=TRUE)
-	# re-add exp without query & obs without target
-	data <- rbind(data, nomatch_obs)
-	data <- rbind(data, nomatch_exp)
-	# add ID list
-	ID_list <- ifelse(is.na(data$target), data$query, data$target)
-	data$ID <- factor(ID_list, levels = ID_list)
-	data$expected_abund[is.na(data$expected_abund)] <- 0
-	data$observed_abund[is.na(data$observed_abund)] <- 0
-	# make relative abundances
-	data$expected_abund <- data$expected_abund/sum(data$expected_abund,na.rm=TRUE)
-	data$observed_abund <- data$observed_abund/sum(data$observed_abund,na.rm=TRUE)
+
+	# (2) AGGREGATE - combine IDs and abundance if multiple query or targets match each other
+	if ( merge_mode == "none" ) {
+		# dont aggregate anything
+		result <- merged[order(merged$query), ]
+		# add ID list
+		ID_list <- ifelse(is.na(result$target), result$query, ifelse(is.na(result$query), result$target, paste0(result$query,"-",result$target) ) )
+		result$ID <- factor(ID_list, levels = ID_list)
+	} else if ( merge_mode == "observed" ) {
+		# (2a) AGGREGATE query
+		print("- Aggregating observed sequences -")
+		# aggregate query by target (obs without target is lost)
+		merged <- merged[order(merged$query), ]
+		merged_obs <- aggregate(query ~ target, merged, paste, collapse = "+")
+		merged_obs_abund <- aggregate(observed_abund ~ target, merged, sum)
+		result <- merge(merged_obs, merged_obs_abund, by="target", all=TRUE)
+		# add exp abundance
+		data_exp_abund <- subset(merged, select=c("target","expected_abund"))
+		data_exp_abund <- unique(data_exp_abund[!is.na(data_exp_abund$target),])
+		result <- merge(result, data_exp_abund, by="target", all=TRUE)
+		# re-add obs without target
+		result <- rbind(result, nomatch_obs)
+		# add ID list
+		ID_list <- ifelse(is.na(result$target), result$query, ifelse(is.na(result$query), result$target, paste0(result$query,"-",result$target) ) )
+		result$ID <- factor(ID_list, levels = ID_list)
+	} else if ( merge_mode == "expected" ) {
+		# (2b) AGGREGATE target
+		print("- Aggregating expected sequences -")
+		# aggregate target by query (exp without query is lost)
+		merged <- merged[order(merged$target), ]
+		merged_exp <- aggregate(target ~ query, merged, paste, collapse = "+")
+		merged_exp_abund <- aggregate(expected_abund ~ query, merged, sum)
+		data_exp <- merge(merged_exp, merged_exp_abund, by.x="query", by.y="query", all=TRUE)
+		result <- unique( merge(data_exp, s_obs, by.x="query", by.y="ID", all=TRUE) )
+		# re-add exp without query
+		result <- rbind(result, nomatch_exp)
+		print(result)
+		# add ID list
+		ID_list <- ifelse(is.na(result$target), result$query, ifelse(is.na(result$query), result$target, paste0(result$query,"-",result$target) ) )
+		result$ID <- factor(ID_list, levels = ID_list)
+	} else if ( merge_mode == "all" ) {
+		# (2c) AGGREGATE ALL
+		print("- Aggregating all sequences -")
+		# aggregate target by query (exp without query is lost)
+		merged <- merged[order(merged$target), ]
+		merged_exp <- aggregate(target ~ query, merged, paste, collapse = "+")
+		merged_exp_abund <- aggregate(expected_abund ~ query, merged, sum)
+		data_exp <- merge(merged_exp, merged_exp_abund, by.x="query", by.y="query", all=TRUE)
+		data_exp <- unique( merge(data_exp, s_obs, by.x="query", by.y="ID", all=TRUE) )
+		# aggregate query by target (obs without target is lost)
+		data_exp <- data_exp[order(data_exp$query), ]
+		merged_obs <- aggregate(query ~ target, data_exp, paste, collapse = "+")
+		merged_obs_abund <- aggregate(observed_abund ~ target, data_exp, sum)
+		result <- merge(merged_obs, merged_obs_abund, by="target", all=TRUE)
+		# add exp abundance
+		data_exp_abund <- subset(data_exp, select=c("target","expected_abund"))
+		data_exp_abund <- unique(data_exp_abund[!is.na(data_exp_abund$target),])
+		result <- merge(result, data_exp_abund, by="target", all=TRUE)
+		# re-add exp without query & obs without target
+		result <- rbind(result, nomatch_obs)
+		result <- rbind(result, nomatch_exp)
+		# add ID list
+		ID_list <- ifelse(is.na(result$target), result$query, result$target)
+		result$ID <- factor(ID_list, levels = ID_list)
+	}
+	result$expected_abund[is.na(result$expected_abund)] <- 0
+	result$observed_abund[is.na(result$observed_abund)] <- 0
 	# Sort by expected abundance
-	data <- data[order(data$expected_abund, decreasing = TRUE), ]
+	result <- result[order(result$expected_abund, decreasing = TRUE), ]
 	# append sample data to table
-	data$sample <- rep(sample, nrow(data))
-	data <- data[, c("sample", "ID", "query", "target", "observed_abund", "expected_abund")]
-	abundances <- rbind( abundances, data )
+	result$sample <- rep(sample, nrow(result))
+	result <- result[, c("sample", "ID", "query", "target", "observed_abund", "expected_abund")]
+	abundances <- rbind( abundances, result )
 
 	# (3) STATISTICS
 
 	# calculate absence/presence stats
-	expIDs <- data$target[!is.na(data$target)]
-	obsIDs <- data$ID[!is.na(data$query)]
+	expIDs <- result$ID[!is.na(result$target)]
+	obsIDs <- result$ID[!is.na(result$query)]
 	df <- get_stats( expIDs, obsIDs, df, sample)
 
 	# Calculate distance metrics, this *includes* non-matching sequences (FP & FN)
-	df <- get_stats_distances( data$expected_abund, data$observed_abund, df, sample)
+	df <- get_stats_distances( result$expected_abund, result$observed_abund, df, sample)
 
 	# Calculate relationship and abundance error, this *excludes* non-matching sequences (FP & FN)
-	data_matches <- data[data$observed_abund >0 & data$expected_abund >0,] # only on matched observed to expected
+	data_matches <- result[result$observed_abund >0 & result$expected_abund >0,] # only on matched observed to expected
 	df <- get_stats_abundance( data_matches$expected_abund, data_matches$observed_abund, df, sample)
 
 	# (4) PLOTS - pairwise comparisons
@@ -281,9 +335,9 @@ for (sample in SAMPLES) {
 	print(paste("write",outfile))
 	svg(outfile, height = 8, width = 10)
 	barplot(
-		rbind(data$expected_abund, data$observed_abund),
+		rbind(result$expected_abund, result$observed_abund),
 		beside = TRUE,
-		names.arg = data$ID,
+		names.arg = result$ID,
 		col = c("skyblue", "salmon"),
 		legend.text = c("Expected", "Observed"),
 		ylab = "Abundance",
@@ -315,19 +369,19 @@ for (sample in SAMPLES) {
 	print(paste("write",outfile))
 	svg(paste0(outfile,".svg"), width = 8, height = 6)
 	plot(
-		1:nrow(data),
-		sort(data$expected_abund, decreasing = TRUE),
+		1:nrow(result),
+		sort(result$expected_abund, decreasing = TRUE),
 		type = "l",
 		col = "blue",
 		lwd = 2,
 		xlab = "Rank",
 		ylab = "Abundance",
 		main = "Rank Abundance Curves",
-		ylim = c(0, max(data$expected_abund, data$observed_abund))
+		ylim = c(0, max(result$expected_abund, result$observed_abund))
 	)
 	lines(
-		1:nrow(data),
-		sort(data$observed_abund, decreasing = TRUE),
+		1:nrow(result),
+		sort(result$observed_abund, decreasing = TRUE),
 		col = "red",
 		lwd = 2
 	)

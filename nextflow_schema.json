@@ -1015,6 +1015,13 @@
                     "help_text": "The number of mismatches and gaps that are accepted in the region evaluated by `--expected_sequences_region` to call it a match. For example, `0` means an exact match, 1 allows one mismatch/gap.",
                     "fa_icon": "fas fa-greater-than-equal"
                 },
+                "expected_sequences_merge": {
+                    "type": "string",
+                    "description": "How to handle multiple sequence matches",
+                    "help_text": "How to handle one-to-many, many-to-one, or many-to-many sequence matches under the constrains of `--expected_sequences_mismatches` and `--expected_sequences_region`. 'all' will aggregate observed and expected IDs and abundances, 'observed' only observed data, 'expected' only expected data, and 'none' will not aggregate.",
+                    "default": "all",
+                    "enum": ["all", "observed", "expected", "none"]
+                },
                 "expected_abundances": {
                     "type": "string",
                     "format": "file-path",

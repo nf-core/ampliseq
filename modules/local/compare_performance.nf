@@ -25,6 +25,7 @@ process COMPARE_PERFORMANCE {
     script:
     def fbeta = task.ext.fbeta ?: 2
     def mismatch_threshold = task.ext.mismatch_threshold ?: 0
+    def merge_mode = task.ext.merge_mode ?: "none"
     """
     compare_performance.r \\
         "${meta.id}" \\
@@ -33,6 +34,7 @@ process COMPARE_PERFORMANCE {
         "$expected_abundances" \\
         "$fbeta" \\
         "$mismatch_threshold" \\
+        "$merge_mode" \\
         >"performance.log"
 
     # isolate warnings (when grep find no match, exit code is 1, "|| true" fixes that)

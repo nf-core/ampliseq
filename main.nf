@@ -201,6 +201,7 @@ params {
     expected_sequences: Path?
     expected_sequences_region: String = 'query'
     expected_sequences_mismatches: Integer = 0
+    expected_sequences_merge: String = 'all'
     expected_abundances: Path?
     expected_profile: Path?
     report_template: String = '${projectDir}/assets/report_template.Rmd'

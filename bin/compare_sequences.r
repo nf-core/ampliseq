@@ -123,11 +123,6 @@ for (sample in SAMPLES) {
 		print(paste("Found",length(unique(s_matches$target)),"matches of",length(unique(matches_above_threshold$target)),"total in sample",sample))
 	}
 
-	# select best match (sort by mismatches and retain only first unique entry)
-	s_matches <- s_matches[order(s_matches$mismatch_final, as.numeric(s_matches$mismatch_final)), ]
-	s_matches <- s_matches[!duplicated(s_matches$query), ]
-	print(paste("Found",length(unique(s_matches$target)),"best matches of",length(unique(matches_above_threshold$target)),"total in sample",sample))
-
 	# filter for ASVs in that sample
 	keep_cols <- c("ID",sample)
 	s_observed <- subset(observed, select = keep_cols)
@@ -138,6 +133,13 @@ for (sample in SAMPLES) {
 	# filter alignment result by observed
 	s_matches <- s_matches[s_matches$query %in% s_observed$ID,]
 	print(paste("Found",nrow(s_matches),"observed sequences with match in sample",sample))
+
+	# select best match (sort by mismatches and retain only first unique entry)
+	s_matches <- s_matches[order(s_matches$mismatch_final, as.numeric(s_matches$mismatch_final)), ]
+	s_matches <- s_matches[!duplicated(s_matches$query), ]
+	print(paste("Found",length(unique(s_matches$target)),"best matches of",length(unique(matches_above_threshold$target)),"total in sample",sample))
+
+	# record numbers below threshold
 	s_below_threshold <- s_observed[!s_observed$ID %in% s_matches$query,]
 	print(paste("Found",nrow(s_below_threshold),"observed sequences without match in sample",sample))
 

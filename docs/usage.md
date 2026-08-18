@@ -270,7 +270,7 @@ Pre-configured reference taxonomy databases are:
 
 ¹: As of Silva version 138 optimized for classification of Bacteria and Archaea, not suitable for Eukaryotes; ²[`--dada_taxonomy_rc`](https://nf-co.re/ampliseq/parameters#dada_taxonomy_rc) is recommended; ³: de-replicated at 85%, only for testing purposes; ⁴: quality of results might vary
 
-[`--dada_ref_taxonomy`](https://nf-co.re/ampliseq/parameters#dada_ref_taxonomy) accepts a comma-separated list of database keys (e.g. `gtdb,silva`) to run DADA2 classification against several databases at once. Only the first-listed database feeds downstream QIIME2 analysis (filtering, diversity, barplots, ANCOM) and R objects -- consolidating results across multiple databases into one is planned as a future addition. For the exact versioned key of each database (e.g. `gtdb=R11-RS232`), see [`conf/ref_databases.config`](../conf/ref_databases.config).
+[`--dada_ref_taxonomy`](https://nf-co.re/ampliseq/parameters#dada_ref_taxonomy) accepts a comma-separated list of database keys (e.g. `gtdb,silva`) to run DADA2 classification against several databases at once. Only the first-listed database feeds downstream QIIME2 analysis (filtering, diversity, barplots, ANCOM) and R objects -- consolidating results across multiple databases into one is planned as a future addition. For the exact versioned key of each database (e.g. `gtdb=R11-RS232`), see [`conf/ref_databases.config`](https://github.com/nf-core/ampliseq/blob/master/conf/ref_databases.config).
 
 Special features of taxonomic classification tools:
 

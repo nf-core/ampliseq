@@ -17,6 +17,10 @@ nextflow_pipeline {
             // stable_path: All files + folders in ${params.outdir}/ with a stable path and file name
             def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
 
+            // Phylum column of each database's own DADA2 assignTaxonomy output
+            def gtdb_phyla = path("$outputDir/dada2/ASV_tax.gtdb_R07-RS207.tsv").csv(sep: '\t', header: true).columns["Phylum"]
+            def rdp_phyla  = path("$outputDir/dada2/ASV_tax.rdp_18.tsv").csv(sep: '\t', header: true).columns["Phylum"]
+
             assert workflow.success
             assertAll(
                 { assert snapshot(
@@ -27,7 +31,17 @@ nextflow_pipeline {
                     stable_path
                 ).match() },
                 // the two databases' results are genuinely different, not both accidentally resolving to the same database
-                { assert path("$outputDir/dada2/ASV_tax.gtdb_R07-RS207.tsv").text != path("$outputDir/dada2/ASV_tax.rdp_18.tsv").text }
+                { assert path("$outputDir/dada2/ASV_tax.gtdb_R07-RS207.tsv").text != path("$outputDir/dada2/ASV_tax.rdp_18.tsv").text },
+                { assert path("$outputDir/dada2/ASV_tax_species.gtdb_R07-RS207.tsv").text != path("$outputDir/dada2/ASV_tax_species.rdp_18.tsv").text },
+                // real content check, not just non-emptiness: how many ASVs get a Phylum call at all
+                // (name-agnostic, complements the named-taxon checks below)
+                { assert gtdb_phyla.findAll { it }.size() >= 270 },
+                { assert rdp_phyla.findAll { it }.size() >= 160 },
+                // Proteobacteria specifically -- both GTDB R07-RS207 and RDP 18 use this classical name
+                // (GTDB's rename to "Pseudomonadota" only landed in later releases), so these two
+                // assertions test the same real-world phylum under the two databases' own classification
+                { assert gtdb_phyla.findAll { it == "Proteobacteria" }.size() >= 40 },
+                { assert rdp_phyla.findAll { it == "Proteobacteria" }.size() >= 60 }
             )
         }
     }

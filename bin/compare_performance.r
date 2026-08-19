@@ -21,7 +21,7 @@ if( !merge_mode %in% c("all","observed","expected","none") ) {
 get_stats <- function(i_exp,i_obs,df,sample) {
 	# if none are expected, skip!
 	if( length(i_exp)==0 ) {
-		print( paste("No expected seq in sample",sample, "- skipping") ); next
+		print( paste("No expected seq in sample",sample, "- skipping") ); return(df)
 	} else {
 		print( paste(length(i_exp),"expected seq in sample",sample) )
 	}
@@ -82,7 +82,7 @@ get_stats <- function(i_exp,i_obs,df,sample) {
 
 # function to produce distances based on complete abundance statistics (incl. FN & FP)
 get_stats_distances <- function(expected_abund,observed_abund,df,sample) {
-	if( length(expected_abund)==0 ) { next }
+	if( length(expected_abund)==0 ) { return(df) }
 	# stats
 	jensen_shannon <- function(p, q) {
 		# KL divergence function (with pseudocount to handle zeros)
@@ -122,7 +122,7 @@ get_stats_distances <- function(expected_abund,observed_abund,df,sample) {
 
 # function to produce abundance statistics based on filtered abundance statistics (excl. FN & FP)
 get_stats_abundance <- function(expected_abund,observed_abund,df,sample) {
-	if( length(expected_abund)==0 ) { next }
+	if( length(expected_abund)==0 ) { return(df) }
 	# stats
 	pearson_cor <- NA
 	spearman_rho <- NA

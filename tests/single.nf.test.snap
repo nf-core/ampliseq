@@ -103,7 +103,7 @@
                 "barrnap/rrna.mito.gff",
                 "barrnap/summary.tsv",
                 "cutadapt",
-                "cutadapt/assignTaxonomy.cutadapt.log",
+                "cutadapt/assignTaxonomy_rdp_18.cutadapt.log",
                 "cutadapt/cutadapt_summary.tsv",
                 "cutadapt/sampleID_1.trimmed.cutadapt.log",
                 "cutadapt/sampleID_1a.trimmed.cutadapt.log",

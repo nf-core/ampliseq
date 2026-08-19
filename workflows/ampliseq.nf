@@ -1206,7 +1206,9 @@ workflow AMPLISEQ {
             SBDIEXPORTREANNOTATE ( ch_sintax_tax, "sintax", db_version, params.cut_its, ch_barrnapsummary.ifEmpty([]) )
         } else {
             SBDIEXPORT ( ch_asv_table, ch_dada2_tax, ch_metadata )
-            db_version = params.dada_ref_databases[val_dada_ref_taxonomy_list[0]]["dbversion"]
+            // val_dada_ref_taxonomy_list[0] is "user" for --dada_ref_tax_custom (not a real
+            // dada_ref_databases key), so the lookup must be null-safe
+            db_version = params.dada_ref_databases[val_dada_ref_taxonomy_list[0]]?.dbversion
             SBDIEXPORTREANNOTATE ( ch_dada2_tax, "dada2", db_version, params.cut_its, ch_barrnapsummary.ifEmpty([]) )
         }
     }

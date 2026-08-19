@@ -68,12 +68,13 @@ workflow DADA2_TAXONOMY_WF {
     //split sequences into chunks (shared across every listed database)
     ch_fasta_chunks = ch_fasta.splitFasta( by: val_dada_assign_chunksize, file: true )
 
-    //per-database outfile suffix + taxlevels, derived once per listed database
+    //per-database outfile suffix + taxlevels, derived once per listed database. db_key is "user" for
+    //--dada_ref_tax_custom (not a real dada_ref_databases key), so the lookup must be null-safe.
     ch_assigntax_taxlevels = ch_assigntax
         .map {
             db_key, db ->
                 def taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" :
-                    ( params.dada_ref_databases[db_key]["taxlevels"] ?: "" )
+                    ( params.dada_ref_databases[db_key]?.taxlevels ?: "" )
                 [ db_key, db, ".${ASV_tax_name}.${sanitize(db_key)}", taxlevels ]
         }
 

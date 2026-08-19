@@ -425,7 +425,7 @@ print(paste("write",outfile))
 write.table(df_sum, file = outfile, row.names = FALSE, col.names = TRUE, quote = FALSE, na = '', sep="\t")
 
 # (6) PLOT - selected metrics, overall
-boxplot_type <- c("recall","precision","F1","Fbeta","fdr","jaccard","bray-curtis","hellinger","jensen-shannon","pearson_cor","spearman_rho","mae","rmse","ps") 
+boxplot_type <- c("recall","precision","F1","Fbeta","fdr","jaccard","bray-curtis","hellinger","jensen-shannon","pearson_cor","spearman_rho","mae","rmse","ps")
 df_subset <- subset(df, type %in% boxplot_type)
 df_subset$type <- factor(df_subset$type, levels = boxplot_type)
 df_subset$value <- as.numeric(df_subset$value)

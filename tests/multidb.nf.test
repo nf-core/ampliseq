@@ -95,4 +95,30 @@ nextflow_pipeline {
             )
         }
     }
+
+    // Mixed rank-vocabulary case: PR2 uses Domain,Supergroup,Division,Subdivision ahead of Class
+    // instead of Kingdom,Phylum -- only pr2=5.0.0/5.1.0 use this scheme (older PR2 releases have a
+    // different, simpler one), so pr2=5.0.0 is the oldest/smallest version that still exercises it.
+    // silva=132/gtdb=R05-RS95 are the oldest/smallest versions of the other two (their rank
+    // vocabulary is the standard Kingdom..Species one at every version, so no such constraint).
+    test("-profile test_multidb --dada_ref_taxonomy silva,gtdb,pr2 --consolidate_taxonomies most-specific") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                dada_ref_taxonomy = "silva=132,gtdb=R05-RS95,pr2=5.0.0"
+                consolidate_taxonomies = "most-specific"
+            }
+        }
+
+        then {
+            assert workflow.success
+            def header = path("$outputDir/dada2/ASV_tax.consolidated.most-specific.tsv").text.readLines()[0].tokenize('\t')
+            // both rank vocabularies survive consolidation into one file: the standard columns
+            // (from silva/gtdb) and PR2's own (Domain, Supergroup, Division, Subdivision)
+            assertAll(
+                { assert header.containsAll(["Kingdom", "Phylum", "Domain", "Supergroup", "Division", "Subdivision"]) }
+            )
+        }
+    }
 }

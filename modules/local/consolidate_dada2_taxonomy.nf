@@ -53,7 +53,11 @@ process CONSOLIDATE_DADA2_TAXONOMY {
     })
     combined <- do.call(rbind, tables)
 
-    rank_cols <- intersect(c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"), colnames(combined))
+    # rank vocabulary differs by database (e.g. PR2 uses Domain/Supergroup/Division/Subdivision
+    # ahead of Class, instead of Kingdom/Phylum) -- Domain is treated as filling the same slot as
+    # Kingdom, and Division as filling the same slot as Phylum; Supergroup and Subdivision are
+    # deliberately not counted. See docs/usage.md for the full rationale.
+    rank_cols <- intersect(c("Kingdom", "Domain", "Phylum", "Division", "Class", "Order", "Family", "Genus", "Species"), colnames(combined))
 
     if (method == "score") {
         combined\$.score <- ifelse(is.na(combined\$confidence), -Inf, combined\$confidence)

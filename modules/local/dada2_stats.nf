@@ -105,9 +105,13 @@ process DADA2_STATS {
 
         #track reads through pipeline
         getN <- function(x) sum(getUniques(x))
-        # Normalise the sample key to the clean sample id (see paired-end branch above).
+        # Normalise the sample key to the clean sample id. Single-end filtered/denoised
+        # filenames are '${meta.id}.filt.fastq.gz' with NO read suffix, so only that
+        # suffix may be stripped here. In contrast the paired-end branch strips
+        # '_1.filt.fastq.gz' / '_2.filt.fastq.gz', which would wrongly eat a trailing
+        # '_1'/'_2' from single-end ids like 'sampleID_1' or 'sampleID_2'.
         normKey_ft <- function(x) sub(pattern = "(.*?)\\\\..*\$", replacement = "\\\\1", sub(pattern = "_1.fastq.gz\$", replacement = "", x))
-        normKey_nc <- function(x) sub(pattern = ".filt.fastq.gz\$", replacement = "", sub(pattern = "_2.filt.fastq.gz\$", replacement = "", sub(pattern = "_1.filt.fastq.gz\$", replacement = "", x)))
+        normKey_nc <- function(x) sub(pattern = ".filt.fastq.gz\$", replacement = "", x)
         if ( nrow(filter_and_trim) == 1 ) {
             track <- cbind(filter_and_trim, getN(dadaFs), rowSums(nochim))
         } else {

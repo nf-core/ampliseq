@@ -78,14 +78,14 @@ alignment$qterminalgaps <- alignment$ql - (abs(alignment$qihi-alignment$qilo)+1)
 alignment$qmism <- alignment$gaps + alignment$qterminalgaps + alignment$mism
 alignment$tterminalgaps <- alignment$tl - (abs(alignment$tihi-alignment$tilo)+1)
 alignment$tmism <- alignment$gaps + alignment$tterminalgaps + alignment$mism
-if( query_or_target=="query" ) {
+if( query_or_target=="observed" ) {
 	alignment$mismatch_final <- alignment$qmism
-} else if( query_or_target=="target" ) {
+} else if( query_or_target=="expected" ) {
 	alignment$mismatch_final <- alignment$tmism
 } else if( query_or_target=="alignment" ) {
 	alignment$mismatch_final <- alignment$gaps + alignment$mism
 } else {
-	stop( paste("ERROR -",query_or_target,"is not valid (valid: query,target,alignment)") )
+	stop( paste("ERROR -",query_or_target,"is not valid (valid: observed,expected,alignment)") )
 }
 
 # order for reproducibility
@@ -123,11 +123,6 @@ for (sample in SAMPLES) {
 		print(paste("Found",length(unique(s_matches$target)),"matches of",length(unique(matches_above_threshold$target)),"total in sample",sample))
 	}
 
-	# select best match (sort by mismatches and retain only first unique entry)
-	s_matches <- s_matches[order(s_matches$mismatch_final, as.numeric(s_matches$mismatch_final)), ]
-	s_matches <- s_matches[!duplicated(s_matches$query), ]
-	print(paste("Found",length(unique(s_matches$target)),"best matches of",length(unique(matches_above_threshold$target)),"total in sample",sample))
-
 	# filter for ASVs in that sample
 	keep_cols <- c("ID",sample)
 	s_observed <- subset(observed, select = keep_cols)
@@ -138,6 +133,13 @@ for (sample in SAMPLES) {
 	# filter alignment result by observed
 	s_matches <- s_matches[s_matches$query %in% s_observed$ID,]
 	print(paste("Found",nrow(s_matches),"observed sequences with match in sample",sample))
+
+	# select best match (sort by mismatches and retain only first unique entry)
+	s_matches <- s_matches[order(s_matches$mismatch_final, as.numeric(s_matches$mismatch_final)), ]
+	s_matches <- s_matches[!duplicated(s_matches$query), ]
+	print(paste("Found",length(unique(s_matches$target)),"best matches of",length(unique(matches_above_threshold$target)),"total in sample",sample))
+
+	# record numbers below threshold
 	s_below_threshold <- s_observed[!s_observed$ID %in% s_matches$query,]
 	print(paste("Found",nrow(s_below_threshold),"observed sequences without match in sample",sample))
 

@@ -450,9 +450,9 @@
             "pooled_final_asvs.fasta:md5,7c1a6481177859d03d7201d0bef79d5d",
             "pooled_stats.tsv:md5,c18004076a0a549f0e8f6f2b51cccd52",
             "overall_summary.tsv:md5,70c98d09d973fd31596cf0a9ff59ebd7",
-            "nucleotide-differences.log:md5,f24904b2c25c361c0e0847cc702106b8",
+            "nucleotide-differences.log:md5,01243d8e01adc20eed66bb88e7439cd5",
             "nucleotide-differences.tsv:md5,b247918365b4cf59f4fbb43ec23001a1",
-            "performance.log:md5,f9bb4a453c8582477868ac06a91be572",
+            "performance.log:md5,b6a68ea31b41ca23ef547afcfa876ca3",
             "profile.log:md5,bab94e7a3cc253ade8f78b1fd146d007"
         ],
         "timestamp": "2026-08-04T18:53:20.660667878",

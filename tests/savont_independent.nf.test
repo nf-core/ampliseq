@@ -20,6 +20,8 @@ nextflow_pipeline {
             // check log files
             def savont_asv_logs = getAllFilesFromDir(params.outdir, include: ['savont/per-sample/*_savont.log'])
             def savont_export_logs = getAllFilesFromDir(params.outdir, include: ['savont/*_savont_export.log'])
+            def performance_summary = getAllFilesFromDir(params.outdir, include: ['comparison/performance_summary.tsv'])
+            def profile_summary = getAllFilesFromDir(params.outdir, include: ['comparison/profile_summary.tsv'])
 
             assert workflow.success
             assertAll(
@@ -32,12 +34,23 @@ nextflow_pipeline {
                     path("$outputDir/savont/independent_feature-table.tsv"),
                     path("$outputDir/savont/independent_final_asvs.fasta"),
                     path("$outputDir/overall_summary.tsv"),
+                    path("$outputDir/comparison/nucleotide-differences.log"),
+                    path("$outputDir/comparison/nucleotide-differences.tsv"),
+                    path("$outputDir/comparison/performance.log"),
+                    path("$outputDir/comparison/profile.log"),
                 ).match() },
 
                 { assert snapshot(
                     "savont_asv_logs all contain 'SAVONT COMPLETED SUCCESSFULLY': ${savont_asv_logs.every { log -> log.readLines().any { it.contains('SAVONT COMPLETED SUCCESSFULLY') } }}",
                     "savont_export_logs contains 'Export complete.': ${savont_export_logs.every { log -> log.readLines().any { it.contains('Export complete.') } }}",
                 ).match("log-checks") },
+
+                // Check median F1 scores, assumes that the median value is next after the F1 value
+                { assert snapshot(
+                    "performance_summary.tsv: median F1 > 0.7: ${performance_summary.every { log -> log.readLines().find { it.startsWith('F1\t') }.split('\t')[1].toFloat() > 0.7 } }",
+                    "profile_summary.tsv: median F1 at level 3 > 0.8: ${profile_summary.every { log -> log.readLines().find { it.startsWith('L3\tF1\t') }.split('\t')[2].toFloat() > 0.8 }}",
+                    "profile_summary.tsv: median recall at level 4 is 0: ${profile_summary.every { log -> log.readLines().find { it.startsWith('L4\trecall\t') }.split('\t')[2].toFloat() == 0 }}",
+                ).match("comparison-checks") },
             )
         }
     }

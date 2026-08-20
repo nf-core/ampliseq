@@ -1,4 +1,16 @@
 {
+    "comparison-checks": {
+        "content": [
+            "performance_summary.tsv: median F1 > 0.7: true",
+            "profile_summary.tsv: median F1 at level 3 > 0.8: true",
+            "profile_summary.tsv: median recall at level 4 is 0: true"
+        ],
+        "timestamp": "2026-08-18T13:43:52.545745735",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
     "-profile test_savont_independent": {
         "content": [
             {
@@ -10,6 +22,15 @@
                 },
                 "COMBINE_TABLE": {
                     "R": "4.0.3"
+                },
+                "COMPARE_PERFORMANCE": {
+                    "R": "4.2.1"
+                },
+                "COMPARE_PROFILE": {
+                    "R": "4.2.1"
+                },
+                "COMPARE_SEQUENCES": {
+                    "R": "4.2.1"
                 },
                 "DADA2_TAXONOMY": {
                     "R": "4.5.2",
@@ -111,6 +132,9 @@
                 "SAVONT_EXPORT": {
                     "savont": "0.6.3"
                 },
+                "VSEARCH_USEARCHGLOBAL_BM": {
+                    "vsearch": "2.31.0"
+                },
                 "Workflow": {
                     "nf-core/ampliseq": "v2.19.0dev"
                 }
@@ -126,6 +150,59 @@
                 "barrnap/rrna.mito.gff",
                 "barrnap/stats.ssu.tsv",
                 "barrnap/summary.tsv",
+                "comparison",
+                "comparison/abundances_per-sample.tsv",
+                "comparison/md5sum_version.txt",
+                "comparison/nucleotide-differences.log",
+                "comparison/nucleotide-differences.tsv",
+                "comparison/per-sample",
+                "comparison/per-sample/Log1_abundance_barplot.svg",
+                "comparison/per-sample/Log1_nucleotide-differences_per-sample.tsv",
+                "comparison/per-sample/Log1_nucleotide-distance_barplot.png",
+                "comparison/per-sample/Log1_nucleotide-distance_barplot.svg",
+                "comparison/per-sample/Log1_rank_abundance_curve.svg",
+                "comparison/per-sample/Log1_scatter_loglog.svg",
+                "comparison/per-sample/Log2_abundance_barplot.svg",
+                "comparison/per-sample/Log2_nucleotide-differences_per-sample.tsv",
+                "comparison/per-sample/Log2_nucleotide-distance_barplot.png",
+                "comparison/per-sample/Log2_nucleotide-distance_barplot.svg",
+                "comparison/per-sample/Log2_rank_abundance_curve.svg",
+                "comparison/per-sample/Log2_scatter_loglog.svg",
+                "comparison/per-sample/Log3_abundance_barplot.svg",
+                "comparison/per-sample/Log3_nucleotide-differences_per-sample.tsv",
+                "comparison/per-sample/Log3_nucleotide-distance_barplot.png",
+                "comparison/per-sample/Log3_nucleotide-distance_barplot.svg",
+                "comparison/per-sample/Log3_rank_abundance_curve.svg",
+                "comparison/per-sample/Log3_scatter_loglog.svg",
+                "comparison/per-sample/Std1_abundance_barplot.svg",
+                "comparison/per-sample/Std1_nucleotide-differences_per-sample.tsv",
+                "comparison/per-sample/Std1_nucleotide-distance_barplot.png",
+                "comparison/per-sample/Std1_nucleotide-distance_barplot.svg",
+                "comparison/per-sample/Std1_rank_abundance_curve.svg",
+                "comparison/per-sample/Std1_scatter_loglog.svg",
+                "comparison/per-sample/Std2_abundance_barplot.svg",
+                "comparison/per-sample/Std2_nucleotide-differences_per-sample.tsv",
+                "comparison/per-sample/Std2_nucleotide-distance_barplot.png",
+                "comparison/per-sample/Std2_nucleotide-distance_barplot.svg",
+                "comparison/per-sample/Std2_rank_abundance_curve.svg",
+                "comparison/per-sample/Std2_scatter_loglog.svg",
+                "comparison/per-sample/Std3_abundance_barplot.svg",
+                "comparison/per-sample/Std3_nucleotide-differences_per-sample.tsv",
+                "comparison/per-sample/Std3_nucleotide-distance_barplot.png",
+                "comparison/per-sample/Std3_nucleotide-distance_barplot.svg",
+                "comparison/per-sample/Std3_rank_abundance_curve.svg",
+                "comparison/per-sample/Std3_scatter_loglog.svg",
+                "comparison/performance.log",
+                "comparison/performance_boxplot.png",
+                "comparison/performance_boxplot.svg",
+                "comparison/performance_per-sample.tsv",
+                "comparison/performance_summary.tsv",
+                "comparison/profile.log",
+                "comparison/profile_lineplot.png",
+                "comparison/profile_lineplot.svg",
+                "comparison/profile_per-sample.tsv",
+                "comparison/profile_summary.tsv",
+                "comparison/vsearch_usearchglobal.tsv",
                 "dada2",
                 "dada2/ASV_tax.gtdb_R07-RS207.tsv",
                 "dada2/args",
@@ -1249,9 +1326,13 @@
             ],
             "independent_feature-table.tsv:md5,d2fccf196db51fe8f9f55da0ace3fb6c",
             "independent_final_asvs.fasta:md5,819672232d27b40e741882254a7b9322",
-            "overall_summary.tsv:md5,d48ea04f973e7a85f857be04e7eb69fc"
+            "overall_summary.tsv:md5,d48ea04f973e7a85f857be04e7eb69fc",
+            "nucleotide-differences.log:md5,13cd46e926bfa5dc780baeab97474e4d",
+            "nucleotide-differences.tsv:md5,58fab07f767ef16a36c471a2c8dd37d4",
+            "performance.log:md5,c8dc4069bb01c53fa1dceb91a2f49330",
+            "profile.log:md5,d3f5b2feca8ad34ef395235d08201bbd"
         ],
-        "timestamp": "2026-08-13T16:43:16.579523438",
+        "timestamp": "2026-08-18T12:54:59.230203413",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

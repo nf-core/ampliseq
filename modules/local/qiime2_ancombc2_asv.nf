@@ -26,6 +26,7 @@ process QIIME2_ANCOMBC2_ASV {
     outfolder       = "Category-${formula}-ASV"
     """
     export XDG_CONFIG_HOME="./xdgconfig"
+    export XDG_CACHE_HOME="./xqcache"
     export MPLCONFIGDIR="./mplconfigdir"
     export NUMBA_CACHE_DIR="./numbacache"
 

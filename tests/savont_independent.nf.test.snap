@@ -206,7 +206,7 @@
                 "dada2",
                 "dada2/ASV_tax.gtdb_R07-RS207.tsv",
                 "dada2/args",
-                "dada2/args/assignTaxonomy.args.txt",
+                "dada2/args/assignTaxonomy.ASV_tax.gtdb_R07-RS207.args.txt",
                 "dada2/chunks",
                 "dada2/chunks/ASV_seqs.ssu.1.ASV_tax.gtdb_R07-RS207.tsv",
                 "dada2/ref_taxonomy.gtdb_R07-RS207.txt",

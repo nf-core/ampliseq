@@ -7,12 +7,10 @@ process FORMAT_TAXRESULTS {
         'biocontainers/pandas:1.1.5' }"
 
     input:
-    path(taxtable)
-    path(fastafile)
-    val(outfile)
+    tuple val(db_key), path(taxtable), path(fastafile), val(outfile)
 
     output:
-    path(outfile)      , emit: tsv
+    tuple val(db_key), path(outfile), emit: tsv
     path "versions.yml", emit: versions_format_taxresults, topic: versions
 
     script:

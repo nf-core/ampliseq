@@ -53,4 +53,46 @@ nextflow_pipeline {
             )
         }
     }
+
+    test("-profile test_multidb --consolidate_taxonomies most-specific") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                consolidate_taxonomies = "most-specific"
+            }
+        }
+
+        then {
+            assert workflow.success
+            def consolidated = path("$outputDir/dada2/ASV_tax.consolidated.most-specific.tsv").csv(sep: '\t', header: true)
+            def databases = consolidated.columns["database"]
+            assertAll(
+                // real per-ASV mixing happened -- both listed databases won at least one ASV,
+                // not an accidental full-passthrough of just the first-listed one
+                { assert databases.findAll { it == "gtdb_R07-RS207" }.size() > 0 },
+                { assert databases.findAll { it == "rdp_18" }.size() > 0 }
+            )
+        }
+    }
+
+    test("-profile test_multidb --consolidate_taxonomies score") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                consolidate_taxonomies = "score"
+            }
+        }
+
+        then {
+            assert workflow.success
+            def consolidated = path("$outputDir/dada2/ASV_tax.consolidated.score.tsv").csv(sep: '\t', header: true)
+            def databases = consolidated.columns["database"]
+            assertAll(
+                { assert databases.findAll { it == "gtdb_R07-RS207" }.size() > 0 },
+                { assert databases.findAll { it == "rdp_18" }.size() > 0 }
+            )
+        }
+    }
 }

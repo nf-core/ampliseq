@@ -294,8 +294,10 @@ def validateInputParameters() {
     }
 
     // --consolidate_taxonomies only does anything once --dada_ref_taxonomy lists more than one
-    // database; warn (not error) otherwise since it's harmless, just a no-op.
-    if (params.consolidate_taxonomies && (!params.dada_ref_taxonomy || params.dada_ref_taxonomy.tokenize(',').size() <= 1)) {
+    // database; warn (not error) otherwise since it's harmless, just a no-op. --dada_ref_tax_custom
+    // (checked above) always collapses this to a single "user" database regardless of whatever
+    // --dada_ref_taxonomy is set to, so it counts as "at most one database" too.
+    if (params.consolidate_taxonomies && (params.dada_ref_tax_custom || !params.dada_ref_taxonomy || params.dada_ref_taxonomy.tokenize(',').size() <= 1)) {
         log.warn "`--consolidate_taxonomies` was given, but `--dada_ref_taxonomy` lists at most one database -- there is nothing to consolidate, this option has no effect."
     }
 

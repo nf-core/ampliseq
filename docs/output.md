@@ -368,6 +368,7 @@ Files when using ITSx:
   - `ASV_ITS_tax_species.*.tsv`: Exact species classification with ITS region of each ASV sequence.
   - `ASV_tax.*.tsv`: Taxonomic classification of each ASV sequence, based on the ITS region.
   - `ASV_tax_species.*.tsv`: Exact species classification of each ASV sequence, based on the ITS region.
+  - `ASV_tax.consolidated.<method>.tsv`: Only when `--consolidate_taxonomies` is used with multiple `--dada_ref_taxonomy` databases -- one winning classification per ASV, consolidated across all listed databases.
   - `ref_taxonomy.*.txt`: Information about the used reference taxonomy, such as title, version, citation.
 
 </details>

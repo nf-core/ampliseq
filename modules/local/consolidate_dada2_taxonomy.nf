@@ -30,6 +30,11 @@ process CONSOLIDATE_DADA2_TAXONOMY {
     # already replaced every "." in a raw db_key with "_", so this is unambiguous.
     extract_db_key <- function(f) sub("^.*\\\\.([^.]+)\\\\.tsv\$", "\\\\1", basename(f))
 
+    # process files in declared --dada_ref_taxonomy order, not channel-arrival order (which
+    # varies run to run since the per-database DADA2 tasks run in parallel) -- keeps the
+    # consolidated output's column order deterministic across otherwise-identical runs.
+    files <- files[ order(match(sapply(files, extract_db_key), db_key_order)) ]
+
     tables <- lapply(files, function(f) {
         df <- read.delim(f, sep = "\\t", header = TRUE, na.strings = "", stringsAsFactors = FALSE, check.names = FALSE)
         df\$database <- extract_db_key(f)

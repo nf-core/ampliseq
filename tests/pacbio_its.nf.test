@@ -45,7 +45,10 @@ nextflow_pipeline {
                     path("$outputDir/SBDI/dna.tsv"),
                     path("$outputDir/SBDI/emof.tsv"),
                     path("$outputDir/SBDI/event.tsv")
-                ).match() }
+                ).match() },
+                // --addsh with two listed databases: SH-assigned results for both actually differ,
+                // not both accidentally resolving to the same database
+                { assert path("$outputDir/assignsh/ASV_tax_species_SH.unite-fungi_8_2.tsv").text != path("$outputDir/assignsh/ASV_tax_species_SH.unite-alleuk_8_2.tsv").text }
             )
         }
     }

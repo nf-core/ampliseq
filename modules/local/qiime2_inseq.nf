@@ -14,6 +14,8 @@ process QIIME2_INSEQ {
 
     script:
     """
+    export XDG_CONFIG_HOME="./xdgconfig"
+    export XDG_CACHE_HOME="./xqcache"
     export MPLCONFIGDIR="./mplconfigdir"
     export NUMBA_CACHE_DIR="./numbacache"
 

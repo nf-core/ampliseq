@@ -7,24 +7,24 @@ process FORMAT_TAXONOMY {
         'docker.io/biocontainers/biocontainers:v1.2.0_cv1' }"
 
     input:
-    path(database)
-    val(suffix)
+    tuple val(db_key), path(database)
 
     output:
-    path( "*assignTaxonomy.fna*" ), emit: assigntax
-    path( "*addSpecies.fna*")     , emit: addspecies
-    path( "ref_taxonomy.*.txt")   , emit: ref_tax_info
-    path "versions.yml"           , emit: versions_format_taxonomy, topic: versions
+    tuple val(db_key), path( "*assignTaxonomy.fna*" ), emit: assigntax
+    tuple val(db_key), path( "*addSpecies.fna*")     , emit: addspecies
+    path( "ref_taxonomy.*.txt")                      , emit: ref_tax_info
+    path "versions.yml"                              , emit: versions_format_taxonomy, topic: versions
 
     script:
+    def suffix = db_key.replace('=','_').replace('.','_')
     """
-    ${params.dada_ref_databases[params.dada_ref_taxonomy]["fmtscript"]} \\
+    ${params.dada_ref_databases[db_key]["fmtscript"]} \\
 
     #Giving out information
-    echo -e "--dada_ref_taxonomy: ${params.dada_ref_taxonomy}\\n" >ref_taxonomy.${suffix}.txt
-    echo -e "Title: ${params.dada_ref_databases[params.dada_ref_taxonomy]["title"]}\\n" >>ref_taxonomy.${suffix}.txt
-    echo -e "Citation: ${params.dada_ref_databases[params.dada_ref_taxonomy]["citation"]}\\n" >>ref_taxonomy.${suffix}.txt
-    echo "All entries: ${params.dada_ref_databases[params.dada_ref_taxonomy]}" >>ref_taxonomy.${suffix}.txt
+    echo -e "--dada_ref_taxonomy: ${db_key}\\n" >ref_taxonomy.${suffix}.txt
+    echo -e "Title: ${params.dada_ref_databases[db_key]["title"]}\\n" >>ref_taxonomy.${suffix}.txt
+    echo -e "Citation: ${params.dada_ref_databases[db_key]["citation"]}\\n" >>ref_taxonomy.${suffix}.txt
+    echo "All entries: ${params.dada_ref_databases[db_key]}" >>ref_taxonomy.${suffix}.txt
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

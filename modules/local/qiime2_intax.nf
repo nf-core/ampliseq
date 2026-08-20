@@ -16,6 +16,8 @@ process QIIME2_INTAX {
     script:
     def script_cmd = script ? "$script $tax" : "cp $tax tax.tsv"
     """
+    export XDG_CONFIG_HOME="./xdgconfig"
+    export XDG_CACHE_HOME="./xqcache"
     export MPLCONFIGDIR="./mplconfigdir"
     export NUMBA_CACHE_DIR="./numbacache"
 

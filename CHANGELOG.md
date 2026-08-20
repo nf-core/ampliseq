@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#1042](https://github.com/nf-core/ampliseq/pull/1042) - DADA2 taxonomy tables (`ASV_tax.*.tsv`, `ASV_tax_species.*.tsv`) now include one `<rank>_confidence` column per rank, in addition to the existing overall `confidence` column (by @erikrikarddaniel)
 - [#1042](https://github.com/nf-core/ampliseq/pull/1042) - Added CI test coverage for `--addsh`, which previously had none (`test_pacbio_its` now also runs DADA2 taxonomy against the UNITE database it already uses for SINTAX) (by @erikrikarddaniel)
 - [#1052](https://github.com/nf-core/ampliseq/pull/1052) - Added `summary_tables/ampliseq.counts.tsv.gz`, ASV counts in long format with consistent, lower-case column names, ready for analysis in R, Python or similar without pipeline-specific parsing; also written as Parquet by default, skip with `--skip_parquet_summary` (by @erikrikarddaniel)
+- [#1056](https://github.com/nf-core/ampliseq/pull/1056) - `--dada_ref_taxonomy` now accepts a comma-separated list of databases (e.g. `gtdb,silva`), running DADA2 taxonomic classification against each; one full set of output files is published per listed database, and the first-listed database feeds every downstream step that expects a single taxonomy (consolidating multiple databases into one is planned as a future addition) (by @erikrikarddaniel)
 
 ### `Changed`
 
@@ -49,6 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#1038](https://github.com/nf-core/ampliseq/pull/1038) - Ensure that the ASV count matrix in exported R objects is consistently stored as integer regardless of the pipeline parameters (by @hindrek)
 - [#1050](https://github.com/nf-core/ampliseq/pull/1050) - Fixed a regression introduced by [#1042](https://github.com/nf-core/ampliseq/pull/1042) (not yet released) that showed the new per-rank `confidence` columns as if they were taxonomic levels in the DADA2/SINTAX/VSEARCH-LCA sections of `summary_report.html` (by @erikrikarddaniel)
 - [#1057](https://github.com/nf-core/ampliseq/pull/1057) - Fixed DADA2 read number tracking table sequence (reported by @Malytherin, fixed by @d4straub)
+- [#1058](https://github.com/nf-core/ampliseq/pull/1058) - Fixed QIIME2 caching (reported by @luciazifcakova, fixed by @d4straub)
 
 ### `Dependencies`
 

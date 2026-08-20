@@ -285,6 +285,14 @@ def validateInputParameters() {
         error("Incompatible parameters: Either `--skip_dada_addspecies` or `--dada_ref_tax_custom_sp` is additionally required to `--dada_ref_tax_custom`.")
     }
 
+    // --dada_ref_tax_custom silently takes priority over --dada_ref_taxonomy (including every
+    // database listed in it, if a comma-separated list); warn regardless of whether the latter is
+    // still at its default, since the warning is useful either way and comparing against a
+    // hardcoded default risks silently going stale if that default is ever changed.
+    if (params.dada_ref_tax_custom && params.dada_ref_taxonomy) {
+        log.warn "`--dada_ref_taxonomy` was also given, but `--dada_ref_tax_custom` takes priority -- `--dada_ref_taxonomy` (including every database listed in it, if a comma-separated list) will be ignored entirely."
+    }
+
     if (params.pplace_tree) {
         if (!params.pplace_aln) {
             error("Missing parameter: Phylogenetic placement requires in addition to `--pplace_tree` also `--pplace_aln`.")
@@ -365,19 +373,25 @@ def validateInputParameters() {
             if ( !sbdi_compatible_databases.contains(params.sintax_ref_taxonomy) ) {
                 error("Incompatible parameters: `--sbdiexport` does not work with the chosen database of `--sintax_ref_taxonomy` because the expected taxonomic levels do not match.")
             }
-        } else if ( !sbdi_compatible_databases.contains(params.dada_ref_taxonomy) ) {
+        // --dada_ref_taxonomy may list several comma-separated databases; only the first-listed one
+        // ("the winner") ever feeds SBDI export, so that's the only one that needs to be compatible
+        } else if ( params.dada_ref_taxonomy && !sbdi_compatible_databases.contains(params.dada_ref_taxonomy.tokenize(',')[0].trim()) ) {
             error("Incompatible parameters: `--sbdiexport` does not work with the chosen database of `--dada_ref_taxonomy` because the expected taxonomic levels do not match.")
         }
     }
 
-    if (params.addsh && !params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]) {
-        def validDBs = ""
-        params.dada_ref_databases.keySet().each { db ->
-            if (params.dada_ref_databases[db]["shfile"]) {
-                validDBs += " " + db
+    if (params.addsh && params.dada_ref_taxonomy) {
+        // addsh runs once per listed database, so every one of them needs SH lookup files, not just the first
+        def missingSh = params.dada_ref_taxonomy.tokenize(',')*.trim().findAll { db -> !params.dada_ref_databases[db]["shfile"] }
+        if ( missingSh ) {
+            def validDBs = ""
+            params.dada_ref_databases.keySet().each { db ->
+                if (params.dada_ref_databases[db]["shfile"]) {
+                    validDBs += " " + db
+                }
             }
+            error("Species hypothesis (SH) lookup files are not available for `--dada_ref_taxonomy` database(s): ${missingSh.join(', ')}. This currently includes `glosed`. The option `--addsh` can only be used with databases that provide precomputed SH lookup files (currently UNITE reference databases):\n" + validDBs + ".")
         }
-        error("Species hypothesis (SH) lookup files are not available for `--dada_ref_taxonomy ${params.dada_ref_taxonomy}`. This currently includes `glosed`. The option `--addsh` can only be used with databases that provide precomputed SH lookup files (currently UNITE reference databases):\n" + validDBs + ".")
     }
 
     if (params.addsh && params.cut_its == "none") {
@@ -504,13 +518,32 @@ def makeComplement(seq) {
 // Exit pipeline if incorrect --dada_ref_taxonomy key provided
 //
 def dadareftaxonomyExistsError() {
-    if (params.dada_ref_databases && params.dada_ref_taxonomy && !params.dada_ref_databases.containsKey(params.dada_ref_taxonomy)) {
-        def error_string = "=============================================================================\n" +
-            "  DADA2 reference database '${params.dada_ref_taxonomy}' not found in any config file provided to the pipeline.\n" +
-            "  Currently, the available reference taxonomy keys for `--dada_ref_taxonomy` are:\n" +
-            "  ${params.dada_ref_databases.keySet().join(", ")}\n" +
-            "==================================================================================="
-        error(error_string)
+    if (params.dada_ref_databases && params.dada_ref_taxonomy) {
+        // --dada_ref_taxonomy accepts a comma-separated list of databases; every listed one must exist
+        def dbKeys = params.dada_ref_taxonomy.tokenize(',')*.trim()
+        def invalidKeys = dbKeys.findAll { db -> !params.dada_ref_databases.containsKey(db) }
+        if (invalidKeys) {
+            def error_string = "=============================================================================\n" +
+                "  DADA2 reference database(s) '${invalidKeys.join("', '")}' not found in any config file provided to the pipeline.\n" +
+                "  Currently, the available reference taxonomy keys for `--dada_ref_taxonomy` are:\n" +
+                "  ${params.dada_ref_databases.keySet().join(", ")}\n" +
+                "==================================================================================="
+            error(error_string)
+        }
+
+        // Two listed keys that resolve to the exact same underlying reference files (e.g. an alias
+        // like `gtdb` and its pinned equivalent `gtdb=R11-RS232`) would otherwise silently drop one
+        // of them downstream instead of failing -- reject this explicitly instead.
+        def filesToKeys = [:]
+        dbKeys.each { db ->
+            def files = params.dada_ref_databases[db]["file"]
+            filesToKeys[files] = (filesToKeys[files] ?: []) + db
+        }
+        def collisions = filesToKeys.values().findAll { it.size() > 1 }
+        if (collisions) {
+            error("Incompatible parameters: `--dada_ref_taxonomy` lists databases that resolve to the exact same reference files, which is redundant: " +
+                collisions.collect { "'${it.join("', '")}'" }.join(", ") + ". List each database only once.")
+        }
     }
 }
 

@@ -24,6 +24,7 @@ process QIIME2_ANCOMBC_TAX {
     def outfolder   = "Category-${formula}-level-${taxlevel}"
     """
     export XDG_CONFIG_HOME="./xdgconfig"
+    export XDG_CACHE_HOME="./xqcache"
     export MPLCONFIGDIR="./mplconfigdir"
     export NUMBA_CACHE_DIR="./numbacache"
 

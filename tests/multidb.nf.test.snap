@@ -1,5 +1,5 @@
 {
-    "-profile test_single": {
+    "-profile test_multidb": {
         "content": [
             {
                 "BARRNAP": {
@@ -7,6 +7,9 @@
                 },
                 "BARRNAPSUMMARY": {
                     "python": "Python 3.9.1"
+                },
+                "COMBINE_TABLE": {
+                    "R": "4.0.3"
                 },
                 "CUTADAPT_BASIC": {
                     "cutadapt": 5.2
@@ -66,8 +69,12 @@
                 "DUCKDB_TABLE2PARQUET": {
                     "duckdb": "1.5.5"
                 },
-                "FASTQC": {
-                    "fastqc": "0.12.1"
+                "FILTER_SAMPLES": {
+                    "R": "4.2.1"
+                },
+                "FILTER_STATS": {
+                    "python": "3.9.1",
+                    "pandas": "1.1.5"
                 },
                 "FORMAT_TAXONOMY": {
                     "bash": "5.0.16(1)-release",
@@ -76,9 +83,42 @@
                 "MERGE_STATS_DADA": {
                     "R": "4.5.2"
                 },
+                "MERGE_STATS_FILTERTAXA": {
+                    "R": "4.5.2"
+                },
                 "PHYLOSEQ": {
                     "R": "4.4.2",
                     "phyloseq": "1.50.0"
+                },
+                "PHYLOSEQ_INASV": {
+                    "sed": 4.7
+                },
+                "QIIME2_BARPLOT": {
+                    "qiime2": "2026.4.0"
+                },
+                "QIIME2_EXPORT_ABSOLUTE": {
+                    "qiime2": "2026.4.0"
+                },
+                "QIIME2_EXPORT_RELASV": {
+                    "qiime2": "2026.4.0"
+                },
+                "QIIME2_EXPORT_RELTAX": {
+                    "qiime2": "2026.4.0"
+                },
+                "QIIME2_INASV": {
+                    "qiime2": "2026.4.0"
+                },
+                "QIIME2_INSEQ": {
+                    "qiime2": "2026.4.0"
+                },
+                "QIIME2_INTAX": {
+                    "qiime2": "2026.4.0"
+                },
+                "QIIME2_SEQFILTERTABLE": {
+                    "qiime2": "2026.4.0"
+                },
+                "QIIME2_TABLEFILTERTAXA": {
+                    "qiime2": "2026.4.0"
                 },
                 "RENAME_RAW_DATA_FILES": {
                     "bash": "5.0.17(1)-release"
@@ -90,6 +130,10 @@
                 "TREESUMMARIZEDEXPERIMENT": {
                     "R": "4.3.2",
                     "TreeSummarizedExperiment": "2.10.0"
+                },
+                "TRUNCLEN": {
+                    "python": "3.9.1",
+                    "pandas": "1.1.5"
                 },
                 "Workflow": {
                     "nf-core/ampliseq": "v2.19.0dev"
@@ -103,6 +147,7 @@
                 "barrnap/rrna.mito.gff",
                 "barrnap/summary.tsv",
                 "cutadapt",
+                "cutadapt/assignTaxonomy_gtdb_R07-RS207.cutadapt.log",
                 "cutadapt/assignTaxonomy_rdp_18.cutadapt.log",
                 "cutadapt/cutadapt_summary.tsv",
                 "cutadapt/sampleID_1.trimmed.cutadapt.log",
@@ -112,75 +157,74 @@
                 "dada2",
                 "dada2/ASV_seqs.fasta",
                 "dada2/ASV_table.tsv",
+                "dada2/ASV_tax.gtdb_R07-RS207.tsv",
                 "dada2/ASV_tax.rdp_18.tsv",
+                "dada2/ASV_tax_species.gtdb_R07-RS207.tsv",
                 "dada2/ASV_tax_species.rdp_18.tsv",
                 "dada2/DADA2_stats.tsv",
                 "dada2/DADA2_table.rds",
                 "dada2/DADA2_table.tsv",
                 "dada2/QC",
-                "dada2/QC/1.err.convergence.txt",
-                "dada2/QC/1.err.pdf",
-                "dada2/QC/4 files were used for single_end plotQualityProfile.txt",
-                "dada2/QC/single_end_preprocessed_qual_stats.pdf",
-                "dada2/QC/single_end_qual_stats.pdf",
+                "dada2/QC/1_1.err.convergence.txt",
+                "dada2/QC/1_1.err.pdf",
+                "dada2/QC/1_2.err.convergence.txt",
+                "dada2/QC/1_2.err.pdf",
+                "dada2/QC/4 files were used for FW plotQualityProfile.txt",
+                "dada2/QC/4 files were used for RV plotQualityProfile.txt",
+                "dada2/QC/FW_preprocessed_qual_stats.pdf",
+                "dada2/QC/FW_qual_stats.pdf",
+                "dada2/QC/RV_preprocessed_qual_stats.pdf",
+                "dada2/QC/RV_qual_stats.pdf",
                 "dada2/QC/svg",
-                "dada2/QC/svg/1.err.svg",
-                "dada2/QC/svg/single_end_preprocessed_qual_stats.svg",
-                "dada2/QC/svg/single_end_qual_stats.svg",
+                "dada2/QC/svg/1_1.err.svg",
+                "dada2/QC/svg/1_2.err.svg",
+                "dada2/QC/svg/FW_preprocessed_qual_stats.svg",
+                "dada2/QC/svg/FW_qual_stats.svg",
+                "dada2/QC/svg/RV_preprocessed_qual_stats.svg",
+                "dada2/QC/svg/RV_qual_stats.svg",
                 "dada2/args",
+                "dada2/args/FW_plotQualityProfile.args.txt",
+                "dada2/args/FW_preprocessed_plotQualityProfile.args.txt",
+                "dada2/args/RV_plotQualityProfile.args.txt",
+                "dada2/args/RV_preprocessed_plotQualityProfile.args.txt",
+                "dada2/args/addSpecies_gtdb_R07-RS207.args.txt",
                 "dada2/args/addSpecies_rdp_18.args.txt",
+                "dada2/args/assignTaxonomy.ASV_tax.gtdb_R07-RS207.args.txt",
                 "dada2/args/assignTaxonomy.ASV_tax.rdp_18.args.txt",
                 "dada2/args/dada.args.txt",
                 "dada2/args/filterAndTrim.args.txt",
                 "dada2/args/learnErrors.args.txt",
+                "dada2/args/mergePairs.args.txt",
                 "dada2/args/removeBimeraDenovo.args.txt",
-                "dada2/args/single_end_plotQualityProfile.args.txt",
-                "dada2/args/single_end_preprocessed_plotQualityProfile.args.txt",
                 "dada2/chunks",
+                "dada2/chunks/ASV_seqs.1.ASV_tax.gtdb_R07-RS207.species.tsv",
+                "dada2/chunks/ASV_seqs.1.ASV_tax.gtdb_R07-RS207.tsv",
                 "dada2/chunks/ASV_seqs.1.ASV_tax.rdp_18.species.tsv",
                 "dada2/chunks/ASV_seqs.1.ASV_tax.rdp_18.tsv",
-                "dada2/chunks/ASV_seqs.2.ASV_tax.rdp_18.species.tsv",
-                "dada2/chunks/ASV_seqs.2.ASV_tax.rdp_18.tsv",
                 "dada2/log",
                 "dada2/log/1.dada.log",
                 "dada2/log/1.err.log",
+                "dada2/ref_taxonomy.gtdb_R07-RS207.txt",
                 "dada2/ref_taxonomy.rdp_18.txt",
                 "decontam",
                 "decontam/decontaminated.tsv",
                 "decontam/decontaminated_counts.tsv",
                 "decontam/decontaminated_details.tsv",
                 "decontam/decontaminated_log.tsv",
-                "fastqc",
-                "fastqc/sampleID_1_fastqc.html",
-                "fastqc/sampleID_1a_fastqc.html",
-                "fastqc/sampleID_2_fastqc.html",
-                "fastqc/sampleID_2a_fastqc.html",
                 "input",
+                "input/Metadata.tsv",
                 "input/Samplesheet_v3.tsv",
                 "multiqc",
                 "multiqc/multiqc_data",
                 "multiqc/multiqc_data/cutadapt_filtered_reads_plot.txt",
                 "multiqc/multiqc_data/cutadapt_trimmed_sequences_plot_5_Counts.txt",
                 "multiqc/multiqc_data/cutadapt_trimmed_sequences_plot_5_Obs_Exp.txt",
-                "multiqc/multiqc_data/fastqc-status-check-heatmap.txt",
-                "multiqc/multiqc_data/fastqc_adapter_content_plot.txt",
-                "multiqc/multiqc_data/fastqc_overrepresented_sequences_plot.txt",
-                "multiqc/multiqc_data/fastqc_per_base_n_content_plot.txt",
-                "multiqc/multiqc_data/fastqc_per_base_sequence_quality_plot.txt",
-                "multiqc/multiqc_data/fastqc_per_sequence_gc_content_plot_Counts.txt",
-                "multiqc/multiqc_data/fastqc_per_sequence_gc_content_plot_Percentages.txt",
-                "multiqc/multiqc_data/fastqc_per_sequence_quality_scores_plot.txt",
-                "multiqc/multiqc_data/fastqc_sequence_counts_plot.txt",
-                "multiqc/multiqc_data/fastqc_sequence_duplication_levels_plot.txt",
-                "multiqc/multiqc_data/fastqc_sequence_length_distribution_plot.txt",
-                "multiqc/multiqc_data/fastqc_top_overrepresented_sequences_table.txt",
                 "multiqc/multiqc_data/llms-full.txt",
                 "multiqc/multiqc_data/multiqc.log",
                 "multiqc/multiqc_data/multiqc.parquet",
                 "multiqc/multiqc_data/multiqc_citations.txt",
                 "multiqc/multiqc_data/multiqc_cutadapt.txt",
                 "multiqc/multiqc_data/multiqc_data.json",
-                "multiqc/multiqc_data/multiqc_fastqc.txt",
                 "multiqc/multiqc_data/multiqc_general_stats.txt",
                 "multiqc/multiqc_data/multiqc_software_versions.txt",
                 "multiqc/multiqc_data/multiqc_sources.txt",
@@ -190,61 +234,94 @@
                 "multiqc/multiqc_plots/pdf/cutadapt_filtered_reads_plot-pct.pdf",
                 "multiqc/multiqc_plots/pdf/cutadapt_trimmed_sequences_plot_5_Counts.pdf",
                 "multiqc/multiqc_plots/pdf/cutadapt_trimmed_sequences_plot_5_Obs_Exp.pdf",
-                "multiqc/multiqc_plots/pdf/fastqc-status-check-heatmap.pdf",
-                "multiqc/multiqc_plots/pdf/fastqc_adapter_content_plot.pdf",
-                "multiqc/multiqc_plots/pdf/fastqc_overrepresented_sequences_plot.pdf",
-                "multiqc/multiqc_plots/pdf/fastqc_per_base_n_content_plot.pdf",
-                "multiqc/multiqc_plots/pdf/fastqc_per_base_sequence_quality_plot.pdf",
-                "multiqc/multiqc_plots/pdf/fastqc_per_sequence_gc_content_plot_Counts.pdf",
-                "multiqc/multiqc_plots/pdf/fastqc_per_sequence_gc_content_plot_Percentages.pdf",
-                "multiqc/multiqc_plots/pdf/fastqc_per_sequence_quality_scores_plot.pdf",
-                "multiqc/multiqc_plots/pdf/fastqc_sequence_counts_plot-cnt.pdf",
-                "multiqc/multiqc_plots/pdf/fastqc_sequence_counts_plot-pct.pdf",
-                "multiqc/multiqc_plots/pdf/fastqc_sequence_duplication_levels_plot.pdf",
-                "multiqc/multiqc_plots/pdf/fastqc_sequence_length_distribution_plot.pdf",
-                "multiqc/multiqc_plots/pdf/fastqc_top_overrepresented_sequences_table.pdf",
                 "multiqc/multiqc_plots/png",
                 "multiqc/multiqc_plots/png/cutadapt_filtered_reads_plot-cnt.png",
                 "multiqc/multiqc_plots/png/cutadapt_filtered_reads_plot-pct.png",
                 "multiqc/multiqc_plots/png/cutadapt_trimmed_sequences_plot_5_Counts.png",
                 "multiqc/multiqc_plots/png/cutadapt_trimmed_sequences_plot_5_Obs_Exp.png",
-                "multiqc/multiqc_plots/png/fastqc-status-check-heatmap.png",
-                "multiqc/multiqc_plots/png/fastqc_adapter_content_plot.png",
-                "multiqc/multiqc_plots/png/fastqc_overrepresented_sequences_plot.png",
-                "multiqc/multiqc_plots/png/fastqc_per_base_n_content_plot.png",
-                "multiqc/multiqc_plots/png/fastqc_per_base_sequence_quality_plot.png",
-                "multiqc/multiqc_plots/png/fastqc_per_sequence_gc_content_plot_Counts.png",
-                "multiqc/multiqc_plots/png/fastqc_per_sequence_gc_content_plot_Percentages.png",
-                "multiqc/multiqc_plots/png/fastqc_per_sequence_quality_scores_plot.png",
-                "multiqc/multiqc_plots/png/fastqc_sequence_counts_plot-cnt.png",
-                "multiqc/multiqc_plots/png/fastqc_sequence_counts_plot-pct.png",
-                "multiqc/multiqc_plots/png/fastqc_sequence_duplication_levels_plot.png",
-                "multiqc/multiqc_plots/png/fastqc_sequence_length_distribution_plot.png",
-                "multiqc/multiqc_plots/png/fastqc_top_overrepresented_sequences_table.png",
                 "multiqc/multiqc_plots/svg",
                 "multiqc/multiqc_plots/svg/cutadapt_filtered_reads_plot-cnt.svg",
                 "multiqc/multiqc_plots/svg/cutadapt_filtered_reads_plot-pct.svg",
                 "multiqc/multiqc_plots/svg/cutadapt_trimmed_sequences_plot_5_Counts.svg",
                 "multiqc/multiqc_plots/svg/cutadapt_trimmed_sequences_plot_5_Obs_Exp.svg",
-                "multiqc/multiqc_plots/svg/fastqc-status-check-heatmap.svg",
-                "multiqc/multiqc_plots/svg/fastqc_adapter_content_plot.svg",
-                "multiqc/multiqc_plots/svg/fastqc_overrepresented_sequences_plot.svg",
-                "multiqc/multiqc_plots/svg/fastqc_per_base_n_content_plot.svg",
-                "multiqc/multiqc_plots/svg/fastqc_per_base_sequence_quality_plot.svg",
-                "multiqc/multiqc_plots/svg/fastqc_per_sequence_gc_content_plot_Counts.svg",
-                "multiqc/multiqc_plots/svg/fastqc_per_sequence_gc_content_plot_Percentages.svg",
-                "multiqc/multiqc_plots/svg/fastqc_per_sequence_quality_scores_plot.svg",
-                "multiqc/multiqc_plots/svg/fastqc_sequence_counts_plot-cnt.svg",
-                "multiqc/multiqc_plots/svg/fastqc_sequence_counts_plot-pct.svg",
-                "multiqc/multiqc_plots/svg/fastqc_sequence_duplication_levels_plot.svg",
-                "multiqc/multiqc_plots/svg/fastqc_sequence_length_distribution_plot.svg",
-                "multiqc/multiqc_plots/svg/fastqc_top_overrepresented_sequences_table.svg",
                 "multiqc/multiqc_report.html",
                 "overall_summary.tsv",
                 "phyloseq",
                 "phyloseq/dada2_phyloseq.rds",
                 "pipeline_info",
                 "pipeline_info/nf_core_ampliseq_software_mqc_versions.yml",
+                "qiime2",
+                "qiime2/abundance_tables",
+                "qiime2/abundance_tables/abs-abund-table-2.tsv",
+                "qiime2/abundance_tables/abs-abund-table-3.tsv",
+                "qiime2/abundance_tables/abs-abund-table-4.tsv",
+                "qiime2/abundance_tables/abs-abund-table-5.tsv",
+                "qiime2/abundance_tables/abs-abund-table-6.tsv",
+                "qiime2/abundance_tables/count_table_filter_stats.tsv",
+                "qiime2/abundance_tables/feature-table.biom",
+                "qiime2/abundance_tables/feature-table.tsv",
+                "qiime2/abundance_tables/filtered-table.qza",
+                "qiime2/barplot",
+                "qiime2/barplot/dist",
+                "qiime2/barplot/dist/bundle.js",
+                "qiime2/barplot/dist/d3-license.txt",
+                "qiime2/barplot/dist/d3-scale-chromatic-license.txt",
+                "qiime2/barplot/dist/thenBy-license.txt",
+                "qiime2/barplot/dist/vendor.bundle.js",
+                "qiime2/barplot/index.html",
+                "qiime2/barplot/level-1.csv",
+                "qiime2/barplot/level-1.jsonp",
+                "qiime2/barplot/level-2.csv",
+                "qiime2/barplot/level-2.jsonp",
+                "qiime2/barplot/level-3.csv",
+                "qiime2/barplot/level-3.jsonp",
+                "qiime2/barplot/level-4.csv",
+                "qiime2/barplot/level-4.jsonp",
+                "qiime2/barplot/level-5.csv",
+                "qiime2/barplot/level-5.jsonp",
+                "qiime2/barplot/level-6.csv",
+                "qiime2/barplot/level-6.jsonp",
+                "qiime2/barplot/level-7.csv",
+                "qiime2/barplot/level-7.jsonp",
+                "qiime2/barplot/level-8.csv",
+                "qiime2/barplot/level-8.jsonp",
+                "qiime2/barplot/q2templateassets",
+                "qiime2/barplot/q2templateassets/css",
+                "qiime2/barplot/q2templateassets/css/base-template.css",
+                "qiime2/barplot/q2templateassets/css/bootstrap.min.css",
+                "qiime2/barplot/q2templateassets/css/normalize.css",
+                "qiime2/barplot/q2templateassets/css/tab-parent.css",
+                "qiime2/barplot/q2templateassets/fonts",
+                "qiime2/barplot/q2templateassets/fonts/glyphicons-halflings-regular.eot",
+                "qiime2/barplot/q2templateassets/fonts/glyphicons-halflings-regular.svg",
+                "qiime2/barplot/q2templateassets/fonts/glyphicons-halflings-regular.ttf",
+                "qiime2/barplot/q2templateassets/fonts/glyphicons-halflings-regular.woff",
+                "qiime2/barplot/q2templateassets/fonts/glyphicons-halflings-regular.woff2",
+                "qiime2/barplot/q2templateassets/img",
+                "qiime2/barplot/q2templateassets/img/qiime2-rect-200.png",
+                "qiime2/barplot/q2templateassets/js",
+                "qiime2/barplot/q2templateassets/js/bootstrap.min.js",
+                "qiime2/barplot/q2templateassets/js/child.js",
+                "qiime2/barplot/q2templateassets/js/jquery-3.2.0.min.js",
+                "qiime2/barplot/q2templateassets/js/parent.js",
+                "qiime2/input",
+                "qiime2/input/rep-seqs.qza",
+                "qiime2/input/table.qza",
+                "qiime2/input/taxonomy.qza",
+                "qiime2/rel_abundance_tables",
+                "qiime2/rel_abundance_tables/rel-table-2.tsv",
+                "qiime2/rel_abundance_tables/rel-table-3.tsv",
+                "qiime2/rel_abundance_tables/rel-table-4.tsv",
+                "qiime2/rel_abundance_tables/rel-table-5.tsv",
+                "qiime2/rel_abundance_tables/rel-table-6.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-gtdb_R07-RS207-tax.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-rdp_18-tax.tsv",
+                "qiime2/representative_sequences",
+                "qiime2/representative_sequences/descriptive_stats.tsv",
+                "qiime2/representative_sequences/filtered-sequences.qza",
+                "qiime2/representative_sequences/rep-seq.fasta",
+                "qiime2/representative_sequences/seven_number_summary.tsv",
                 "summary_report",
                 "summary_report/dada2_taxonomic_classification_per_taxonomy_level.svg",
                 "summary_report/rrna_detection_with_barrnap.svg",
@@ -256,27 +333,12 @@
                 "summary_tables/ampliseq.counts.tsv.gz",
                 "treesummarizedexperiment",
                 "treesummarizedexperiment/dada2_TreeSummarizedExperiment.rds"
-            ],
-            "overall_summary.tsv:md5,db822df85440a2b55c844f7a56419af7",
-            "rrna.arc.gff:md5,d8aac921e2f8b05ecc9beb8accb24ba5",
-            "rrna.bac.gff:md5,6d1b3a15d4d732865d877a1bb77eeb70",
-            "rrna.euk.gff:md5,a58909ad2c114e551e34e50fa87b1a5f",
-            "rrna.mito.gff:md5,df19e1b84ba6f691d20c72b397c88abf",
-            "cutadapt_summary.tsv:md5,cde6a72b1f0daccb7b69727834fbb9e5",
-            "ASV_seqs.fasta:md5,cdf666b1d9a0f1555562ec8d88238785",
-            "ASV_table.tsv:md5,eeb1f5926e81093e17064a3270c37318",
-            "ref_taxonomy.rdp_18.txt:md5,c20d8e186e2893ba7818a0115edb013e",
-            "DADA2_stats.tsv:md5,25ab6c6d213de82e6e6d40e6c4c1ad6f",
-            "DADA2_table.tsv:md5,82951f7be54adae8290e8fff951a7ae9",
-            "Samplesheet_v3.tsv:md5,e03352e42a97a6078b30ec3fcec362a4",
-            "multiqc_fastqc.txt:md5,75d0463a8b94a5dec14c3fb5b82169cd",
-            "multiqc_general_stats.txt:md5,1662178e2c1ac6cb0880f95c1746ce81",
-            "multiqc_cutadapt.txt:md5,0adee517528dc17cb0c9dfdc9858dc2c"
+            ]
         ],
+        "timestamp": "2026-08-20T14:40:28.053644025",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.4"
-        },
-        "timestamp": "2026-04-21T09:37:29.018931608"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
     }
 }

@@ -123,7 +123,7 @@
                 "dada2/QC/svg/2_1.err.svg",
                 "dada2/QC/svg/2_2.err.svg",
                 "dada2/args",
-                "dada2/args/assignTaxonomy.args.txt",
+                "dada2/args/assignTaxonomy.ASV_tax.rdp_18.args.txt",
                 "dada2/args/dada.args.txt",
                 "dada2/args/filterAndTrim.args.txt",
                 "dada2/args/learnErrors.args.txt",

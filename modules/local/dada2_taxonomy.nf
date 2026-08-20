@@ -8,14 +8,11 @@ process DADA2_TAXONOMY {
         'community.wave.seqera.io/library/bioconductor-dada2_r-base_r-digest_tbb:38acac09bac46f36' }"
 
     input:
-    path(fasta)
-    path(database)
-    val(outfile)
-    val(taxlevels_input)
+    tuple val(db_key), path(fasta), path(database), val(outfile), val(taxlevels_input)
 
     output:
-    path("*${outfile}.tsv")  , emit: tsv
-    path( "*${outfile}.rds" ), emit: rds
+    tuple val(db_key), path("*${outfile}.tsv") , emit: tsv
+    tuple val(db_key), path("*${outfile}.rds") , emit: rds
     path "versions.yml"      , emit: versions_dada2_taxonomy, topic: versions
     path "*.args.txt"        , emit: args
 
@@ -80,7 +77,7 @@ process DADA2_TAXONOMY {
     taxa_export <- cbind( ASV_ID = tx\$ASV_ID, taxa\$tax, confidence = tx\$confidence, as.matrix(rank_confidence))
     saveRDS(taxa_export, "${fasta.baseName}${outfile}.rds")
 
-    write.table('assignTaxonomy\t$args\ntaxlevels\t$taxlevels\nseed\t$seed', file = "assignTaxonomy.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
+    write.table('assignTaxonomy\t$args\ntaxlevels\t$taxlevels\nseed\t$seed', file = "assignTaxonomy${outfile}.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
     writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
     """
 }

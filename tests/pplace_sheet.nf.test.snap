@@ -8,6 +8,10 @@
                 "BARRNAPSUMMARY": {
                     "python": "Python 3.9.1"
                 },
+                "BUILD_ASV_ANNOTATIONS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
+                },
                 "CLUSTALO_ALIGN": {
                     "clustalo": "1.2.4",
                     "pigz": 2.8
@@ -164,6 +168,10 @@
                     "seqtk": "1.4-r122"
                 },
                 "SUMMARY_TABLE_COUNTS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
+                },
+                "SUMMARY_TABLE_TAXONOMY": {
                     "R": "4.3.1",
                     "r-dplyr": "1.1.4"
                 },
@@ -490,6 +498,10 @@
                 "summary_tables",
                 "summary_tables/ampliseq.counts.parquet",
                 "summary_tables/ampliseq.counts.tsv.gz",
+                "summary_tables/ampliseq.taxonomy.PPLACE.PPLACE.parquet",
+                "summary_tables/ampliseq.taxonomy.PPLACE.PPLACE.tsv.gz",
+                "summary_tables/ampliseq.taxonomy.QIIME2.greengenes85.parquet",
+                "summary_tables/ampliseq.taxonomy.QIIME2.greengenes85.tsv.gz",
                 "treesummarizedexperiment",
                 "treesummarizedexperiment/qiime2_TreeSummarizedExperiment.rds"
             ],

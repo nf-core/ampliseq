@@ -80,6 +80,8 @@ include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_QIIME2 } from '../modules/local/phylo
 include { FILTER_CLUSTERS               } from '../modules/local/filter_clusters'
 include { HMMER_HMMEXTRACT              } from '../modules/local/hmmer/hmmextract'
 include { SUMMARY_TABLE_COUNTS          } from '../modules/local/summary_table_counts'
+include { BUILD_ASV_ANNOTATIONS         } from '../modules/local/build_asv_annotations'
+include { SUMMARY_TABLE_TAXONOMY        } from '../modules/local/summary_table_taxonomy'
 include { DUCKDB_TABLE2PARQUET          } from '../modules/nf-core/duckdb/table2parquet'
 
 //
@@ -651,15 +653,6 @@ workflow AMPLISEQ {
         //
         SUMMARY_TABLE_COUNTS ( DADA2_MERGE.out.asv )
         ch_summary_tables = ch_summary_tables.mix( SUMMARY_TABLE_COUNTS.out.tsv )
-
-        //
-        // MODULE: Also write the summary tables as Parquet
-        //
-        if ( !params.skip_parquet_summary ) {
-            DUCKDB_TABLE2PARQUET (
-                ch_summary_tables.map { tsv -> [ [ id: tsv.name.replaceAll(/\.tsv(\.gz)?$/, '') ], tsv ] }
-            )
-        }
     }
 
     //
@@ -714,6 +707,13 @@ workflow AMPLISEQ {
     }
 
     //
+    // Snapshot of the ASV table right before the standard filtering chain (decontam through the
+    // ITSx-region length filter) starts -- diffed against its state at the end of that chain to
+    // build the "ampliseq_accept" summary-table annotation (see BUILD_ASV_ANNOTATIONS below).
+    //
+    ch_annot_accept_pre = ch_asv_table
+
+    //
     // MODULE : ASV decontamination with "decontam"
     //
     DECONTAM (
@@ -751,6 +751,8 @@ workflow AMPLISEQ {
     //
     // Modules : Filter rRNA
     //
+    ch_annot_ssu_pre  = channel.empty()
+    ch_annot_ssu_post = channel.empty()
     if ( !params.skip_barrnap && params.filter_ssu && !params.multiregion ) {
         BARRNAP ( ch_unfiltered_fasta )
         BARRNAPSUMMARY ( BARRNAP.out.gff.collect() )
@@ -760,11 +762,13 @@ workflow AMPLISEQ {
             }
         }
         ch_barrnapsummary = BARRNAPSUMMARY.out.summary
+        ch_annot_ssu_pre = ch_asv_table
         FILTER_SSU ( ch_unfiltered_fasta, ch_asv_table.ifEmpty( [] ), BARRNAPSUMMARY.out.summary )
         MERGE_STATS_FILTERSSU ( ch_stats, FILTER_SSU.out.stats )
         ch_stats = MERGE_STATS_FILTERSSU.out.tsv
         ch_asv_fasta = FILTER_SSU.out.fasta
         ch_asv_table = FILTER_SSU.out.asv
+        ch_annot_ssu_post = ch_asv_table
     } else if ( !params.skip_barrnap && !params.filter_ssu && !params.multiregion ) {
         BARRNAP ( ch_unfiltered_fasta )
         BARRNAPSUMMARY ( BARRNAP.out.gff.collect() )
@@ -779,12 +783,16 @@ workflow AMPLISEQ {
     //
     // Modules : amplicon length filtering
     //
+    ch_annot_len_asv_pre  = channel.empty()
+    ch_annot_len_asv_post = channel.empty()
     if ( (params.min_len_asv || params.max_len_asv) && !params.multiregion ) {
+        ch_annot_len_asv_pre = ch_asv_table
         FILTER_LEN_ASV ( ch_asv_fasta, ch_asv_table.ifEmpty( [] ) )
         MERGE_STATS_FILTERLENASV ( ch_stats, FILTER_LEN_ASV.out.stats )
         ch_stats = MERGE_STATS_FILTERLENASV.out.tsv
         ch_asv_fasta = FILTER_LEN_ASV.out.fasta
         ch_asv_table = FILTER_LEN_ASV.out.asv
+        ch_annot_len_asv_post = ch_asv_table
         // Make sure that not all sequences were removed
         ch_asv_fasta.subscribe { it -> if (it.countLines() == 0) error("ASV length filtering activated by '--min_len_asv' or '--max_len_asv' removed all ASVs, please adjust settings.") }
     }
@@ -792,12 +800,16 @@ workflow AMPLISEQ {
     //
     // Modules : Filtering based on codons in an open reading frame
     //
+    ch_annot_codons_pre  = channel.empty()
+    ch_annot_codons_post = channel.empty()
     if ( params.filter_codons && !params.multiregion ) {
+        ch_annot_codons_pre = ch_asv_table
         FILTER_CODONS ( ch_asv_fasta, ch_asv_table.ifEmpty( [] ) )
         MERGE_STATS_CODONS( ch_stats, FILTER_CODONS.out.stats )
         ch_stats = MERGE_STATS_CODONS.out.tsv
         ch_asv_fasta = FILTER_CODONS.out.fasta
         ch_asv_table = FILTER_CODONS.out.asv
+        ch_annot_codons_post = ch_asv_table
         // Make sure that not all sequences were removed
         ch_asv_fasta.subscribe { it -> if (it.countLines() == 0) error("ASV codon filtering activated by '--filter_codons' removed all ASVs, please adjust settings.") }
     }
@@ -806,6 +818,8 @@ workflow AMPLISEQ {
     // Modules : ITSx / ITSxRust - cut out ITS region if long ITS reads
     //
     ch_full_fasta = ch_asv_fasta
+    ch_annot_len_itsx_pre  = channel.empty()
+    ch_annot_len_itsx_post = channel.empty()
     if (params.cut_its == "none") {
         ch_fasta = ch_asv_fasta
     } else {
@@ -829,10 +843,13 @@ workflow AMPLISEQ {
             ch_its_summary = ITSX_CUTASV.out.summary
         }
 
+        ch_annot_len_itsx_pre = ch_asv_table
         FILTER_LEN_ITSX ( ch_its_fasta, ch_asv_table.ifEmpty( [] ) )
         ch_fasta = FILTER_LEN_ITSX.out.fasta
         ch_asv_table = FILTER_LEN_ITSX.out.asv
+        ch_annot_len_itsx_post = ch_asv_table
     }
+    ch_annot_accept_post = ch_asv_table
 
     //
     // SUBWORKFLOW / MODULES : Taxonomic classification with DADA2, SINTAX and/or QIIME2
@@ -1031,6 +1048,47 @@ workflow AMPLISEQ {
         ch_tax_for_robject = ch_tax_for_robject.mix ( PHYLOSEQ_INTAX_QIIME2 ( ch_qiime2_tax ).tsv.map { it -> [ "qiime2", file(it) ] } )
     } else {
         ch_qiime2_tax = channel.empty()
+    }
+
+    //
+    // MODULE: Per-ASV annotations (barrnap domain call, decontam contaminant call, per-filter
+    // pass/fail, and the whole-chain "ampliseq_accept") for the taxonomy summary tables below
+    //
+    BUILD_ASV_ANNOTATIONS (
+        ch_barrnapsummary.ifEmpty( [] ),
+        DECONTAM.out.decontaminated_details.ifEmpty( [] ),
+        DECONTAM.out.notcontaminant_details.ifEmpty( [] ),
+        ch_annot_ssu_pre.ifEmpty( [] ),
+        ch_annot_ssu_post.ifEmpty( [] ),
+        ch_annot_len_asv_pre.ifEmpty( [] ),
+        ch_annot_len_asv_post.ifEmpty( [] ),
+        ch_annot_codons_pre.ifEmpty( [] ),
+        ch_annot_codons_post.ifEmpty( [] ),
+        ch_annot_len_itsx_pre.ifEmpty( [] ),
+        ch_annot_len_itsx_post.ifEmpty( [] ),
+        ch_annot_accept_pre.ifEmpty( [] ),
+        ch_annot_accept_post.ifEmpty( [] )
+    )
+
+    //
+    // MODULE: Slim, consistent-schema taxonomy summary table, one per classifier/database already
+    // carried in ch_tax_tsv (KRAKEN2 excluded -- different/inconsistent shape, see docs/output.md)
+    //
+    SUMMARY_TABLE_TAXONOMY (
+        ch_tax_tsv
+            .filter { meta, _tsv -> meta.classifier != "KRAKEN2" }
+            .combine( BUILD_ASV_ANNOTATIONS.out.tsv )
+    )
+    ch_summary_tables = ch_summary_tables.mix( SUMMARY_TABLE_TAXONOMY.out.tsv )
+
+    //
+    // MODULE: Also write the summary tables as Parquet -- must run after every summary table
+    // (counts, taxonomy) has been mixed into ch_summary_tables, not right after the first one
+    //
+    if ( !params.skip_parquet_summary ) {
+        DUCKDB_TABLE2PARQUET (
+            ch_summary_tables.map { tsv -> [ [ id: tsv.name.replaceAll(/\.tsv(\.gz)?$/, '') ], tsv ] }
+        )
     }
 
     //

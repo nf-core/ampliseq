@@ -8,6 +8,10 @@
                 "BARRNAPSUMMARY": {
                     "python": "Python 3.9.1"
                 },
+                "BUILD_ASV_ANNOTATIONS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
+                },
                 "COMBINE_TABLE": {
                     "R": "4.0.3"
                 },
@@ -147,6 +151,10 @@
                     "bash": "5.0.17(1)-release"
                 },
                 "SUMMARY_TABLE_COUNTS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
+                },
+                "SUMMARY_TABLE_TAXONOMY": {
                     "R": "4.3.1",
                     "r-dplyr": "1.1.4"
                 },
@@ -966,6 +974,8 @@
                 "summary_tables",
                 "summary_tables/ampliseq.counts.parquet",
                 "summary_tables/ampliseq.counts.tsv.gz",
+                "summary_tables/ampliseq.taxonomy.DADA2.user.parquet",
+                "summary_tables/ampliseq.taxonomy.DADA2.user.tsv.gz",
                 "treesummarizedexperiment",
                 "treesummarizedexperiment/dada2_TreeSummarizedExperiment.rds"
             ],

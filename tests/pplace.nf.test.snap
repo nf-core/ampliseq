@@ -8,6 +8,10 @@
                 "BARRNAPSUMMARY": {
                     "python": "Python 3.9.1"
                 },
+                "BUILD_ASV_ANNOTATIONS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
+                },
                 "CLUSTALO_ALIGN": {
                     "clustalo": "1.2.4",
                     "pigz": 2.8
@@ -180,6 +184,10 @@
                     "bash": "5.0.17(1)-release"
                 },
                 "SUMMARY_TABLE_COUNTS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
+                },
+                "SUMMARY_TABLE_TAXONOMY": {
                     "R": "4.3.1",
                     "r-dplyr": "1.1.4"
                 },
@@ -1201,6 +1209,10 @@
                 "summary_tables",
                 "summary_tables/ampliseq.counts.parquet",
                 "summary_tables/ampliseq.counts.tsv.gz",
+                "summary_tables/ampliseq.taxonomy.PPLACE.test_pplace.parquet",
+                "summary_tables/ampliseq.taxonomy.PPLACE.test_pplace.tsv.gz",
+                "summary_tables/ampliseq.taxonomy.QIIME2.greengenes85.parquet",
+                "summary_tables/ampliseq.taxonomy.QIIME2.greengenes85.tsv.gz",
                 "treesummarizedexperiment",
                 "treesummarizedexperiment/pplace_TreeSummarizedExperiment.rds",
                 "treesummarizedexperiment/qiime2_TreeSummarizedExperiment.rds"
@@ -1222,10 +1234,10 @@
             "multiqc_general_stats.txt:md5,7a395be7984aaa0f9154de4abed5d824",
             "multiqc_cutadapt.txt:md5,3dce058d2d6c85a3cca7314ae19c5586"
         ],
+        "timestamp": "2026-08-21T10:54:40.248350914",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.4"
-        },
-        "timestamp": "2026-04-21T13:11:50.389289893"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
     }
 }

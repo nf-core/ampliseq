@@ -20,6 +20,9 @@
                     "R": "4.5.2",
                     "dada2": "1.38.0"
                 },
+                "DUCKDB_TABLE2PARQUET": {
+                    "duckdb": "1.5.5"
+                },
                 "FILTER_CODONS": {
                     "python": "3.9.1",
                     "pandas": "1.1.5"
@@ -94,6 +97,7 @@
                 "summary_report/rrna_detection_with_barrnap.svg",
                 "summary_report/summary_report.html",
                 "summary_report/versions.yml",
+                "summary_tables",
                 "summary_tables/ampliseq.taxonomy.DADA2.rdp_18.parquet",
                 "summary_tables/ampliseq.taxonomy.DADA2.rdp_18.tsv.gz"
             ],
@@ -110,10 +114,10 @@
             "ref_taxonomy.rdp_18.txt:md5,c20d8e186e2893ba7818a0115edb013e",
             "ASV_seqs.fasta:md5,39b0d4ad96b37fa68d4ee5c21b667fed"
         ],
+        "timestamp": "2026-08-21T15:20:21.823742365",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.4"
-        },
-        "timestamp": "2026-04-21T08:55:06.518243143"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
     }
 }

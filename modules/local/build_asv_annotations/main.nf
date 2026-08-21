@@ -74,6 +74,16 @@ process BUILD_ASV_ANNOTATIONS {
     if (!is.null(barrnap_summary)) {
         evals <- read_tsv(barrnap_summary, show_col_types = FALSE)
         eval_cols <- setdiff(colnames(evals), c("ASV_ID", "eval_method"))
+    } else {
+        evals <- tibble()
+    }
+    # Guard nrow(evals) > 0: dplyr's rowwise()/mutate() still evaluates the block once (to type the
+    # new column) even with zero rows, and c_across() on that zero-row probe returns a zero-length
+    # vector -- crashes the names<- assignment below since eval_cols has 4 entries. Zero rows here is
+    # a real, common case, not a hypothetical: barrnap targets rRNA, so an ITS-only amplicon run (no
+    # rRNA in the data at all) legitimately produces zero hits across every ASV, not just an edge
+    # case for pathological input.
+    if (nrow(evals) > 0) {
         label <- evals |>
             rowwise() |>
             mutate(barrnap_domain = {

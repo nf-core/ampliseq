@@ -8,6 +8,10 @@
                 "BARRNAPSUMMARY": {
                     "python": "Python 3.9.1"
                 },
+                "BUILD_ASV_ANNOTATIONS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
+                },
                 "COMBINE_TABLE": {
                     "R": "4.0.3"
                 },
@@ -167,6 +171,10 @@
                     "R": "3.6.3"
                 },
                 "SUMMARY_TABLE_COUNTS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
+                },
+                "SUMMARY_TABLE_TAXONOMY": {
                     "R": "4.3.1",
                     "r-dplyr": "1.1.4"
                 },
@@ -1365,6 +1373,8 @@
                 "summary_tables",
                 "summary_tables/ampliseq.counts.parquet",
                 "summary_tables/ampliseq.counts.tsv.gz",
+                "summary_tables/ampliseq.taxonomy.SINTAX.unite-fungi.parquet",
+                "summary_tables/ampliseq.taxonomy.SINTAX.unite-fungi.tsv.gz",
                 "treesummarizedexperiment",
                 "treesummarizedexperiment/sintax_TreeSummarizedExperiment.rds"
             ],
@@ -1388,7 +1398,7 @@
             "multiqc_general_stats.txt:md5,1fef8358fe3cc974bf05e2f27fc7e250",
             "multiqc_cutadapt.txt:md5,160135fece18361e17bef9e8d04cf0b9"
         ],
-        "timestamp": "2026-08-04T19:44:34.128481848",
+        "timestamp": "2026-08-21T11:55:09.339502871",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

@@ -211,14 +211,21 @@ DADA2 reduces sequence errors and dereplicates sequences by quality filtering, d
 
 ### Summary tables
 
-Tables with consistent, lower-case column names, ready to load into R, Python or another tool of choice without pipeline-specific parsing. These are sourced directly from DADA2's own raw output, before any of the optional post-processing filters below run.
+Tables with consistent, lower-case column names, ready to load into R, Python or another tool of choice without pipeline-specific parsing.
 
 <details markdown="1">
 <summary>Output files</summary>
 
 - `summary_tables/`
-  - `ampliseq.counts.tsv.gz`: ASV counts in long format (`asv_id`, `sample`, `count`), rows with a count of 0 are dropped.
+  - `ampliseq.counts.tsv.gz`: ASV counts in long format (`asv_id`, `sample`, `count`), rows with a count of 0 are dropped. Sourced directly from DADA2's own raw output, before any of the optional post-processing filters below run.
   - `ampliseq.counts.parquet`: The same table in [Parquet](https://parquet.apache.org/) format. Skip this file with `--skip_parquet_summary`.
+  - `ampliseq.taxonomy.<classifier>.<database>.tsv.gz`: One file per classifier and database actually run (e.g. `ampliseq.taxonomy.DADA2.gtdb_R07-RS207.tsv.gz`) -- Kraken2 excluded, its rank vocabulary and output shape are too different to normalize here. A slim, consistent-schema reformat of that classifier's own native taxonomy table: `asv_id`, `kingdom`..`species` (rank names as reported by that classifier/database; QIIME2's `k__`/`p__`/etc.-prefixed `Taxon` string and phylogenetic placement's unranked, semicolon-joined string are both parsed into these same seven columns, best-effort for the latter), `confidence` (blank where the classifier doesn't report one). Deliberately narrower than the native per-classifier files elsewhere in this directory: `sequence` is dropped (recoverable via `asv_id`) and, for DADA2, the per-rank `*_confidence` columns are dropped too (DADA2-specific detail, not comparable across classifiers) -- both remain available in full in the native files.
+
+    Joined onto every one of these files, whenever the corresponding option was used:
+    - `barrnap_domain`: the rRNA domain barrnap called with the lowest e-value for this ASV (`bac`/`arc`/`euk`/`mito`), blank if none was significant -- present whenever barrnap ran (i.e. `--skip_barrnap` wasn't set). A blank value is ambiguous between "no significant hit" and "barrnap wasn't run"; the whole column is simply absent in the latter case.
+    - `decontam_contaminant` / `decontam_not_contaminant`: decontam's own contaminant call for this ASV, present whenever decontam's contaminant-detection analysis ran (i.e. the sample sheet includes `control` and/or `quant_reading` columns, [see below](#decontam)) -- independent of whether `--decontam` was additionally set to actually filter the ASV table using that call.
+    - `passed_ssu_filter`, `passed_length_filter_asv`, `passed_codon_filter`, `passed_length_filter_itsx`: whether this ASV survived each individual optional filter below, present only when that filter was enabled.
+    - `ampliseq_accept`: whether this ASV survived the whole standard filtering chain (decontam through the ITSx-region length filter) end to end. Provided as a convenience alongside the individual columns above, not instead of them, so the pipeline's own filtering choices can be recombined differently if wanted.
 
 </details>
 

@@ -1,0 +1,75 @@
+name: build_asv_annotations
+description: Build a per-ASV table of barrnap/decontam/filter annotations for joining onto the taxonomy summary tables
+keywords:
+  - summary
+  - annotations
+  - asv
+  - barrnap
+  - decontam
+  - filter
+tools:
+  - dplyr:
+      description: A grammar of data manipulation
+      homepage: https://dplyr.tidyverse.org/
+      documentation: https://dplyr.tidyverse.org/
+      tool_dev_url: https://github.com/tidyverse/dplyr
+      licence: ["MIT"]
+      identifier: ""
+input:
+  - - barrnap_summary:
+        type: file
+        description: BARRNAPSUMMARY's per-ASV rRNA domain e-value summary, or an empty list when barrnap wasn't run
+        pattern: "summary.tsv"
+    - decontam_details:
+        type: file
+        description: DECONTAM's per-ASV contaminant-call details, or an empty list when DECONTAM didn't run (no control/quant_reading metadata) -- independent of --decontam, which only gates whether that call is used to filter the ASV table
+        pattern: "decontaminated_details.tsv"
+    - notcontam_details:
+        type: file
+        description: DECONTAM's per-ASV not-contaminant-call details, or an empty list when DECONTAM didn't run or no negative controls were configured -- independent of --decontam, which only gates whether that call is used to filter the ASV table
+        pattern: "notcontaminant_details.tsv"
+    - ssu_pre:
+        type: file
+        description: ASV table immediately before FILTER_SSU, or an empty list when --filter_ssu wasn't set
+    - ssu_post:
+        type: file
+        description: ASV table immediately after FILTER_SSU, or an empty list when --filter_ssu wasn't set
+    - len_asv_pre:
+        type: file
+        description: ASV table immediately before FILTER_LEN_ASV, or an empty list when --min_len_asv/--max_len_asv weren't set
+    - len_asv_post:
+        type: file
+        description: ASV table immediately after FILTER_LEN_ASV, or an empty list when --min_len_asv/--max_len_asv weren't set
+    - codons_pre:
+        type: file
+        description: ASV table immediately before FILTER_CODONS, or an empty list when --filter_codons wasn't set
+    - codons_post:
+        type: file
+        description: ASV table immediately after FILTER_CODONS, or an empty list when --filter_codons wasn't set
+    - len_itsx_pre:
+        type: file
+        description: ASV table immediately before FILTER_LEN_ITSX, or an empty list when --cut_its was "none"
+    - len_itsx_post:
+        type: file
+        description: ASV table immediately after FILTER_LEN_ITSX, or an empty list when --cut_its was "none"
+    - accept_pre:
+        type: file
+        description: ASV table immediately before the standard filtering chain (decontam) starts
+    - accept_post:
+        type: file
+        description: ASV table immediately after the standard filtering chain (ITSx-region length filter) ends
+output:
+  - tsv:
+      - "ASV_annotations.tsv":
+          type: file
+          description: Wide per-ASV annotations (asv_id plus barrnap_domain, decontam_*, passed_*_filter, ampliseq_accept -- each present only if its source actually ran)
+          pattern: "ASV_annotations.tsv"
+  - versions:
+      - versions.yml:
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+authors:
+  - "@erikrikarddaniel"
+maintainers:
+  - "@erikrikarddaniel"

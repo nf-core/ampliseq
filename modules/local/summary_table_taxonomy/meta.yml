@@ -1,0 +1,41 @@
+name: summary_table_taxonomy
+description: Reformat one classifier/database's taxonomy table into the slim, consistent summary-table schema, joined with per-ASV annotations
+keywords:
+  - summary
+  - taxonomy
+  - asv
+  - long format
+tools:
+  - dplyr:
+      description: A grammar of data manipulation
+      homepage: https://dplyr.tidyverse.org/
+      documentation: https://dplyr.tidyverse.org/
+      tool_dev_url: https://github.com/tidyverse/dplyr
+      licence: ["MIT"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: Groovy Map with classifier and database keys, e.g. [classifier: "DADA2", database: "gtdb_R07-RS207"]
+    - tax_tsv:
+        type: file
+        description: One classifier/database's native taxonomy table, as carried in ch_tax_tsv (KRAKEN2 already excluded upstream)
+    - annotations:
+        type: file
+        description: BUILD_ASV_ANNOTATIONS' wide per-ASV annotations table (asv_id plus whichever of barrnap_domain/decontam_*/passed_*_filter/ampliseq_accept actually apply) -- combined onto every ch_tax_tsv entry via .combine(), since it is a single shared table but ch_tax_tsv can carry several entries
+        pattern: "ASV_annotations.tsv"
+output:
+  - tsv:
+      - "ampliseq.taxonomy.*.tsv.gz":
+          type: file
+          description: Slim, consistent-schema taxonomy table for this classifier/database (asv_id, kingdom..species, confidence) joined with the per-ASV annotations
+          pattern: "ampliseq.taxonomy.*.tsv.gz"
+  - versions:
+      - versions.yml:
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+authors:
+  - "@erikrikarddaniel"
+maintainers:
+  - "@erikrikarddaniel"

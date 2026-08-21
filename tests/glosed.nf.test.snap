@@ -173,6 +173,8 @@
                 "summary_tables",
                 "summary_tables/ampliseq.counts.parquet",
                 "summary_tables/ampliseq.counts.tsv.gz",
+                "summary_tables/ampliseq.taxonomy.DADA2.glosed.parquet",
+                "summary_tables/ampliseq.taxonomy.DADA2.glosed.tsv.gz",
                 "treesummarizedexperiment",
                 "treesummarizedexperiment/dada2_TreeSummarizedExperiment.rds"
             ],

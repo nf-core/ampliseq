@@ -16,7 +16,7 @@ tools:
 input:
   - - meta:
         type: map
-        description: Groovy Map with classifier and database keys, e.g. [classifier: "DADA2", database: "gtdb_R07-RS207"]
+        description: 'Groovy Map with classifier and database keys, e.g. [classifier: "DADA2", database: "gtdb_R07-RS207"]'
     - tax_tsv:
         type: file
         description: One classifier/database's native taxonomy table, as carried in ch_tax_tsv (KRAKEN2 already excluded upstream)

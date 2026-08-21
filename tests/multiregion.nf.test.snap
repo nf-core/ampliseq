@@ -2,6 +2,10 @@
     "-profile test_multiregion": {
         "content": [
             {
+                "BUILD_ASV_ANNOTATIONS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
+                },
                 "CUTADAPT_BASIC": {
                     "cutadapt": 5.2
                 },

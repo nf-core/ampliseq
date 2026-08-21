@@ -40,6 +40,9 @@
                     "R": "4.5.2",
                     "dada2": "1.38.0"
                 },
+                "DUCKDB_TABLE2PARQUET": {
+                    "duckdb": "1.5.5"
+                },
                 "FILTER_SAMPLES": {
                     "R": "4.2.1"
                 },
@@ -1331,6 +1334,7 @@
                 "summary_report/shannon_vector_spearman.svg",
                 "summary_report/summary_report.html",
                 "summary_report/versions.yml",
+                "summary_tables",
                 "summary_tables/ampliseq.taxonomy.DADA2.gtdb_R07-RS207.parquet",
                 "summary_tables/ampliseq.taxonomy.DADA2.gtdb_R07-RS207.tsv.gz"
             ],
@@ -1342,7 +1346,7 @@
             "performance.log:md5,c8dc4069bb01c53fa1dceb91a2f49330",
             "profile.log:md5,d3f5b2feca8ad34ef395235d08201bbd"
         ],
-        "timestamp": "2026-08-18T12:54:59.230203413",
+        "timestamp": "2026-08-21T16:06:28.413669539",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

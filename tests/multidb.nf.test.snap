@@ -283,8 +283,6 @@
                 "qiime2/barplot/level-6.jsonp",
                 "qiime2/barplot/level-7.csv",
                 "qiime2/barplot/level-7.jsonp",
-                "qiime2/barplot/level-8.csv",
-                "qiime2/barplot/level-8.jsonp",
                 "qiime2/barplot/q2templateassets",
                 "qiime2/barplot/q2templateassets/css",
                 "qiime2/barplot/q2templateassets/css/base-template.css",
@@ -335,7 +333,7 @@
                 "treesummarizedexperiment/dada2_TreeSummarizedExperiment.rds"
             ]
         ],
-        "timestamp": "2026-08-20T14:40:28.053644025",
+        "timestamp": "2026-08-25T15:50:17.392115232",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

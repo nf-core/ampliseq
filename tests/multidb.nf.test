@@ -67,11 +67,20 @@ nextflow_pipeline {
             assert workflow.success
             def consolidated = path("$outputDir/dada2/ASV_tax.consolidated.most-specific.tsv").csv(sep: '\t', header: true)
             def databases = consolidated.columns["database"]
+            // qiime taxa barplot emits one level-N.csv per rank actually present in the taxonomy
+            // string it was given (no explicit --p-n-levels) -- a level-8.csv means some non-rank
+            // column (e.g. consolidate_dada2_taxonomy's "database", or DADA2_ADDSPECIES's
+            // "Species_exact") leaked into parse_dada2_taxonomy.r's 7-rank taxonomy string as a
+            // bogus 8th rank, same class of bug fixed in bin/parse_dada2_taxonomy.r
+            def barplot_headers = path("$outputDir/qiime2/barplot/level-7.csv").readLines()[0]
             assertAll(
                 // real per-ASV mixing happened -- both listed databases won at least one ASV,
                 // not an accidental full-passthrough of just the first-listed one
                 { assert databases.findAll { it == "gtdb_R07-RS207" }.size() > 0 },
-                { assert databases.findAll { it == "rdp_18" }.size() > 0 }
+                { assert databases.findAll { it == "rdp_18" }.size() > 0 },
+                { assert !path("$outputDir/qiime2/barplot/level-8.csv").exists() },
+                { assert !barplot_headers.contains("gtdb_R07-RS207") },
+                { assert !barplot_headers.contains("rdp_18") }
             )
         }
     }

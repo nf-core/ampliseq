@@ -82,9 +82,24 @@ process SUMMARY_REPORT  {
     // make named R list (comma separated)
     // all non-boolean or non-numeric values must be encumbered by single quotes (')!
     // all elements must have a value, i.e. booleans also need to be set to TRUE
-    // --dada_ref_taxonomy may list several comma-separated databases; only the first-listed one
-    // ("the winner") feeds downstream analysis, so that's the one to report here
-    def dada_ref_taxonomy_winner = params.dada_ref_taxonomy ? params.dada_ref_taxonomy.tokenize(',')[0].trim() : null
+    // --dada_ref_taxonomy may list several comma-separated databases. Without consolidation, only
+    // the first-listed one ("the winner") feeds downstream analysis, so that's the one to report.
+    // With --consolidate_taxonomies, every listed database can win individual ASVs -- report that
+    // plainly (which method, which databases) rather than naming just the first-listed one as if
+    // it were the sole source.
+    def dada_ref_taxonomy_list   = params.dada_ref_taxonomy ? params.dada_ref_taxonomy.tokenize(',')*.trim() : []
+    def dada_ref_taxonomy_winner = dada_ref_taxonomy_list ? dada_ref_taxonomy_list[0] : null
+    def dada_consolidated        = params.consolidate_taxonomies && dada_ref_taxonomy_list.size() > 1
+    def dada2_ref_tax_title      = dada_consolidated ?
+        "Consolidated per ASV (--consolidate_taxonomies ${params.consolidate_taxonomies}) across: " +
+            dada_ref_taxonomy_list.collect { params.dada_ref_databases[it]["title"] }.join('; ') :
+        dada_ref_taxonomy_winner ? params.dada_ref_databases[dada_ref_taxonomy_winner]["title"] : null
+    def dada2_ref_tax_file       = dada_consolidated ?
+        dada_ref_taxonomy_list.collect { params.dada_ref_databases[it]["file"] }.flatten().join(', ') :
+        dada_ref_taxonomy_winner ? params.dada_ref_databases[dada_ref_taxonomy_winner]["file"] : null
+    def dada2_ref_tax_citation   = dada_consolidated ?
+        dada_ref_taxonomy_list.collect { params.dada_ref_databases[it]["citation"] }.join(' | ') :
+        dada_ref_taxonomy_winner ? params.dada_ref_databases[dada_ref_taxonomy_winner]["citation"] : null
     def params_list_named  = [
         "css='$report_styles'",
         "report_logo='$report_logo'",
@@ -137,7 +152,7 @@ process SUMMARY_REPORT  {
         "dada_min_boot=$params.dada_min_boot",
         itsx_cutasv_summary ? "itsx_cutasv_summary='$itsx_cutasv_summary',cut_its='$params.cut_its'" : "",
         dada2_tax ? "dada2_taxonomy='$dada2_tax'" : "",
-        dada2_tax && !params.dada_ref_tax_custom ? "dada2_ref_tax_title='${params.dada_ref_databases[dada_ref_taxonomy_winner]["title"]}',dada2_ref_tax_file='${params.dada_ref_databases[dada_ref_taxonomy_winner]["file"]}',dada2_ref_tax_citation='${params.dada_ref_databases[dada_ref_taxonomy_winner]["citation"]}'" : "",
+        dada2_tax && !params.dada_ref_tax_custom ? "dada2_ref_tax_title='$dada2_ref_tax_title',dada2_ref_tax_file='$dada2_ref_tax_file',dada2_ref_tax_citation='$dada2_ref_tax_citation'" : "",
         cut_dada_ref_taxonomy ? "cut_dada_ref_taxonomy='$cut_dada_ref_taxonomy'" : "",
         sintax_tax && !params.sintax_ref_tax_custom ? "sintax_taxonomy='$sintax_tax',sintax_ref_tax_title='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["title"]}',sintax_ref_tax_file='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["file"]}',sintax_ref_tax_citation='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["citation"]}'" : "",
         sintax_tax && params.sintax_ref_tax_custom ? "sintax_taxonomy='$sintax_tax',sintax_ref_tax_title='User-supplied reference database',sintax_ref_tax_file='${params.sintax_ref_tax_custom}',sintax_ref_tax_citation='Not specified'" : "",

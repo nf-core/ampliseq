@@ -53,4 +53,81 @@ nextflow_pipeline {
             )
         }
     }
+
+    test("-profile test_multidb --consolidate_taxonomies most-specific") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                consolidate_taxonomies = "most-specific"
+            }
+        }
+
+        then {
+            assert workflow.success
+            def consolidated = path("$outputDir/dada2/ASV_tax.consolidated.most-specific.tsv").csv(sep: '\t', header: true)
+            def databases = consolidated.columns["database"]
+            // qiime taxa barplot emits one level-N.csv per rank actually present in the taxonomy
+            // string it was given (no explicit --p-n-levels) -- a level-8.csv means some non-rank
+            // column (e.g. consolidate_dada2_taxonomy's "database", or DADA2_ADDSPECIES's
+            // "Species_exact") leaked into parse_dada2_taxonomy.r's 7-rank taxonomy string as a
+            // bogus 8th rank, same class of bug fixed in bin/parse_dada2_taxonomy.r
+            def barplot_headers = path("$outputDir/qiime2/barplot/level-7.csv").readLines()[0]
+            assertAll(
+                // real per-ASV mixing happened -- both listed databases won at least one ASV,
+                // not an accidental full-passthrough of just the first-listed one
+                { assert databases.findAll { it == "gtdb_R07-RS207" }.size() > 0 },
+                { assert databases.findAll { it == "rdp_18" }.size() > 0 },
+                { assert !path("$outputDir/qiime2/barplot/level-8.csv").exists() },
+                { assert !barplot_headers.contains("gtdb_R07-RS207") },
+                { assert !barplot_headers.contains("rdp_18") }
+            )
+        }
+    }
+
+    test("-profile test_multidb --consolidate_taxonomies score") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                consolidate_taxonomies = "score"
+            }
+        }
+
+        then {
+            assert workflow.success
+            def consolidated = path("$outputDir/dada2/ASV_tax.consolidated.score.tsv").csv(sep: '\t', header: true)
+            def databases = consolidated.columns["database"]
+            assertAll(
+                { assert databases.findAll { it == "gtdb_R07-RS207" }.size() > 0 },
+                { assert databases.findAll { it == "rdp_18" }.size() > 0 }
+            )
+        }
+    }
+
+    // Mixed rank-vocabulary case: PR2 uses Domain,Supergroup,Division,Subdivision ahead of Class
+    // instead of Kingdom,Phylum -- only pr2=5.0.0/5.1.0 use this scheme (older PR2 releases have a
+    // different, simpler one), so pr2=5.0.0 is the oldest/smallest version that still exercises it.
+    // silva=132/gtdb=R05-RS95 are the oldest/smallest versions of the other two (their rank
+    // vocabulary is the standard Kingdom..Species one at every version, so no such constraint).
+    test("-profile test_multidb --dada_ref_taxonomy silva,gtdb,pr2 --consolidate_taxonomies most-specific") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                dada_ref_taxonomy = "silva=132,gtdb=R05-RS95,pr2=5.0.0"
+                consolidate_taxonomies = "most-specific"
+            }
+        }
+
+        then {
+            assert workflow.success
+            def header = path("$outputDir/dada2/ASV_tax.consolidated.most-specific.tsv").text.readLines()[0].tokenize('\t')
+            // both rank vocabularies survive consolidation into one file: the standard columns
+            // (from silva/gtdb) and PR2's own (Domain, Supergroup, Division, Subdivision)
+            assertAll(
+                { assert header.containsAll(["Kingdom", "Phylum", "Domain", "Supergroup", "Division", "Subdivision"]) }
+            )
+        }
+    }
 }

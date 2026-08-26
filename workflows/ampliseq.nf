@@ -92,6 +92,7 @@ include { QIIME2_PREPTAX                } from '../subworkflows/local/qiime2_pre
 include { QIIME2_TAXONOMY               } from '../subworkflows/local/qiime2_taxonomy'
 include { CUTADAPT_WORKFLOW             } from '../subworkflows/local/cutadapt_workflow'
 include { DADA2_TAXONOMY_WF             } from '../subworkflows/local/dada2_taxonomy_wf'
+include { CONSOLIDATE_DADA2_TAXONOMY    } from '../modules/local/consolidate_dada2_taxonomy'
 include { SINTAX_TAXONOMY_WF            } from '../subworkflows/local/sintax_taxonomy_wf'
 include { VSEARCH_LCA_TAXONOMY_WF       } from '../subworkflows/local/vsearch_lca_taxonomy_wf'
 include { KRAKEN2_TAXONOMY_WF           } from '../subworkflows/local/kraken2_taxonomy_wf'
@@ -858,8 +859,19 @@ workflow AMPLISEQ {
             )
         // one entry per listed database -- feeds ch_tax_tsv (already tolerant of multiple entries per classifier)
         ch_tax_tsv = ch_tax_tsv.mix( ch_dada2_taxonomy_wf.tax.map { db_key, f -> [ [database: db_key.replace('=','_').replace('.','_'), classifier:"DADA2"], file(f) ] } )
-        // the first-listed database is the "winner" that feeds every other downstream consumer, unchanged
-        ch_dada2_tax = ch_dada2_taxonomy_wf.tax.filter { db_key, _f -> db_key == val_dada_ref_taxonomy_list[0] }.map { _db_key, f -> f }
+        // the winner that feeds every other downstream consumer: either the first-listed database
+        // (default), or a real per-ASV consolidation across every listed database when requested
+        if (params.consolidate_taxonomies && val_dada_ref_taxonomy_list.size() > 1) {
+            CONSOLIDATE_DADA2_TAXONOMY (
+                ch_dada2_taxonomy_wf.tax.map { _db_key, f -> f }.collect(),
+                params.consolidate_taxonomies,
+                val_dada_ref_taxonomy_list.collect { db_key -> db_key.replace('=','_').replace('.','_') }.join(','),
+                "ASV_tax.consolidated.${params.consolidate_taxonomies}.tsv"
+            )
+            ch_dada2_tax = CONSOLIDATE_DADA2_TAXONOMY.out.tsv
+        } else {
+            ch_dada2_tax = ch_dada2_taxonomy_wf.tax.filter { db_key, _f -> db_key == val_dada_ref_taxonomy_list[0] }.map { _db_key, f -> f }
+        }
         ch_dada2_cut_tax = params.cut_dada_ref_taxonomy ?
             ch_dada2_taxonomy_wf.cut_tax.filter { meta, _log -> meta.db_key == val_dada_ref_taxonomy_list[0] } :
             ch_dada2_taxonomy_wf.cut_tax

@@ -20,6 +20,10 @@ nextflow_pipeline {
             // for the reverse read only, rather than both reads sharing one value
             def filtntrim_args = path("$outputDir/dada2/args/filterAndTrim.args.txt").text
             assertAll(
+                { assert snapshot(
+                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_ampliseq_software_mqc_versions.yml")
+                ).match() },
                 { assert filtntrim_args.contains("maxEE = c(2, 5)") }
             )
         }

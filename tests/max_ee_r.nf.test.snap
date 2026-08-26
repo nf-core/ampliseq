@@ -1,0 +1,83 @@
+{
+    "-profile test_max_ee_r": {
+        "content": [
+            {
+                "BARRNAP": {
+                    "barrnap": 0.9
+                },
+                "BARRNAPSUMMARY": {
+                    "python": "Python 3.9.1"
+                },
+                "CUTADAPT_BASIC": {
+                    "cutadapt": 5.2
+                },
+                "CUTADAPT_SUMMARY_STD": {
+                    "python": "Python 3.8.3"
+                },
+                "DADA2_DENOISING": {
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
+                },
+                "DADA2_ERR": {
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
+                },
+                "DADA2_FILTNTRIM": {
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
+                },
+                "DADA2_MERGE": {
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
+                },
+                "DADA2_QUALITY1": {
+                    "R": "4.5.2",
+                    "dada2": "1.38.0",
+                    "ShortRead": "1.68.0"
+                },
+                "DADA2_QUALITY2": {
+                    "R": "4.5.2",
+                    "dada2": "1.38.0",
+                    "ShortRead": "1.68.0"
+                },
+                "DADA2_RMCHIMERA": {
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
+                },
+                "DADA2_STATS": {
+                    "R": "4.5.2",
+                    "dada2": "1.38.0"
+                },
+                "DECONTAM": {
+                    "R": "4.5.2",
+                    "decontam": "1.30.0"
+                },
+                "DUCKDB_TABLE2PARQUET": {
+                    "duckdb": "1.5.5"
+                },
+                "MERGE_STATS_DADA": {
+                    "R": "4.5.2"
+                },
+                "RENAME_RAW_DATA_FILES": {
+                    "bash": "5.0.17(1)-release"
+                },
+                "SUMMARY_TABLE_COUNTS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
+                },
+                "TRUNCLEN": {
+                    "python": "3.9.1",
+                    "pandas": "1.1.5"
+                },
+                "Workflow": {
+                    "nf-core/ampliseq": "v2.19.0dev"
+                }
+            }
+        ],
+        "timestamp": "2026-08-26T08:13:13.453887771",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}

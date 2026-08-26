@@ -105,6 +105,7 @@ params {
     trunc_qmin: Integer = 25
     trunc_rmin: Float = 0.75
     max_ee: Integer = 2
+    max_ee_r: Integer?
     min_len: Integer = 50
     max_len: Integer?
     ignore_failed_filtering: Boolean

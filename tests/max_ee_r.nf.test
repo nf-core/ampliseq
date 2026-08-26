@@ -1,0 +1,27 @@
+nextflow_pipeline {
+
+    name "Test pipeline"
+    script "../main.nf"
+    tag "pipeline"
+    profile "test_max_ee_r"
+
+    test("-profile test_max_ee_r") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            assert workflow.success
+            // filterAndTrim.args.txt records the exact R arguments DADA2_FILTNTRIM was called
+            // with -- "maxEE = c(2, 5)" confirms --max_ee_r (5) overrode --max_ee (2, default)
+            // for the reverse read only, rather than both reads sharing one value
+            def filtntrim_args = path("$outputDir/dada2/args/filterAndTrim.args.txt").text
+            assertAll(
+                { assert filtntrim_args.contains("maxEE = c(2, 5)") }
+            )
+        }
+    }
+}

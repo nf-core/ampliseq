@@ -258,13 +258,12 @@ Pre-configured reference taxonomy databases are:
 | rdp          | +     | -      | +       | -      | -       | -          | 16S rRNA                                      |
 | greengenes   | -     | -      | +       | (+)³   | -       | -          | 16S rRNA                                      |
 | greengenes2  | +     | -      | -       | +      | -       | -          | 16S rRNA                                      |
-| pr2          | +     | -      | -       | -      | -       | -          | 18S rRNA                                      |
+| pr2          | +     | -      | -       | -      | -       | -          | 18S rRNA, also plastid/chloroplast 16S rRNA   |
 | GloSED       | +     | -      | -       | -      | -       | -          | eukaryotic nuclear ribosomal ITS region       |
 | unite-fungi  | +     | +      | -       | -      | +       | -          | eukaryotic nuclear ribosomal ITS region       |
 | unite-alleuk | +     | +      | -       | -      | +       | -          | eukaryotic nuclear ribosomal ITS region       |
 | coidb        | +     | +      | -       | -      | +       | -          | eukaryotic Cytochrome Oxidase I (COI)         |
 | midori2-co1  | +     | -      | -       | -      | +       | -          | eukaryotic Cytochrome Oxidase I (COI)         |
-| phytoref     | +     | -      | -       | -      | -       | -          | eukaryotic plastid 16S rRNA                   |
 | zehr-nifh    | +     | -      | -       | -      | -       | -          | Nitrogenase iron protein NifH                 |
 | standard     | -     | -      | +       | -      | -       | -          | any in genomes of archaea, bacteria, viruses⁴ |
 

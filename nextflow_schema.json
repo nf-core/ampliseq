@@ -640,6 +640,14 @@
                     "help_text": "Comma separated list of taxonomic ranks matching the labels in the custom database. Required with `--sintax_ref_tax_custom`. For example: `Phylum,Class,Order,Family,Genus,Species`.",
                     "description": "Comma separated list of taxonomic levels used in SINTAX with a custom reference database"
                 },
+                "sintax_cutoff": {
+                    "type": "number",
+                    "default": 0.8,
+                    "minimum": 0,
+                    "maximum": 1,
+                    "help_text": "Confidence cutoff for SINTAX taxonomic classification (`--sintax_cutoff` in VSEARCH). Increasing the cutoff requires higher confidence to assign a rank.",
+                    "description": "Confidence cutoff for SINTAX taxonomic classification."
+                },
                 "vsearch_lca_ref_tax_custom": {
                     "type": "string",
                     "format": "file-path",

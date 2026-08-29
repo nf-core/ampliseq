@@ -47,6 +47,7 @@ params:
     cut_its: FALSE
     dada2_ref_tax_title: FALSE
     qiime2_ref_tax_title: FALSE
+    sintax_cutoff: ""
     sintax_ref_tax_title: FALSE
     kraken2_ref_tax_title: FALSE
     dada2_ref_tax_file: ""
@@ -1301,6 +1302,10 @@ cat("## SINTAX\n")
 cat("The taxonomic classification was performed by [SINTAX](https://doi.org/10.1101/074161)
     using the database: `", params$sintax_ref_tax_title, "`.
     More details about the reference taxonomy database can be found in the ['Methods section'](#methods).\n\n", sep = "")
+
+if ( params$sintax_cutoff != "" && params$sintax_cutoff != "0.8" ) {
+    cat("A SINTAX confidence score threshold of",params$sintax_cutoff,"was applied for taxonomic classifications.\n\n")
+}
 
 asv_tax <- read.table(params$sintax_taxonomy, header = TRUE, sep = "\t", comment.char = "")
 

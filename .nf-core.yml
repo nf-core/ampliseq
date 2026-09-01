@@ -10,7 +10,7 @@ lint:
     - docs/images/nf-core-ampliseq_logo_dark.png
   nextflow_config: false
   schema_params: false
-nf_core_version: 4.0.3
+nf_core_version: 4.1.0
 repository_type: pipeline
 template:
   author: Daniel Straub, Alexander Peltzer

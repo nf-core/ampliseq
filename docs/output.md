@@ -454,6 +454,7 @@ Files when _not_ using ITSx (default):
 
 - `vsearch_lca/`
   - `ASV_tax_vsearch_lca.*.lca`: Raw `--lcaout` output from VSEARCH.
+  - `ASV_tax_vsearch_lca.*.txt`: Raw `--blast6out` hit table from VSEARCH (accepted hits used for LCA).
   - `ASV_tax_vsearch_lca.*.tsv`: Taxonomic classification for each ASV sequence in a format similar to DADA2 output.
   - `ref_taxonomy_vsearch_lca.txt`: Information about the used reference taxonomy, such as title, version, citation.
 
@@ -466,6 +467,7 @@ Files when using ITSx:
 
 - `vsearch_lca/`
   - `ASV_ITS_tax_vsearch_lca.*.lca`: Raw `--lcaout` output from VSEARCH, when using cut sequences as input.
+  - `ASV_ITS_tax_vsearch_lca.*.txt`: Raw `--blast6out` hit table from VSEARCH (accepted hits used for LCA), when using cut sequences as input.
   - `ASV_tax_vsearch_lca.*.tsv`: Taxonomic classification for each ASV sequence, based on the chosen ITS region, in a format similar to DADA2 output.
   - `ref_taxonomy_vsearch_lca.txt`: Information about the used reference taxonomy, such as title, version, citation.
 

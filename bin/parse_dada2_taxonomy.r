@@ -13,10 +13,11 @@ OUT="tax.tsv"
 # read required files
 tax = read.table(tax_file, header = TRUE, sep = "\t", stringsAsFactors = FALSE, comment.char = '', quote = '')
 
-# Join the taxonomy rank columns only -- excludes ASV_ID, sequence, the aggregate
-# "confidence" column, and the per-rank "<rank>_confidence" columns, none of which
-# are taxonomic ranks and shouldn't end up in the QIIME2 taxonomy string
-non_rank_cols <- colnames(tax) %in% c('ASV_ID', 'sequence', 'confidence') | grepl('_confidence$', colnames(tax))
+# Join the taxonomy rank columns only, excluding known non-rank columns. Matched by suffix
+# pattern where possible ("_confidence", "_exact") rather than by literal name, so a future
+# added metadata column doesn't silently leak into the taxonomy string as a bogus extra rank.
+non_rank_cols <- colnames(tax) %in% c('ASV_ID', 'sequence', 'confidence', 'database') |
+    grepl('_confidence$|_exact$', colnames(tax))
 r <- colnames(tax)[!non_rank_cols]
 tax$taxonomy <- do.call(paste, c(tax[r], sep = ';'))
 

@@ -138,6 +138,7 @@ params {
     dada_min_boot: Integer = 50
     dada_assign_taxlevels: String?
     cut_dada_ref_taxonomy: Boolean
+    consolidate_taxonomies: String?
     dada_addspecies_allowmultiple: Boolean
     dada_taxonomy_rc: Boolean
     dada_assign_chunksize: Integer = 10000

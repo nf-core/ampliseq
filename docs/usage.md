@@ -258,19 +258,27 @@ Pre-configured reference taxonomy databases are:
 | rdp          | +     | -      | +       | -      | -       | -          | 16S rRNA                                      |
 | greengenes   | -     | -      | +       | (+)³   | -       | -          | 16S rRNA                                      |
 | greengenes2  | +     | -      | -       | +      | -       | -          | 16S rRNA                                      |
-| pr2          | +     | -      | -       | -      | -       | -          | 18S rRNA                                      |
+| pr2          | +     | -      | -       | -      | -       | -          | 18S rRNA, also plastid/chloroplast 16S rRNA   |
 | GloSED       | +     | -      | -       | -      | -       | -          | eukaryotic nuclear ribosomal ITS region       |
 | unite-fungi  | +     | +      | -       | -      | +       | -          | eukaryotic nuclear ribosomal ITS region       |
 | unite-alleuk | +     | +      | -       | -      | +       | -          | eukaryotic nuclear ribosomal ITS region       |
 | coidb        | +     | +      | -       | -      | +       | -          | eukaryotic Cytochrome Oxidase I (COI)         |
 | midori2-co1  | +     | -      | -       | -      | +       | -          | eukaryotic Cytochrome Oxidase I (COI)         |
-| phytoref     | +     | -      | -       | -      | -       | -          | eukaryotic plastid 16S rRNA                   |
 | zehr-nifh    | +     | -      | -       | -      | -       | -          | Nitrogenase iron protein NifH                 |
 | standard     | -     | -      | +       | -      | -       | -          | any in genomes of archaea, bacteria, viruses⁴ |
 
 ¹: As of Silva version 138 optimized for classification of Bacteria and Archaea, not suitable for Eukaryotes; ²[`--dada_taxonomy_rc`](https://nf-co.re/ampliseq/parameters#dada_taxonomy_rc) is recommended; ³: de-replicated at 85%, only for testing purposes; ⁴: quality of results might vary
 
-[`--dada_ref_taxonomy`](https://nf-co.re/ampliseq/parameters#dada_ref_taxonomy) accepts a comma-separated list of database keys (e.g. `gtdb,silva`) to run DADA2 classification against several databases at once. Only the first-listed database feeds downstream QIIME2 analysis (filtering, diversity, barplots, ANCOM) and R objects -- consolidating results across multiple databases into one is planned as a future addition. For the exact versioned key of each database (e.g. `gtdb=R11-RS232`), see [`conf/ref_databases.config`](https://github.com/nf-core/ampliseq/blob/master/conf/ref_databases.config).
+[`--dada_ref_taxonomy`](https://nf-co.re/ampliseq/parameters#dada_ref_taxonomy) accepts a comma-separated list of database keys (e.g. `gtdb,silva`) to run DADA2 classification against several databases at once. By default, only the first-listed database feeds downstream QIIME2 analysis (filtering, diversity, barplots, ANCOM) and R objects; use [`--consolidate_taxonomies`](https://nf-co.re/ampliseq/parameters#consolidate_taxonomies) to instead pick a winning database per ASV (currently DADA2-only, does not compare across different classification methods). For the exact versioned key of each database (e.g. `gtdb=R11-RS232`), see [`conf/ref_databases.config`](https://github.com/nf-core/ampliseq/blob/master/conf/ref_databases.config).
+
+**Rank vocabulary across `--dada_ref_taxonomy` databases** (relevant to `--consolidate_taxonomies most-specific`):
+
+- Most databases use the standard `Kingdom,Phylum,Class,Order,Family,Genus,Species` levels.
+- PR2 uses `Domain,Supergroup,Division,Subdivision,Class,Order,Family,Genus,Species` instead.
+- `most-specific` treats `Kingdom`/`Domain` as the same rank, and `Division` as `Phylum`-equivalent.
+- `Supergroup`/`Subdivision` don't count, so a database with more intermediate rank names doesn't win purely by having more columns.
+- A database with both `Kingdom` and `Domain` populated (older PR2 releases) gets credit for both -- a minor, accepted asymmetry.
+- This mapping isn't perfect everywhere in PR2 -- e.g. Metazoa's phylum-level names sit in `Class`, one level below `Division` -- but matches PR2's primary use case (protists, whose phylum-equivalent groups are in `Division`).
 
 Special features of taxonomic classification tools:
 

@@ -34,6 +34,7 @@ params:
     trunclenf: ""
     trunclenr: ""
     max_ee: ""
+    max_ee_r: ""
     trunc_qmin: FALSE
     trunc_rmin: ""
     dada_sample_inference: ""
@@ -463,9 +464,15 @@ if (params$trunc_qmin) {
 } else if (params$trunclenr != 0) {
     cat("Reverse reads were trimmed at ", params$trunclenr," bp, reads shorter than this were discarded. ", sep = "")
 }
-cat("Reads with more than", params$max_ee,"expected errors were discarded.",
-    "Read counts passing the filter are shown in section ['Read counts per sample'](#read-counts-per-sample)",
-    "column 'filtered'.", sep = " ")
+if (isFALSE(params$flag_single_end) && params$max_ee_r != "") {
+    cat("Reads with more than", params$max_ee, "(forward) or", params$max_ee_r, "(reverse) expected errors were discarded.",
+        "Read counts passing the filter are shown in section ['Read counts per sample'](#read-counts-per-sample)",
+        "column 'filtered'.", sep = " ")
+} else {
+    cat("Reads with more than", params$max_ee,"expected errors were discarded.",
+        "Read counts passing the filter are shown in section ['Read counts per sample'](#read-counts-per-sample)",
+        "column 'filtered'.", sep = " ")
+}
 ```
 
 <!-- Subsection on DADA2 QC visualisation -->
@@ -2065,7 +2072,9 @@ if (params$trunc_qmin) {
 } else if (params$trunclenr != 0) {
     cat("trim reads (reverse reads at ", params$trunclenr," bp, reads shorter than this were discarded), ", sep = "")
 }
-if ( as.integer(params$max_ee) > 0 ) {
+if (isFALSE(params$flag_single_end) && params$max_ee_r != "") {
+    cat("discard reads with >", params$max_ee, "(forward) or >", params$max_ee_r, "(reverse) expected errors, ")
+} else if ( as.integer(params$max_ee) > 0 ) {
     cat("discard reads with >", params$max_ee,"expected errors, ")
 }
 cat("correct errors, ")

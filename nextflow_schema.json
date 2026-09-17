@@ -248,7 +248,13 @@
                     "type": "integer",
                     "default": 2,
                     "description": "DADA2 read filtering option",
-                    "help_text": "After truncation, reads with higher than `max_ee` \"expected errors\" will be discarded. In case of very long reads, you might want to increase this value.  We recommend (to start with) a value corresponding to approximately 1 expected error per 100-200 bp (default: 2)",
+                    "help_text": "After truncation, reads with higher than `max_ee` \"expected errors\" will be discarded. In case of very long reads, you might want to increase this value.  We recommend (to start with) a value corresponding to approximately 1 expected error per 100-200 bp (default: 2)\n\nFor paired-end data, this value is used for both forward and reverse reads unless `--max_ee_r` is also set, in which case `--max_ee_r` applies to the reverse reads only.",
+                    "fa_icon": "fas fa-equals"
+                },
+                "max_ee_r": {
+                    "type": "integer",
+                    "description": "DADA2 read filtering option for reverse reads, overriding --max_ee for reverse reads only (paired-end Illumina data only)",
+                    "help_text": "Only relevant for paired-end Illumina data. By default, `--max_ee` is applied to both forward and reverse reads. Some sequencing runs show a quality drop restricted to the reverse read (e.g. a known Illumina NextSeq behaviour); `--max_ee_r` lets the reverse read use a separate, typically more permissive, expected-error threshold instead of discarding those reads outright. If not set, `--max_ee` is used for the reverse reads too, unchanged from previous pipeline versions.",
                     "fa_icon": "fas fa-equals"
                 },
                 "min_len": {

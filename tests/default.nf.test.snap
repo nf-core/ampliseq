@@ -2342,6 +2342,10 @@
                 "BARRNAPSUMMARY": {
                     "python": "Python 3.9.1"
                 },
+                "BUILD_ASV_ANNOTATIONS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
+                },
                 "CUTADAPT_BASIC": {
                     "cutadapt": 5.2
                 },
@@ -2437,7 +2441,7 @@
                 }
             }
         ],
-        "timestamp": "2026-09-17T17:08:20.511387847",
+        "timestamp": "2026-09-17T21:21:08.372290005",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"

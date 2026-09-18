@@ -32,7 +32,9 @@ nextflow_pipeline {
                     path("$outputDir/input/Samplesheet_novaseq_v3.tsv"),
                     path("$outputDir/multiqc/multiqc_data/multiqc_fastqc.txt"),
                     path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt")
-                ).match() }
+                ).match() },
+                // maxEE = c(2, 5) confirms --max_ee_r overrides --max_ee for the reverse read only
+                { assert path("$outputDir/dada2/args/filterAndTrim.args.txt").text.contains("maxEE = c(2, 5)") }
             )
         }
     }

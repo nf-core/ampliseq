@@ -110,6 +110,7 @@ process SUMMARY_REPORT  {
         "trunclenf='$params.trunclenf'",
         "trunclenr='$params.trunclenr'",
         "max_ee=$params.max_ee",
+        params.max_ee_r ? "max_ee_r=$params.max_ee_r" : "",
         dada_qual_stats && meta.single_end ? "dada_qc_f_path='$dada_qual_stats',dada_pp_qc_f_path='$dada_pp_qual_stats'" :
             dada_qual_stats ? "dada_qc_f_path='FW_qual_stats.svg',dada_qc_r_path='RV_qual_stats.svg',dada_pp_qc_f_path='FW_preprocessed_qual_stats.svg',dada_pp_qc_r_path='RV_preprocessed_qual_stats.svg'" : "",
         dada_filtntrim_args ? "dada_filtntrim_args='$dada_filtntrim_args'" : "",

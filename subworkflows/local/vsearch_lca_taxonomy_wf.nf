@@ -38,6 +38,7 @@ workflow VSEARCH_LCA_TAXONOMY_WF {
     FORMAT_TAXRESULTS_VSEARCH_LCA( VSEARCH_USEARCHGLOBAL_LCA.out.lca, ch_full_fasta, ASV_tax_name2 + ".tsv", vsearch_lca_taxlevels )
 
     emit:
-    raw_lca = VSEARCH_USEARCHGLOBAL_LCA.out.lca
-    tax     = FORMAT_TAXRESULTS_VSEARCH_LCA.out.tsv
+    raw_lca  = VSEARCH_USEARCHGLOBAL_LCA.out.lca
+    raw_hits = VSEARCH_USEARCHGLOBAL_LCA.out.txt
+    tax      = FORMAT_TAXRESULTS_VSEARCH_LCA.out.tsv
 }

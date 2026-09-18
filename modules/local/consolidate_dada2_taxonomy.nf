@@ -11,6 +11,7 @@ process CONSOLIDATE_DADA2_TAXONOMY {
     path(tax_files)
     val(method)
     val(db_key_order)
+    val(taxlevels_input)
     val(outfile)
 
     output:
@@ -18,6 +19,9 @@ process CONSOLIDATE_DADA2_TAXONOMY {
     path "versions.yml"  , emit: versions_consolidate_dada2_taxonomy, topic: versions
 
     script:
+    def taxlevels = taxlevels_input ?
+        'c("' + taxlevels_input.split(",").join('","') + '")' :
+        'c("Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species")'
     """
     #!/usr/bin/env Rscript
 
@@ -25,10 +29,45 @@ process CONSOLIDATE_DADA2_TAXONOMY {
     db_key_order <- strsplit("$db_key_order", ",", fixed = TRUE)[[1]]
     files <- strsplit("${tax_files.join(',')}", ",", fixed = TRUE)[[1]]
 
+    # the consolidated table feeds every downstream consumer that expects one taxonomy per ASV
+    # (QIIME2 import, phyloseq/TSE, SBDI export), all of which read ranks positionally or by
+    # name -- so the output carries exactly these ranks, whichever database won a given ASV.
+    target_ranks <- $taxlevels
+
     # each file's sanitized database key is the segment right before the ".tsv" extension,
     # e.g. "ASV_tax.gtdb_R07-RS207.tsv" -> "gtdb_R07-RS207" -- sanitize() (dada2_taxonomy_wf.nf)
     # already replaced every "." in a raw db_key with "_", so this is unambiguous.
     extract_db_key <- function(f) sub("^.*\\\\.([^.]+)\\\\.tsv\$", "\\\\1", basename(f))
+
+    # everything that isn't one of these occupies a rank position. SH and BOLD_bin are
+    # identifiers rather than ranks, the same distinction bin/sbdiexport.R already makes.
+    is_meta <- function(cols) cols %in% c("ASV_ID", "confidence", "sequence", "database", "SH", "BOLD_bin") | grepl("_confidence\$|_exact\$", cols)
+
+    # rank vocabulary differs by database: PR2 uses Domain,Supergroup,Division,Subdivision ahead
+    # of Class where the standard scheme uses Kingdom,Phylum. Domain fills the same slot as
+    # Kingdom and Division the same slot as Phylum, so those are renamed into whichever of the
+    # pair target_ranks uses; Supergroup and Subdivision have no counterpart and are dropped.
+    # See docs/usage.md for the full rationale.
+    rank_synonyms <- c(Domain = "Kingdom", Kingdom = "Domain", Division = "Phylum", Phylum = "Division")
+
+    harmonize <- function(df) {
+        cols <- colnames(df)
+        ranks <- cols[!is_meta(cols)]
+        mapped <- ifelse(ranks %in% target_ranks, ranks, rank_synonyms[ranks])
+        names(mapped) <- ranks
+        mapped <- mapped[!is.na(mapped) & mapped %in% target_ranks]
+        # a rank without a slot in target_ranks takes its bootstrap column with it
+        dropped <- setdiff(ranks, names(mapped))
+        from <- setdiff(cols, c(dropped, paste0(tolower(dropped), "_confidence")))
+        to <- from
+        to[match(names(mapped), from)] <- unname(mapped)
+        conf_from <- paste0(tolower(names(mapped)), "_confidence")
+        renamed_conf <- conf_from %in% from
+        to[match(conf_from[renamed_conf], from)] <- paste0(tolower(unname(mapped)), "_confidence")[renamed_conf]
+        df <- df[, from, drop = FALSE]
+        colnames(df) <- to
+        df
+    }
 
     # process files in declared --dada_ref_taxonomy order, not channel-arrival order (which
     # varies run to run since the per-database DADA2 tasks run in parallel) -- keeps the
@@ -37,13 +76,13 @@ process CONSOLIDATE_DADA2_TAXONOMY {
 
     tables <- lapply(files, function(f) {
         df <- read.delim(f, sep = "\\t", header = TRUE, na.strings = "", stringsAsFactors = FALSE, check.names = FALSE)
+        df <- harmonize(df)
         df\$database <- extract_db_key(f)
         df
     })
 
-    # different listed databases can resolve a different set of ranks for this data (e.g. a
-    # database whose reference taxonomy never reaches species level for any ASV won't have a
-    # "Species"/"species_confidence" column at all) -- align every table to the union of columns
+    # a database whose reference taxonomy never reaches species level for this data won't have a
+    # "Species"/"species_confidence" column at all -- align every table to the union of columns
     # seen across all of them before binding, so rbind() doesn't choke on a column-count mismatch.
     all_cols <- Reduce(union, lapply(tables, colnames))
     tables <- lapply(tables, function(df) {
@@ -53,11 +92,7 @@ process CONSOLIDATE_DADA2_TAXONOMY {
     })
     combined <- do.call(rbind, tables)
 
-    # rank vocabulary differs by database (e.g. PR2 uses Domain/Supergroup/Division/Subdivision
-    # ahead of Class, instead of Kingdom/Phylum) -- Domain is treated as filling the same slot as
-    # Kingdom, and Division as filling the same slot as Phylum; Supergroup and Subdivision are
-    # deliberately not counted. See docs/usage.md for the full rationale.
-    rank_cols <- intersect(c("Kingdom", "Domain", "Phylum", "Division", "Class", "Order", "Family", "Genus", "Species"), colnames(combined))
+    rank_cols <- intersect(target_ranks, colnames(combined))
 
     if (method == "score") {
         combined\$.score <- ifelse(is.na(combined\$confidence), -Inf, combined\$confidence)
@@ -74,9 +109,11 @@ process CONSOLIDATE_DADA2_TAXONOMY {
     winners\$.score <- NULL
     winners\$.tiebreak <- NULL
 
-    # keep original column order, with the new provenance column appended at the end
-    orig_cols <- setdiff(colnames(winners), "database")
-    winners <- winners[ , c(orig_cols, "database") ]
+    # same column order as a single-database dada2_taxonomy.nf table, with any identifier column
+    # (SH, BOLD_bin, Species_exact) kept after the ranks and the new provenance column last
+    tail_cols <- c("confidence", paste0(tolower(rank_cols), "_confidence"), "sequence", "database")
+    extras <- setdiff(colnames(winners), c("ASV_ID", rank_cols, tail_cols))
+    winners <- winners[ , c("ASV_ID", rank_cols, extras, intersect(tail_cols, colnames(winners))) ]
 
     write.table(winners, file = "$outfile", sep = "\\t", row.names = FALSE, col.names = TRUE, quote = FALSE, na = '')
 

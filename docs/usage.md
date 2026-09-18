@@ -271,12 +271,14 @@ Pre-configured reference taxonomy databases are:
 
 [`--dada_ref_taxonomy`](https://nf-co.re/ampliseq/parameters#dada_ref_taxonomy) accepts a comma-separated list of database keys (e.g. `gtdb,silva`) to run DADA2 classification against several databases at once. By default, only the first-listed database feeds downstream QIIME2 analysis (filtering, diversity, barplots, ANCOM) and R objects; use [`--consolidate_taxonomies`](https://nf-co.re/ampliseq/parameters#consolidate_taxonomies) to instead pick a winning database per ASV (currently DADA2-only, does not compare across different classification methods). For the exact versioned key of each database (e.g. `gtdb=R11-RS232`), see [`conf/ref_databases.config`](https://github.com/nf-core/ampliseq/blob/master/conf/ref_databases.config).
 
-**Rank vocabulary across `--dada_ref_taxonomy` databases** (relevant to `--consolidate_taxonomies most-specific`):
+**Rank vocabulary across `--dada_ref_taxonomy` databases** (relevant to `--consolidate_taxonomies`):
 
 - Most databases use the standard `Kingdom,Phylum,Class,Order,Family,Genus,Species` levels.
 - PR2 uses `Domain,Supergroup,Division,Subdivision,Class,Order,Family,Genus,Species` instead.
-- `most-specific` treats `Kingdom`/`Domain` as the same rank, and `Division` as `Phylum`-equivalent.
-- `Supergroup`/`Subdivision` don't count, so a database with more intermediate rank names doesn't win purely by having more columns.
+- The consolidated table uses the **first-listed** database's levels throughout, whichever database won a given ASV, so that everything reading it downstream (QIIME2 import, phyloseq/TSE objects, SBDI export) sees one consistent set of ranks.
+- `Domain` is therefore written into the `Kingdom` slot and `Division` into the `Phylum` slot when the first-listed database uses the standard levels, and the reverse when it is PR2.
+- `Supergroup`/`Subdivision` have no counterpart in the standard levels and are dropped from the consolidated table. Each database's own unmodified table is still published under `dada2/`, so nothing is lost.
+- `most-specific` scores a database by how many of these levels it resolved, so a database with more intermediate rank names doesn't win purely by having more columns.
 - A database with both `Kingdom` and `Domain` populated (older PR2 releases) gets credit for both -- a minor, accepted asymmetry.
 - This mapping isn't perfect everywhere in PR2 -- e.g. Metazoa's phylum-level names sit in `Class`, one level below `Division` -- but matches PR2's primary use case (protists, whose phylum-equivalent groups are in `Division`).
 

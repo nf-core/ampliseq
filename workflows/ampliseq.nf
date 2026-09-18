@@ -866,6 +866,7 @@ workflow AMPLISEQ {
                 ch_dada2_taxonomy_wf.tax.map { _db_key, f -> f }.collect(),
                 params.consolidate_taxonomies,
                 val_dada_ref_taxonomy_list.collect { db_key -> db_key.replace('=','_').replace('.','_') }.join(','),
+                val_dada_taxlevels,
                 "ASV_tax.consolidated.${params.consolidate_taxonomies}.tsv"
             )
             ch_dada2_tax = CONSOLIDATE_DADA2_TAXONOMY.out.tsv

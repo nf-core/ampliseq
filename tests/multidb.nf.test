@@ -122,11 +122,23 @@ nextflow_pipeline {
 
         then {
             assert workflow.success
+            def consolidated = path("$outputDir/dada2/ASV_tax.consolidated.most-specific.tsv").csv(sep: '\t', header: true)
             def header = path("$outputDir/dada2/ASV_tax.consolidated.most-specific.tsv").text.readLines()[0].tokenize('\t')
-            // both rank vocabularies survive consolidation into one file: the standard columns
-            // (from silva/gtdb) and PR2's own (Domain, Supergroup, Division, Subdivision)
+            // ASVs won by PR2, whose own vocabulary is Domain,Supergroup,Division,Subdivision
+            def pr2_rows = (0..<consolidated.rowCount).findAll { consolidated.columns["database"][it] == "pr2_5_0_0" }
             assertAll(
-                { assert header.containsAll(["Kingdom", "Phylum", "Domain", "Supergroup", "Division", "Subdivision"]) }
+                // consolidation emits one rank vocabulary -- the first-listed database's -- whichever
+                // database won a given ASV, because every consumer of this file (QIIME2 import via
+                // parse_dada2_taxonomy.r, phyloseq/TSE, SBDI export) reads ranks positionally or by name
+                { assert header.containsAll(["Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"]) },
+                { assert !header.any { it in ["Domain", "Supergroup", "Division", "Subdivision"] } },
+                // PR2 did win ASVs, and its Domain/Division values were carried into the
+                // Kingdom/Phylum slots rather than dropped with the columns they arrived in
+                { assert pr2_rows.size() > 0 },
+                { assert pr2_rows.every { consolidated.columns["Kingdom"][it] } },
+                // qiime taxa barplot emits one level-N.csv per segment of the taxonomy string it is
+                // given, so a level-8.csv means an extra rank column reached parse_dada2_taxonomy.r
+                { assert !path("$outputDir/qiime2/barplot/level-8.csv").exists() }
             )
         }
     }

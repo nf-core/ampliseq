@@ -211,14 +211,21 @@ DADA2 reduces sequence errors and dereplicates sequences by quality filtering, d
 
 ### Summary tables
 
-Tables with consistent, lower-case column names, ready to load into R, Python or another tool of choice without pipeline-specific parsing. These are sourced directly from DADA2's own raw output, before any of the optional post-processing filters below run.
+Tables with consistent, lower-case column names, ready to load into R, Python or another tool of choice without pipeline-specific parsing.
 
 <details markdown="1">
 <summary>Output files</summary>
 
 - `summary_tables/`
-  - `ampliseq.counts.tsv.gz`: ASV counts in long format (`asv_id`, `sample`, `count`), rows with a count of 0 are dropped.
-  - `ampliseq.counts.parquet`: The same table in [Parquet](https://parquet.apache.org/) format. Skip this file with `--skip_parquet_summary`.
+  - `ampliseq.counts.tsv.gz`: ASV counts in long format (`asv_id`, `sample`, `count`), zero-count rows dropped. Sourced from DADA2's raw output, before any post-processing filters below.
+  - `ampliseq.counts.parquet`: The same table in [Parquet](https://parquet.apache.org/) format. Skip with `--skip_parquet_summary`.
+  - `ampliseq.taxonomy.<classifier>.<database>.tsv.gz` (+ `.parquet`): One file pair per classifier/database actually run (Kraken2 excluded). A slim, consistent-schema reformat of that classifier's native taxonomy table: `asv_id`, `kingdom`..`species`, `confidence`. `sequence` and DADA2's per-rank `*_confidence` columns are dropped (both remain available in the native per-classifier files elsewhere in this directory).
+
+    Joined onto every file, whenever that step ran:
+    - `barrnap_domain`: winning rRNA domain by e-value, blank if none significant.
+    - `decontam_contaminant` / `decontam_not_contaminant`: decontam's contaminant call ([see below](#decontam)).
+    - `passed_ssu_filter`, `passed_length_filter_asv`, `passed_codon_filter`, `passed_length_filter_itsx`: pass/fail for each individual optional filter below.
+    - `ampliseq_accept`: whether this ASV survived the whole filtering chain end to end -- a convenience alongside the individual columns, not instead of them.
 
 </details>
 

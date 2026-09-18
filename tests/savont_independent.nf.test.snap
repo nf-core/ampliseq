@@ -20,6 +20,10 @@
                 "BARRNAPSUMMARY": {
                     "python": "Python 3.9.1"
                 },
+                "BUILD_ASV_ANNOTATIONS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
+                },
                 "COMBINE_TABLE": {
                     "R": "4.0.3"
                 },
@@ -35,6 +39,9 @@
                 "DADA2_TAXONOMY": {
                     "R": "4.5.2",
                     "dada2": "1.38.0"
+                },
+                "DUCKDB_TABLE2PARQUET": {
+                    "duckdb": "1.5.5"
                 },
                 "FILTER_SAMPLES": {
                     "R": "4.2.1"
@@ -131,6 +138,10 @@
                 },
                 "SAVONT_EXPORT": {
                     "savont": "0.6.3"
+                },
+                "SUMMARY_TABLE_TAXONOMY": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
                 },
                 "VSEARCH_USEARCHGLOBAL_BM": {
                     "vsearch": "2.31.0"
@@ -1322,7 +1333,10 @@
                 "summary_report/rrna_detection_with_barrnap.svg",
                 "summary_report/shannon_vector_spearman.svg",
                 "summary_report/summary_report.html",
-                "summary_report/versions.yml"
+                "summary_report/versions.yml",
+                "summary_tables",
+                "summary_tables/ampliseq.taxonomy.DADA2.gtdb_R07-RS207.parquet",
+                "summary_tables/ampliseq.taxonomy.DADA2.gtdb_R07-RS207.tsv.gz"
             ],
             "independent_feature-table.tsv:md5,d2fccf196db51fe8f9f55da0ace3fb6c",
             "independent_final_asvs.fasta:md5,819672232d27b40e741882254a7b9322",
@@ -1332,7 +1346,7 @@
             "performance.log:md5,c8dc4069bb01c53fa1dceb91a2f49330",
             "profile.log:md5,d3f5b2feca8ad34ef395235d08201bbd"
         ],
-        "timestamp": "2026-08-18T12:54:59.230203413",
+        "timestamp": "2026-08-21T16:06:28.413669539",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

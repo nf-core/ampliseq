@@ -34,6 +34,7 @@ params:
     trunclenf: ""
     trunclenr: ""
     max_ee: ""
+    max_ee_r: ""
     trunc_qmin: FALSE
     trunc_rmin: ""
     dada_sample_inference: ""
@@ -47,6 +48,7 @@ params:
     cut_its: FALSE
     dada2_ref_tax_title: FALSE
     qiime2_ref_tax_title: FALSE
+    sintax_cutoff: ""
     sintax_ref_tax_title: FALSE
     kraken2_ref_tax_title: FALSE
     dada2_ref_tax_file: ""
@@ -463,9 +465,15 @@ if (params$trunc_qmin) {
 } else if (params$trunclenr != 0) {
     cat("Reverse reads were trimmed at ", params$trunclenr," bp, reads shorter than this were discarded. ", sep = "")
 }
-cat("Reads with more than", params$max_ee,"expected errors were discarded.",
-    "Read counts passing the filter are shown in section ['Read counts per sample'](#read-counts-per-sample)",
-    "column 'filtered'.", sep = " ")
+if (isFALSE(params$flag_single_end) && params$max_ee_r != "") {
+    cat("Reads with more than", params$max_ee, "(forward) or", params$max_ee_r, "(reverse) expected errors were discarded.",
+        "Read counts passing the filter are shown in section ['Read counts per sample'](#read-counts-per-sample)",
+        "column 'filtered'.", sep = " ")
+} else {
+    cat("Reads with more than", params$max_ee,"expected errors were discarded.",
+        "Read counts passing the filter are shown in section ['Read counts per sample'](#read-counts-per-sample)",
+        "column 'filtered'.", sep = " ")
+}
 ```
 
 <!-- Subsection on DADA2 QC visualisation -->
@@ -1302,6 +1310,10 @@ cat("The taxonomic classification was performed by [SINTAX](https://doi.org/10.1
     using the database: `", params$sintax_ref_tax_title, "`.
     More details about the reference taxonomy database can be found in the ['Methods section'](#methods).\n\n", sep = "")
 
+if ( params$sintax_cutoff != "" && params$sintax_cutoff != "0.8" ) {
+    cat("A SINTAX confidence score threshold of",params$sintax_cutoff,"was applied for taxonomic classifications.\n\n")
+}
+
 asv_tax <- read.table(params$sintax_taxonomy, header = TRUE, sep = "\t", comment.char = "")
 
 # Calculate the classified numbers/percent of asv
@@ -2065,7 +2077,9 @@ if (params$trunc_qmin) {
 } else if (params$trunclenr != 0) {
     cat("trim reads (reverse reads at ", params$trunclenr," bp, reads shorter than this were discarded), ", sep = "")
 }
-if ( as.integer(params$max_ee) > 0 ) {
+if (isFALSE(params$flag_single_end) && params$max_ee_r != "") {
+    cat("discard reads with >", params$max_ee, "(forward) or >", params$max_ee_r, "(reverse) expected errors, ")
+} else if ( as.integer(params$max_ee) > 0 ) {
     cat("discard reads with >", params$max_ee,"expected errors, ")
 }
 cat("correct errors, ")

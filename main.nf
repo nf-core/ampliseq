@@ -105,6 +105,7 @@ params {
     trunc_qmin: Integer = 25
     trunc_rmin: Float = 0.75
     max_ee: Integer = 2
+    max_ee_r: Integer?
     min_len: Integer = 50
     max_len: Integer?
     ignore_failed_filtering: Boolean
@@ -158,6 +159,7 @@ params {
     sintax_ref_taxonomy: String?
     sintax_ref_tax_custom: Path?
     sintax_assign_taxlevels: String?
+    sintax_cutoff: Float = 0.8
     vsearch_lca_ref_tax_custom: Path?
     vsearch_lca_ref_taxonomy: String?
     vsearch_lca_assign_taxlevels: String?

@@ -54,15 +54,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#1050](https://github.com/nf-core/ampliseq/pull/1050) - Fixed a regression introduced by [#1042](https://github.com/nf-core/ampliseq/pull/1042) (not yet released) that showed the new per-rank `confidence` columns as if they were taxonomic levels in the DADA2/SINTAX/VSEARCH-LCA sections of `summary_report.html` (by @erikrikarddaniel)
 - [#1057](https://github.com/nf-core/ampliseq/pull/1057) - Fixed DADA2 read number tracking table sequence (reported by @Malytherin, fixed by @d4straub)
 - [#1058](https://github.com/nf-core/ampliseq/pull/1058) - Fixed QIIME2 caching (reported by @luciazifcakova, fixed by @d4straub)
+- [#1077](https://github.com/nf-core/ampliseq/pull/1077) - Template update for nf-core/tools version 4.1.0 (by @d4straub)
 
 ### `Dependencies`
 
 - [#1035](https://github.com/nf-core/ampliseq/pull/1035) - ITSxRust 0.2.2 to 0.3.0, reducing peak memory approximately six-fold on large inputs; extraction output is unchanged (by @ayobi)
+- [#1077](https://github.com/nf-core/ampliseq/pull/1077) - MultiQC 1.34 to 1.35 (by @d4straub)
 
 | software | previously | now   |
 | -------- | ---------- | ----- |
 | ITSxRust | 0.2.2      | 0.3.0 |
 | Savont   |            | 0.6.3 |
+| MultiQC  | 1.34       | 1.35  |
 
 ### `Removed`
 

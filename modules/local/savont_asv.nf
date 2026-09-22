@@ -3,10 +3,10 @@ process SAVONT_ASV {
     label 'process_medium'
     label 'process_long'
 
-    conda "bioconda::savont=0.6.3"
+    conda "bioconda::savont=0.7.0"
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/savont:0.6.3--hec9b1f2_0' :
-        'biocontainers/savont:0.6.3--hec9b1f2_0' }"
+        'https://depot.galaxyproject.org/singularity/savont:0.7.0--hec9b1f2_0' :
+        'biocontainers/savont:0.7.0--hec9b1f2_0' }"
 
     input:
     tuple val(meta), path(reads), val(sample_header), val(sample_string)
@@ -14,7 +14,7 @@ process SAVONT_ASV {
     output:
     path("*_feature-table.tsv") , emit: asv
     path("*_final_asvs.fasta")  , emit: fasta
-    path("*_final_clusters.tsv"), emit: clusters
+    path("*_final_assignments.tsv"), emit: clusters
     path("*_stats.tsv")         , emit: stats
     path("savont_asv_*/temp/*") , emit: temp
     tuple val(meta), path("savont_asv_*"), val(sample_string), emit: output_folder
@@ -40,7 +40,7 @@ process SAVONT_ASV {
 
     # copy other files to include the prefix
     cp savont_asv_${prefix}/final_asvs.fasta ${prefix}_final_asvs.fasta
-    cp savont_asv_${prefix}/final_clusters.tsv ${prefix}_final_clusters.tsv
+    cp savont_asv_${prefix}/final_assignments.tsv ${prefix}_final_assignments.tsv
     cp savont_asv_${prefix}/savont_*.log ${prefix}_savont.log
     """
 }

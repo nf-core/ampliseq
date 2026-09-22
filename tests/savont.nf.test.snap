@@ -124,10 +124,10 @@
                     "bash": "5.0.17(1)-release"
                 },
                 "SAVONT_ASV": {
-                    "savont": "0.6.3"
+                    "savont": "0.7.0"
                 },
                 "SAVONT_EXPORT": {
-                    "savont": "0.6.3"
+                    "savont": "0.7.0"
                 },
                 "TREESUMMARIZEDEXPERIMENT": {
                     "R": "4.3.2",

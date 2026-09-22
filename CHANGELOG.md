@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#1022](https://github.com/nf-core/ampliseq/issues/1022) - added new GloSED database for classification of Eukaryotic ITS. Not support for SH numbers as of yet. (by @tom-brekke)
 - [#1021](https://github.com/nf-core/ampliseq/pull/1021),[#1023](https://github.com/nf-core/ampliseq/pull/1023),[#1025](https://github.com/nf-core/ampliseq/pull/1025),[#1048](https://github.com/nf-core/ampliseq/pull/1048),[#1054](https://github.com/nf-core/ampliseq/pull/1054) - Comparison of observed ASVs and taxonomic profiles against expected data is now available with `--expected_*` parameters (by @d4straub, reviewed by @erikrikarddaniel)
-- [#1026](https://github.com/nf-core/ampliseq/pull/1026),[#1046](https://github.com/nf-core/ampliseq/pull/1046),[#1049](https://github.com/nf-core/ampliseq/pull/1049) - Add support for Oxford Nanopore Technology (ONT) R10.4 sequencing (preferably with SUP basecalling) with Savont (by @d4straub)
+- [#1026](https://github.com/nf-core/ampliseq/pull/1026),[#1046](https://github.com/nf-core/ampliseq/pull/1046),[#1049](https://github.com/nf-core/ampliseq/pull/1049),[#1079](https://github.com/nf-core/ampliseq/pull/1079) - Add support for Oxford Nanopore Technology (ONT) R10.4 sequencing (preferably with SUP basecalling) with Savont (by @d4straub)
 - [#1042](https://github.com/nf-core/ampliseq/pull/1042) - DADA2 taxonomy tables (`ASV_tax.*.tsv`, `ASV_tax_species.*.tsv`) now include one `<rank>_confidence` column per rank, in addition to the existing overall `confidence` column (by @erikrikarddaniel)
 - [#1042](https://github.com/nf-core/ampliseq/pull/1042) - Added CI test coverage for `--addsh`, which previously had none (`test_pacbio_its` now also runs DADA2 taxonomy against the UNITE database it already uses for SINTAX) (by @erikrikarddaniel)
 - [#1052](https://github.com/nf-core/ampliseq/pull/1052) - Added `summary_tables/ampliseq.counts.tsv.gz`, ASV counts in long format with consistent, lower-case column names, ready for analysis in R, Python or similar without pipeline-specific parsing; also written as Parquet by default, skip with `--skip_parquet_summary` (by @erikrikarddaniel)
@@ -65,7 +65,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | software | previously | now   |
 | -------- | ---------- | ----- |
 | ITSxRust | 0.2.2      | 0.3.0 |
-| Savont   |            | 0.6.3 |
+| Savont   |            | 0.7.0 |
 | MultiQC  | 1.34       | 1.35  |
 
 ### `Removed`

@@ -56,7 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#1057](https://github.com/nf-core/ampliseq/pull/1057) - Fixed DADA2 read number tracking table sequence (reported by @Malytherin, fixed by @d4straub)
 - [#1058](https://github.com/nf-core/ampliseq/pull/1058) - Fixed QIIME2 caching (reported by @luciazifcakova, fixed by @d4straub)
 - [#1077](https://github.com/nf-core/ampliseq/pull/1077) - Template update for nf-core/tools version 4.1.0 (by @d4straub)
-- [#NNNN](https://github.com/nf-core/ampliseq/pull/NNNN) - `SUMMARY_REPORT` no longer fails with "input file name collision" when `--report_abstract`, `--metadata`, `--input` or `--input_fasta` share a file name (fixes [#1073](https://github.com/nf-core/ampliseq/issues/1073)) (by @erikrikarddaniel)
+- [#1080](https://github.com/nf-core/ampliseq/pull/1080) - `SUMMARY_REPORT` no longer fails with "input file name collision" when `--report_abstract`, `--metadata`, `--input` or `--input_fasta` share a file name (fixes [#1073](https://github.com/nf-core/ampliseq/issues/1073)) (by @erikrikarddaniel)
 
 ### `Dependencies`
 

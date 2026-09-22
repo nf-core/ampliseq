@@ -1,0 +1,53 @@
+nextflow_pipeline {
+
+    name "Test pipeline"
+    script "../main.nf"
+    tag "pipeline"
+    profile "test_multidb"
+
+    test("-profile test_multidb --consolidate_taxonomies most-specific") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                consolidate_taxonomies = "most-specific"
+            }
+        }
+
+        then {
+            // stable_path: All files + folders in ${params.outdir}/ with a stable path and file name
+            def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
+
+            assert workflow.success
+            def consolidated = path("$outputDir/dada2/ASV_tax.consolidated.most-specific.tsv").csv(sep: '\t', header: true)
+            def databases = consolidated.columns["database"]
+            // qiime taxa barplot emits one level-N.csv per rank actually present in the taxonomy
+            // string it was given (no explicit --p-n-levels) -- a level-8.csv means some non-rank
+            // column (e.g. consolidate_dada2_taxonomy's "database", or DADA2_ADDSPECIES's
+            // "Species_exact") leaked into parse_dada2_taxonomy.r's 7-rank taxonomy string as a
+            // bogus 8th rank, same class of bug fixed in bin/parse_dada2_taxonomy.r
+            def barplot_headers = path("$outputDir/qiime2/barplot/level-7.csv").readLines()[0]
+            def report = path("$outputDir/summary_report/summary_report.html").text
+            assertAll(
+                { assert snapshot(
+                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_ampliseq_software_mqc_versions.yml"),
+                    // All stable path name, with a relative path
+                    stable_path
+                ).match() },
+                // real per-ASV mixing happened -- both listed databases won at least one ASV,
+                // not an accidental full-passthrough of just the first-listed one
+                { assert databases.findAll { it == "gtdb_R07-RS207" }.size() > 0 },
+                { assert databases.findAll { it == "rdp_18" }.size() > 0 },
+                { assert !path("$outputDir/qiime2/barplot/level-8.csv").exists() },
+                { assert !barplot_headers.contains("gtdb_R07-RS207") },
+                { assert !barplot_headers.contains("rdp_18") },
+                // the database column is provenance, not a rank
+                { assert !report.contains("ASVs at database level") },
+                { assert report.contains("won consolidation") },
+                // every listed database was cut by primers, and each is reported
+                { assert report.contains("The taxonomic reference databases were cut") }
+            )
+        }
+    }
+}

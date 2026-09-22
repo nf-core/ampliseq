@@ -325,9 +325,6 @@ workflow AMPLISEQ {
         val_dada_taxlevels = params.dada_assign_taxlevels ? "${params.dada_assign_taxlevels}" : ""
     } else if (params.dada_ref_taxonomy && !params.skip_dada_taxonomy && !params.skip_taxonomy) {
         //standard ref taxonomy input from params.dada_ref_taxonomy & conf/ref_databases.config
-        // --dada_ref_taxonomy accepts a comma-separated list of databases; the first-listed one is the
-        // "winner" that feeds every downstream step that expects exactly one DADA2 taxonomy result
-        // (real consolidation across databases is planned as a later, separate PR)
         val_dada_ref_taxonomy_list = params.dada_ref_taxonomy.tokenize(',')*.trim()
 
         // database files, kept paired with the database they belong to. Looked up from static config,
@@ -859,9 +856,8 @@ workflow AMPLISEQ {
             )
         // one entry per listed database -- feeds ch_tax_tsv (already tolerant of multiple entries per classifier)
         ch_tax_tsv = ch_tax_tsv.mix( ch_dada2_taxonomy_wf.tax.map { db_key, f -> [ [database: db_key.replace('=','_').replace('.','_'), classifier:"DADA2"], file(f) ] } )
-        // the winner that feeds every other downstream consumer: either the first-listed database
-        // (default), or a real per-ASV consolidation across every listed database when requested
-        if (params.consolidate_taxonomies && val_dada_ref_taxonomy_list.size() > 1) {
+        // single taxonomy for every other downstream consumer
+        if (params.consolidate_taxonomies != 'first' && val_dada_ref_taxonomy_list.size() > 1) {
             CONSOLIDATE_DADA2_TAXONOMY (
                 ch_dada2_taxonomy_wf.tax.map { _db_key, f -> f }.collect(),
                 params.consolidate_taxonomies,

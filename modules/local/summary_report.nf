@@ -89,7 +89,7 @@ process SUMMARY_REPORT  {
     // it were the sole source.
     def dada_ref_taxonomy_list   = params.dada_ref_taxonomy ? params.dada_ref_taxonomy.tokenize(',')*.trim() : []
     def dada_ref_taxonomy_winner = dada_ref_taxonomy_list ? dada_ref_taxonomy_list[0] : null
-    def dada_consolidated        = params.consolidate_taxonomies && dada_ref_taxonomy_list.size() > 1
+    def dada_consolidated        = params.consolidate_taxonomies != 'first' && dada_ref_taxonomy_list.size() > 1
     def dada2_ref_tax_title      = dada_consolidated ?
         "Consolidated per ASV (--consolidate_taxonomies ${params.consolidate_taxonomies}) across: " +
             dada_ref_taxonomy_list.collect { params.dada_ref_databases[it]["title"] }.join('; ') :

@@ -501,9 +501,10 @@
                 },
                 "consolidate_taxonomies": {
                     "type": "string",
-                    "enum": ["most-specific", "score"],
-                    "help_text": "Only relevant when `--dada_ref_taxonomy` lists more than one database. By default the **first-listed** database's result is used for every downstream step (QIIME2 filtering, diversity, barplots, ANCOM, R objects); this option instead picks a winner per ASV across all listed databases:\n\n- `most-specific`: for each ASV, use whichever listed database resolved the deepest taxonomic rank (fewest unresolved ranks). Ties are broken by database order in `--dada_ref_taxonomy`.\n- `score`: for each ASV, use whichever listed database reported the highest DADA2 assignTaxonomy bootstrap confidence. Ties are broken by database order in `--dada_ref_taxonomy`.\n\nConsolidation is currently limited to DADA2's own listed databases; it does not compare across different classification methods (e.g. DADA2 vs. SINTAX).",
-                    "description": "Consolidate DADA2 taxonomy across multiple `--dada_ref_taxonomy` databases per ASV, instead of using only the first-listed database"
+                    "default": "first",
+                    "enum": ["first", "most-specific", "score"],
+                    "help_text": "Only relevant when `--dada_ref_taxonomy` lists more than one database.\n\n- `first` (default): use the **first-listed** database's result for every downstream step (QIIME2 filtering, diversity, barplots, ANCOM, R objects).\n- `most-specific`: for each ASV, use whichever listed database resolved the deepest taxonomic rank (fewest unresolved ranks). Ties are broken by database order in `--dada_ref_taxonomy`.\n- `score`: for each ASV, use whichever listed database reported the highest DADA2 assignTaxonomy bootstrap confidence. Ties are broken by database order in `--dada_ref_taxonomy`.\n\nConsolidation is currently limited to DADA2's own listed databases; it does not compare across different classification methods (e.g. DADA2 vs. SINTAX).",
+                    "description": "How to pick one DADA2 taxonomy per ASV when `--dada_ref_taxonomy` lists several databases"
                 },
                 "dada_addspecies_allowmultiple": {
                     "type": "boolean",

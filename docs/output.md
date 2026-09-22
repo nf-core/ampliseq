@@ -462,6 +462,7 @@ Files when _not_ using ITSx (default):
 
 - `vsearch_lca/`
   - `ASV_tax_vsearch_lca.*.lca`: Raw `--lcaout` output from VSEARCH.
+  - `ASV_tax_vsearch_lca.*.txt`: Raw `--blast6out` hit table from VSEARCH (accepted hits used for LCA).
   - `ASV_tax_vsearch_lca.*.tsv`: Taxonomic classification for each ASV sequence in a format similar to DADA2 output.
   - `ref_taxonomy_vsearch_lca.txt`: Information about the used reference taxonomy, such as title, version, citation.
 
@@ -474,6 +475,7 @@ Files when using ITSx:
 
 - `vsearch_lca/`
   - `ASV_ITS_tax_vsearch_lca.*.lca`: Raw `--lcaout` output from VSEARCH, when using cut sequences as input.
+  - `ASV_ITS_tax_vsearch_lca.*.txt`: Raw `--blast6out` hit table from VSEARCH (accepted hits used for LCA), when using cut sequences as input.
   - `ASV_tax_vsearch_lca.*.tsv`: Taxonomic classification for each ASV sequence, based on the chosen ITS region, in a format similar to DADA2 output.
   - `ref_taxonomy_vsearch_lca.txt`: Information about the used reference taxonomy, such as title, version, citation.
 
@@ -909,3 +911,5 @@ This report includes information on how many reads per sample passed each pipeli
   - Parameters used by the pipeline run: `params.json`.
 
 </details>
+
+[Nextflow](https://docs.seqera.io/platform-cloud/reports/overview) provides excellent functionality for generating various reports relevant to the running and execution of the pipeline. This will allow you to troubleshoot errors with the running of the pipeline, and also provide you with other information such as launch commands, run times and resource usage.

@@ -870,7 +870,11 @@ workflow AMPLISEQ {
             ch_dada2_tax = ch_dada2_taxonomy_wf.tax.filter { db_key, _f -> db_key == val_dada_ref_taxonomy_list[0] }.map { _db_key, f -> f }
         }
         ch_dada2_cut_tax = params.cut_dada_ref_taxonomy ?
-            ch_dada2_taxonomy_wf.cut_tax.filter { meta, _log -> meta.db_key == val_dada_ref_taxonomy_list[0] } :
+            ch_dada2_taxonomy_wf.cut_tax
+                .filter { meta, _log -> params.consolidate_taxonomies != 'first' || meta.db_key == val_dada_ref_taxonomy_list[0] }
+                .map { _meta, log -> log }
+                .collect()
+                .map { logs -> [ [], logs ] } :
             ch_dada2_taxonomy_wf.cut_tax
         ch_tax_for_robject = ch_tax_for_robject.mix ( ch_dada2_tax.map { it -> [ "dada2", file(it) ] } )
     } else {

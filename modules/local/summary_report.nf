@@ -45,7 +45,7 @@ process SUMMARY_REPORT  {
     path(filter_codons_stats)
     path(itsx_cutasv_summary)
     path(dada2_tax)
-    tuple val(meta_ref), path(cut_dada_ref_taxonomy) // cutadapt log when params.cut_dada_ref_taxonomy
+    tuple val(meta_ref), path(cut_dada_ref_taxonomy) // cutadapt logs, one per database used downstream
     path(sintax_tax)
     path(vsearch_lca_tax)
     path(kraken2_tax)
@@ -82,11 +82,7 @@ process SUMMARY_REPORT  {
     // make named R list (comma separated)
     // all non-boolean or non-numeric values must be encumbered by single quotes (')!
     // all elements must have a value, i.e. booleans also need to be set to TRUE
-    // --dada_ref_taxonomy may list several comma-separated databases. Without consolidation, only
-    // the first-listed one ("the winner") feeds downstream analysis, so that's the one to report.
-    // With --consolidate_taxonomies, every listed database can win individual ASVs -- report that
-    // plainly (which method, which databases) rather than naming just the first-listed one as if
-    // it were the sole source.
+    // report only the databases that feed downstream analysis: the first-listed one, or all when consolidating
     def dada_ref_taxonomy_list   = params.dada_ref_taxonomy ? params.dada_ref_taxonomy.tokenize(',')*.trim() : []
     def dada_ref_taxonomy_winner = dada_ref_taxonomy_list ? dada_ref_taxonomy_list[0] : null
     def dada_consolidated        = params.consolidate_taxonomies != 'first' && dada_ref_taxonomy_list.size() > 1

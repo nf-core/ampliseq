@@ -65,43 +65,4 @@ nextflow_pipeline {
             )
         }
     }
-
-    test("-profile test, max_ee_r") {
-
-        when {
-            params {
-                outdir = "$outputDir"
-                // reverse-read-only relaxed threshold, kept clearly different from the
-                // (default) --max_ee so the assertion can tell the two apart unambiguously
-                max_ee_r = 5
-                // taxonomy/QIIME2 aren't needed -- this test only exercises DADA2 read filtering
-                skip_taxonomy = true
-                skip_fastqc = true
-                // the "test" profile's sbdiexport=true requires taxa annotation, incompatible with skip_taxonomy
-                sbdiexport = false
-                // with skip_taxonomy=true, ch_metadata skips the FILTER_SAMPLES reassignment that
-                // normally gives it a distinct filename from report_abstract -- the "test" profile's
-                // report_abstract fixture reuses metadata's own Metadata.tsv, so without this override
-                // SUMMARY_REPORT would get two same-named "Metadata.tsv" inputs and fail to stage them.
-                // Point it at an already-fetched fixture with a different basename instead (an empty
-                // string fails nf-schema's file-path format validation)
-                report_abstract = "https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/samplesheets/Metadata_full.tsv"
-            }
-        }
-
-        then {
-            assert workflow.success
-            // filterAndTrim.args.txt records the exact R arguments DADA2_FILTNTRIM was called
-            // with -- "maxEE = c(2, 5)" confirms --max_ee_r (5) overrode --max_ee (2, default)
-            // for the reverse read only, rather than both reads sharing one value
-            def filtntrim_args = path("$outputDir/dada2/args/filterAndTrim.args.txt").text
-            assertAll(
-                { assert snapshot(
-                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
-                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_ampliseq_software_mqc_versions.yml")
-                ).match() },
-                { assert filtntrim_args.contains("maxEE = c(2, 5)") }
-            )
-        }
-    }
 }

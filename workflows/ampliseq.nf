@@ -866,6 +866,7 @@ workflow AMPLISEQ {
                 "ASV_tax.consolidated.${params.consolidate_taxonomies}.tsv"
             )
             ch_dada2_tax = CONSOLIDATE_DADA2_TAXONOMY.out.tsv
+            ch_tax_tsv = ch_tax_tsv.mix( ch_dada2_tax.map { f -> [ [database: "consolidated_${params.consolidate_taxonomies}", classifier:"DADA2"], f ] } )
         } else {
             ch_dada2_tax = ch_dada2_taxonomy_wf.tax.filter { db_key, _f -> db_key == val_dada_ref_taxonomy_list[0] }.map { _db_key, f -> f }
         }

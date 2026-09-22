@@ -46,7 +46,8 @@ nextflow_pipeline {
                 { assert !report.contains("ASVs at database level") },
                 { assert report.contains("won consolidation") },
                 // every listed database was cut by primers, and each is reported
-                { assert report.contains("The taxonomic reference databases were cut") }
+                { assert report.contains("The taxonomic reference databases were cut") },
+                { assert path("$outputDir/qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-consolidated_most-specific-tax.tsv").exists() }
             )
         }
     }

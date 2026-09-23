@@ -215,7 +215,7 @@ if ( !isFALSE(params$metadata) || !isFALSE(params$input_samplesheet) ) {
 
 if ( !isFALSE(params$input_samplesheet) ) {
     # samplesheet input
-    cat("\nSequencing data was provided in the samplesheet file `", params$input_samplesheet, "` that is displayed below:", sep="")
+    cat("\nSequencing data was provided in the samplesheet file `", basename(params$input_samplesheet), "` that is displayed below:", sep="")
 
     samplesheet <- read.table(file = params$input_samplesheet, header = TRUE, sep = "\t")
     # Display table
@@ -225,13 +225,13 @@ if ( !isFALSE(params$input_samplesheet) ) {
         paging = FALSE))
 } else if ( !isFALSE(params$input_fasta) ) {
     # fasta input
-    cat("\nASV/OTU sequences were provided in the fasta file `", params$input_fasta, "`. ", sep="")
+    cat("\nASV/OTU sequences were provided in the fasta file `", basename(params$input_fasta), "`. ", sep="")
 } else if ( !isFALSE(params$input_folder) ) {
     # folder input
     cat("\nSequencing data was retrieved from folder `", params$input_folder, "`. ", sep="")
 }
 if ( !isFALSE(params$metadata) ) {
-    cat("\nMetadata associated with the sequencing data was provided in `", params$metadata, "` and is displayed below:", sep="")
+    cat("\nMetadata associated with the sequencing data was provided in `", basename(params$metadata), "` and is displayed below:", sep="")
 
     metadata <- read.table(file = params$metadata, header = TRUE, sep = "\t")
     # Display table

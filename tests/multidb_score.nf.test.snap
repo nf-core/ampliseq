@@ -1,5 +1,5 @@
 {
-    "-profile test_multidb": {
+    "-profile test_multidb --consolidate_taxonomies score": {
         "content": [
             {
                 "BARRNAP": {
@@ -10,6 +10,9 @@
                 },
                 "COMBINE_TABLE": {
                     "R": "4.0.3"
+                },
+                "CONSOLIDATE_DADA2_TAXONOMY": {
+                    "R": "4.5.2"
                 },
                 "CUTADAPT_BASIC": {
                     "cutadapt": 5.2
@@ -157,6 +160,7 @@
                 "dada2",
                 "dada2/ASV_seqs.fasta",
                 "dada2/ASV_table.tsv",
+                "dada2/ASV_tax.consolidated.score.tsv",
                 "dada2/ASV_tax.gtdb_R07-RS207.tsv",
                 "dada2/ASV_tax.rdp_18.tsv",
                 "dada2/ASV_tax_species.gtdb_R07-RS207.tsv",
@@ -313,6 +317,7 @@
                 "qiime2/rel_abundance_tables/rel-table-5.tsv",
                 "qiime2/rel_abundance_tables/rel-table-6.tsv",
                 "qiime2/rel_abundance_tables/rel-table-ASV.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-consolidated_score-tax.tsv",
                 "qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-gtdb_R07-RS207-tax.tsv",
                 "qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-rdp_18-tax.tsv",
                 "qiime2/representative_sequences",
@@ -333,9 +338,9 @@
                 "treesummarizedexperiment/dada2_TreeSummarizedExperiment.rds"
             ]
         ],
-        "timestamp": "2026-08-25T15:50:17.392115232",
+        "timestamp": "2026-09-22T12:05:02.51387663",
         "meta": {
-            "nf-test": "0.9.5",
+            "nf-test": "0.9.4",
             "nextflow": "26.04.6"
         }
     }

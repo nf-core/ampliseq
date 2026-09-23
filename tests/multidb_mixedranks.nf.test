@@ -1,0 +1,54 @@
+nextflow_pipeline {
+
+    name "Test pipeline"
+    script "../main.nf"
+    tag "pipeline"
+    profile "test_multidb"
+
+    // Mixed rank-vocabulary case: PR2 uses Domain,Supergroup,Division,Subdivision ahead of Class
+    // instead of Kingdom,Phylum -- only pr2=5.0.0/5.1.0 use this scheme (older PR2 releases have a
+    // different, simpler one), so pr2=5.0.0 is the oldest/smallest version that still exercises it.
+    // silva=132/gtdb=R05-RS95 are the oldest/smallest versions of the other two (their rank
+    // vocabulary is the standard Kingdom..Species one at every version, so no such constraint).
+    test("-profile test_multidb --dada_ref_taxonomy silva,gtdb,pr2 --consolidate_taxonomies most-specific") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                dada_ref_taxonomy = "silva=132,gtdb=R05-RS95,pr2=5.0.0"
+                consolidate_taxonomies = "most-specific"
+            }
+        }
+
+        then {
+            // stable_path: All files + folders in ${params.outdir}/ with a stable path and file name
+            def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
+
+            assert workflow.success
+            def consolidated = path("$outputDir/dada2/ASV_tax.consolidated.most-specific.tsv").csv(sep: '\t', header: true)
+            def header = path("$outputDir/dada2/ASV_tax.consolidated.most-specific.tsv").text.readLines()[0].tokenize('\t')
+            // ASVs won by PR2, whose own vocabulary is Domain,Supergroup,Division,Subdivision
+            def pr2_rows = (0..<consolidated.rowCount).findAll { consolidated.columns["database"][it] == "pr2_5_0_0" }
+            assertAll(
+                { assert snapshot(
+                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_ampliseq_software_mqc_versions.yml"),
+                    // All stable path name, with a relative path
+                    stable_path
+                ).match() },
+                // consolidation emits one rank vocabulary -- the first-listed database's -- whichever
+                // database won a given ASV, because every consumer of this file (QIIME2 import via
+                // parse_dada2_taxonomy.r, phyloseq/TSE, SBDI export) reads ranks positionally or by name
+                { assert header.containsAll(["Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"]) },
+                { assert !header.any { it in ["Domain", "Supergroup", "Division", "Subdivision"] } },
+                // PR2 did win ASVs, and its Domain/Division values were carried into the
+                // Kingdom/Phylum slots rather than dropped with the columns they arrived in
+                { assert pr2_rows.size() > 0 },
+                { assert pr2_rows.every { consolidated.columns["Kingdom"][it] } },
+                // qiime taxa barplot emits one level-N.csv per segment of the taxonomy string it is
+                // given, so a level-8.csv means an extra rank column reached parse_dada2_taxonomy.r
+                { assert !path("$outputDir/qiime2/barplot/level-8.csv").exists() }
+            )
+        }
+    }
+}

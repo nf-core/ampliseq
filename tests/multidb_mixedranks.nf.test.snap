@@ -1,5 +1,5 @@
 {
-    "-profile test_multidb": {
+    "-profile test_multidb --dada_ref_taxonomy silva,gtdb,pr2 --consolidate_taxonomies most-specific": {
         "content": [
             {
                 "BARRNAP": {
@@ -10,6 +10,9 @@
                 },
                 "COMBINE_TABLE": {
                     "R": "4.0.3"
+                },
+                "CONSOLIDATE_DADA2_TAXONOMY": {
+                    "R": "4.5.2"
                 },
                 "CUTADAPT_BASIC": {
                     "cutadapt": 5.2
@@ -147,8 +150,9 @@
                 "barrnap/rrna.mito.gff",
                 "barrnap/summary.tsv",
                 "cutadapt",
-                "cutadapt/assignTaxonomy_gtdb_R07-RS207.cutadapt.log",
-                "cutadapt/assignTaxonomy_rdp_18.cutadapt.log",
+                "cutadapt/assignTaxonomy_gtdb_R05-RS95.cutadapt.log",
+                "cutadapt/assignTaxonomy_pr2_5_0_0.cutadapt.log",
+                "cutadapt/assignTaxonomy_silva_132.cutadapt.log",
                 "cutadapt/cutadapt_summary.tsv",
                 "cutadapt/sampleID_1.trimmed.cutadapt.log",
                 "cutadapt/sampleID_1a.trimmed.cutadapt.log",
@@ -157,10 +161,13 @@
                 "dada2",
                 "dada2/ASV_seqs.fasta",
                 "dada2/ASV_table.tsv",
-                "dada2/ASV_tax.gtdb_R07-RS207.tsv",
-                "dada2/ASV_tax.rdp_18.tsv",
-                "dada2/ASV_tax_species.gtdb_R07-RS207.tsv",
-                "dada2/ASV_tax_species.rdp_18.tsv",
+                "dada2/ASV_tax.consolidated.most-specific.tsv",
+                "dada2/ASV_tax.gtdb_R05-RS95.tsv",
+                "dada2/ASV_tax.pr2_5_0_0.tsv",
+                "dada2/ASV_tax.silva_132.tsv",
+                "dada2/ASV_tax_species.gtdb_R05-RS95.tsv",
+                "dada2/ASV_tax_species.pr2_5_0_0.tsv",
+                "dada2/ASV_tax_species.silva_132.tsv",
                 "dada2/DADA2_stats.tsv",
                 "dada2/DADA2_table.rds",
                 "dada2/DADA2_table.tsv",
@@ -187,25 +194,30 @@
                 "dada2/args/FW_preprocessed_plotQualityProfile.args.txt",
                 "dada2/args/RV_plotQualityProfile.args.txt",
                 "dada2/args/RV_preprocessed_plotQualityProfile.args.txt",
-                "dada2/args/addSpecies_gtdb_R07-RS207.args.txt",
-                "dada2/args/addSpecies_rdp_18.args.txt",
-                "dada2/args/assignTaxonomy.ASV_tax.gtdb_R07-RS207.args.txt",
-                "dada2/args/assignTaxonomy.ASV_tax.rdp_18.args.txt",
+                "dada2/args/addSpecies_gtdb_R05-RS95.args.txt",
+                "dada2/args/addSpecies_pr2_5_0_0.args.txt",
+                "dada2/args/addSpecies_silva_132.args.txt",
+                "dada2/args/assignTaxonomy.ASV_tax.gtdb_R05-RS95.args.txt",
+                "dada2/args/assignTaxonomy.ASV_tax.pr2_5_0_0.args.txt",
+                "dada2/args/assignTaxonomy.ASV_tax.silva_132.args.txt",
                 "dada2/args/dada.args.txt",
                 "dada2/args/filterAndTrim.args.txt",
                 "dada2/args/learnErrors.args.txt",
                 "dada2/args/mergePairs.args.txt",
                 "dada2/args/removeBimeraDenovo.args.txt",
                 "dada2/chunks",
-                "dada2/chunks/ASV_seqs.1.ASV_tax.gtdb_R07-RS207.species.tsv",
-                "dada2/chunks/ASV_seqs.1.ASV_tax.gtdb_R07-RS207.tsv",
-                "dada2/chunks/ASV_seqs.1.ASV_tax.rdp_18.species.tsv",
-                "dada2/chunks/ASV_seqs.1.ASV_tax.rdp_18.tsv",
+                "dada2/chunks/ASV_seqs.1.ASV_tax.gtdb_R05-RS95.species.tsv",
+                "dada2/chunks/ASV_seqs.1.ASV_tax.gtdb_R05-RS95.tsv",
+                "dada2/chunks/ASV_seqs.1.ASV_tax.pr2_5_0_0.species.tsv",
+                "dada2/chunks/ASV_seqs.1.ASV_tax.pr2_5_0_0.tsv",
+                "dada2/chunks/ASV_seqs.1.ASV_tax.silva_132.species.tsv",
+                "dada2/chunks/ASV_seqs.1.ASV_tax.silva_132.tsv",
                 "dada2/log",
                 "dada2/log/1.dada.log",
                 "dada2/log/1.err.log",
-                "dada2/ref_taxonomy.gtdb_R07-RS207.txt",
-                "dada2/ref_taxonomy.rdp_18.txt",
+                "dada2/ref_taxonomy.gtdb_R05-RS95.txt",
+                "dada2/ref_taxonomy.pr2_5_0_0.txt",
+                "dada2/ref_taxonomy.silva_132.txt",
                 "decontam",
                 "decontam/decontaminated.tsv",
                 "decontam/decontaminated_counts.tsv",
@@ -313,8 +325,10 @@
                 "qiime2/rel_abundance_tables/rel-table-5.tsv",
                 "qiime2/rel_abundance_tables/rel-table-6.tsv",
                 "qiime2/rel_abundance_tables/rel-table-ASV.tsv",
-                "qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-gtdb_R07-RS207-tax.tsv",
-                "qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-rdp_18-tax.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-consolidated_most-specific-tax.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-gtdb_R05-RS95-tax.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-pr2_5_0_0-tax.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-silva_132-tax.tsv",
                 "qiime2/representative_sequences",
                 "qiime2/representative_sequences/descriptive_stats.tsv",
                 "qiime2/representative_sequences/filtered-sequences.qza",
@@ -333,9 +347,9 @@
                 "treesummarizedexperiment/dada2_TreeSummarizedExperiment.rds"
             ]
         ],
-        "timestamp": "2026-08-25T15:50:17.392115232",
+        "timestamp": "2026-09-22T12:21:48.677708466",
         "meta": {
-            "nf-test": "0.9.5",
+            "nf-test": "0.9.4",
             "nextflow": "26.04.6"
         }
     }

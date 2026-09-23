@@ -14,8 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#1042](https://github.com/nf-core/ampliseq/pull/1042) - Added CI test coverage for `--addsh`, which previously had none (`test_pacbio_its` now also runs DADA2 taxonomy against the UNITE database it already uses for SINTAX) (by @erikrikarddaniel)
 - [#1052](https://github.com/nf-core/ampliseq/pull/1052) - Added `summary_tables/ampliseq.counts.tsv.gz`, ASV counts in long format with consistent, lower-case column names, ready for analysis in R, Python or similar without pipeline-specific parsing; also written as Parquet by default, skip with `--skip_parquet_summary` (by @erikrikarddaniel)
 - [#1056](https://github.com/nf-core/ampliseq/pull/1056) - `--dada_ref_taxonomy` now accepts a comma-separated list of databases (e.g. `gtdb,silva`), running DADA2 taxonomic classification against each; one full set of output files is published per listed database, and the first-listed database feeds every downstream step that expects a single taxonomy (consolidating multiple databases into one is planned as a future addition) (by @erikrikarddaniel)
+- [#1062](https://github.com/nf-core/ampliseq/pull/1062) - Added `--consolidate_taxonomies` (`first` by default, `most-specific` or `score`) to pick a per-ASV winning database across multiple `--dada_ref_taxonomy` databases, instead of always using the first-listed one; the winning result is published as `dada2/ASV_tax.consolidated.<method>.tsv` (by @erikrikarddaniel)
 - [#1063](https://github.com/nf-core/ampliseq/pull/1063) - Added `summary_tables/ampliseq.taxonomy.<classifier>.<database>.tsv.gz`, a slim, consistent-schema taxonomy table for every classifier/database actually run, joined with per-ASV barrnap/decontam/filter annotations; also written as Parquet by default, skip with `--skip_parquet_summary` (by @erikrikarddaniel)
 - [#1065](https://github.com/nf-core/ampliseq/pull/1065) - New `--max_ee_r` overrides `--max_ee` for reverse reads only (paired-end Illumina data), for runs where read quality drops on the reverse read only (fixes [#1037](https://github.com/nf-core/ampliseq/issues/1037)) (by @erikrikarddaniel)
+- [#1066](https://github.com/nf-core/ampliseq/pull/1066) - Added `--sintax_cutoff` parameter (maintaining the default: 0.8). (by @pieterprovoost)
+- [#1070](https://github.com/nf-core/ampliseq/pull/1070) - VSEARCH LCA now also publishes the raw `--blast6out` hit table (`ASV_tax_vsearch_lca.*.txt` / `ASV_ITS_tax_vsearch_lca.*.txt`) alongside the existing LCA and taxonomy TSV outputs (by @pieterprovoost)
 
 ### `Changed`
 
@@ -41,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#1028](https://github.com/nf-core/ampliseq/pull/1028) - Multi-region sample sheet via `--multiregion` had its header changed from `FW_primer` and `RV_primer` to `primer_fwd` and `primer_rev`, respectively. (by @d4straub)
 - [#1032](https://github.com/nf-core/ampliseq/pull/1032) - Refactor the pipeline's parameter handling and initialization (by @erikrikarddaniel).
 - [#1051](https://github.com/nf-core/ampliseq/pull/1051) - Continue #1032's parameter-handling refactor: `qiime2_ancom` and `qiime2_diversity` subworkflows now take all their flags (`ancom`, `ancombc`, `ancombc2`, `qiime_adonis_formula`) as explicit arguments instead of reading some directly from `params.*`; no behaviour change (by @erikrikarddaniel).
+- [#1074](https://github.com/nf-core/ampliseq/pull/1074) - `--max_ee_r` is now covered by the existing `test_novaseq` profile instead of a dedicated test, removing the extra CI run added in [#1065](https://github.com/nf-core/ampliseq/pull/1065) (by @erikrikarddaniel)
 
 ### `Fixed`
 
@@ -53,15 +57,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#1050](https://github.com/nf-core/ampliseq/pull/1050) - Fixed a regression introduced by [#1042](https://github.com/nf-core/ampliseq/pull/1042) (not yet released) that showed the new per-rank `confidence` columns as if they were taxonomic levels in the DADA2/SINTAX/VSEARCH-LCA sections of `summary_report.html` (by @erikrikarddaniel)
 - [#1057](https://github.com/nf-core/ampliseq/pull/1057) - Fixed DADA2 read number tracking table sequence (reported by @Malytherin, fixed by @d4straub)
 - [#1058](https://github.com/nf-core/ampliseq/pull/1058) - Fixed QIIME2 caching (reported by @luciazifcakova, fixed by @d4straub)
+- [#1077](https://github.com/nf-core/ampliseq/pull/1077) - Template update for nf-core/tools version 4.1.0 (by @d4straub)
+- [#1080](https://github.com/nf-core/ampliseq/pull/1080) - `SUMMARY_REPORT` no longer fails with "input file name collision" when `--report_abstract`, `--metadata`, `--input` or `--input_fasta` share a file name (fixes [#1073](https://github.com/nf-core/ampliseq/issues/1073)) (by @erikrikarddaniel)
 
 ### `Dependencies`
 
 - [#1035](https://github.com/nf-core/ampliseq/pull/1035) - ITSxRust 0.2.2 to 0.3.0, reducing peak memory approximately six-fold on large inputs; extraction output is unchanged (by @ayobi)
+- [#1077](https://github.com/nf-core/ampliseq/pull/1077) - MultiQC 1.34 to 1.35 (by @d4straub)
 
 | software | previously | now   |
 | -------- | ---------- | ----- |
 | ITSxRust | 0.2.2      | 0.3.0 |
 | Savont   |            | 0.6.3 |
+| MultiQC  | 1.34       | 1.35  |
 
 ### `Removed`
 

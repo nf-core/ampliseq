@@ -258,19 +258,18 @@ Pre-configured reference taxonomy databases are:
 | rdp          | +     | -      | +       | -      | -       | -          | 16S rRNA                                      |
 | greengenes   | -     | -      | +       | (+)³   | -       | -          | 16S rRNA                                      |
 | greengenes2  | +     | -      | -       | +      | -       | -          | 16S rRNA                                      |
-| pr2          | +     | -      | -       | -      | -       | -          | 18S rRNA                                      |
+| pr2          | +     | -      | -       | -      | -       | -          | 18S rRNA, also plastid/chloroplast 16S rRNA   |
 | GloSED       | +     | -      | -       | -      | -       | -          | eukaryotic nuclear ribosomal ITS region       |
 | unite-fungi  | +     | +      | -       | -      | +       | -          | eukaryotic nuclear ribosomal ITS region       |
 | unite-alleuk | +     | +      | -       | -      | +       | -          | eukaryotic nuclear ribosomal ITS region       |
 | coidb        | +     | +      | -       | -      | +       | -          | eukaryotic Cytochrome Oxidase I (COI)         |
 | midori2-co1  | +     | -      | -       | -      | +       | -          | eukaryotic Cytochrome Oxidase I (COI)         |
-| phytoref     | +     | -      | -       | -      | -       | -          | eukaryotic plastid 16S rRNA                   |
 | zehr-nifh    | +     | -      | -       | -      | -       | -          | Nitrogenase iron protein NifH                 |
 | standard     | -     | -      | +       | -      | -       | -          | any in genomes of archaea, bacteria, viruses⁴ |
 
 ¹: As of Silva version 138 optimized for classification of Bacteria and Archaea, not suitable for Eukaryotes; ²[`--dada_taxonomy_rc`](https://nf-co.re/ampliseq/parameters#dada_taxonomy_rc) is recommended; ³: de-replicated at 85%, only for testing purposes; ⁴: quality of results might vary
 
-[`--dada_ref_taxonomy`](https://nf-co.re/ampliseq/parameters#dada_ref_taxonomy) accepts a comma-separated list of database keys (e.g. `gtdb,silva`) to run DADA2 classification against several databases at once. Only the first-listed database feeds downstream QIIME2 analysis (filtering, diversity, barplots, ANCOM) and R objects -- consolidating results across multiple databases into one is planned as a future addition. For the exact versioned key of each database (e.g. `gtdb=R11-RS232`), see [`conf/ref_databases.config`](https://github.com/nf-core/ampliseq/blob/master/conf/ref_databases.config).
+For the exact versioned key of each database (e.g. `gtdb=R11-RS232`), see [`conf/ref_databases.config`](https://github.com/nf-core/ampliseq/blob/master/conf/ref_databases.config).
 
 Special features of taxonomic classification tools:
 
@@ -284,6 +283,24 @@ Parameter guidance is given in [nf-core/ampliseq website parameter documentation
 
 > [!TIP]
 > Taxonomic reference databases can be stored and shared locally with [`--ref_taxonomy_storage`](https://nf-co.re/ampliseq/parameters/#ref_taxonomy_storage). That way, remote files will be downloaded only if they are not available in the storage directory.
+
+#### Multiple DADA2 reference databases
+
+[`--dada_ref_taxonomy`](https://nf-co.re/ampliseq/parameters#dada_ref_taxonomy) accepts a comma-separated list of database keys (e.g. `gtdb,silva`) to run DADA2 classification against several databases at once.
+By default, only the first-listed database feeds downstream QIIME2 analysis (filtering, diversity, barplots, ANCOM) and R objects.
+Use [`--consolidate_taxonomies most-specific` or `score`](https://nf-co.re/ampliseq/parameters#consolidate_taxonomies) to instead pick a winning database per ASV.
+This currently compares DADA2 results only, not results from different classification methods.
+
+**Rank vocabulary across databases**
+
+- Most databases use the standard `Kingdom,Phylum,Class,Order,Family,Genus,Species` levels.
+- PR2 uses `Domain,Supergroup,Division,Subdivision,Class,Order,Family,Genus,Species` instead.
+- The consolidated table uses the **first-listed** database's levels throughout, whichever database won a given ASV, so that everything reading it downstream (QIIME2 import, phyloseq/TSE objects, SBDI export) sees one consistent set of ranks.
+- `Domain` is therefore written into the `Kingdom` slot and `Division` into the `Phylum` slot when the first-listed database uses the standard levels, and the reverse when it is PR2.
+- `Supergroup`/`Subdivision` have no counterpart in the standard levels and are dropped from the consolidated table. Each database's own unmodified table is still published under `dada2/`, so nothing is lost.
+- `most-specific` scores a database by how many of these levels it resolved, so a database with more intermediate rank names doesn't win purely by having more columns.
+- A database with both `Kingdom` and `Domain` populated (older PR2 releases) gets credit for both -- a minor, accepted asymmetry.
+- This mapping isn't perfect everywhere in PR2 -- e.g. Metazoa's phylum-level names sit in `Class`, one level below `Division` -- but matches PR2's primary use case (protists, whose phylum-equivalent groups are in `Division`).
 
 ### Multiple region analysis with Sidle
 
@@ -505,7 +522,7 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
 - `apptainer`
   - A generic configuration profile to be used with [Apptainer](https://apptainer.org/)
 - `wave`
-  - A generic configuration profile to enable [Wave](https://seqera.io/wave/) containers. Use together with one of the above (requires Nextflow ` 24.03.0-edge` or later).
+  - A generic configuration profile to enable [Wave](https://seqera.io/wave/) containers. Use together with one of the above (requires Nextflow `24.03.0-edge` or later).
 - `conda`
   - A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter, Charliecloud, or Apptainer.
 

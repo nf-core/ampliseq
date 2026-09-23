@@ -347,7 +347,13 @@ Taxonomic classification of ASVs can be performed with a choice of DADA2, SINTAX
 
 DADA2 is the default method for taxonomy classification. Depending on the reference taxonomy database, sequences can be classified down to species rank. Species classification is reported in columns "Species" using DADA2's assignTaxonomy function or "Species_exact" using DADA2's addSpecies function, the latter only assigns exact sequence matches. Generally, species assignment without exact matches are much less trustworthy than those with exact matches. With short amplicons, e.g. 16S rRNA gene V4 region, the non-exact species annotation is not recommended to be trusted. The longer the ASVs are, the more acceptable is the non-exact species classification, e.g. PacBio (nearly) full length 16S rRNA gene sequences are thought to be trustworthy.
 
-`--dada_ref_taxonomy` accepts a comma-separated list of databases (e.g. `--dada_ref_taxonomy gtdb,silva`) to classify against several databases at once; one full set of the output files below is published per listed database. Only the **first-listed** database feeds every downstream step that expects a single taxonomy (QIIME2 filtering, diversity, barplots, ANCOM, R objects) -- consolidating results across multiple databases into one is planned as a future addition.
+`--dada_ref_taxonomy` accepts a comma-separated list of databases (e.g. `--dada_ref_taxonomy gtdb,silva`) to classify against several databases at once; one full set of the output files below is published per listed database.
+
+- By default (`--consolidate_taxonomies first`), only the **first-listed** database feeds every downstream step that expects a single taxonomy (QIIME2 filtering, diversity, barplots, ANCOM, R objects).
+- `--consolidate_taxonomies most-specific` instead picks, per ASV, whichever listed database resolved the deepest rank.
+- `--consolidate_taxonomies score` instead picks, per ASV, whichever listed database reported the highest assignTaxonomy bootstrap confidence.
+- Both break ties by database order in `--dada_ref_taxonomy`, and are currently DADA2-only -- they don't compare results across different classification methods (e.g. DADA2 vs. SINTAX).
+- When set, the winning per-ASV result is published as `dada2/ASV_tax.consolidated.<method>.tsv`, with an added `database` column recording which listed database each row's winning classification came from.
 
 In addition to the "confidence" column (the bootstrap support for the most specific rank assigned), each taxonomy table also has one `<rank>_confidence` column per rank (e.g. `phylum_confidence`), giving assignTaxonomy's bootstrap support at that specific rank.
 
@@ -359,6 +365,7 @@ Files when _not_ using ITSx (default):
 - `dada2/`
   - `ASV_tax.*.tsv`: Taxonomic classification for each ASV sequence.
   - `ASV_tax_species.*.tsv`: Exact species classification for each ASV sequence.
+  - `ASV_tax.consolidated.<method>.tsv`: Only when `--consolidate_taxonomies` is used with multiple `--dada_ref_taxonomy` databases -- one winning classification per ASV, consolidated across all listed databases.
   - `ref_taxonomy.*.txt`: Information about the used reference taxonomy, such as title, version, citation.
 - `dada2/chunks/`: Directory containing files with taxonomy assignments of individual chunks.
 
@@ -374,6 +381,7 @@ Files when using ITSx:
   - `ASV_ITS_tax_species.*.tsv`: Exact species classification with ITS region of each ASV sequence.
   - `ASV_tax.*.tsv`: Taxonomic classification of each ASV sequence, based on the ITS region.
   - `ASV_tax_species.*.tsv`: Exact species classification of each ASV sequence, based on the ITS region.
+  - `ASV_tax.consolidated.<method>.tsv`: Only when `--consolidate_taxonomies` is used with multiple `--dada_ref_taxonomy` databases -- one winning classification per ASV, consolidated across all listed databases.
   - `ref_taxonomy.*.txt`: Information about the used reference taxonomy, such as title, version, citation.
 
 </details>
@@ -461,6 +469,7 @@ Files when _not_ using ITSx (default):
 
 - `vsearch_lca/`
   - `ASV_tax_vsearch_lca.*.lca`: Raw `--lcaout` output from VSEARCH.
+  - `ASV_tax_vsearch_lca.*.txt`: Raw `--blast6out` hit table from VSEARCH (accepted hits used for LCA).
   - `ASV_tax_vsearch_lca.*.tsv`: Taxonomic classification for each ASV sequence in a format similar to DADA2 output.
   - `ref_taxonomy_vsearch_lca.txt`: Information about the used reference taxonomy, such as title, version, citation.
 
@@ -473,6 +482,7 @@ Files when using ITSx:
 
 - `vsearch_lca/`
   - `ASV_ITS_tax_vsearch_lca.*.lca`: Raw `--lcaout` output from VSEARCH, when using cut sequences as input.
+  - `ASV_ITS_tax_vsearch_lca.*.txt`: Raw `--blast6out` hit table from VSEARCH (accepted hits used for LCA), when using cut sequences as input.
   - `ASV_tax_vsearch_lca.*.tsv`: Taxonomic classification for each ASV sequence, based on the chosen ITS region, in a format similar to DADA2 output.
   - `ref_taxonomy_vsearch_lca.txt`: Information about the used reference taxonomy, such as title, version, citation.
 
@@ -578,6 +588,7 @@ Absolute abundance tables produced by the previous steps contain count data, but
   - `rel-table-*.tsv`: Tab-separated relative abundance table at taxa level `*`, where `*` ranges by default from 2 to 6, specified by the `--tax_agglom_min` and `--tax_agglom_max` parameters.
   - `rel-table-ASV.tsv`: Tab-separated relative abundance table for all ASVs.
   - `rel-table-ASV_with-*-tax.tsv`: Tab-separated table for all ASVs with taxonomic classification, sequence and relative abundance. The star (\*) is replaced by the taxonomic classification method.
+    With `--consolidate_taxonomies most-specific` or `score`, the consolidated DADA2 taxonomy gets its own table, `rel-table-ASV_with-DADA2-consolidated_<method>-tax.tsv`.
 
 </details>
 
@@ -908,3 +919,5 @@ This report includes information on how many reads per sample passed each pipeli
   - Parameters used by the pipeline run: `params.json`.
 
 </details>
+
+[Nextflow](https://docs.seqera.io/platform-cloud/reports/overview) provides excellent functionality for generating various reports relevant to the running and execution of the pipeline. This will allow you to troubleshoot errors with the running of the pipeline, and also provide you with other information such as launch commands, run times and resource usage.

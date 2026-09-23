@@ -136,7 +136,7 @@ workflow PIPELINE_INITIALISATION {
         before_text,
         after_text,
         command,
-        null
+        true
     )
 
     //
@@ -291,6 +291,16 @@ def validateInputParameters() {
     // hardcoded default risks silently going stale if that default is ever changed.
     if (params.dada_ref_tax_custom && params.dada_ref_taxonomy) {
         log.warn "`--dada_ref_taxonomy` was also given, but `--dada_ref_tax_custom` takes priority -- `--dada_ref_taxonomy` (including every database listed in it, if a comma-separated list) will be ignored entirely."
+    }
+
+    // --dada_ref_tax_custom always yields a single "user" database
+    if (params.consolidate_taxonomies != 'first' && (params.dada_ref_tax_custom || !params.dada_ref_taxonomy || params.dada_ref_taxonomy.tokenize(',').size() <= 1)) {
+        log.warn "`--consolidate_taxonomies` was given, but `--dada_ref_taxonomy` lists at most one database -- there is nothing to consolidate, this option has no effect."
+    }
+
+    // SBDI export records a single dbversion; --sbdiexport is slated for removal (#1055)
+    if (params.consolidate_taxonomies != 'first' && params.sbdiexport) {
+        log.warn "`--consolidate_taxonomies` was given together with `--sbdiexport` -- the SBDI export records only the first-listed `--dada_ref_taxonomy` database as the source, even though consolidation may pick a different database per ASV. The exported reference-database metadata may not accurately reflect every ASV's actual source."
     }
 
     if (params.pplace_tree) {

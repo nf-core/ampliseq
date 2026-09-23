@@ -48,6 +48,7 @@ params:
     cut_its: FALSE
     dada2_ref_tax_title: FALSE
     qiime2_ref_tax_title: FALSE
+    sintax_cutoff: ""
     sintax_ref_tax_title: FALSE
     kraken2_ref_tax_title: FALSE
     dada2_ref_tax_file: ""
@@ -214,7 +215,7 @@ if ( !isFALSE(params$metadata) || !isFALSE(params$input_samplesheet) ) {
 
 if ( !isFALSE(params$input_samplesheet) ) {
     # samplesheet input
-    cat("\nSequencing data was provided in the samplesheet file `", params$input_samplesheet, "` that is displayed below:", sep="")
+    cat("\nSequencing data was provided in the samplesheet file `", basename(params$input_samplesheet), "` that is displayed below:", sep="")
 
     samplesheet <- read.table(file = params$input_samplesheet, header = TRUE, sep = "\t")
     # Display table
@@ -224,13 +225,13 @@ if ( !isFALSE(params$input_samplesheet) ) {
         paging = FALSE))
 } else if ( !isFALSE(params$input_fasta) ) {
     # fasta input
-    cat("\nASV/OTU sequences were provided in the fasta file `", params$input_fasta, "`. ", sep="")
+    cat("\nASV/OTU sequences were provided in the fasta file `", basename(params$input_fasta), "`. ", sep="")
 } else if ( !isFALSE(params$input_folder) ) {
     # folder input
     cat("\nSequencing data was retrieved from folder `", params$input_folder, "`. ", sep="")
 }
 if ( !isFALSE(params$metadata) ) {
-    cat("\nMetadata associated with the sequencing data was provided in `", params$metadata, "` and is displayed below:", sep="")
+    cat("\nMetadata associated with the sequencing data was provided in `", basename(params$metadata), "` and is displayed below:", sep="")
 
     metadata <- read.table(file = params$metadata, header = TRUE, sep = "\t")
     # Display table
@@ -1152,33 +1153,46 @@ cat ("\n\n")
 
 # mention if taxonomy was cut by cutadapt
 if ( !isFALSE(params$cut_dada_ref_taxonomy) ) {
-    cut_dada_ref_taxonomy <- readLines(params$cut_dada_ref_taxonomy)
-    for (line in cut_dada_ref_taxonomy){
-        if (grepl("Total reads processed:", line)) {
-            cut_dada_ref_taxonomy_orig <- sub("Total reads processed: *\t*", "", line)
-        }
-        if (grepl("Reads written \\(passing filters\\):", line)) {
-            cut_dada_ref_taxonomy_filt <- sub("Reads written .passing filters.: *\t*", "", line)
-        }
-        if (grepl("Total basepairs processed:", line)) {
-            cut_dada_ref_taxonomy_orig_bp <- sub("Total basepairs processed: *\t*", "", line)
-        }
-        if (grepl("Total written \\(filtered\\):", line)) {
-            cut_dada_ref_taxonomy_filt_bp <- sub("Total written \\(filtered\\): *\t*", "", line)
-        }
-    }
+    cut_logs <- strsplit(params$cut_dada_ref_taxonomy, " ")[[1]]
+    cut_stat <- function(lines, pattern) trimws(sub("^[^:]*:", "", grep(pattern, lines, value = TRUE, fixed = TRUE)[1]))
+    cut_dada_ref_taxonomy <- do.call(rbind, lapply(cut_logs, function(log) {
+        lines <- readLines(log)
+        data.frame(
+            database = sub("^assignTaxonomy_(.*)\\.cutadapt\\.log$", "\\1", basename(log)),
+            orig     = cut_stat(lines, "Total reads processed:"),
+            filt     = cut_stat(lines, "Reads written (passing filters):"),
+            orig_bp  = cut_stat(lines, "Total basepairs processed:"),
+            filt_bp  = cut_stat(lines, "Total written (filtered):")
+        )
+    }))
+    cut_dada_ref_taxonomy <- cut_dada_ref_taxonomy[order(cut_dada_ref_taxonomy$database), ]
 
-    cat("The taxonomic reference database was cut by primer sequences to improve matching.
-        The original database had ",cut_dada_ref_taxonomy_orig," sequences with ",cut_dada_ref_taxonomy_orig_bp,
-        ", retained were ",cut_dada_ref_taxonomy_filt," sequences that represented ",cut_dada_ref_taxonomy_filt_bp,".\n\n",
-        sep = "")
+    if (nrow(cut_dada_ref_taxonomy) == 1) {
+        with(cut_dada_ref_taxonomy, cat("The taxonomic reference database was cut by primer sequences to improve matching.
+            The original database had ",orig," sequences with ",orig_bp,
+            ", retained were ",filt," sequences that represented ",filt_bp,".\n\n",
+            sep = ""))
+        cut_dada_ref_taxonomy_filt <- cut_dada_ref_taxonomy$filt
+    } else {
+        cat("The taxonomic reference databases were cut by primer sequences to improve matching:\n\n")
+        with(cut_dada_ref_taxonomy, cat(paste0("- `", database, "`: the original database had ", orig, " sequences with ", orig_bp,
+            ", retained were ", filt, " sequences that represented ", filt_bp, ".\n"), "\n", sep = ""))
+        cut_dada_ref_taxonomy_filt <- with(cut_dada_ref_taxonomy, paste0(filt, " (", database, ")", collapse = ", "))
+    }
 }
 
 # make statistics of taxonomic classification
 asv_tax <- read.table(params$dada2_taxonomy, header = TRUE, sep = "\t", comment.char = "")
 
+# consolidated taxonomy records the winning database per ASV
+if ("database" %in% colnames(asv_tax)) {
+    dada2_db_counts <- table(asv_tax$database[asv_tax$database != "" & !is.na(asv_tax$database)])
+    dada2_db_counts_str <- paste0("`", names(dada2_db_counts), "` (", dada2_db_counts, " ASVs)", collapse = ", ")
+    cat("The taxonomy of each ASV was taken from the database that won consolidation: ", dada2_db_counts_str, ".\n\n", sep = "")
+}
+
 # Calculate the classified numbers/percent of asv
-non_rank_cols <- colnames(asv_tax) %in% c("ASV_ID", "confidence", "sequence") | grepl("_confidence$", colnames(asv_tax))
+non_rank_cols <- colnames(asv_tax) %in% c("ASV_ID", "confidence", "sequence", "database") | grepl("_confidence$", colnames(asv_tax))
 level <- colnames(asv_tax)[!non_rank_cols]
 
 n_asv_tax = nrow(asv_tax)
@@ -1308,6 +1322,10 @@ cat("## SINTAX\n")
 cat("The taxonomic classification was performed by [SINTAX](https://doi.org/10.1101/074161)
     using the database: `", params$sintax_ref_tax_title, "`.
     More details about the reference taxonomy database can be found in the ['Methods section'](#methods).\n\n", sep = "")
+
+if ( params$sintax_cutoff != "" && params$sintax_cutoff != "0.8" ) {
+    cat("A SINTAX confidence score threshold of",params$sintax_cutoff,"was applied for taxonomic classifications.\n\n")
+}
 
 asv_tax <- read.table(params$sintax_taxonomy, header = TRUE, sep = "\t", comment.char = "")
 
@@ -2159,6 +2177,10 @@ if ( !isFALSE(params$dada2_taxonomy) ) {
     if ( !isFALSE(params$cut_dada_ref_taxonomy) ) {
         methods_taxonomic_classification_dada <- paste(methods_taxonomic_classification_dada,
             "that had",cut_dada_ref_taxonomy_filt,"sequences extracted by PCR primers to improve assignments")
+    }
+    if ( exists("dada2_db_counts_str") ) {
+        methods_taxonomic_classification_dada <- paste0(methods_taxonomic_classification_dada,
+            ", taking each ASV's taxonomy from the database that won consolidation: ", dada2_db_counts_str)
     }
     methods_taxonomic_classification <- c(methods_taxonomic_classification, methods_taxonomic_classification_dada)
 }

@@ -188,18 +188,18 @@
                 "summary_tables/ampliseq.counts.parquet",
                 "summary_tables/ampliseq.counts.tsv.gz"
             ],
-            "ASV_seqs.fasta:md5,0ed4ce8c63b31ee3968232ded3da9875",
-            "ASV_table.tsv:md5,0028da02541e474b4229e7776c091586",
-            "DADA2_stats.tsv:md5,4bb143b3aa5532a86e115378e9ffb575",
-            "DADA2_table.tsv:md5,fe7dd1249b7fe1643f13ee6699c6e877",
+            "ASV_seqs.fasta:md5,d81c296ebe3cb0b0e8dad34ef2efa530",
+            "ASV_table.tsv:md5,c656747f25d521818b0f57f1bef19453",
+            "DADA2_stats.tsv:md5,06546ce7dbf4cb2fb0ce1b17e60b526c",
+            "DADA2_table.tsv:md5,f73cf94a5141b0c6fad2f2d993072be6",
             "Samplesheet_novaseq_v3.tsv:md5,3ab45eb0806f95ed09df95805cc8e339",
             "multiqc_fastqc.txt:md5,a99548124efd185a7d4e33245edcb81b",
             "multiqc_general_stats.txt:md5,92648df79061fa3b17fea104fe1b7641"
         ],
+        "timestamp": "2026-09-18T08:55:32.998347766",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.4"
-        },
-        "timestamp": "2026-04-21T09:16:32.819905764"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
     }
 }

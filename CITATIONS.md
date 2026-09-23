@@ -96,10 +96,6 @@
 
   > Sundh J, Manoharan L, Iwaszkiewicz-Eggebrecht E, Miraldo A, Andersson A, Ronquist F. COI reference sequences from BOLD DB. doi: https://doi.org/10.17044/scilifelab.20514192.v2.
 
-- [PhytoRef plastid 16S rRNA database for photosynthetic eukaryotes](https://pubmed.ncbi.nlm.nih.gov/25740460/)
-
-  > Decelle J, Romac S, Stern RF, Bendif el M, Zingone A, Audic S, Guiry MD, Guillou L, Tessier D, Le Gall F, Gourvil P, Dos Santos AL, Probert I, Vaulot D, de Vargas C, Christen R. PhytoREF: a reference database of the plastidial 16S rRNA gene of photosynthetic eukaryotes with curated taxonomy. Mol Ecol Resour. 2015 Nov;15(6):1435-45. doi: 10.1111/1755-0998.12401. Epub 2015 Apr 6. PMID: 25740460.
-
 - [Zehr lab nifH database](http://doi.org/10.5281/zenodo.7996213)
 
   > M. A. Moynihan & C. Furbo Reeder 2023. nifHdada2 GitHub repository, v2.0.5. Zenodo. doi: http://doi.org/10.5281/zenodo.7996213

@@ -3,13 +3,14 @@ nextflow_pipeline {
     name "Test pipeline"
     script "../main.nf"
     tag "pipeline"
-    profile "test_novaseq"
+    profile "test_multidb"
 
-    test("-profile test_novaseq") {
+    test("-profile test_multidb --consolidate_taxonomies score") {
 
         when {
             params {
                 outdir = "$outputDir"
+                consolidate_taxonomies = "score"
             }
         }
 
@@ -18,23 +19,17 @@ nextflow_pipeline {
             def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
 
             assert workflow.success
+            def consolidated = path("$outputDir/dada2/ASV_tax.consolidated.score.tsv").csv(sep: '\t', header: true)
+            def databases = consolidated.columns["database"]
             assertAll(
                 { assert snapshot(
                     // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
                     removeNextflowVersion("$outputDir/pipeline_info/nf_core_ampliseq_software_mqc_versions.yml"),
                     // All stable path name, with a relative path
-                    stable_path,
-                    // Manually chosen files for content checks
-                    path("$outputDir/dada2/ASV_seqs.fasta"),
-                    path("$outputDir/dada2/ASV_table.tsv"),
-                    path("$outputDir/dada2/DADA2_stats.tsv"),
-                    path("$outputDir/dada2/DADA2_table.tsv"),
-                    path("$outputDir/input/Samplesheet_novaseq_v3.tsv"),
-                    path("$outputDir/multiqc/multiqc_data/multiqc_fastqc.txt"),
-                    path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt")
+                    stable_path
                 ).match() },
-                // maxEE = c(2, 5) confirms --max_ee_r overrides --max_ee for the reverse read only
-                { assert path("$outputDir/dada2/args/filterAndTrim.args.txt").text.contains("maxEE = c(2, 5)") }
+                { assert databases.findAll { it == "gtdb_R07-RS207" }.size() > 0 },
+                { assert databases.findAll { it == "rdp_18" }.size() > 0 }
             )
         }
     }

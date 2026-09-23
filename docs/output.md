@@ -213,15 +213,17 @@ DADA2 reduces sequence errors and dereplicates sequences by quality filtering, d
 
 Tables with consistent, lower-case column names, ready to load into R, Python or another tool of choice without pipeline-specific parsing.
 
+Every table is written both as a gzipped TSV and as [Parquet](https://parquet.apache.org/).
+Skip the Parquet copies with `--skip_parquet_summary`.
+
 <details markdown="1">
 <summary>Output files</summary>
 
 - `summary_tables/`
-  - `ampliseq.counts.tsv.gz`: ASV counts in long format (`asv_id`, `sample`, `count`), zero-count rows dropped. Sourced from DADA2's raw output, before any post-processing filters below.
-  - `ampliseq.counts.parquet`: The same table in [Parquet](https://parquet.apache.org/) format. Skip with `--skip_parquet_summary`.
+  - `ampliseq.counts.tsv.gz` (+ `.parquet`): ASV counts in long format (`asv_id`, `sample`, `count`), zero-count rows dropped. Sourced from DADA2's raw output, before any post-processing filters below.
   - `ampliseq.taxonomy.<classifier>.<database>.tsv.gz` (+ `.parquet`): One file pair per classifier/database actually run (Kraken2 excluded). A slim, consistent-schema reformat of that classifier's native taxonomy table: `asv_id`, `kingdom`..`species`, `confidence`. `sequence` and DADA2's per-rank `*_confidence` columns are dropped (both remain available in the native per-classifier files elsewhere in this directory). A consolidated DADA2 table (`--consolidate_taxonomies`) additionally has `source_database`, the database that won each ASV.
 
-    Joined onto every file, whenever that step ran:
+    Joined onto every taxonomy table, whenever that step ran, but not onto `ampliseq.counts` -- join on `asv_id` to combine them:
     - `barrnap_domain`: winning rRNA domain by e-value, blank if none significant.
     - `decontam_contaminant` / `decontam_not_contaminant`: decontam's contaminant call ([see below](#decontam)).
     - `passed_ssu_filter`, `passed_length_filter_asv`, `passed_codon_filter`, `passed_length_filter_itsx`: pass/fail for each individual optional filter below.

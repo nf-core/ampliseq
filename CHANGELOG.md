@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#1065](https://github.com/nf-core/ampliseq/pull/1065) - New `--max_ee_r` overrides `--max_ee` for reverse reads only (paired-end Illumina data), for runs where read quality drops on the reverse read only (fixes [#1037](https://github.com/nf-core/ampliseq/issues/1037)) (by @erikrikarddaniel)
 - [#1066](https://github.com/nf-core/ampliseq/pull/1066) - Added `--sintax_cutoff` parameter (maintaining the default: 0.8). (by @pieterprovoost)
 - [#1070](https://github.com/nf-core/ampliseq/pull/1070) - VSEARCH LCA now also publishes the raw `--blast6out` hit table (`ASV_tax_vsearch_lca.*.txt` / `ASV_ITS_tax_vsearch_lca.*.txt`) alongside the existing LCA and taxonomy TSV outputs (by @pieterprovoost)
+- [#1078](https://github.com/nf-core/ampliseq/pull/1078) - Added DADA2 reference taxonomic databases SILVA 144 (`silva` & `silva=144`) and Kraken2 from June 2026 (`standard` & `standard=20260626`) (by @d4straub)
 
 ### `Changed`
 

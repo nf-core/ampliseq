@@ -34,9 +34,7 @@ process SUMMARY_TABLE_TAXONOMY {
     tax_raw <- read_tsv("$tax_tsv", show_col_types = FALSE)
 
     if ("${meta.classifier}" == "QIIME2") {
-        # Native QIIME2 classify-sklearn output: "Feature ID", "Taxon", "Confidence" -- Taxon is a
-        # "k__X; p__Y; ..." rank-letter-prefixed, semicolon+space-joined string, not already-named
-        # rank columns like the other classifiers.
+        # QIIME2 gives one "k__X; p__Y; ..." string per ASV rather than named rank columns.
         prefix_to_rank <- c(k = "kingdom", p = "phylum", c = "class", o = "order", f = "family", g = "genus", s = "species")
         parse_taxon <- function(taxon) {
             out <- setNames(rep(NA_character_, length(RANKS)), RANKS)
@@ -54,8 +52,7 @@ process SUMMARY_TABLE_TAXONOMY {
         parsed <- tax_raw[["Taxon"]] |> map(parse_taxon) |> list_rbind()
         tax <- bind_cols(tibble(asv_id = tax_raw[["Feature ID"]], confidence = tax_raw[["Confidence"]]), parsed)
     } else if ("${meta.classifier}" == "PPLACE") {
-        # FORMAT_PPLACETAX output: "ASV_ID", "taxonomy" -- an unranked, unprefixed semicolon-joined
-        # string, best-effort positionally mapped kingdom..species (see docs/output.md caveat).
+        # FORMAT_PPLACETAX's string carries no rank names, so ranks are assigned by position.
         parsed <- tax_raw[["taxonomy"]] |>
             strsplit(";") |>
             map(function(v) {
@@ -66,12 +63,9 @@ process SUMMARY_TABLE_TAXONOMY {
             list_rbind()
         tax <- bind_cols(tibble(asv_id = tax_raw[["ASV_ID"]], confidence = NA_real_), parsed)
     } else {
-        # DADA2 / SINTAX / VSEARCH-LCA -- already-named rank columns (Kingdom..Species, optionally
-        # non-standard names like PR2's Supergroup/Division/Subdivision, kept as-is), a single
-        # most-specific-rank confidence column, optionally per-rank *_confidence columns and/or an
-        # SH column (--addsh) and a sequence column. Slimmed per the confirmed summary-table design:
-        # drop sequence (recoverable via asv_id) and the per-rank confidence columns (DADA2-specific
-        # detail not comparable across classifiers), keep the single confidence.
+        # DADA2, SINTAX and VSEARCH-LCA already name their rank columns, PR2's non-standard names
+        # included. The sequence and per-rank confidences are dropped: the first is recoverable from
+        # asv_id, the second is DADA2-only and so not comparable across classifiers.
         tax <- tax_raw |>
             rename(asv_id = ASV_ID) |>
             select(-any_of("sequence")) |>
@@ -84,13 +78,9 @@ process SUMMARY_TABLE_TAXONOMY {
             tax <- tax |> rename(source_database = database)
         }
 
-        # DADA2_ADDSPECIES (--dada_addspecies) always renames its own exact-match species call to
-        # "Species_exact", and only re-adds a native "Species" column (assignTaxonomy's own call)
-        # when assignTaxonomy's taxlevels already included one -- many databases rely on addSpecies
-        # alone for species-level calls, so without this the "species" column would be silently
-        # absent for those, breaking the promised consistent kingdom..species schema. Prefer the
-        # native assignTaxonomy species call when present, fall back to addSpecies' exact-match call
-        # otherwise, keep the table to one species column rather than exposing both.
+        # DADA2_ADDSPECIES puts its exact matches in "Species_exact" and leaves "Species" out unless
+        # assignTaxonomy's taxlevels had one. Many databases reach species through addSpecies alone,
+        # so the promised kingdom..species schema needs both columns folded into one.
         if (!"species" %in% colnames(tax) && "species_exact" %in% colnames(tax)) {
             tax <- tax |> rename(species = species_exact)
         } else if ("species" %in% colnames(tax) && "species_exact" %in% colnames(tax)) {

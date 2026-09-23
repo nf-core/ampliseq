@@ -22,7 +22,7 @@ input:
         description: One classifier/database's native taxonomy table, as carried in ch_tax_tsv (KRAKEN2 already excluded upstream)
     - annotations:
         type: file
-        description: BUILD_ASV_ANNOTATIONS' wide per-ASV annotations table (asv_id plus whichever of barrnap_domain/decontam_*/passed_*_filter/ampliseq_accept actually apply) -- combined onto every ch_tax_tsv entry via .combine(), since it is a single shared table but ch_tax_tsv can carry several entries
+        description: BUILD_ASV_ANNOTATIONS' wide per-ASV annotations table (asv_id plus whichever of barrnap_domain/decontam_*/passed_*_filter/ampliseq_accept apply), one shared table combined onto every entry
         pattern: "ASV_annotations.tsv"
 output:
   - tsv:

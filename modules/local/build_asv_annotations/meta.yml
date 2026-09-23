@@ -22,11 +22,11 @@ input:
         pattern: "summary.tsv"
     - decontam_details:
         type: file
-        description: DECONTAM's per-ASV contaminant-call details, or an empty list when DECONTAM didn't run (no control/quant_reading metadata) -- independent of --decontam, which only gates whether that call is used to filter the ASV table
+        description: DECONTAM's per-ASV contaminant-call details, or an empty list when DECONTAM didn't run for want of control/quant_reading metadata. --decontam only gates whether the call filters the ASV table, so it does not gate this input
         pattern: "decontaminated_details.tsv"
     - notcontam_details:
         type: file
-        description: DECONTAM's per-ASV not-contaminant-call details, or an empty list when DECONTAM didn't run or no negative controls were configured -- independent of --decontam, which only gates whether that call is used to filter the ASV table
+        description: DECONTAM's per-ASV not-contaminant-call details, or an empty list when DECONTAM didn't run or no negative controls were configured
         pattern: "notcontaminant_details.tsv"
     - ssu_pre:
         type: file

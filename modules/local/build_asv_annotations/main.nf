@@ -29,8 +29,7 @@ process BUILD_ASV_ANNOTATIONS {
     task.ext.when == null || task.ext.when
 
     script:
-    // Groovy-side presence checks -- each source is only wired in when the upstream step that
-    // produces it actually ran (see workflows/ampliseq.nf); NULL here means "not run", not "no data"
+    // NULL means the upstream step never ran, not that it produced nothing.
     def barrnap_r      = barrnap_summary   ? "'${barrnap_summary}'"   : "NULL"
     def decontam_r     = decontam_details  ? "'${decontam_details}'" : "NULL"
     def notcontam_r    = notcontam_details ? "'${notcontam_details}'" : "NULL"
@@ -66,10 +65,8 @@ process BUILD_ASV_ANNOTATIONS {
     accept_pre        <- $accept_pre_r
     accept_post       <- $accept_post_r
 
-    # Barrnap: single winning-domain label per ASV, not the raw e-values (those are available in
-    # barrnap's own native output). Argmin over non-NA e-value columns only -- NA (not some arbitrary
-    # domain) when none are significant. NA here is deliberately ambiguous with "barrnap wasn't run"
-    # (see docs/output.md); not disambiguated further, per confirmed design decision.
+    # One winning domain per ASV, by smallest non-NA e-value; the values themselves stay in barrnap's
+    # own output. NA covers both "nothing significant" and "barrnap never ran" (see docs/output.md).
     chr_long <- tibble(asv_id = character(), field = character(), value = character())
     if (!is.null(barrnap_summary)) {
         evals <- read_tsv(barrnap_summary, show_col_types = FALSE)
@@ -77,12 +74,8 @@ process BUILD_ASV_ANNOTATIONS {
     } else {
         evals <- tibble()
     }
-    # Guard nrow(evals) > 0: dplyr's rowwise()/mutate() still evaluates the block once (to type the
-    # new column) even with zero rows, and c_across() on that zero-row probe returns a zero-length
-    # vector -- crashes the names<- assignment below since eval_cols has 4 entries. Zero rows here is
-    # a real, common case, not a hypothetical: barrnap targets rRNA, so an ITS-only amplicon run (no
-    # rRNA in the data at all) legitimately produces zero hits across every ASV, not just an edge
-    # case for pathological input.
+    # rowwise()/mutate() runs its block once even on zero rows, where c_across() gives a zero-length
+    # vector and the names<- assignment fails. An ITS-only run leaves barrnap with zero hits.
     if (nrow(evals) > 0) {
         label <- evals |>
             rowwise() |>
@@ -97,11 +90,8 @@ process BUILD_ASV_ANNOTATIONS {
         chr_long <- bind_rows(chr_long, label)
     }
 
-    # Decontam and per-filter pass/fail: booleans only, kept in a separate (logical-typed) long
-    # table from the character one above -- pivot_wider() has no type-guessing of its own, so
-    # stacking different-typed sources into one generic value column would let bind_rows() silently
-    # coerce booleans to 0/1 or strings, which then bakes the wrong column type into the Parquet
-    # output. Splitting by type before stacking keeps every column's real type intact.
+    # Booleans stack in their own long table: sharing one value column with the character data
+    # above lets bind_rows() coerce them to 0/1 or strings, and that type reaches the Parquet output.
     lgl_long <- tibble(asv_id = character(), field = character(), value = logical())
 
     add_bool <- function(long, path, id_col, bool_col, field_name) {
@@ -113,10 +103,8 @@ process BUILD_ASV_ANNOTATIONS {
         add_bool(decontam_details, "ID", "contaminant", "decontam_contaminant") |>
         add_bool(notcontam_details, "ID", "not.contaminant", "decontam_not_contaminant")
 
-    # Filter pass/fail booleans: none of FILTER_SSU/FILTER_LEN/FILTER_CODONS emit a per-ASV boolean
-    # today, only the surviving table -- derive it by diffing ASV_ID membership between the table as
-    # it was immediately before this specific filter ran and immediately after (positional first
-    # column, since the ID column's exact name isn't consistent across every filter's own output).
+    # No filter emits a per-ASV boolean, only the table of survivors, so membership is diffed across
+    # it. The ID column is taken positionally because its name differs between filters.
     add_filter_pass <- function(long, pre, post, field_name) {
         if (is.null(pre) || is.null(post)) return(long)
         pre_ids  <- read_tsv(pre,  show_col_types = FALSE)[[1]]
@@ -128,11 +116,8 @@ process BUILD_ASV_ANNOTATIONS {
         add_filter_pass(len_asv_pre, len_asv_post, "passed_length_filter_asv") |>
         add_filter_pass(codons_pre, codons_post, "passed_codon_filter") |>
         add_filter_pass(len_itsx_pre, len_itsx_post, "passed_length_filter_itsx") |>
-        # Recapitulates the whole standard filtering chain (decontam through the ITSx-region length
-        # filter) in one column, rather than combining the individual passed_*/decontam_* columns
-        # above -- those need careful NA-vs-absent and decontam-polarity handling to combine
-        # correctly (an ASV removed by an early filter is NA, not FALSE, in every later filter's own
-        # column), which a direct start-to-end table diff sidesteps entirely.
+        # Diffed across the whole chain rather than combined from the columns above: an ASV dropped
+        # by an early filter is NA, not FALSE, in every later filter's column.
         add_filter_pass(accept_pre, accept_post, "ampliseq_accept")
 
     wide_chr <- chr_long |> pivot_wider(names_from = field, values_from = value)

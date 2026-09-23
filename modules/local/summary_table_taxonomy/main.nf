@@ -78,6 +78,12 @@ process SUMMARY_TABLE_TAXONOMY {
             select(-matches("_confidence\$")) |>
             rename_with(str_to_lower)
 
+        # In a consolidated table (--consolidate_taxonomies), "database" is the database that won a
+        # given ASV, not the table's own.
+        if ("database" %in% colnames(tax)) {
+            tax <- tax |> rename(source_database = database)
+        }
+
         # DADA2_ADDSPECIES (--dada_addspecies) always renames its own exact-match species call to
         # "Species_exact", and only re-adds a native "Species" column (assignTaxonomy's own call)
         # when assignTaxonomy's taxlevels already included one -- many databases rely on addSpecies

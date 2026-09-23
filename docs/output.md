@@ -219,7 +219,7 @@ Tables with consistent, lower-case column names, ready to load into R, Python or
 - `summary_tables/`
   - `ampliseq.counts.tsv.gz`: ASV counts in long format (`asv_id`, `sample`, `count`), zero-count rows dropped. Sourced from DADA2's raw output, before any post-processing filters below.
   - `ampliseq.counts.parquet`: The same table in [Parquet](https://parquet.apache.org/) format. Skip with `--skip_parquet_summary`.
-  - `ampliseq.taxonomy.<classifier>.<database>.tsv.gz` (+ `.parquet`): One file pair per classifier/database actually run (Kraken2 excluded). A slim, consistent-schema reformat of that classifier's native taxonomy table: `asv_id`, `kingdom`..`species`, `confidence`. `sequence` and DADA2's per-rank `*_confidence` columns are dropped (both remain available in the native per-classifier files elsewhere in this directory).
+  - `ampliseq.taxonomy.<classifier>.<database>.tsv.gz` (+ `.parquet`): One file pair per classifier/database actually run (Kraken2 excluded). A slim, consistent-schema reformat of that classifier's native taxonomy table: `asv_id`, `kingdom`..`species`, `confidence`. `sequence` and DADA2's per-rank `*_confidence` columns are dropped (both remain available in the native per-classifier files elsewhere in this directory). A consolidated DADA2 table (`--consolidate_taxonomies`) additionally has `source_database`, the database that won each ASV.
 
     Joined onto every file, whenever that step ran:
     - `barrnap_domain`: winning rRNA domain by e-value, blank if none significant.

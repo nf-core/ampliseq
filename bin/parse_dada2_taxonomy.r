@@ -14,8 +14,7 @@ OUT="tax.tsv"
 # Read as character throughout: a rank that is empty for every ASV is otherwise typed logical and
 # renders as the literal string "NA" in the taxonomy below. Emptying na.strings keeps an empty
 # field empty instead of turning it into NA again.
-tax = read.table(tax_file, header = TRUE, sep = "\t", stringsAsFactors = FALSE, comment.char = '', quote = '',
-                colClasses = "character", na.strings = character(0))
+tax = read.table(tax_file, header = TRUE, sep = "\t", stringsAsFactors = FALSE, comment.char = '', quote = '', colClasses = "character", na.strings = character(0))
 
 # Join the taxonomy rank columns only, excluding known non-rank columns. Matched by suffix
 # pattern where possible ("_confidence", "_exact") rather than by literal name, so a future

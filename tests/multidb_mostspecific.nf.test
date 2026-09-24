@@ -28,6 +28,7 @@ nextflow_pipeline {
             // bogus 8th rank, same class of bug fixed in bin/parse_dada2_taxonomy.r
             def barplot_headers = path("$outputDir/qiime2/barplot/level-7.csv").readLines()[0]
             def report = path("$outputDir/summary_report/summary_report.html").text
+            def summary_table = path("$outputDir/summary_tables/ampliseq.taxonomy.DADA2.consolidated_most-specific.tsv.gz")
             assertAll(
                 { assert snapshot(
                     // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
@@ -47,7 +48,11 @@ nextflow_pipeline {
                 { assert report.contains("won consolidation") },
                 // every listed database was cut by primers, and each is reported
                 { assert report.contains("The taxonomic reference databases were cut") },
-                { assert path("$outputDir/qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-consolidated_most-specific-tax.tsv").exists() }
+                { assert path("$outputDir/qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-consolidated_most-specific-tax.tsv").exists() },
+                // the consolidated table reaches the taxonomy summary tables, with its provenance
+                // column renamed so it isn't read as this table's own database
+                { assert summary_table.exists() },
+                { assert summary_table.linesGzip[0].split('\t').contains("source_database") }
             )
         }
     }

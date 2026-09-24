@@ -44,7 +44,10 @@ nextflow_pipeline {
                     path("$outputDir/SBDI/event.tsv"),
                     path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt"),
                     path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt")
-                ).match() }
+                ).match() },
+                // UNITE gives this profile an SH column. SH identifies a sequence cluster rather
+                // than a rank, so it must not reach QIIME2 as an eighth taxonomy level.
+                { assert !path("$outputDir/qiime2/barplot/level-8.csv").exists() }
             )
         }
     }

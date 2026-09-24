@@ -8,6 +8,10 @@
                 "BARRNAPSUMMARY": {
                     "python": "Python 3.9.1"
                 },
+                "BUILD_ASV_ANNOTATIONS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
+                },
                 "CUTADAPT_BASIC": {
                     "cutadapt": 5.2
                 },
@@ -100,6 +104,10 @@
                     "bash": "5.0.17(1)-release"
                 },
                 "SUMMARY_TABLE_COUNTS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
+                },
+                "SUMMARY_TABLE_TAXONOMY": {
                     "R": "4.3.1",
                     "r-dplyr": "1.1.4"
                 },
@@ -300,7 +308,11 @@
                 "summary_report/versions.yml",
                 "summary_tables",
                 "summary_tables/ampliseq.counts.parquet",
-                "summary_tables/ampliseq.counts.tsv.gz"
+                "summary_tables/ampliseq.counts.tsv.gz",
+                "summary_tables/ampliseq.taxonomy.DADA2.user.parquet",
+                "summary_tables/ampliseq.taxonomy.DADA2.user.tsv.gz",
+                "summary_tables/ampliseq.taxonomy.QIIME2.user.parquet",
+                "summary_tables/ampliseq.taxonomy.QIIME2.user.tsv.gz"
             ],
             "overall_summary.tsv:md5,788502ac905468319bcc8b1598b7e925",
             "rrna.arc.gff:md5,6dae470aace9293d5eb8c318584852dd",

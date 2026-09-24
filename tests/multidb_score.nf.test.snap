@@ -8,6 +8,10 @@
                 "BARRNAPSUMMARY": {
                     "python": "Python 3.9.1"
                 },
+                "BUILD_ASV_ANNOTATIONS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
+                },
                 "COMBINE_TABLE": {
                     "R": "4.0.3"
                 },
@@ -127,6 +131,10 @@
                     "bash": "5.0.17(1)-release"
                 },
                 "SUMMARY_TABLE_COUNTS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
+                },
+                "SUMMARY_TABLE_TAXONOMY": {
                     "R": "4.3.1",
                     "r-dplyr": "1.1.4"
                 },
@@ -334,11 +342,17 @@
                 "summary_tables",
                 "summary_tables/ampliseq.counts.parquet",
                 "summary_tables/ampliseq.counts.tsv.gz",
+                "summary_tables/ampliseq.taxonomy.DADA2.consolidated_score.parquet",
+                "summary_tables/ampliseq.taxonomy.DADA2.consolidated_score.tsv.gz",
+                "summary_tables/ampliseq.taxonomy.DADA2.gtdb_R07-RS207.parquet",
+                "summary_tables/ampliseq.taxonomy.DADA2.gtdb_R07-RS207.tsv.gz",
+                "summary_tables/ampliseq.taxonomy.DADA2.rdp_18.parquet",
+                "summary_tables/ampliseq.taxonomy.DADA2.rdp_18.tsv.gz",
                 "treesummarizedexperiment",
                 "treesummarizedexperiment/dada2_TreeSummarizedExperiment.rds"
             ]
         ],
-        "timestamp": "2026-09-22T12:05:02.51387663",
+        "timestamp": "2026-09-23T15:48:49.747743343",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"

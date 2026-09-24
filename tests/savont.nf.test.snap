@@ -30,6 +30,10 @@
                 "BARRNAPSUMMARY": {
                     "python": "Python 3.9.1"
                 },
+                "BUILD_ASV_ANNOTATIONS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
+                },
                 "CHOPPER": {
                     "chopper": "0.12.0"
                 },
@@ -58,6 +62,9 @@
                 "DADA2_TAXONOMY": {
                     "R": "4.5.2",
                     "dada2": "1.38.0"
+                },
+                "DUCKDB_TABLE2PARQUET": {
+                    "duckdb": "1.5.5"
                 },
                 "FASTQC": {
                     "fastqc": "0.12.1"
@@ -128,6 +135,10 @@
                 },
                 "SAVONT_EXPORT": {
                     "savont": "0.7.0"
+                },
+                "SUMMARY_TABLE_TAXONOMY": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
                 },
                 "TREESUMMARIZEDEXPERIMENT": {
                     "R": "4.3.2",
@@ -441,6 +452,9 @@
                 "summary_report/rrna_detection_with_barrnap.svg",
                 "summary_report/summary_report.html",
                 "summary_report/versions.yml",
+                "summary_tables",
+                "summary_tables/ampliseq.taxonomy.DADA2.gtdb_R07-RS207.parquet",
+                "summary_tables/ampliseq.taxonomy.DADA2.gtdb_R07-RS207.tsv.gz",
                 "treesummarizedexperiment",
                 "treesummarizedexperiment/dada2_TreeSummarizedExperiment.rds"
             ],

@@ -2,10 +2,6 @@
     "-profile test_novaseq": {
         "content": [
             {
-                "BUILD_ASV_ANNOTATIONS": {
-                    "R": "4.3.1",
-                    "r-dplyr": "1.1.4"
-                },
                 "DADA2_DENOISING": {
                     "R": "4.5.2",
                     "dada2": "1.38.0"
@@ -196,7 +192,7 @@
             "multiqc_fastqc.txt:md5,a99548124efd185a7d4e33245edcb81b",
             "multiqc_general_stats.txt:md5,92648df79061fa3b17fea104fe1b7641"
         ],
-        "timestamp": "2026-09-18T08:55:32.998347766",
+        "timestamp": "2026-09-24T16:00:51.228502911",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"

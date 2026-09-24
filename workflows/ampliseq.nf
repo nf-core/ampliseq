@@ -1068,8 +1068,18 @@ workflow AMPLISEQ {
     // MODULE: Per-ASV annotations (barrnap domain call, decontam contaminant call, per-filter
     // pass/fail, and the whole-chain "ampliseq_accept") for the taxonomy summary tables below
     //
+    // SUMMARY_TABLE_TAXONOMY is the only consumer, so the annotations are worth building only
+    // when it has something to join them onto. Gating on its own input channel keeps the two in
+    // step; a parameter expression would have to restate every condition that fills ch_tax_tsv.
+    ch_summary_tax = ch_tax_tsv.filter { meta, _tsv -> meta.classifier != "KRAKEN2" }
+    ch_annot_barrnap = ch_summary_tax
+        .map { _meta, _tsv -> true }
+        .first()
+        .combine( ch_barrnapsummary.ifEmpty( [] ) )
+        .map { _gate, summary -> summary }
+
     BUILD_ASV_ANNOTATIONS (
-        ch_barrnapsummary.ifEmpty( [] ),
+        ch_annot_barrnap,
         DECONTAM.out.decontaminated_details.ifEmpty( [] ),
         DECONTAM.out.notcontaminant_details.ifEmpty( [] ),
         ch_annot_ssu_pre.ifEmpty( [] ),
@@ -1089,9 +1099,7 @@ workflow AMPLISEQ {
     // carried in ch_tax_tsv (KRAKEN2 excluded -- different/inconsistent shape, see docs/output.md)
     //
     SUMMARY_TABLE_TAXONOMY (
-        ch_tax_tsv
-            .filter { meta, _tsv -> meta.classifier != "KRAKEN2" }
-            .combine( BUILD_ASV_ANNOTATIONS.out.tsv )
+        ch_summary_tax.combine( BUILD_ASV_ANNOTATIONS.out.tsv )
     )
     ch_summary_tables = ch_summary_tables.mix( SUMMARY_TABLE_TAXONOMY.out.tsv )
 

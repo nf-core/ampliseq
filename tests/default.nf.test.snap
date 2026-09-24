@@ -234,12 +234,6 @@
                 "RENAME_RAW_DATA_FILES": {
                     "bash": "5.0.17(1)-release"
                 },
-                "SBDIEXPORT": {
-                    "R": "3.6.3"
-                },
-                "SBDIEXPORTREANNOTATE": {
-                    "R": "3.6.3"
-                },
                 "SUMMARY_TABLE_COUNTS": {
                     "R": "4.3.1",
                     "r-dplyr": "1.1.4"
@@ -265,12 +259,6 @@
                 }
             },
             [
-                "SBDI",
-                "SBDI/annotation.tsv",
-                "SBDI/asv-table.tsv",
-                "SBDI/dna.tsv",
-                "SBDI/emof.tsv",
-                "SBDI/event.tsv",
                 "asv_length_filter",
                 "asv_length_filter/ASV_len_filt.tsv",
                 "asv_length_filter/ASV_len_orig.tsv",
@@ -2313,9 +2301,6 @@
             "multiqc_fastqc.txt:md5,7d23984b06e4251f17e1cfce7a04aaae",
             "multiqc_general_stats.txt:md5,885c19ff3e53d16bfe7937d6694268d7",
             "multiqc_cutadapt.txt:md5,3dce058d2d6c85a3cca7314ae19c5586",
-            "dna.tsv:md5,46bb52a05204ade2d571ac089f732012",
-            "emof.tsv:md5,52ff7d226c79b1f78d5f4895d748f915",
-            "event.tsv:md5,d275c5c0d7dbf7a5b2c61082fbce486d",
             "ASV_post_clustering_filtered.fna:md5,33486b16d07201703fd93904a5a8429c",
             "ASV_post_clustering_filtered.stats.tsv:md5,222f6a7cdbf2d4b3f745a49359a61c0d",
             "ASV_post_clustering_filtered.table.tsv:md5,349277d892297b57b1761c88825580de",
@@ -2323,9 +2308,9 @@
             "lvl2-treatment1::b.volcano_plot.tsv:md5,d2d76d7f8824e748559295224c96d10e",
             "ASV-treatment1::a.volcano_plot.tsv:md5,c999d1f72b221f6502b7b4a3d1112b32"
         ],
-        "timestamp": "2026-08-25T15:02:34.55305779",
+        "timestamp": "2026-09-24T21:14:21.640172338",
         "meta": {
-            "nf-test": "0.9.5",
+            "nf-test": "0.9.4",
             "nextflow": "26.04.6"
         }
     }

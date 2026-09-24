@@ -38,7 +38,7 @@ nextflow_pipeline {
                 ).match() },
                 // consolidation emits one rank vocabulary -- the first-listed database's -- whichever
                 // database won a given ASV, because every consumer of this file (QIIME2 import via
-                // parse_dada2_taxonomy.r, phyloseq/TSE, SBDI export) reads ranks positionally or by name
+                // parse_dada2_taxonomy.r, phyloseq/TSE) reads ranks positionally or by name
                 { assert header.containsAll(["Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"]) },
                 { assert !header.any { it in ["Domain", "Supergroup", "Division", "Subdivision"] } },
                 // PR2 did win ASVs, and its Domain/Division values were carried into the

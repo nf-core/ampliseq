@@ -39,9 +39,6 @@ nextflow_pipeline {
                     path("$outputDir/qiime2/representative_sequences/seven_number_summary.tsv"),
                     path("$outputDir/input/Samplesheet_pacbio_ITS_v3.tsv"),
                     path("$outputDir/input/Metadata_pacbio_ITS.tsv"),
-                    path("$outputDir/SBDI/dna.tsv"),
-                    path("$outputDir/SBDI/emof.tsv"),
-                    path("$outputDir/SBDI/event.tsv"),
                     path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt"),
                     path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt")
                 ).match() },

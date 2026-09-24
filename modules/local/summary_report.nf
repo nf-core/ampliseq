@@ -69,7 +69,6 @@ process SUMMARY_REPORT  {
     path(ancombc2, stageAs: 'ancombc2/*')
     path(ancombc2_formula, stageAs: 'ancombc2_formula/*')
     path(picrust_pathways)
-    path(sbdi, stageAs: 'sbdi/*')
     path(phyloseq, stageAs: 'phyloseq/*')
     path(tse, stageAs: 'tse/*')
 
@@ -175,7 +174,6 @@ process SUMMARY_REPORT  {
         ancombc_formula ? "ancombc_formula='"+ ancombc_formula.join(",") +"'" : "",
         ancombc2 ? "ancombc2='"+ ancombc2.join(",") +"'" : "",
         ancombc2_formula ? "ancombc2_formula='"+ ancombc2_formula.join(",") +"'" : "",
-        sbdi ? "sbdi='"+ sbdi.join(",") +"'" : "",
         phyloseq ? "phyloseq='"+ phyloseq.join(",") +"'" : "",
         tse ? "tse='"+ tse.join(",") +"'" : "",
     ]

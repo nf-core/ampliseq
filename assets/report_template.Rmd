@@ -125,7 +125,6 @@ params:
     ancombc2: FALSE
     ancombc2_formula: FALSE
     picrust_pathways: FALSE
-    sbdi: FALSE
     phyloseq: FALSE
     tse: FALSE
 ---
@@ -1958,22 +1957,6 @@ Enzyme Classification numbers (EC), KEGG orthologs (KO) and MetaCyc ontology pre
 In folder [PICRUSt2/](../PICRUSt2/) are predicted quantifications for Enzyme Classification numbers (EC), see
 `EC_pred_metagenome_unstrat_descrip.tsv`, KEGG orthologs (KO), see `KO_pred_metagenome_unstrat_descrip.tsv`, MetaCyc ontology,
 see `METACYC_path_abun_unstrat_descrip.tsv`. Quantifications are not normalized yet, they can be normalized e.g. by the total sum per sample.
-"))
-```
-
-<!-- Section on SBDI results -->
-
-```{r, eval = !isFALSE(params$sbdi), results='asis'}
-cat(paste0("
-# SBDI
-
-The [Swedish Biodiversity Infrastructure (SBDI)](https://biodiversitydata.se/) provides a cost-effective, cutting-edge
-infrastructure that supports Swedish and international biodiversity and ecosystems research.
-Files in preparation for submission to SBDI can be found in folder [SBDI](../SBDI/).
-Tables are generated from the DADA2 denoising and taxonomy assignment steps.
-Each table, except `annotation.tsv`, corresponds to one tab in the [SBDI submission template](https://asv-portal.biodiversitydata.se/submit).
-Most of the fields in the template will not be populated,
-but if you run nf-core/ampliseq with a sample metadata table (`--metadata`) any fields corresponding to a field in the template will be used.
 "))
 ```
 

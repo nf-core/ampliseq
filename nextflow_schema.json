@@ -646,7 +646,7 @@
                 "sintax_ref_tax_custom": {
                     "type": "string",
                     "format": "file-path",
-                    "help_text": "Overwrites `--sintax_ref_taxonomy`. Requires `--sintax_assign_taxlevels`. Plain fasta or gzip-compressed (`.gz`) is accepted. Cannot be used with `--sbdiexport`.",
+                    "help_text": "Overwrites `--sintax_ref_taxonomy`. Requires `--sintax_assign_taxlevels`. Plain fasta or gzip-compressed (`.gz`) is accepted.",
                     "description": "Path to a custom SINTAX reference database (fasta)"
                 },
                 "sintax_assign_taxlevels": {
@@ -860,10 +860,6 @@
                 "picrust": {
                     "type": "boolean",
                     "description": "If the functional potential of the bacterial community is predicted."
-                },
-                "sbdiexport": {
-                    "type": "boolean",
-                    "description": "If data should be exported in SBDI (Swedish biodiversity infrastructure) Excel format."
                 },
                 "diversity_rarefaction_depth": {
                     "type": "integer",
@@ -1101,7 +1097,7 @@
                 },
                 "skip_taxonomy": {
                     "type": "boolean",
-                    "description": "Skip taxonomic classification. Incompatible with `--sbdiexport`"
+                    "description": "Skip taxonomic classification."
                 },
                 "skip_dada_taxonomy": {
                     "type": "boolean",
@@ -1109,7 +1105,7 @@
                 },
                 "skip_dada_addspecies": {
                     "type": "boolean",
-                    "description": "Skip species level when using DADA2 for taxonomic classification. This reduces the required memory dramatically under certain conditions. Incompatible with `--sbdiexport`"
+                    "description": "Skip species level when using DADA2 for taxonomic classification. This reduces the required memory dramatically under certain conditions."
                 },
                 "skip_barplot": {
                     "type": "boolean",

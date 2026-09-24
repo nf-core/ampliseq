@@ -187,7 +187,6 @@ params {
     metadata_category_barplot: String?
     qiime_adonis_formula: String?
     picrust: Boolean
-    sbdiexport: Boolean
     diversity_rarefaction_depth: Integer = 500
     tax_agglom_min: Integer = 2
     tax_agglom_max: Integer = 6

@@ -41,10 +41,7 @@ nextflow_pipeline {
                     path("$outputDir/itsx/ITSxRust.args.txt"),
                     path("$outputDir/multiqc/multiqc_data/multiqc_fastqc.txt"),
                     path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt"),
-                    path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt"),
-                    path("$outputDir/SBDI/dna.tsv"),
-                    path("$outputDir/SBDI/emof.tsv"),
-                    path("$outputDir/SBDI/event.tsv")
+                    path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt")
                 ).match() },
                 // --addsh with two listed databases: SH-assigned results for both actually differ,
                 // not both accidentally resolving to the same database

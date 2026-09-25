@@ -47,6 +47,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#1032](https://github.com/nf-core/ampliseq/pull/1032) - Refactor the pipeline's parameter handling and initialization (by @erikrikarddaniel).
 - [#1051](https://github.com/nf-core/ampliseq/pull/1051) - Continue #1032's parameter-handling refactor: `qiime2_ancom` and `qiime2_diversity` subworkflows now take all their flags (`ancom`, `ancombc`, `ancombc2`, `qiime_adonis_formula`) as explicit arguments instead of reading some directly from `params.*`; no behaviour change (by @erikrikarddaniel).
 - [#1074](https://github.com/nf-core/ampliseq/pull/1074) - `--max_ee_r` is now covered by the existing `test_novaseq` profile instead of a dedicated test, removing the extra CI run added in [#1065](https://github.com/nf-core/ampliseq/pull/1065) (by @erikrikarddaniel)
+- [#1084](https://github.com/nf-core/ampliseq/pull/1084) - The top taxonomic rank is now called `Domain` rather than `Kingdom` wherever the database holds a domain (Bacteria, Archaea, Eukaryota) there (fixes [#1059](https://github.com/nf-core/ampliseq/issues/1059)) (by @erikrikarddaniel)
+
+| affects                                                                                  | previously                                   | now                                                                           |
+| ---------------------------------------------------------------------------------------- | -------------------------------------------- | ----------------------------------------------------------------------------- |
+| `--dada_ref_taxonomy` GTDB, SILVA 132/138/138.2, RDP, Greengenes2                        | `Kingdom`                                    | `Domain`                                                                      |
+| `--dada_ref_taxonomy` SBDI-GTDB                                                          | `Domain`, `Kingdom` (domain repeated)        | `Domain`                                                                      |
+| `--dada_ref_taxonomy` SILVA 144, PR2                                                     | `Domain`, `Kingdom`                          | unchanged                                                                     |
+| UNITE, COIDB and the other SINTAX and VSEARCH-LCA databases                              | `Kingdom`                                    | unchanged, their top rank is a kingdom                                        |
+| `--dada_ref_tax_custom` without `--dada_assign_taxlevels`                                | `Kingdom`                                    | unchanged                                                                     |
+| DADA2 `ASV_tax*.tsv` and the phyloseq and TreeSummarizedExperiment objects built from it | `Kingdom` column                             | the database's own top rank, as above                                         |
+| summary tables `ampliseq.taxonomy.*.tsv.gz`                                              | `kingdom` column for every database          | the database's own ranks in lower case; `domain` for QIIME2 and pplace        |
+| `summary_report.html`, QIIME2 section                                                    | "classified at Kingdom level"                | "classified at Domain level"                                                  |
+| `--consolidate_taxonomies`                                                               | output named after the first-listed database | unchanged, `Domain`/`Kingdom` still treated as one rank when matching columns |
 
 ### `Fixed`
 
@@ -62,6 +75,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#1077](https://github.com/nf-core/ampliseq/pull/1077) - Template update for nf-core/tools version 4.1.0 (by @d4straub)
 - [#1082](https://github.com/nf-core/ampliseq/pull/1082) - Fixed two kinds of non-rank content in the taxonomy string imported into QIIME2: a rank that is empty for every ASV was rendered as the literal taxon `NA`, and the UNITE `SH` and COIDB `BOLD_bin` identifiers were treated as a taxonomic rank, adding a spurious extra level to the barplots and the rank-collapsed abundance tables (fixes [#1075](https://github.com/nf-core/ampliseq/issues/1075)) (by @erikrikarddaniel)
 - [#1080](https://github.com/nf-core/ampliseq/pull/1080) - `SUMMARY_REPORT` no longer fails with "input file name collision" when `--report_abstract`, `--metadata`, `--input` or `--input_fasta` share a file name (fixes [#1073](https://github.com/nf-core/ampliseq/issues/1073)) (by @erikrikarddaniel)
+- [#1084](https://github.com/nf-core/ampliseq/pull/1084) - QIIME2 summary tables left the top rank empty for SILVA and Greengenes2, which mark it `d__` rather than `k__` (by @erikrikarddaniel)
+- [#1084](https://github.com/nf-core/ampliseq/pull/1084) - `--consolidate_taxonomies most-specific` gave a database filling both `Domain` and `Kingdom`, such as SILVA 144, an extra point over one filling either, so it could win ASVs it resolved less deeply (by @erikrikarddaniel)
 
 ### `Dependencies`
 

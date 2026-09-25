@@ -29,7 +29,7 @@ nf-test test tests/default.nf.test --profile +docker --verbose
 Update snapshots after intentional output changes:
 
 ```bash
-nf-test test --tag test --profile +docker --verbose --update-snapshots
+nf-test test --tag test --profile +docker --verbose --update-snapshot
 ```
 
 Lint (nf-core community rules, run before opening a PR):
@@ -54,7 +54,7 @@ pre-commit hooks (prettier, trailing whitespace, nextflow-lint) run via `prek`/`
 
 ### Test profiles
 
-`tests/*.nf.test` each pair with a `conf/test_*.config` profile (e.g. `default` ↔ `test`, `multiregion` ↔ `test_multiregion`, `pplace` ↔ `test_pplace`, `sintax` ↔ `test_sintax`, `fasta` ↔ `test_fasta`). When adding a new test scenario, add both the `.nf.test` file in `tests/` and its matching `conf/test_<name>.config`. Corresponding `.nf.test.snap` files hold expected outputs — regenerate with `--update-snapshots` rather than hand-editing.
+`tests/*.nf.test` each pair with a `conf/test_*.config` profile (e.g. `default` ↔ `test`, `multiregion` ↔ `test_multiregion`, `pplace` ↔ `test_pplace`, `sintax` ↔ `test_sintax`, `fasta` ↔ `test_fasta`). When adding a new test scenario, add both the `.nf.test` file in `tests/` and its matching `conf/test_<name>.config`. Corresponding `.nf.test.snap` files hold expected outputs — regenerate with `--update-snapshot` rather than hand-editing.
 
 Module/subworkflow tests under `modules/nf-core/**/tests` and `subworkflows/nf-core/**/tests` are vendored from nf-core/modules and excluded from local test runs (`ignore` list in `nf-test.config`) — don't hand-edit these, update via `nf-core modules update`.
 

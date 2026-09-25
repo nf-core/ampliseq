@@ -62,6 +62,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#1077](https://github.com/nf-core/ampliseq/pull/1077) - Template update for nf-core/tools version 4.1.0 (by @d4straub)
 - [#1082](https://github.com/nf-core/ampliseq/pull/1082) - Fixed two kinds of non-rank content in the taxonomy string imported into QIIME2: a rank that is empty for every ASV was rendered as the literal taxon `NA`, and the UNITE `SH` and COIDB `BOLD_bin` identifiers were treated as a taxonomic rank, adding a spurious extra level to the barplots and the rank-collapsed abundance tables (fixes [#1075](https://github.com/nf-core/ampliseq/issues/1075)) (by @erikrikarddaniel)
 - [#1080](https://github.com/nf-core/ampliseq/pull/1080) - `SUMMARY_REPORT` no longer fails with "input file name collision" when `--report_abstract`, `--metadata`, `--input` or `--input_fasta` share a file name (fixes [#1073](https://github.com/nf-core/ampliseq/issues/1073)) (by @erikrikarddaniel)
+- [#1086](https://github.com/nf-core/ampliseq/pull/1086) - The processes that reformat reference databases used a legacy Singularity image whose pull could hang indefinitely; they now use a Seqera container declaring every tool their scripts call (fixes [#1081](https://github.com/nf-core/ampliseq/issues/1081)) (by @erikrikarddaniel)
 
 ### `Dependencies`
 
@@ -78,6 +79,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#1028](https://github.com/nf-core/ampliseq/pull/1028) - Removed support for the legacy sample sheet to simplify parsing (by @d4straub)
 - [#1083](https://github.com/nf-core/ampliseq/pull/1083) - Removed `--sbdiexport` and the `SBDI/` output files; submission files for the Swedish Biodiversity Infrastructure will be produced by a separate pipeline instead. The SBDI-GTDB reference database is unaffected and remains the default for `--dada_ref_taxonomy` (closes [#1055](https://github.com/nf-core/ampliseq/issues/1055)) (by @erikrikarddaniel)
+- [#1086](https://github.com/nf-core/ampliseq/pull/1086) - Removed the unused `taxref_reformat_phytoref.sh`; PhytoRef is included in PR2 (by @erikrikarddaniel)
 
 ## nf-core/ampliseq version 2.18.0 - 2026-06-18
 

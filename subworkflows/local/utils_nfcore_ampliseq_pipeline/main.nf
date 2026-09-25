@@ -298,31 +298,12 @@ def validateInputParameters() {
         log.warn "`--consolidate_taxonomies` was given, but `--dada_ref_taxonomy` lists at most one database -- there is nothing to consolidate, this option has no effect."
     }
 
-    // SBDI export records a single dbversion; --sbdiexport is slated for removal (#1055)
-    if (params.consolidate_taxonomies != 'first' && params.sbdiexport) {
-        log.warn "`--consolidate_taxonomies` was given together with `--sbdiexport` -- the SBDI export records only the first-listed `--dada_ref_taxonomy` database as the source, even though consolidation may pick a different database per ASV. The exported reference-database metadata may not accurately reflect every ASV's actual source."
-    }
-
     if (params.pplace_tree) {
         if (!params.pplace_aln) {
             error("Missing parameter: Phylogenetic placement requires in addition to `--pplace_tree` also `--pplace_aln`.")
         }
         if (!params.pplace_model) {
             error("Missing parameter: Phylogenetic placement requires in addition to `--pplace_tree` also `--pplace_model`.")
-        }
-    }
-
-    if (params.dada_assign_taxlevels && params.sbdiexport && !params.sintax_ref_taxonomy && !params.sintax_ref_tax_custom) {
-        error("Incompatible parameters: `--sbdiexport` expects specific taxonomics ranks (default) and therefore excludes modifying those using `--dada_assign_taxlevels`.")
-    }
-
-    if (params.skip_taxonomy && params.sbdiexport) {
-        error("Incompatible parameters: `--sbdiexport` expects taxa annotation and therefore excludes `--skip_taxonomy`.")
-    }
-
-    if (params.skip_dada_taxonomy && params.sbdiexport) {
-        if (!params.sintax_ref_taxonomy && !params.sintax_ref_tax_custom && (params.skip_qiime || (!params.qiime_ref_taxonomy && !params.qiime_ref_tax_custom))) {
-            error("Incompatible parameters: `--sbdiexport` expects taxa annotation and therefore annotation with either DADA2, SINTAX, or QIIME2 is needed.")
         }
     }
 
@@ -358,36 +339,8 @@ def validateInputParameters() {
         error("Missing parameter: Taxonomic classification with `--vsearch_lca_ref_tax_custom` requires `--vsearch_lca_assign_taxlevels` (comma-separated taxonomic ranks matching the reference database labels).")
     }
 
-    if (params.sbdiexport && params.sintax_ref_tax_custom) {
-        error("Incompatible parameters: `--sbdiexport` does not support `--sintax_ref_tax_custom`; use a catalog `--sintax_ref_taxonomy` key or disable `--sbdiexport`.")
-    }
-
     if (params.filter_ssu && params.skip_barrnap) {
         error("Incompatible parameters: `--filter_ssu` cannot be used with `--skip_barrnap` because filtering for SSU's depends on barrnap.")
-    }
-
-    String[] sbdi_compatible_databases = [
-        "coidb","coidb=221216",
-        "greengenes2","greengenes2=2024.09",
-        "gtdb","gtdb=R11-RS232","gtdb=R10-RS226","gtdb=R09-RS220","gtdb=R08-RS214","gtdb=R07-RS207","gtdb=R06-RS202","gtdb=R05-RS95",
-        "midori2-co1","midori2-co1=gb250",
-        "pr2","pr2=5.1.0","pr2=5.0.0","pr2=4.14.0","pr2=4.13.0",
-        "rdp","rdp=18",
-        "sbdi-gtdb","sbdi-gtdb=R11-RS232-1","sbdi-gtdb=R10-RS226-2","sbdi-gtdb=R09-RS220-2","sbdi-gtdb=R09-RS220-1", "sbdi-gtdb=R08-RS214-1","sbdi-gtdb=R07-RS207-1",
-        "silva","silva=144","silva=138.2","silva=138","silva=132",
-        "unite-fungi","unite-fungi=10.0","unite-fungi=9.0","unite-fungi=8.3","unite-fungi=8.2",
-        "unite-alleuk","unite-alleuk=10.0","unite-alleuk=9.0","unite-alleuk=8.3","unite-alleuk=8.2"
-    ]
-    if (params.sbdiexport){
-        if (params.sintax_ref_taxonomy ) {
-            if ( !sbdi_compatible_databases.contains(params.sintax_ref_taxonomy) ) {
-                error("Incompatible parameters: `--sbdiexport` does not work with the chosen database of `--sintax_ref_taxonomy` because the expected taxonomic levels do not match.")
-            }
-        // --dada_ref_taxonomy may list several comma-separated databases; only the first-listed one
-        // ("the winner") ever feeds SBDI export, so that's the only one that needs to be compatible
-        } else if ( params.dada_ref_taxonomy && !sbdi_compatible_databases.contains(params.dada_ref_taxonomy.tokenize(',')[0].trim()) ) {
-            error("Incompatible parameters: `--sbdiexport` does not work with the chosen database of `--dada_ref_taxonomy` because the expected taxonomic levels do not match.")
-        }
     }
 
     if (params.addsh && params.dada_ref_taxonomy) {

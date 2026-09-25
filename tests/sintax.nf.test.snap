@@ -164,12 +164,6 @@
                 "RENAME_RAW_DATA_FILES": {
                     "bash": "5.0.17(1)-release"
                 },
-                "SBDIEXPORT": {
-                    "R": "3.6.3"
-                },
-                "SBDIEXPORTREANNOTATE": {
-                    "R": "3.6.3"
-                },
                 "SUMMARY_TABLE_COUNTS": {
                     "R": "4.3.1",
                     "r-dplyr": "1.1.4"
@@ -190,12 +184,6 @@
                 }
             },
             [
-                "SBDI",
-                "SBDI/annotation.tsv",
-                "SBDI/asv-table.tsv",
-                "SBDI/dna.tsv",
-                "SBDI/emof.tsv",
-                "SBDI/event.tsv",
                 "barrnap",
                 "barrnap/rrna.arc.gff",
                 "barrnap/rrna.bac.gff",
@@ -1386,13 +1374,10 @@
             "seven_number_summary.tsv:md5,ef0fd839c0f691c0bbf478de3e724d34",
             "Samplesheet_pacbio_ITS_v3.tsv:md5,4b5309fae8f2772bbd205f88c9ad7267",
             "Metadata_pacbio_ITS.tsv:md5,51d81b0fe29f6377fa21ce8399fc5ae0",
-            "dna.tsv:md5,228fe70edd08069c1c57718513f93536",
-            "emof.tsv:md5,c6599c76a70fe5458db56ff8c2e89a37",
-            "event.tsv:md5,bfcf7d8ac2a3c6b48d075d6dc235f0e4",
             "multiqc_general_stats.txt:md5,1fef8358fe3cc974bf05e2f27fc7e250",
             "multiqc_cutadapt.txt:md5,160135fece18361e17bef9e8d04cf0b9"
         ],
-        "timestamp": "2026-09-24T11:21:02.196518537",
+        "timestamp": "2026-09-24T21:29:25.51314577",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"

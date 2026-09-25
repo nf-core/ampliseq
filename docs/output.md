@@ -48,7 +48,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [Differential abundance analysis](#differential-abundance-analysis) - Calling differentially abundant features with ANCOM or ANCOM-BC
 - [Compare to expected](#compare-to-expected) - Comparing analysis outcome to expected results
 - [PICRUSt2](#picrust2) - Predict the functional potential of a bacterial community
-- [SBDI export](#sbdi-export) - Swedish Biodiversity Infrastructure (SBDI) submission file
 - [R object](#r-objects) - Phyloseq and TreeSummarizedExperiment R objects
 - [Read count report](#read-count-report) - Report of read counts during various steps of the pipeline
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
@@ -863,27 +862,6 @@ PICRUSt2 is preferentially applied to filtered data by QIIME2 but will use DADA2
 :::note
 Quantifications are not normalized yet, they can be normalized e.g. by the total sum per sample.
 :::
-
-### SBDI export
-
-You can use the `--sbdiexport` flag (or `sbdiexport: true` in a nextflow parameter file using `-params-file` in yml format) to generate tab separated files in preparation for submission to the [Swedish Biodiversity Infrastructure (SBDI)](https://biodiversitydata.se/).
-
-Tables are generated from the DADA2 denoising and taxonomy assignment steps.
-Each table, except `annotation.tsv`, corresponds to one tab in the [submission template](https://asv-portal.biodiversitydata.se/submit).
-See [`docs/usage.md`](docs/usage.md) for further information.
-Most of the fields in the template will not be populated by the export process, but if you run nf-core/ampliseq with a sample metadata table (`--metadata`) any fields corresponding to a field in the template will be used.
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `SBDI/`
-  - `annotation.tsv`: SBDI specific output for taxonomic reannotation, not used in submission to SBDI.
-  - `asv-table.tsv`: asv-table tab of template.
-  - `emof.tsv`: emof tab of template.
-  - `event.tsv`: event tab of template.
-  - `mixs.tsv`: mixs tab of template.
-
-</details>
 
 ### R objects
 

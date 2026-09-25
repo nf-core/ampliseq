@@ -72,8 +72,6 @@ include { METADATA_ALL                  } from '../modules/local/metadata_all'
 include { METADATA_PAIRWISE             } from '../modules/local/metadata_pairwise'
 include { QIIME2_INTAX                  } from '../modules/local/qiime2_intax'
 include { PICRUST                       } from '../modules/local/picrust'
-include { SBDIEXPORT                    } from '../modules/local/sbdiexport'
-include { SBDIEXPORTREANNOTATE          } from '../modules/local/sbdiexportreannotate'
 include { SUMMARY_REPORT                } from '../modules/local/summary_report'
 include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_PPLACE } from '../modules/local/phyloseq_intax'
 include { PHYLOSEQ_INTAX as PHYLOSEQ_INTAX_QIIME2 } from '../modules/local/phyloseq_intax'
@@ -1277,23 +1275,6 @@ workflow AMPLISEQ {
     }
 
     //
-    // MODULE: Export data in SBDI's (Swedish biodiversity infrastructure) format
-    //
-    if ( params.sbdiexport ) {
-        if ( params.sintax_ref_taxonomy ) {
-            SBDIEXPORT ( ch_asv_table, ch_sintax_tax, ch_metadata )
-            db_version = params.sintax_ref_databases[params.sintax_ref_taxonomy]["dbversion"]
-            SBDIEXPORTREANNOTATE ( ch_sintax_tax, "sintax", db_version, params.cut_its, ch_barrnapsummary.ifEmpty([]) )
-        } else {
-            SBDIEXPORT ( ch_asv_table, ch_dada2_tax, ch_metadata )
-            // val_dada_ref_taxonomy_list[0] is "user" for --dada_ref_tax_custom (not a real
-            // dada_ref_databases key), so the lookup must be null-safe
-            db_version = params.dada_ref_databases[val_dada_ref_taxonomy_list[0]]?.dbversion
-            SBDIEXPORTREANNOTATE ( ch_dada2_tax, "dada2", db_version, params.cut_its, ch_barrnapsummary.ifEmpty([]) )
-        }
-    }
-
-    //
     // SUBWORKFLOW: Create R objects
     //
     if ( !params.skip_taxonomy && ( !params.skip_phyloseq || !params.skip_tse ) ) {
@@ -1479,7 +1460,6 @@ workflow AMPLISEQ {
             run_qiime2 && params.ancombc2 && params.metadata ? QIIME2_ANCOM.out.ancombc2.collect().ifEmpty( [] ) : [],
             run_qiime2 && params.ancombc2_formula && params.metadata ? QIIME2_ANCOM.out.ancombc2_formula.collect().ifEmpty( [] ) : [],
             params.picrust ? PICRUST.out.pathways.ifEmpty( [] ) : [],
-            params.sbdiexport ? SBDIEXPORT.out.sbditables.mix(SBDIEXPORTREANNOTATE.out.sbdiannottables).collect().ifEmpty( [] ) : [],
             !params.skip_taxonomy && !params.skip_phyloseq ? ROBJECT_WORKFLOW.out.phyloseq.map{_info,rds -> [rds]}.collect().ifEmpty( [] ) : [],
             !params.skip_taxonomy && !params.skip_tse ? ROBJECT_WORKFLOW.out.tse.map{_info,rds -> [rds]}.collect().ifEmpty( [] ) : []
         )

@@ -41,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | --FW_primer       | --primer_fwd                  |         |
 | --RV_primer       | --primer_rev                  |         |
 | --classifier      | --qiime_classifier            |         |
+| --sbdiexport      |                               | removed |
 
 - [#1028](https://github.com/nf-core/ampliseq/pull/1028) - Multi-region sample sheet via `--multiregion` had its header changed from `FW_primer` and `RV_primer` to `primer_fwd` and `primer_rev`, respectively. (by @d4straub)
 - [#1032](https://github.com/nf-core/ampliseq/pull/1032) - Refactor the pipeline's parameter handling and initialization (by @erikrikarddaniel).
@@ -76,6 +77,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Removed`
 
 - [#1028](https://github.com/nf-core/ampliseq/pull/1028) - Removed support for the legacy sample sheet to simplify parsing (by @d4straub)
+- [#1083](https://github.com/nf-core/ampliseq/pull/1083) - Removed `--sbdiexport` and the `SBDI/` output files; submission files for the Swedish Biodiversity Infrastructure will be produced by a separate pipeline instead. The SBDI-GTDB reference database is unaffected and remains the default for `--dada_ref_taxonomy` (closes [#1055](https://github.com/nf-core/ampliseq/issues/1055)) (by @erikrikarddaniel)
 
 ## nf-core/ampliseq version 2.18.0 - 2026-06-18
 

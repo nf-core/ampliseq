@@ -39,8 +39,8 @@
                     "sed": 4.7
                 },
                 "FORMAT_TAXONOMY": {
-                    "bash": "5.0.16(1)-release",
-                    "sed": 4.7
+                    "bash": "5.2.37(1)-release",
+                    "sed": "4.10"
                 },
                 "SUMMARY_TABLE_TAXONOMY": {
                     "R": "4.3.1",

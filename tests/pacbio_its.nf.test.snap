@@ -75,12 +75,12 @@
                     "Biostrings": "2.58.0"
                 },
                 "FORMAT_TAXONOMY": {
-                    "bash": "5.0.16(1)-release",
-                    "sed": 4.7
+                    "bash": "5.2.37(1)-release",
+                    "sed": "4.10"
                 },
                 "FORMAT_TAXONOMY_SINTAX": {
-                    "bash": "5.0.16(1)-release",
-                    "sed": 4.7
+                    "bash": "5.2.37(1)-release",
+                    "sed": "4.10"
                 },
                 "FORMAT_TAXRESULTS_ADDSP": {
                     "python": "3.9.1",

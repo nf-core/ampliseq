@@ -62,6 +62,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#1077](https://github.com/nf-core/ampliseq/pull/1077) - Template update for nf-core/tools version 4.1.0 (by @d4straub)
 - [#1082](https://github.com/nf-core/ampliseq/pull/1082) - Fixed two kinds of non-rank content in the taxonomy string imported into QIIME2: a rank that is empty for every ASV was rendered as the literal taxon `NA`, and the UNITE `SH` and COIDB `BOLD_bin` identifiers were treated as a taxonomic rank, adding a spurious extra level to the barplots and the rank-collapsed abundance tables (fixes [#1075](https://github.com/nf-core/ampliseq/issues/1075)) (by @erikrikarddaniel)
 - [#1080](https://github.com/nf-core/ampliseq/pull/1080) - `SUMMARY_REPORT` no longer fails with "input file name collision" when `--report_abstract`, `--metadata`, `--input` or `--input_fasta` share a file name (fixes [#1073](https://github.com/nf-core/ampliseq/issues/1073)) (by @erikrikarddaniel)
+- [#1085](https://github.com/nf-core/ampliseq/pull/1085) - `QIIME2_EXPORT_RELTAX`, `QIIME2_FEATURETABLE_GROUP` and `QIIME2_INTREE` asked for 1 GB, less than QIIME2 needs to start, so their first attempt was killed for running out of memory; they now get 3 GB like the other QIIME2 processes (by @erikrikarddaniel)
 
 ### `Dependencies`
 

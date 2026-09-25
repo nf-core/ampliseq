@@ -43,11 +43,11 @@ process CONSOLIDATE_DADA2_TAXONOMY {
     # identifiers rather than ranks, the same distinction bin/sbdiexport.R already makes.
     is_meta <- function(cols) cols %in% c("ASV_ID", "confidence", "sequence", "database", "SH", "BOLD_bin") | grepl("_confidence\$|_exact\$", cols)
 
-    # rank vocabulary differs by database: PR2 uses Domain,Supergroup,Division,Subdivision ahead
-    # of Class where the standard scheme uses Kingdom,Phylum. Domain fills the same slot as
-    # Kingdom and Division the same slot as Phylum, so those are renamed into whichever of the
-    # pair target_ranks uses; Supergroup and Subdivision have no counterpart and are dropped.
-    # See docs/usage.md for the full rationale.
+    # rank vocabulary differs by database: a database roots at Domain or at Kingdom depending on
+    # what it holds, and PR2 puts Supergroup,Division,Subdivision ahead of Class where the others
+    # have Phylum. Domain fills the same slot as Kingdom and Division the same slot as Phylum, so
+    # those are renamed into whichever of the pair target_ranks uses; Supergroup and Subdivision
+    # have no counterpart and are dropped. See docs/usage.md for the full rationale.
     rank_synonyms <- c(Domain = "Kingdom", Kingdom = "Domain", Division = "Phylum", Phylum = "Division")
 
     harmonize <- function(df) {
@@ -97,7 +97,15 @@ process CONSOLIDATE_DADA2_TAXONOMY {
     if (method == "score") {
         combined\$.score <- ifelse(is.na(combined\$confidence), -Inf, combined\$confidence)
     } else if (method == "most-specific") {
-        combined\$.score <- rowSums(!is.na(combined[, rank_cols, drop = FALSE]))
+        # Domain/Kingdom and Division/Phylum are two names for one slot (see rank_synonyms), and
+        # target_ranks can carry both. Counting per column would hand a database that fills both a
+        # free point over one that fills either, so a pair scores once.
+        slots <- unique(lapply(rank_cols, function(r) sort(intersect(c(r, rank_synonyms[r]), rank_cols))))
+        hits <- matrix(FALSE, nrow = nrow(combined), ncol = length(slots))
+        for (i in seq_along(slots)) {
+            hits[, i] <- rowSums(!is.na(combined[, slots[[i]], drop = FALSE])) > 0
+        }
+        combined\$.score <- rowSums(hits)
     } else {
         stop(paste0("Unknown consolidation method: ", method))
     }

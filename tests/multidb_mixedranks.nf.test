@@ -5,11 +5,11 @@ nextflow_pipeline {
     tag "pipeline"
     profile "test_multidb"
 
-    // Mixed rank-vocabulary case: PR2 uses Domain,Supergroup,Division,Subdivision ahead of Class
-    // instead of Kingdom,Phylum -- only pr2=5.0.0/5.1.0 use this scheme (older PR2 releases have a
-    // different, simpler one), so pr2=5.0.0 is the oldest/smallest version that still exercises it.
-    // silva=132/gtdb=R05-RS95 are the oldest/smallest versions of the other two (their rank
-    // vocabulary is the standard Kingdom..Species one at every version, so no such constraint).
+    // Mixed rank-vocabulary case: PR2 puts Supergroup,Division,Subdivision ahead of Class where
+    // the standard scheme has Phylum -- only pr2=5.0.0/5.1.0 use this scheme (older PR2 releases
+    // have a different, simpler one), so pr2=5.0.0 is the oldest/smallest version that still
+    // exercises it. silva=132/gtdb=R05-RS95 are the oldest/smallest versions of the other two
+    // (their rank vocabulary is the standard Domain..Species one at every version).
     test("-profile test_multidb --dada_ref_taxonomy silva,gtdb,pr2 --consolidate_taxonomies most-specific") {
 
         when {
@@ -38,13 +38,13 @@ nextflow_pipeline {
                 ).match() },
                 // consolidation emits one rank vocabulary -- the first-listed database's -- whichever
                 // database won a given ASV, because every consumer of this file (QIIME2 import via
-                // parse_dada2_taxonomy.r, phyloseq/TSE, SBDI export) reads ranks positionally or by name
-                { assert header.containsAll(["Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"]) },
-                { assert !header.any { it in ["Domain", "Supergroup", "Division", "Subdivision"] } },
-                // PR2 did win ASVs, and its Domain/Division values were carried into the
-                // Kingdom/Phylum slots rather than dropped with the columns they arrived in
+                // parse_dada2_taxonomy.r, phyloseq/TSE) reads ranks positionally or by name
+                { assert header.containsAll(["Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species"]) },
+                { assert !header.any { it in ["Kingdom", "Supergroup", "Division", "Subdivision"] } },
+                // PR2 did win ASVs, and its Division values were carried into the Phylum slot
+                // rather than dropped with the column they arrived in
                 { assert pr2_rows.size() > 0 },
-                { assert pr2_rows.every { consolidated.columns["Kingdom"][it] } },
+                { assert pr2_rows.every { consolidated.columns["Phylum"][it] } },
                 // qiime taxa barplot emits one level-N.csv per segment of the taxonomy string it is
                 // given, so a level-8.csv means an extra rank column reached parse_dada2_taxonomy.r
                 { assert !path("$outputDir/qiime2/barplot/level-8.csv").exists() }

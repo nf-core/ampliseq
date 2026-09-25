@@ -246,7 +246,7 @@ Taxonomic classification of ASVs can be performed with tools DADA2, SINTAX, Krak
 
 In case multiple tools for taxonomic classification are executed in one pipeline run, only the taxonomic classification result of one tool is forwarded to downstream analysis with QIIME2. The priority is `SIDLE` (multi-region) > `phylogenetic placement` > `DADA2` > `SINTAX` > `Kraken2` > `QIIME2` > `VSEARCH`, that is by no means a recommendation for a specific tool but a technical limitation.
 
-Default setting for taxonomic classification is DADA2 with the SILVA reference taxonomy database.
+Default setting for taxonomic classification is DADA2 with the SBDI-GTDB reference taxonomy database.
 
 Pre-configured reference taxonomy databases are:
 
@@ -279,6 +279,10 @@ Special features of taxonomic classification tools:
 - DADA2, Kraken2, QIIME2, SINTAX, and VSEARCH have specific parameters to accept custom databases (but theoretically possible with all classifiers).
 - Phyloplace assigns taxonomy by placement on reference phylogenies provided with the database, see [Placement in database provided phylogenies](#placement-in-database-provided-phylogenies).
 
+Rank names follow what a database holds at its top level: `Domain` for the databases rooted at Bacteria, Archaea and Eukaryota (GTDB, SBDI-GTDB, SILVA, RDP, Greengenes2), `Kingdom` for those rooted at a kingdom (UNITE, COIDB, GloSED).
+SILVA 144 has both, having adopted the prokaryotic kingdoms (`Bacillati`, `Pseudomonadati` and the rest) that sit between domain and phylum.
+A database supplied with `--dada_ref_tax_custom` and no [`--dada_assign_taxlevels`](https://nf-co.re/ampliseq/parameters#dada_assign_taxlevels) still defaults to `Kingdom,Phylum,Class,Order,Family,Genus,Species`.
+
 Parameter guidance is given in [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#taxonomic-assignment). Citations are listed in [`CITATIONS.md`](CITATIONS.md).
 
 > [!TIP]
@@ -293,13 +297,12 @@ This currently compares DADA2 results only, not results from different classific
 
 **Rank vocabulary across databases**
 
-- Most databases use the standard `Kingdom,Phylum,Class,Order,Family,Genus,Species` levels.
+- Most databases use `Domain` or `Kingdom` followed by `Phylum,Class,Order,Family,Genus,Species`.
 - PR2 uses `Domain,Supergroup,Division,Subdivision,Class,Order,Family,Genus,Species` instead.
-- The consolidated table uses the **first-listed** database's levels throughout, whichever database won a given ASV, so that everything reading it downstream (QIIME2 import, phyloseq/TSE objects, SBDI export) sees one consistent set of ranks.
-- `Domain` is therefore written into the `Kingdom` slot and `Division` into the `Phylum` slot when the first-listed database uses the standard levels, and the reverse when it is PR2.
+- The consolidated table uses the **first-listed** database's levels throughout, whichever database won a given ASV, so that everything reading it downstream (QIIME2 import, phyloseq/TSE objects) sees one consistent set of ranks.
+- `Domain` and `Kingdom` fill the same slot, as do `Division` and `Phylum`. A value arriving under one is written into whichever of the pair the first-listed database uses.
 - `Supergroup`/`Subdivision` have no counterpart in the standard levels and are dropped from the consolidated table. Each database's own unmodified table is still published under `dada2/`, so nothing is lost.
-- `most-specific` scores a database by how many of these levels it resolved, so a database with more intermediate rank names doesn't win purely by having more columns.
-- A database with both `Kingdom` and `Domain` populated (older PR2 releases) gets credit for both -- a minor, accepted asymmetry.
+- `most-specific` scores a database by how many of these levels it resolved, so a database with more intermediate rank names doesn't win purely by having more columns. A `Domain`/`Kingdom` pair counts once, as does a `Division`/`Phylum` pair.
 - This mapping isn't perfect everywhere in PR2 -- e.g. Metazoa's phylum-level names sit in `Class`, one level below `Division` -- but matches PR2's primary use case (protists, whose phylum-equivalent groups are in `Division`).
 
 ### Multiple region analysis with Sidle

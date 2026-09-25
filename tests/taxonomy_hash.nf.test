@@ -23,7 +23,7 @@ nextflow_workflow {
             ].join("\n") + "\n"
 
             tax.text = [
-                "ASV_ID\tKingdom\tPhylum\tClass\tOrder\tFamily\tGenus\tSpecies\tconfidence\tsequence",
+                "ASV_ID\tDomain\tPhylum\tClass\tOrder\tFamily\tGenus\tSpecies\tconfidence\tsequence",
                 "asv1\tBacteria\tNA\tNA\tNA\tNA\tNA\tuncultured_bacterium_#0319-7L14\t1.00\tACGT",
                 "asv2\tBacteria\tFirmicutes\tBacilli\tNA\tNA\tNA\tLactobacillus_sp\t0.9\tTGCA"
             ].join("\n") + "\n"

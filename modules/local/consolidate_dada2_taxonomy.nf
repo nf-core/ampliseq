@@ -30,8 +30,8 @@ process CONSOLIDATE_DADA2_TAXONOMY {
     files <- strsplit("${tax_files.join(',')}", ",", fixed = TRUE)[[1]]
 
     # the consolidated table feeds every downstream consumer that expects one taxonomy per ASV
-    # (QIIME2 import, phyloseq/TSE, SBDI export), all of which read ranks positionally or by
-    # name -- so the output carries exactly these ranks, whichever database won a given ASV.
+    # (QIIME2 import, phyloseq/TSE), all of which read ranks positionally or by name -- so the
+    # output carries exactly these ranks, whichever database won a given ASV.
     target_ranks <- $taxlevels
 
     # each file's sanitized database key is the segment right before the ".tsv" extension,
@@ -40,7 +40,7 @@ process CONSOLIDATE_DADA2_TAXONOMY {
     extract_db_key <- function(f) sub("^.*\\\\.([^.]+)\\\\.tsv\$", "\\\\1", basename(f))
 
     # everything that isn't one of these occupies a rank position. SH and BOLD_bin are
-    # identifiers rather than ranks, the same distinction bin/sbdiexport.R already makes.
+    # identifiers rather than ranks, the same distinction bin/parse_dada2_taxonomy.r makes.
     is_meta <- function(cols) cols %in% c("ASV_ID", "confidence", "sequence", "database", "SH", "BOLD_bin") | grepl("_confidence\$|_exact\$", cols)
 
     # rank vocabulary differs by database: PR2 uses Domain,Supergroup,Division,Subdivision ahead

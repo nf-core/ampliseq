@@ -102,12 +102,6 @@
                 "RENAME_RAW_DATA_FILES": {
                     "bash": "5.0.17(1)-release"
                 },
-                "SBDIEXPORT": {
-                    "R": "3.6.3"
-                },
-                "SBDIEXPORTREANNOTATE": {
-                    "R": "3.6.3"
-                },
                 "SUMMARY_TABLE_COUNTS": {
                     "R": "4.3.1",
                     "r-dplyr": "1.1.4"
@@ -131,12 +125,6 @@
                 }
             },
             [
-                "SBDI",
-                "SBDI/annotation.tsv",
-                "SBDI/asv-table.tsv",
-                "SBDI/dna.tsv",
-                "SBDI/emof.tsv",
-                "SBDI/event.tsv",
                 "assignsh",
                 "assignsh/ASV_ITS_tax.vsearch.unite-alleuk_8_2.txt",
                 "assignsh/ASV_ITS_tax.vsearch.unite-fungi_8_2.txt",
@@ -350,14 +338,11 @@
             "ITSxRust.args.txt:md5,5edc28029c799b9112f3d66731b9347a",
             "multiqc_fastqc.txt:md5,f11936dbbf1718301ceba86050e24799",
             "multiqc_general_stats.txt:md5,1fef8358fe3cc974bf05e2f27fc7e250",
-            "multiqc_cutadapt.txt:md5,160135fece18361e17bef9e8d04cf0b9",
-            "dna.tsv:md5,228fe70edd08069c1c57718513f93536",
-            "emof.tsv:md5,c6599c76a70fe5458db56ff8c2e89a37",
-            "event.tsv:md5,bfcf7d8ac2a3c6b48d075d6dc235f0e4"
+            "multiqc_cutadapt.txt:md5,160135fece18361e17bef9e8d04cf0b9"
         ],
-        "timestamp": "2026-08-05T13:38:48.578799722",
+        "timestamp": "2026-09-24T21:36:04.770502086",
         "meta": {
-            "nf-test": "0.9.5",
+            "nf-test": "0.9.4",
             "nextflow": "26.04.6"
         }
     }

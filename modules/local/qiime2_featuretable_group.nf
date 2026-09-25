@@ -1,6 +1,7 @@
 process QIIME2_FEATURETABLE_GROUP {
     tag "${category}"
-    label 'process_single'
+    label 'process_low'
+    label 'process_cpu_single'
 
     conda "${moduleDir}/envs/rachis-qiime2-linux-64-conda.yml"
     container "qiime2/qiime2:2026.4"

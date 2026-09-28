@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-- [#1022](https://github.com/nf-core/ampliseq/issues/1022) - added new GloSED database for classification of Eukaryotic ITS. Not support for SH numbers as of yet. (by @tom-brekke)
 - [#1021](https://github.com/nf-core/ampliseq/pull/1021),[#1023](https://github.com/nf-core/ampliseq/pull/1023),[#1025](https://github.com/nf-core/ampliseq/pull/1025),[#1048](https://github.com/nf-core/ampliseq/pull/1048),[#1054](https://github.com/nf-core/ampliseq/pull/1054) - Comparison of observed ASVs and taxonomic profiles against expected data is now available with `--expected_*` parameters (by @d4straub, reviewed by @erikrikarddaniel)
+- [#1022](https://github.com/nf-core/ampliseq/issues/1022) - added new GloSED database for classification of Eukaryotic ITS. Not support for SH numbers as of yet. (by @tom-brekke)
 - [#1026](https://github.com/nf-core/ampliseq/pull/1026),[#1046](https://github.com/nf-core/ampliseq/pull/1046),[#1049](https://github.com/nf-core/ampliseq/pull/1049),[#1079](https://github.com/nf-core/ampliseq/pull/1079) - Add support for Oxford Nanopore Technology (ONT) R10.4 sequencing (preferably with SUP basecalling) with Savont (by @d4straub)
 - [#1042](https://github.com/nf-core/ampliseq/pull/1042) - DADA2 taxonomy tables (`ASV_tax.*.tsv`, `ASV_tax_species.*.tsv`) now include one `<rank>_confidence` column per rank, in addition to the existing overall `confidence` column (by @erikrikarddaniel)
 - [#1042](https://github.com/nf-core/ampliseq/pull/1042) - Added CI test coverage for `--addsh`, which previously had none (`test_pacbio_its` now also runs DADA2 taxonomy against the UNITE database it already uses for SINTAX) (by @erikrikarddaniel)
@@ -61,20 +61,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | `summary_report.html`, QIIME2 section                                                    | "classified at Kingdom level"                | "classified at Domain level"                                                  |
 | `--consolidate_taxonomies`                                                               | output named after the first-listed database | unchanged, `Domain`/`Kingdom` still treated as one rank when matching columns |
 
+- [#1087](https://github.com/nf-core/ampliseq/pull/1087) - Replaced the workflow overview figure with a simplified metro map. (by @d4straub)
+
 ### `Fixed`
 
 - [#1019](https://github.com/nf-core/ampliseq/pull/1019) - Improve channel assignment & improve some version reporting (by @d4straub)
 - [#1027](https://github.com/nf-core/ampliseq/pull/1027) - SBDI's file `dna.tsv` recorded "paired" as lib_layout if `--single_end` was not specified alongside `--pacbio` or `--iontorrent`; now reports "single" in that cases (by @d4straub)
 - [#1034](https://github.com/nf-core/ampliseq/pull/1034) - Fix reading taxonomy tables when taxon names contain `#` (by @pieterprovoost)
+- [#1038](https://github.com/nf-core/ampliseq/pull/1038) - Ensure that the ASV count matrix in exported R objects is consistently stored as integer regardless of the pipeline parameters (by @hindrek)
 - [#1042](https://github.com/nf-core/ampliseq/pull/1042) - DADA2's `confidence` column was incorrectly included as an extra, spurious rank when building the taxonomy string imported into QIIME2; no longer included (by @erikrikarddaniel)
 - [#1045](https://github.com/nf-core/ampliseq/pull/1045) - Fixed a regression introduced by [#1042](https://github.com/nf-core/ampliseq/pull/1042) (not yet released) that made `DADA2_ADDSPECIES` crash with "Non-ACGT characters present in the query sequences" whenever two or more ASVs ended up with an identical sequence (e.g. after `--cut_its` trimming) (by @erikrikarddaniel)
-- [#1038](https://github.com/nf-core/ampliseq/pull/1038) - Ensure that the ASV count matrix in exported R objects is consistently stored as integer regardless of the pipeline parameters (by @hindrek)
 - [#1050](https://github.com/nf-core/ampliseq/pull/1050) - Fixed a regression introduced by [#1042](https://github.com/nf-core/ampliseq/pull/1042) (not yet released) that showed the new per-rank `confidence` columns as if they were taxonomic levels in the DADA2/SINTAX/VSEARCH-LCA sections of `summary_report.html` (by @erikrikarddaniel)
 - [#1057](https://github.com/nf-core/ampliseq/pull/1057) - Fixed DADA2 read number tracking table sequence (reported by @Malytherin, fixed by @d4straub)
 - [#1058](https://github.com/nf-core/ampliseq/pull/1058) - Fixed QIIME2 caching (reported by @luciazifcakova, fixed by @d4straub)
 - [#1077](https://github.com/nf-core/ampliseq/pull/1077) - Template update for nf-core/tools version 4.1.0 (by @d4straub)
-- [#1082](https://github.com/nf-core/ampliseq/pull/1082) - Fixed two kinds of non-rank content in the taxonomy string imported into QIIME2: a rank that is empty for every ASV was rendered as the literal taxon `NA`, and the UNITE `SH` and COIDB `BOLD_bin` identifiers were treated as a taxonomic rank, adding a spurious extra level to the barplots and the rank-collapsed abundance tables (fixes [#1075](https://github.com/nf-core/ampliseq/issues/1075)) (by @erikrikarddaniel)
 - [#1080](https://github.com/nf-core/ampliseq/pull/1080) - `SUMMARY_REPORT` no longer fails with "input file name collision" when `--report_abstract`, `--metadata`, `--input` or `--input_fasta` share a file name (fixes [#1073](https://github.com/nf-core/ampliseq/issues/1073)) (by @erikrikarddaniel)
+- [#1082](https://github.com/nf-core/ampliseq/pull/1082) - Fixed two kinds of non-rank content in the taxonomy string imported into QIIME2: a rank that is empty for every ASV was rendered as the literal taxon `NA`, and the UNITE `SH` and COIDB `BOLD_bin` identifiers were treated as a taxonomic rank, adding a spurious extra level to the barplots and the rank-collapsed abundance tables (fixes [#1075](https://github.com/nf-core/ampliseq/issues/1075)) (by @erikrikarddaniel)
+- [#1085](https://github.com/nf-core/ampliseq/pull/1085) - `QIIME2_EXPORT_RELTAX`, `QIIME2_FEATURETABLE_GROUP` and `QIIME2_INTREE` asked for 1 GB, less than QIIME2 needs to start, so their first attempt was killed for running out of memory; they now get 3 GB like the other QIIME2 processes (by @erikrikarddaniel)
+- [#1086](https://github.com/nf-core/ampliseq/pull/1086) - The processes that reformat reference databases used a legacy Singularity image whose pull could hang indefinitely; they now use a Seqera container declaring every tool their scripts call (fixes [#1081](https://github.com/nf-core/ampliseq/issues/1081)) (by @erikrikarddaniel)
 
 ### `Dependencies`
 
@@ -91,6 +95,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#1028](https://github.com/nf-core/ampliseq/pull/1028) - Removed support for the legacy sample sheet to simplify parsing (by @d4straub)
 - [#1083](https://github.com/nf-core/ampliseq/pull/1083) - Removed `--sbdiexport` and the `SBDI/` output files; submission files for the Swedish Biodiversity Infrastructure will be produced by a separate pipeline instead. The SBDI-GTDB reference database is unaffected and remains the default for `--dada_ref_taxonomy` (closes [#1055](https://github.com/nf-core/ampliseq/issues/1055)) (by @erikrikarddaniel)
+- [#1086](https://github.com/nf-core/ampliseq/pull/1086) - Removed the unused `taxref_reformat_phytoref.sh`; PhytoRef is included in PR2 (by @erikrikarddaniel)
 
 ## nf-core/ampliseq version 2.18.0 - 2026-06-18
 

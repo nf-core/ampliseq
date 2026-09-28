@@ -71,8 +71,8 @@
                     "fastqc": "0.12.1"
                 },
                 "FORMAT_TAXONOMY": {
-                    "bash": "5.0.16(1)-release",
-                    "sed": 4.7
+                    "bash": "5.2.37(1)-release",
+                    "sed": "4.10"
                 },
                 "MERGE_STATS_DADA": {
                     "R": "4.5.2"

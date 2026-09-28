@@ -15,7 +15,8 @@ repos:
               .*ro-crate-metadata.json$|
               modules/(?!local/).*|
               subworkflows/(?!local/).*|
-              .*\.snap$
+              .*\.snap$|
+              .*\.svg$
           )$
       - id: end-of-file-fixer
         exclude: |

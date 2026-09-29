@@ -1,0 +1,35 @@
+process QIIME2_TRAIN {
+    tag "${meta.primer_fwd}-${meta.primer_rev}"
+    label 'process_huge'
+    label 'process_cpu_single'
+
+    conda "${moduleDir}/environment.yml"
+    container "qiime2/qiime2:2026.4"
+
+    input:
+    tuple val(meta), path(qza)
+
+    output:
+    path("*-classifier.qza"), emit: qza
+    path "versions.yml"     , emit: versions_qiime2_train, topic: versions
+
+    script:
+    """
+    export XDG_CONFIG_HOME="./xdgconfig"
+    export XDG_CACHE_HOME="./xqcache"
+    export MPLCONFIGDIR="./mplconfigdir"
+    export NUMBA_CACHE_DIR="./numbacache"
+
+    #Train classifier
+    qiime feature-classifier fit-classifier-naive-bayes \\
+        --i-reference-reads ${meta.primer_fwd}-${meta.primer_rev}-ref-seq.qza \\
+        --i-reference-taxonomy ref-taxonomy.qza \\
+        --o-classifier ${meta.primer_fwd}-${meta.primer_rev}-classifier.qza \\
+        --quiet
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        qiime2: \$( qiime --version | sed '1!d;s/.* //' )
+    END_VERSIONS
+    """
+}

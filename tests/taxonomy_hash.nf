@@ -1,5 +1,5 @@
-include { PHYLOSEQ                 } from '../modules/local/phyloseq'
-include { TREESUMMARIZEDEXPERIMENT } from '../modules/local/treesummarizedexperiment'
+include { PHYLOSEQ                 } from '../modules/local/phyloseq/main'
+include { TREESUMMARIZEDEXPERIMENT } from '../modules/local/treesummarizedexperiment/main'
 
 workflow TAXONOMY_HASH {
     take:

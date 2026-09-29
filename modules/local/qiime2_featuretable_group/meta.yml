@@ -1,0 +1,45 @@
+name: qiime2_featuretable_group
+description: Groups samples of a QIIME2 feature table by a metadata column
+keywords:
+  - qiime2
+  - feature table
+  - group
+tools:
+  - qiime2:
+      description: Microbiome multi-omics data science platform
+      homepage: https://qiime2.org
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:qiime2
+input:
+  - - table:
+        type: file
+        description: QIIME2 feature table artifact
+    - metadata:
+        type: file
+        description: Sample metadata table (TSV)
+    - category:
+        type: string
+        description: Metadata column to group by
+output:
+  qza:
+    - ${category}.qza:
+        type: file
+        description: Grouped feature table artifact
+        pattern: ${category}.qza
+  versions_qiime2_featuretable_group:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

@@ -1,0 +1,51 @@
+name: format_taxresults
+description: Adds ASV sequences to a taxonomy table
+keywords:
+  - taxonomy
+  - format
+  - asv
+tools:
+  - pandas:
+      description: Data analysis and manipulation tool built on Python
+      homepage: https://pandas.pydata.org/
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:pandas
+input:
+  - - db_key:
+        type: string
+        description: Key of the reference taxonomy database, as in --dada_ref_taxonomy
+    - taxtable:
+        type: file
+        description: Taxonomy table (TSV)
+    - fastafile:
+        type: file
+        description: ASV sequences in FASTA format
+    - outfile:
+        type: string
+        description: Output file name
+output:
+  tsv:
+    - - db_key:
+          type: string
+          description: Key of the reference taxonomy database, as in --dada_ref_taxonomy
+      - outfile:
+          type: file
+          description: Taxonomy table with sequences (TSV)
+          pattern: outfile
+  versions_format_taxresults:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@jtangrot"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

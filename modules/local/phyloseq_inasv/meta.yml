@@ -1,0 +1,39 @@
+name: phyloseq_inasv
+description: Converts an exported abundance table for phyloseq
+keywords:
+  - phyloseq
+  - abundance
+  - format
+tools:
+  - sed:
+      description: GNU stream editor
+      homepage: https://www.gnu.org/software/sed/
+      licence:
+        - GPL-3.0-or-later
+      identifier: ""
+input:
+  - biom_file:
+      type: file
+      description: Abundance table exported from BIOM (TSV)
+output:
+  tsv:
+    - "*.tsv":
+        type: file
+        description: Abundance table (TSV)
+        pattern: "*.tsv"
+  versions_phyloseq_inasv:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@jtangrot"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

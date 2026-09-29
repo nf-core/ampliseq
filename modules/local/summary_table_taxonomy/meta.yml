@@ -11,7 +11,8 @@ tools:
       homepage: https://dplyr.tidyverse.org/
       documentation: https://dplyr.tidyverse.org/
       tool_dev_url: https://github.com/tidyverse/dplyr
-      licence: ["MIT"]
+      licence:
+        - MIT
       identifier: ""
 input:
   - - meta:
@@ -23,18 +24,24 @@ input:
     - annotations:
         type: file
         description: BUILD_ASV_ANNOTATIONS' wide per-ASV annotations table (asv_id plus whichever of barrnap_domain/decontam_*/passed_*_filter/ampliseq_accept apply), one shared table combined onto every entry
-        pattern: "ASV_annotations.tsv"
+        pattern: ASV_annotations.tsv
 output:
-  - tsv:
-      - "ampliseq.taxonomy.*.tsv.gz":
-          type: file
-          description: Slim taxonomy table for this classifier/database (asv_id, the database's own ranks, confidence) joined with the per-ASV annotations
-          pattern: "ampliseq.taxonomy.*.tsv.gz"
-  - versions:
-      - versions.yml:
-          type: file
-          description: File containing software versions
-          pattern: "versions.yml"
+  tsv:
+    - ampliseq.taxonomy.*.tsv.gz:
+        type: file
+        description: Slim taxonomy table for this classifier/database (asv_id, the database's own ranks, confidence) joined with the per-ASV annotations
+        pattern: ampliseq.taxonomy.*.tsv.gz
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
 authors:
   - "@erikrikarddaniel"
 maintainers:

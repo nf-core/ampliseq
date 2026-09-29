@@ -1,0 +1,20 @@
+/*
+ * Taxonomic classification with QIIME2
+ */
+
+include { QIIME2_INSEQ                  } from '../../../modules/local/qiime2_inseq/main'
+include { QIIME2_CLASSIFY               } from '../../../modules/local/qiime2_classify/main'
+
+workflow QIIME2_TAXONOMY {
+    take:
+    ch_fasta
+    ch_qiime_classifier
+
+    main:
+    QIIME2_INSEQ ( ch_fasta )
+    QIIME2_CLASSIFY ( ch_qiime_classifier, QIIME2_INSEQ.out.qza )
+
+    emit:
+    qza      = QIIME2_CLASSIFY.out.qza
+    tsv      = QIIME2_CLASSIFY.out.tsv
+}

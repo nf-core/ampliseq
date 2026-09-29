@@ -1,0 +1,66 @@
+name: savont_export
+description: Merges Savont results of separately processed samples
+keywords:
+  - savont
+  - asv
+  - long reads
+  - merge
+tools:
+  - savont:
+      description: Amplicon sequence variants from 16S ONT R10.4 and HiFi long reads
+      homepage: https://github.com/bluenote-1577/savont
+      licence:
+        - MIT
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information, e.g. [ id:'test' ]
+    - output_folders:
+        type: directory
+        description: Savont output folders
+    - sample_string:
+        type: string
+        description: Sample names
+output:
+  asv:
+    - "*_feature-table.tsv":
+        type: file
+        description: ASV count table (TSV)
+        pattern: "*_feature-table.tsv"
+  fasta:
+    - "*_final_asvs.fasta":
+        type: file
+        description: ASV sequences in FASTA format
+        pattern: "*_final_asvs.fasta"
+  log:
+    - "*_savont_export.log":
+        type: file
+        description: Log file
+        pattern: "*_savont_export.log"
+  versions_savont:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - savont:
+          type: string
+          description: The name of the tool
+      - savont --version 2>&1 | cut -d ' ' -f 2:
+          type: eval
+          description: The expression to obtain the version of the tool
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - savont:
+          type: string
+          description: The name of the tool
+      - savont --version 2>&1 | cut -d ' ' -f 2:
+          type: eval
+          description: The expression to obtain the version of the tool
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

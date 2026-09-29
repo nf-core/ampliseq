@@ -1,0 +1,47 @@
+name: qiime2_classify
+description: Classifies ASVs taxonomically with a QIIME2 naive Bayes classifier
+keywords:
+  - qiime2
+  - taxonomy
+  - classification
+tools:
+  - qiime2:
+      description: Microbiome multi-omics data science platform
+      homepage: https://qiime2.org
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:qiime2
+input:
+  - trained_classifier:
+      type: file
+      description: Trained QIIME2 classifier artifact
+  - repseq:
+      type: file
+      description: QIIME2 representative sequences artifact
+output:
+  qza:
+    - taxonomy.qza:
+        type: file
+        description: QIIME2 taxonomy artifact
+        pattern: taxonomy.qza
+  tsv:
+    - taxonomy.tsv:
+        type: file
+        description: Taxonomy table (TSV)
+        pattern: taxonomy.tsv
+  versions_qiime2_classify:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

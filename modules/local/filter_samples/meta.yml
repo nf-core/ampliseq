@@ -1,0 +1,52 @@
+name: filter_samples
+description: Restricts metadata and abundance table to shared samples
+keywords:
+  - samples
+  - filter
+  - metadata
+tools:
+  - r:
+      description: Language and environment for statistical computing and graphics
+      homepage: https://www.r-project.org/
+      licence:
+        - GPL-2.0-or-later
+      identifier: ""
+input:
+  - metadata:
+      type: file
+      description: Sample metadata table (TSV)
+  - table:
+      type: file
+      description: ASV count table (TSV), ASV IDs in the first column and one column per sample
+output:
+  metadata:
+    - metadata.tsv:
+        type: file
+        description: Filtered sample metadata (TSV)
+        pattern: metadata.tsv
+  abundances:
+    - table.tsv:
+        type: file
+        description: Filtered abundance table (TSV)
+        pattern: table.tsv
+  log:
+    - "*.log":
+        type: file
+        description: Log of removed samples
+        pattern: "*.log"
+  versions_filter_samples:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

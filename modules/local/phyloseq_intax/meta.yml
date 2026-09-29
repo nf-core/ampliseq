@@ -1,0 +1,39 @@
+name: phyloseq_intax
+description: Converts a taxonomy table for phyloseq
+keywords:
+  - phyloseq
+  - taxonomy
+  - format
+tools:
+  - pandas:
+      description: Data analysis and manipulation tool built on Python
+      homepage: https://pandas.pydata.org/
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:pandas
+input:
+  - tax_tsv:
+      type: file
+      description: Taxonomy table (TSV)
+output:
+  tsv:
+    - "*.tsv":
+        type: file
+        description: Taxonomy table (TSV)
+        pattern: "*.tsv"
+  versions_phyloseq_intax:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

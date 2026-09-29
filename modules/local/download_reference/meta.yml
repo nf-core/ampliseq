@@ -1,0 +1,28 @@
+name: download_reference
+description: Downloads a reference taxonomy database
+keywords:
+  - download
+  - database
+  - reference
+tools:
+  - wget:
+      description: Non-interactive download of files from the web
+      homepage: https://www.gnu.org/software/wget/
+      licence:
+        - GPL-3.0-or-later
+      identifier: ""
+input:
+  - ref_url:
+      type: string
+      description: URL of the reference file
+output:
+  db:
+    - ${local_filename}:
+        type: file
+        description: Downloaded reference file
+        pattern: ${local_filename}
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

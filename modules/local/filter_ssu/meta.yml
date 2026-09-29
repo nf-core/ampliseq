@@ -1,0 +1,61 @@
+name: filter_ssu
+description: Keeps ASVs classified by Barrnap as rRNA of the selected kingdoms
+keywords:
+  - rrna
+  - barrnap
+  - filter
+  - asv
+tools:
+  - biostrings:
+      description: Memory efficient string containers, string matching algorithms and other utilities for biological sequences
+      homepage: https://bioconductor.org/packages/Biostrings
+      licence:
+        - Artistic-2.0
+      identifier: biotools:biostrings
+input:
+  - fasta:
+      type: file
+      description: ASV sequences in FASTA format
+  - table:
+      type: file
+      description: ASV count table (TSV), ASV IDs in the first column and one column per sample
+  - barrnap_summary:
+      type: file
+      description: Barrnap summary table (TSV)
+output:
+  result:
+    - result.tsv:
+        type: file
+        description: Kingdom assigned to each ASV (TSV)
+        pattern: result.tsv
+  stats:
+    - stats.ssu.tsv:
+        type: file
+        description: Filtering statistics (TSV)
+        pattern: stats.ssu.tsv
+  asv:
+    - ASV_table.ssu.tsv:
+        type: file
+        description: ASV count table after filtering (TSV)
+        pattern: ASV_table.ssu.tsv
+  fasta:
+    - ASV_seqs.ssu.fasta:
+        type: file
+        description: ASV sequences after filtering (FASTA)
+        pattern: ASV_seqs.ssu.fasta
+  versions_filter_ssu:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

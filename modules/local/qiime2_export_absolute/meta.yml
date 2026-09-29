@@ -1,0 +1,76 @@
+name: qiime2_export_absolute
+description: Exports QIIME2 feature table, sequences and taxonomy with absolute abundances
+keywords:
+  - qiime2
+  - export
+  - abundance
+tools:
+  - qiime2:
+      description: Microbiome multi-omics data science platform
+      homepage: https://qiime2.org
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:qiime2
+input:
+  - table:
+      type: file
+      description: QIIME2 feature table artifact
+  - repseq:
+      type: file
+      description: QIIME2 representative sequences artifact
+  - taxonomy:
+      type: file
+      description: QIIME2 taxonomy artifact
+  - tax_agglom_min:
+      type: integer
+      description: Lowest taxonomic level to collapse to
+  - tax_agglom_max:
+      type: integer
+      description: Highest taxonomic level to collapse to
+output:
+  fasta:
+    - rep-seq.fasta:
+        type: file
+        description: ASV sequences in FASTA format
+        pattern: rep-seq.fasta
+  tsv:
+    - feature-table.tsv:
+        type: file
+        description: Feature table (TSV)
+        pattern: feature-table.tsv
+  biom:
+    - feature-table.biom:
+        type: file
+        description: Feature table (BIOM)
+        pattern: feature-table.biom
+  summary:
+    - seven_number_summary.tsv:
+        type: file
+        description: Seven-number summary of counts per sample (TSV)
+        pattern: seven_number_summary.tsv
+  descr:
+    - descriptive_stats.tsv:
+        type: file
+        description: Descriptive statistics of counts per sample (TSV)
+        pattern: descriptive_stats.tsv
+  abundtable:
+    - abs-abund-table-*.tsv:
+        type: file
+        description: Absolute abundances per taxonomic level (TSV)
+        pattern: abs-abund-table-*.tsv
+  versions_qiime2_export_absolute:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

@@ -1,0 +1,45 @@
+name: barrnap
+description: Predicts ribosomal RNA genes in ASV sequences for bacteria, archaea, mitochondria and eukaryotes
+keywords:
+  - rrna
+  - barrnap
+  - asv
+  - annotation
+tools:
+  - barrnap:
+      description: Predicts the location of ribosomal RNA genes in genomes
+      homepage: https://github.com/tseemann/barrnap
+      licence:
+        - GPL-3.0
+      identifier: biotools:barrnap
+input:
+  - fasta:
+      type: file
+      description: ASV sequences in FASTA format
+output:
+  matches:
+    - "*.matches.txt":
+        type: file
+        description: Number of rRNA matches per kingdom
+        pattern: "*.matches.txt"
+  gff:
+    - rrna.*.gff:
+        type: file
+        description: Barrnap predictions in GFF3 format, one file per kingdom
+        pattern: rrna.*.gff
+  versions_barrnap:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

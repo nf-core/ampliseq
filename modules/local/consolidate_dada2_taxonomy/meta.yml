@@ -1,0 +1,53 @@
+name: consolidate_dada2_taxonomy
+description: Picks a per-ASV winning database across several DADA2 taxonomy tables
+keywords:
+  - taxonomy
+  - dada2
+  - consolidation
+  - database
+tools:
+  - dada2:
+      description: Infers exact amplicon sequence variants (ASVs) from high-throughput amplicon sequencing data
+      homepage: https://bioconductor.org/packages/dada2
+      documentation: https://benjjneb.github.io/dada2/
+      licence:
+        - LGPL-2
+      identifier: biotools:dada2
+input:
+  - tax_files:
+      type: file
+      description: DADA2 taxonomy tables (TSV), one per database
+  - method:
+      type: string
+      description: "Consolidation method: first, most-specific or score"
+  - db_key_order:
+      type: string
+      description: Comma-separated database keys in --dada_ref_taxonomy order
+  - taxlevels_input:
+      type: string
+      description: Comma-separated taxonomic rank names, empty to use the database's own
+  - outfile:
+      type: string
+      description: Name of the output table
+output:
+  tsv:
+    - outfile:
+        type: file
+        description: Consolidated taxonomy table (TSV)
+        pattern: outfile
+  versions_consolidate_dada2_taxonomy:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@erikrikarddaniel"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

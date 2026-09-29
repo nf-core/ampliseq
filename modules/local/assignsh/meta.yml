@@ -1,0 +1,55 @@
+name: assignsh
+description: Adds UNITE species hypotheses (SH) to a DADA2 taxonomy table from VSEARCH matches
+keywords:
+  - taxonomy
+  - unite
+  - species hypothesis
+  - its
+tools:
+  - pandas:
+      description: Data analysis and manipulation tool built on Python
+      homepage: https://pandas.pydata.org/
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:pandas
+input:
+  - - db_key:
+        type: string
+        description: Key of the reference taxonomy database, as in --dada_ref_taxonomy
+    - asvtable:
+        type: file
+        description: DADA2 taxonomy table (TSV)
+    - sh_info:
+        type: file
+        description: UNITE species hypothesis information file
+    - blastfile:
+        type: file
+        description: VSEARCH matches of ASVs against the UNITE database, in BLAST6 format
+    - outtable:
+        type: string
+        description: Name of the output table
+output:
+  tsv:
+    - - db_key:
+          type: string
+          description: Key of the reference taxonomy database, as in --dada_ref_taxonomy
+      - outtable:
+          type: file
+          description: Taxonomy table with added species hypothesis columns (TSV)
+          pattern: outtable
+  versions_assignsh:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

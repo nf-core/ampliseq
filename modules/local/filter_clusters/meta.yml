@@ -1,0 +1,56 @@
+name: filter_clusters
+description: Merges ASV counts according to VSEARCH clusters
+keywords:
+  - vsearch
+  - clustering
+  - asv
+  - filter
+tools:
+  - pandas:
+      description: Data analysis and manipulation tool built on Python
+      homepage: https://pandas.pydata.org/
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:pandas
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information, e.g. [ id:'test' ]
+    - clusters:
+        type: file
+        description: VSEARCH cluster files
+  - asv:
+      type: file
+      description: ASV count table (TSV), ASV IDs in the first column and one column per sample
+output:
+  asv:
+    - ASV_post_clustering_filtered.table.tsv:
+        type: file
+        description: ASV count table after clustering (TSV)
+        pattern: ASV_post_clustering_filtered.table.tsv
+  fasta:
+    - ASV_post_clustering_filtered.fna:
+        type: file
+        description: ASV sequences after clustering (FASTA)
+        pattern: ASV_post_clustering_filtered.fna
+  stats:
+    - ASV_post_clustering_filtered.stats.tsv:
+        type: file
+        description: Clustering statistics (TSV)
+        pattern: ASV_post_clustering_filtered.stats.tsv
+  versions_filter_clusters:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

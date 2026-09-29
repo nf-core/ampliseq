@@ -1,0 +1,43 @@
+name: cutadapt_summary_merge
+description: Merges or copies Cutadapt summary tables
+keywords:
+  - cutadapt
+  - primer
+  - summary
+tools:
+  - dada2:
+      description: Infers exact amplicon sequence variants (ASVs) from high-throughput amplicon sequencing data
+      homepage: https://bioconductor.org/packages/dada2
+      documentation: https://benjjneb.github.io/dada2/
+      licence:
+        - LGPL-2
+      identifier: biotools:dada2
+input:
+  - action:
+      type: string
+      description: Either merge, to combine the standard and double-primer tables, or copy
+  - files:
+      type: file
+      description: Cutadapt summary tables (TSV)
+output:
+  tsv:
+    - cutadapt_summary.tsv:
+        type: file
+        description: Cutadapt summary table (TSV)
+        pattern: cutadapt_summary.tsv
+  versions_cutadapt_summary_merge:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

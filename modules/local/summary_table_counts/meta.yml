@@ -11,24 +11,31 @@ tools:
       homepage: https://dplyr.tidyverse.org/
       documentation: https://dplyr.tidyverse.org/
       tool_dev_url: https://github.com/tidyverse/dplyr
-      licence: ["MIT"]
+      licence:
+        - MIT
       identifier: ""
 input:
-  - - asv_table:
-        type: file
-        description: DADA2's merged wide ASV table (ASV_ID column plus one column per sample)
-        pattern: "ASV_table.tsv"
+  - asv_table:
+      type: file
+      description: DADA2's merged wide ASV table (ASV_ID column plus one column per sample)
+      pattern: ASV_table.tsv
 output:
-  - tsv:
-      - "ampliseq.counts.tsv.gz":
-          type: file
-          description: Long-format ASV counts (asv_id, sample, count), zero-count rows dropped
-          pattern: "ampliseq.counts.tsv.gz"
-  - versions:
-      - versions.yml:
-          type: file
-          description: File containing software versions
-          pattern: "versions.yml"
+  tsv:
+    - ampliseq.counts.tsv.gz:
+        type: file
+        description: Long-format ASV counts (asv_id, sample, count), zero-count rows dropped
+        pattern: ampliseq.counts.tsv.gz
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
 authors:
   - "@erikrikarddaniel"
 maintainers:

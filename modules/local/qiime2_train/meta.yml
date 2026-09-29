@@ -1,0 +1,42 @@
+name: qiime2_train
+description: Trains a QIIME2 naive Bayes classifier
+keywords:
+  - qiime2
+  - classifier
+  - training
+tools:
+  - qiime2:
+      description: Microbiome multi-omics data science platform
+      homepage: https://qiime2.org
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:qiime2
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information, e.g. [ id:'test' ]
+    - qza:
+        type: file
+        description: Reference sequences and taxonomy artifacts
+output:
+  qza:
+    - "*-classifier.qza":
+        type: file
+        description: Trained classifier artifact
+        pattern: "*-classifier.qza"
+  versions_qiime2_train:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

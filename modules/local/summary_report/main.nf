@@ -1,0 +1,199 @@
+process SUMMARY_REPORT  {
+    label 'process_low'
+
+    conda "${moduleDir}/environment.yml"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/mulled-v2-b2ec1fea5791d428eebb8c8ea7409c350d31dada:a447f6b7a6afde38352b24c30ae9cd6e39df95c4-1' :
+        'biocontainers/mulled-v2-b2ec1fea5791d428eebb8c8ea7409c350d31dada:a447f6b7a6afde38352b24c30ae9cd6e39df95c4-1' }"
+
+    input:
+    path(report_template)
+    path(report_styles)
+    path(report_logo)
+    path(report_abstract, stageAs: 'report_abstract/*') // user-supplied paths may share a basename
+    path(metadata, stageAs: 'metadata/*')
+    path(input_samplesheet, stageAs: 'input_samplesheet/*')
+    path(input_fasta, stageAs: 'input_fasta/*')
+    tuple val(meta_mqc), path(mqc_plots)
+    path(cutadapt_summary)
+    tuple val(meta_porechop_abi), path(porechop_abi_log_paths)
+    path(chopper_stats)
+    path(savont_asv_table)
+    path(savont_stats)
+    val(find_truncation_values)
+    path(dada_filtntrim_args)
+    path(dada_qual_stats)
+    path(dada_pp_qual_stats)
+    tuple val(meta), path(dada_err_svgs)
+    path(dada_asv_table)
+    path(dada_asv_fa)
+    path(dada_tab)
+    path(dada_stats)
+    val(mergepairs_strategy)
+    path(vsearch_cluster)
+    val(decontam)
+    path(decontaminated_counts)
+    path(notcontaminant_counts)
+    path(decontaminated_details)
+    path(notcontaminant_details)
+    path(barrnap_summary)
+    path(filter_ssu_stats)
+    path(filter_ssu_asv)
+    path(filter_len_asv_stats)
+    path(filter_len_asv_len_orig)
+    path(filter_codons_fasta)
+    path(filter_codons_stats)
+    path(itsx_cutasv_summary)
+    path(dada2_tax)
+    tuple val(meta_ref), path(cut_dada_ref_taxonomy) // cutadapt logs, one per database used downstream
+    path(sintax_tax)
+    path(vsearch_lca_tax)
+    path(kraken2_tax)
+    path(pplace_tax)
+    tuple val(meta_pplace), path(pplace_heattree)
+    path(qiime2_tax)
+    val(run_qiime2)
+    val(val_used_taxonomy)
+    val(qiime2_filtertaxa) // <ASV count original +1>,<ASV count filtered +2>
+    path(filter_stats_tsv)
+    path(barplot)
+    path(abundance_tables, stageAs: 'abundance_tables/*')
+    val(alpha_rarefaction)
+    path(diversity_indices)
+    path(diversity_indices_alpha, stageAs: 'alpha_diversity/*') // prevent folder name collisons
+    path(diversity_indices_beta, stageAs: 'beta_diversity/*') // prevent folder name collisons
+    path(diversity_indices_adonis, stageAs: 'beta_diversity/adonis/*') // prevent folder name collisons
+    path(ancom, stageAs: 'ancom/*')
+    path(ancombc, stageAs: 'ancombc/da_barplot/*')
+    path(ancombc_formula, stageAs: 'ancombc_formula/da_barplot/*')
+    path(ancombc2, stageAs: 'ancombc2/*')
+    path(ancombc2_formula, stageAs: 'ancombc2_formula/*')
+    path(picrust_pathways)
+    path(phyloseq, stageAs: 'phyloseq/*')
+    path(tse, stageAs: 'tse/*')
+
+    output:
+    path "*.svg"               , emit: svg, optional: true
+    path "summary_report.html" , emit: report
+    path "versions.yml"        , emit: versions // This may not be added to the versions topic otherwise the pipeline hangs forever!
+
+    script:
+    // make named R list (comma separated)
+    // all non-boolean or non-numeric values must be encumbered by single quotes (')!
+    // all elements must have a value, i.e. booleans also need to be set to TRUE
+    // report only the databases that feed downstream analysis: the first-listed one, or all when consolidating
+    def dada_ref_taxonomy_list   = params.dada_ref_taxonomy ? params.dada_ref_taxonomy.tokenize(',')*.trim() : []
+    def dada_ref_taxonomy_winner = dada_ref_taxonomy_list ? dada_ref_taxonomy_list[0] : null
+    def dada_consolidated        = params.consolidate_taxonomies != 'first' && dada_ref_taxonomy_list.size() > 1
+    def dada2_ref_tax_title      = dada_consolidated ?
+        "Consolidated per ASV (--consolidate_taxonomies ${params.consolidate_taxonomies}) across: " +
+            dada_ref_taxonomy_list.collect { params.dada_ref_databases[it]["title"] }.join('; ') :
+        dada_ref_taxonomy_winner ? params.dada_ref_databases[dada_ref_taxonomy_winner]["title"] : null
+    def dada2_ref_tax_file       = dada_consolidated ?
+        dada_ref_taxonomy_list.collect { params.dada_ref_databases[it]["file"] }.flatten().join(', ') :
+        dada_ref_taxonomy_winner ? params.dada_ref_databases[dada_ref_taxonomy_winner]["file"] : null
+    def dada2_ref_tax_citation   = dada_consolidated ?
+        dada_ref_taxonomy_list.collect { params.dada_ref_databases[it]["citation"] }.join(' | ') :
+        dada_ref_taxonomy_winner ? params.dada_ref_databases[dada_ref_taxonomy_winner]["citation"] : null
+    def params_list_named  = [
+        "css='$report_styles'",
+        "report_logo='$report_logo'",
+        "workflow_manifest_version='${workflow.manifest.version}'",
+        "workflow_scriptid='${workflow.scriptId.substring(0,10)}'",
+        params.report_title ? "report_title='$params.report_title'" : "",
+        report_abstract ? "report_abstract='$report_abstract'" : "",
+        meta.single_end ? "flag_single_end=TRUE" : "",
+        metadata ? "metadata='$metadata'" : "",
+        input_samplesheet ? "input_samplesheet='$input_samplesheet'" : "",
+        input_fasta ? "input_fasta='$input_fasta'" : "",
+        !input_fasta && !input_samplesheet ? "input_folder='$params.input_folder'" : "",
+        mqc_plots ? "mqc_plot='${mqc_plots}/svg/fastqc_per_sequence_quality_scores_plot.svg'" : "",
+        cutadapt_summary ?
+            params.retain_untrimmed ? "flag_retain_untrimmed=TRUE,cutadapt_summary='$cutadapt_summary'" :
+            "cutadapt_summary='$cutadapt_summary'" : "",
+        porechop_abi_log_paths ? "porechop_abi_log_paths='"+porechop_abi_log_paths.join(',')+"'" : "",
+        chopper_stats ? "chopper_stats_path='$chopper_stats'" : "",
+        savont_asv_table ? "savont_asv_table_path='$savont_asv_table'" : "",
+        savont_stats ? "savont_stats_path='$savont_stats'" : "",
+        "truncq=$params.truncq",
+        find_truncation_values ? "trunc_qmin=$params.trunc_qmin,trunc_rmin=$params.trunc_rmin" : "",
+        "trunclenf='$params.trunclenf'",
+        "trunclenr='$params.trunclenr'",
+        "max_ee=$params.max_ee",
+        params.max_ee_r ? "max_ee_r=$params.max_ee_r" : "",
+        dada_qual_stats && meta.single_end ? "dada_qc_f_path='$dada_qual_stats',dada_pp_qc_f_path='$dada_pp_qual_stats'" :
+            dada_qual_stats ? "dada_qc_f_path='FW_qual_stats.svg',dada_qc_r_path='RV_qual_stats.svg',dada_pp_qc_f_path='FW_preprocessed_qual_stats.svg',dada_pp_qc_r_path='RV_preprocessed_qual_stats.svg'" : "",
+        dada_filtntrim_args ? "dada_filtntrim_args='$dada_filtntrim_args'" : "",
+        "dada_sample_inference='$params.sample_inference'",
+        dada_err_svgs && meta.run.size() == 1 && meta.single_end ?
+            "dada_err_path='$dada_err_svgs',dada_err_run='"+meta.run+"'" :
+            dada_err_svgs ? "dada_err_path='"+dada_err_svgs.join(',')+"',dada_err_run='"+meta.run.join(',')+"'" : "",
+        dada_asv_table ? "dada_asv_table_path='$dada_asv_table'" : "",
+        dada_asv_fa ? "path_asv_fa='$dada_asv_fa'": "",
+        dada_tab ? "path_dada2_tab='$dada_tab'" : "",
+        dada_stats ? "dada_stats_path='$dada_stats'" : "",
+        "mergepairs_strategy='$mergepairs_strategy'",
+        vsearch_cluster ? "vsearch_cluster='$vsearch_cluster',vsearch_cluster_id='$params.vsearch_cluster_id'" : "",
+        decontaminated_counts ? "decontam='$decontam',decontaminated_counts='$decontaminated_counts',decontaminated_details='$decontaminated_details'" : "",
+        notcontaminant_counts ? "notcontaminant_counts='$notcontaminant_counts',notcontaminant_details='$notcontaminant_details'" : "",
+        params.skip_barrnap ? "" : "path_barrnap_sum='$barrnap_summary'",
+        filter_ssu_stats ? "filter_ssu_stats='$filter_ssu_stats'" : "",
+        filter_ssu_asv ? "filter_ssu_asv='$filter_ssu_asv',filter_ssu='$params.filter_ssu'" : "",
+        filter_len_asv_stats ? "filter_len_asv='$filter_len_asv_stats'" : "",
+        filter_len_asv_len_orig ? "filter_len_asv_len_orig='$filter_len_asv_len_orig'" : "",
+        params.min_len_asv ? "min_len_asv=$params.min_len_asv" : "min_len_asv=0",
+        params.max_len_asv ? "max_len_asv=$params.max_len_asv" : "max_len_asv=0",
+        filter_codons_fasta ? "filter_codons_fasta='$filter_codons_fasta',stop_codons='$params.stop_codons'" : "",
+        filter_codons_stats ? "filter_codons_stats='$filter_codons_stats'" : "",
+        "dada_min_boot=$params.dada_min_boot",
+        itsx_cutasv_summary ? "itsx_cutasv_summary='$itsx_cutasv_summary',cut_its='$params.cut_its'" : "",
+        dada2_tax ? "dada2_taxonomy='$dada2_tax'" : "",
+        dada2_tax && !params.dada_ref_tax_custom ? "dada2_ref_tax_title='$dada2_ref_tax_title',dada2_ref_tax_file='$dada2_ref_tax_file',dada2_ref_tax_citation='$dada2_ref_tax_citation'" : "",
+        cut_dada_ref_taxonomy ? "cut_dada_ref_taxonomy='$cut_dada_ref_taxonomy'" : "",
+        sintax_tax && !params.sintax_ref_tax_custom ? "sintax_taxonomy='$sintax_tax',sintax_cutoff='$params.sintax_cutoff',sintax_ref_tax_title='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["title"]}',sintax_ref_tax_file='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["file"]}',sintax_ref_tax_citation='${params.sintax_ref_databases[params.sintax_ref_taxonomy]["citation"]}'" : "",
+        sintax_tax && params.sintax_ref_tax_custom ? "sintax_taxonomy='$sintax_tax',sintax_cutoff='$params.sintax_cutoff',sintax_ref_tax_title='User-supplied reference database',sintax_ref_tax_file='${params.sintax_ref_tax_custom}',sintax_ref_tax_citation='Not specified'" : "",
+        vsearch_lca_tax && params.vsearch_lca_ref_taxonomy ? "vsearch_lca_taxonomy='$vsearch_lca_tax',vsearch_lca_ref_tax_title='${params.vsearch_lca_ref_databases[params.vsearch_lca_ref_taxonomy]["title"]}',vsearch_lca_ref_tax_file='${params.vsearch_lca_ref_databases[params.vsearch_lca_ref_taxonomy]["file"]}',vsearch_lca_ref_tax_citation='${params.vsearch_lca_ref_databases[params.vsearch_lca_ref_taxonomy]["citation"]}'" : "",
+        vsearch_lca_tax && params.vsearch_lca_ref_tax_custom ? "vsearch_lca_taxonomy='$vsearch_lca_tax',vsearch_lca_ref_tax_title='User-supplied reference database',vsearch_lca_ref_tax_file='${params.vsearch_lca_ref_tax_custom}',vsearch_lca_ref_tax_citation='Not specified'" : "",
+        kraken2_tax ? "kraken2_taxonomy='$kraken2_tax',kraken2_confidence='$params.kraken2_confidence'" : "",
+        kraken2_tax && !params.kraken2_ref_tax_custom ? "kraken2_ref_tax_title='${params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["title"]}',kraken2_ref_tax_file='${params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["file"]}',kraken2_ref_tax_citation='${params.kraken2_ref_databases[params.kraken2_ref_taxonomy]["citation"]}'" : "",
+        pplace_tax ? "pplace_taxonomy='$pplace_tax',pplace_heattree='$pplace_heattree'" : "",
+        qiime2_tax ? "qiime2_taxonomy='$qiime2_tax'" : "",
+        qiime2_tax && params.qiime_ref_taxonomy ? "qiime2_ref_tax_title='${params.qiime_ref_databases[params.qiime_ref_taxonomy]["title"]}',qiime2_ref_tax_file='${params.qiime_ref_databases[params.qiime_ref_taxonomy]["file"]}',qiime2_ref_tax_citation='${params.qiime_ref_databases[params.qiime_ref_taxonomy]["citation"]}'" : "",
+        run_qiime2 ? "val_used_taxonomy='$val_used_taxonomy'" : "",
+        filter_stats_tsv ? "filter_stats_tsv='$filter_stats_tsv',qiime2_filtertaxa='$qiime2_filtertaxa',exclude_taxa='$params.exclude_taxa',min_frequency='$params.min_frequency',min_samples='$params.min_samples'" : "",
+        barplot ? "barplot=TRUE" : "",
+        barplot && params.metadata_category_barplot ? "metadata_category_barplot='$params.metadata_category_barplot'" : "",
+        abundance_tables ? "abundance_tables=TRUE" : "",
+        alpha_rarefaction ? "alpha_rarefaction=TRUE" : "",
+        diversity_indices ? "diversity_indices_depth='$diversity_indices'": "",
+        diversity_indices_alpha ? "diversity_indices_alpha=TRUE" : "",
+        diversity_indices_beta ? "diversity_indices_beta='"+ diversity_indices_beta.join(",") +"'" : "",
+        diversity_indices_adonis ? "diversity_indices_adonis='"+ diversity_indices_adonis.join(",") +"',qiime_adonis_formula='$params.qiime_adonis_formula'" : "",
+        ancom ? "ancom='"+ ancom.join(",") +"'" : "",
+        ancombc ? "ancombc='"+ ancombc.join(",") +"'" : "",
+        ancombc_formula ? "ancombc_formula='"+ ancombc_formula.join(",") +"'" : "",
+        ancombc2 ? "ancombc2='"+ ancombc2.join(",") +"'" : "",
+        ancombc2_formula ? "ancombc2_formula='"+ ancombc2_formula.join(",") +"'" : "",
+        phyloseq ? "phyloseq='"+ phyloseq.join(",") +"'" : "",
+        tse ? "tse='"+ tse.join(",") +"'" : "",
+    ]
+    // groovy list to R named list string; findAll removes empty entries
+    params_list_named_string = params_list_named.findAll().join(',').trim()
+    """
+    #!/usr/bin/env Rscript
+    library(rmarkdown)
+
+    # Work around  https://github.com/rstudio/rmarkdown/issues/1508
+    # If the symbolic link is not replaced by a physical file
+    # output- and temporary files will be written to the original directory.
+    file.copy("./${report_template}", "./template.Rmd", overwrite = TRUE)
+
+    rmarkdown::render("template.Rmd", output_file = "summary_report.html", params = list($params_list_named_string), envir = new.env())
+
+    writeLines(c("\\"${task.process}\\":",
+        paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),
+        paste0("    rmarkdown: ", packageVersion("rmarkdown")),
+        paste0("    knitr: ", packageVersion("knitr")) ),
+        "versions.yml")
+    """
+}

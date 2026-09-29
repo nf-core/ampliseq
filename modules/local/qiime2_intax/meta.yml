@@ -1,0 +1,42 @@
+name: qiime2_intax
+description: Imports a taxonomy table into QIIME2
+keywords:
+  - qiime2
+  - import
+  - taxonomy
+tools:
+  - qiime2:
+      description: Microbiome multi-omics data science platform
+      homepage: https://qiime2.org
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:qiime2
+input:
+  - tax:
+      type: file
+      description: Taxonomy table (TSV)
+  - script:
+      type: string
+      description: Script converting the table to QIIME2 format, empty if already in that format
+output:
+  qza:
+    - taxonomy.qza:
+        type: file
+        description: QIIME2 taxonomy artifact
+        pattern: taxonomy.qza
+  versions_qiime2_intax:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

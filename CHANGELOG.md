@@ -84,12 +84,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#1035](https://github.com/nf-core/ampliseq/pull/1035) - ITSxRust 0.2.2 to 0.3.0, reducing peak memory approximately six-fold on large inputs; extraction output is unchanged (by @ayobi)
 - [#1077](https://github.com/nf-core/ampliseq/pull/1077) - MultiQC 1.34 to 1.35 (by @d4straub)
+- [#1089](https://github.com/nf-core/ampliseq/pull/1089) - Updated nf-core modules and subworkflows, and removed the stale `mafft` pin from `.nf-core.yml` (by @erikrikarddaniel)
 
 | software | previously | now   |
 | -------- | ---------- | ----- |
 | ITSxRust | 0.2.2      | 0.3.0 |
 | Savont   |            | 0.7.0 |
 | MultiQC  | 1.34       | 1.35  |
+| gappa    | 0.8.0      | 0.9.0 |
+| HMMER    | 3.3.2      | 3.4   |
 
 ### `Removed`
 

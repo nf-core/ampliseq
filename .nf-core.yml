@@ -23,7 +23,3 @@ template:
   skip_features:
     - igenomes
   version: 2.19.0dev
-update:
-  https://github.com/nf-core/modules.git:
-    nf-core:
-      mafft: feb29be775d9e41750180539e9a3bdce801d0609

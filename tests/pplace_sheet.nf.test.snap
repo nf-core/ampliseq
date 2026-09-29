@@ -72,11 +72,14 @@
                 "DUCKDB_TABLE2PARQUET": {
                     "duckdb": "1.5.5"
                 },
+                "DUCKDB_TABLE2PARQUET_TBLOUT": {
+                    "duckdb": "1.5.5"
+                },
                 "EPANG_PLACE": {
-                    "epang": "0.3.8"
+                    "epa-ng": "0.3.8"
                 },
                 "EPANG_SPLIT_CLUSTALO": {
-                    "epang": "0.3.8"
+                    "epa-ng": "0.3.8"
                 },
                 "FASTQC": {
                     "fastqc": "0.12.1"
@@ -89,20 +92,22 @@
                     "sed": "4.10"
                 },
                 "GAPPA_ASSIGN": {
-                    "gappa": "0.8.0"
+                    "gappa": "0.9.0"
                 },
                 "GAPPA_GRAFT": {
-                    "gappa": "0.8.0"
+                    "gappa": "0.9.0"
                 },
                 "GAPPA_HEATTREE": {
-                    "gappa": "0.8.0"
+                    "gappa": "0.9.0"
+                },
+                "HMMER_FORMATTSV_TBLOUT": {
+                    "gawk": "5.3.1"
                 },
                 "HMMER_HMMEXTRACT": {
                     "hmmer": "3.3.2"
                 },
                 "HMMER_HMMRANK": {
-                    "R": "4.2.3",
-                    "tidyverse": "2.0.0"
+                    "duckdb": "1.5.5"
                 },
                 "HMMER_HMMSEARCH": {
                     "hmmer": 3.4
@@ -528,10 +533,10 @@
             3826,
             276
         ],
-        "timestamp": "2026-06-24T15:20:11.672168665",
+        "timestamp": "2026-09-29T11:26:46.852451219",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.3"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     }
 }

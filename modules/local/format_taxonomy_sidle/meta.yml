@@ -52,7 +52,7 @@ topics:
         description: File containing software versions
         pattern: versions.yml
 authors:
-  - "@emnilsson"
+  - "@d4straub"
 maintainers:
   - "@d4straub"
   - "@erikrikarddaniel"

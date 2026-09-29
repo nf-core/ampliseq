@@ -46,7 +46,7 @@ topics:
         description: File containing software versions
         pattern: versions.yml
 authors:
-  - "@jtangrot"
+  - "@pieterprovoost"
 maintainers:
   - "@d4straub"
   - "@erikrikarddaniel"

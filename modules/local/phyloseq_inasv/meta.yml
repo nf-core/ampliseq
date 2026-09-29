@@ -33,7 +33,7 @@ topics:
         description: File containing software versions
         pattern: versions.yml
 authors:
-  - "@jtangrot"
+  - "@a4000"
 maintainers:
   - "@d4straub"
   - "@erikrikarddaniel"

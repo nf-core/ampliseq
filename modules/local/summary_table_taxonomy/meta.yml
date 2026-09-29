@@ -28,7 +28,7 @@ output:
   - tsv:
       - "ampliseq.taxonomy.*.tsv.gz":
           type: file
-          description: Slim, consistent-schema taxonomy table for this classifier/database (asv_id, kingdom..species, confidence) joined with the per-ASV annotations
+          description: Slim taxonomy table for this classifier/database (asv_id, the database's own ranks, confidence) joined with the per-ASV annotations
           pattern: "ampliseq.taxonomy.*.tsv.gz"
   - versions:
       - versions.yml:

@@ -1267,7 +1267,8 @@ df = as.data.frame(lapply(df, function(x) gsub(";$","",x)))
 max_taxa <- lengths(regmatches(df$Taxon, gregexpr(";", df$Taxon)))+1
 
 # Currently, all QIIME2 databases seem to have the same levels! But for compatibility, restrict number of levels to max_taxa
-level <- c("Kingdom","Phylum","Class","Order","Family","Genus","Species")
+# They all root at a domain, whichever prefix they write it with -- Greengenes 85 uses "k__".
+level <- c("Domain","Phylum","Class","Order","Family","Genus","Species")
 level <- head(level, n = max(max_taxa) )
 
 # Calculate the classified numbers/percent of asv

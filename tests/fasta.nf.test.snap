@@ -111,12 +111,12 @@
             "rrna.mito.gff:md5,df19e1b84ba6f691d20c72b397c88abf",
             "ASV_codon_filtered.fna:md5,9eac2d17e026ac8b1cba876ff3cac619",
             "ASV_codon_filtered.list:md5,6cdde55829be1ebc5d73a17602e7c881",
-            "ref_taxonomy.rdp_18.txt:md5,c20d8e186e2893ba7818a0115edb013e",
+            "ref_taxonomy.rdp_18.txt:md5,47e0a8ebcc2059bfeb879381e791fabd",
             "ASV_seqs.fasta:md5,39b0d4ad96b37fa68d4ee5c21b667fed"
         ],
-        "timestamp": "2026-08-21T15:20:21.823742365",
+        "timestamp": "2026-09-25T16:39:22.755906422",
         "meta": {
-            "nf-test": "0.9.5",
+            "nf-test": "0.9.4",
             "nextflow": "26.04.6"
         }
     }

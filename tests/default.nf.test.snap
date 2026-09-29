@@ -2288,7 +2288,7 @@
             "cutadapt_summary.tsv:md5,5d02749984a811479e7d534fda75163f",
             "ASV_seqs.fasta:md5,e3cdcd93bdce761152085a7c797763c3",
             "ASV_table.tsv:md5,d3f7d98b8750dfb3b486b32cc5d32414",
-            "ref_taxonomy.gtdb_R07-RS207.txt:md5,965c6b1f9097128572a5ec2b8e9cef06",
+            "ref_taxonomy.gtdb_R07-RS207.txt:md5,f7e717ddcb373b0496b9a49b0312b004",
             "DADA2_stats.tsv:md5,b61a945febb806ed63729bcaa8ae0575",
             "DADA2_table.tsv:md5,7ec2214a627e7492d31ac2672f82f94d",
             439,
@@ -2308,7 +2308,7 @@
             "lvl2-treatment1::b.volcano_plot.tsv:md5,d2d76d7f8824e748559295224c96d10e",
             "ASV-treatment1::a.volcano_plot.tsv:md5,c999d1f72b221f6502b7b4a3d1112b32"
         ],
-        "timestamp": "2026-09-24T21:14:21.640172338",
+        "timestamp": "2026-09-25T12:17:51.638398329",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"

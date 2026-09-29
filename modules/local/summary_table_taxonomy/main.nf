@@ -29,13 +29,15 @@ process SUMMARY_TABLE_TAXONOMY {
         library(stringr)
     })
 
-    RANKS <- c("kingdom", "phylum", "class", "order", "family", "genus", "species")
+    RANKS <- c("domain", "phylum", "class", "order", "family", "genus", "species")
 
     tax_raw <- read_tsv("$tax_tsv", show_col_types = FALSE)
 
     if ("${meta.classifier}" == "QIIME2") {
-        # QIIME2 gives one "k__X; p__Y; ..." string per ASV rather than named rank columns.
-        prefix_to_rank <- c(k = "kingdom", p = "phylum", c = "class", o = "order", f = "family", g = "genus", s = "species")
+        # QIIME2 gives one "d__X; p__Y; ..." string per ASV rather than named rank columns. Its
+        # databases disagree on the top prefix -- SILVA and Greengenes2 write "d__", Greengenes 85
+        # "k__" -- while all of them hold a domain there, so both land in "domain".
+        prefix_to_rank <- c(d = "domain", k = "domain", p = "phylum", c = "class", o = "order", f = "family", g = "genus", s = "species")
         parse_taxon <- function(taxon) {
             out <- setNames(rep(NA_character_, length(RANKS)), RANKS)
             if (!is.na(taxon)) {
@@ -80,7 +82,7 @@ process SUMMARY_TABLE_TAXONOMY {
 
         # DADA2_ADDSPECIES puts its exact matches in "Species_exact" and leaves "Species" out unless
         # assignTaxonomy's taxlevels had one. Many databases reach species through addSpecies alone,
-        # so the promised kingdom..species schema needs both columns folded into one.
+        # so the two columns are folded into one "species".
         if (!"species" %in% colnames(tax) && "species_exact" %in% colnames(tax)) {
             tax <- tax |> rename(species = species_exact)
         } else if ("species" %in% colnames(tax) && "species_exact" %in% colnames(tax)) {
@@ -108,7 +110,7 @@ process SUMMARY_TABLE_TAXONOMY {
     stub:
     def outfile = "ampliseq.taxonomy.${meta.classifier}.${meta.database}.tsv.gz"
     """
-    echo -e "asv_id\\tkingdom\\tphylum\\tclass\\torder\\tfamily\\tgenus\\tspecies\\tconfidence" | gzip > ${outfile}
+    echo -e "asv_id\\tdomain\\tphylum\\tclass\\torder\\tfamily\\tgenus\\tspecies\\tconfidence" | gzip > ${outfile}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -1,0 +1,61 @@
+name: dada2_filtntrim
+description: Filters and trims reads with DADA2
+keywords:
+  - dada2
+  - filtering
+  - trimming
+  - fastq
+tools:
+  - dada2:
+      description: Infers exact amplicon sequence variants (ASVs) from high-throughput amplicon sequencing data
+      homepage: https://bioconductor.org/packages/dada2
+      documentation: https://benjjneb.github.io/dada2/
+      licence:
+        - LGPL-2
+      identifier: biotools:dada2
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information, e.g. [ id:'test' ]
+    - reads:
+        type: file
+        description: Reads (FASTQ)
+    - trunclenf_in:
+        type: integer
+        description: Truncation length of forward reads
+    - trunclenr_in:
+        type: integer
+        description: Truncation length of reverse reads
+output:
+  reads_logs_args:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information, e.g. [ id:'test' ]
+      - "*.filt.fastq.gz":
+          type: file
+          description: Filtered reads (FASTQ)
+          pattern: "*.filt.fastq.gz"
+      - "*.filter_stats.tsv":
+          type: file
+          description: Filtering statistics (TSV)
+          pattern: "*.filter_stats.tsv"
+      - "*.args.txt":
+          type: file
+          description: Arguments passed to the tool, for the summary report
+          pattern: "*.args.txt"
+  versions_dada2_filtntrim:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

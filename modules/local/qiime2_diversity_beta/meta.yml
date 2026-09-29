@@ -1,0 +1,50 @@
+name: qiime2_diversity_beta
+description: Tests beta diversity between metadata groups with QIIME2
+keywords:
+  - qiime2
+  - beta diversity
+  - statistics
+tools:
+  - qiime2:
+      description: Microbiome multi-omics data science platform
+      homepage: https://qiime2.org
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:qiime2
+input:
+  - - metadata:
+        type: file
+        description: Sample metadata table (TSV)
+    - core:
+        type: file
+        description: Distance matrix artifact
+    - category:
+        type: string
+        description: Metadata column to test
+output:
+  beta:
+    - beta_diversity/*:
+        type: file
+        description: Exported beta diversity group significance
+        pattern: beta_diversity/*
+  qzv:
+    - "*.qzv":
+        type: file
+        description: QIIME2 visualisation
+        pattern: "*.qzv"
+  versions_qiime2_diversity_beta:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

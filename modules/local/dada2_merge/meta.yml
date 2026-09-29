@@ -1,0 +1,63 @@
+name: dada2_merge
+description: Merges DADA2 tables and statistics of all sequencing runs
+keywords:
+  - dada2
+  - asv
+  - merge
+tools:
+  - dada2:
+      description: Infers exact amplicon sequence variants (ASVs) from high-throughput amplicon sequencing data
+      homepage: https://bioconductor.org/packages/dada2
+      documentation: https://benjjneb.github.io/dada2/
+      licence:
+        - LGPL-2
+      identifier: biotools:dada2
+input:
+  - files:
+      type: file
+      description: DADA2 statistics tables (TSV)
+  - rds:
+      type: file
+      description: DADA2 ASV tables (RDS)
+output:
+  dada2stats:
+    - DADA2_stats.tsv:
+        type: file
+        description: Read counts through the DADA2 steps (TSV)
+        pattern: DADA2_stats.tsv
+  dada2asv:
+    - DADA2_table.tsv:
+        type: file
+        description: DADA2 ASV table with sequences (TSV)
+        pattern: DADA2_table.tsv
+  asv:
+    - ASV_table.tsv:
+        type: file
+        description: ASV count table (TSV), ASV IDs in the first column and one column per sample
+        pattern: ASV_table.tsv
+  fasta:
+    - ASV_seqs.fasta:
+        type: file
+        description: ASV sequences in FASTA format
+        pattern: ASV_seqs.fasta
+  rds:
+    - DADA2_table.rds:
+        type: file
+        description: DADA2 ASV table (RDS)
+        pattern: DADA2_table.rds
+  versions_dada2_merge:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

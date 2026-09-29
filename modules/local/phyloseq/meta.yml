@@ -1,0 +1,54 @@
+name: phyloseq
+description: Creates a phyloseq object
+keywords:
+  - phyloseq
+  - r object
+  - microbiome
+tools:
+  - phyloseq:
+      description: Import, storage, analysis and graphical display of microbiome census data
+      homepage: https://bioconductor.org/packages/phyloseq
+      licence:
+        - AGPL-3
+      identifier: biotools:phyloseq
+input:
+  - - prefix:
+        type: string
+        description: Output file name prefix
+    - tax_tsv:
+        type: file
+        description: Taxonomy table (TSV)
+    - otu_tsv:
+        type: file
+        description: Abundance table (TSV)
+    - sam_tsv:
+        type: file
+        description: Sample metadata (TSV)
+    - tree:
+        type: file
+        description: Phylogenetic tree (Newick)
+output:
+  rds:
+    - - prefix:
+          type: string
+          description: Output file name prefix
+      - "*phyloseq.rds":
+          type: file
+          description: phyloseq object (RDS)
+          pattern: "*phyloseq.rds"
+  versions_phyloseq:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@a4000"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

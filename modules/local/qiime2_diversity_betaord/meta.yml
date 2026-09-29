@@ -1,0 +1,48 @@
+name: qiime2_diversity_betaord
+description: Plots beta diversity ordinations with QIIME2 Emperor
+keywords:
+  - qiime2
+  - beta diversity
+  - ordination
+  - emperor
+tools:
+  - qiime2:
+      description: Microbiome multi-omics data science platform
+      homepage: https://qiime2.org
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:qiime2
+input:
+  - - metadata:
+        type: file
+        description: Sample metadata table (TSV)
+    - core:
+        type: file
+        description: PCoA results artifact
+output:
+  beta:
+    - beta_diversity/*:
+        type: file
+        description: Exported Emperor plots
+        pattern: beta_diversity/*
+  qzv:
+    - "*.qzv":
+        type: file
+        description: QIIME2 visualisation
+        pattern: "*.qzv"
+  versions_qiime2_diversity_betaord:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

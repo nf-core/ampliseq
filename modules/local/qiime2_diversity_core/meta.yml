@@ -1,0 +1,72 @@
+name: qiime2_diversity_core
+description: Computes core phylogenetic diversity metrics with QIIME2
+keywords:
+  - qiime2
+  - diversity
+  - alpha diversity
+  - beta diversity
+tools:
+  - qiime2:
+      description: Microbiome multi-omics data science platform
+      homepage: https://qiime2.org
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:qiime2
+input:
+  - metadata:
+      type: file
+      description: Sample metadata table (TSV)
+  - table:
+      type: file
+      description: QIIME2 feature table artifact
+  - tree:
+      type: file
+      description: QIIME2 rooted tree artifact
+  - stats:
+      type: file
+      description: Counts per sample (TSV), to set the rarefaction depth
+  - mindepth:
+      type: integer
+      description: Minimum rarefaction depth
+output:
+  pcoa:
+    - diversity_core/*_pcoa_results.qza:
+        type: file
+        description: PCoA results artifacts
+        pattern: diversity_core/*_pcoa_results.qza
+  vector:
+    - diversity_core/*_vector.qza:
+        type: file
+        description: Alpha diversity vector artifacts
+        pattern: diversity_core/*_vector.qza
+  distance:
+    - diversity_core/*_distance_matrix.qza:
+        type: file
+        description: Distance matrix artifacts
+        pattern: diversity_core/*_distance_matrix.qza
+  distance_tsv:
+    - "*_distance_matrix.tsv":
+        type: file
+        description: Distance matrices (TSV)
+        pattern: "*_distance_matrix.tsv"
+  versions_qiime2_diversity_core:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+  depth:
+    - "*rarefaction.txt":
+        type: file
+        description: Rarefaction depth used
+        pattern: "*rarefaction.txt"
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

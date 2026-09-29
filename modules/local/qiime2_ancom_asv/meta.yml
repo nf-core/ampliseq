@@ -1,0 +1,42 @@
+name: qiime2_ancom_asv
+description: Differential abundance testing of ASVs with QIIME2 ANCOM
+keywords:
+  - qiime2
+  - ancom
+  - differential abundance
+tools:
+  - qiime2:
+      description: Microbiome multi-omics data science platform
+      homepage: https://qiime2.org
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:qiime2
+input:
+  - - metadata:
+        type: file
+        description: Sample metadata table (TSV)
+    - table:
+        type: file
+        description: QIIME2 feature table artifact
+output:
+  ancom:
+    - ancom/*:
+        type: file
+        description: Exported ANCOM results
+        pattern: ancom/*
+  versions_qiime2_ancom_asv:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

@@ -1,0 +1,42 @@
+name: qiime2_seqfiltertable
+description: Restricts QIIME2 sequences to the features of a feature table
+keywords:
+  - qiime2
+  - filter
+  - sequences
+tools:
+  - qiime2:
+      description: Microbiome multi-omics data science platform
+      homepage: https://qiime2.org
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:qiime2
+input:
+  - table:
+      type: file
+      description: QIIME2 feature table artifact
+  - repseq:
+      type: file
+      description: QIIME2 representative sequences artifact
+output:
+  qza:
+    - filtered-sequences.qza:
+        type: file
+        description: QIIME2 representative sequences artifact
+        pattern: filtered-sequences.qza
+  versions_qiime2_seqfiltertable:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

@@ -1,0 +1,49 @@
+name: qiime2_export_reltax
+description: Exports relative taxon abundances per taxonomic level from QIIME2
+keywords:
+  - qiime2
+  - export
+  - relative abundance
+  - taxonomy
+tools:
+  - qiime2:
+      description: Microbiome multi-omics data science platform
+      homepage: https://qiime2.org
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:qiime2
+input:
+  - table:
+      type: file
+      description: QIIME2 feature table artifact
+  - taxonomy:
+      type: file
+      description: QIIME2 taxonomy artifact
+  - tax_agglom_min:
+      type: integer
+      description: Lowest taxonomic level to collapse to
+  - tax_agglom_max:
+      type: integer
+      description: Highest taxonomic level to collapse to
+output:
+  tsv:
+    - "*.tsv":
+        type: file
+        description: Relative abundances per taxonomic level (TSV)
+        pattern: "*.tsv"
+  versions_qiime2_export_reltax:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

@@ -1,0 +1,39 @@
+name: qiime2_export_relasv
+description: Exports relative ASV abundances from QIIME2
+keywords:
+  - qiime2
+  - export
+  - relative abundance
+tools:
+  - qiime2:
+      description: Microbiome multi-omics data science platform
+      homepage: https://qiime2.org
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:qiime2
+input:
+  - table:
+      type: file
+      description: QIIME2 feature table artifact
+output:
+  tsv:
+    - rel-table-ASV.tsv:
+        type: file
+        description: Relative ASV abundances (TSV)
+        pattern: rel-table-ASV.tsv
+  versions_qiime2_export_relasv:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

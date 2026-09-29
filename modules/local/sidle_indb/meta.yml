@@ -1,0 +1,48 @@
+name: sidle_indb
+description: Imports reference sequences and taxonomy into QIIME2 for Sidle
+keywords:
+  - sidle
+  - multi-region
+  - import
+  - database
+tools:
+  - q2-sidle:
+      description: QIIME 2 implementation of SMURF, reconstructing full-length marker genes from multiple amplified regions
+      homepage: https://github.com/jwdebelius/q2-sidle
+      licence:
+        - BSD-3-Clause
+      identifier: ""
+input:
+  - seq:
+      type: file
+      description: Reference sequences (FASTA)
+  - tax:
+      type: file
+      description: Reference taxonomy (TSV)
+output:
+  seq:
+    - db_sequences.qza:
+        type: file
+        description: Reference sequences artifact
+        pattern: db_sequences.qza
+  tax:
+    - db_taxonomy.qza:
+        type: file
+        description: Reference taxonomy artifact
+        pattern: db_taxonomy.qza
+  versions_sidle_indb:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

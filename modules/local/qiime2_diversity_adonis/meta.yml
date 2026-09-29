@@ -1,0 +1,51 @@
+name: qiime2_diversity_adonis
+description: Tests beta diversity against a metadata formula with QIIME2 adonis
+keywords:
+  - qiime2
+  - beta diversity
+  - adonis
+  - permanova
+tools:
+  - qiime2:
+      description: Microbiome multi-omics data science platform
+      homepage: https://qiime2.org
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:qiime2
+input:
+  - - metadata:
+        type: file
+        description: Sample metadata table (TSV)
+    - core:
+        type: file
+        description: Distance matrix artifact
+    - formula:
+        type: string
+        description: Adonis formula
+output:
+  html:
+    - adonis/*:
+        type: file
+        description: Exported adonis results
+        pattern: adonis/*
+  qzv:
+    - "*.qzv":
+        type: file
+        description: QIIME2 visualisation
+        pattern: "*.qzv"
+  versions_qiime2_diversity_adonis:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

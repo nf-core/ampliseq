@@ -1,0 +1,62 @@
+name: filter_len
+description: Filters ASVs by sequence length
+keywords:
+  - length
+  - filter
+  - asv
+tools:
+  - biostrings:
+      description: Memory efficient string containers, string matching algorithms and other utilities for biological sequences
+      homepage: https://bioconductor.org/packages/Biostrings
+      licence:
+        - Artistic-2.0
+      identifier: biotools:biostrings
+input:
+  - fasta:
+      type: file
+      description: ASV sequences in FASTA format
+  - table:
+      type: file
+      description: ASV count table (TSV), ASV IDs in the first column and one column per sample
+output:
+  stats:
+    - stats.len.tsv:
+        type: file
+        description: Filtering statistics (TSV)
+        pattern: stats.len.tsv
+  asv:
+    - ASV_table.len.tsv:
+        type: file
+        description: ASV count table after filtering (TSV)
+        pattern: ASV_table.len.tsv
+  fasta:
+    - ASV_seqs.len.fasta:
+        type: file
+        description: ASV sequences after filtering (FASTA)
+        pattern: ASV_seqs.len.fasta
+  len_orig:
+    - ASV_len_orig.tsv:
+        type: file
+        description: Length distribution before filtering (TSV)
+        pattern: ASV_len_orig.tsv
+  len_filt:
+    - ASV_len_filt.tsv:
+        type: file
+        description: Length distribution after filtering (TSV)
+        pattern: ASV_len_filt.tsv
+  versions_filter_len:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

@@ -1,0 +1,57 @@
+name: dada2_addspecies
+description: Adds species to a DADA2 taxonomy table by exact matching
+keywords:
+  - dada2
+  - taxonomy
+  - species
+tools:
+  - dada2:
+      description: Infers exact amplicon sequence variants (ASVs) from high-throughput amplicon sequencing data
+      homepage: https://bioconductor.org/packages/dada2
+      documentation: https://benjjneb.github.io/dada2/
+      licence:
+        - LGPL-2
+      identifier: biotools:dada2
+input:
+  - - db_key:
+        type: string
+        description: Key of the reference taxonomy database, as in --dada_ref_taxonomy
+    - taxtable:
+        type: file
+        description: DADA2 taxonomy table (TSV)
+    - database:
+        type: file
+        description: Reference sequences for species assignment, from FORMAT_TAXONOMY
+    - taxlevels_input:
+        type: string
+        description: Comma-separated taxonomic rank names, empty to use the database's own
+output:
+  tsv:
+    - - db_key:
+          type: string
+          description: Key of the reference taxonomy database, as in --dada_ref_taxonomy
+      - ${taxtable.baseName}.species.tsv:
+          type: file
+          description: DADA2 taxonomy table with species (TSV)
+          pattern: ${taxtable.baseName}.species.tsv
+  versions_dada2_addspecies:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+  args:
+    - "*.args.txt":
+        type: file
+        description: Arguments passed to the tool, for the summary report
+        pattern: "*.args.txt"
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

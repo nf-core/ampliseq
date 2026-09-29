@@ -1,0 +1,58 @@
+name: itsxrust_cutasv
+description: Extracts ITS regions from ASV sequences with ITSxRust
+keywords:
+  - itsxrust
+  - its
+  - asv
+  - extraction
+tools:
+  - itsxrust:
+      description: ITS region extraction for long-read amplicon sequencing
+      homepage: https://github.com/ayobi/ITSxRust
+      licence:
+        - MIT
+      identifier: ""
+input:
+  - fasta:
+      type: file
+      description: ASV sequences in FASTA format
+  - outfile:
+      type: string
+      description: Output file name
+output:
+  fasta:
+    - outfile:
+        type: file
+        description: Extracted ITS sequences (FASTA)
+        pattern: outfile
+  summary:
+    - ASV_ITS_seqs.summary.txt:
+        type: file
+        description: ITSxRust summary
+        pattern: ASV_ITS_seqs.summary.txt
+  fastas:
+    - ASV_ITS_seqs.*fasta:
+        type: file
+        description: Sequences of the individual ITS subregions (FASTA)
+        pattern: ASV_ITS_seqs.*fasta
+  versions_itsxrust_cutasv:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+  args:
+    - "*.args.txt":
+        type: file
+        description: Arguments passed to the tool, for the summary report
+        pattern: "*.args.txt"
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@ayobi"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

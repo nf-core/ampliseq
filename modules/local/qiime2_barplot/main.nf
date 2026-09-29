@@ -1,0 +1,41 @@
+process QIIME2_BARPLOT {
+    label 'process_low'
+
+    conda "${moduleDir}/environment.yml"
+    container "qiime2/qiime2:2026.4"
+
+    input:
+    path(metadata)
+    path(table)
+    path(taxonomy)
+    val(setting)
+
+    output:
+    path("barplot${suffix}/*"), emit: folder
+    path "versions.yml"       , emit: versions_qiime2_barplot, topic: versions
+
+    script:
+    suffix = setting ? "_${table.baseName}" : ""
+    def metadata_cmd = metadata ? "--m-metadata-file ${metadata}": ""
+    """
+    export XDG_CONFIG_HOME="./xdgconfig"
+    export XDG_CACHE_HOME="./xqcache"
+    export MPLCONFIGDIR="./mplconfigdir"
+    export NUMBA_CACHE_DIR="./numbacache"
+
+    qiime taxa barplot  \\
+        --i-table ${table}  \\
+        --i-taxonomy ${taxonomy}  \\
+        ${metadata_cmd}  \\
+        --o-visualization taxa-bar-plots.qzv  \\
+        --verbose
+    qiime tools export \\
+        --input-path taxa-bar-plots.qzv  \\
+        --output-path barplot${suffix}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        qiime2: \$( qiime --version | sed '1!d;s/.* //' )
+    END_VERSIONS
+    """
+}

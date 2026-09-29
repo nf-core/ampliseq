@@ -1,0 +1,41 @@
+name: trunclen
+description: Determines truncation lengths from read quality statistics
+keywords:
+  - truncation
+  - quality
+  - dada2
+tools:
+  - pandas:
+      description: Data analysis and manipulation tool built on Python
+      homepage: https://pandas.pydata.org/
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:pandas
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information, e.g. [ id:'test' ]
+    - qual_stats:
+        type: file
+        description: Quality statistics per position (TSV)
+output:
+  trunc:
+    - meta:
+        type: map
+        description: Groovy Map containing sample information, e.g. [ id:'test' ]
+  versions_trunclen:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

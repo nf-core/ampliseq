@@ -1,0 +1,53 @@
+name: sidle_treerecon
+description: Inserts reconstructed fragments into a reference tree with SEPP
+keywords:
+  - sidle
+  - multi-region
+  - phylogeny
+  - sepp
+tools:
+  - q2-sidle:
+      description: QIIME 2 implementation of SMURF, reconstructing full-length marker genes from multiple amplified regions
+      homepage: https://github.com/jwdebelius/q2-sidle
+      licence:
+        - BSD-3-Clause
+      identifier: ""
+input:
+  - reconstruction_fragments:
+      type: file
+      description: Reconstructed fragments artifact
+  - ref_db_tree:
+      type: file
+      description: SEPP reference database artifact
+output:
+  qza:
+    - reconstructed_tree.qza:
+        type: file
+        description: QIIME2 rooted tree artifact
+        pattern: reconstructed_tree.qza
+  qza_placements:
+    - reconstruction_placements.qza:
+        type: file
+        description: Fragment placements artifact
+        pattern: reconstruction_placements.qza
+  nwk:
+    - reconstructed_tree.nwk:
+        type: file
+        description: Reconstructed tree (Newick)
+        pattern: reconstructed_tree.nwk
+  versions_sidle_treerecon:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

@@ -1,0 +1,242 @@
+name: summary_report
+description: Renders the pipeline summary report with R Markdown
+keywords:
+  - report
+  - rmarkdown
+  - summary
+tools:
+  - rmarkdown:
+      description: Dynamic documents for R
+      homepage: https://rmarkdown.rstudio.com/
+      licence:
+        - GPL-3
+      identifier: ""
+input:
+  - report_template:
+      type: file
+      description: R Markdown template
+  - report_styles:
+      type: file
+      description: CSS styles
+  - report_logo:
+      type: file
+      description: Logo image
+  - report_abstract:
+      type: file
+      description: Abstract to include
+  - metadata:
+      type: file
+      description: Sample metadata table (TSV)
+  - input_samplesheet:
+      type: file
+      description: Input sample sheet
+  - input_fasta:
+      type: file
+      description: Input sequences (FASTA)
+  - - meta_mqc:
+        type: map
+        description: Groovy Map for the MultiQC plots
+    - mqc_plots:
+        type: file
+        description: MultiQC plots
+  - cutadapt_summary:
+      type: file
+      description: Cutadapt summary table
+  - - meta_porechop_abi:
+        type: map
+        description: Groovy Map for the Porechop_ABI logs
+    - porechop_abi_log_paths:
+        type: file
+        description: Porechop_ABI logs
+  - chopper_stats:
+      type: file
+      description: Chopper statistics
+  - savont_asv_table:
+      type: file
+      description: Savont ASV table
+  - savont_stats:
+      type: file
+      description: Savont statistics
+  - find_truncation_values:
+      type: boolean
+      description: Whether truncation values were determined automatically
+  - dada_filtntrim_args:
+      type: file
+      description: DADA2 filterAndTrim arguments
+  - dada_qual_stats:
+      type: file
+      description: DADA2 quality statistics before preprocessing
+  - dada_pp_qual_stats:
+      type: file
+      description: DADA2 quality statistics after preprocessing
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information, e.g. [ id:'test' ]
+    - dada_err_svgs:
+        type: file
+        description: DADA2 error model plots
+  - dada_asv_table:
+      type: file
+      description: DADA2 ASV table
+  - dada_asv_fa:
+      type: file
+      description: DADA2 ASV sequences
+  - dada_tab:
+      type: file
+      description: DADA2 table with sequences
+  - dada_stats:
+      type: file
+      description: DADA2 read count statistics
+  - mergepairs_strategy:
+      type: string
+      description: Read pair merging strategy
+  - vsearch_cluster:
+      type: file
+      description: VSEARCH clustering statistics
+  - decontam:
+      type: boolean
+      description: Whether decontam ran
+  - decontaminated_counts:
+      type: file
+      description: decontam counts
+  - notcontaminant_counts:
+      type: file
+      description: isNotContaminant counts
+  - decontaminated_details:
+      type: file
+      description: decontam statistics per feature
+  - notcontaminant_details:
+      type: file
+      description: isNotContaminant statistics per feature
+  - barrnap_summary:
+      type: file
+      description: Barrnap summary
+  - filter_ssu_stats:
+      type: file
+      description: rRNA filtering statistics
+  - filter_ssu_asv:
+      type: file
+      description: ASV table after rRNA filtering
+  - filter_len_asv_stats:
+      type: file
+      description: Length filtering statistics
+  - filter_len_asv_len_orig:
+      type: file
+      description: Length distribution before filtering
+  - filter_codons_fasta:
+      type: file
+      description: Sequences after codon filtering
+  - filter_codons_stats:
+      type: file
+      description: Codon filtering statistics
+  - itsx_cutasv_summary:
+      type: file
+      description: ITS extraction summary
+  - dada2_tax:
+      type: file
+      description: DADA2 taxonomy tables
+  - - meta_ref:
+        type: map
+        description: Groovy Map for the reference database Cutadapt logs
+    - cut_dada_ref_taxonomy:
+        type: file
+        description: Cutadapt logs of reference database extraction, one per database
+  - sintax_tax:
+      type: file
+      description: SINTAX taxonomy table
+  - vsearch_lca_tax:
+      type: file
+      description: VSEARCH LCA taxonomy table
+  - kraken2_tax:
+      type: file
+      description: Kraken2 taxonomy table
+  - pplace_tax:
+      type: file
+      description: Phylogenetic placement taxonomy table
+  - - meta_pplace:
+        type: map
+        description: Groovy Map for the placement heat tree
+    - pplace_heattree:
+        type: file
+        description: Phylogenetic placement heat tree
+  - qiime2_tax:
+      type: file
+      description: QIIME2 taxonomy table
+  - run_qiime2:
+      type: boolean
+      description: Whether QIIME2 ran
+  - val_used_taxonomy:
+      type: string
+      description: Taxonomy used downstream
+  - qiime2_filtertaxa:
+      type: string
+      description: ASV counts before and after QIIME2 taxa filtering
+  - filter_stats_tsv:
+      type: file
+      description: Filtering statistics
+  - barplot:
+      type: file
+      description: QIIME2 barplot
+  - abundance_tables:
+      type: file
+      description: Abundance tables
+  - alpha_rarefaction:
+      type: boolean
+      description: Whether alpha rarefaction ran
+  - diversity_indices:
+      type: file
+      description: Diversity rarefaction depth
+  - diversity_indices_alpha:
+      type: file
+      description: Alpha diversity results
+  - diversity_indices_beta:
+      type: file
+      description: Beta diversity results
+  - diversity_indices_adonis:
+      type: file
+      description: Adonis results
+  - ancom:
+      type: file
+      description: ANCOM results
+  - ancombc:
+      type: file
+      description: ANCOM-BC results
+  - ancombc_formula:
+      type: file
+      description: ANCOM-BC formula results
+  - ancombc2:
+      type: file
+      description: ANCOM-BC2 results
+  - ancombc2_formula:
+      type: file
+      description: ANCOM-BC2 formula results
+  - picrust_pathways:
+      type: file
+      description: PICRUSt2 pathway predictions
+  - phyloseq:
+      type: file
+      description: phyloseq objects
+  - tse:
+      type: file
+      description: TreeSummarizedExperiment objects
+output:
+  svg:
+    - "*.svg":
+        type: file
+        description: Plot in SVG format
+        pattern: "*.svg"
+  report:
+    - summary_report.html:
+        type: file
+        description: Summary report (HTML)
+        pattern: summary_report.html
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@tillenglert"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

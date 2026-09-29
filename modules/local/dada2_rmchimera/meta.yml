@@ -1,0 +1,51 @@
+name: dada2_rmchimera
+description: Removes chimeric sequences with DADA2
+keywords:
+  - dada2
+  - chimera
+  - asv
+tools:
+  - dada2:
+      description: Infers exact amplicon sequence variants (ASVs) from high-throughput amplicon sequencing data
+      homepage: https://bioconductor.org/packages/dada2
+      documentation: https://benjjneb.github.io/dada2/
+      licence:
+        - LGPL-2
+      identifier: biotools:dada2
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information, e.g. [ id:'test' ]
+    - seqtab:
+        type: file
+        description: DADA2 sequence table (RDS)
+output:
+  rds:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information, e.g. [ id:'test' ]
+      - "*.ASVtable.rds":
+          type: file
+          description: Chimera-free DADA2 sequence table (RDS)
+          pattern: "*.ASVtable.rds"
+  versions_dada2_rmchimera:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+  args:
+    - "*.args.txt":
+        type: file
+        description: Arguments passed to the tool, for the summary report
+        pattern: "*.args.txt"
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

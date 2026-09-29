@@ -62,6 +62,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | `--consolidate_taxonomies`                                                               | output named after the first-listed database | unchanged, `Domain`/`Kingdom` still treated as one rank when matching columns |
 
 - [#1087](https://github.com/nf-core/ampliseq/pull/1087) - Replaced the workflow overview figure with a simplified metro map. (by @d4straub)
+- [#1088](https://github.com/nf-core/ampliseq/pull/1088) - Local modules and subworkflows moved from `<name>.nf` to `<name>/main.nf`, following the nf-core directory structure; every local module now has a `meta.yml` and an `environment.yml`, the latter a symlink for modules sharing an environment in `modules/local/envs/`; the unused QIIME2 2024.10 environment file is removed (by @erikrikarddaniel)
 
 ### `Fixed`
 

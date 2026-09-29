@@ -1,0 +1,28 @@
+process TRUNCLEN {
+    tag "$meta"
+    label 'process_single'
+
+    conda "${moduleDir}/environment.yml"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/pandas:1.1.5' :
+        'biocontainers/pandas:1.1.5' }"
+
+    input:
+    tuple val(meta), path(qual_stats)
+
+    output:
+    tuple val(meta), stdout, emit: trunc
+    path "versions.yml"    , emit: versions_trunclen, topic: versions
+
+    script:
+    def args = task.ext.args ?: ''
+    """
+    trunclen.py $qual_stats $args
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python --version 2>&1 | sed 's/Python //g')
+        pandas: \$(python -c "import pkg_resources; print(pkg_resources.get_distribution('pandas').version)")
+    END_VERSIONS
+    """
+}

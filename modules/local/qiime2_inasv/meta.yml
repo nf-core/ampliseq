@@ -1,0 +1,39 @@
+name: qiime2_inasv
+description: Imports an ASV table into QIIME2
+keywords:
+  - qiime2
+  - import
+  - feature table
+tools:
+  - qiime2:
+      description: Microbiome multi-omics data science platform
+      homepage: https://qiime2.org
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:qiime2
+input:
+  - asv:
+      type: file
+      description: ASV count table (TSV), ASV IDs in the first column and one column per sample
+output:
+  qza:
+    - table.qza:
+        type: file
+        description: QIIME2 feature table artifact
+        pattern: table.qza
+  versions_qiime2_inasv:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

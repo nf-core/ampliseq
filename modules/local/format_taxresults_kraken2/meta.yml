@@ -1,0 +1,66 @@
+name: format_taxresults_kraken2
+description: Converts Kraken2 results into taxonomy tables
+keywords:
+  - kraken2
+  - taxonomy
+  - format
+tools:
+  - r:
+      description: Language and environment for statistical computing and graphics
+      homepage: https://www.r-project.org/
+      licence:
+        - GPL-2.0-or-later
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information, e.g. [ id:'test' ]
+    - report:
+        type: file
+        description: Kraken2 report
+  - - meta2:
+        type: map
+        description: Groovy Map containing sample information
+    - classified_reads_assignment:
+        type: file
+        description: Kraken2 per-sequence classification
+  - taxlevels_input:
+      type: string
+      description: Comma-separated taxonomic rank names, empty to use the database's own
+output:
+  keys_tsv:
+    - "*.kraken2.keys.tsv":
+        type: file
+        description: Taxonomy of each Kraken2 taxon ID (TSV)
+        pattern: "*.kraken2.keys.tsv"
+  complete_tsv:
+    - "*.kraken2.complete.tsv":
+        type: file
+        description: Complete taxonomy per ASV (TSV)
+        pattern: "*.kraken2.complete.tsv"
+  tsv:
+    - "*.kraken2.tsv":
+        type: file
+        description: Taxonomy table (TSV)
+        pattern: "*.kraken2.tsv"
+  qiime2_tsv:
+    - "*.kraken2.into-qiime2.tsv":
+        type: file
+        description: Taxonomy table for import into QIIME2 (TSV)
+        pattern: "*.kraken2.into-qiime2.tsv"
+  versions_format_taxresults_kraken2:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

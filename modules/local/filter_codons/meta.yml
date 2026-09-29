@@ -1,0 +1,58 @@
+name: filter_codons
+description: Removes ASVs with stop codons in the expected reading frame
+keywords:
+  - codon
+  - filter
+  - asv
+  - coi
+tools:
+  - pandas:
+      description: Data analysis and manipulation tool built on Python
+      homepage: https://pandas.pydata.org/
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:pandas
+input:
+  - fasta:
+      type: file
+      description: ASV sequences in FASTA format
+  - asv:
+      type: file
+      description: ASV count table (TSV), ASV IDs in the first column and one column per sample
+output:
+  asv:
+    - ASV_codon_filtered.table.tsv:
+        type: file
+        description: ASV count table after filtering (TSV)
+        pattern: ASV_codon_filtered.table.tsv
+  fasta:
+    - ASV_codon_filtered.fna:
+        type: file
+        description: ASV sequences after filtering (FASTA)
+        pattern: ASV_codon_filtered.fna
+  list:
+    - ASV_codon_filtered.list:
+        type: file
+        description: IDs of the ASVs kept
+        pattern: ASV_codon_filtered.list
+  stats:
+    - codon.filtered.stats.tsv:
+        type: file
+        description: Filtering statistics (TSV)
+        pattern: codon.filtered.stats.tsv
+  versions_filter_codons:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@lokeshbio"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

@@ -1,0 +1,46 @@
+name: qiime2_filtersamples
+description: Filters samples of a QIIME2 feature table by metadata
+keywords:
+  - qiime2
+  - feature table
+  - filter
+  - samples
+tools:
+  - qiime2:
+      description: Microbiome multi-omics data science platform
+      homepage: https://qiime2.org
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:qiime2
+input:
+  - - metadata:
+        type: file
+        description: Sample metadata table (TSV)
+    - table:
+        type: file
+        description: QIIME2 feature table artifact
+    - filter:
+        type: string
+        description: Metadata column to filter by
+output:
+  qza:
+    - "*.qza":
+        type: file
+        description: Filtered feature table artifact
+        pattern: "*.qza"
+  versions_qiime2_filtersamples:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

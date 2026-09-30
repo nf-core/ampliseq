@@ -43,10 +43,7 @@ process ITSXRUST_CUTASV {
         cp ASV_ITS_seqs.its2.fasta ASV_ITS_seqs.ITS2.tmp && mv ASV_ITS_seqs.ITS2.tmp ASV_ITS_seqs.ITS2.fasta && rm -f ASV_ITS_seqs.its2.fasta
     fi
 
-    # Handle partial naming: if its_partial is used, the workflow expects
-    # filenames like ASV_ITS_seqs.full_and_partial.fasta
-    # This is handled by the outfile val — if outfile contains "full_and_partial",
-    # we rename accordingly (ITSxRust's partial-chain fallback includes partials by default)
+    # With its_partial the workflow expects ASV_ITS_seqs.full_and_partial.fasta; ITSxRust's partial-chain fallback includes partials by default
     if echo "$outfile" | grep -q "full_and_partial"; then
         if [ -f ASV_ITS_seqs.full.fasta ]; then
             cp ASV_ITS_seqs.full.fasta "$outfile"

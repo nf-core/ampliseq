@@ -285,10 +285,8 @@ def validateInputParameters() {
         error("Incompatible parameters: Either `--skip_dada_addspecies` or `--dada_ref_tax_custom_sp` is additionally required to `--dada_ref_tax_custom`.")
     }
 
-    // --dada_ref_tax_custom silently takes priority over --dada_ref_taxonomy (including every
-    // database listed in it, if a comma-separated list); warn regardless of whether the latter is
-    // still at its default, since the warning is useful either way and comparing against a
-    // hardcoded default risks silently going stale if that default is ever changed.
+    // --dada_ref_tax_custom silently takes priority over every database in --dada_ref_taxonomy;
+    // warn even when the latter is at its default, which would otherwise have to be hardcoded here
     if (params.dada_ref_tax_custom && params.dada_ref_taxonomy) {
         log.warn "`--dada_ref_taxonomy` was also given, but `--dada_ref_tax_custom` takes priority -- `--dada_ref_taxonomy` (including every database listed in it, if a comma-separated list) will be ignored entirely."
     }

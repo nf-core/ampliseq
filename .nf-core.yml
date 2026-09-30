@@ -1,6 +1,7 @@
 lint:
   files_exist:
     - conf/igenomes.config
+    - .github/workflows/linting_comment.yml
   files_unchanged:
     - .gitattributes
     - .gitignore

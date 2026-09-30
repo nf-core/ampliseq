@@ -4,8 +4,8 @@ process RENAME_RAW_DATA_FILES {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/ubuntu:20.04' :
-        'nf-core/ubuntu:20.04' }"
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ac/ac8d2a429a6d54f2642e14f2334a12493b42ae7769071d3da79030f4b5e3fd66/data' :
+        'community.wave.seqera.io/library/bash_coreutils:25e9437236fbb54f' }"
 
     input:
     tuple val(meta), path(reads)

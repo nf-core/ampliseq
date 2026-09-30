@@ -969,8 +969,7 @@ workflow AMPLISEQ {
                 taxonomy:     params.pplace_taxonomy ? file( params.pplace_taxonomy, checkIfExists: true ) : []
             ] ]
         }
-        PPLACE_STANDARD ( ch_pp_data )
-        ch_versions = ch_versions.mix( PPLACE_STANDARD.out.versions )
+        PPLACE_STANDARD ( ch_pp_data, false )
         ch_pplace_tax = PPLACEFORMATTAX_STANDARD ( PPLACE_STANDARD.out.taxonomy_per_query ).tsv
         ch_tax_tsv = ch_tax_tsv.mix( ch_pplace_tax.map { it = [ [database: params.pplace_name ?: 'user_tree', classifier:"PPLACE"], file(it) ] } )
         ch_tax_for_robject = ch_tax_for_robject.mix ( PHYLOSEQ_INTAX_PPLACE ( ch_pplace_tax ).tsv.map { it -> [ "pplace", file(it) ] } )
@@ -1001,8 +1000,7 @@ workflow AMPLISEQ {
         //
         // SUBWORKFLOW: Search the ASV fasta with the hmms for phyloplacement
         //
-        FASTA_HMMSEARCH_RANK_FASTAS(ch_search_profiles, ch_fasta)
-        ch_versions = ch_versions.mix(FASTA_HMMSEARCH_RANK_FASTAS.out.versions)
+        FASTA_HMMSEARCH_RANK_FASTAS(ch_search_profiles, ch_fasta, false)
 
         ch_phyloplace_data = FASTA_HMMSEARCH_RANK_FASTAS.out.seqfastas
             .join(
@@ -1025,8 +1023,7 @@ workflow AMPLISEQ {
         //
         // SUBWORKFLOW: Run phylogenetic placement
         //
-        PPLACE_SHEET(ch_phyloplace_data)
-        ch_versions = ch_versions.mix(PPLACE_SHEET.out.versions)
+        PPLACE_SHEET(ch_phyloplace_data, false)
 
         PPLACEFORMATTAX_SHEET(PPLACE_SHEET.out.taxonomy_per_query)
 

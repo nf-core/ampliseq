@@ -100,7 +100,7 @@
                     "TreeSummarizedExperiment": "2.10.0"
                 },
                 "Workflow": {
-                    "nf-core/ampliseq": "v2.19.0dev"
+                    "nf-core/ampliseq": "v3.0.0"
                 }
             },
             [

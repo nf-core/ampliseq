@@ -8,6 +8,10 @@
                 "BARRNAPSUMMARY": {
                     "python": "Python 3.9.1"
                 },
+                "BUILD_ASV_ANNOTATIONS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
+                },
                 "DADA2_ADDSPECIES": {
                     "R": "4.5.2",
                     "dada2": "1.38.0"
@@ -15,6 +19,9 @@
                 "DADA2_TAXONOMY": {
                     "R": "4.5.2",
                     "dada2": "1.38.0"
+                },
+                "DUCKDB_TABLE2PARQUET": {
+                    "duckdb": "1.5.5"
                 },
                 "FILTER_CODONS": {
                     "python": "3.9.1",
@@ -32,10 +39,15 @@
                     "sed": 4.7
                 },
                 "FORMAT_TAXONOMY": {
-                    "sed": 4.7
+                    "bash": "5.2.37(1)-release",
+                    "sed": "4.10"
+                },
+                "SUMMARY_TABLE_TAXONOMY": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
                 },
                 "Workflow": {
-                    "nf-core/ampliseq": "v2.18.0"
+                    "nf-core/ampliseq": "v3.0.0"
                 }
             },
             [
@@ -59,8 +71,8 @@
                 "dada2/ASV_tax.rdp_18.tsv",
                 "dada2/ASV_tax_species.rdp_18.tsv",
                 "dada2/args",
-                "dada2/args/addSpecies.args.txt",
-                "dada2/args/assignTaxonomy.args.txt",
+                "dada2/args/addSpecies_rdp_18.args.txt",
+                "dada2/args/assignTaxonomy.ASV_tax.rdp_18.args.txt",
                 "dada2/chunks",
                 "dada2/chunks/ASV_codon_filtered.1.ASV_tax.rdp_18.species.tsv",
                 "dada2/chunks/ASV_codon_filtered.1.ASV_tax.rdp_18.tsv",
@@ -84,7 +96,10 @@
                 "summary_report/dada2_taxonomic_classification_per_taxonomy_level.svg",
                 "summary_report/rrna_detection_with_barrnap.svg",
                 "summary_report/summary_report.html",
-                "summary_report/versions.yml"
+                "summary_report/versions.yml",
+                "summary_tables",
+                "summary_tables/ampliseq.taxonomy.DADA2.rdp_18.parquet",
+                "summary_tables/ampliseq.taxonomy.DADA2.rdp_18.tsv.gz"
             ],
             "ASV_len_filt.tsv:md5,0e5bd974219951f56db71843053ac796",
             "ASV_len_orig.tsv:md5,09a300b31acf0eee817367dad5083f48",
@@ -96,13 +111,13 @@
             "rrna.mito.gff:md5,df19e1b84ba6f691d20c72b397c88abf",
             "ASV_codon_filtered.fna:md5,9eac2d17e026ac8b1cba876ff3cac619",
             "ASV_codon_filtered.list:md5,6cdde55829be1ebc5d73a17602e7c881",
-            "ref_taxonomy.rdp_18.txt:md5,c20d8e186e2893ba7818a0115edb013e",
+            "ref_taxonomy.rdp_18.txt:md5,47e0a8ebcc2059bfeb879381e791fabd",
             "ASV_seqs.fasta:md5,39b0d4ad96b37fa68d4ee5c21b667fed"
         ],
+        "timestamp": "2026-09-25T16:39:22.755906422",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.4"
-        },
-        "timestamp": "2026-04-21T08:55:06.518243143"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
     }
 }

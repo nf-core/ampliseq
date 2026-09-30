@@ -1,0 +1,56 @@
+name: sidle_seqrecon
+description: Reconstructs representative sequences of reconstructed features with Sidle
+keywords:
+  - sidle
+  - multi-region
+  - reconstruction
+  - sequences
+tools:
+  - q2-sidle:
+      description: QIIME 2 implementation of SMURF, reconstructing full-length marker genes from multiple amplified regions
+      homepage: https://github.com/jwdebelius/q2-sidle
+      licence:
+        - BSD-3-Clause
+      identifier: ""
+input:
+  - reconstruction_map:
+      type: file
+      description: Reconstruction map artifact
+  - reconstruction_summary:
+      type: file
+      description: Reconstruction summary artifact
+  - db_aligned_sequences:
+      type: file
+      description: Aligned reference sequences artifact
+output:
+  qza:
+    - reconstruction_fragments.qza:
+        type: file
+        description: Reconstructed fragments artifact
+        pattern: reconstruction_fragments.qza
+  visualisation:
+    - reconstruction_fragments/*:
+        type: file
+        description: Exported reconstructed fragments
+        pattern: reconstruction_fragments/*
+  fasta:
+    - reconstructed_fragments.fasta:
+        type: file
+        description: Reconstructed fragments (FASTA)
+        pattern: reconstructed_fragments.fasta
+  versions_sidle_sqrecon:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

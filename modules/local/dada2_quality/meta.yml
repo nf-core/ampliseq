@@ -1,0 +1,71 @@
+name: dada2_quality
+description: Plots and summarises read quality profiles with DADA2
+keywords:
+  - dada2
+  - quality
+  - fastq
+tools:
+  - dada2:
+      description: Infers exact amplicon sequence variants (ASVs) from high-throughput amplicon sequencing data
+      homepage: https://bioconductor.org/packages/dada2
+      documentation: https://benjjneb.github.io/dada2/
+      licence:
+        - LGPL-2
+      identifier: biotools:dada2
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information, e.g. [ id:'test' ]
+    - reads:
+        type: file
+        description: Reads (FASTQ)
+output:
+  pdf:
+    - "*_qual_stats.pdf":
+        type: file
+        description: Quality profile plot (PDF)
+        pattern: "*_qual_stats.pdf"
+  svg:
+    - "*_qual_stats.svg":
+        type: file
+        description: Quality profile plot (SVG)
+        pattern: "*_qual_stats.svg"
+  tsv:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information, e.g. [ id:'test' ]
+      - "*_qual_stats.tsv":
+          type: file
+          description: Quality statistics per position (TSV)
+          pattern: "*_qual_stats.tsv"
+  versions_dada2_quality:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+  args:
+    - "*.args.txt":
+        type: file
+        description: Arguments passed to the tool, for the summary report
+        pattern: "*.args.txt"
+  warning:
+    - "*plotQualityProfile.txt":
+        type: file
+        description: Warnings from plotQualityProfile
+        pattern: "*plotQualityProfile.txt"
+  unique_qscores:
+    - "*QualityScores.txt":
+        type: file
+        description: Unique quality scores found in the reads
+        pattern: "*QualityScores.txt"
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

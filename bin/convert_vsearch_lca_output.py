@@ -30,12 +30,18 @@ def parse_lca_tokens(raw_taxonomy):
     return [tok.strip() for tok in re.split(r"[;,]", raw_taxonomy) if tok.strip()]
 
 
-def rank_key_to_name(token_key):
+def rank_key_to_name(token_key, ordered_taxlevels):
     key = token_key.strip().lower()
+    if key in ("d", "k", "domain", "kingdom"):
+        # A database's prefix for the top rank need not agree with the rank its taxlevels name:
+        # UNITE writes "d:" for kingdom Fungi, Greengenes "k__" for domain Bacteria. Resolving
+        # against taxlevels keeps the token from landing on a rank that isn't there, which would
+        # drop it silently.
+        for level in ordered_taxlevels:
+            if level in ("Domain", "Kingdom"):
+                return level
+        return ""
     rank_map = {
-        "d": "Kingdom",
-        "k": "Kingdom",
-        "kingdom": "Kingdom",
         "p": "Phylum",
         "phylum": "Phylum",
         "c": "Class",
@@ -64,10 +70,10 @@ def parse_taxonomy(raw_taxonomy, ordered_taxlevels):
 
         if "__" in token:
             key, value = token.split("__", 1)
-            rank = rank_key_to_name(key)
+            rank = rank_key_to_name(key, ordered_taxlevels)
         elif ":" in token:
             key, value = token.split(":", 1)
-            rank = rank_key_to_name(key)
+            rank = rank_key_to_name(key, ordered_taxlevels)
         else:
             # Fallback: fill taxlevels left to right when no prefixes are present
             if sequential_idx >= len(ordered_taxlevels):

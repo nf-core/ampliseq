@@ -1,0 +1,66 @@
+name: compare_profile
+description: Compares observed with expected taxonomic profiles for mock communities
+keywords:
+  - mock community
+  - benchmark
+  - taxonomy
+  - comparison
+tools:
+  - r:
+      description: Language and environment for statistical computing and graphics
+      homepage: https://www.r-project.org/
+      licence:
+        - GPL-2.0-or-later
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information, e.g. [ id:'test' ]
+    - observed_profile:
+        type: file
+        description: Taxonomic profile exported by the pipeline
+  - expected_profile:
+      type: file
+      description: Expected taxonomic profile
+output:
+  svg:
+    - "*.svg":
+        type: file
+        description: Plot in SVG format
+        pattern: "*.svg"
+  png:
+    - "*.png":
+        type: file
+        description: Plot in PNG format
+        pattern: "*.png"
+  performance:
+    - profile_summary.tsv:
+        type: file
+        description: Profile comparison summary (TSV)
+        pattern: profile_summary.tsv
+  performance_per_sample:
+    - profile_per-sample.tsv:
+        type: file
+        description: Profile comparison per sample (TSV)
+        pattern: profile_per-sample.tsv
+  log:
+    - profile.log:
+        type: file
+        description: Log file
+        pattern: profile.log
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

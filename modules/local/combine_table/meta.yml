@@ -1,0 +1,52 @@
+name: combine_table
+description: Combines a relative abundance table, taxonomy and sequences into one table
+keywords:
+  - asv
+  - taxonomy
+  - abundance
+  - table
+tools:
+  - biostrings:
+      description: Memory efficient string containers, string matching algorithms and other utilities for biological sequences
+      homepage: https://bioconductor.org/packages/Biostrings
+      licence:
+        - Artistic-2.0
+      identifier: biotools:biostrings
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information, e.g. [ id:'test' ]
+    - tax:
+        type: file
+        description: Taxonomy table (TSV)
+    - table:
+        type: file
+        description: Relative abundance table (TSV)
+    - seq:
+        type: file
+        description: ASV sequences in FASTA format
+output:
+  tsv:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information, e.g. [ id:'test' ]
+      - rel-table-ASV_with-*-tax.tsv:
+          type: file
+          description: Relative abundances with taxonomy and sequences (TSV)
+          pattern: rel-table-ASV_with-*-tax.tsv
+  versions_combine_table:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

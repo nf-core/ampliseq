@@ -1,0 +1,56 @@
+nextflow_pipeline {
+
+    name "Test pipeline"
+    script "../main.nf"
+    tag "pipeline"
+    profile "test_multidb"
+
+    test("-profile test_multidb") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            // stable_path: All files + folders in ${params.outdir}/ with a stable path and file name
+            def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
+
+            // Phylum column of each database's own DADA2 assignTaxonomy output
+            def gtdb_phyla = path("$outputDir/dada2/ASV_tax.gtdb_R07-RS207.tsv").csv(sep: '\t', header: true).columns["Phylum"]
+            def rdp_phyla  = path("$outputDir/dada2/ASV_tax.rdp_18.tsv").csv(sep: '\t', header: true).columns["Phylum"]
+
+            assert workflow.success
+            assertAll(
+                { assert snapshot(
+                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_ampliseq_software_mqc_versions.yml"),
+                    // All stable path name, with a relative path -- covers presence of both databases'
+                    // dada2/ output files and both COMBINE_TABLE entries under qiime2/rel_abundance_tables/
+                    stable_path
+                ).match() },
+                // the two databases' results are genuinely different, not both accidentally resolving to the same database
+                { assert path("$outputDir/dada2/ASV_tax.gtdb_R07-RS207.tsv").text != path("$outputDir/dada2/ASV_tax.rdp_18.tsv").text },
+                { assert path("$outputDir/dada2/ASV_tax_species.gtdb_R07-RS207.tsv").text != path("$outputDir/dada2/ASV_tax_species.rdp_18.tsv").text },
+                // real content check, not just non-emptiness: how many ASVs get a Phylum call at all
+                // (name-agnostic, complements the named-taxon checks below)
+                { assert gtdb_phyla.findAll { it }.size() >= 270 },
+                { assert rdp_phyla.findAll { it }.size() >= 160 },
+                // Proteobacteria specifically -- both GTDB R07-RS207 and RDP 18 use this classical name
+                // (GTDB's rename to "Pseudomonadota" only landed in later releases), so these two
+                // assertions test the same real-world phylum under the two databases' own classification
+                { assert gtdb_phyla.findAll { it == "Proteobacteria" }.size() >= 40 },
+                { assert rdp_phyla.findAll { it == "Proteobacteria" }.size() >= 60 },
+                // ch_tax (feeding rel-table-2.tsv, phylum level -- tax_agglom_min default is 2) should be
+                // GTDB's classification, not RDP's. Row-count comparison turned out too fragile here
+                // (RDP only has 20 phyla total on this data to begin with, and post-filter counts for
+                // both databases can land close together) -- "Patescibacteria" is a name GTDB uses that
+                // RDP's real output on this data never produces at all (RDP splits that group across
+                // several differently-named candidate divisions instead), so its presence is direct,
+                // filtering-independent confirmation that GTDB is the one actually feeding ch_tax
+                { assert path("$outputDir/qiime2/rel_abundance_tables/rel-table-2.tsv").text.contains("Patescibacteria") }
+            )
+        }
+    }
+}

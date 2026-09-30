@@ -1,0 +1,60 @@
+name: dada2_splitregions
+description: Splits a DADA2 ASV table by amplified region for multi-region analysis
+keywords:
+  - dada2
+  - multi-region
+  - asv
+tools:
+  - r:
+      description: Language and environment for statistical computing and graphics
+      homepage: https://www.r-project.org/
+      licence:
+        - GPL-2.0-or-later
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information, e.g. [ id:'test' ]
+    - mapping:
+        type: list
+        description: Sample to region mapping
+  - table:
+      type: file
+      description: DADA2 ASV table with sequences (TSV)
+output:
+  dada2asv:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information, e.g. [ id:'test' ]
+      - DADA2_table_*.tsv:
+          type: file
+          description: DADA2 ASV table of one region (TSV)
+          pattern: DADA2_table_*.tsv
+  for_sidle:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information, e.g. [ id:'test' ]
+      - ASV_table_*.tsv:
+          type: file
+          description: ASV count table of one region (TSV)
+          pattern: ASV_table_*.tsv
+      - ASV_seqs_*.fasta:
+          type: file
+          description: ASV sequences of one region (FASTA)
+          pattern: ASV_seqs_*.fasta
+  versions_dada2_splitregions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

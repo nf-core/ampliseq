@@ -1,0 +1,59 @@
+name: format_taxonomy
+description: Formats a reference database for DADA2 assignTaxonomy and addSpecies
+keywords:
+  - dada2
+  - taxonomy
+  - database
+  - format
+tools:
+  - bash:
+      description: The GNU Bourne-Again SHell
+      homepage: https://www.gnu.org/software/bash/
+      licence:
+        - GPL-3.0-or-later
+      identifier: ""
+input:
+  - - db_key:
+        type: string
+        description: Key of the reference taxonomy database, as in --dada_ref_taxonomy
+    - database:
+        type: file
+        description: Reference database files
+output:
+  assigntax:
+    - - db_key:
+          type: string
+          description: Key of the reference taxonomy database, as in --dada_ref_taxonomy
+      - "*assignTaxonomy.fna*":
+          type: file
+          description: Reference sequences for assignTaxonomy (FASTA)
+          pattern: "*assignTaxonomy.fna*"
+  addspecies:
+    - - db_key:
+          type: string
+          description: Key of the reference taxonomy database, as in --dada_ref_taxonomy
+      - "*addSpecies.fna*":
+          type: file
+          description: Reference sequences for addSpecies (FASTA)
+          pattern: "*addSpecies.fna*"
+  ref_tax_info:
+    - ref_taxonomy.*.txt:
+        type: file
+        description: Reference database provenance
+        pattern: ref_taxonomy.*.txt
+  versions_format_taxonomy:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@emnilsson"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

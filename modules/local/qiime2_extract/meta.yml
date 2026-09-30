@@ -1,0 +1,46 @@
+name: qiime2_extract
+description: Extracts the amplified region from reference sequences with QIIME2
+keywords:
+  - qiime2
+  - reference
+  - primer
+  - extract
+tools:
+  - qiime2:
+      description: Microbiome multi-omics data science platform
+      homepage: https://qiime2.org
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:qiime2
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information, e.g. [ id:'test' ]
+    - database:
+        type: file
+        description: Reference sequences and taxonomy
+output:
+  qza:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information, e.g. [ id:'test' ]
+      - "*.qza":
+          type: file
+          description: Extracted reference sequences and taxonomy artifacts
+          pattern: "*.qza"
+  versions_qiime2_extract:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

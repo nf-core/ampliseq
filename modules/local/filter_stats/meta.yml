@@ -1,0 +1,42 @@
+name: filter_stats
+description: Reports counts before and after filtering an abundance table
+keywords:
+  - filter
+  - statistics
+  - abundance
+tools:
+  - pandas:
+      description: Data analysis and manipulation tool built on Python
+      homepage: https://pandas.pydata.org/
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:pandas
+input:
+  - unfiltered:
+      type: file
+      description: Abundance table before filtering (TSV)
+  - filtered:
+      type: file
+      description: Abundance table after filtering (TSV)
+output:
+  tsv:
+    - count_table_filter_stats.tsv:
+        type: file
+        description: Filtering statistics per sample (TSV)
+        pattern: count_table_filter_stats.tsv
+  versions_filter_stats:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

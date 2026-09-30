@@ -1,0 +1,57 @@
+name: filter_sequences_abundances
+description: Restricts sequences and abundances to features present in both
+keywords:
+  - filter
+  - asv
+  - sequences
+tools:
+  - biostrings:
+      description: Memory efficient string containers, string matching algorithms and other utilities for biological sequences
+      homepage: https://bioconductor.org/packages/Biostrings
+      licence:
+        - Artistic-2.0
+      identifier: biotools:biostrings
+input:
+  - fasta:
+      type: file
+      description: ASV sequences in FASTA format
+  - table:
+      type: file
+      description: ASV count table (TSV), ASV IDs in the first column and one column per sample
+output:
+  seq:
+    - filtered_sequences.fasta:
+        type: file
+        description: Filtered sequences (FASTA)
+        pattern: filtered_sequences.fasta
+  abund:
+    - filtered_abundances.tsv:
+        type: file
+        description: Filtered abundance table (TSV)
+        pattern: filtered_abundances.tsv
+  stats_counts:
+    - stats_counts.tsv:
+        type: file
+        description: Counts before and after filtering (TSV)
+        pattern: stats_counts.tsv
+  stats_features:
+    - stats_features.tsv:
+        type: file
+        description: Feature numbers before and after filtering (TSV)
+        pattern: stats_features.tsv
+  versions_filter_sequence_abundance:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

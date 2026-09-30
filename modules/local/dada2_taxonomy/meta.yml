@@ -1,0 +1,69 @@
+name: dada2_taxonomy
+description: Assigns taxonomy to ASVs with the DADA2 naive Bayesian classifier
+keywords:
+  - dada2
+  - taxonomy
+  - classification
+  - asv
+tools:
+  - dada2:
+      description: Infers exact amplicon sequence variants (ASVs) from high-throughput amplicon sequencing data
+      homepage: https://bioconductor.org/packages/dada2
+      documentation: https://benjjneb.github.io/dada2/
+      licence:
+        - LGPL-2
+      identifier: biotools:dada2
+input:
+  - - db_key:
+        type: string
+        description: Key of the reference taxonomy database, as in --dada_ref_taxonomy
+    - fasta:
+        type: file
+        description: ASV sequences in FASTA format
+    - database:
+        type: file
+        description: Reference sequences formatted for assignTaxonomy
+    - outfile:
+        type: string
+        description: Output file name
+    - taxlevels_input:
+        type: string
+        description: Comma-separated taxonomic rank names, empty to use the database's own
+output:
+  tsv:
+    - - db_key:
+          type: string
+          description: Key of the reference taxonomy database, as in --dada_ref_taxonomy
+      - "*${outfile}.tsv":
+          type: file
+          description: Taxonomy table (TSV)
+          pattern: "*${outfile}.tsv"
+  rds:
+    - - db_key:
+          type: string
+          description: Key of the reference taxonomy database, as in --dada_ref_taxonomy
+      - "*${outfile}.rds":
+          type: file
+          description: Taxonomy table (RDS)
+          pattern: "*${outfile}.rds"
+  versions_dada2_taxonomy:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+  args:
+    - "*.args.txt":
+        type: file
+        description: Arguments passed to the tool, for the summary report
+        pattern: "*.args.txt"
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

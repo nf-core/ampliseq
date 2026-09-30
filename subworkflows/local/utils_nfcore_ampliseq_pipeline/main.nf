@@ -41,6 +41,53 @@ workflow PIPELINE_INITIALISATION {
     ch_versions = channel.empty()
 
     //
+    // Build channels from self-contained parameters
+    // (params only used to construct these channels; no other logic depends on how they're built)
+    //
+    if (params.metadata) {
+        ch_metadata = channel.fromPath( params.metadata )
+    } else { ch_metadata = channel.empty() }
+
+    // report sources
+    ch_report_template = channel.fromPath("${params.report_template}", checkIfExists: true)
+    ch_report_css = channel.fromPath("${params.report_css}", checkIfExists: true)
+    ch_report_logo = channel.fromPath("${params.report_logo}", checkIfExists: true)
+    ch_report_abstract = params.report_abstract ? channel.fromPath(params.report_abstract) : []
+
+    // Parse the --pplace_sheet file if present (may be overwritten later in AMPLISEQ based on --dada_ref_taxonomy)
+    ch_pplace_sheet = channel.empty()
+    if ( params.pplace_sheet ) {
+        ch_pplace_sheet = channel.fromPath(params.pplace_sheet)
+            .splitCsv(header: true)
+            .map { it ->
+                [
+                    meta: [
+                        id: it.target,
+                        min_bitscore: it.min_bitscore
+                    ],
+                    data: [
+                        alignmethod:    it.alignmethod  ?: 'clustalo',
+                        hmm:            file(it.hmm,  checkIfExists: true),
+                        extract_hmm:    it.extract_hmm,
+                        refseqfile:     it.refseqfile   ? file(it.refseqfile,   checkIfExists: true) : [],
+                        refphylogeny:   it.refphylogeny ? file(it.refphylogeny, checkIfExists: true) : [],
+                        model:          it.model,
+                        taxonomy:       it.taxonomy     ? file(it.taxonomy,     checkIfExists: true) : []
+                    ]
+                ]
+            }
+    }
+
+    ch_expected_sequences = params.expected_sequences ? channel.fromPath( params.expected_sequences ) : channel.empty()
+    ch_expected_abundances = params.expected_abundances ? channel.fromPath( params.expected_abundances ) : channel.empty()
+    ch_expected_profile = params.expected_profile ? channel.fromPath( params.expected_profile ) : channel.empty()
+
+    // Select metadata categories for diversity analysis & ancom, if explicitly specified
+    if (params.metadata_category) {
+        ch_metadata_category = channel.fromList(params.metadata_category.tokenize(','))
+    } else { ch_metadata_category = channel.empty() }
+
+    //
     // Print version and exit if required and dump pipeline parameters to JSON file
     //
     UTILS_NEXTFLOW_PIPELINE (
@@ -88,7 +135,8 @@ workflow PIPELINE_INITIALISATION {
         show_hidden,
         before_text,
         after_text,
-        command
+        command,
+        true
     )
 
     //
@@ -112,7 +160,7 @@ workflow PIPELINE_INITIALISATION {
     if ( params.vsearch_lca_ref_taxonomy && !params.skip_taxonomy && !params.vsearch_lca_ref_tax_custom ) {
         vsearchlcareftaxonomyExistsError()
     }
-    if ( (params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && !params.skip_taxonomy && !params.classifier ) {
+    if ( (params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && !params.skip_taxonomy && !params.qiime_classifier ) {
         qiimereftaxonomyExistsError()
     }
     if ( params.kraken2_ref_taxonomy  && !params.skip_taxonomy ) {
@@ -123,7 +171,17 @@ workflow PIPELINE_INITIALISATION {
     }
 
     emit:
-    versions    = ch_versions
+    versions             = ch_versions
+    metadata             = ch_metadata             // channel: [ path(metadata) ] or empty
+    report_template      = ch_report_template       // channel: [ path(report_template) ]
+    report_css           = ch_report_css            // channel: [ path(report_css) ]
+    report_logo          = ch_report_logo           // channel: [ path(report_logo) ]
+    report_abstract      = ch_report_abstract       // channel: [ path(report_abstract) ] or []
+    pplace_sheet         = ch_pplace_sheet          // channel: parsed pplace_sheet rows, or empty
+    expected_sequences   = ch_expected_sequences    // channel: [ path(expected_sequences) ] or empty
+    expected_abundances  = ch_expected_abundances   // channel: [ path(expected_abundances) ] or empty
+    expected_profile     = ch_expected_profile      // channel: [ path(expected_profile) ] or empty
+    metadata_category    = ch_metadata_category     // channel: tokenized metadata_category, or empty
 }
 
 /*
@@ -183,15 +241,19 @@ def validateInputParameters() {
         error("Missing input declaration: One of `--input`, `--input_fasta`, `--input_folder` is required.")
     }
 
-    if ( !params.multiregion && !params.input_fasta && (!params.FW_primer || !params.RV_primer) && !params.skip_cutadapt ) {
-        error("Incompatible parameters: `--FW_primer` and `--RV_primer` are required for primer trimming. If primer trimming is not needed, use `--skip_cutadapt`.")
+    if ( !params.multiregion && !params.input_fasta && (!params.primer_fwd || !params.primer_rev) && !params.skip_cutadapt ) {
+        error("Incompatible parameters: `--primer_fwd` and `--primer_rev` are required for primer trimming. If primer trimming is not needed, use `--skip_cutadapt`.")
     }
 
-    if ( params.binned_quality && params.pacbio ) {
-        error("Incompatible parameters: `--binned_quality` and `--pacbio` are both used, but only one is allowed. When the data has binned quality scores, use `--binned_quality` instead of `--pacbio`.")
+    if ( params.binned_quality && params.sequencing_type == "pacbio" ) {
+        error("Incompatible parameters: `--binned_quality` and `--sequencing_type pacbio` are both used, but only one is allowed. When the data has binned quality scores, use `--binned_quality` instead of `--sequencing_type pacbio`.")
     }
 
-    if ( params.pacbio || params.iontorrent || params.single_end ) {
+    if ( params.sample_inference == "pseudo" && ( (params.sequencing_type == "nanopore" && params.asv_calling == "auto") || params.asv_calling == "savont") ) {
+        error("Incompatible parameters: `--sample_inference pseudo` and Savont are incompatible. Use `--sample_inference independent` or `--sample_inference pooled` (default) with Savont (default for `--sequencing_type nanopore`).")
+    }
+
+    if ( params.sequencing_type in ["nanopore","pacbio","iontorrent","illumina_se"] ) {
         if (params.trunclenr) { log.warn "Unused parameter: `--trunclenr` is ignored because the data is single end." }
     } else if (params.trunclenf && !params.trunclenr) {
         error("Invalid command: `--trunclenf` is set, but `--trunclenr` is not. Either both parameters `--trunclenf` and `--trunclenr` must be set or none.")
@@ -223,6 +285,17 @@ def validateInputParameters() {
         error("Incompatible parameters: Either `--skip_dada_addspecies` or `--dada_ref_tax_custom_sp` is additionally required to `--dada_ref_tax_custom`.")
     }
 
+    // --dada_ref_tax_custom silently takes priority over every database in --dada_ref_taxonomy;
+    // warn even when the latter is at its default, which would otherwise have to be hardcoded here
+    if (params.dada_ref_tax_custom && params.dada_ref_taxonomy) {
+        log.warn "`--dada_ref_taxonomy` was also given, but `--dada_ref_tax_custom` takes priority -- `--dada_ref_taxonomy` (including every database listed in it, if a comma-separated list) will be ignored entirely."
+    }
+
+    // --dada_ref_tax_custom always yields a single "user" database
+    if (params.consolidate_taxonomies != 'first' && (params.dada_ref_tax_custom || !params.dada_ref_taxonomy || params.dada_ref_taxonomy.tokenize(',').size() <= 1)) {
+        log.warn "`--consolidate_taxonomies` was given, but `--dada_ref_taxonomy` lists at most one database -- there is nothing to consolidate, this option has no effect."
+    }
+
     if (params.pplace_tree) {
         if (!params.pplace_aln) {
             error("Missing parameter: Phylogenetic placement requires in addition to `--pplace_tree` also `--pplace_aln`.")
@@ -232,30 +305,16 @@ def validateInputParameters() {
         }
     }
 
-    if (params.dada_assign_taxlevels && params.sbdiexport && !params.sintax_ref_taxonomy && !params.sintax_ref_tax_custom) {
-        error("Incompatible parameters: `--sbdiexport` expects specific taxonomics ranks (default) and therefore excludes modifying those using `--dada_assign_taxlevels`.")
+    if ( (!params.primer_fwd || !params.primer_rev) && (params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && !params.skip_qiime && !params.skip_taxonomy ) {
+        error("Incompatible parameters: `--primer_fwd` and `--primer_rev` are required for cutting the QIIME2 reference database to the amplicon sequences. Please specify primers or do not use `--qiime_ref_taxonomy`.")
     }
 
-    if (params.skip_taxonomy && params.sbdiexport) {
-        error("Incompatible parameters: `--sbdiexport` expects taxa annotation and therefore excludes `--skip_taxonomy`.")
+    if ( (!params.primer_fwd || !params.primer_rev) && params.cut_dada_ref_taxonomy && !params.skip_taxonomy ) {
+        error("Incompatible parameters: `--primer_fwd` and `--primer_rev` are required for cutting the DADA2 reference database to the amplicon sequences. Please specify primers or do not use `--cut_dada_ref_taxonomy`.")
     }
 
-    if (params.skip_dada_taxonomy && params.sbdiexport) {
-        if (!params.sintax_ref_taxonomy && !params.sintax_ref_tax_custom && (params.skip_qiime || (!params.qiime_ref_taxonomy && !params.qiime_ref_tax_custom))) {
-            error("Incompatible parameters: `--sbdiexport` expects taxa annotation and therefore annotation with either DADA2, SINTAX, or QIIME2 is needed.")
-        }
-    }
-
-    if ( (!params.FW_primer || !params.RV_primer) && (params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && !params.skip_qiime && !params.skip_taxonomy ) {
-        error("Incompatible parameters: `--FW_primer` and `--RV_primer` are required for cutting the QIIME2 reference database to the amplicon sequences. Please specify primers or do not use `--qiime_ref_taxonomy`.")
-    }
-
-    if ( (!params.FW_primer || !params.RV_primer) && params.cut_dada_ref_taxonomy && !params.skip_taxonomy ) {
-        error("Incompatible parameters: `--FW_primer` and `--RV_primer` are required for cutting the DADA2 reference database to the amplicon sequences. Please specify primers or do not use `--cut_dada_ref_taxonomy`.")
-    }
-
-    if ((params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && params.classifier) {
-        error("Incompatible parameters: `--qiime_ref_taxonomy` and `--qiime_ref_tax_custom` will produce a classifier but `--classifier` points to a precomputed classifier, therefore, only use one of those.")
+    if ((params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && params.qiime_classifier) {
+        error("Incompatible parameters: `--qiime_ref_taxonomy` and `--qiime_ref_tax_custom` will produce a classifier but `--qiime_classifier` points to a precomputed classifier, therefore, only use one of those.")
     }
 
     if (params.kraken2_ref_tax_custom && !params.kraken2_assign_taxlevels ) {
@@ -278,44 +337,22 @@ def validateInputParameters() {
         error("Missing parameter: Taxonomic classification with `--vsearch_lca_ref_tax_custom` requires `--vsearch_lca_assign_taxlevels` (comma-separated taxonomic ranks matching the reference database labels).")
     }
 
-    if (params.sbdiexport && params.sintax_ref_tax_custom) {
-        error("Incompatible parameters: `--sbdiexport` does not support `--sintax_ref_tax_custom`; use a catalog `--sintax_ref_taxonomy` key or disable `--sbdiexport`.")
-    }
-
     if (params.filter_ssu && params.skip_barrnap) {
         error("Incompatible parameters: `--filter_ssu` cannot be used with `--skip_barrnap` because filtering for SSU's depends on barrnap.")
     }
 
-    String[] sbdi_compatible_databases = [
-        "coidb","coidb=221216",
-        "greengenes2","greengenes2=2024.09",
-        "gtdb","gtdb=R11-RS232","gtdb=R10-RS226","gtdb=R09-RS220","gtdb=R08-RS214","gtdb=R07-RS207","gtdb=R06-RS202","gtdb=R05-RS95",
-        "midori2-co1","midori2-co1=gb250",
-        "pr2","pr2=5.1.0","pr2=5.0.0","pr2=4.14.0","pr2=4.13.0",
-        "rdp","rdp=18",
-        "sbdi-gtdb","sbdi-gtdb=R11-RS232-1","sbdi-gtdb=R10-RS226-2","sbdi-gtdb=R09-RS220-2","sbdi-gtdb=R09-RS220-1", "sbdi-gtdb=R08-RS214-1","sbdi-gtdb=R07-RS207-1",
-        "silva","silva=138.2","silva=138","silva=132",
-        "unite-fungi","unite-fungi=10.0","unite-fungi=9.0","unite-fungi=8.3","unite-fungi=8.2",
-        "unite-alleuk","unite-alleuk=10.0","unite-alleuk=9.0","unite-alleuk=8.3","unite-alleuk=8.2"
-    ]
-    if (params.sbdiexport){
-        if (params.sintax_ref_taxonomy ) {
-            if ( !sbdi_compatible_databases.contains(params.sintax_ref_taxonomy) ) {
-                error("Incompatible parameters: `--sbdiexport` does not work with the chosen database of `--sintax_ref_taxonomy` because the expected taxonomic levels do not match.")
+    if (params.addsh && params.dada_ref_taxonomy) {
+        // addsh runs once per listed database, so every one of them needs SH lookup files, not just the first
+        def missingSh = params.dada_ref_taxonomy.tokenize(',')*.trim().findAll { db -> !params.dada_ref_databases[db]["shfile"] }
+        if ( missingSh ) {
+            def validDBs = ""
+            params.dada_ref_databases.keySet().each { db ->
+                if (params.dada_ref_databases[db]["shfile"]) {
+                    validDBs += " " + db
+                }
             }
-        } else if ( !sbdi_compatible_databases.contains(params.dada_ref_taxonomy) ) {
-            error("Incompatible parameters: `--sbdiexport` does not work with the chosen database of `--dada_ref_taxonomy` because the expected taxonomic levels do not match.")
+            error("Species hypothesis (SH) lookup files are not available for `--dada_ref_taxonomy` database(s): ${missingSh.join(', ')}. This currently includes `glosed`. The option `--addsh` can only be used with databases that provide precomputed SH lookup files (currently UNITE reference databases):\n" + validDBs + ".")
         }
-    }
-
-    if (params.addsh && !params.dada_ref_databases[params.dada_ref_taxonomy]["shfile"]) {
-        def validDBs = ""
-        params.dada_ref_databases.keySet().each { db ->
-            if (params.dada_ref_databases[db]["shfile"]) {
-                validDBs += " " + db
-            }
-        }
-        error("UNITE species hypothesis information is not available for the selected reference database, please use the option `--dada_ref_taxonomy` to select an appropriate database. Currently, the option `--addsh` can only be used together with the following UNITE reference databases:\n" + validDBs + ".")
     }
 
     if (params.addsh && params.cut_its == "none") {
@@ -442,13 +479,32 @@ def makeComplement(seq) {
 // Exit pipeline if incorrect --dada_ref_taxonomy key provided
 //
 def dadareftaxonomyExistsError() {
-    if (params.dada_ref_databases && params.dada_ref_taxonomy && !params.dada_ref_databases.containsKey(params.dada_ref_taxonomy)) {
-        def error_string = "=============================================================================\n" +
-            "  DADA2 reference database '${params.dada_ref_taxonomy}' not found in any config file provided to the pipeline.\n" +
-            "  Currently, the available reference taxonomy keys for `--dada_ref_taxonomy` are:\n" +
-            "  ${params.dada_ref_databases.keySet().join(", ")}\n" +
-            "==================================================================================="
-        error(error_string)
+    if (params.dada_ref_databases && params.dada_ref_taxonomy) {
+        // --dada_ref_taxonomy accepts a comma-separated list of databases; every listed one must exist
+        def dbKeys = params.dada_ref_taxonomy.tokenize(',')*.trim()
+        def invalidKeys = dbKeys.findAll { db -> !params.dada_ref_databases.containsKey(db) }
+        if (invalidKeys) {
+            def error_string = "=============================================================================\n" +
+                "  DADA2 reference database(s) '${invalidKeys.join("', '")}' not found in any config file provided to the pipeline.\n" +
+                "  Currently, the available reference taxonomy keys for `--dada_ref_taxonomy` are:\n" +
+                "  ${params.dada_ref_databases.keySet().join(", ")}\n" +
+                "==================================================================================="
+            error(error_string)
+        }
+
+        // Two listed keys that resolve to the exact same underlying reference files (e.g. an alias
+        // like `gtdb` and its pinned equivalent `gtdb=R11-RS232`) would otherwise silently drop one
+        // of them downstream instead of failing -- reject this explicitly instead.
+        def filesToKeys = [:]
+        dbKeys.each { db ->
+            def files = params.dada_ref_databases[db]["file"]
+            filesToKeys[files] = (filesToKeys[files] ?: []) + db
+        }
+        def collisions = filesToKeys.values().findAll { it.size() > 1 }
+        if (collisions) {
+            error("Incompatible parameters: `--dada_ref_taxonomy` lists databases that resolve to the exact same reference files, which is redundant: " +
+                collisions.collect { "'${it.join("', '")}'" }.join(", ") + ". List each database only once.")
+        }
     }
 }
 

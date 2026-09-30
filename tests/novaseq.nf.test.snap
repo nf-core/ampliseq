@@ -36,6 +36,9 @@
                     "R": "4.5.2",
                     "dada2": "1.38.0"
                 },
+                "DUCKDB_TABLE2PARQUET": {
+                    "duckdb": "1.5.5"
+                },
                 "FASTQC": {
                     "fastqc": "0.12.1"
                 },
@@ -47,14 +50,18 @@
                     "R": "4.5.2"
                 },
                 "RENAME_RAW_DATA_FILES": {
-                    "sed": 4.7
+                    "bash": "5.2.37(1)-release"
+                },
+                "SUMMARY_TABLE_COUNTS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
                 },
                 "TRUNCLEN": {
                     "python": "3.9.1",
                     "pandas": "1.1.5"
                 },
                 "Workflow": {
-                    "nf-core/ampliseq": "v2.18.0"
+                    "nf-core/ampliseq": "v3.0.0"
                 }
             },
             [
@@ -106,7 +113,7 @@
                 "fastqc/S2_1_fastqc.html",
                 "fastqc/S2_2_fastqc.html",
                 "input",
-                "input/Samplesheet_novaseq.tsv",
+                "input/Samplesheet_novaseq_v3.tsv",
                 "multiqc",
                 "multiqc/multiqc_data",
                 "multiqc/multiqc_data/fastqc-status-check-heatmap.txt",
@@ -172,20 +179,23 @@
                 "summary_report",
                 "summary_report/stacked_barchart_of_reads.svg",
                 "summary_report/summary_report.html",
-                "summary_report/versions.yml"
+                "summary_report/versions.yml",
+                "summary_tables",
+                "summary_tables/ampliseq.counts.parquet",
+                "summary_tables/ampliseq.counts.tsv.gz"
             ],
-            "ASV_seqs.fasta:md5,0ed4ce8c63b31ee3968232ded3da9875",
-            "ASV_table.tsv:md5,0028da02541e474b4229e7776c091586",
-            "DADA2_stats.tsv:md5,4bb143b3aa5532a86e115378e9ffb575",
-            "DADA2_table.tsv:md5,fe7dd1249b7fe1643f13ee6699c6e877",
-            "Samplesheet_novaseq.tsv:md5,bcca78fe24736f4ee4ea26fdbd47ee64",
+            "ASV_seqs.fasta:md5,d81c296ebe3cb0b0e8dad34ef2efa530",
+            "ASV_table.tsv:md5,c656747f25d521818b0f57f1bef19453",
+            "DADA2_stats.tsv:md5,06546ce7dbf4cb2fb0ce1b17e60b526c",
+            "DADA2_table.tsv:md5,f73cf94a5141b0c6fad2f2d993072be6",
+            "Samplesheet_novaseq_v3.tsv:md5,3ab45eb0806f95ed09df95805cc8e339",
             "multiqc_fastqc.txt:md5,a99548124efd185a7d4e33245edcb81b",
             "multiqc_general_stats.txt:md5,92648df79061fa3b17fea104fe1b7641"
         ],
+        "timestamp": "2026-09-24T16:00:51.228502911",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.4"
-        },
-        "timestamp": "2026-04-21T09:16:32.819905764"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
     }
 }

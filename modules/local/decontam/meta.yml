@@ -1,0 +1,87 @@
+name: decontam
+description: Identifies and removes contaminant ASVs with decontam
+keywords:
+  - decontam
+  - contamination
+  - asv
+  - controls
+tools:
+  - decontam:
+      description: Statistical identification of contaminating sequence features in marker-gene or metagenomics data
+      homepage: https://bioconductor.org/packages/decontam
+      licence:
+        - Artistic-2.0
+      identifier: biotools:decontam
+input:
+  - abundances_tsv:
+      type: file
+      description: Abundance table (TSV), feature IDs in the first column and a header row
+  - metadata_tsv:
+      type: file
+      description: Sample sheet columns control and quant_reading (TSV)
+  - iscontaminant_method:
+      type: string
+      description: "isContaminant method: auto, frequency, prevalence, combined, minimum, either or both"
+  - iscontaminant_threshold:
+      type: float
+      description: Probability threshold for isContaminant
+  - isnotcontaminant_threshold:
+      type: float
+      description: Probability threshold for isNotContaminant
+output:
+  decontaminated_abundances:
+    - decontaminated.tsv:
+        type: file
+        description: Abundance table without contaminants (TSV)
+        pattern: decontaminated.tsv
+  decontaminated_counts:
+    - decontaminated_counts.tsv:
+        type: file
+        description: Counts of removed contaminants (TSV)
+        pattern: decontaminated_counts.tsv
+  decontaminated_log:
+    - decontaminated_log.tsv:
+        type: file
+        description: Log of the contaminant removal (TSV)
+        pattern: decontaminated_log.tsv
+  decontaminated_details:
+    - decontaminated_details.tsv:
+        type: file
+        description: isContaminant statistics per feature (TSV)
+        pattern: decontaminated_details.tsv
+  notcontaminant_abundances:
+    - notcontaminant.tsv:
+        type: file
+        description: Abundance table of non-contaminants from isNotContaminant (TSV)
+        pattern: notcontaminant.tsv
+  notcontaminant_counts:
+    - notcontaminant_counts.tsv:
+        type: file
+        description: Counts from isNotContaminant (TSV)
+        pattern: notcontaminant_counts.tsv
+  notcontaminant_log:
+    - notcontaminant_log.tsv:
+        type: file
+        description: Log of isNotContaminant (TSV)
+        pattern: notcontaminant_log.tsv
+  notcontaminant_details:
+    - notcontaminant_details.tsv:
+        type: file
+        description: isNotContaminant statistics per feature (TSV)
+        pattern: notcontaminant_details.tsv
+  versions_decontam:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

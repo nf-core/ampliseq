@@ -1,0 +1,55 @@
+name: sidle_dbrecon
+description: Reconstructs the reference database across regions with Sidle
+keywords:
+  - sidle
+  - multi-region
+  - reconstruction
+tools:
+  - q2-sidle:
+      description: QIIME 2 implementation of SMURF, reconstructing full-length marker genes from multiple amplified regions
+      homepage: https://github.com/jwdebelius/q2-sidle
+      licence:
+        - BSD-3-Clause
+      identifier: ""
+input:
+  - region:
+      type: string
+      description: Region identifiers
+  - kmer_map:
+      type: file
+      description: K-mer map artifacts
+  - aligned_map:
+      type: file
+      description: Alignment map artifacts
+output:
+  reconstruction_map:
+    - reconstruction_map.qza:
+        type: file
+        description: Reconstruction map artifact
+        pattern: reconstruction_map.qza
+  reconstruction_summary:
+    - reconstruction_summary.qza:
+        type: file
+        description: Reconstruction summary artifact
+        pattern: reconstruction_summary.qza
+  visualisation:
+    - reconstruction_summary/*:
+        type: file
+        description: Exported reconstruction summary
+        pattern: reconstruction_summary/*
+  versions_sidle_dbrecon:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

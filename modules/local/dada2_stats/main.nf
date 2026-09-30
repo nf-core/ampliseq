@@ -1,0 +1,130 @@
+process DADA2_STATS {
+    tag "$meta.run"
+    label 'process_low'
+
+    conda "${moduleDir}/environment.yml"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/81/81153df5d53322e6d91b2c4c9bc4da50774fb1d101ead002fe75bb75fc6f036c/data' :
+        'community.wave.seqera.io/library/bioconductor-dada2_r-base_r-digest_tbb:38acac09bac46f36' }"
+
+    input:
+    tuple val(meta), path("filter_and_trim_files/*"), path(denoised), path(mergers), path(seqtab_nochim)
+
+    output:
+    tuple val(meta), path("*.stats.tsv"), emit: stats
+    path "versions.yml"                 , emit: versions_dada2_stats, topic: versions
+
+    script:
+    def prefix = task.ext.prefix ?: "prefix"
+    if (!meta.single_end) {
+        """
+        #!/usr/bin/env Rscript
+        suppressPackageStartupMessages(library(dada2))
+
+        #combine filter_and_trim files
+        for (data in list.files("./filter_and_trim_files", full.names=TRUE)){
+            if (!exists("filter_and_trim")){ filter_and_trim <- read.csv(data, header=TRUE, sep="\\t") }
+            if (exists("filter_and_trim")){
+                tempory <-read.csv(data, header=TRUE, sep="\\t")
+                filter_and_trim <-unique(rbind(filter_and_trim, tempory))
+                rm(tempory)
+            }
+        }
+        rownames(filter_and_trim) <- filter_and_trim\$ID
+        filter_and_trim["ID"] <- NULL
+        #write.table( filter_and_trim, file = "${prefix}.filter_and_trim.tsv", sep = "\\t", row.names = TRUE, quote = FALSE, na = '')
+
+        #read data
+        dadaFs = readRDS("${denoised[0]}")
+        dadaRs = readRDS("${denoised[1]}")
+        mergers = readRDS("$mergers")
+        nochim = readRDS("$seqtab_nochim")
+
+        #track reads through pipeline
+        getN <- function(x) sum(getUniques(x))
+        get_acc <- function(x) sum(x\$abundance[x\$accept])
+        # filter_and_trim rownames end in '_1.fastq.gz', DADA2/seqtab rownames in '_1.filt.fastq.gz'; reduce both to the sample id
+        normKey_ft <- function(x) sub(pattern = "(.*?)\\\\..*\$", replacement = "\\\\1", sub(pattern = "_1.fastq.gz\$", replacement = "", x))
+        normKey_nc <- function(x) sub(pattern = ".filt.fastq.gz\$", replacement = "", sub(pattern = "_2.filt.fastq.gz\$", replacement = "", sub(pattern = "_1.filt.fastq.gz\$", replacement = "", x)))
+        if ( nrow(filter_and_trim) == 1 ) {
+            track <- cbind(filter_and_trim, getN(dadaFs), getN(dadaRs), getN(mergers), get_acc(mergers), rowSums(nochim))
+        } else {
+            # Merge on the sample key; a positional cbind mislabels counts when one sample name is a prefix of another
+            ft_keys <- normKey_ft(rownames(filter_and_trim))
+            samples <- normKey_nc(rownames(nochim))   # canonical sample order from the ASV table
+            gN  <- function(x) as.numeric(unname(sapply(x, getN)))
+            gNa <- function(x) as.numeric(unname(sapply(x, get_acc)))
+            track <- data.frame(key = ft_keys, filter_and_trim, check.names = FALSE, stringsAsFactors = FALSE)
+            track <- merge(track, data.frame(key = samples,
+                    denoisedF      = gN(dadaFs),
+                    denoisedR      = gN(dadaRs),
+                    denoisedPairs  = gN(mergers),
+                    merged         = gNa(mergers),
+                    nonchim        = as.numeric(unname(rowSums(nochim))),
+                    stringsAsFactors = FALSE),
+                by = "key", all = TRUE, sort = FALSE)
+            # keep the deterministic filter_and_trim row order
+            track <- track[order(match(track\$key, ft_keys)), ]
+            rownames(track) <- track\$key
+            track\$key <- NULL
+        }
+        colnames(track) <- c("DADA2_input", "filtered", "denoisedF", "denoisedR", "denoisedPairs", "merged", "nonchim")
+        rownames(track) <- sub(pattern = "_1.fastq.gz\$", replacement = "", rownames(track)) #this is when cutadapt is skipped!
+        track <- cbind(sample = sub(pattern = "(.*?)\\\\..*\$", replacement = "\\\\1", rownames(track)), track)
+        write.table( track, file = "${prefix}.stats.tsv", sep = "\\t", row.names = FALSE, quote = FALSE, na = '')
+
+        writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
+        """
+    } else {
+        """
+        #!/usr/bin/env Rscript
+        suppressPackageStartupMessages(library(dada2))
+
+        #combine filter_and_trim files
+        for (data in list.files("./filter_and_trim_files", full.names=TRUE)){
+            if (!exists("filter_and_trim")){ filter_and_trim <- read.csv(data, header=TRUE, sep="\\t") }
+            if (exists("filter_and_trim")){
+                tempory <-read.csv(data, header=TRUE, sep="\\t")
+                filter_and_trim <-unique(rbind(filter_and_trim, tempory))
+                rm(tempory)
+            }
+        }
+        rownames(filter_and_trim) <- filter_and_trim\$ID
+        filter_and_trim["ID"] <- NULL
+        #write.table( filter_and_trim, file = "${prefix}.filter_and_trim.tsv", sep = "\\t", row.names = TRUE, quote = FALSE, na = '')
+
+        #read data
+        dadaFs = readRDS("${denoised[0]}")
+        nochim = readRDS("$seqtab_nochim")
+
+        #track reads through pipeline
+        getN <- function(x) sum(getUniques(x))
+        # Single-end filenames have no read suffix, so strip only '.filt.fastq.gz'; stripping '_1'/'_2' would eat it from ids like 'sampleID_1'
+        normKey_ft <- function(x) sub(pattern = "(.*?)\\\\..*\$", replacement = "\\\\1", sub(pattern = "_1.fastq.gz\$", replacement = "", x))
+        normKey_nc <- function(x) sub(pattern = ".filt.fastq.gz\$", replacement = "", x)
+        if ( nrow(filter_and_trim) == 1 ) {
+            track <- cbind(filter_and_trim, getN(dadaFs), rowSums(nochim))
+        } else {
+            # Align columns by merging on the normalised sample key instead of positional cbind.
+            # dadaFs and nochim share identical rownames, so a single merge suffices.
+            ft_keys <- normKey_ft(rownames(filter_and_trim))
+            samples <- normKey_nc(rownames(nochim))
+            gN <- function(x) as.numeric(unname(sapply(x, getN)))
+            track <- data.frame(key = ft_keys, filter_and_trim, check.names = FALSE, stringsAsFactors = FALSE)
+            track <- merge(track, data.frame(key = samples,
+                    denoised = gN(dadaFs),
+                    nonchim  = as.numeric(unname(rowSums(nochim))),
+                    stringsAsFactors = FALSE),
+                by = "key", all = TRUE, sort = FALSE)
+            track <- track[order(match(track\$key, ft_keys)), ]
+            rownames(track) <- track\$key
+            track\$key <- NULL
+        }
+        colnames(track) <- c("DADA2_input", "filtered", "denoised", "nonchim")
+        track <- cbind(sample = sub(pattern = "(.*?)\\\\..*\$", replacement = "\\\\1", rownames(track)), track)
+        write.table( track, file = "${prefix}.stats.tsv", sep = "\\t", row.names = FALSE, quote = FALSE, na = '')
+
+        writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
+        """
+    }
+}

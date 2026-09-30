@@ -8,7 +8,11 @@
                 "BARRNAPSUMMARY": {
                     "python": "Python 3.9.1"
                 },
-                "COMBINE_TABLE_DADA2": {
+                "BUILD_ASV_ANNOTATIONS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
+                },
+                "COMBINE_TABLE": {
                     "R": "4.0.3"
                 },
                 "CUTADAPT_BASIC": {
@@ -58,6 +62,9 @@
                     "R": "4.5.2",
                     "dada2": "1.38.0"
                 },
+                "DUCKDB_TABLE2PARQUET": {
+                    "duckdb": "1.5.5"
+                },
                 "FILTER_LEN_ASV": {
                     "R": "4.0.3",
                     "Biostrings": "2.58.0"
@@ -73,6 +80,9 @@
                     "python": "3.9.1",
                     "pandas": "1.1.5"
                 },
+                "MERGE_STATS_DADA": {
+                    "R": "4.5.2"
+                },
                 "MERGE_STATS_FILTERLENASV": {
                     "R": "4.5.2"
                 },
@@ -80,9 +90,6 @@
                     "R": "4.5.2"
                 },
                 "MERGE_STATS_FILTERTAXA": {
-                    "R": "4.5.2"
-                },
-                "MERGE_STATS_STD": {
                     "R": "4.5.2"
                 },
                 "METADATA_ALL": {
@@ -141,7 +148,15 @@
                     "qiime2": "2026.4.0"
                 },
                 "RENAME_RAW_DATA_FILES": {
-                    "sed": 4.7
+                    "bash": "5.2.37(1)-release"
+                },
+                "SUMMARY_TABLE_COUNTS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
+                },
+                "SUMMARY_TABLE_TAXONOMY": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
                 },
                 "TREESUMMARIZEDEXPERIMENT": {
                     "R": "4.3.2",
@@ -152,7 +167,7 @@
                     "pandas": "1.1.5"
                 },
                 "Workflow": {
-                    "nf-core/ampliseq": "v2.18.0"
+                    "nf-core/ampliseq": "v3.0.0"
                 }
             },
             [
@@ -173,7 +188,7 @@
                 "barrnap/stats.ssu.tsv",
                 "barrnap/summary.tsv",
                 "cutadapt",
-                "cutadapt/assignTaxonomy.cutadapt.log",
+                "cutadapt/assignTaxonomy_user.cutadapt.log",
                 "cutadapt/cutadapt_summary.tsv",
                 "cutadapt/sampleID_1.trimmed.cutadapt.log",
                 "cutadapt/sampleID_1a.trimmed.cutadapt.log",
@@ -210,7 +225,7 @@
                 "dada2/args/FW_preprocessed_plotQualityProfile.args.txt",
                 "dada2/args/RV_plotQualityProfile.args.txt",
                 "dada2/args/RV_preprocessed_plotQualityProfile.args.txt",
-                "dada2/args/assignTaxonomy.args.txt",
+                "dada2/args/assignTaxonomy.ASV_tax.user.args.txt",
                 "dada2/args/dada.args.txt",
                 "dada2/args/filterAndTrim.args.txt",
                 "dada2/args/learnErrors.args.txt",
@@ -223,7 +238,7 @@
                 "dada2/log/1.err.log",
                 "input",
                 "input/Metadata_failed_sample.tsv",
-                "input/Samplesheet_failed_sample.tsv",
+                "input/Samplesheet_failed_sample_v3.tsv",
                 "multiqc",
                 "multiqc/multiqc_data",
                 "multiqc/multiqc_data/cutadapt_filtered_reads_plot.txt",
@@ -322,8 +337,6 @@
                 "qiime2/barplot/level-5.jsonp",
                 "qiime2/barplot/level-6.csv",
                 "qiime2/barplot/level-6.jsonp",
-                "qiime2/barplot/level-7.csv",
-                "qiime2/barplot/level-7.jsonp",
                 "qiime2/barplot/q2templateassets",
                 "qiime2/barplot/q2templateassets/css",
                 "qiime2/barplot/q2templateassets/css/base-template.css",
@@ -941,7 +954,7 @@
                 "qiime2/rel_abundance_tables/rel-table-5.tsv",
                 "qiime2/rel_abundance_tables/rel-table-6.tsv",
                 "qiime2/rel_abundance_tables/rel-table-ASV.tsv",
-                "qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-tax.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-user-tax.tsv",
                 "qiime2/representative_sequences",
                 "qiime2/representative_sequences/descriptive_stats.tsv",
                 "qiime2/representative_sequences/filtered-sequences.qza",
@@ -958,6 +971,11 @@
                 "summary_report/stacked_barchart_of_reads.svg",
                 "summary_report/summary_report.html",
                 "summary_report/versions.yml",
+                "summary_tables",
+                "summary_tables/ampliseq.counts.parquet",
+                "summary_tables/ampliseq.counts.tsv.gz",
+                "summary_tables/ampliseq.taxonomy.DADA2.user.parquet",
+                "summary_tables/ampliseq.taxonomy.DADA2.user.tsv.gz",
                 "treesummarizedexperiment",
                 "treesummarizedexperiment/dada2_TreeSummarizedExperiment.rds"
             ],
@@ -983,10 +1001,10 @@
             "multiqc_general_stats.txt:md5,0d19dc786ef0263939502acd5caa29de",
             "multiqc_cutadapt.txt:md5,5660c331eff9d7ff9ac702804d3801f3"
         ],
+        "timestamp": "2026-08-04T18:22:52.643673583",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.4"
-        },
-        "timestamp": "2026-04-21T12:04:36.209559248"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
     }
 }

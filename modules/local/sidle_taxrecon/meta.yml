@@ -1,0 +1,53 @@
+name: sidle_taxrecon
+description: Reconstructs taxonomy of reconstructed features with Sidle
+keywords:
+  - sidle
+  - multi-region
+  - reconstruction
+  - taxonomy
+tools:
+  - q2-sidle:
+      description: QIIME 2 implementation of SMURF, reconstructing full-length marker genes from multiple amplified regions
+      homepage: https://github.com/jwdebelius/q2-sidle
+      licence:
+        - BSD-3-Clause
+      identifier: ""
+input:
+  - reconstruction_map:
+      type: file
+      description: Reconstruction map artifact
+  - tax:
+      type: file
+      description: Reference taxonomy artifact
+output:
+  qza:
+    - reconstruction_taxonomy.qza:
+        type: file
+        description: QIIME2 taxonomy artifact
+        pattern: reconstruction_taxonomy.qza
+  visualisation:
+    - reconstruction_taxonomy/*:
+        type: file
+        description: Exported reconstructed taxonomy
+        pattern: reconstruction_taxonomy/*
+  tsv:
+    - reconstruction_taxonomy.tsv:
+        type: file
+        description: Reconstructed taxonomy (TSV)
+        pattern: reconstruction_taxonomy.tsv
+  versions_sidle_taxrecon:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

@@ -1,0 +1,91 @@
+name: compare_sequences
+description: Compares observed with expected ASV sequences for mock communities
+keywords:
+  - mock community
+  - benchmark
+  - sequences
+  - comparison
+tools:
+  - r:
+      description: Language and environment for statistical computing and graphics
+      homepage: https://www.r-project.org/
+      licence:
+        - GPL-2.0-or-later
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information, e.g. [ id:'test' ]
+    - blast6out:
+        type: file
+        description: VSEARCH global alignments of observed to expected sequences, in BLAST6 format
+  - observed_abundances:
+      type: file
+      description: ASV table produced by the pipeline
+  - expected_abundances:
+      type: file
+      description: Expected abundances table, from --expected_abundances
+  - similarity_threshold:
+      type: float
+      description: Similarity threshold for VSEARCH matches
+  - query_or_target:
+      type: string
+      description: Region to evaluate, from --expected_sequences_region
+  - trace_report_suffix:
+      type: string
+      description: Timestamp of the pipeline info files
+  - val_params_string:
+      type: string
+      description: Pipeline parameters as a string
+output:
+  svg:
+    - "*.svg":
+        type: file
+        description: Plot in SVG format
+        pattern: "*.svg"
+  png:
+    - "*.png":
+        type: file
+        description: Plot in PNG format
+        pattern: "*.png"
+  matches:
+    - "*nucleotide-differences.tsv":
+        type: file
+        description: Nucleotide differences between matched sequences (TSV)
+        pattern: "*nucleotide-differences.tsv"
+  matches_per_sample:
+    - "*_per-sample.tsv":
+        type: file
+        description: Nucleotide differences per sample (TSV)
+        pattern: "*_per-sample.tsv"
+  log:
+    - "*nucleotide-differences.log":
+        type: file
+        description: Log file
+        pattern: "*nucleotide-differences.log"
+  md5sum_version:
+    - md5sum_version.txt:
+        type: file
+        description: Checksums, parameters and timestamp of the comparison
+        pattern: md5sum_version.txt
+  warnings:
+    - Warnings.txt:
+        type: file
+        description: Warnings raised during the comparison
+        pattern: Warnings.txt
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

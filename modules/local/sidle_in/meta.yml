@@ -1,0 +1,52 @@
+name: sidle_in
+description: Imports a regional ASV table and sequences into QIIME2 for Sidle
+keywords:
+  - sidle
+  - multi-region
+  - import
+tools:
+  - q2-sidle:
+      description: QIIME 2 implementation of SMURF, reconstructing full-length marker genes from multiple amplified regions
+      homepage: https://github.com/jwdebelius/q2-sidle
+      licence:
+        - BSD-3-Clause
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information, e.g. [ id:'test' ]
+    - table:
+        type: file
+        description: ASV count table (TSV), ASV IDs in the first column and one column per sample
+    - seq:
+        type: file
+        description: ASV sequences in FASTA format
+output:
+  table_seq:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information, e.g. [ id:'test' ]
+      - "*_table.qza":
+          type: file
+          description: QIIME2 feature table artifact
+          pattern: "*_table.qza"
+      - "*_rep-seqs.qza":
+          type: file
+          description: QIIME2 representative sequences artifact
+          pattern: "*_rep-seqs.qza"
+  versions_sidle_in:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

@@ -18,7 +18,7 @@
                     "pattern": "^\\S+\\.(tsv|csv|yml|yaml|txt)$",
                     "fa_icon": "fas fa-dna",
                     "description": "Path to tab-separated sample sheet",
-                    "help_text": "Path to sample sheet, either tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml), that points to compressed fastq files.\n\nThe sample sheet must have at least two entries and supports two header layouts:\n- Legacy layout (required): `sampleID`, `forwardReads`; optional: `reverseReads`, `run`, `control`, `quant_reading`\n- Standardized layout (required): `sample`, `fastq_1`; optional: `fastq_2`, `run`, `control`, `quant_reading`\n\nSample IDs must start with a letter and can only contain letters, numbers or underscores.\n\nRelated parameters are:\n- `--pacbio` and `--iontorrent` if the sequencing data is PacBio data or IonTorrent data (default expected: paired-end Illumina data)\n- `--single_end` if the sequencing data is single-ended Illumina data (default expected: paired-end Illumina data)\n- Choose an appropriate reference taxonomy for the type of amplicon (16S/18S/ITS/CO1) (default: DADA2 assignTaxonomy and 16S rRNA sequence database)",
+                    "help_text": "Path to sample sheet, either tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml), that points to compressed fastq files.\n\nThe sample sheet must have at least two entries:\n- required: `sample`, `fastq_1`\n- optional: `fastq_2`, `run`, `control`, `quant_reading`\n\nSample IDs must start with a letter and can only contain letters, numbers or underscores.\n\nRelated parameters are:\n- `--sequencing_type` to define the data type (default expected: paired-end Illumina data)\n- Choose an appropriate reference taxonomy for the type of amplicon (16S/18S/ITS/CO1) (default: DADA2 assignTaxonomy and 16S rRNA sequence database)",
                     "schema": "assets/schema_input.json"
                 },
                 "input_fasta": {
@@ -35,18 +35,18 @@
                     "format": "directory-path",
                     "fa_icon": "fas fa-dna",
                     "description": "Path to folder containing zipped FastQ files",
-                    "help_text": "Path to folder containing compressed fastq files. Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique. Examples and requirements are in the usage documentation.\n\nRelated parameters: `--extension`, `--multiple_sequencing_runs`, `--pacbio`, `--iontorrent`, `--single_end`."
+                    "help_text": "Path to folder containing compressed fastq files. Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique. Examples and requirements are in the usage documentation.\n\nRelated parameters: `--input_folder_extensions`, `--multiple_sequencing_runs`, `--sequencing_type`."
                 },
-                "FW_primer": {
+                "primer_fwd": {
                     "type": "string",
                     "description": "Forward primer sequence",
-                    "help_text": "In amplicon sequencing methods, PCR with specific primers produces the amplicon of interest. These primer sequences need to be trimmed from the reads before further processing and are also required for producing an appropriate classifier. Do not use here any technical sequence such as adapter sequences but only the primer sequence that matches the biological amplicon.\n\nFor example:\n\n```bash\n--FW_primer \"GTGYCAGCMGCCGCGGTAA\" --RV_primer \"GGACTACNVGGGTWTCTAAT\"\n```",
+                    "help_text": "In amplicon sequencing methods, PCR with specific primers produces the amplicon of interest. These primer sequences need to be trimmed from the reads before further processing and are also required for producing an appropriate classifier. Do not use here any technical sequence such as adapter sequences but only the primer sequence that matches the biological amplicon.\n\nFor example:\n\n```bash\n--primer_fwd \"GTGYCAGCMGCCGCGGTAA\" --primer_rev \"GGACTACNVGGGTWTCTAAT\"\n```",
                     "fa_icon": "fas fa-arrow-circle-right"
                 },
-                "RV_primer": {
+                "primer_rev": {
                     "type": "string",
                     "description": "Reverse primer sequence",
-                    "help_text": "In amplicon sequencing methods, PCR with specific primers produces the amplicon of interest. These primer sequences need to be trimmed from the reads before further processing and are also required for producing an appropriate classifier. Do not use here any technical sequence such as adapter sequences but only the primer sequence that matches the biological amplicon.\n\nFor example:\n\n```bash\n--FW_primer GTGYCAGCMGCCGCGGTAA --RV_primer GGACTACNVGGGTWTCTAAT\n```",
+                    "help_text": "In amplicon sequencing methods, PCR with specific primers produces the amplicon of interest. These primer sequences need to be trimmed from the reads before further processing and are also required for producing an appropriate classifier. Do not use here any technical sequence such as adapter sequences but only the primer sequence that matches the biological amplicon.\n\nFor example:\n\n```bash\n--primer_fwd GTGYCAGCMGCCGCGGTAA --primer_rev GGACTACNVGGGTWTCTAAT\n```",
                     "fa_icon": "fas fa-arrow-alt-circle-left"
                 },
                 "metadata": {
@@ -63,7 +63,7 @@
                     "pattern": "^\\S+\\.(tsv|csv|yml|yaml|txt)$",
                     "fa_icon": "fas fa-dna",
                     "description": "Path to multi-region definition sheet, for multi-region analysis with Sidle",
-                    "help_text": "Path to file with information about sequenced regions, either tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml). This initiates scaffolding multiple regions along a reference.\n\nThe file must have four headers: \n- `region`: Unique region identifier\n- `region_length`: Minimal length of region\n- `FW_primer`: Forward primer sequence\n- `RV_primer`: Reverse primer sequence\n\nFor more details check the usage documentation.\n\nRelated parameters are:\n- `--sidle_ref_taxonomy` to select the reference taxonomic database\n- `--sidle_ref_tax_custom`, `--sidle_ref_seq_custom` and related parameters for custom reference taxonomic database files",
+                    "help_text": "Path to file with information about sequenced regions, either tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml). This initiates scaffolding multiple regions along a reference.\n\nThe file must have four headers: \n- `region`: Unique region identifier\n- `region_length`: Minimal length of region\n- `primer_fwd`: Forward primer sequence\n- `primer_rev`: Reverse primer sequence\n\nFor more details check the usage documentation.\n\nRelated parameters are:\n- `--sidle_ref_taxonomy` to select the reference taxonomic database\n- `--sidle_ref_tax_custom`, `--sidle_ref_seq_custom` and related parameters for custom reference taxonomic database files",
                     "schema": "assets/schema_multiregion.json"
                 },
                 "outdir": {
@@ -97,13 +97,21 @@
         "sequencing_input": {
             "title": "Sequencing input",
             "type": "object",
-            "description": "",
+            "description": "Customize settings to the sequencing input data properties",
             "default": "",
             "properties": {
+                "sequencing_type": {
+                    "type": "string",
+                    "default": "illumina_pe",
+                    "description": "Sequencing technology of the data, determines analyze settings and tools.",
+                    "help_text": "Sets (1) paired-end versus single-end for Cutadapt, (2) error profile model for DADA2 if not overwritten by `--binned_quality`, (3) ASV calling tool DADA2 or Savont if not overwritten by `--asv_calling`, and (4) the prest for ITSxRust.",
+                    "enum": ["illumina_pe", "illumina_se", "iontorrent", "pacbio", "nanopore"],
+                    "fa_icon": "fas fa-align-justify"
+                },
                 "binned_quality": {
                     "type": "string",
-                    "description": "Comma separated quality bins. If data has binned quality scores.",
-                    "help_text": "Bins can change over time and vary by sequencer type and software version. For example, at the time of writing, for 'MiSeq i100 Control Software version 1.0' quality bins are documented as '2,12,24,38', for 'MiSeq i100 Control Software version 1.1 and later' as '2,9,23,38', for 'NovaSeq X/X Plus Control Software v1.3' as '2,9,24,40'.",
+                    "description": "Comma separated quality bins for DADA2. If data has binned quality scores.",
+                    "help_text": "Sets the quality bins for DADA2's error model. Bins can change over time and vary by sequencer type and software version. For example, at the time of writing, for 'MiSeq i100 Control Software version 1.0' quality bins are documented as '2,12,24,38', for 'MiSeq i100 Control Software version 1.1 and later' as '2,9,23,38', for 'NovaSeq X/X Plus Control Software v1.3' as '2,9,24,40'.",
                     "fa_icon": "fas fa-align-justify",
                     "pattern": "^[0-9]+(,[0-9]+)*$"
                 },
@@ -112,32 +120,16 @@
                     "description": "Ignore warnings about binned quality scores.",
                     "fa_icon": "fas fa-arrow-right"
                 },
-                "pacbio": {
+                "illumina_pe_readthrough": {
                     "type": "boolean",
-                    "description": "If data is single-ended PacBio reads instead of Illumina",
-                    "fa_icon": "fas fa-align-justify"
-                },
-                "iontorrent": {
-                    "type": "boolean",
-                    "description": "If data is single-ended IonTorrent reads instead of Illumina",
-                    "fa_icon": "fas fa-align-justify"
-                },
-                "single_end": {
-                    "type": "boolean",
-                    "description": "If data is single-ended Illumina reads instead of paired-end",
-                    "help_text": "When using a sample sheet with `--input` containing forward and reverse reads, specifying `--single_end` will only extract forward reads and treat the data as single ended instead of extracting forward and reverse reads.",
-                    "fa_icon": "fas fa-align-left"
-                },
-                "illumina_pe_its": {
-                    "type": "boolean",
-                    "description": "If analysing ITS amplicons or any other region with large length variability with Illumina paired end reads",
+                    "description": "If analyzing Illumina paired end reads of an amplicon with large length variability such as ITS",
                     "help_text": "This will cause the pipeline to\n- not truncate input reads if not `--trunclenf` and `--trunclenr` are overwriting defaults\n- remove reverse complement primers from the end of reads in case the read length exceeds the amplicon length",
                     "fa_icon": "fas fa-align-justify"
                 },
                 "quality_type": {
                     "type": "string",
                     "default": "Auto",
-                    "description": "Type of quality scores in raw read data",
+                    "description": "Type of quality scores in raw read data for DADA2",
                     "help_text": "From R package 'ShortRead' function 'readFastq': Representation to be used for quality scores, must be one of `Auto` (infer automatically), `FastqQuality` (Phred-like base 33 encoding), `SFastqQuality` (Illumina base 64 encoding).",
                     "enum": ["Auto", "FastqQuality", "SFastqQuality"],
                     "fa_icon": "fab fa-amilia"
@@ -145,14 +137,14 @@
                 "multiple_sequencing_runs": {
                     "type": "boolean",
                     "description": "If using `--input_folder`: samples were sequenced in multiple sequencing runs",
-                    "help_text": "Expects one sub-folder per sequencing run in the folder specified by `--input_folder` containing sequencing data of the specific run.\nSample identifiers are taken from sequencing files, specifically the string before the first underscore will be the sample ID. Sample IDs across all sequencing runs (all sequencing files) have to be unique. If this is not the case, please use a sample sheet as input instead.\n\nExample for input data organization:\n\n```bash\ndata\n  |-run1\n  |  |-sample1_1_L001_R1_001.fastq.gz\n  |  |-sample1_1_L001_R2_001.fastq.gz\n  |  |-sample2_1_L001_R1_001.fastq.gz\n  |  |-sample2_1_L001_R2_001.fastq.gz\n  |\n  |-run2\n     |-sample3_1_L001_R1_001.fastq.gz\n     |-sample3_1_L001_R2_001.fastq.gz\n     |-sample4_1_L001_R1_001.fastq.gz\n     |-sample4_1_L001_R2_001.fastq.gz\n```\n\nExample command to analyze this data in one pipeline run:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input_folder \"data\" \\\n    --FW_primer \"GTGYCAGCMGCCGCGGTAA\" \\\n    --RV_primer \"GGACTACNVGGGTWTCTAAT\" \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multiple_sequencing_runs\n```",
+                    "help_text": "Expects one sub-folder per sequencing run in the folder specified by `--input_folder` containing sequencing data of the specific run.\nSample identifiers are taken from sequencing files, specifically the string before the first underscore will be the sample ID. Sample IDs across all sequencing runs (all sequencing files) have to be unique. If this is not the case, please use a sample sheet as input instead.\n\nExample for input data organization:\n\n```bash\ndata\n  |-run1\n  |  |-sample1_1_L001_R1_001.fastq.gz\n  |  |-sample1_1_L001_R2_001.fastq.gz\n  |  |-sample2_1_L001_R1_001.fastq.gz\n  |  |-sample2_1_L001_R2_001.fastq.gz\n  |\n  |-run2\n     |-sample3_1_L001_R1_001.fastq.gz\n     |-sample3_1_L001_R2_001.fastq.gz\n     |-sample4_1_L001_R1_001.fastq.gz\n     |-sample4_1_L001_R2_001.fastq.gz\n```\n\nExample command to analyze this data in one pipeline run:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input_folder \"data\" \\\n    --primer_fwd \"GTGYCAGCMGCCGCGGTAA\" \\\n    --primer_rev \"GGACTACNVGGGTWTCTAAT\" \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multiple_sequencing_runs\n```",
                     "fa_icon": "fas fa-running"
                 },
-                "extension": {
+                "input_folder_extensions": {
                     "type": "string",
                     "default": "/*_R{1,2}_001.fastq.gz",
                     "description": "If using `--input_folder`: naming of sequencing files",
-                    "help_text": "Indicates the naming of sequencing files (default: `\"/*_R{1,2}_001.fastq.gz\"`).\n\nPlease note:\n\n1. The prepended slash (`/`) is required\n2. The star (`*`) is the required wildcard for sample names\n3. The curly brackets (`{}`) enclose the orientation for paired end reads, separated by a comma (`,`).\n4. The pattern must be enclosed in quotes\n\nFor example for one sample (name: `1`) with forward (file: `1_a.fastq.gz`) and reverse (file: `1_b.fastq.gz`) reads in folder `data`:\n\n```bash\n--input_folder \"data\" --extension \"/*_{a,b}.fastq.gz\"\n```",
+                    "help_text": "Indicates the naming of sequencing files (default: `\"/*_R{1,2}_001.fastq.gz\"`).\n\nPlease note:\n\n1. The prepended slash (`/`) is required\n2. The star (`*`) is the required wildcard for sample names\n3. The curly brackets (`{}`) enclose the orientation for paired end reads, separated by a comma (`,`).\n4. The pattern must be enclosed in quotes\n\nFor example for one sample (name: `1`) with forward (file: `1_a.fastq.gz`) and reverse (file: `1_b.fastq.gz`) reads in folder `data`:\n\n```bash\n--input_folder \"data\" --input_folder_extensions \"/*_{a,b}.fastq.gz\"\n```",
                     "fa_icon": "fab fa-amilia"
                 },
                 "min_read_counts": {
@@ -211,7 +203,7 @@
             "fa_icon": "fas fa-align-left"
         },
         "read_trimming_and_quality_filtering": {
-            "title": "Read trimming and quality filtering",
+            "title": "DADA2 read trimming and quality filtering",
             "type": "object",
             "description": "Read trimming and quality filtering is supposed to reduce spurious results and aid error correction",
             "default": "",
@@ -256,7 +248,13 @@
                     "type": "integer",
                     "default": 2,
                     "description": "DADA2 read filtering option",
-                    "help_text": "After truncation, reads with higher than `max_ee` \"expected errors\" will be discarded. In case of very long reads, you might want to increase this value.  We recommend (to start with) a value corresponding to approximately 1 expected error per 100-200 bp (default: 2)",
+                    "help_text": "After truncation, reads with higher than `max_ee` \"expected errors\" will be discarded. In case of very long reads, you might want to increase this value.  We recommend (to start with) a value corresponding to approximately 1 expected error per 100-200 bp (default: 2)\n\nFor paired-end data, this value is used for both forward and reverse reads unless `--max_ee_r` is also set, in which case `--max_ee_r` applies to the reverse reads only.",
+                    "fa_icon": "fas fa-equals"
+                },
+                "max_ee_r": {
+                    "type": "integer",
+                    "description": "DADA2 read filtering option for reverse reads, overriding --max_ee for reverse reads only (paired-end Illumina data only)",
+                    "help_text": "Only relevant for paired-end Illumina data. By default, `--max_ee` is applied to both forward and reverse reads. Some sequencing runs show a quality drop restricted to the reverse read (e.g. a known Illumina NextSeq behaviour); `--max_ee_r` lets the reverse read use a separate, typically more permissive, expected-error threshold instead of discarding those reads outright. If not set, `--max_ee` is used for the reverse reads too, unchanged from previous pipeline versions.",
                     "fa_icon": "fas fa-equals"
                 },
                 "min_len": {
@@ -286,54 +284,66 @@
             "type": "object",
             "default": "",
             "properties": {
+                "asv_calling": {
+                    "type": "string",
+                    "default": "auto",
+                    "help_text": "DADA2 is recommended for Illumina, IonTorrent, and PacBio HiFi data. Savont is recommended for ONT data but is also applicable to PacBio HiFi data.",
+                    "description": "Tool for ASV calculation.",
+                    "enum": ["dada2", "savont", "auto"]
+                },
                 "sample_inference": {
                     "type": "string",
-                    "default": "independent",
-                    "help_text": "If samples are treated independent (lowest sensitivity and lowest resources), pooled (highest sensitivity and resources) or pseudo-pooled (balance between required resources and sensitivity).",
+                    "default": "pooled",
+                    "help_text": "If samples are treated independent (lowest sensitivity and lowest resources), pooled (highest sensitivity and resources) or [only for DADA2] pseudo-pooled (balance between required resources and sensitivity).",
                     "description": "Mode of sample inference: \"independent\", \"pooled\" or \"pseudo\"",
                     "enum": ["independent", "pooled", "pseudo"]
+                },
+                "savont_options": {
+                    "type": "string",
+                    "default": "--fl-16s",
+                    "description": "Options for Savont ONT analysis"
                 },
                 "mergepairs_strategy": {
                     "type": "string",
                     "default": "merge",
-                    "description": "Strategy to merge paired end reads. When paired end reads are not sufficiently overlapping for merging, you can use \"concatenate\" (not recommended). When you have a mix of overlapping and non overlapping reads use \"consensus\"",
-                    "help_text": "This parameters specifies how paired-end reads are merged after denoising. By default, read pairs will be merged by overlap. Concatenating read pairs (separated by 10 N's) is an alternative to only analyzing the forward or reverse read in case of non-overlapping paired-end sequencing data, this is not recommended, only if all other options fail. The consensus strategy is merging read pairs by overlap if possible and concatenates non-overlapping read pairs, based on `--mergepairs_consensus_*` parameters.",
+                    "description": "DADA2: Strategy to merge paired end reads. When paired end reads are not sufficiently overlapping for merging, you can use \"concatenate\" (not recommended). When you have a mix of overlapping and non overlapping reads use \"consensus\"",
+                    "help_text": "This parameters specifies how paired-end reads are merged after denoising with DADA2. By default, read pairs will be merged by overlap. Concatenating read pairs (separated by 10 N's) is an alternative to only analyzing the forward or reverse read in case of non-overlapping paired-end sequencing data, this is not recommended, only if all other options fail. The consensus strategy is merging read pairs by overlap if possible and concatenates non-overlapping read pairs, based on `--mergepairs_consensus_*` parameters.",
                     "enum": ["merge", "concatenate", "consensus"]
                 },
                 "mergepairs_consensus_match": {
                     "type": "integer",
                     "default": 1,
-                    "description": "The score assigned for each matching base pair during sequence alignment.",
+                    "description": "DADA2: The score assigned for each matching base pair during sequence alignment.",
                     "help_text": "This parameter specifies the numerical value added to the alignment score for every pair of bases that match between the forward and reverse reads. A higher value increases the preference for alignments with more matching bases."
                 },
                 "mergepairs_consensus_mismatch": {
                     "type": "integer",
                     "default": -2,
-                    "description": "The penalty score assigned for each mismatched base pair during sequence alignment.",
+                    "description": "DADA2: The penalty score assigned for each mismatched base pair during sequence alignment.",
                     "help_text": "This parameter defines the numerical penalty subtracted from the alignment score for each base pair mismatch between the forward and reverse reads. A higher penalty reduces the likelihood of accepting alignments with mismatches."
                 },
                 "mergepairs_consensus_gap": {
                     "type": "integer",
                     "default": -4,
-                    "description": "The penalty score assigned for each gap introduced during sequence alignment.",
+                    "description": "DADA2: The penalty score assigned for each gap introduced during sequence alignment.",
                     "help_text": "This parameter sets the numerical penalty subtracted from the alignment score for each gap (insertion or deletion) introduced to align the forward and reverse reads. A higher penalty discourages alignments that require gaps."
                 },
                 "mergepairs_consensus_minoverlap": {
                     "type": "integer",
                     "default": 12,
-                    "description": "The minimum number of overlapping base pairs required to merge forward and reverse reads.",
+                    "description": "DADA2: The minimum number of overlapping base pairs required to merge forward and reverse reads.",
                     "help_text": "This parameter specifies the smallest number of consecutive base pairs that must overlap between the forward and reverse reads for them to be merged. Ensuring sufficient overlap is crucial for accurate merging."
                 },
                 "mergepairs_consensus_maxmismatch": {
                     "type": "integer",
                     "default": 0,
-                    "description": "The maximum number of mismatches allowed within the overlapping region for merging reads.",
+                    "description": "DADA2: The maximum number of mismatches allowed within the overlapping region for merging reads.",
                     "help_text": "This parameter defines the highest number of mismatched base pairs permitted in the overlap region between forward and reverse reads for a successful merge. Setting this value helps control the stringency of read merging, balancing between sensitivity and accuracy."
                 },
                 "mergepairs_consensus_percentile_cutoff": {
                     "type": "number",
                     "default": 0.001,
-                    "description": "The percentile used to determine a stringent cutoff which will correspond to the minimum observed overlap in the dataset. This ensures that only read pairs with high overlap are merged into consensus sequences. Those with insufficient overlap are concatenated."
+                    "description": "DADA2: The percentile used to determine a stringent cutoff which will correspond to the minimum observed overlap in the dataset. This ensures that only read pairs with high overlap are merged into consensus sequences. Those with insufficient overlap are concatenated."
                 }
             },
             "fa_icon": "fas fa-braille"
@@ -455,65 +465,19 @@
             "properties": {
                 "dada_ref_taxonomy": {
                     "type": "string",
-                    "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `silva=138`) . This will download the desired database, format it to produce a file that is compatible with DADA2's assignTaxonomy and another file that is compatible with DADA2's addSpecies.\n\nThe following databases are supported:\n- GTDB - Genome Taxonomy Database - 16S rRNA\n- SBDI-GTDB, a Sativa-vetted version of the GTDB 16S rRNA\n- PR2 - Protist Reference Ribosomal Database - 18S rRNA\n- RDP - Ribosomal Database Project - 16S rRNA\n- SILVA ribosomal RNA gene database project - 16S rRNA\n- UNITE - eukaryotic nuclear ribosomal ITS region - ITS\n- COIDB - eukaryotic Cytochrome Oxidase I (COI) from The Barcode of Life Data System (BOLD) - COI\n\nGenerally, using `gtdb`, `pr2`, `rdp`, `sbdi-gtdb`, `silva`, `coidb`, `unite-fungi`, or `unite-alleuk` will select the most recent supported version.\n\nPlease note that commercial/non-academic entities [require licensing](https://www.arb-silva.de/silva-license-information) for SILVA v132 database (non-default) but not from v138 on (default).",
-                    "description": "Name of supported database, and optionally also version number",
-                    "default": "sbdi-gtdb=R11-RS232-1",
-                    "enum": [
-                        "coidb",
-                        "coidb=221216",
-                        "greengenes2",
-                        "greengenes2=2024.09",
-                        "gtdb",
-                        "gtdb=R05-RS95",
-                        "gtdb=R06-RS202",
-                        "gtdb=R07-RS207",
-                        "gtdb=R08-RS214",
-                        "gtdb=R09-RS220",
-                        "gtdb=R10-RS226",
-                        "gtdb=R11-RS232",
-                        "midori2-co1",
-                        "midori2-co1=gb250",
-                        "pr2",
-                        "pr2=4.13.0",
-                        "pr2=4.14.0",
-                        "pr2=5.0.0",
-                        "pr2=5.1.0",
-                        "rdp",
-                        "rdp=18",
-                        "sbdi-gtdb",
-                        "sbdi-gtdb=R11-RS232-1",
-                        "sbdi-gtdb=R10-RS226-2",
-                        "sbdi-gtdb=R09-RS220-2",
-                        "sbdi-gtdb=R09-RS220-1",
-                        "sbdi-gtdb=R08-RS214-1",
-                        "sbdi-gtdb=R07-RS207-1",
-                        "sbdi-gtdb=R06-RS202-3",
-                        "sbdi-gtdb=R06-RS202-1",
-                        "silva",
-                        "silva=138.2",
-                        "silva=138",
-                        "silva=132",
-                        "unite-alleuk",
-                        "unite-alleuk=10.0",
-                        "unite-alleuk=9.0",
-                        "unite-alleuk=8.3",
-                        "unite-alleuk=8.2",
-                        "unite-fungi",
-                        "unite-fungi=10.0",
-                        "unite-fungi=9.0",
-                        "unite-fungi=8.3",
-                        "unite-fungi=8.2",
-                        "zehr-nifh",
-                        "zehr-nifh=2.5.0"
-                    ]
+                    "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `silva=138`). This will download the desired database, format it to produce a file that is compatible with DADA2's assignTaxonomy and another file that is compatible with DADA2's addSpecies.\n\nDatabase keys are given in **lower case**; the values in parentheses below are the exact strings `--dada_ref_taxonomy` accepts for that database (the unversioned key selects the most recent/default version).\n\n**SSU rRNA**\n- SBDI-GTDB, a Sativa-vetted version of the GTDB 16S rRNA, the default (`sbdi-gtdb`, `sbdi-gtdb=R11-RS232-1`, `sbdi-gtdb=R10-RS226-2`, `sbdi-gtdb=R09-RS220-2`, `sbdi-gtdb=R09-RS220-1`, `sbdi-gtdb=R08-RS214-1`, `sbdi-gtdb=R07-RS207-1`, `sbdi-gtdb=R06-RS202-3`, `sbdi-gtdb=R06-RS202-1`)\n- SILVA ribosomal RNA gene database project, 16S rRNA (`silva`, `silva=138.2`, `silva=138`, `silva=132`)\n- GTDB - Genome Taxonomy Database, 16S rRNA (`gtdb`, `gtdb=R11-RS232`, `gtdb=R10-RS226`, `gtdb=R09-RS220`, `gtdb=R08-RS214`, `gtdb=R07-RS207`, `gtdb=R06-RS202`, `gtdb=R05-RS95`)\n- RDP - Ribosomal Database Project, 16S rRNA (`rdp`, `rdp=18`)\n- Greengenes2, 16S rRNA (`greengenes2`, `greengenes2=2024.09`)\n- PR2 - Protist Reference Ribosomal Database, 18S rRNA (Note: also contains plastid/chloroplast 16S rRNA sequences) (`pr2`, `pr2=5.1.0`, `pr2=5.0.0`, `pr2=4.14.0`, `pr2=4.13.0`)\n\n**ITS** (also rRNA, listed next to SSU rRNA)\n- UNITE - eukaryotic nuclear ribosomal ITS region: fungi only (`unite-fungi`, `unite-fungi=10.0`, `unite-fungi=9.0`, `unite-fungi=8.3`, `unite-fungi=8.2`), or all eukaryotes (`unite-alleuk`, `unite-alleuk=10.0`, `unite-alleuk=9.0`, `unite-alleuk=8.3`, `unite-alleuk=8.2`)\n- GloSED - Global Standardised Soil Eukaryome Dataset, fungal ITS; SH support not available (`glosed`, `glosed=1.0.0`)\n\n**COI**\n- COIDB - eukaryotic Cytochrome Oxidase I (COI) from The Barcode of Life Data System (BOLD) (`coidb`, `coidb=221216`)\n- MIDORI2-CO1 (`midori2-co1`, `midori2-co1=gb250`)\n\n**nifH**\n- Zehr-nifH (`zehr-nifh`, `zehr-nifh=2.5.0`)\n\nSeveral comma-separated databases may be given (e.g. `sbdi-gtdb,silva`) to run DADA2 taxonomic classification against each of them; one full set of output files is published per listed database. By default, only the **first-listed** database feeds every downstream step that expects a single taxonomy (QIIME2 filtering, diversity, barplots, ANCOM, R objects); use `--consolidate_taxonomies` to instead pick a per-ASV winner across all listed databases.\n\nPlease note that commercial/non-academic entities [require licensing](https://www.arb-silva.de/silva-license-information) for SILVA v132 (non-default) but not from v138 on (default). This list (including the exact accepted database/version strings) always matches `conf/ref_databases.config` -- supply an invalid value (e.g. `x`) to have the pipeline print the current list. See also the [usage docs](https://nf-co.re/ampliseq/docs/usage/#taxonomic-classification).",
+                    "description": "Name of supported database(s), and optionally also version number(s) -- comma-separated for multiple databases",
+                    "default": "sbdi-gtdb=R11-RS232-1"
                 },
                 "dada_ref_tax_custom": {
                     "type": "string",
-                    "help_text": "Overwrites `--dada_ref_taxonomy`. Either `--skip_dada_addspecies` (no species annotation) or `--dada_ref_tax_custom_sp` (species annotation) is additionally required. Consider also setting `--dada_assign_taxlevels`.\n\nMust be compatible to DADA2's assignTaxonomy function: 'Can be compressed. This reference fasta file should be formatted so that the id lines correspond to the taxonomy (or classification) of the associated sequence, and each taxonomic level is separated by a semicolon.' See also https://rdrr.io/bioc/dada2/man/assignTaxonomy.html",
+                    "format": "file-path",
+                    "help_text": "Overwrites `--dada_ref_taxonomy` entirely -- including every database listed in it, if `--dada_ref_taxonomy` is given a comma-separated list. Only this single custom database is used; `--dada_ref_taxonomy` is not combined with it. Either `--skip_dada_addspecies` (no species annotation) or `--dada_ref_tax_custom_sp` (species annotation) is additionally required. Consider also setting `--dada_assign_taxlevels`.\n\nMust be compatible to DADA2's assignTaxonomy function: 'Can be compressed. This reference fasta file should be formatted so that the id lines correspond to the taxonomy (or classification) of the associated sequence, and each taxonomic level is separated by a semicolon.' See also https://rdrr.io/bioc/dada2/man/assignTaxonomy.html",
                     "description": "Path to a custom DADA2 reference taxonomy database"
                 },
                 "dada_ref_tax_custom_sp": {
                     "type": "string",
+                    "format": "file-path",
                     "help_text": "Requires `--dada_ref_tax_custom`. Must be compatible to DADA2's addSpecies function: 'Can be compressed. This reference fasta file should be formatted so that the id lines correspond to the genus-species binomial of the associated sequence.' See also https://rdrr.io/bioc/dada2/man/addSpecies.html",
                     "description": "Path to a custom DADA2 reference taxonomy database for species assignment"
                 },
@@ -534,6 +498,13 @@
                     "type": "boolean",
                     "help_text": "Expected amplified sequences are extracted from the DADA2 reference taxonomy using the primer sequences, that might improve classification. This is not applied to species classification (assignSpecies) but only for lower taxonomic levels (assignTaxonomy).",
                     "description": "If the expected amplified sequences are extracted from the DADA2 reference taxonomy database"
+                },
+                "consolidate_taxonomies": {
+                    "type": "string",
+                    "default": "first",
+                    "enum": ["first", "most-specific", "score"],
+                    "help_text": "Only relevant when `--dada_ref_taxonomy` lists more than one database.\n\n- `first` (default): use the **first-listed** database's result for every downstream step (QIIME2 filtering, diversity, barplots, ANCOM, R objects).\n- `most-specific`: for each ASV, use whichever listed database resolved the deepest taxonomic rank (fewest unresolved ranks). Ties are broken by database order in `--dada_ref_taxonomy`.\n- `score`: for each ASV, use whichever listed database reported the highest DADA2 assignTaxonomy bootstrap confidence. Ties are broken by database order in `--dada_ref_taxonomy`.\n\nConsolidation is currently limited to DADA2's own listed databases; it does not compare across different classification methods (e.g. DADA2 vs. SINTAX).",
+                    "description": "How to pick one DADA2 taxonomy per ASV when `--dada_ref_taxonomy` lists several databases"
                 },
                 "dada_addspecies_allowmultiple": {
                     "type": "boolean",
@@ -563,10 +534,12 @@
                 },
                 "pplace_tree": {
                     "type": "string",
+                    "format": "file-path",
                     "description": "Newick file with reference phylogenetic tree. Requires also `--pplace_aln` and `--pplace_model`."
                 },
                 "pplace_aln": {
                     "type": "string",
+                    "format": "file-path",
                     "description": "File with reference sequences. Requires also `--pplace_tree` and `--pplace_model`."
                 },
                 "pplace_model": {
@@ -581,6 +554,7 @@
                 },
                 "pplace_taxonomy": {
                     "type": "string",
+                    "format": "file-path",
                     "help_text": "Headerless, tab-separated, first column with tree leaves, second column with taxonomy ranks separated by semicolon `;`. The results take precedence over DADA2 and QIIME2 classifications.",
                     "description": "Tab-separated file with taxonomy assignments of reference sequences."
                 },
@@ -607,10 +581,11 @@
                     "help_text": "Overwrites `--qiime_ref_taxonomy`. Either path to tarball (`*.tar.gz` or `*.tgz`) that contains sequence (`*.fna`) and taxonomy (`*.tax`) data, or alternatively a comma separated pair of filepaths to sequence (`*.fna`) and taxonomy (`*.tax`) data (possibly gzipped `*.gz`).",
                     "description": "Path to files of a custom QIIME2 reference taxonomy database (tarball, or two comma-separated files)"
                 },
-                "classifier": {
+                "qiime_classifier": {
                     "type": "string",
+                    "format": "file-path",
                     "description": "Path to QIIME2 trained classifier file (typically *-classifier.qza)",
-                    "help_text": "If you have trained a compatible classifier before, from sources such as SILVA (https://www.arb-silva.de/), Greengenes (http://greengenes.secondgenome.com/downloads) or RDP (https://rdp.cme.msu.edu/). \n\nFor example:\n\n```bash\n--classifier \"FW_primer-RV_primer-classifier.qza\"\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The classifier is a Naive Bayes classifier produced by `qiime feature-classifier fit-classifier-naive-bayes` (e.g. by this pipeline)\n3. The primer pair for the amplicon PCR and the computing of the classifier are exactly the same (or full-length, potentially lower performance)\n4. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses"
+                    "help_text": "If you have trained a compatible classifier before, from sources such as SILVA (https://www.arb-silva.de/), Greengenes (http://greengenes.secondgenome.com/downloads) or RDP (https://rdp.cme.msu.edu/). \n\nFor example:\n\n```bash\n--qiime_classifier \"primer_fwd-primer_rev-qiime_classifier.qza\"\n```\n\nPlease note the following requirements:\n\n1. The path must be enclosed in quotes\n2. The classifier is a Naive Bayes classifier produced by `qiime feature-classifier fit-classifier-naive-bayes` (e.g. by this pipeline)\n3. The primer pair for the amplicon PCR and the computing of the classifier are exactly the same (or full-length, potentially lower performance)\n4. The classifier has to be trained by the same version of scikit-learn as this version of the pipeline uses"
                 },
                 "kraken2_ref_taxonomy": {
                     "type": "string",
@@ -625,12 +600,14 @@
                         "greengenes",
                         "greengenes=13.5",
                         "standard",
+                        "standard=20260626",
                         "standard=20240904",
                         "standard=20230605"
                     ]
                 },
                 "kraken2_ref_tax_custom": {
                     "type": "string",
+                    "format": "file-path",
                     "help_text": "Overwrites `--kraken2_ref_taxonomy`. Consider also setting `--kraken2_assign_taxlevels`. Can be compressed tar archive (.tar.gz|.tgz) or folder containing the database. See also https://benlangmead.github.io/aws-indexes/k2.",
                     "description": "Path to a custom Kraken2 reference taxonomy database (*.tar.gz|*.tgz archive or folder)"
                 },
@@ -668,7 +645,8 @@
                 },
                 "sintax_ref_tax_custom": {
                     "type": "string",
-                    "help_text": "Overwrites `--sintax_ref_taxonomy`. Requires `--sintax_assign_taxlevels`. Plain fasta or gzip-compressed (`.gz`) is accepted. Cannot be used with `--sbdiexport`.",
+                    "format": "file-path",
+                    "help_text": "Overwrites `--sintax_ref_taxonomy`. Requires `--sintax_assign_taxlevels`. Plain fasta or gzip-compressed (`.gz`) is accepted.",
                     "description": "Path to a custom SINTAX reference database (fasta)"
                 },
                 "sintax_assign_taxlevels": {
@@ -676,8 +654,17 @@
                     "help_text": "Comma separated list of taxonomic ranks matching the labels in the custom database. Required with `--sintax_ref_tax_custom`. For example: `Phylum,Class,Order,Family,Genus,Species`.",
                     "description": "Comma separated list of taxonomic levels used in SINTAX with a custom reference database"
                 },
+                "sintax_cutoff": {
+                    "type": "number",
+                    "default": 0.8,
+                    "minimum": 0,
+                    "maximum": 1,
+                    "help_text": "Confidence cutoff for SINTAX taxonomic classification (`--sintax_cutoff` in VSEARCH). Increasing the cutoff requires higher confidence to assign a rank.",
+                    "description": "Confidence cutoff for SINTAX taxonomic classification."
+                },
                 "vsearch_lca_ref_tax_custom": {
                     "type": "string",
+                    "format": "file-path",
                     "help_text": "Path to a custom VSEARCH LCA reference database. Requires `--vsearch_lca_assign_taxlevels`. Expected format: SINTAX-compatible FASTA with semicolon-separated taxonomy labels in sequence headers (same as `--sintax_ref_tax_custom`); plain FASTA or gzip-compressed (`.gz`) is accepted. Cannot be used together with `--vsearch_lca_ref_taxonomy`.",
                     "description": "Path to a custom VSEARCH LCA reference database (SINTAX-compatible FASTA)"
                 },
@@ -742,7 +729,8 @@
                 },
                 "addsh": {
                     "type": "boolean",
-                    "description": "If ASVs should be assigned to UNITE species hypotheses (SHs). Only relevant for ITS data."
+                    "description": "If ASVs should be assigned to UNITE species hypotheses (SHs). Only relevant for ITS data.",
+                    "help_text": "Requires a DADA2 reference database with precomputed SH lookup files. Currently supported for UNITE reference databases. Not currently supported for `--dada_ref_taxonomy glosed`."
                 },
                 "cut_its": {
                     "type": "string",
@@ -780,24 +768,28 @@
                 },
                 "sidle_ref_tax_custom": {
                     "type": "string",
+                    "format": "file-path",
                     "help_text": "Use with `--sidle_ref_seq_custom`. Consider also setting `--sidle_ref_aln_custom` and `--sidle_ref_tree_custom`. The taxonomy file must be headerless and follow the format of `qiime tools import`'s `HeaderlessTSVTaxonomyFormat`. Example usage: `--sidle_ref_tax_custom 'taxonomy_99_taxonomy.txt'`",
                     "description": "Path to reference taxonomy strings (headerless, *.txt)",
                     "pattern": "^.*\\.txt$"
                 },
                 "sidle_ref_seq_custom": {
                     "type": "string",
+                    "format": "file-path",
                     "help_text": "Use with `--sidle_ref_tax_custom`. Example usage: `--sidle_ref_seq_custom 'rep_set_99.fasta'`",
                     "description": "Path to reference taxonomy sequences in fasta format",
                     "pattern": "^.*\\.(fasta|fas|fna|fa|ffn)$"
                 },
                 "sidle_ref_aln_custom": {
                     "type": "string",
+                    "format": "file-path",
                     "help_text": "May be used with `--sidle_ref_tax_custom`. Allows sequence reconstruction. Example usage: `--sidle_ref_aln_custom 'rep_set_aligned_99.fasta'`",
                     "description": "Path to multiple sequence alignment of reference taxonomy sequences in fasta format",
                     "pattern": "^.*\\.(fasta|fas|fna|fa|ffn)$"
                 },
                 "sidle_ref_tree_custom": {
                     "type": "string",
+                    "format": "file-path",
                     "help_text": "Use with `--sidle_ref_aln_custom`. Recommended with `--sidle_ref_tax_custom`. Allows phylogenetic tree reconstruction and therefore diversity analysis. Overwrites tree chosen by `--sidle_ref_taxonomy`",
                     "description": "Path to SIDLE reference taxonomy tree (*.qza)",
                     "pattern": "^.*\\.qza$"
@@ -868,10 +860,6 @@
                 "picrust": {
                     "type": "boolean",
                     "description": "If the functional potential of the bacterial community is predicted."
-                },
-                "sbdiexport": {
-                    "type": "boolean",
-                    "description": "If data should be exported in SBDI (Swedish biodiversity infrastructure) Excel format."
                 },
                 "diversity_rarefaction_depth": {
                     "type": "integer",
@@ -966,6 +954,61 @@
                 }
             }
         },
+        "comparison": {
+            "title": "Comparison of observed to expected results",
+            "type": "object",
+            "description": "Settings for comparing analysis results to the expected outcome",
+            "default": "",
+            "properties": {
+                "expected_sequences": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/tsv",
+                    "pattern": "^\\S+\\.(fasta|fas|fna|fa|ffn)$",
+                    "description": "Path to file of expected sequences in fasta format",
+                    "help_text": "Ideally the expected sequences should be all unique within the alignment region with the observed sequences, because the alignment matches are used to aggregate identical expected sequences and in case there isnt an exact match to a set of identical expected sequences, those will not be aggregated and inflate the number of expected unique sequences. Supplying only sequences will compare ASVs of each sample to the given sequence set. Consider other parameters for more comprehensive comparisons."
+                },
+                "expected_sequences_region": {
+                    "type": "string",
+                    "description": "What region of the sequence comparison is evaluated",
+                    "help_text": "`alignment`: only the alignment region is evaluated including mismatches and gaps. `observed`: alignment region and terminal gaps to the observed sequence, i.e. constructed ASV sequence, are evaluated. `expected`: alignment region and terminal gaps to the expected sequence, are evaluated.",
+                    "default": "observed",
+                    "enum": ["alignment", "observed", "expected"]
+                },
+                "expected_sequences_mismatches": {
+                    "type": "integer",
+                    "default": 0,
+                    "minimum": 0,
+                    "description": "Threshold of accepted mismatches and gaps to the expected sequences",
+                    "help_text": "The number of mismatches and gaps that are accepted in the region evaluated by `--expected_sequences_region` to call it a match. For example, `0` means an exact match, 1 allows one mismatch/gap.",
+                    "fa_icon": "fas fa-greater-than-equal"
+                },
+                "expected_sequences_merge": {
+                    "type": "string",
+                    "description": "How to handle multiple sequence matches",
+                    "help_text": "How to handle one-to-many, many-to-one, or many-to-many sequence matches under the constrains of `--expected_sequences_mismatches` and `--expected_sequences_region`. 'all' will aggregate observed and expected IDs and abundances, 'observed' only observed data, 'expected' only expected data, and 'none' will not aggregate.",
+                    "default": "all",
+                    "enum": ["all", "observed", "expected", "none"]
+                },
+                "expected_abundances": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/tsv",
+                    "pattern": "^\\S+\\.(tsv|txt)$",
+                    "description": "Path to file of abundances of expected sequences in tsv format",
+                    "help_text": "Tab-separated table with header. First column is sequence IDs corresponding to the fasta file supplied with `--expected_sequences`. All further columns should have names corresponding to the sample names in `--input` or other input options. Samples will only compared to when they are in sequencing data input and the expected abundance input. This allows for example to only compare mock samples that were added to another data set as controls."
+                },
+                "expected_profile": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/tsv",
+                    "pattern": "^\\S+\\.(tsv|txt)$",
+                    "description": "Path to file of abundances of expected taxnonomies in tsv format",
+                    "help_text": "Tab-separated table with header. First column is taxonomic string (levels are semicolon-separated). All further columns should have names corresponding to the sample names in `--input` or other input options. Samples will only compared to when they are in sequencing data input and the expected profile input. This allows for example to only compare mock samples that were added to another data set as controls."
+                }
+            },
+            "fa_icon": "fas fa-book-open"
+        },
         "pipeline_report": {
             "title": "Pipeline summary report",
             "type": "object",
@@ -994,6 +1037,7 @@
                 },
                 "report_abstract": {
                     "type": "string",
+                    "format": "file-path",
                     "description": "Path to Markdown file (md) that replaces the 'Abstract' section"
                 }
             },
@@ -1023,6 +1067,14 @@
                     "type": "boolean",
                     "description": "Skip FastQC"
                 },
+                "skip_porechop_abi": {
+                    "type": "boolean",
+                    "description": "Skip adapter trimming with porechop_ABI (ONT reads)."
+                },
+                "skip_chopper": {
+                    "type": "boolean",
+                    "description": "Skip quality filtering with Chopper (ONT reads)."
+                },
                 "skip_cutadapt": {
                     "type": "boolean",
                     "description": "Skip primer trimming with cutadapt. This is not recommended! Use only in case primer sequences were removed before and the data does not contain any primer sequences."
@@ -1045,7 +1097,7 @@
                 },
                 "skip_taxonomy": {
                     "type": "boolean",
-                    "description": "Skip taxonomic classification. Incompatible with `--sbdiexport`"
+                    "description": "Skip taxonomic classification."
                 },
                 "skip_dada_taxonomy": {
                     "type": "boolean",
@@ -1053,7 +1105,7 @@
                 },
                 "skip_dada_addspecies": {
                     "type": "boolean",
-                    "description": "Skip species level when using DADA2 for taxonomic classification. This reduces the required memory dramatically under certain conditions. Incompatible with `--sbdiexport`"
+                    "description": "Skip species level when using DADA2 for taxonomic classification. This reduces the required memory dramatically under certain conditions."
                 },
                 "skip_barplot": {
                     "type": "boolean",
@@ -1086,6 +1138,10 @@
                 "skip_report": {
                     "type": "boolean",
                     "description": "Skip Markdown summary report"
+                },
+                "skip_parquet_summary": {
+                    "type": "boolean",
+                    "description": "Skip writing summary tables as Parquet, alongside the default gzipped tsv"
                 }
             },
             "fa_icon": "fas fa-hand-paper"
@@ -1285,6 +1341,9 @@
         },
         {
             "$ref": "#/$defs/differential_abundance_analysis"
+        },
+        {
+            "$ref": "#/$defs/comparison"
         },
         {
             "$ref": "#/$defs/pipeline_report"

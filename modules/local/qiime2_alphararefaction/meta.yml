@@ -1,0 +1,53 @@
+name: qiime2_alphararefaction
+description: Computes alpha rarefaction curves with QIIME2
+keywords:
+  - qiime2
+  - alpha diversity
+  - rarefaction
+tools:
+  - qiime2:
+      description: Microbiome multi-omics data science platform
+      homepage: https://qiime2.org
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:qiime2
+input:
+  - metadata:
+      type: file
+      description: Sample metadata table (TSV)
+  - table:
+      type: file
+      description: QIIME2 feature table artifact
+  - tree:
+      type: file
+      description: QIIME2 rooted tree artifact
+  - stats:
+      type: file
+      description: Counts per sample (TSV), to set the rarefaction depth
+output:
+  rarefaction:
+    - alpha-rarefaction/*:
+        type: file
+        description: Exported rarefaction curves
+        pattern: alpha-rarefaction/*
+  qzv:
+    - "*.qzv":
+        type: file
+        description: QIIME2 visualisation
+        pattern: "*.qzv"
+  versions_qiime2_alphararefaction:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

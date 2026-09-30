@@ -1,0 +1,25 @@
+process PHYLOSEQ_INASV {
+    label 'process_single'
+
+    conda "${moduleDir}/environment.yml"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/ubuntu:20.04' :
+        'nf-core/ubuntu:20.04' }"
+
+    input:
+    path(biom_file)
+
+    output:
+    path( "*.tsv" )          , emit: tsv
+    path "versions.yml"      , emit: versions_phyloseq_inasv, topic: versions
+
+    script:
+    """
+    tail $biom_file -n +2 | sed '1s/#OTU ID/ASV_ID/' > reformat_$biom_file
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        sed: \$(sed --version 2>&1 | sed -n 1p | sed 's/sed (GNU sed) //')
+    END_VERSIONS
+    """
+}

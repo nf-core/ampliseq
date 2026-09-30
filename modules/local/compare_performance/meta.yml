@@ -1,0 +1,79 @@
+name: compare_performance
+description: Compares observed with expected ASV abundances for mock communities
+keywords:
+  - mock community
+  - benchmark
+  - abundance
+  - comparison
+tools:
+  - r:
+      description: Language and environment for statistical computing and graphics
+      homepage: https://www.r-project.org/
+      licence:
+        - GPL-2.0-or-later
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information, e.g. [ id:'test' ]
+    - alignment:
+        type: file
+        description: Alignments of observed to expected sequences with columns query, target and mismatch_final
+  - observed_abundances:
+      type: file
+      description: ASV table produced by the pipeline
+  - expected_abundances:
+      type: file
+      description: Expected abundances table, from --expected_abundances
+output:
+  svg:
+    - "*.svg":
+        type: file
+        description: Plot in SVG format
+        pattern: "*.svg"
+  png:
+    - "*.png":
+        type: file
+        description: Plot in PNG format
+        pattern: "*.png"
+  performance:
+    - performance_summary.tsv:
+        type: file
+        description: Performance metrics summary (TSV)
+        pattern: performance_summary.tsv
+  performance_per_sample:
+    - performance_per-sample.tsv:
+        type: file
+        description: Performance metrics per sample (TSV)
+        pattern: performance_per-sample.tsv
+  abundance_table_per_sample:
+    - abundances_per-sample.tsv:
+        type: file
+        description: Observed and expected abundances per sample (TSV)
+        pattern: abundances_per-sample.tsv
+  log:
+    - performance.log:
+        type: file
+        description: Log file
+        pattern: performance.log
+  warnings:
+    - Warnings.txt:
+        type: file
+        description: Warnings raised during the comparison
+        pattern: Warnings.txt
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

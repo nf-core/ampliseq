@@ -703,9 +703,8 @@ workflow AMPLISEQ {
     }
 
     //
-    // Snapshot of the ASV table right before the standard filtering chain (decontam through the
-    // ITSx-region length filter) starts -- diffed against its state at the end of that chain to
-    // build the "ampliseq_accept" summary-table annotation (see BUILD_ASV_ANNOTATIONS below).
+    // ASV table before the filtering chain (decontam to ITSx-region length filter), diffed against
+    // its state after the chain for the "ampliseq_accept" annotation in BUILD_ASV_ANNOTATIONS
     //
     ch_annot_accept_pre = ch_asv_table
 
@@ -1063,9 +1062,8 @@ workflow AMPLISEQ {
     // MODULE: Per-ASV annotations (barrnap domain call, decontam contaminant call, per-filter
     // pass/fail, and the whole-chain "ampliseq_accept") for the taxonomy summary tables below
     //
-    // SUMMARY_TABLE_TAXONOMY is the only consumer, so the annotations are worth building only
-    // when it has something to join them onto. Gating on its own input channel keeps the two in
-    // step; a parameter expression would have to restate every condition that fills ch_tax_tsv.
+    // SUMMARY_TABLE_TAXONOMY is the only consumer; gating on its input channel avoids restating every
+    // condition that fills ch_tax_tsv in a parameter expression
     ch_summary_tax = ch_tax_tsv.filter { meta, _tsv -> meta.classifier != "KRAKEN2" }
     ch_annot_barrnap = ch_summary_tax
         .map { _meta, _tsv -> true }
@@ -1099,8 +1097,7 @@ workflow AMPLISEQ {
     ch_summary_tables = ch_summary_tables.mix( SUMMARY_TABLE_TAXONOMY.out.tsv )
 
     //
-    // MODULE: Also write the summary tables as Parquet -- must run after every summary table
-    // (counts, taxonomy) has been mixed into ch_summary_tables, not right after the first one
+    // MODULE: Also write the summary tables as Parquet; must run after every summary table is in ch_summary_tables
     //
     if ( !params.skip_parquet_summary ) {
         DUCKDB_TABLE2PARQUET (

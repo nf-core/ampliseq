@@ -167,7 +167,7 @@
                     "qiime2": "2026.4.0"
                 },
                 "RENAME_RAW_DATA_FILES": {
-                    "bash": "5.0.17(1)-release"
+                    "bash": "5.2.37(1)-release"
                 },
                 "SEQTK_SUBSEQ": {
                     "seqtk": "1.4-r122"

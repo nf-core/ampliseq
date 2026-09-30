@@ -99,7 +99,7 @@
                     "qiime2": "2026.4.0"
                 },
                 "RENAME_RAW_DATA_FILES": {
-                    "bash": "5.0.17(1)-release"
+                    "bash": "5.2.37(1)-release"
                 },
                 "SIDLE_ALIGN": {
                     "qiime2": "2021.4.0",

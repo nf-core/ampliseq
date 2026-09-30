@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## nf-core/ampliseq version 3.0.0dev - [YYYY-MM-DD]
+## nf-core/ampliseq version 3.0.0 - [YYYY-MM-DD]
 
 ### `Added`
 
@@ -64,6 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#1087](https://github.com/nf-core/ampliseq/pull/1087) - Replaced the workflow overview figure with a simplified metro map. (by @d4straub)
 - [#1088](https://github.com/nf-core/ampliseq/pull/1088) - Local modules and subworkflows moved from `<name>.nf` to `<name>/main.nf`, following the nf-core directory structure; every local module now has a `meta.yml` and an `environment.yml`, the latter a symlink for modules sharing an environment in `modules/local/envs/`; the unused QIIME2 2024.10 environment file is removed (by @erikrikarddaniel)
 - [#1090](https://github.com/nf-core/ampliseq/pull/1090) - Change version to 3.0.0 (by @d4straub)
+- [#1092](https://github.com/nf-core/ampliseq/pull/1092) - `RENAME_RAW_DATA_FILES` now runs in a Seqera container with bash and coreutils, so `-profile conda` and container profiles report the same bash version; trimmed code comments and corrected two typos in the documentation (by @erikrikarddaniel)
 
 ### `Fixed`
 
@@ -88,13 +89,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#1077](https://github.com/nf-core/ampliseq/pull/1077) - MultiQC 1.34 to 1.35 (by @d4straub)
 - [#1089](https://github.com/nf-core/ampliseq/pull/1089) - Updated nf-core modules and subworkflows, and removed the stale `mafft` pin from `.nf-core.yml` (by @erikrikarddaniel)
 
-| software | previously | now   |
-| -------- | ---------- | ----- |
-| ITSxRust | 0.2.2      | 0.3.0 |
-| Savont   |            | 0.7.0 |
-| MultiQC  | 1.34       | 1.35  |
-| gappa    | 0.8.0      | 0.9.0 |
-| HMMER    | 3.3.2      | 3.4   |
+| software     | previously | now        |
+| ------------ | ---------- | ---------- |
+| ITSxRust     | 0.2.2      | 0.3.0      |
+| Savont       |            | 0.7.0      |
+| MultiQC      | 1.34       | 1.35       |
+| gappa        | 0.8.0      | 0.9.0      |
+| HMMER        | 3.3.2      | 3.4        |
+| Nextflow     | 25.10.4    | 26.04.0    |
+| Chopper      |            | 0.12.0b    |
+| Porechop_ABI |            | 0.5.0post1 |
+| DuckDB       |            | 1.5.5      |
+| sed          | 4.7        | 4.10       |
+| bash         | 5.0.17     | 5.2.37     |
 
 ### `Removed`
 

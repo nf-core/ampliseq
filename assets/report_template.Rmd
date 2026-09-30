@@ -261,7 +261,7 @@ MultiQC report, which can be found in [multiqc/multiqc_report.html](../multiqc/m
 "))
 ```
 
-<!-- TODO: MultiQC occasionally doesnt produce plots. This seems to be a consequence of an issue in Kaleido, should be fixed with Kaleido2 -->
+<!-- TODO: MultiQC occasionally does not produce plots. This seems to be a consequence of an issue in Kaleido, should be fixed with Kaleido2 -->
 
 ```{r, eval = !isFALSE(params$mqc_plot), out.width='100%', dpi=1200, fig.align='center'}
 if ( file.exists(params$mqc_plot) ) {
@@ -1716,7 +1716,7 @@ Folder [qiime2/diversity/alpha_diversity](../qiime2/diversity/alpha_diversity) c
 
 - Shannon’s diversity index (quantitative): [qiime2/diversity/alpha_diversity/shannon_vector/index.html](../qiime2/diversity/alpha_diversity/shannon_vector/index.html)
 - Pielou’s Evenness: [qiime2/diversity/alpha_diversity/evenness_vector/index.html](../qiime2/diversity/alpha_diversity/evenness_vector/index.html)
-- Faith’s Phylogenetic Diversity (qualitiative, phylogenetic) [qiime2/diversity/alpha_diversity/faith_pd_vector/index.html](../qiime2/diversity/alpha_diversity/faith_pd_vector/index.html)
+- Faith’s Phylogenetic Diversity (qualitative, phylogenetic) [qiime2/diversity/alpha_diversity/faith_pd_vector/index.html](../qiime2/diversity/alpha_diversity/faith_pd_vector/index.html)
 - Observed OTUs (qualitative): [qiime2/diversity/alpha_diversity/observed_features_vector/index.html](../qiime2/diversity/alpha_diversity/observed_features_vector/index.html)
 "))
 ```

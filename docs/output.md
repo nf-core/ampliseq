@@ -643,7 +643,7 @@ Alpha diversity measures the species diversity within samples. Diversity calcula
 
 - `qiime2/diversity/alpha_diversity/`
   - `evenness_vector/index.html`: Pielou’s Evenness.
-  - `faith_pd_vector/index.html`: Faith’s Phylogenetic Diversity (qualitiative, phylogenetic).
+  - `faith_pd_vector/index.html`: Faith’s Phylogenetic Diversity (qualitative, phylogenetic).
   - `observed_otus_vector/index.html`: Observed OTUs (qualitative).
   - `shannon_vector/index.html`: Shannon’s diversity index (quantitative).
 

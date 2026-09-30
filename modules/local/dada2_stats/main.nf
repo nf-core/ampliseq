@@ -43,19 +43,13 @@ process DADA2_STATS {
         #track reads through pipeline
         getN <- function(x) sum(getUniques(x))
         get_acc <- function(x) sum(x\$abundance[x\$accept])
-        # Normalise the sample key to the clean sample id. filter_and_trim rownames end in
-        # '_1.fastq.gz' (trimmed input) while the DADA2/seqtab rownames end in '_1.filt.fastq.gz',
-        # so each side is reduced to the same id using the pipeline's own conventions
-        # (the 'sample' derivation below and the ASV-table column naming in DADA2_MERGE).
+        # filter_and_trim rownames end in '_1.fastq.gz', DADA2/seqtab rownames in '_1.filt.fastq.gz'; reduce both to the sample id
         normKey_ft <- function(x) sub(pattern = "(.*?)\\\\..*\$", replacement = "\\\\1", sub(pattern = "_1.fastq.gz\$", replacement = "", x))
         normKey_nc <- function(x) sub(pattern = ".filt.fastq.gz\$", replacement = "", sub(pattern = "_2.filt.fastq.gz\$", replacement = "", sub(pattern = "_1.filt.fastq.gz\$", replacement = "", x)))
         if ( nrow(filter_and_trim) == 1 ) {
             track <- cbind(filter_and_trim, getN(dadaFs), getN(dadaRs), getN(mergers), get_acc(mergers), rowSums(nochim))
         } else {
-            # Align columns by merging on the normalised sample key instead of cbind'ing
-            # independently (re)sorted columns. The old positional cbind shifted rows when a
-            # sample name was a full prefix of another sample name (e.g. EQUIP_BLANK / EQUIP_BLANK_3_25_2026),
-            # mis-labelling the denoised/merged/nonchim read counts in the HTML report.
+            # Merge on the sample key; a positional cbind mislabels counts when one sample name is a prefix of another
             ft_keys <- normKey_ft(rownames(filter_and_trim))
             samples <- normKey_nc(rownames(nochim))   # canonical sample order from the ASV table
             gN  <- function(x) as.numeric(unname(sapply(x, getN)))
@@ -105,11 +99,7 @@ process DADA2_STATS {
 
         #track reads through pipeline
         getN <- function(x) sum(getUniques(x))
-        # Normalise the sample key to the clean sample id. Single-end filtered/denoised
-        # filenames are '${meta.id}.filt.fastq.gz' with NO read suffix, so only that
-        # suffix may be stripped here. In contrast the paired-end branch strips
-        # '_1.filt.fastq.gz' / '_2.filt.fastq.gz', which would wrongly eat a trailing
-        # '_1'/'_2' from single-end ids like 'sampleID_1' or 'sampleID_2'.
+        # Single-end filenames have no read suffix, so strip only '.filt.fastq.gz'; stripping '_1'/'_2' would eat it from ids like 'sampleID_1'
         normKey_ft <- function(x) sub(pattern = "(.*?)\\\\..*\$", replacement = "\\\\1", sub(pattern = "_1.fastq.gz\$", replacement = "", x))
         normKey_nc <- function(x) sub(pattern = ".filt.fastq.gz\$", replacement = "", x)
         if ( nrow(filter_and_trim) == 1 ) {

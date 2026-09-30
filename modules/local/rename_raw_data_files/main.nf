@@ -27,7 +27,7 @@ process RENAME_RAW_DATA_FILES {
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
-            bash: \$(echo \"\$BASH_VERSION\")
+            bash: \$(bash -c 'echo \$BASH_VERSION')
         END_VERSIONS
         """
     } else {
@@ -37,7 +37,7 @@ process RENAME_RAW_DATA_FILES {
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
-            bash: \$(echo \"\$BASH_VERSION\")
+            bash: \$(bash -c 'echo \$BASH_VERSION')
         END_VERSIONS
         """
     }

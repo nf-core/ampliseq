@@ -376,7 +376,7 @@ To investigate the quality of data generation and/or data analysis, analysis out
 
 The observed sequences will be aligned globally (using `VSEARCH --usearch_global`) to the expected sequences (`--expected_sequences`).
 Depending on the region to analyse (`--expected_sequences_region`) the mismatches and gaps within the alignment will be summarized with or without terminal gaps.
-The nucleotide differences will be evaluated for each observed sequence to its best match.
+The nucleotide differences will be evaluated for each observed sequence to its best match, independent of `--expected_sequences_mismatches`.
 
 Observed sequences will be accepted as "match" to an expected sequence (i.e. true positive) if there are no mismatches or gaps in the region (adjustable with `--expected_sequences_mismatches`).
 Expected abundances per sequence (`--expected_abundances`) enable sample specific presence/absence metrics and abundance-based comparisons.

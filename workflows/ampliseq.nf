@@ -516,6 +516,7 @@ workflow AMPLISEQ {
                     failed: it[1].countFastq() < params.min_read_counts
                     passed: true }
         ch_reads_trimming = ch_reads_trimming_check.passed
+            .ifEmpty { error("No sample has enough reads (>=$params.min_read_counts) after filtering with Chopper. This dataset may have too low read quality to be analysed properly. Adjust the threshold with `--min_read_counts` or the filtering with `--skip_chopper`.") }
         ch_reads_trimming_check.failed
             .map { meta, _reads -> [ meta.id ] }
             .collect()

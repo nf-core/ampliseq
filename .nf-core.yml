@@ -12,6 +12,7 @@ lint:
   nf_test_content:
     - tests/savont_incompatible.nf.test
     - tests/savont_multiregion.nf.test
+    - tests/savont_nosamples.nf.test
   nextflow_config: false
   schema_params: false
 nf_core_version: 4.1.0

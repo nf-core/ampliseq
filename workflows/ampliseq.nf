@@ -503,8 +503,8 @@ workflow AMPLISEQ {
 
         // Count reads of input and output files
         ch_stats_chopper = ch_reads_trimming
-            .map { meta, fastq -> [meta.sample, fastq.countFastq()] }
-            .join( CHOPPER.out.fastq.map { meta, fastq -> [meta.sample, fastq.countFastq()]}, by: 0 )
+            .map { meta, fastq -> [meta.id, fastq.countFastq()] }
+            .join( CHOPPER.out.fastq.map { meta, fastq -> [meta.id, fastq.countFastq()]}, by: 0 )
             .collectFile(keepHeader: true, skip: 1, sort: true, cache: true) { sample, read_counts_in, read_counts_out ->
                 ["chopper_readcounts.tsv", "sample\tchopper_input\tchopper_output\n${sample}\t${read_counts_in}\t${read_counts_out}\n"] }
         ch_stats = ch_stats_chopper
@@ -560,7 +560,7 @@ workflow AMPLISEQ {
                         def reads = list.collect { _meta, read -> read }
                         def ids = list.collect { meta, _reads -> meta.id }.join("\t")
                         def ids_for_export = list.collect { meta, _reads -> meta.id }.join(" ")
-                        [ [id: 'pooled'], reads, "ID\t${ids}", ids_for_export ] }
+                        [ [id: 'pooled'], reads, "ID\t${ids}", ids_for_export, true ] }
             SAVONT_ASV (ch_reads_to_savont)
             SAVONT_EXPORT ( SAVONT_ASV.out.output_folder )
             ch_asv_fasta = SAVONT_EXPORT.out.fasta
@@ -570,7 +570,7 @@ workflow AMPLISEQ {
             ch_reads_to_savont =
                 ch_reads_trimming
                     .map { meta, reads ->
-                        [ meta, reads, "ID\t${meta.id}", meta.id ] }
+                        [ meta, reads, "ID\t${meta.id}", meta.id, false ] }
             SAVONT_ASV (ch_reads_to_savont)
             ch_reads_to_savont_export =
                 SAVONT_ASV.out.output_folder

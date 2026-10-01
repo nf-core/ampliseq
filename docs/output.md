@@ -219,14 +219,18 @@ Skip the Parquet copies with `--skip_parquet_summary`.
 <summary>Output files</summary>
 
 - `summary_tables/`
-  - `ampliseq.counts.tsv.gz` (+ `.parquet`): ASV counts in long format (`asv_id`, `sample`, `count`), zero-count rows dropped. Sourced from DADA2's raw output, before any post-processing filters below.
+  - `ampliseq.counts.tsv.gz` (+ `.parquet`): ASV counts in long format (`asv_id`, `sample`, `count`), zero-count rows dropped. Sourced from DADA2's raw output, before clustering and any post-processing filters below. Only written with `--asv_calling dada2`.
   - `ampliseq.taxonomy.<classifier>.<database>.tsv.gz` (+ `.parquet`): One file pair per classifier/database actually run (Kraken2 excluded). A slim reformat of that classifier's native taxonomy table: `asv_id`, then the database's own ranks in lower case (`domain` or `kingdom` down to `species`, plus PR2's `supergroup`/`subdivision` where they apply), then `confidence`. QIIME2 and phylogenetic placement carry no rank names of their own, so theirs are named `domain`..`species` by position. `sequence` and DADA2's per-rank `*_confidence` columns are dropped (both remain available in the native per-classifier files elsewhere in this directory). A consolidated DADA2 table (`--consolidate_taxonomies`) additionally has `source_database`, the database that won each ASV.
 
     Joined onto every taxonomy table, whenever that step ran, but not onto `ampliseq.counts` -- join on `asv_id` to combine them:
     - `barrnap_domain`: winning rRNA domain by e-value, blank if none significant.
     - `decontam_contaminant` / `decontam_not_contaminant`: decontam's contaminant call ([see below](#decontam)).
-    - `passed_ssu_filter`, `passed_length_filter_asv`, `passed_codon_filter`, `passed_length_filter_itsx`: pass/fail for each individual optional filter below.
+    - `passed_ssu_filter`, `passed_length_filter_asv`, `passed_codon_filter`, `passed_length_filter_itsx`: whether the ASV passed each individual optional filter below. A column exists only if its filter ran.
     - `ampliseq_accept`: whether this ASV survived the whole filtering chain end to end -- a convenience alongside the individual columns, not instead of them.
+
+    Taxonomy is assigned to the ASVs that remain after clustering and all filters, so ASVs removed by a filter or by decontam have no row in a taxonomy table.
+    In these tables `passed_*` and `ampliseq_accept` are therefore `TRUE` for every row.
+    ASVs merged into a cluster centroid by `--vsearch_cluster` or removed by a filter are only in `ampliseq.counts`.
 
 </details>
 

@@ -41,13 +41,15 @@ By default, for paired-end Illumina data, the pipeline currently performs the fo
 - Sequencing quality control ([FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
 - Trimming of reads ([Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200))
 - Infer Amplicon Sequence Variants (ASVs) ([DADA2](https://doi.org/10.1038/nmeth.3869))
+- For Oxford Nanopore data, additional read preprocessing with [Porechop_ABI](https://pubmed.ncbi.nlm.nih.gov/36698762/) and [Chopper](https://pubmed.ncbi.nlm.nih.gov/37171891/), and ASV inference with [Savont](https://doi.org/10.64898/2026.05.26.727271) instead of DADA2
 - Optional post-clustering with [VSEARCH](https://github.com/torognes/vsearch)
 - Decontamination with [decontam](https://pubmed.ncbi.nlm.nih.gov/30558668/), if any controls or quantification information is given
 - Predict whether ASVs are ribosomal RNA sequences ([Barrnap](https://github.com/tseemann/barrnap))
 - Phylogenetic placement ([EPA-NG](https://github.com/Pbdas/epa-ng))
-- Taxonomical classification using DADA2; alternatives are [SINTAX](https://doi.org/10.1101/074161), [Kraken2](https://doi.org/10.1186/s13059-019-1891-0), and [QIIME2](https://www.nature.com/articles/s41587-019-0209-9)
+- Taxonomical classification using DADA2; alternatives are [SINTAX](https://doi.org/10.1101/074161), [VSEARCH/LCA](https://peerj.com/articles/2584/), [Kraken2](https://doi.org/10.1186/s13059-019-1891-0), and [QIIME2](https://www.nature.com/articles/s41587-019-0209-9)
 - Excludes unwanted taxa, produces absolute and relative feature/taxa count tables and plots, plots alpha rarefaction curves, computes alpha and beta diversity indices and plots thereof ([QIIME2](https://www.nature.com/articles/s41587-019-0209-9))
 - Creates phyloseq R objects ([Phyloseq](https://www.bioconductor.org/packages/release/bioc/html/phyloseq.html) and [TreeSE](https://doi.org/10.12688/f1000research.26669.2))
+- Optional comparison of the results to expected sequences, abundances and taxonomic profile
 - Pipeline QC summaries ([MultiQC](https://multiqc.info/))
 - Pipeline summary report ([R Markdown](https://github.com/rstudio/rmarkdown))
 

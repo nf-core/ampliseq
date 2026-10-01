@@ -273,6 +273,14 @@ def validateInputParameters() {
         error("Incompatible parameters: `--skip_dada_quality` may not be used without setting `--trunclenf` and `--trunclenr`.")
     }
 
+    if ( params.expected_abundances && !params.expected_sequences ) {
+        error("Missing parameter: `--expected_abundances` requires `--expected_sequences`, to which the abundances refer.")
+    }
+
+    if ( params.expected_profile && ( params.skip_taxonomy || params.skip_qiime || params.skip_qiime_downstream || params.skip_abundance_tables ) ) {
+        error("Incompatible parameters: `--expected_profile` is compared to the taxonomic abundance tables of QIIME2, which are not produced with `--skip_taxonomy`, `--skip_qiime`, `--skip_qiime_downstream` or `--skip_abundance_tables`.")
+    }
+
     if (params.tax_agglom_min > params.tax_agglom_max) {
         error("Incompatible parameters: `--tax_agglom_min` may not be greater than `--tax_agglom_max`.")
     }

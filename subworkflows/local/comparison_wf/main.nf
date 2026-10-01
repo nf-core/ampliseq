@@ -52,8 +52,8 @@ workflow COMPARISON_WF {
     // Compare taxonomic profiles
     COMPARE_PROFILE (
         ch_observed_profile
-            .collect(sort: true) // all files originate from same work dir
-            .map { list -> list[-1] } // take only the file with the highest taxonomic level
+            .collect()
+            .map { list -> list.max { f -> f.baseName.tokenize('-')[-1] as int } } // only the file with the highest taxonomic level, rel-table-<level>.tsv
             .map { it = [ [id: val_md5sum_version], it ] },
         ch_expected_profile
     )

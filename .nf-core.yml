@@ -9,6 +9,8 @@ lint:
     - assets/nf-core-ampliseq_logo_dark.png
     - docs/images/nf-core-ampliseq_logo_light.png
     - docs/images/nf-core-ampliseq_logo_dark.png
+  nf_test_content:
+    - tests/comparison_incompatible.nf.test
   nextflow_config: false
   schema_params: false
 nf_core_version: 4.1.0

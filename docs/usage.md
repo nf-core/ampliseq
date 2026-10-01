@@ -374,9 +374,9 @@ The columns which are to be assessed can be specified by `--metadata_category`. 
 
 To investigate the quality of data generation and/or data analysis, analysis outcome is compared to expected results. Comparison steps are implemented in the pipeline and can be used with `--expected_*` parameters, details in the [parameter documentation](https://nf-co.re/ampliseq/parameters/#comparison).
 
-The observed sequences will be aligned globally (using `VSEASRCH --usearch_global`) to the expected sequences (`--expected_sequences`).
+The observed sequences will be aligned globally (using `VSEARCH --usearch_global`) to the expected sequences (`--expected_sequences`).
 Depending on the region to analyse (`--expected_sequences_region`) the mismatches and gaps within the alignment will be summarized with or without terminal gaps.
-The nucleotide differences will be evaluated for each observed sequence to its best match.
+The nucleotide differences will be evaluated for each observed sequence to its best match, independent of `--expected_sequences_mismatches`.
 
 Observed sequences will be accepted as "match" to an expected sequence (i.e. true positive) if there are no mismatches or gaps in the region (adjustable with `--expected_sequences_mismatches`).
 Expected abundances per sequence (`--expected_abundances`) enable sample specific presence/absence metrics and abundance-based comparisons.
@@ -433,7 +433,7 @@ This can be done either a single reference for all ASV sequences, or multiple re
 
 #### Single reference phylogenetic placement
 
-Adding the parameters `--pplace_tree`, `--place_aln`, `--pplace_alnmethod`, `--place_model`, `--pplace_taxonomy` and `--pplace_name` will perform phylogenetic placement of ASV sequences in the specified reference phylogeny.
+Adding the parameters `--pplace_tree`, `--pplace_aln`, `--pplace_alnmethod`, `--pplace_model`, `--pplace_taxonomy` and `--pplace_name` will perform phylogenetic placement of ASV sequences in the specified reference phylogeny.
 See the [nf-core/ampliseq parameter documentation](https://nf-co.re/ampliseq/parameters) for more information about the parameters.
 
 #### Multiple reference phylogenetic placement

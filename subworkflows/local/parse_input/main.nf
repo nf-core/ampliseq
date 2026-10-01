@@ -30,7 +30,7 @@ workflow PARSE_INPUT {
                         [ meta, read ] }
     } else {
         //Get files - paired end
-        ch_reads
+        ch_reads =
             channel
                 .fromFilePairs( input + folders + extension, size: 2 )
                 .ifEmpty { error("${error_message}") }

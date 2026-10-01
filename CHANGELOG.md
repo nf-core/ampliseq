@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | ----------------- | ----------------------------- | ------- |
 | --nanopore        | --sequencing_type nanopore    |         |
 | --pacbio          | --sequencing_type pacbio      |         |
-| --iontorrent      | --sequencing_type nanopore    |         |
+| --iontorrent      | --sequencing_type iontorrent  |         |
 | --single_end      | --sequencing_type illumina_se |         |
 | default           | --sequencing_type illumina_pe | default |
 |                   | --asv_calling auto            | default |

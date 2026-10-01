@@ -867,6 +867,9 @@ Quantifications are not normalized yet, they can be normalized e.g. by the total
 
 Pipeline results are stored in phyloseq and TreeSummarizedExperiment R objects for each taxonomy table produced by this pipeline. The R objects will contain an ASV abundance table and a taxonomy table, and optionally sequences, metadata and a phylogenetic tree.
 
+Phyloseq treats every column of its taxonomy table as a rank, so DADA2's per-rank confidence columns and the `database` column are left out of the phyloseq objects.
+They remain in the DADA2 taxonomy tables and in the TreeSummarizedExperiment objects, which store the taxonomy table as `rowData`.
+
 <details markdown="1">
 <summary>Output files</summary>
 

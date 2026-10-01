@@ -22,6 +22,8 @@ process PHYLOSEQ {
 
     otu_df  <- read.table("$otu_tsv", sep="\\t", header=TRUE, row.names=1)
     tax_df  <- read.table("$tax_tsv", sep="\\t", header=TRUE, row.names=1, comment.char = "")
+    # per-rank confidences and the source database are not ranks, and phyloseq treats every column as one
+    tax_df  <- tax_df[, !grepl("_confidence\$", colnames(tax_df)) & colnames(tax_df) != "database", drop=FALSE]
     otu_mat <- as.matrix(otu_df)
     tax_mat <- as.matrix(tax_df)
     storage.mode(otu_mat) <- "integer"

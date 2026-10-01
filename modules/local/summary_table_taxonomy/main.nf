@@ -18,7 +18,8 @@ process SUMMARY_TABLE_TAXONOMY {
     task.ext.when == null || task.ext.when
 
     script:
-    def outfile = "ampliseq.taxonomy.${meta.classifier}.${meta.database}.tsv.gz"
+    def database = meta.database.toString().replaceAll(/[^A-Za-z0-9_-]/, '_') // --pplace_name is free text
+    def outfile = "ampliseq.taxonomy.${meta.classifier}.${database}.tsv.gz"
     """
     #!/usr/bin/env Rscript
     suppressPackageStartupMessages({
@@ -108,7 +109,8 @@ process SUMMARY_TABLE_TAXONOMY {
     """
 
     stub:
-    def outfile = "ampliseq.taxonomy.${meta.classifier}.${meta.database}.tsv.gz"
+    def database = meta.database.toString().replaceAll(/[^A-Za-z0-9_-]/, '_') // --pplace_name is free text
+    def outfile = "ampliseq.taxonomy.${meta.classifier}.${database}.tsv.gz"
     """
     echo -e "asv_id\\tdomain\\tphylum\\tclass\\torder\\tfamily\\tgenus\\tspecies\\tconfidence" | gzip > ${outfile}
 

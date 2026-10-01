@@ -17,10 +17,10 @@ process COMPARE_SEQUENCES {
     val(val_params_string)           // params map converted to string
 
     output:
-    path("*.svg")                            , emit: svg
-    path("*.png")                            , emit: png
+    path("*.svg")                            , emit: svg, optional: true
+    path("*.png")                            , emit: png, optional: true
     path("*nucleotide-differences.tsv")      , emit: matches
-    path("*_per-sample.tsv")                 , emit: matches_per_sample
+    path("*_per-sample.tsv")                 , emit: matches_per_sample, optional: true
     path("*nucleotide-differences.log")      , emit: log
     path("md5sum_version.txt")               , emit: md5sum_version
     path("Warnings.txt")                     , emit: warnings

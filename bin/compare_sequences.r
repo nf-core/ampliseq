@@ -22,8 +22,13 @@ if (file.exists(expabundFILE)) {
 # PREPARE
 
 # Read sequence alignment table
-alignment = read.table( alignmentFILE, header = FALSE, sep = "\t", stringsAsFactors = FALSE, check.names = FALSE, strip.white = TRUE)
-colnames(alignment) <- c("query","target","ql","tl","qilo","qihi","tilo","tihi","gaps","mism","qstrand")
+alignment_cols <- c("query","target","ql","tl","qilo","qihi","tilo","tihi","gaps","mism","qstrand")
+if (file.info(alignmentFILE)$size > 0) {
+	alignment = read.table( alignmentFILE, header = FALSE, sep = "\t", stringsAsFactors = FALSE, check.names = FALSE, strip.white = TRUE)
+	colnames(alignment) <- alignment_cols
+} else {
+	alignment <- setNames(data.frame(matrix(nrow = 0, ncol = length(alignment_cols))), alignment_cols)
+}
 
 # Read pipeline's ASV abundance table (either from QIIME2 [skipping first line] or from previous steps)
 if (grepl("^# Constructed from biom file", readLines(obsabundFILE, n = 1))) {

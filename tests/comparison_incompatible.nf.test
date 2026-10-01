@@ -1,0 +1,42 @@
+nextflow_pipeline {
+
+    name "Test pipeline"
+    script "../main.nf"
+    tag "pipeline"
+    profile "test"
+
+    test("-profile test --expected_abundances without --expected_sequences fails") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                expected_abundances = "https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/expected/expected_abundances.tsv"
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.failed },
+                { assert workflow.stdout.any { it.contains("requires `--expected_sequences`") } || workflow.stderr.any { it.contains("requires `--expected_sequences`") } }
+            )
+        }
+    }
+
+    test("-profile test --expected_profile with --skip_abundance_tables fails") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                expected_profile = "https://raw.githubusercontent.com/nf-core/test-datasets/ampliseq/expected/D6305-D6311_ZymoBIOMICS.STD.refseq.v2.prokaryotes.profile.gtdb_R07-RS207.tsv"
+                skip_abundance_tables = true
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.failed },
+                { assert workflow.stdout.any { it.contains("`--expected_profile` is compared") } || workflow.stderr.any { it.contains("`--expected_profile` is compared") } }
+            )
+        }
+    }
+}

@@ -223,7 +223,7 @@ Skip the Parquet copies with `--skip_parquet_summary`.
   - `ampliseq.taxonomy.<classifier>.<database>.tsv.gz` (+ `.parquet`): One file pair per classifier/database actually run (Kraken2 excluded). A slim reformat of that classifier's native taxonomy table: `asv_id`, then the database's own ranks in lower case (`domain` or `kingdom` down to `species`, plus PR2's `supergroup`/`subdivision` where they apply), then `confidence`. QIIME2 and phylogenetic placement carry no rank names of their own, so theirs are named `domain`..`species` by position. `sequence` and DADA2's per-rank `*_confidence` columns are dropped (both remain available in the native per-classifier files elsewhere in this directory). A consolidated DADA2 table (`--consolidate_taxonomies`) additionally has `source_database`, the database that won each ASV.
 
     Joined onto every taxonomy table, whenever that step ran, but not onto `ampliseq.counts` -- join on `asv_id` to combine them:
-    - `barrnap_domain`: winning rRNA domain by e-value, blank if none significant.
+    - `barrnap_domain`: winning rRNA domain by e-value, `NA` if none significant.
     - `decontam_contaminant` / `decontam_not_contaminant`: decontam's contaminant call ([see below](#decontam)).
     - `passed_ssu_filter`, `passed_length_filter_asv`, `passed_codon_filter`, `passed_length_filter_itsx`: pass/fail for each individual optional filter below.
     - `ampliseq_accept`: whether this ASV survived the whole filtering chain end to end -- a convenience alongside the individual columns, not instead of them.

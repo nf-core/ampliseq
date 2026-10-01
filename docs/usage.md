@@ -374,7 +374,7 @@ The columns which are to be assessed can be specified by `--metadata_category`. 
 
 To investigate the quality of data generation and/or data analysis, analysis outcome is compared to expected results. Comparison steps are implemented in the pipeline and can be used with `--expected_*` parameters, details in the [parameter documentation](https://nf-co.re/ampliseq/parameters/#comparison).
 
-The observed sequences will be aligned globally (using `VSEASRCH --usearch_global`) to the expected sequences (`--expected_sequences`).
+The observed sequences will be aligned globally (using `VSEARCH --usearch_global`) to the expected sequences (`--expected_sequences`).
 Depending on the region to analyse (`--expected_sequences_region`) the mismatches and gaps within the alignment will be summarized with or without terminal gaps.
 The nucleotide differences will be evaluated for each observed sequence to its best match.
 

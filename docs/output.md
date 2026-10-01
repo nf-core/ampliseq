@@ -46,7 +46,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [Alpha diversity rarefaction curves](#alpha-diversity-rarefaction-curves) - Rarefaction curves for quality control
   - [Diversity analysis](#diversity-analysis) - High level overview with different diversity indices
   - [Differential abundance analysis](#differential-abundance-analysis) - Calling differentially abundant features with ANCOM or ANCOM-BC
-- [Compare to expected](#compare-to-expected) - Comparing analysis outcome to expected results
+- [Compare to expected](#compare-observed-to-expected-outcome) - Comparing analysis outcome to expected results
 - [PICRUSt2](#picrust2) - Predict the functional potential of a bacterial community
 - [R object](#r-objects) - Phyloseq and TreeSummarizedExperiment R objects
 - [Read count report](#read-count-report) - Report of read counts during various steps of the pipeline

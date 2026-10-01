@@ -433,7 +433,7 @@ This can be done either a single reference for all ASV sequences, or multiple re
 
 #### Single reference phylogenetic placement
 
-Adding the parameters `--pplace_tree`, `--place_aln`, `--pplace_alnmethod`, `--place_model`, `--pplace_taxonomy` and `--pplace_name` will perform phylogenetic placement of ASV sequences in the specified reference phylogeny.
+Adding the parameters `--pplace_tree`, `--pplace_aln`, `--pplace_alnmethod`, `--pplace_model`, `--pplace_taxonomy` and `--pplace_name` will perform phylogenetic placement of ASV sequences in the specified reference phylogeny.
 See the [nf-core/ampliseq parameter documentation](https://nf-co.re/ampliseq/parameters) for more information about the parameters.
 
 #### Multiple reference phylogenetic placement

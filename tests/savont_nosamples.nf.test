@@ -1,0 +1,25 @@
+nextflow_pipeline {
+
+    name "Test pipeline"
+    script "../main.nf"
+    tag "pipeline"
+    profile "test_savont"
+    config "./savont_nosamples.config"
+
+    test("-profile test_savont fails when Chopper removes every sample") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                ignore_failed_trimming = true
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.failed },
+                { assert workflow.stdout.any { it.contains("No sample has enough reads") } || workflow.stderr.any { it.contains("No sample has enough reads") } }
+            )
+        }
+    }
+}

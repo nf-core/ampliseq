@@ -1,0 +1,23 @@
+nextflow_pipeline {
+
+    name "Test pipeline"
+    script "../main.nf"
+    tag "pipeline"
+
+    test("-profile test --asv_calling savont fails with paired end data") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                asv_calling = "savont"
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.failed },
+                { assert workflow.stdout.any { it.contains("requires single end data") } || workflow.stderr.any { it.contains("requires single end data") } }
+            )
+        }
+    }
+}

@@ -10,6 +10,7 @@ lint:
     - docs/images/nf-core-ampliseq_logo_light.png
     - docs/images/nf-core-ampliseq_logo_dark.png
   nf_test_content:
+    - tests/comparison_incompatible.nf.test
     - tests/savont_incompatible.nf.test
     - tests/savont_multiregion.nf.test
     - tests/savont_nosamples.nf.test

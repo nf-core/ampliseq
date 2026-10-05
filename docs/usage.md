@@ -379,6 +379,7 @@ Depending on the region to analyse (`--expected_sequences_region`) the mismatche
 The nucleotide differences will be evaluated for each observed sequence to its best match.
 
 Observed sequences will be accepted as "match" to an expected sequence (i.e. true positive) if there are no mismatches or gaps in the region (adjustable with `--expected_sequences_mismatches`).
+Both strands are searched, so an observed sequence that is the reverse complement of an expected sequence also counts as a match.
 Expected abundances per sequence (`--expected_abundances`) enable sample specific presence/absence metrics and abundance-based comparisons.
 
 Observed and expected sequences can form one-to-many, many-to-one, and many-to-many matches, depending on `--expected_sequences_region` and `--expected_sequences_mismatches` settings.

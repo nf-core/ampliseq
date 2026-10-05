@@ -9,7 +9,7 @@ process SAVONT_ASV {
         'biocontainers/savont:0.7.0--hec9b1f2_0' }"
 
     input:
-    tuple val(meta), path(reads), val(sample_header), val(sample_string)
+    tuple val(meta), path(reads), val(sample_header), val(sample_string), val(pooled)
 
     output:
     path("*_feature-table.tsv") , emit: asv
@@ -24,7 +24,7 @@ process SAVONT_ASV {
     script:
     def prefix = task.ext.prefix ?: "$meta.id"
     def args = task.ext.args ?: ''
-    def reads_cmd = reads instanceof List ? "--pooled-samples ${reads.join(' ')}" : "${reads}"
+    def reads_cmd = pooled ? "--pooled-samples ${reads instanceof List ? reads.join(' ') : reads}" : "${reads}"
     """
     savont asv \\
         -t $task.cpus \\

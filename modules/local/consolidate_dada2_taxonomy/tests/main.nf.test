@@ -1,0 +1,117 @@
+nextflow_process {
+
+    name "Test Process CONSOLIDATE_DADA2_TAXONOMY"
+    script "../main.nf"
+    process "CONSOLIDATE_DADA2_TAXONOMY"
+    tag "modules"
+    tag "modules_local"
+    tag "consolidate_dada2_taxonomy"
+
+    test("a database with Domain and Kingdom keeps its own Kingdom") {
+
+        when {
+            process {
+                """
+                def dir = File.createTempDir()
+                def tables = [
+                    "dbA": "ASV_ID|Kingdom|Phylum|confidence|kingdom_confidence|phylum_confidence|sequence;asv1|Bacteria||0.9|0.9||ACGT;",
+                    "dbB": "ASV_ID|Domain|Kingdom|Phylum|confidence|domain_confidence|kingdom_confidence|phylum_confidence|sequence;asv1|Eukaryota|Fungi|Ascomycota|0.8|1|0.9|0.8|ACGT;"
+                ]
+                def files = tables.collect { key, text ->
+                    def f = new File(dir, "ASV_tax.\${key}.tsv")
+                    f.text = text.replace("|", "\\t").replace(";", "\\n")
+                    file(f.absolutePath)
+                }
+                input[0] = files
+                input[1] = "most-specific"
+                input[2] = "dbA,dbB"
+                input[3] = "Kingdom,Phylum"
+                input[4] = "consolidated.tsv"
+                """
+            }
+        }
+
+        then {
+            def rows = path(process.out.tsv[0]).readLines().collect { it.split("\t", -1) as List }
+            def header = rows[0]
+            def asv1 = rows.find { it[0] == "asv1" }
+            assertAll(
+                { assert process.success },
+                { assert header.count("Kingdom") == 1 },
+                { assert asv1[header.indexOf("Kingdom")] == "Fungi" },
+                { assert asv1[header.indexOf("database")] == "dbB" }
+            )
+        }
+    }
+
+    test("a rank holding only F is kept as text") {
+
+        when {
+            process {
+                """
+                def dir = File.createTempDir()
+                def tables = [
+                    "dbA": "ASV_ID|Kingdom|Family|confidence|kingdom_confidence|family_confidence|sequence;asv1|Bacteria|F|1|1|1|ACGT;",
+                    "dbB": "ASV_ID|Kingdom|Family|confidence|kingdom_confidence|family_confidence|sequence;asv1|Bacteria||0.9|0.9||ACGT;"
+                ]
+                def files = tables.collect { key, text ->
+                    def f = new File(dir, "ASV_tax.\${key}.tsv")
+                    f.text = text.replace("|", "\\t").replace(";", "\\n")
+                    file(f.absolutePath)
+                }
+                input[0] = files
+                input[1] = "score"
+                input[2] = "dbA,dbB"
+                input[3] = "Kingdom,Family"
+                input[4] = "consolidated.tsv"
+                """
+            }
+        }
+
+        then {
+            def rows = path(process.out.tsv[0]).readLines().collect { it.split("\t", -1) as List }
+            def header = rows[0]
+            def asv1 = rows.find { it[0] == "asv1" }
+            assertAll(
+                { assert process.success },
+                { assert asv1[header.indexOf("Family")] == "F" },
+                { assert asv1[header.indexOf("database")] == "dbA" }
+            )
+        }
+    }
+
+    test("BOLD_bin does not count as a rank") {
+
+        when {
+            process {
+                """
+                def dir = File.createTempDir()
+                def tables = [
+                    "dbA": "ASV_ID|Kingdom|Phylum|BOLD_bin|confidence|kingdom_confidence|phylum_confidence|sequence;asv1|Animalia||BOLD:1|0.9|0.9||ACGT;",
+                    "dbB": "ASV_ID|Kingdom|Phylum|BOLD_bin|confidence|kingdom_confidence|phylum_confidence|sequence;asv1|Animalia|Chordata||0.8|0.9|0.8|ACGT;"
+                ]
+                def files = tables.collect { key, text ->
+                    def f = new File(dir, "ASV_tax.\${key}.tsv")
+                    f.text = text.replace("|", "\\t").replace(";", "\\n")
+                    file(f.absolutePath)
+                }
+                input[0] = files
+                input[1] = "most-specific"
+                input[2] = "dbA,dbB"
+                input[3] = "Kingdom,Phylum,BOLD_bin"
+                input[4] = "consolidated.tsv"
+                """
+            }
+        }
+
+        then {
+            def rows = path(process.out.tsv[0]).readLines().collect { it.split("\t", -1) as List }
+            def header = rows[0]
+            def asv1 = rows.find { it[0] == "asv1" }
+            assertAll(
+                { assert process.success },
+                { assert asv1[header.indexOf("database")] == "dbB" }
+            )
+        }
+    }
+}

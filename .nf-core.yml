@@ -11,6 +11,10 @@ lint:
     - docs/images/nf-core-ampliseq_logo_dark.png
   nf_test_content:
     - tests/comparison_incompatible.nf.test
+    - tests/savont_incompatible.nf.test
+    - tests/savont_multiregion.nf.test
+    - tests/savont_nosamples.nf.test
+    - tests/dada_ref_duplicates.nf.test
   nextflow_config: false
   schema_params: false
 nf_core_version: 4.1.0

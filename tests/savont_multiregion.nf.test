@@ -1,0 +1,25 @@
+nextflow_pipeline {
+
+    name "Test pipeline"
+    script "../main.nf"
+    tag "pipeline"
+    profile "test_multiregion"
+
+    test("-profile test_multiregion --asv_calling savont fails") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                asv_calling = "savont"
+                sequencing_type = "illumina_se"
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.failed },
+                { assert workflow.stdout.any { it.contains("requires DADA2") } || workflow.stderr.any { it.contains("requires DADA2") } }
+            )
+        }
+    }
+}

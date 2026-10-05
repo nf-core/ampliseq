@@ -28,6 +28,8 @@ process TREESUMMARIZEDEXPERIMENT {
     assays <- SimpleList(counts = otu_mat)
     # Read taxonomy table. Correct format for it is DataFrame.
     taxonomy_table  <- read.table("$tax_tsv", sep="\\t", header=TRUE, row.names=1, comment.char = "")
+    # per-rank confidences and the source database are not ranks
+    taxonomy_table  <- taxonomy_table[, !grepl("_confidence\$", colnames(taxonomy_table)) & colnames(taxonomy_table) != "database", drop=FALSE]
     taxonomy_table <- DataFrame(taxonomy_table)
 
     # Match rownames between taxonomy table and abundance matrix.

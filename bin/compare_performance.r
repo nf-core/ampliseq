@@ -242,13 +242,15 @@ for (sample in SAMPLES) {
 	nomatch_obs <- merged[is.na(merged$target),]
 
 	# (2) AGGREGATE - combine IDs and abundance if multiple query or targets match each other
-	if ( merge_mode == "none" ) {
+	# without any match there is nothing to aggregate, and aggregate() fails on zero rows
+	sample_merge_mode <- if ( any(!is.na(merged$query) & !is.na(merged$target)) ) merge_mode else "none"
+	if ( sample_merge_mode == "none" ) {
 		# dont aggregate anything
 		result <- merged[order(merged$query), ]
 		# add ID list
 		ID_list <- ifelse(is.na(result$target), result$query, ifelse(is.na(result$query), result$target, paste0(result$query,"-",result$target) ) )
 		result$ID <- factor(ID_list, levels = ID_list)
-	} else if ( merge_mode == "observed" ) {
+	} else if ( sample_merge_mode == "observed" ) {
 		# (2a) AGGREGATE query
 		print("- Aggregating observed sequences -")
 		# aggregate query by target (obs without target is lost)
@@ -265,7 +267,7 @@ for (sample in SAMPLES) {
 		# add ID list
 		ID_list <- ifelse(is.na(result$target), result$query, ifelse(is.na(result$query), result$target, paste0(result$query,"-",result$target) ) )
 		result$ID <- factor(ID_list, levels = ID_list)
-	} else if ( merge_mode == "expected" ) {
+	} else if ( sample_merge_mode == "expected" ) {
 		# (2b) AGGREGATE target
 		print("- Aggregating expected sequences -")
 		# aggregate target by query (exp without query is lost)
@@ -280,7 +282,7 @@ for (sample in SAMPLES) {
 		# add ID list
 		ID_list <- ifelse(is.na(result$target), result$query, ifelse(is.na(result$query), result$target, paste0(result$query,"-",result$target) ) )
 		result$ID <- factor(ID_list, levels = ID_list)
-	} else if ( merge_mode == "all" ) {
+	} else if ( sample_merge_mode == "all" ) {
 		# (2c) AGGREGATE ALL
 		print("- Aggregating all sequences -")
 		# aggregate target by query (exp without query is lost)
@@ -313,6 +315,10 @@ for (sample in SAMPLES) {
 	result$sample <- rep(sample, nrow(result))
 	result <- result[, c("sample", "ID", "query", "target", "observed_abund", "expected_abund")]
 	abundances <- rbind( abundances, result )
+	if ( nrow(result) == 0 ) {
+		print(paste("WARN - Skipping sample",sample,"because it has no expected and no observed sequences"))
+		next
+	}
 
 	# (3) STATISTICS
 
@@ -352,16 +358,22 @@ for (sample in SAMPLES) {
 	outfile <- paste0(sample,"_scatter_loglog")
 	print(paste("write",outfile))
 	svg(paste0(outfile,".svg"), width = 8, height = 6)
-	plot(
-		log10(data_matches$expected_abund),
-		log10(data_matches$observed_abund),
-		xlab = "log10(Expected Abundance)",
-		ylab = "log10(Observed Abundance)",
-		main = "Scatter Plot: Observed vs. Expected Abundance (log-log)",
-		pch = 19,
-		col = "blue"
-	)
-	abline(a = 0, b = 1, col = "red", lty = 2)
+	if ( nrow(data_matches) > 0 ) {
+		plot(
+			log10(data_matches$expected_abund),
+			log10(data_matches$observed_abund),
+			xlab = "log10(Expected Abundance)",
+			ylab = "log10(Observed Abundance)",
+			main = "Scatter Plot: Observed vs. Expected Abundance (log-log)",
+			pch = 19,
+			col = "blue"
+		)
+		abline(a = 0, b = 1, col = "red", lty = 2)
+	} else {
+		plot.new()
+		title(main = "Scatter Plot: Observed vs. Expected Abundance (log-log)")
+		text(0.5, 0.5, "No observed sequence matches an expected sequence")
+	}
 	invisible(dev.off())
 
 	# Rank Abundance Curves

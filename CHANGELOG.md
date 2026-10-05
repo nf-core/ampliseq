@@ -82,6 +82,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#1082](https://github.com/nf-core/ampliseq/pull/1082) - Fixed two kinds of non-rank content in the taxonomy string imported into QIIME2: a rank that is empty for every ASV was rendered as the literal taxon `NA`, and the UNITE `SH` and COIDB `BOLD_bin` identifiers were treated as a taxonomic rank, adding a spurious extra level to the barplots and the rank-collapsed abundance tables (fixes [#1075](https://github.com/nf-core/ampliseq/issues/1075)) (by @erikrikarddaniel)
 - [#1085](https://github.com/nf-core/ampliseq/pull/1085) - `QIIME2_EXPORT_RELTAX`, `QIIME2_FEATURETABLE_GROUP` and `QIIME2_INTREE` asked for 1 GB, less than QIIME2 needs to start, so their first attempt was killed for running out of memory; they now get 3 GB like the other QIIME2 processes (by @erikrikarddaniel)
 - [#1086](https://github.com/nf-core/ampliseq/pull/1086) - The processes that reformat reference databases used a legacy Singularity image whose pull could hang indefinitely; they now use a Seqera container declaring every tool their scripts call (fixes [#1081](https://github.com/nf-core/ampliseq/issues/1081)) (by @erikrikarddaniel)
+- [#1111](https://github.com/nf-core/ampliseq/pull/1111) - Pinned nf-schema 2.7.2 in AWS full-test launch config (by @d4straub)
 
 ### `Dependencies`
 

@@ -1,0 +1,123 @@
+nextflow_process {
+
+    name "Test Process COMPARE_PERFORMANCE"
+    script "../main.nf"
+    process "COMPARE_PERFORMANCE"
+    config "./nextflow.config"
+    tag "modules"
+    tag "modules_local"
+    tag "compare_performance"
+
+    // S1 has a true positive (a1 = e1). S2 has no observed sequence that matches an expected one within the mismatch threshold.
+
+    test("sample without matches - merge mode none") {
+
+        when {
+            params {
+                merge_mode = "none"
+            }
+            process {
+                """
+                def dir = File.createTempDir()
+                def header = "query\\ttarget\\tql\\ttl\\tqilo\\tqihi\\ttilo\\ttihi\\tgaps\\tmism\\tqstrand\\tqterminalgaps\\tqmism\\ttterminalgaps\\ttmism\\tmismatch_final"
+                new File(dir, 'alignment.tsv').text = [
+                    header,
+                    "a1\\te1\\t10\\t10\\t1\\t10\\t1\\t10\\t0\\t0\\t+\\t0\\t0\\t0\\t0\\t0",
+                    "a2\\te1\\t10\\t10\\t1\\t10\\t1\\t10\\t0\\t1\\t+\\t0\\t1\\t0\\t1\\t1",
+                    "a3\\t*\\t10\\t0\\t0\\t0\\t0\\t0\\t0\\t0\\t\\t0\\t0\\t0\\t0\\t0",
+                ].join("\\n") + "\\n"
+                new File(dir, 'observed.tsv').text = "ID\\tS1\\tS2\\na1\\t10\\t0\\na2\\t5\\t7\\na3\\t0\\t3\\n"
+                new File(dir, 'expected.tsv').text = "ID\\tS1\\tS2\\ne1\\t1\\t1\\ne2\\t1\\t1\\n"
+                input[0] = [ [ id:'test' ], file("\${dir}/alignment.tsv") ]
+                input[1] = file("\${dir}/observed.tsv")
+                input[2] = file("\${dir}/expected.tsv")
+                """
+            }
+        }
+
+        then {
+            def per_sample = path(process.out.performance_per_sample[0]).readLines()
+            assertAll(
+                { assert process.success },
+                { assert per_sample.any { it.startsWith("S1\tTP\t1") } },
+                { assert per_sample.any { it.startsWith("S2\tTP\t0") } },
+                { assert path(process.out.abundance_table_per_sample[0]).readLines().any { it.startsWith("S2\t") } },
+                { assert process.out.svg[0].any { it.endsWith("S2_scatter_loglog.svg") } }
+            )
+        }
+    }
+
+    test("sample without matches - merge mode observed") {
+
+        when {
+            params {
+                merge_mode = "observed"
+            }
+            process {
+                """
+                def dir = File.createTempDir()
+                def header = "query\\ttarget\\tql\\ttl\\tqilo\\tqihi\\ttilo\\ttihi\\tgaps\\tmism\\tqstrand\\tqterminalgaps\\tqmism\\ttterminalgaps\\ttmism\\tmismatch_final"
+                new File(dir, 'alignment.tsv').text = [
+                    header,
+                    "a1\\te1\\t10\\t10\\t1\\t10\\t1\\t10\\t0\\t0\\t+\\t0\\t0\\t0\\t0\\t0",
+                    "a2\\te1\\t10\\t10\\t1\\t10\\t1\\t10\\t0\\t1\\t+\\t0\\t1\\t0\\t1\\t1",
+                    "a3\\t*\\t10\\t0\\t0\\t0\\t0\\t0\\t0\\t0\\t\\t0\\t0\\t0\\t0\\t0",
+                ].join("\\n") + "\\n"
+                new File(dir, 'observed.tsv').text = "ID\\tS1\\tS2\\na1\\t10\\t0\\na2\\t5\\t7\\na3\\t0\\t3\\n"
+                new File(dir, 'expected.tsv').text = "ID\\tS1\\tS2\\ne1\\t1\\t1\\ne2\\t1\\t1\\n"
+                input[0] = [ [ id:'test' ], file("\${dir}/alignment.tsv") ]
+                input[1] = file("\${dir}/observed.tsv")
+                input[2] = file("\${dir}/expected.tsv")
+                """
+            }
+        }
+
+        then {
+            def per_sample = path(process.out.performance_per_sample[0]).readLines()
+            assertAll(
+                { assert process.success },
+                { assert per_sample.any { it.startsWith("S1\tTP\t1") } },
+                { assert per_sample.any { it.startsWith("S2\tTP\t0") } },
+                { assert path(process.out.abundance_table_per_sample[0]).readLines().any { it.startsWith("S2\t") } },
+                { assert process.out.svg[0].any { it.endsWith("S2_scatter_loglog.svg") } }
+            )
+        }
+    }
+
+    test("sample without matches - merge mode all") {
+
+        when {
+            params {
+                merge_mode = "all"
+            }
+            process {
+                """
+                def dir = File.createTempDir()
+                def header = "query\\ttarget\\tql\\ttl\\tqilo\\tqihi\\ttilo\\ttihi\\tgaps\\tmism\\tqstrand\\tqterminalgaps\\tqmism\\ttterminalgaps\\ttmism\\tmismatch_final"
+                new File(dir, 'alignment.tsv').text = [
+                    header,
+                    "a1\\te1\\t10\\t10\\t1\\t10\\t1\\t10\\t0\\t0\\t+\\t0\\t0\\t0\\t0\\t0",
+                    "a2\\te1\\t10\\t10\\t1\\t10\\t1\\t10\\t0\\t1\\t+\\t0\\t1\\t0\\t1\\t1",
+                    "a3\\t*\\t10\\t0\\t0\\t0\\t0\\t0\\t0\\t0\\t\\t0\\t0\\t0\\t0\\t0",
+                ].join("\\n") + "\\n"
+                new File(dir, 'observed.tsv').text = "ID\\tS1\\tS2\\na1\\t10\\t0\\na2\\t5\\t7\\na3\\t0\\t3\\n"
+                new File(dir, 'expected.tsv').text = "ID\\tS1\\tS2\\ne1\\t1\\t1\\ne2\\t1\\t1\\n"
+                input[0] = [ [ id:'test' ], file("\${dir}/alignment.tsv") ]
+                input[1] = file("\${dir}/observed.tsv")
+                input[2] = file("\${dir}/expected.tsv")
+                """
+            }
+        }
+
+        then {
+            def per_sample = path(process.out.performance_per_sample[0]).readLines()
+            assertAll(
+                { assert process.success },
+                { assert per_sample.any { it.startsWith("S1\tTP\t1") } },
+                { assert per_sample.any { it.startsWith("S2\tTP\t0") } },
+                { assert path(process.out.abundance_table_per_sample[0]).readLines().any { it.startsWith("S2\t") } },
+                { assert process.out.svg[0].any { it.endsWith("S2_scatter_loglog.svg") } }
+            )
+        }
+    }
+}

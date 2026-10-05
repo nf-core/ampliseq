@@ -36,12 +36,11 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 ## Pipeline summary
 
-By default, for paired-end Illumina data, the pipeline currently performs the following:
+Depending on the sequencing technology and parameters, the pipeline performs the following:
 
 - Sequencing quality control ([FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-- Trimming of reads ([Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200))
-- Infer Amplicon Sequence Variants (ASVs) ([DADA2](https://doi.org/10.1038/nmeth.3869))
-- For Oxford Nanopore data, additional read preprocessing with [Porechop_ABI](https://pubmed.ncbi.nlm.nih.gov/36698762/) and [Chopper](https://pubmed.ncbi.nlm.nih.gov/37171891/), and ASV inference with [Savont](https://doi.org/10.64898/2026.05.26.727271) instead of DADA2
+- Trimming of reads ([Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200)); for Oxford Nanopore data, additional read preprocessing with [Porechop_ABI](https://pubmed.ncbi.nlm.nih.gov/36698762/) and [Chopper](https://pubmed.ncbi.nlm.nih.gov/37171891/)
+- Infer Amplicon Sequence Variants (ASVs) with [DADA2](https://doi.org/10.1038/nmeth.3869) for Illumina, PacBio and IonTorrent data, or with [Savont](https://doi.org/10.64898/2026.05.26.727271) for Oxford Nanopore data
 - Optional post-clustering with [VSEARCH](https://github.com/torognes/vsearch)
 - Decontamination with [decontam](https://pubmed.ncbi.nlm.nih.gov/30558668/), if any controls or quantification information is given
 - Predict whether ASVs are ribosomal RNA sequences ([Barrnap](https://github.com/tseemann/barrnap))

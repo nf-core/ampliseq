@@ -1,0 +1,41 @@
+nextflow_pipeline {
+
+    name "Test pipeline"
+    script "../main.nf"
+    tag "pipeline"
+    profile "test"
+
+    test("-profile test --dada_ref_taxonomy listing a database twice fails") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                dada_ref_taxonomy = "silva,silva"
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.failed },
+                { assert workflow.stdout.any { it.contains("resolve to the exact same reference files") } || workflow.stderr.any { it.contains("resolve to the exact same reference files") } }
+            )
+        }
+    }
+
+    test("-profile test --dada_ref_taxonomy listing a database and its pinned version fails") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                dada_ref_taxonomy = "gtdb,gtdb=R11-RS232"
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.failed },
+                { assert workflow.stdout.any { it.contains("'gtdb', 'gtdb=R11-RS232'") } || workflow.stderr.any { it.contains("'gtdb', 'gtdb=R11-RS232'") } }
+            )
+        }
+    }
+}

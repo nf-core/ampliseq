@@ -53,6 +53,8 @@ num_ranks = len(rank_cols)
 sh_pos = taxtable.columns.get_loc(rank_cols[-1]) + 1
 taxtable.insert(sh_pos, "SH", "", allow_duplicates=False)
 tax_entries = rank_cols + ["SH", "confidence"]
+# The per-rank bootstrap values belong to the replaced DADA2 ranks, so they are cleared for updated ASVs
+rank_conf_cols = [c for c in taxtable.columns if c.endswith("_confidence")]
 
 # Go through vsearch matches and update taxonomy for those entries
 fh = open(sys.argv[4], mode="r")
@@ -95,6 +97,7 @@ for row in fh:
         if SH != "":
             tax_list = tax[1 : num_ranks + 1] + [SH] + [conf]
             taxtable.loc[taxtable["ASV_ID"] == prev_ASV, tax_entries] = tax_list
+            taxtable.loc[taxtable["ASV_ID"] == prev_ASV, rank_conf_cols] = float("nan")
         prev_ASV = ASV
         maxid = -1
         maxlen = -1
@@ -141,6 +144,7 @@ if match != "*":  # Take care of last row/ASV in match file
     if SH != "":
         tax_list = tax[1 : num_ranks + 1] + [SH] + [conf]
         taxtable.loc[taxtable["ASV_ID"] == prev_ASV, tax_entries] = tax_list
+        taxtable.loc[taxtable["ASV_ID"] == prev_ASV, rank_conf_cols] = float("nan")
 
 
 # Write new taxtable, with SH and new taxonomy added if found

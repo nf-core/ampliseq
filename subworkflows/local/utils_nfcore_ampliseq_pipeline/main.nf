@@ -249,8 +249,18 @@ def validateInputParameters() {
         error("Incompatible parameters: `--binned_quality` and `--sequencing_type pacbio` are both used, but only one is allowed. When the data has binned quality scores, use `--binned_quality` instead of `--sequencing_type pacbio`.")
     }
 
-    if ( params.sample_inference == "pseudo" && ( (params.sequencing_type == "nanopore" && params.asv_calling == "auto") || params.asv_calling == "savont") ) {
+    def use_savont = params.asv_calling == "savont" || ( params.asv_calling == "auto" && params.sequencing_type == "nanopore" )
+
+    if ( params.sample_inference == "pseudo" && use_savont ) {
         error("Incompatible parameters: `--sample_inference pseudo` and Savont are incompatible. Use `--sample_inference independent` or `--sample_inference pooled` (default) with Savont (default for `--sequencing_type nanopore`).")
+    }
+
+    if ( use_savont && params.sequencing_type == "illumina_pe" ) {
+        error("Incompatible parameters: Savont (`--asv_calling savont`) requires single end data, but `--sequencing_type illumina_pe` is used. Use `--asv_calling dada2` or `--asv_calling auto` for paired end data.")
+    }
+
+    if ( use_savont && params.multiregion ) {
+        error("Incompatible parameters: Multiple region analysis with `--multiregion` requires DADA2, but Savont is used (default for `--sequencing_type nanopore`). Use `--asv_calling dada2`.")
     }
 
     if ( params.sequencing_type in ["nanopore","pacbio","iontorrent","illumina_se"] ) {
@@ -271,6 +281,14 @@ def validateInputParameters() {
 
     if ( params.skip_dada_quality && (params.trunclenf == null || params.trunclenr == null) ) {
         error("Incompatible parameters: `--skip_dada_quality` may not be used without setting `--trunclenf` and `--trunclenr`.")
+    }
+
+    if ( params.expected_abundances && !params.expected_sequences ) {
+        error("Missing parameter: `--expected_abundances` requires `--expected_sequences`, to which the abundances refer.")
+    }
+
+    if ( params.expected_profile && ( params.skip_taxonomy || params.skip_qiime || params.skip_qiime_downstream || params.skip_abundance_tables ) ) {
+        error("Incompatible parameters: `--expected_profile` is compared to the taxonomic abundance tables of QIIME2, which are not produced with `--skip_taxonomy`, `--skip_qiime`, `--skip_qiime_downstream` or `--skip_abundance_tables`.")
     }
 
     if (params.tax_agglom_min > params.tax_agglom_max) {

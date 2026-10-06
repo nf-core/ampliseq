@@ -26,6 +26,9 @@ input:
     - sample_string:
         type: string
         description: Sample names
+    - pooled:
+        type: boolean
+        description: Pass all reads to one pooled Savont run (`--pooled-samples`) instead of a run on a single sample
 output:
   asv:
     - "*_feature-table.tsv":

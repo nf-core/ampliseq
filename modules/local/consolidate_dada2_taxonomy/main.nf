@@ -55,6 +55,9 @@ process CONSOLIDATE_DADA2_TAXONOMY {
         ranks <- cols[!is_meta(cols)]
         mapped <- ifelse(ranks %in% target_ranks, ranks, rank_synonyms[ranks])
         names(mapped) <- ranks
+        # a synonym fills its slot only when no column of that name exists, so a database
+        # holding both Domain and Kingdom keeps the one the target uses and drops the other
+        mapped[!(ranks %in% target_ranks) & mapped %in% ranks] <- NA
         mapped <- mapped[!is.na(mapped) & mapped %in% target_ranks]
         # a rank without a slot in target_ranks takes its bootstrap column with it
         dropped <- setdiff(ranks, names(mapped))
@@ -75,7 +78,10 @@ process CONSOLIDATE_DADA2_TAXONOMY {
     files <- files[ order(match(sapply(files, extract_db_key), db_key_order)) ]
 
     tables <- lapply(files, function(f) {
-        df <- read.delim(f, sep = "\\t", header = TRUE, na.strings = "", stringsAsFactors = FALSE, check.names = FALSE)
+        # character, so a rank that happens to be only "F" or "T" is not read as logical
+        df <- read.delim(f, sep = "\\t", header = TRUE, na.strings = "", colClasses = "character", check.names = FALSE)
+        conf_cols <- grep("^confidence\$|_confidence\$", colnames(df), value = TRUE)
+        df[conf_cols] <- lapply(df[conf_cols], as.numeric)
         df <- harmonize(df)
         df\$database <- extract_db_key(f)
         df
@@ -100,7 +106,9 @@ process CONSOLIDATE_DADA2_TAXONOMY {
         # Domain/Kingdom and Division/Phylum are two names for one slot (see rank_synonyms), and
         # target_ranks can carry both. Counting per column would hand a database that fills both a
         # free point over one that fills either, so a pair scores once.
-        slots <- unique(lapply(rank_cols, function(r) sort(intersect(c(r, rank_synonyms[r]), rank_cols))))
+        # SH and BOLD_bin are identifiers, not ranks, so they do not score.
+        score_cols <- setdiff(rank_cols, c("SH", "BOLD_bin"))
+        slots <- unique(lapply(score_cols, function(r) sort(intersect(c(r, rank_synonyms[r]), score_cols))))
         hits <- matrix(FALSE, nrow = nrow(combined), ncol = length(slots))
         for (i in seq_along(slots)) {
             hits[, i] <- rowSums(!is.na(combined[, slots[[i]], drop = FALSE])) > 0

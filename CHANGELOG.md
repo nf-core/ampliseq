@@ -24,24 +24,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Changed`
 
 - [#1018](https://github.com/nf-core/ampliseq/pull/1018) - Change version to 2.19.0dev (by @d4straub)
-- [#1027](https://github.com/nf-core/ampliseq/pull/1027),[#1094](https://github.com/nf-core/ampliseq/pull/1094) - Changed parameters, including the default of `--sample_inference` from `independent` to `pooled` and `--dada_taxonomy_rc` isnt enforced with IonTorrent and PacBio any more (by @d4straub)
+- [#1027](https://github.com/nf-core/ampliseq/pull/1027),[#1094](https://github.com/nf-core/ampliseq/pull/1094),[#1114](https://github.com/nf-core/ampliseq/pull/1114) - Changed parameters, including the default of `--sample_inference` from `independent` to `pooled` and `--dada_taxonomy_rc` isnt enforced with IonTorrent and PacBio any more (by @d4straub)
 
-| previously        | now                           | comment |
-| ----------------- | ----------------------------- | ------- |
-| --nanopore        | --sequencing_type nanopore    |         |
-| --pacbio          | --sequencing_type pacbio      |         |
-| --iontorrent      | --sequencing_type iontorrent  |         |
-| --single_end      | --sequencing_type illumina_se |         |
-| default           | --sequencing_type illumina_pe | default |
-|                   | --asv_calling auto            | default |
-| default           | --asv_calling dada2           | new     |
-|                   | --asv_calling savont          | new     |
-| --illumina_pe_its | --illumina_pe_readthrough     |         |
-| --extension       | --input_folder_extensions     |         |
-| --FW_primer       | --primer_fwd                  |         |
-| --RV_primer       | --primer_rev                  |         |
-| --classifier      | --qiime_classifier            |         |
-| --sbdiexport      |                               | removed |
+| previously                 | now                           | comment                                    |
+| -------------------------- | ----------------------------- | ------------------------------------------ |
+| --nanopore                 | --sequencing_type nanopore    |                                            |
+| --pacbio                   | --sequencing_type pacbio      |                                            |
+| --iontorrent               | --sequencing_type iontorrent  |                                            |
+| --single_end               | --sequencing_type illumina_se |                                            |
+| default                    | --sequencing_type illumina_pe | default                                    |
+|                            | --asv_calling auto            | default                                    |
+| default                    | --asv_calling dada2           | new                                        |
+|                            | --asv_calling savont          | new                                        |
+| --illumina_pe_its          | --illumina_pe_readthrough     |                                            |
+| --extension                |                               | removed                                    |
+| --input_folder             |                               | removed, use `--input`                     |
+| --multiple_sequencing_runs |                               | removed, use the `run` column of `--input` |
+| --FW_primer                | --primer_fwd                  |                                            |
+| --RV_primer                | --primer_rev                  |                                            |
+| --classifier               | --qiime_classifier            |                                            |
+| --sbdiexport               |                               | removed                                    |
 
 - [#1028](https://github.com/nf-core/ampliseq/pull/1028) - Multi-region sample sheet via `--multiregion` had its header changed from `FW_primer` and `RV_primer` to `primer_fwd` and `primer_rev`, respectively. (by @d4straub)
 - [#1032](https://github.com/nf-core/ampliseq/pull/1032) - Refactor the pipeline's parameter handling and initialization (by @erikrikarddaniel).

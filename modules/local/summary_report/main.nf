@@ -106,7 +106,6 @@ process SUMMARY_REPORT  {
         metadata ? "metadata='$metadata'" : "",
         input_samplesheet ? "input_samplesheet='$input_samplesheet'" : "",
         input_fasta ? "input_fasta='$input_fasta'" : "",
-        !input_fasta && !input_samplesheet ? "input_folder='$params.input_folder'" : "",
         mqc_plots ? "mqc_plot='${mqc_plots}/svg/fastqc_per_sequence_quality_scores_plot.svg'" : "",
         cutadapt_summary ?
             params.retain_untrimmed ? "flag_retain_untrimmed=TRUE,cutadapt_summary='$cutadapt_summary'" :

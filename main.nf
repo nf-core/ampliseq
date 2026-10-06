@@ -76,7 +76,6 @@ workflow NFCORE_AMPLISEQ {
 params {
     input: Path?
     input_fasta: Path?
-    input_folder: Path?
     primer_fwd: String?
     primer_rev: String?
     metadata: Path?
@@ -90,8 +89,6 @@ params {
     ignore_binned_quality: Boolean
     illumina_pe_readthrough: Boolean
     quality_type: String = 'Auto'
-    multiple_sequencing_runs: Boolean
-    input_folder_extensions: String = '/*_R{1,2}_001.fastq.gz'
     min_read_counts: Integer = 1
     ignore_empty_input_files: Boolean
     retain_untrimmed: Boolean

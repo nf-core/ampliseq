@@ -30,13 +30,6 @@
                     "description": "Path to ASV/OTU fasta file",
                     "help_text": "Path to fasta format file with sequences that will be taxonomically classified. The fasta file input option can be used to taxonomically classify previously produced ASV/OTU sequences.\n\nThe fasta sequence header line may contain a description, that will be kept as part of the sequence name. However, tabs will be changed into spaces.\n\nRelated parameters are:\n- Choose an appropriate reference taxonomy for the type of amplicon (16S/18S/ITS/CO1) (default: DADA2 assignTaxonomy and 16S rRNA sequence database)"
                 },
-                "input_folder": {
-                    "type": "string",
-                    "format": "directory-path",
-                    "fa_icon": "fas fa-dna",
-                    "description": "Path to folder containing zipped FastQ files",
-                    "help_text": "Path to folder containing compressed fastq files. Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique. Examples and requirements are in the usage documentation.\n\nRelated parameters: `--input_folder_extensions`, `--multiple_sequencing_runs`, `--sequencing_type`."
-                },
                 "primer_fwd": {
                     "type": "string",
                     "description": "Forward primer sequence",
@@ -132,19 +125,6 @@
                     "description": "Type of quality scores in raw read data for DADA2",
                     "help_text": "From R package 'ShortRead' function 'readFastq': Representation to be used for quality scores, must be one of `Auto` (infer automatically), `FastqQuality` (Phred-like base 33 encoding), `SFastqQuality` (Illumina base 64 encoding).",
                     "enum": ["Auto", "FastqQuality", "SFastqQuality"],
-                    "fa_icon": "fab fa-amilia"
-                },
-                "multiple_sequencing_runs": {
-                    "type": "boolean",
-                    "description": "If using `--input_folder`: samples were sequenced in multiple sequencing runs",
-                    "help_text": "Expects one sub-folder per sequencing run in the folder specified by `--input_folder` containing sequencing data of the specific run.\nSample identifiers are taken from sequencing files, specifically the string before the first underscore will be the sample ID. Sample IDs across all sequencing runs (all sequencing files) have to be unique. If this is not the case, please use a sample sheet as input instead.\n\nExample for input data organization:\n\n```bash\ndata\n  |-run1\n  |  |-sample1_1_L001_R1_001.fastq.gz\n  |  |-sample1_1_L001_R2_001.fastq.gz\n  |  |-sample2_1_L001_R1_001.fastq.gz\n  |  |-sample2_1_L001_R2_001.fastq.gz\n  |\n  |-run2\n     |-sample3_1_L001_R1_001.fastq.gz\n     |-sample3_1_L001_R2_001.fastq.gz\n     |-sample4_1_L001_R1_001.fastq.gz\n     |-sample4_1_L001_R2_001.fastq.gz\n```\n\nExample command to analyze this data in one pipeline run:\n\n```bash\nnextflow run nf-core/ampliseq \\\n    -profile singularity \\\n    --input_folder \"data\" \\\n    --primer_fwd \"GTGYCAGCMGCCGCGGTAA\" \\\n    --primer_rev \"GGACTACNVGGGTWTCTAAT\" \\\n    --metadata \"data/Metadata.tsv\" \\\n    --multiple_sequencing_runs\n```",
-                    "fa_icon": "fas fa-running"
-                },
-                "input_folder_extensions": {
-                    "type": "string",
-                    "default": "/*_R{1,2}_001.fastq.gz",
-                    "description": "If using `--input_folder`: naming of sequencing files",
-                    "help_text": "Indicates the naming of sequencing files (default: `\"/*_R{1,2}_001.fastq.gz\"`).\n\nPlease note:\n\n1. The prepended slash (`/`) is required\n2. The star (`*`) is the required wildcard for sample names\n3. The curly brackets (`{}`) enclose the orientation for paired end reads, separated by a comma (`,`).\n4. The pattern must be enclosed in quotes\n\nFor example for one sample (name: `1`) with forward (file: `1_a.fastq.gz`) and reverse (file: `1_b.fastq.gz`) reads in folder `data`:\n\n```bash\n--input_folder \"data\" --input_folder_extensions \"/*_{a,b}.fastq.gz\"\n```",
                     "fa_icon": "fab fa-amilia"
                 },
                 "min_read_counts": {
@@ -1359,6 +1339,15 @@
         },
         {
             "$ref": "#/$defs/institutional_config_options"
+        }
+    ],
+    "errorMessage": "Exactly one of `--input` or `--input_fasta` is required",
+    "oneOf": [
+        {
+            "required": ["input"]
+        },
+        {
+            "required": ["input_fasta"]
         }
     ]
 }

@@ -237,10 +237,6 @@ workflow PIPELINE_COMPLETION {
 // Check and validate pipeline parameters
 //
 def validateInputParameters() {
-    if ( !params.input && !params.input_fasta && !params.input_folder ) {
-        error("Missing input declaration: One of `--input`, `--input_fasta`, `--input_folder` is required.")
-    }
-
     if ( !params.multiregion && !params.input_fasta && (!params.primer_fwd || !params.primer_rev) && !params.skip_cutadapt ) {
         error("Incompatible parameters: `--primer_fwd` and `--primer_rev` are required for primer trimming. If primer trimming is not needed, use `--skip_cutadapt`.")
     }

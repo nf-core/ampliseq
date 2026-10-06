@@ -7,30 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-- [#1021](https://github.com/nf-core/ampliseq/pull/1021),[#1023](https://github.com/nf-core/ampliseq/pull/1023),[#1025](https://github.com/nf-core/ampliseq/pull/1025),[#1048](https://github.com/nf-core/ampliseq/pull/1048),[#1054](https://github.com/nf-core/ampliseq/pull/1054) - Comparison of observed ASVs and taxonomic profiles against expected data is now available with `--expected_*` parameters (by @d4straub, reviewed by @erikrikarddaniel)
+- [#1021](https://github.com/nf-core/ampliseq/pull/1021),[#1023](https://github.com/nf-core/ampliseq/pull/1023),[#1025](https://github.com/nf-core/ampliseq/pull/1025),[#1048](https://github.com/nf-core/ampliseq/pull/1048),[#1054](https://github.com/nf-core/ampliseq/pull/1054),[#1094](https://github.com/nf-core/ampliseq/pull/1094) - Comparison of observed ASVs and taxonomic profiles against expected data is now available with `--expected_*` parameters (by @d4straub, reviewed by @erikrikarddaniel)
 - [#1022](https://github.com/nf-core/ampliseq/issues/1022) - added new GloSED database for classification of Eukaryotic ITS. Not support for SH numbers as of yet. (by @tom-brekke)
 - [#1026](https://github.com/nf-core/ampliseq/pull/1026),[#1046](https://github.com/nf-core/ampliseq/pull/1046),[#1049](https://github.com/nf-core/ampliseq/pull/1049),[#1079](https://github.com/nf-core/ampliseq/pull/1079) - Add support for Oxford Nanopore Technology (ONT) R10.4 sequencing (preferably with SUP basecalling) with Savont (by @d4straub)
 - [#1042](https://github.com/nf-core/ampliseq/pull/1042) - DADA2 taxonomy tables (`ASV_tax.*.tsv`, `ASV_tax_species.*.tsv`) now include one `<rank>_confidence` column per rank, in addition to the existing overall `confidence` column (by @erikrikarddaniel)
 - [#1042](https://github.com/nf-core/ampliseq/pull/1042) - Added CI test coverage for `--addsh`, which previously had none (`test_pacbio_its` now also runs DADA2 taxonomy against the UNITE database it already uses for SINTAX) (by @erikrikarddaniel)
-- [#1052](https://github.com/nf-core/ampliseq/pull/1052) - Added `summary_tables/ampliseq.counts.tsv.gz`, ASV counts in long format with consistent, lower-case column names, ready for analysis in R, Python or similar without pipeline-specific parsing; also written as Parquet by default, skip with `--skip_parquet_summary` (by @erikrikarddaniel)
+- [#1052](https://github.com/nf-core/ampliseq/pull/1052),[#1094](https://github.com/nf-core/ampliseq/pull/1094) - Added `summary_tables/ampliseq.counts.tsv.gz`, ASV counts in long format with consistent, lower-case column names, ready for analysis in R, Python or similar without pipeline-specific parsing; also written as Parquet by default, skip with `--skip_parquet_summary` (by @erikrikarddaniel)
 - [#1056](https://github.com/nf-core/ampliseq/pull/1056) - `--dada_ref_taxonomy` now accepts a comma-separated list of databases (e.g. `gtdb,silva`), running DADA2 taxonomic classification against each; one full set of output files is published per listed database, and the first-listed database feeds every downstream step that expects a single taxonomy (consolidating multiple databases into one is planned as a future addition) (by @erikrikarddaniel)
 - [#1062](https://github.com/nf-core/ampliseq/pull/1062) - Added `--consolidate_taxonomies` (`first` by default, `most-specific` or `score`) to pick a per-ASV winning database across multiple `--dada_ref_taxonomy` databases, instead of always using the first-listed one; the winning result is published as `dada2/ASV_tax.consolidated.<method>.tsv` (by @erikrikarddaniel)
 - [#1063](https://github.com/nf-core/ampliseq/pull/1063) - Added `summary_tables/ampliseq.taxonomy.<classifier>.<database>.tsv.gz`, one taxonomy table per classifier and database, with per-ASV barrnap, decontam and filter annotations ([documentation](docs/output.md#summary-tables)) (by @erikrikarddaniel)
 - [#1065](https://github.com/nf-core/ampliseq/pull/1065) - New `--max_ee_r` overrides `--max_ee` for reverse reads only (paired-end Illumina data), for runs where read quality drops on the reverse read only (fixes [#1037](https://github.com/nf-core/ampliseq/issues/1037)) (by @erikrikarddaniel)
 - [#1066](https://github.com/nf-core/ampliseq/pull/1066) - Added `--sintax_cutoff` parameter (maintaining the default: 0.8). (by @pieterprovoost)
 - [#1070](https://github.com/nf-core/ampliseq/pull/1070) - VSEARCH LCA now also publishes the raw `--blast6out` hit table (`ASV_tax_vsearch_lca.*.txt` / `ASV_ITS_tax_vsearch_lca.*.txt`) alongside the existing LCA and taxonomy TSV outputs (by @pieterprovoost)
-- [#1078](https://github.com/nf-core/ampliseq/pull/1078) - Added DADA2 reference taxonomic databases SILVA 144 (`silva` & `silva=144`) and Kraken2 from June 2026 (`standard` & `standard=20260626`) (by @d4straub)
+- [#1078](https://github.com/nf-core/ampliseq/pull/1078),[#1094](https://github.com/nf-core/ampliseq/pull/1094) - Added DADA2 reference taxonomic databases SILVA 144 (`silva` & `silva=144`) and Kraken2 from June 2026 (`standard` & `standard=20260626`) (by @d4straub)
 
 ### `Changed`
 
 - [#1018](https://github.com/nf-core/ampliseq/pull/1018) - Change version to 2.19.0dev (by @d4straub)
-- [#1027](https://github.com/nf-core/ampliseq/pull/1027) - Changed parameters, including the default of `--sample_inference` from `independent` to `pooled` and `--dada_taxonomy_rc` isnt enforced with IonTorrent and PacBio any more (by @d4straub)
+- [#1027](https://github.com/nf-core/ampliseq/pull/1027),[#1094](https://github.com/nf-core/ampliseq/pull/1094) - Changed parameters, including the default of `--sample_inference` from `independent` to `pooled` and `--dada_taxonomy_rc` isnt enforced with IonTorrent and PacBio any more (by @d4straub)
 
 | previously        | now                           | comment |
 | ----------------- | ----------------------------- | ------- |
 | --nanopore        | --sequencing_type nanopore    |         |
 | --pacbio          | --sequencing_type pacbio      |         |
-| --iontorrent      | --sequencing_type nanopore    |         |
+| --iontorrent      | --sequencing_type iontorrent  |         |
 | --single_end      | --sequencing_type illumina_se |         |
 | default           | --sequencing_type illumina_pe | default |
 |                   | --asv_calling auto            | default |
@@ -62,7 +62,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | `--consolidate_taxonomies`                                                               | output named after the first-listed database | unchanged, `Domain`/`Kingdom` still treated as one rank when matching columns |
 
 - [#1087](https://github.com/nf-core/ampliseq/pull/1087) - Replaced the workflow overview figure with a simplified metro map. (by @d4straub)
-- [#1088](https://github.com/nf-core/ampliseq/pull/1088) - Local modules and subworkflows moved from `<name>.nf` to `<name>/main.nf`, following the nf-core directory structure; every local module now has a `meta.yml` and an `environment.yml`, the latter a symlink for modules sharing an environment in `modules/local/envs/`; the unused QIIME2 2024.10 environment file is removed (by @erikrikarddaniel)
+- [#1088](https://github.com/nf-core/ampliseq/pull/1088),[#1094](https://github.com/nf-core/ampliseq/pull/1094) - Local modules and subworkflows moved from `<name>.nf` to `<name>/main.nf`, following the nf-core directory structure; every local module now has a `meta.yml` and an `environment.yml`, the latter a symlink for modules sharing an environment in `modules/local/envs/`; the unused QIIME2 2024.10 environment file is removed (by @erikrikarddaniel)
 - [#1090](https://github.com/nf-core/ampliseq/pull/1090) - Change version to 3.0.0 (by @d4straub)
 - [#1092](https://github.com/nf-core/ampliseq/pull/1092) - `RENAME_RAW_DATA_FILES` now runs in a Seqera container with bash and coreutils, so `-profile conda` and container profiles report the same bash version; trimmed code comments and corrected two typos in the documentation (by @erikrikarddaniel)
 

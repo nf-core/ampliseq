@@ -228,6 +228,10 @@
 
 > Ewels P, Magnusson M, Lundin S, Käller M. MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics. 2016 Oct 1;32(19):3047-8. doi: 10.1093/bioinformatics/btw354. Epub 2016 Jun 16. PubMed PMID: 27312411; PubMed Central PMCID: PMC5039924.
 
+- [DuckDB](https://doi.org/10.1145/3299869.3320212)
+
+  > Raasveldt M, Mühleisen H. DuckDB: an Embeddable Analytical Database. Proceedings of the 2019 International Conference on Management of Data (SIGMOD '19). 2019 June; 1981-1984. doi: 10.1145/3299869.3320212
+
 ## Data
 
 - [Full-size test data](https://doi.org/10.3389/fmicb.2020.550420)

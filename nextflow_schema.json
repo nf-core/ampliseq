@@ -1341,13 +1341,13 @@
             "$ref": "#/$defs/institutional_config_options"
         }
     ],
-    "anyOf": [
+    "errorMessage": "Exactly one of `--input` or `--input_fasta` is required",
+    "oneOf": [
         {
             "required": ["input"]
         },
         {
             "required": ["input_fasta"]
         }
-    ],
-    "errorMessage": "One of `--input` or `--input_fasta` is required"
+    ]
 }

@@ -109,7 +109,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#1028](https://github.com/nf-core/ampliseq/pull/1028) - Removed support for the legacy sample sheet to simplify parsing (by @d4straub)
 - [#1083](https://github.com/nf-core/ampliseq/pull/1083) - Removed `--sbdiexport` and the `SBDI/` output files; submission files for the Swedish Biodiversity Infrastructure will be produced by a separate pipeline instead. The SBDI-GTDB reference database is unaffected and remains the default for `--dada_ref_taxonomy` (closes [#1055](https://github.com/nf-core/ampliseq/issues/1055)) (by @erikrikarddaniel)
 - [#1086](https://github.com/nf-core/ampliseq/pull/1086) - Removed the unused `taxref_reformat_phytoref.sh`; PhytoRef is included in PR2 (by @erikrikarddaniel)
-- [#NNNN](https://github.com/nf-core/ampliseq/pull/NNNN) - Removed `--input_folder`, `--input_folder_extensions` (previously `--extension`) and `--multiple_sequencing_runs`; use a sample sheet with `--input` instead, the `run` column replaces `--multiple_sequencing_runs` (fixes [#1110](https://github.com/nf-core/ampliseq/issues/1110)) (by @erikrikarddaniel)
+- [#1114](https://github.com/nf-core/ampliseq/pull/1114) - Removed `--input_folder`, `--input_folder_extensions` (previously `--extension`) and `--multiple_sequencing_runs`; use a sample sheet with `--input` instead, the `run` column replaces `--multiple_sequencing_runs` (fixes [#1110](https://github.com/nf-core/ampliseq/issues/1110)) (by @erikrikarddaniel)
 
 ## nf-core/ampliseq version 2.18.0 - 2026-06-18
 

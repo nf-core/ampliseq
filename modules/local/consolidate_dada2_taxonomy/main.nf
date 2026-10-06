@@ -100,30 +100,58 @@ process CONSOLIDATE_DADA2_TAXONOMY {
 
     rank_cols <- intersect(target_ranks, colnames(combined))
 
-    if (method == "score") {
-        combined\$.score <- ifelse(is.na(combined\$confidence), -Inf, combined\$confidence)
-    } else if (method == "most-specific") {
-        # Domain/Kingdom and Division/Phylum are two names for one slot (see rank_synonyms), and
-        # target_ranks can carry both. Counting per column would hand a database that fills both a
-        # free point over one that fills either, so a pair scores once.
-        # SH and BOLD_bin are identifiers, not ranks, so they do not score.
-        score_cols <- setdiff(rank_cols, c("SH", "BOLD_bin"))
-        slots <- unique(lapply(score_cols, function(r) sort(intersect(c(r, rank_synonyms[r]), score_cols))))
-        hits <- matrix(FALSE, nrow = nrow(combined), ncol = length(slots))
-        for (i in seq_along(slots)) {
-            hits[, i] <- rowSums(!is.na(combined[, slots[[i]], drop = FALSE])) > 0
-        }
-        combined\$.score <- rowSums(hits)
-    } else {
+    if (!(method %in% c("most-specific", "score"))) {
         stop(paste0("Unknown consolidation method: ", method))
     }
-    combined\$.tiebreak <- match(combined\$database, db_key_order)
 
-    # per ASV_ID: highest score first, tie broken by earliest position in db_key_order
-    combined <- combined[ order(combined\$ASV_ID, -combined\$.score, combined\$.tiebreak), ]
-    winners <- combined[ !duplicated(combined\$ASV_ID), ]
-    winners\$.score <- NULL
-    winners\$.tiebreak <- NULL
+    # Domain/Kingdom and Division/Phylum are two names for one slot (see rank_synonyms), and
+    # target_ranks can carry both, so a pair counts as one rank.
+    # SH and BOLD_bin are identifiers, not ranks.
+    score_cols <- setdiff(rank_cols, c("SH", "BOLD_bin"))
+    slots <- unique(lapply(score_cols, function(r) sort(intersect(c(r, rank_synonyms[r]), score_cols))))
+    assigned <- matrix(FALSE, nrow = nrow(combined), ncol = length(slots))
+    slot_conf <- matrix(NA_real_, nrow = nrow(combined), ncol = length(slots))
+    for (i in seq_along(slots)) {
+        assigned[, i] <- rowSums(!is.na(combined[, slots[[i]], drop = FALSE])) > 0
+        conf_cols <- intersect(paste0(tolower(slots[[i]]), "_confidence"), colnames(combined))
+        if (length(conf_cols) > 0) {
+            slot_conf[, i] <- suppressWarnings(apply(combined[, conf_cols, drop = FALSE], 1, max, na.rm = TRUE))
+        }
+    }
+    # DADA2 reports a bootstrap for unassigned ranks too; only assigned ranks are compared
+    slot_conf[!assigned | is.infinite(slot_conf)] <- NA
+    comparable <- assigned & !is.na(slot_conf)
+    depth <- apply(assigned, 1, function(x) if (any(x)) max(which(x)) else 0)
+    tiebreak <- match(combined\$database, db_key_order)
+
+    # bootstraps only fall with depth, so each database's own deepest rank would favour shallow
+    # assignments; compare at the deepest rank that all remaining candidates assigned instead
+    pick_by_score <- function(rows) {
+        cand <- rows[depth[rows] > 0]
+        if (length(cand) == 0) cand <- rows
+        previous <- 0
+        while (length(cand) > 1) {
+            shared <- which(colSums(!comparable[cand, , drop = FALSE]) == 0)
+            if (length(shared) == 0 || max(shared) <= previous) break
+            previous <- max(shared)
+            conf <- slot_conf[cand, previous]
+            cand <- cand[conf == max(conf)]
+            deeper <- cand[depth[cand] > previous]
+            if (length(deeper) == 0) break
+            cand <- deeper
+        }
+        cand <- cand[depth[cand] == max(depth[cand])]
+        cand[which.min(tiebreak[cand])]
+    }
+
+    rows_by_asv <- split(seq_len(nrow(combined)), combined\$ASV_ID)
+    if (method == "score") {
+        winner_rows <- vapply(rows_by_asv, pick_by_score, integer(1))
+    } else {
+        # most slots filled first, tie broken by earliest position in db_key_order
+        winner_rows <- vapply(rows_by_asv, function(rows) rows[order(-rowSums(assigned[rows, , drop = FALSE]), tiebreak[rows])][1], integer(1))
+    }
+    winners <- combined[winner_rows, ]
 
     # same column order as a single-database dada2_taxonomy.nf table, with any identifier column
     # (SH, BOLD_bin, Species_exact) kept after the ranks and the new provenance column last

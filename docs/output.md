@@ -356,7 +356,7 @@ DADA2 is the default method for taxonomy classification. Depending on the refere
 
 - By default (`--consolidate_taxonomies first`), only the **first-listed** database feeds every downstream step that expects a single taxonomy (QIIME2 filtering, diversity, barplots, ANCOM, R objects).
 - `--consolidate_taxonomies most-specific` instead picks, per ASV, whichever listed database resolved the deepest rank.
-- `--consolidate_taxonomies score` instead picks, per ASV, whichever listed database reported the highest assignTaxonomy bootstrap confidence.
+- `--consolidate_taxonomies score` instead picks, per ASV, whichever listed database reported the highest assignTaxonomy bootstrap confidence at the deepest rank that all listed databases assigned.
 - Both break ties by database order in `--dada_ref_taxonomy`, and are currently DADA2-only -- they don't compare results across different classification methods (e.g. DADA2 vs. SINTAX).
 - When set, the winning per-ASV result is published as `dada2/ASV_tax.consolidated.<method>.tsv`, with an added `database` column recording which listed database each row's winning classification came from.
 

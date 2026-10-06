@@ -2,12 +2,6 @@
     "-profile test_glosed": {
         "content": [
             {
-                "BARRNAP": {
-                    "barrnap": 0.9
-                },
-                "BARRNAPSUMMARY": {
-                    "python": "Python 3.9.1"
-                },
                 "BUILD_ASV_ANNOTATIONS": {
                     "R": "4.3.1",
                     "r-dplyr": "1.1.4"
@@ -105,12 +99,6 @@
                 }
             },
             [
-                "barrnap",
-                "barrnap/rrna.arc.gff",
-                "barrnap/rrna.bac.gff",
-                "barrnap/rrna.euk.gff",
-                "barrnap/rrna.mito.gff",
-                "barrnap/summary.tsv",
                 "cutadapt",
                 "cutadapt/cutadapt_summary.tsv",
                 "cutadapt/sampleID_1.trimmed.cutadapt.log",
@@ -268,7 +256,6 @@
                 "pipeline_info/nf_core_ampliseq_software_mqc_versions.yml",
                 "summary_report",
                 "summary_report/dada2_taxonomic_classification_per_taxonomy_level.svg",
-                "summary_report/rrna_detection_with_barrnap.svg",
                 "summary_report/stacked_barchart_of_reads.svg",
                 "summary_report/summary_report.html",
                 "summary_report/versions.yml",
@@ -281,10 +268,6 @@
                 "treesummarizedexperiment/dada2_TreeSummarizedExperiment.rds"
             ],
             "overall_summary.tsv:md5,788502ac905468319bcc8b1598b7e925",
-            "rrna.arc.gff:md5,6dae470aace9293d5eb8c318584852dd",
-            "rrna.bac.gff:md5,439a9084f089120f700f938dfb58fa41",
-            "rrna.euk.gff:md5,c9bc1d9d8fb77dc19c95dee2d53840eb",
-            "rrna.mito.gff:md5,df19e1b84ba6f691d20c72b397c88abf",
             "cutadapt_summary.tsv:md5,5d02749984a811479e7d534fda75163f",
             "ASV_seqs.fasta:md5,e3cdcd93bdce761152085a7c797763c3",
             "ASV_table.tsv:md5,d3f7d98b8750dfb3b486b32cc5d32414",
@@ -296,9 +279,9 @@
             "multiqc_general_stats.txt:md5,885c19ff3e53d16bfe7937d6694268d7",
             "multiqc_cutadapt.txt:md5,3dce058d2d6c85a3cca7314ae19c5586"
         ],
-        "timestamp": "2026-09-17T21:38:59.618487232",
+        "timestamp": "2026-10-06T13:11:19.702209938",
         "meta": {
-            "nf-test": "0.9.4",
+            "nf-test": "0.9.5",
             "nextflow": "26.04.6"
         }
     }

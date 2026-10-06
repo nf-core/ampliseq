@@ -1069,7 +1069,7 @@ workflow AMPLISEQ {
     ch_annot_barrnap = ch_summary_tax
         .map { _meta, _tsv -> true }
         .first()
-        .combine( ch_barrnapsummary.ifEmpty( [] ) )
+        .combine( ch_barrnapsummary.ifEmpty( [[]] ) )
         .map { _gate, summary -> summary }
 
     BUILD_ASV_ANNOTATIONS (

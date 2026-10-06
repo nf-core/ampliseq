@@ -86,7 +86,6 @@ include { DUCKDB_TABLE2PARQUET          } from '../modules/nf-core/duckdb/table2
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 
-include { PARSE_INPUT                   } from '../subworkflows/local/parse_input/main'
 include { DADA2_PREPROCESSING           } from '../subworkflows/local/dada2_preprocessing/main'
 include { QIIME2_PREPTAX                } from '../subworkflows/local/qiime2_preptax/main'
 include { QIIME2_TAXONOMY               } from '../subworkflows/local/qiime2_taxonomy/main'
@@ -201,11 +200,8 @@ workflow AMPLISEQ {
 
     } else if ( params.input_fasta ) {
         ch_input_fasta = channel.fromPath(params.input_fasta)
-    } else if ( params.input_folder ) {
-        PARSE_INPUT ( params.input_folder, single_end, params.multiple_sequencing_runs, params.input_folder_extensions )
-        ch_input_reads = PARSE_INPUT.out.reads
     } else {
-        error("One of `--input`, `--input_fasta`, `--input_folder` must be provided!")
+        error("One of `--input`, `--input_fasta` must be provided!")
     }
 
     //

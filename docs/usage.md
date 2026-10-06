@@ -30,7 +30,7 @@ nextflow run nf-core/ampliseq \
     --outdir "./results"
 ```
 
-In this example, `--input` is the [Sample sheet input](#sample-sheet-input), other options are [Direct FASTQ input](#direct-fastq-input) and [ASV/OTU fasta input](#asvotu-fasta-input). For more details on metadata, see [Metadata](#metadata). It is possible to not provide primer sequences (`--primer_fwd` & `--primer_rev`) and skip primer trimming using `--skip_cutadapt`, but this is only for data that indeed does not contain any PCR primers in their sequences. Also, metadata (`--metadata`) isnt required, but aids downstream analysis.
+In this example, `--input` is the [Sample sheet input](#sample-sheet-input), the other option is [ASV/OTU fasta input](#asvotu-fasta-input). For more details on metadata, see [Metadata](#metadata). It is possible to not provide primer sequences (`--primer_fwd` & `--primer_rev`) and skip primer trimming using `--skip_cutadapt`, but this is only for data that indeed does not contain any PCR primers in their sequences. Also, metadata (`--metadata`) isnt required, but aids downstream analysis.
 
 This will launch the pipeline with the `singularity` configuration profile. See below [`-profile`](#profile) for more information about profiles.
 
@@ -47,7 +47,7 @@ work                # Directory containing the nextflow working files
 > For [Reproducibility](#reproducibility), specify the version to run using `-r` (= release, e.g. 2.17.0, please use the most recent release). See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters) for more information about pipeline specific parameters.
 
 > [!NOTE]
-> If the data originates from multiple sequencing runs, the error profile of each of those sequencing runs needs to be considered separately. Using the `run` column in the sample sheet input or adding `--multiple_sequencing_runs` for direct FASTQ input will separate certain processes by the sequencing run. Please see the following example:
+> If the data originates from multiple sequencing runs, the error profile of each of those sequencing runs needs to be considered separately. Using the `run` column in the sample sheet input will separate certain processes by the sequencing run. Please see the following example:
 
 <p align="center">
     <img src="images/ampliseq_workflow_multiplesequencingruns.png" alt="nf-core/ampliseq workflow overview with --multiple_sequencing_runs" width="40%">
@@ -83,12 +83,11 @@ You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-c
 
 ### Input specifications
 
-The input data can be passed to nf-core/ampliseq in three possible ways using the parameters `--input`, `--input_fasta`, or `--input_folder`.
-The three parameters and input types are mutually exclusive.
+The input data can be passed to nf-core/ampliseq in two possible ways using the parameters `--input` or `--input_fasta`.
+The two parameters and input types are mutually exclusive.
 
 - [Sample sheet input](#sample-sheet-input) using `--input`: Sample sheet tab-separated, comma-separated, or in YAML format
 - [ASV/OTU fasta input](#asvotu-fasta-input) using `--input_fasta`: Fasta file with sequences to be taxonomically classified
-- [Direct FASTQ input](#direct-fastq-input) using `--input_folder`: Folder containing zipped FastQ files.
 
 Optionally, a metadata sheet can be specified for downstream analysis.
 
@@ -138,8 +137,6 @@ Please note the following requirements:
 
 Examples for the layout is provided within the pipeline code in folder `assets` as `samplesheet.tsv`.
 
-To avoid producing a sample sheet, [Direct FASTQ input](#direct-fastq-input) may be used instead.
-
 #### ASV/OTU fasta input
 
 To taxonomically classify pre-computed sequence files, a fasta format file with sequences may be provided.
@@ -149,56 +146,6 @@ The sequence header line may contain a description, that will be kept as part of
 ```bash
 --input_fasta 'path/to/amplicon_sequences.fasta'
 ```
-
-#### Direct FASTQ input
-
-An easy way to input sequencing data to the pipeline is to specify directly the path to the folder that contains your input FASTQ files. For example:
-
-```bash
---input_folder 'path/to/data/'
-```
-
-File names must follow a specific pattern, default is `/*_R{1,2}_001.fastq.gz`, but this can be adjusted with `--input_folder_extensions`.
-
-For example, the following files in folder `data` would be processed as `sample1` and `sample2`:
-
-```console
-data
-    |-sample1_1_L001_R1_001.fastq.gz
-    |-sample1_1_L001_R2_001.fastq.gz
-    |-sample2_1_L001_R1_001.fastq.gz
-    |-sample2_1_L001_R2_001.fastq.gz
-```
-
-All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed. Sequencing data originating from multiple sequencing runs requires additionally the parameter `--multiple_sequencing_runs` and a specific folder structure, for example:
-
-```console
-data
-    |-runA
-    |   |-sample1_1_L001_R1_001.fastq.gz
-    |   |-sample1_1_L001_R2_001.fastq.gz
-    |   |-sample2_1_L001_R1_001.fastq.gz
-    |   |-sample2_1_L001_R2_001.fastq.gz
-    |
-    |-runB
-        |-sample3_1_L001_R1_001.fastq.gz
-        |-sample3_1_L001_R2_001.fastq.gz
-        |-sample4_1_L001_R1_001.fastq.gz
-        |-sample4_1_L001_R2_001.fastq.gz
-```
-
-Where `sample1` and `sample2` were sequenced in one sequencing run and `sample3` and `sample4` in another sequencing run.
-
-Please note the following additional requirements:
-
-- Files names must be unique
-- Valid file extensions: `.fastq.gz`, `.fq.gz` (files must be compressed)
-- The path must be enclosed in quotes
-- `--input_folder_extensions` must have at least one `*` wildcard character
-- When using the pipeline with paired end data, the `--input_folder_extensions` must use `{1,2}` (or similar) notation to specify read pairs
-- When a single-ended data type is specified with `--sequencing_type`, `--input_folder_extensions` may not include curly brackets `{}`
-- Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique (also across sequencing runs) and only contain letters, numbers or underscores
-- If your data is scattered, produce a sample sheet
 
 ### Sequencing data types
 

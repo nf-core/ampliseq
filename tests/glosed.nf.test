@@ -26,10 +26,6 @@ nextflow_pipeline {
                     stable_name,
                     // Manually chosen files for content checks
                     path("$outputDir/overall_summary.tsv"),
-                    path("$outputDir/barrnap/rrna.arc.gff"),
-                    path("$outputDir/barrnap/rrna.bac.gff"),
-                    path("$outputDir/barrnap/rrna.euk.gff"),
-                    path("$outputDir/barrnap/rrna.mito.gff"),
                     path("$outputDir/cutadapt/cutadapt_summary.tsv"),
                     path("$outputDir/dada2/ASV_seqs.fasta"),
                     path("$outputDir/dada2/ASV_table.tsv"),

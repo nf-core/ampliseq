@@ -34,6 +34,7 @@ params:
     trunclenf: ""
     trunclenr: ""
     max_ee: ""
+    max_ee_r: ""
     trunc_qmin: FALSE
     trunc_rmin: ""
     dada_sample_inference: ""
@@ -47,6 +48,7 @@ params:
     cut_its: FALSE
     dada2_ref_tax_title: FALSE
     qiime2_ref_tax_title: FALSE
+    sintax_cutoff: ""
     sintax_ref_tax_title: FALSE
     kraken2_ref_tax_title: FALSE
     dada2_ref_tax_file: ""
@@ -72,9 +74,12 @@ params:
     metadata: FALSE
     input_samplesheet: FALSE
     input_fasta: FALSE
-    input_folder: FALSE
     mqc_plot: FALSE
+    porechop_abi_log_paths: FALSE
+    chopper_stats_path: FALSE
     cutadapt_summary: FALSE
+    savont_asv_table_path : FALSE
+    savont_stats_path: FALSE
     dada_filtntrim_args: FALSE
     dada_qc_f_path: FALSE
     dada_qc_r_path: ""
@@ -82,7 +87,7 @@ params:
     dada_pp_qc_r_path: ""
     dada_err_path: FALSE
     dada_err_run: ""
-    asv_table_path: FALSE
+    dada_asv_table_path: FALSE
     path_asv_fa: FALSE
     path_dada2_tab: FALSE
     dada_stats_path: FALSE
@@ -119,7 +124,6 @@ params:
     ancombc2: FALSE
     ancombc2_formula: FALSE
     picrust_pathways: FALSE
-    sbdi: FALSE
     phyloseq: FALSE
     tse: FALSE
 ---
@@ -209,7 +213,7 @@ if ( !isFALSE(params$metadata) || !isFALSE(params$input_samplesheet) ) {
 
 if ( !isFALSE(params$input_samplesheet) ) {
     # samplesheet input
-    cat("\nSequencing data was provided in the samplesheet file `", params$input_samplesheet, "` that is displayed below:", sep="")
+    cat("\nSequencing data was provided in the samplesheet file `", basename(params$input_samplesheet), "` that is displayed below:", sep="")
 
     samplesheet <- read.table(file = params$input_samplesheet, header = TRUE, sep = "\t")
     # Display table
@@ -219,13 +223,10 @@ if ( !isFALSE(params$input_samplesheet) ) {
         paging = FALSE))
 } else if ( !isFALSE(params$input_fasta) ) {
     # fasta input
-    cat("\nASV/OTU sequences were provided in the fasta file `", params$input_fasta, "`. ", sep="")
-} else if ( !isFALSE(params$input_folder) ) {
-    # folder input
-    cat("\nSequencing data was retrieved from folder `", params$input_folder, "`. ", sep="")
+    cat("\nASV/OTU sequences were provided in the fasta file `", basename(params$input_fasta), "`. ", sep="")
 }
 if ( !isFALSE(params$metadata) ) {
-    cat("\nMetadata associated with the sequencing data was provided in `", params$metadata, "` and is displayed below:", sep="")
+    cat("\nMetadata associated with the sequencing data was provided in `", basename(params$metadata), "` and is displayed below:", sep="")
 
     metadata <- read.table(file = params$metadata, header = TRUE, sep = "\t")
     # Display table
@@ -256,7 +257,7 @@ MultiQC report, which can be found in [multiqc/multiqc_report.html](../multiqc/m
 "))
 ```
 
-<!-- TODO: MultiQC occasionally doesnt produce plots. This seems to be a consequence of an issue in Kaleido, should be fixed with Kaleido2 -->
+<!-- TODO: MultiQC occasionally does not produce plots. This seems to be a consequence of an issue in Kaleido, should be fixed with Kaleido2 -->
 
 ```{r, eval = !isFALSE(params$mqc_plot), out.width='100%', dpi=1200, fig.align='center'}
 if ( file.exists(params$mqc_plot) ) {
@@ -270,6 +271,52 @@ _This plot is missing. That is only a visual mishap, all data can be found in th
 _The cause is likely a bug in Kaleido, a dependency of MultiQC. There is no need to take action._
     "))
 }
+```
+
+<!-- Subsection on Porechop_ABI -->
+
+```{r, eval = !isFALSE(params$porechop_abi_log_paths), results='asis'}
+cat(paste0("
+## Adapter removal with Porechop_ABI
+
+[Porechop_ABI](https://pubmed.ncbi.nlm.nih.gov/36698762/) removed adapters from reads.
+This is important to not have any remaining non-biological remnants in the read data.
+
+Information about changes to the data can be found in the [MultiQC report](../multiqc/multiqc_report.html) and
+Porechop_ABI log files can be found in folder [porechop_abi](../porechop_abi).
+"))
+```
+
+<!-- Subsection on Chopper -->
+
+```{r, eval = !isFALSE(params$chopper_stats_path), results='asis'}
+cat(paste0("
+## Read filtering with Chopper
+
+[Chopper](https://pubmed.ncbi.nlm.nih.gov/37171891/) filtered reads based on quality cutoffs.
+Reducing the data and number of reads can speed up subsequent steps, but is not strictely required.
+"))
+
+# import tsv
+chopper_stats <- read.table(file = params$chopper_stats_path, header = TRUE, sep = "\t")
+chopper_stats$passing_percent <- chopper_stats$chopper_output / chopper_stats$chopper_input * 100
+chopper_max_discarded <- round( 100 - min(chopper_stats$passing_percent), 1 )
+chopper_avg_passed <- round(mean(chopper_stats$passing_percent),1)
+
+# prep text
+chopper_text <- paste0("Less than ",
+    chopper_max_discarded, "% of the sequences were discarded per sample and a mean of ",
+    chopper_avg_passed, "% of the sequences (",min(chopper_stats$chopper_output)," to ",
+    max(chopper_stats$chopper_output),") per sample passed the filtering.
+")
+cat(chopper_text)
+
+# display table
+datatable(chopper_stats, options = list(
+        scrollX = TRUE,
+        scrollY = "300px",
+        paging = FALSE))
+
 ```
 
 <!-- Subsection on Cutadapt -->
@@ -314,6 +361,68 @@ datatable(cutadapt_summary, options = list(
         paging = FALSE))
 ```
 
+<!-- Subsection on Savont ASVs -->
+
+```{r, eval = !isFALSE(params$savont_asv_table_path) || !isFALSE(params$savont_stats_path), results='asis'}
+cat(paste0("
+# ASV inference using Savont
+
+[Savont](https://doi.org/10.64898/2026.05.26.727271) generates Amplicon Sequence Variants (ASVs) at single-nucleotide resolution
+from long-read amplicon sequencing data such as Oxford Nanopore (ONT) R10.4 sequencing (preferably with SUP basecalling) or PacBio HiFi sequencing.
+
+Savont filters reads (98% quality), produces ASVs, and removes apparent PCR chimera.
+"))
+```
+
+<!-- Subsection on Savont ASVs -->
+
+```{r, eval = !isFALSE(params$savont_asv_table_path), results='asis'}
+cat("## Inferred ASVs\n\n")
+
+#import asv table
+asv_table <- read.table(file = params$savont_asv_table_path, header = TRUE, sep = "\t")
+n_asv <- nrow(asv_table)
+n_asv_final <- nrow(asv_table) #this is to report the original number later in the methods section
+
+# Output text
+cat("Savont generated", n_asv,
+        "amplicon sequence variants (ASVs) across all samples. ")
+if ( params$dada_sample_inference == "independent" ) {
+    cat("The ASVs can be found in [`savont/pooled_final_asvs.fasta`](../savont/). And the corresponding",
+        " quantification of the ASVs across samples is in [`savont/independent_feature-table.tsv`](../savont/).",
+        "ASVs were inferred for each sample independently",
+        "and per-sample information can be found in folder [savont/per-sample/](../savont/per-sample/). ")
+} else if ( params$dada_sample_inference == "pooled" ) {
+    cat("The ASVs can be found in [`savont/pooled_final_asvs.fasta`](../savont/). And the corresponding",
+        " quantification of the ASVs across samples is in [`savont/pooled_feature-table.tsv`](../savont/).",
+        "ASVs were inferred from pooled sample information. ")
+}
+```
+
+<!-- Subsection on Savont per-sample counts -->
+
+```{r, eval = !isFALSE(params$savont_stats_path), results='asis'}
+cat(paste0("
+## Read counts per sample
+
+The following table shows the read numbers per sample after ASV inference.
+"))
+
+# import tsv
+savont_stats <- read.table(file = params$savont_stats_path, header = TRUE, sep = "\t")
+
+datatable(savont_stats, options = list(
+        scrollX = TRUE,
+        scrollY = "300px",
+        paging = FALSE))
+
+cat(paste0("
+The ASV count table contained in total ",sum(savont_stats$savont_output)," counts,
+at least ",min(savont_stats$savont_output)," and at most ",max(savont_stats$savont_output)," per sample
+(average ",round(sum(savont_stats$savont_output)/length(savont_stats$savont_output),0),").
+"))
+```
+
 <!-- Subsection on DADA2 QC filtering -->
 
 ```{r, eval = !isFALSE(params$dada_filtntrim_args), results='asis'}
@@ -351,9 +460,15 @@ if (params$trunc_qmin) {
 } else if (params$trunclenr != 0) {
     cat("Reverse reads were trimmed at ", params$trunclenr," bp, reads shorter than this were discarded. ", sep = "")
 }
-cat("Reads with more than", params$max_ee,"expected errors were discarded.",
-    "Read counts passing the filter are shown in section ['Read counts per sample'](#read-counts-per-sample)",
-    "column 'filtered'.", sep = " ")
+if (isFALSE(params$flag_single_end) && params$max_ee_r != "") {
+    cat("Reads with more than", params$max_ee, "(forward) or", params$max_ee_r, "(reverse) expected errors were discarded.",
+        "Read counts passing the filter are shown in section ['Read counts per sample'](#read-counts-per-sample)",
+        "column 'filtered'.", sep = " ")
+} else {
+    cat("Reads with more than", params$max_ee,"expected errors were discarded.",
+        "Read counts passing the filter are shown in section ['Read counts per sample'](#read-counts-per-sample)",
+        "column 'filtered'.", sep = " ")
+}
 ```
 
 <!-- Subsection on DADA2 QC visualisation -->
@@ -401,9 +516,9 @@ that position. Original plots can be found in folder [dada2/QC/](../dada2/QC/) w
 "))
 ```
 
-<!-- Section on sequences / DADA2 ASVs -->
+<!-- Section on DADA2 ASVs -->
 
-```{r, eval = !isFALSE(params$dada_err_path) || !isFALSE(params$dada_stats_path) || !isFALSE(params$asv_table_path), results='asis'}
+```{r, eval = !isFALSE(params$dada_err_path) || !isFALSE(params$dada_stats_path) || !isFALSE(params$dada_asv_table_path), results='asis'}
 cat(paste0("
 # ASV inference using DADA2
 
@@ -595,13 +710,13 @@ Samples that are very different in lost reads (per stage) to the majority of sam
 
 <!-- Subsection on DADA2 ASVs -->
 
-```{r, eval = !isFALSE(params$asv_table_path), results='asis'}
+```{r, eval = !isFALSE(params$dada_asv_table_path), results='asis'}
 cat("## Inferred ASVs\n\n")
 
 #import asv table
-asv_table <- read.table(file = params$asv_table_path, header = TRUE, sep = "\t")
+asv_table <- read.table(file = params$dada_asv_table_path, header = TRUE, sep = "\t")
 n_asv <- length(asv_table$ASV_ID)
-n_asv_dada <- length(asv_table$ASV_ID) #this is to report the original number later in the methods section
+n_asv_final <- length(asv_table$ASV_ID) #this is to report the original number later in the methods section
 
 # Output text
 cat("Finally,", n_asv,
@@ -638,7 +753,7 @@ n_asv_vsearch_cluster <- nrow(vsearch_cluster)
 cat(paste0("
 ## Clustering of ASVs
 
-[VSEARCH](https://peerj.com/articles/2584/) clustered ",n_asv_dada," ASVs into ",n_asv_vsearch_cluster,"
+[VSEARCH](https://peerj.com/articles/2584/) clustered ",n_asv_final," ASVs into ",n_asv_vsearch_cluster,"
 centroids with pairwise identity of ",params$vsearch_cluster_id,".
 Clustered ASV sequences and abundances can be found in folder [vsearch_cluster](../vsearch_cluster).
 "))
@@ -1033,34 +1148,47 @@ cat ("\n\n")
 
 # mention if taxonomy was cut by cutadapt
 if ( !isFALSE(params$cut_dada_ref_taxonomy) ) {
-    cut_dada_ref_taxonomy <- readLines(params$cut_dada_ref_taxonomy)
-    for (line in cut_dada_ref_taxonomy){
-        if (grepl("Total reads processed:", line)) {
-            cut_dada_ref_taxonomy_orig <- sub("Total reads processed: *\t*", "", line)
-        }
-        if (grepl("Reads written \\(passing filters\\):", line)) {
-            cut_dada_ref_taxonomy_filt <- sub("Reads written .passing filters.: *\t*", "", line)
-        }
-        if (grepl("Total basepairs processed:", line)) {
-            cut_dada_ref_taxonomy_orig_bp <- sub("Total basepairs processed: *\t*", "", line)
-        }
-        if (grepl("Total written \\(filtered\\):", line)) {
-            cut_dada_ref_taxonomy_filt_bp <- sub("Total written \\(filtered\\): *\t*", "", line)
-        }
-    }
+    cut_logs <- strsplit(params$cut_dada_ref_taxonomy, " ")[[1]]
+    cut_stat <- function(lines, pattern) trimws(sub("^[^:]*:", "", grep(pattern, lines, value = TRUE, fixed = TRUE)[1]))
+    cut_dada_ref_taxonomy <- do.call(rbind, lapply(cut_logs, function(log) {
+        lines <- readLines(log)
+        data.frame(
+            database = sub("^assignTaxonomy_(.*)\\.cutadapt\\.log$", "\\1", basename(log)),
+            orig     = cut_stat(lines, "Total reads processed:"),
+            filt     = cut_stat(lines, "Reads written (passing filters):"),
+            orig_bp  = cut_stat(lines, "Total basepairs processed:"),
+            filt_bp  = cut_stat(lines, "Total written (filtered):")
+        )
+    }))
+    cut_dada_ref_taxonomy <- cut_dada_ref_taxonomy[order(cut_dada_ref_taxonomy$database), ]
 
-    cat("The taxonomic reference database was cut by primer sequences to improve matching.
-        The original database had ",cut_dada_ref_taxonomy_orig," sequences with ",cut_dada_ref_taxonomy_orig_bp,
-        ", retained were ",cut_dada_ref_taxonomy_filt," sequences that represented ",cut_dada_ref_taxonomy_filt_bp,".\n\n",
-        sep = "")
+    if (nrow(cut_dada_ref_taxonomy) == 1) {
+        with(cut_dada_ref_taxonomy, cat("The taxonomic reference database was cut by primer sequences to improve matching.
+            The original database had ",orig," sequences with ",orig_bp,
+            ", retained were ",filt," sequences that represented ",filt_bp,".\n\n",
+            sep = ""))
+        cut_dada_ref_taxonomy_filt <- cut_dada_ref_taxonomy$filt
+    } else {
+        cat("The taxonomic reference databases were cut by primer sequences to improve matching:\n\n")
+        with(cut_dada_ref_taxonomy, cat(paste0("- `", database, "`: the original database had ", orig, " sequences with ", orig_bp,
+            ", retained were ", filt, " sequences that represented ", filt_bp, ".\n"), "\n", sep = ""))
+        cut_dada_ref_taxonomy_filt <- with(cut_dada_ref_taxonomy, paste0(filt, " (", database, ")", collapse = ", "))
+    }
 }
 
 # make statistics of taxonomic classification
-asv_tax <- read.table(params$dada2_taxonomy, header = TRUE, sep = "\t")
+asv_tax <- read.table(params$dada2_taxonomy, header = TRUE, sep = "\t", comment.char = "")
+
+# consolidated taxonomy records the winning database per ASV
+if ("database" %in% colnames(asv_tax)) {
+    dada2_db_counts <- table(asv_tax$database[asv_tax$database != "" & !is.na(asv_tax$database)])
+    dada2_db_counts_str <- paste0("`", names(dada2_db_counts), "` (", dada2_db_counts, " ASVs)", collapse = ", ")
+    cat("The taxonomy of each ASV was taken from the database that won consolidation: ", dada2_db_counts_str, ".\n\n", sep = "")
+}
 
 # Calculate the classified numbers/percent of asv
-level <- subset(asv_tax, select = -c(ASV_ID,confidence,sequence))
-level <- colnames(level)
+non_rank_cols <- colnames(asv_tax) %in% c("ASV_ID", "confidence", "sequence", "database") | grepl("_confidence$", colnames(asv_tax))
+level <- colnames(asv_tax)[!non_rank_cols]
 
 n_asv_tax = nrow(asv_tax)
 
@@ -1120,7 +1248,7 @@ if ( !isFALSE(params$qiime2_ref_tax_title) ) {
 }
 
 # Read file and prepare table
-asv_tax <- read.table(params$qiime2_taxonomy, header = TRUE, sep = "\t")
+asv_tax <- read.table(params$qiime2_taxonomy, header = TRUE, sep = "\t", comment.char = "")
 #asv_tax <- data.frame(do.call('rbind', strsplit(as.character(asv_tax$Taxon),'; ',fixed=TRUE)))
 asv_tax <- subset(asv_tax, select = Taxon)
 
@@ -1135,7 +1263,8 @@ df = as.data.frame(lapply(df, function(x) gsub(";$","",x)))
 max_taxa <- lengths(regmatches(df$Taxon, gregexpr(";", df$Taxon)))+1
 
 # Currently, all QIIME2 databases seem to have the same levels! But for compatibility, restrict number of levels to max_taxa
-level <- c("Kingdom","Phylum","Class","Order","Family","Genus","Species")
+# They all root at a domain, whichever prefix they write it with -- Greengenes 85 uses "k__".
+level <- c("Domain","Phylum","Class","Order","Family","Genus","Species")
 level <- head(level, n = max(max_taxa) )
 
 # Calculate the classified numbers/percent of asv
@@ -1190,11 +1319,15 @@ cat("The taxonomic classification was performed by [SINTAX](https://doi.org/10.1
     using the database: `", params$sintax_ref_tax_title, "`.
     More details about the reference taxonomy database can be found in the ['Methods section'](#methods).\n\n", sep = "")
 
-asv_tax <- read.table(params$sintax_taxonomy, header = TRUE, sep = "\t")
+if ( params$sintax_cutoff != "" && params$sintax_cutoff != "0.8" ) {
+    cat("A SINTAX confidence score threshold of",params$sintax_cutoff,"was applied for taxonomic classifications.\n\n")
+}
+
+asv_tax <- read.table(params$sintax_taxonomy, header = TRUE, sep = "\t", comment.char = "")
 
 # Calculate the classified numbers/percent of asv
-level <- subset(asv_tax, select = -c(ASV_ID,confidence,sequence))
-level <- colnames(level)
+non_rank_cols <- colnames(asv_tax) %in% c("ASV_ID", "confidence", "sequence") | grepl("_confidence$", colnames(asv_tax))
+level <- colnames(asv_tax)[!non_rank_cols]
 
 n_asv_tax = nrow(asv_tax)
 
@@ -1247,11 +1380,11 @@ cat("The taxonomic classification was performed by [VSEARCH](https://github.com/
     `usearch_global` with `--lcaout`, using the reference database: `", params$vsearch_lca_ref_tax_title, "`.
     More details about the reference taxonomy database can be found in the ['Methods section'](#methods).\n\n", sep = "")
 
-asv_tax <- read.table(params$vsearch_lca_taxonomy, header = TRUE, sep = "\t")
+asv_tax <- read.table(params$vsearch_lca_taxonomy, header = TRUE, sep = "\t", comment.char = "")
 
 # Calculate the classified numbers/percent of asv
-level <- subset(asv_tax, select = -c(ASV_ID,confidence,sequence))
-level <- colnames(level)
+non_rank_cols <- colnames(asv_tax) %in% c("ASV_ID", "confidence", "sequence") | grepl("_confidence$", colnames(asv_tax))
+level <- colnames(asv_tax)[!non_rank_cols]
 
 n_asv_tax = nrow(asv_tax)
 
@@ -1311,7 +1444,7 @@ if ( params$kraken2_confidence != "0" ) {
     cat("A confidence score threshold of",params$kraken2_confidence,"was applied for taxonomic classifications.\n\n")
 }
 
-asv_tax <- read.table(params$kraken2_taxonomy, header = TRUE, sep = "\t")
+asv_tax <- read.table(params$kraken2_taxonomy, header = TRUE, sep = "\t", comment.char = "")
 
 # Calculate the classified numbers/percent of asv
 level <- subset(asv_tax, select = -c(ASV_ID,lowest_match))
@@ -1370,7 +1503,7 @@ Extraction of taxonomic classification was performed with [EPA-NG](https://githu
 "))
 
 # Read file and prepare table
-asv_tax <- read.table(params$pplace_taxonomy, header = TRUE, sep = "\t")
+asv_tax <- read.table(params$pplace_taxonomy, header = TRUE, sep = "\t", comment.char = "")
 
 # get maximum amount of taxa levels per ASV
 max_taxa <- lengths(regmatches(asv_tax$taxonomy, gregexpr(";", asv_tax$taxonomy)))+1
@@ -1579,7 +1712,7 @@ Folder [qiime2/diversity/alpha_diversity](../qiime2/diversity/alpha_diversity) c
 
 - Shannon’s diversity index (quantitative): [qiime2/diversity/alpha_diversity/shannon_vector/index.html](../qiime2/diversity/alpha_diversity/shannon_vector/index.html)
 - Pielou’s Evenness: [qiime2/diversity/alpha_diversity/evenness_vector/index.html](../qiime2/diversity/alpha_diversity/evenness_vector/index.html)
-- Faith’s Phylogenetic Diversity (qualitiative, phylogenetic) [qiime2/diversity/alpha_diversity/faith_pd_vector/index.html](../qiime2/diversity/alpha_diversity/faith_pd_vector/index.html)
+- Faith’s Phylogenetic Diversity (qualitative, phylogenetic) [qiime2/diversity/alpha_diversity/faith_pd_vector/index.html](../qiime2/diversity/alpha_diversity/faith_pd_vector/index.html)
 - Observed OTUs (qualitative): [qiime2/diversity/alpha_diversity/observed_features_vector/index.html](../qiime2/diversity/alpha_diversity/observed_features_vector/index.html)
 "))
 ```
@@ -1824,22 +1957,6 @@ see `METACYC_path_abun_unstrat_descrip.tsv`. Quantifications are not normalized 
 "))
 ```
 
-<!-- Section on SBDI results -->
-
-```{r, eval = !isFALSE(params$sbdi), results='asis'}
-cat(paste0("
-# SBDI
-
-The [Swedish Biodiversity Infrastructure (SBDI)](https://biodiversitydata.se/) provides a cost-effective, cutting-edge
-infrastructure that supports Swedish and international biodiversity and ecosystems research.
-Files in preparation for submission to SBDI can be found in folder [SBDI](../SBDI/).
-Tables are generated from the DADA2 denoising and taxonomy assignment steps.
-Each table, except `annotation.tsv`, corresponds to one tab in the [SBDI submission template](https://asv-portal.biodiversitydata.se/submit).
-Most of the fields in the template will not be populated,
-but if you run nf-core/ampliseq with a sample metadata table (`--metadata`) any fields corresponding to a field in the template will be used.
-"))
-```
-
 <!-- Section on exported R objects -->
 
 ```{r, results='asis'}
@@ -1893,6 +2010,13 @@ Data quality was evaluated with FastQC ([Andrews, 2010](https://www.bioinformati
 and summarized with MultiQC ([Ewels et al., 2016](https://pubmed.ncbi.nlm.nih.gov/27312411/)).
 "))
 ```
+```{r, eval = !isFALSE(params$porechop_abi_log_paths), results='asis'}
+cat("[Porechop_ABI](https://pubmed.ncbi.nlm.nih.gov/36698762/) removed adapters from reads. ")
+```
+```{r, eval = !isFALSE(params$chopper_stats_path), results='asis'}
+cat("[Chopper](https://pubmed.ncbi.nlm.nih.gov/37171891/) filtered reads based on quality cutoffs: ")
+cat(chopper_text)
+```
 ```{r, eval = !isFALSE(params$cutadapt_summary), results='asis'}
 cutadapt_intro = "Cutadapt ([Marcel et al., 2011](https://doi.org/10.14806/ej.17.1.200)) trimmed primers"
 if ( isFALSE(params$flag_retain_untrimmed) ) {
@@ -1900,6 +2024,15 @@ if ( isFALSE(params$flag_retain_untrimmed) ) {
 } else {
     cat(paste0(cutadapt_intro, "."))
 }
+```
+```{r, eval = !isFALSE(params$savont_asv_table_path), results='asis'}
+cat(paste0("
+[Savont](https://doi.org/10.64898/2026.05.26.727271) filtered reads (98% quality), produced ASVs, and removed PCR chimera.
+Ultimately, ",n_asv_final," amplicon sequencing variants (ASVs) were obtained across all samples.
+The ASV count table contained in total ",sum(savont_stats$savont_output)," counts,
+at least ",min(savont_stats$savont_output)," and at most ",max(savont_stats$savont_output)," per sample
+(average ",round(sum(savont_stats$savont_output)/length(savont_stats$savont_output),0),").
+"))
 ```
 ```{r, eval = !isFALSE(params$dada_filtntrim_args), results='asis'}
 if ( !isFALSE(params$cutadapt_summary) && isFALSE(params$flag_retain_untrimmed) ) {
@@ -1937,7 +2070,9 @@ if (params$trunc_qmin) {
 } else if (params$trunclenr != 0) {
     cat("trim reads (reverse reads at ", params$trunclenr," bp, reads shorter than this were discarded), ", sep = "")
 }
-if ( as.integer(params$max_ee) > 0 ) {
+if (isFALSE(params$flag_single_end) && params$max_ee_r != "") {
+    cat("discard reads with >", params$max_ee, "(forward) or >", params$max_ee_r, "(reverse) expected errors, ")
+} else if ( as.integer(params$max_ee) > 0 ) {
     cat("discard reads with >", params$max_ee,"expected errors, ")
 }
 cat("correct errors, ")
@@ -1952,7 +2087,7 @@ if ( isFALSE(params$flag_single_end) ) {
 }
 cat(paste0("
 and remove polymerase chain reaction (PCR) chimeras;
-ultimately, ",n_asv_dada," amplicon sequencing variants (ASVs) were obtained across all samples.
+ultimately, ",n_asv_final," amplicon sequencing variants (ASVs) were obtained across all samples.
 Between ",min(dada_stats_p$analysis),"% and ",max(dada_stats_p$analysis),"% reads per sample
 (average ",dada_stats_p_analysis_average,"%) were retained.
 The ASV count table contained in total ",sum(dada_stats_ex$analysis)," counts,
@@ -1963,7 +2098,7 @@ at least ",min(dada_stats_ex$analysis)," and at most ",max(dada_stats_ex$analysi
 
 ```{r, eval = !isFALSE(params$vsearch_cluster), results='asis'}
 cat(paste0("
-VSEARCH ([Rognes et al., 2016](https://peerj.com/articles/2584/)) clustered ",n_asv_dada," ASVs into ",n_asv_vsearch_cluster,"
+VSEARCH ([Rognes et al., 2016](https://peerj.com/articles/2584/)) clustered ",n_asv_final," ASVs into ",n_asv_vsearch_cluster,"
 centroids with pairwise identity of ",params$vsearch_cluster_id,"."))
 ```
 ```{r, eval = (params$decontam != "none"), results='asis'}
@@ -2022,6 +2157,10 @@ if ( !isFALSE(params$dada2_taxonomy) ) {
     if ( !isFALSE(params$cut_dada_ref_taxonomy) ) {
         methods_taxonomic_classification_dada <- paste(methods_taxonomic_classification_dada,
             "that had",cut_dada_ref_taxonomy_filt,"sequences extracted by PCR primers to improve assignments")
+    }
+    if ( exists("dada2_db_counts_str") ) {
+        methods_taxonomic_classification_dada <- paste0(methods_taxonomic_classification_dada,
+            ", taking each ASV's taxonomy from the database that won consolidation: ", dada2_db_counts_str)
     }
     methods_taxonomic_classification <- c(methods_taxonomic_classification, methods_taxonomic_classification_dada)
 }

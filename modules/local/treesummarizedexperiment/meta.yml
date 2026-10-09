@@ -1,0 +1,54 @@
+name: treesummarizedexperiment
+description: Creates a TreeSummarizedExperiment object
+keywords:
+  - treesummarizedexperiment
+  - r object
+  - microbiome
+tools:
+  - treesummarizedexperiment:
+      description: S4 class extending SingleCellExperiment to hold hierarchical (tree) structures of rows and columns
+      homepage: https://bioconductor.org/packages/TreeSummarizedExperiment
+      licence:
+        - GPL-2.0-or-later
+      identifier: ""
+input:
+  - - prefix:
+        type: string
+        description: Output file name prefix
+    - tax_tsv:
+        type: file
+        description: Taxonomy table (TSV)
+    - otu_tsv:
+        type: file
+        description: Abundance table (TSV)
+    - sam_tsv:
+        type: file
+        description: Sample metadata (TSV)
+    - tree:
+        type: file
+        description: Phylogenetic tree (Newick)
+output:
+  rds:
+    - - prefix:
+          type: string
+          description: Output file name prefix
+      - "*TreeSummarizedExperiment.rds":
+          type: file
+          description: TreeSummarizedExperiment object (RDS)
+          pattern: "*TreeSummarizedExperiment.rds"
+  versions_treesummarizedexperiment:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

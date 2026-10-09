@@ -1,0 +1,48 @@
+name: sidle_dbfilt
+description: Filters reference sequences for Sidle
+keywords:
+  - sidle
+  - multi-region
+  - database
+  - filter
+tools:
+  - q2-sidle:
+      description: QIIME 2 implementation of SMURF, reconstructing full-length marker genes from multiple amplified regions
+      homepage: https://github.com/jwdebelius/q2-sidle
+      licence:
+        - BSD-3-Clause
+      identifier: ""
+input:
+  - seq:
+      type: file
+      description: Reference sequences artifact
+  - tax:
+      type: file
+      description: Reference taxonomy artifact
+output:
+  seq:
+    - db_filtered_sequences.qza:
+        type: file
+        description: Filtered reference sequences artifact
+        pattern: db_filtered_sequences.qza
+  tax:
+    - db_filtered_sequences_tax.qza:
+        type: file
+        description: Filtered reference taxonomy artifact
+        pattern: db_filtered_sequences_tax.qza
+  versions_sidle_dbfilt:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

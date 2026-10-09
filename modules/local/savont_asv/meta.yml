@@ -1,0 +1,99 @@
+name: savont_asv
+description: Infers ASVs from long reads with Savont
+keywords:
+  - savont
+  - asv
+  - long reads
+  - nanopore
+  - pacbio
+tools:
+  - savont:
+      description: Amplicon sequence variants from 16S ONT R10.4 and HiFi long reads
+      homepage: https://github.com/bluenote-1577/savont
+      licence:
+        - MIT
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information, e.g. [ id:'test' ]
+    - reads:
+        type: file
+        description: Reads (FASTQ), one file or several to pool
+    - sample_header:
+        type: string
+        description: Header line with sample names for the feature table
+    - sample_string:
+        type: string
+        description: Sample names
+    - pooled:
+        type: boolean
+        description: Pass all reads to one pooled Savont run (`--pooled-samples`) instead of a run on a single sample
+output:
+  asv:
+    - "*_feature-table.tsv":
+        type: file
+        description: ASV count table (TSV)
+        pattern: "*_feature-table.tsv"
+  fasta:
+    - "*_final_asvs.fasta":
+        type: file
+        description: ASV sequences in FASTA format
+        pattern: "*_final_asvs.fasta"
+  clusters:
+    - "*_final_assignments.tsv":
+        type: file
+        description: Read to ASV assignments (TSV)
+        pattern: "*_final_assignments.tsv"
+  stats:
+    - "*_stats.tsv":
+        type: file
+        description: Savont statistics (TSV)
+        pattern: "*_stats.tsv"
+  temp:
+    - savont_asv_*/temp/*:
+        type: file
+        description: Savont temporary files
+        pattern: savont_asv_*/temp/*
+  output_folder:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information, e.g. [ id:'test' ]
+      - savont_asv_*:
+          type: directory
+          description: Savont output folder
+          pattern: savont_asv_*
+      - sample_string:
+          type: string
+          description: Sample names
+  log:
+    - "*_savont.log":
+        type: file
+        description: Log file
+        pattern: "*_savont.log"
+  versions_savont:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - savont:
+          type: string
+          description: The name of the tool
+      - savont --version 2>&1 | cut -d ' ' -f 2:
+          type: eval
+          description: The expression to obtain the version of the tool
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - savont:
+          type: string
+          description: The name of the tool
+      - savont --version 2>&1 | cut -d ' ' -f 2:
+          type: eval
+          description: The expression to obtain the version of the tool
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

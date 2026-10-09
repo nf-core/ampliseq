@@ -11,8 +11,8 @@
 
 [![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.1493841-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.1493841)[![Cite Publication](https://img.shields.io/badge/Cite%20Us!-Cite%20Publication-important?labelColor=000000)](https://doi.org/10.3389/fmicb.2020.550420)
 
-[![Nextflow](https://img.shields.io/badge/version-%E2%89%A525.10.4-green?style=flat&logo=nextflow&logoColor=white&color=%230DC09D&link=https%3A%2F%2Fnextflow.io)](https://www.nextflow.io/)
-[![nf-core template version](https://img.shields.io/badge/nf--core_template-4.0.2-green?style=flat&logo=nfcore&logoColor=white&color=%2324B064&link=https%3A%2F%2Fnf-co.re)](https://github.com/nf-core/tools/releases/tag/4.0.2)
+[![Nextflow](https://img.shields.io/badge/version-%E2%89%A526.04.0-green?style=flat&logo=nextflow&logoColor=white&color=%230DC09D&link=https%3A%2F%2Fnextflow.io)](https://www.nextflow.io/)
+[![nf-core template version](https://img.shields.io/badge/nf--core_template-4.1.0-green?style=flat&logo=nfcore&logoColor=white&color=%2324B064&link=https%3A%2F%2Fnf-co.re)](https://github.com/nf-core/tools/releases/tag/4.1.0)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
@@ -22,30 +22,33 @@
 
 ## Introduction
 
-**nfcore/ampliseq** is a bioinformatics analysis pipeline used for amplicon sequencing, supporting denoising of any amplicon and supports a variety of taxonomic databases for taxonomic assignment including 16S, ITS, CO1 and 18S. Phylogenetic placement is also possible. Multiple region analysis such as 5R is implemented. Supported is paired-end Illumina or single-end Illumina, PacBio and IonTorrent data. Default is the analysis of 16S rRNA gene amplicons sequenced paired-end with Illumina.
+**nfcore/ampliseq** is a bioinformatics analysis pipeline used for amplicon sequencing, supporting denoising of any amplicon and supports a variety of taxonomic databases for taxonomic assignment including 16S, ITS, CO1 and 18S. Phylogenetic placement is also possible. Multiple region analysis such as 5R is implemented. Supported is paired-end Illumina or single-end Illumina, PacBio, IonTorrent, and Oxford Nanopore data. Default is the analysis of 16S rRNA gene amplicons sequenced paired-end with Illumina.
 
 A video about relevance, usage and output of the pipeline (version 2.1.0; 26th Oct. 2021) can also be found in [YouTube](https://youtu.be/a0VOEeAvETs) and [billibilli](https://www.bilibili.com/video/BV1B44y1e7MM), the slides are deposited at [figshare](https://doi.org/10.6084/m9.figshare.16871008.v1).
 
 <p align="center">
-    <img src="docs/images/ampliseq_workflow.png" alt="nf-core/ampliseq workflow overview" width="60%">
+    <img src="docs/images/ampliseq_metromap.png" alt="nf-core/ampliseq workflow metro map" width="60%">
+    <br>
+    <em>The nf-core/ampliseq metro map is a simplification in every regard, it only demonstrates the general idea and functions. *: check docs</em>
 </p>
 
 On release, automated continuous integration tests run the pipeline on a full-sized dataset on the AWS cloud infrastructure. This ensures that the pipeline runs on AWS, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources. The results obtained from the full-sized test can be viewed on the [nf-core website](https://nf-co.re/ampliseq/results).
 
 ## Pipeline summary
 
-By default, the pipeline currently performs the following:
+Depending on the sequencing technology and parameters, the pipeline performs the following:
 
 - Sequencing quality control ([FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-- Trimming of reads ([Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200))
-- Infer Amplicon Sequence Variants (ASVs) ([DADA2](https://doi.org/10.1038/nmeth.3869))
+- Trimming of reads ([Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200)); for Oxford Nanopore data, additional read preprocessing with [Porechop_ABI](https://pubmed.ncbi.nlm.nih.gov/36698762/) and [Chopper](https://pubmed.ncbi.nlm.nih.gov/37171891/)
+- Infer Amplicon Sequence Variants (ASVs) with [DADA2](https://doi.org/10.1038/nmeth.3869) for Illumina, PacBio and IonTorrent data, or with [Savont](https://doi.org/10.64898/2026.05.26.727271) for Oxford Nanopore data
 - Optional post-clustering with [VSEARCH](https://github.com/torognes/vsearch)
 - Decontamination with [decontam](https://pubmed.ncbi.nlm.nih.gov/30558668/), if any controls or quantification information is given
 - Predict whether ASVs are ribosomal RNA sequences ([Barrnap](https://github.com/tseemann/barrnap))
 - Phylogenetic placement ([EPA-NG](https://github.com/Pbdas/epa-ng))
-- Taxonomical classification using DADA2; alternatives are [SINTAX](https://doi.org/10.1101/074161), [Kraken2](https://doi.org/10.1186/s13059-019-1891-0), and [QIIME2](https://www.nature.com/articles/s41587-019-0209-9)
+- Taxonomical classification using DADA2; alternatives are [SINTAX](https://doi.org/10.1101/074161), [VSEARCH/LCA](https://peerj.com/articles/2584/), [Kraken2](https://doi.org/10.1186/s13059-019-1891-0), and [QIIME2](https://www.nature.com/articles/s41587-019-0209-9)
 - Excludes unwanted taxa, produces absolute and relative feature/taxa count tables and plots, plots alpha rarefaction curves, computes alpha and beta diversity indices and plots thereof ([QIIME2](https://www.nature.com/articles/s41587-019-0209-9))
 - Creates phyloseq R objects ([Phyloseq](https://www.bioconductor.org/packages/release/bioc/html/phyloseq.html) and [TreeSE](https://doi.org/10.12688/f1000research.26669.2))
+- Optional comparison of the results to expected sequences, abundances and taxonomic profile
 - Pipeline QC summaries ([MultiQC](https://multiqc.info/))
 - Pipeline summary report ([R Markdown](https://github.com/rstudio/rmarkdown))
 
@@ -58,14 +61,16 @@ First, you need to know whether the sequencing files at hand are expected to con
 
 Next, the sequencing data needs to be detailed in a sample sheet or organized in a folder (see [input documentation](https://nf-co.re/ampliseq/usage#input-specifications)).
 
+Furthermore, specify what type of sequencing data you have, e.g. Illumina, PacBio, IonTorrent, and Oxford Nanopore data (see [data type documentation](https://nf-co.re/ampliseq/usage#sequencing-data-types)). In the example below paired-end Illumina data is assumed, which is default.
+
 Now, you can run the pipeline using:
 
 ```bash
 nextflow run nf-core/ampliseq \
    -profile <docker/singularity/.../institute> \
    --input "samplesheet.tsv" \
-   --FW_primer "GTGYCAGCMGCCGCGGTAA" \
-   --RV_primer "GGACTACNVGGGTWTCTAAT" \
+   --primer_fwd "GTGYCAGCMGCCGCGGTAA" \
+   --primer_rev "GGACTACNVGGGTWTCTAAT" \
    --outdir <OUTDIR>
 ```
 
@@ -73,7 +78,7 @@ nextflow run nf-core/ampliseq \
 > Adding metadata will considerably increase the output, see [metadata documentation](https://nf-co.re/ampliseq/usage#metadata).
 
 > [!TIP]
-> By default the taxonomic assignment will be performed with DADA2 on SILVA database, but there are various tools and databases readily available, see [taxonomic classification documentation](https://nf-co.re/ampliseq/usage#taxonomic-classification).
+> By default the taxonomic assignment will be performed with DADA2 on SBDI-GTDB database, but there are various tools and databases readily available, see [taxonomic classification documentation](https://nf-co.re/ampliseq/usage#taxonomic-classification).
 
 > [!WARNING]
 > Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_; see [docs](https://nf-co.re/docs/running/run-pipelines#using-parameter-files).

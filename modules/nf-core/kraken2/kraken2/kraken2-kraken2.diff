@@ -13,6 +13,6 @@ Changes in 'kraken2/kraken2/main.nf':
          $readclassification_option \\
 
 'modules/nf-core/kraken2/kraken2/environment.yml' is unchanged
-'modules/nf-core/kraken2/kraken2/tests/main.nf.test' is unchanged
 'modules/nf-core/kraken2/kraken2/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/kraken2/kraken2/tests/main.nf.test' is unchanged
 ************************************************************

@@ -1,0 +1,26 @@
+process FORMAT_TAXRESULTS {
+    label 'process_single'
+
+    conda "${moduleDir}/environment.yml"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/pandas:1.1.5' :
+        'biocontainers/pandas:1.1.5' }"
+
+    input:
+    tuple val(db_key), path(taxtable), path(fastafile), val(outfile)
+
+    output:
+    tuple val(db_key), path(outfile), emit: tsv
+    path "versions.yml", emit: versions_format_taxresults, topic: versions
+
+    script:
+    """
+    add_full_sequence_to_taxfile.py $taxtable $fastafile $outfile
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python --version 2>&1 | sed 's/Python //g')
+        pandas: \$(python -c "import pkg_resources; print(pkg_resources.get_distribution('pandas').version)")
+    END_VERSIONS
+    """
+}

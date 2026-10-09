@@ -1,0 +1,112 @@
+nextflow_process {
+
+    name "Test Process SUMMARY_TABLE_TAXONOMY"
+    script "../main.nf"
+    process "SUMMARY_TABLE_TAXONOMY"
+    tag "modules"
+    tag "modules_local"
+    tag "summary_table_taxonomy"
+
+    test("a database name with spaces and slashes gives a safe file name") {
+
+        when {
+            process {
+                """
+                def dir = File.createTempDir()
+                new File(dir, 'tax.tsv').text = "ASV_ID\\ttaxonomy\\nasv1\\tBacteria;Firmicutes\\n"
+                new File(dir, 'annotations.tsv').text = "asv_id\\tampliseq_accept\\nasv1\\tTRUE\\n"
+                input[0] = [
+                    [ database: 'my tree/v1.0', classifier: 'PPLACE' ],
+                    file("\${dir}/tax.tsv"),
+                    file("\${dir}/annotations.tsv")
+                ]
+                """
+            }
+        }
+
+        then {
+            def lines = path(process.out.tsv[0]).linesGzip
+            assertAll(
+                { assert process.success },
+                { assert process.out.tsv[0].endsWith("ampliseq.taxonomy.PPLACE.my_tree_v1_0.tsv.gz") },
+                { assert lines[0].startsWith("asv_id\t") },
+                { assert lines[1].startsWith("asv1\t") }
+            )
+        }
+    }
+
+    test("a QIIME2 table without ASVs gives a header-only table") {
+
+        when {
+            process {
+                """
+                def dir = File.createTempDir()
+                new File(dir, 'tax.tsv').text = "Feature ID\\tTaxon\\tConfidence\\n"
+                new File(dir, 'annotations.tsv').text = "asv_id\\tampliseq_accept\\n"
+                input[0] = [
+                    [ database: 'db', classifier: 'QIIME2' ],
+                    file("\${dir}/tax.tsv"),
+                    file("\${dir}/annotations.tsv")
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.tsv[0]).linesGzip.size() == 1 }
+            )
+        }
+    }
+
+    test("a PPLACE table without ASVs gives a header-only table") {
+
+        when {
+            process {
+                """
+                def dir = File.createTempDir()
+                new File(dir, 'tax.tsv').text = "ASV_ID\\ttaxonomy\\n"
+                new File(dir, 'annotations.tsv').text = "asv_id\\tampliseq_accept\\n"
+                input[0] = [
+                    [ database: 'db', classifier: 'PPLACE' ],
+                    file("\${dir}/tax.tsv"),
+                    file("\${dir}/annotations.tsv")
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.tsv[0]).linesGzip.size() == 1 }
+            )
+        }
+    }
+
+    test("a DADA2 table without ASVs gives a header-only table") {
+
+        when {
+            process {
+                """
+                def dir = File.createTempDir()
+                new File(dir, 'tax.tsv').text = "ASV_ID\\tKingdom\\tPhylum\\tconfidence\\tsequence\\n"
+                new File(dir, 'annotations.tsv').text = "asv_id\\tampliseq_accept\\n"
+                input[0] = [
+                    [ database: 'db', classifier: 'DADA2' ],
+                    file("\${dir}/tax.tsv"),
+                    file("\${dir}/annotations.tsv")
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.tsv[0]).linesGzip.size() == 1 }
+            )
+        }
+    }
+}

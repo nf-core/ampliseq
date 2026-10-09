@@ -1,0 +1,40 @@
+name: sidle_indbaligned
+description: Imports aligned reference sequences into QIIME2 for Sidle
+keywords:
+  - sidle
+  - multi-region
+  - import
+  - alignment
+tools:
+  - q2-sidle:
+      description: QIIME 2 implementation of SMURF, reconstructing full-length marker genes from multiple amplified regions
+      homepage: https://github.com/jwdebelius/q2-sidle
+      licence:
+        - BSD-3-Clause
+      identifier: ""
+input:
+  - seq:
+      type: file
+      description: Aligned reference sequences (FASTA)
+output:
+  seq:
+    - db_alignedsequences.qza:
+        type: file
+        description: Aligned reference sequences artifact
+        pattern: db_alignedsequences.qza
+  versions_sidle_indbalignd:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

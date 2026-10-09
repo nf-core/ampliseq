@@ -1,0 +1,48 @@
+name: sidle_align
+description: Aligns ASVs to regional database k-mers with Sidle
+keywords:
+  - sidle
+  - multi-region
+  - alignment
+tools:
+  - q2-sidle:
+      description: QIIME 2 implementation of SMURF, reconstructing full-length marker genes from multiple amplified regions
+      homepage: https://github.com/jwdebelius/q2-sidle
+      licence:
+        - BSD-3-Clause
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information, e.g. [ id:'test' ]
+    - kmers:
+        type: file
+        description: Regional database k-mers artifact
+    - seq:
+        type: file
+        description: QIIME2 representative sequences artifact
+output:
+  aligned_map:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information, e.g. [ id:'test' ]
+      - "*rep-seqs_align-map.qza":
+          type: file
+          description: Alignment map artifact
+          pattern: "*rep-seqs_align-map.qza"
+  versions_sidle_align:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

@@ -1,0 +1,47 @@
+name: qiime2_diversity_alpha
+description: Tests alpha diversity between metadata groups with QIIME2
+keywords:
+  - qiime2
+  - alpha diversity
+  - statistics
+tools:
+  - qiime2:
+      description: Microbiome multi-omics data science platform
+      homepage: https://qiime2.org
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:qiime2
+input:
+  - - metadata:
+        type: file
+        description: Sample metadata table (TSV)
+    - core:
+        type: file
+        description: Alpha diversity vector artifact
+output:
+  alpha:
+    - alpha_diversity/*:
+        type: file
+        description: Exported alpha diversity group significance
+        pattern: alpha_diversity/*
+  qzv:
+    - "*.qzv":
+        type: file
+        description: QIIME2 visualisation
+        pattern: "*.qzv"
+  versions_qiime2_diversity_alpha:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

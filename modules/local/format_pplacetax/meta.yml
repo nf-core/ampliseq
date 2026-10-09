@@ -1,0 +1,48 @@
+name: format_pplacetax
+description: Formats phylogenetic placement taxonomy into a table
+keywords:
+  - phylogenetic placement
+  - taxonomy
+  - format
+tools:
+  - dada2:
+      description: Infers exact amplicon sequence variants (ASVs) from high-throughput amplicon sequencing data
+      homepage: https://bioconductor.org/packages/dada2
+      documentation: https://benjjneb.github.io/dada2/
+      licence:
+        - LGPL-2
+      identifier: biotools:dada2
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information, e.g. [ id:'test' ]
+    - tax:
+        type: file
+        description: Taxonomy assignments from gappa (TSV)
+output:
+  unique:
+    - "*.per_query_unique.tsv":
+        type: file
+        description: One taxonomy per query (TSV)
+        pattern: "*.per_query_unique.tsv"
+  tsv:
+    - "*.taxonomy.tsv":
+        type: file
+        description: Taxonomy table (TSV)
+        pattern: "*.taxonomy.tsv"
+  versions_format_pplacetax:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

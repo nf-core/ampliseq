@@ -14,22 +14,41 @@
 
 ## Pipeline tools
 
-### Core tools
-
-- [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
-
-> Andrews, S. (2010). FastQC: A Quality Control Tool for High Throughput Sequence Data [Online].
+### Preprocessing & QC
 
 - [Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200/479)
 
   > Marcel, M. Cutadapt removes adapter sequences from high-throughput sequencing reads. EMBnet. journal 17.1 (2011): pp-10. doi: 10.14806/ej.17.1.200.
 
+#### Short read tools
+
+- [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
+
+  > Andrews, S. (2010). FastQC: A Quality Control Tool for High Throughput Sequence Data [Online].
+
+- [DADA2](https://pubmed.ncbi.nlm.nih.gov/27214047/)
+
+  > Callahan BJ, McMurdie PJ, Rosen MJ, Han AW, Johnson AJ, Holmes SP. DADA2: High-resolution sample inference from Illumina amplicon data. Nat Methods. 2016 Jul;13(7):581-3. doi: 10.1038/nmeth.3869. Epub 2016 May 23. PMID: 27214047; PMCID: PMC4927377.
+
+#### Long read tools
+
+- [Porechop_ABI](https://pubmed.ncbi.nlm.nih.gov/36698762/)
+
+  > Bonenfant Q, Noé L, Touzet H. Porechop_ABI: discovering unknown adapters in Oxford Nanopore Technology sequencing reads for downstream trimming. Bioinform Adv. 2022 Nov 21;3(1):vbac085. doi: 10.1093/bioadv/vbac085. PMID: 36698762; PMCID: PMC9869717.
+
+- [Chopper](https://pubmed.ncbi.nlm.nih.gov/37171891/)
+
+  > De Coster W, Rademakers R. NanoPack2: population-scale evaluation of long-read sequencing data. Bioinformatics. 2023 May 4;39(5):btad311. doi: 10.1093/bioinformatics/btad311. PMID: 37171891; PMCID: PMC10196664.
+
+- [Savont](https://doi.org/10.64898/2026.05.26.727271)
+
+  > Jim Shaw, Marie Riisgaard-Jensen, Kasper Skytte Andersen, Rasmus Kirkegaard, Morten Kam Dahl Dueholm, Heng Li. Sensitive long-read amplicon sequence variant recovery with savont. bioRxiv 2026.05.26.727271; doi: https://doi.org/10.64898/2026.05.26.727271
+
+### Default broad classification
+
 - [Barrnap](https://github.com/tseemann/barrnap)
 
   > Seemann T. barrnap 0.9 : rapid ribosomal RNA prediction.
-
-- [DADA2](https://pubmed.ncbi.nlm.nih.gov/27214047/)
-  > Callahan BJ, McMurdie PJ, Rosen MJ, Han AW, Johnson AJ, Holmes SP. DADA2: High-resolution sample inference from Illumina amplicon data. Nat Methods. 2016 Jul;13(7):581-3. doi: 10.1038/nmeth.3869. Epub 2016 May 23. PMID: 27214047; PMCID: PMC4927377.
 
 ### Taxonomic classification and databases
 
@@ -65,6 +84,10 @@
 
   > Kõljalg U, Larsson KH, Abarenkov K, Nilsson RH, Alexander IJ, Eberhardt U, Erland S, Høiland K, Kjøller R, Larsson E, Pennanen T, Sen R, Taylor AF, Tedersoo L, Vrålstad T, Ursing BM. UNITE: a database providing web-based methods for the molecular identification of ectomycorrhizal fungi. New Phytol. 2005 Jun;166(3):1063-8. doi: 10.1111/j.1469-8137.2005.01376.x. PMID: 15869663.
 
+- [GloSED - Global standardised soil eukaryome dataset](https://www.nature.com/articles/s41597-026-07315-y)
+
+  > Mikryukov V, Dulya O, Abarenkov K, Anslan S, Hagh-Doust N, Prins V, Panksep K, Põlme S, Ibrahim KS, Bahram M, Adamson K, Agan A, Ahmed T, Alatalo JM, Albornoz FE, Al-Hatmi AM, Alkahtani S, Alvarez-Manjarrez J, Ankuda J, Antonelli A, Ariyan M, Armolaitis K, Aslani F, Barrio IC, Bauters M, Biersma EM, Bitenieks K, Bonito G, Brearley FQ, Bråthen KA, Buegger F, Butterbach-Bahl K, Bálint M, Cameron EK, Canini F, Casique-Valdés R, Corrales A, Davydov EA, De Crop E, De Kesel A, Djeugap JF, Drenkhan R, Duarte Ritter C, Dudov SV, Espenberg M, Fanuel O, Fedosov VE, Florence L, Furneaux BR, Furtado ANM, Färkkilä S, Gamova NS, Garibay-Orijel R, Geml J, Ghosh S, Godoy R, Gohar D, Gryzenhout M, Hasan AH, Hashem AH, Heilmann-Clausen J, Henkel TW, Hiiesalu I, Hiiesalu I, Hosseyni Moghaddam MS, Hyde KD, Inostroza KK, Kariman K, Karimullina E, Kepfer-Rojas S, Khalid AN, Klavina D, Kohout P, Korotkov YN, Kupagme JY, Kurina O, Lamit LJ, Lateef AA, Ledoux NA, Lim YW, Maciá-Vicente JG, Makovskis K, Martínez S, Marín C, Meidl P, Mortimer PE, Mundra S, Naluyange V, Netherway T, Newsham KK, Nouhra E, Nyamukondiwa C, Nteziryayo V, Ochieno DMW, Oja J, Onipchenko VG, Otsing E, Owaid MN, Piepenbring M, Pochekutova P, Pombo MM, Pritsch K, Puusepp R, Pärn J, Põldmaa K, Rahimlou S, Rinaldi AC, Rojas O, Roslin T, Runnel K, Rähn E, Saba M, Saitta A, Salih TS, Sarapuu J, Serrano E, Serrano O, Sharmah D, Sharp C, Skalska-Tuomi MW, Tchan KI, Truong C, van der Merwe H, Vanié-Léabo LLP, Vasco-Palacios AM, Verbeken A, Vlk L, Wijayawardene NN, Wood JL, Yasanthika WAE, Yorou NS, Zahn G, Zettur I, Zucconi L, Kõljalg U, Tedersoo L. Global dataset of soil eukaryotic communities created with a uniform protocol and long read sequencing. Sci Data. 2026 May 5. doi: 10.1038/s41597-026-07315-y.
+
 - [MIDORI2 - a collection of reference databases](https://doi.org/10.1002/edn3.303/)
 
   > Leray, M., Knowlton, N., & Machida, R. J. (2022). MIDORI2: A collection of quality controlled, preformatted, and regularly updated reference databases for taxonomic assignment of eukaryotic mitochondrial sequences. Environmental DNA, 4, 894– 907. doi: https://doi.org/10.1002/edn3.303.
@@ -72,10 +95,6 @@
 - [COIDB - CO1 Taxonomy Database](https://doi.org/10.17044/scilifelab.20514192.v2)
 
   > Sundh J, Manoharan L, Iwaszkiewicz-Eggebrecht E, Miraldo A, Andersson A, Ronquist F. COI reference sequences from BOLD DB. doi: https://doi.org/10.17044/scilifelab.20514192.v2.
-
-- [PhytoRef plastid 16S rRNA database for photosynthetic eukaryotes](https://pubmed.ncbi.nlm.nih.gov/25740460/)
-
-  > Decelle J, Romac S, Stern RF, Bendif el M, Zingone A, Audic S, Guiry MD, Guillou L, Tessier D, Le Gall F, Gourvil P, Dos Santos AL, Probert I, Vaulot D, de Vargas C, Christen R. PhytoREF: a reference database of the plastidial 16S rRNA gene of photosynthetic eukaryotes with curated taxonomy. Mol Ecol Resour. 2015 Nov;15(6):1435-45. doi: 10.1111/1755-0998.12401. Epub 2015 Apr 6. PMID: 25740460.
 
 - [Zehr lab nifH database](http://doi.org/10.5281/zenodo.7996213)
 
@@ -208,6 +227,10 @@
 - [MultiQC](https://pubmed.ncbi.nlm.nih.gov/27312411/)
 
 > Ewels P, Magnusson M, Lundin S, Käller M. MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics. 2016 Oct 1;32(19):3047-8. doi: 10.1093/bioinformatics/btw354. Epub 2016 Jun 16. PubMed PMID: 27312411; PubMed Central PMCID: PMC5039924.
+
+- [DuckDB](https://doi.org/10.1145/3299869.3320212)
+
+  > Raasveldt M, Mühleisen H. DuckDB: an Embeddable Analytical Database. Proceedings of the 2019 International Conference on Management of Data (SIGMOD '19). 2019 June; 1981-1984. doi: 10.1145/3299869.3320212
 
 ## Data
 

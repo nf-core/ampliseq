@@ -20,10 +20,11 @@
                 "BARRNAPSUMMARY": {
                     "python": "Python 3.9.1"
                 },
-                "COMBINE_TABLE_DADA2": {
-                    "R": "4.0.3"
+                "BUILD_ASV_ANNOTATIONS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
                 },
-                "COMBINE_TABLE_QIIME2": {
+                "COMBINE_TABLE": {
                     "R": "4.0.3"
                 },
                 "CUTADAPT_BASIC": {
@@ -81,6 +82,9 @@
                     "R": "4.5.2",
                     "decontam": "1.30.0"
                 },
+                "DUCKDB_TABLE2PARQUET": {
+                    "duckdb": "1.5.5"
+                },
                 "FASTQC": {
                     "fastqc": "0.12.1"
                 },
@@ -108,10 +112,14 @@
                     "pandas": "1.1.5"
                 },
                 "FORMAT_TAXONOMY": {
-                    "sed": 4.7
+                    "bash": "5.2.37(1)-release",
+                    "sed": "4.10"
                 },
                 "FORMAT_TAXONOMY_QIIME": {
-                    "sed": 4.7
+                    "sed": "4.10"
+                },
+                "MERGE_STATS_DADA": {
+                    "R": "4.5.2"
                 },
                 "MERGE_STATS_DECONTAM": {
                     "R": "4.5.2"
@@ -123,9 +131,6 @@
                     "R": "4.5.2"
                 },
                 "MERGE_STATS_FILTERTAXA": {
-                    "R": "4.5.2"
-                },
-                "MERGE_STATS_STD": {
                     "R": "4.5.2"
                 },
                 "METADATA_ALL": {
@@ -227,13 +232,15 @@
                     "qiime2": "2026.4.0"
                 },
                 "RENAME_RAW_DATA_FILES": {
-                    "sed": 4.7
+                    "bash": "5.2.37(1)-release"
                 },
-                "SBDIEXPORT": {
-                    "R": "3.6.3"
+                "SUMMARY_TABLE_COUNTS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
                 },
-                "SBDIEXPORTREANNOTATE": {
-                    "R": "3.6.3"
+                "SUMMARY_TABLE_TAXONOMY": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
                 },
                 "TREESUMMARIZEDEXPERIMENT": {
                     "R": "4.3.2",
@@ -248,16 +255,10 @@
                     "vsearch": "2.31.0"
                 },
                 "Workflow": {
-                    "nf-core/ampliseq": "v2.18.0"
+                    "nf-core/ampliseq": "v3.0.0"
                 }
             },
             [
-                "SBDI",
-                "SBDI/annotation.tsv",
-                "SBDI/asv-table.tsv",
-                "SBDI/dna.tsv",
-                "SBDI/emof.tsv",
-                "SBDI/event.tsv",
                 "asv_length_filter",
                 "asv_length_filter/ASV_len_filt.tsv",
                 "asv_length_filter/ASV_len_orig.tsv",
@@ -275,7 +276,7 @@
                 "barrnap/stats.ssu.tsv",
                 "barrnap/summary.tsv",
                 "cutadapt",
-                "cutadapt/assignTaxonomy.cutadapt.log",
+                "cutadapt/assignTaxonomy_gtdb_R07-RS207.cutadapt.log",
                 "cutadapt/cutadapt_summary.tsv",
                 "cutadapt/sampleID_1.trimmed.cutadapt.log",
                 "cutadapt/sampleID_1a.trimmed.cutadapt.log",
@@ -312,8 +313,8 @@
                 "dada2/args/FW_preprocessed_plotQualityProfile.args.txt",
                 "dada2/args/RV_plotQualityProfile.args.txt",
                 "dada2/args/RV_preprocessed_plotQualityProfile.args.txt",
-                "dada2/args/addSpecies.args.txt",
-                "dada2/args/assignTaxonomy.args.txt",
+                "dada2/args/addSpecies_gtdb_R07-RS207.args.txt",
+                "dada2/args/assignTaxonomy.ASV_tax.gtdb_R07-RS207.args.txt",
                 "dada2/args/dada.args.txt",
                 "dada2/args/filterAndTrim.args.txt",
                 "dada2/args/learnErrors.args.txt",
@@ -342,7 +343,7 @@
                 "fastqc/sampleID_2a_2_fastqc.html",
                 "input",
                 "input/Metadata.tsv",
-                "input/Samplesheet_standardized.tsv",
+                "input/Samplesheet_v3.tsv",
                 "multiqc",
                 "multiqc/multiqc_data",
                 "multiqc/multiqc_data/cutadapt_filtered_reads_plot.txt",
@@ -1167,10 +1168,6 @@
                 "qiime2/barplot/level-6.jsonp",
                 "qiime2/barplot/level-7.csv",
                 "qiime2/barplot/level-7.jsonp",
-                "qiime2/barplot/level-8.csv",
-                "qiime2/barplot/level-8.jsonp",
-                "qiime2/barplot/level-9.csv",
-                "qiime2/barplot/level-9.jsonp",
                 "qiime2/barplot/q2templateassets",
                 "qiime2/barplot/q2templateassets/css",
                 "qiime2/barplot/q2templateassets/css/base-template.css",
@@ -1213,10 +1210,6 @@
                 "qiime2/barplot_average/barplot_treatment1/level-6.jsonp",
                 "qiime2/barplot_average/barplot_treatment1/level-7.csv",
                 "qiime2/barplot_average/barplot_treatment1/level-7.jsonp",
-                "qiime2/barplot_average/barplot_treatment1/level-8.csv",
-                "qiime2/barplot_average/barplot_treatment1/level-8.jsonp",
-                "qiime2/barplot_average/barplot_treatment1/level-9.csv",
-                "qiime2/barplot_average/barplot_treatment1/level-9.jsonp",
                 "qiime2/barplot_average/barplot_treatment1/q2templateassets",
                 "qiime2/barplot_average/barplot_treatment1/q2templateassets/css",
                 "qiime2/barplot_average/barplot_treatment1/q2templateassets/css/base-template.css",
@@ -2239,8 +2232,8 @@
                 "qiime2/rel_abundance_tables",
                 "qiime2/rel_abundance_tables/rel-table-2.tsv",
                 "qiime2/rel_abundance_tables/rel-table-ASV.tsv",
-                "qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-tax.tsv",
-                "qiime2/rel_abundance_tables/rel-table-ASV_with-QIIME2-tax.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-gtdb_R07-RS207-tax.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV_with-QIIME2-greengenes85-tax.tsv",
                 "qiime2/representative_sequences",
                 "qiime2/representative_sequences/descriptive_stats.tsv",
                 "qiime2/representative_sequences/filtered-sequences.qza",
@@ -2262,6 +2255,13 @@
                 "summary_report/stacked_barchart_of_reads.svg",
                 "summary_report/summary_report.html",
                 "summary_report/versions.yml",
+                "summary_tables",
+                "summary_tables/ampliseq.counts.parquet",
+                "summary_tables/ampliseq.counts.tsv.gz",
+                "summary_tables/ampliseq.taxonomy.DADA2.gtdb_R07-RS207.parquet",
+                "summary_tables/ampliseq.taxonomy.DADA2.gtdb_R07-RS207.tsv.gz",
+                "summary_tables/ampliseq.taxonomy.QIIME2.greengenes85.parquet",
+                "summary_tables/ampliseq.taxonomy.QIIME2.greengenes85.tsv.gz",
                 "treesummarizedexperiment",
                 "treesummarizedexperiment/dada2_TreeSummarizedExperiment.rds",
                 "treesummarizedexperiment/qiime2_TreeSummarizedExperiment.rds",
@@ -2288,21 +2288,19 @@
             "cutadapt_summary.tsv:md5,5d02749984a811479e7d534fda75163f",
             "ASV_seqs.fasta:md5,e3cdcd93bdce761152085a7c797763c3",
             "ASV_table.tsv:md5,d3f7d98b8750dfb3b486b32cc5d32414",
-            "ref_taxonomy.gtdb_R07-RS207.txt:md5,965c6b1f9097128572a5ec2b8e9cef06",
+            "ref_taxonomy.gtdb_R07-RS207.txt:md5,f7e717ddcb373b0496b9a49b0312b004",
             "DADA2_stats.tsv:md5,b61a945febb806ed63729bcaa8ae0575",
             "DADA2_table.tsv:md5,7ec2214a627e7492d31ac2672f82f94d",
+            439,
             "decontaminated.tsv:md5,3c94a1d7c56657fcbfaea344f0eae09e",
             "decontaminated_counts.tsv:md5,f519211d0ac2cb979b09d3803e8ca3fa",
             313,
             "decontaminated_log.tsv:md5,e4af6016bd48a5eda8f1aa9aad3ed712",
-            "Samplesheet_standardized.tsv:md5,40895dd2af868c8a55c6c690dbeb9000",
+            "Samplesheet_v3.tsv:md5,e03352e42a97a6078b30ec3fcec362a4",
             "Metadata.tsv:md5,060b56528bb566eed71f6dfdb52cc395",
             "multiqc_fastqc.txt:md5,7d23984b06e4251f17e1cfce7a04aaae",
             "multiqc_general_stats.txt:md5,885c19ff3e53d16bfe7937d6694268d7",
             "multiqc_cutadapt.txt:md5,3dce058d2d6c85a3cca7314ae19c5586",
-            "dna.tsv:md5,46bb52a05204ade2d571ac089f732012",
-            "emof.tsv:md5,52ff7d226c79b1f78d5f4895d748f915",
-            "event.tsv:md5,d275c5c0d7dbf7a5b2c61082fbce486d",
             "ASV_post_clustering_filtered.fna:md5,33486b16d07201703fd93904a5a8429c",
             "ASV_post_clustering_filtered.stats.tsv:md5,222f6a7cdbf2d4b3f745a49359a61c0d",
             "ASV_post_clustering_filtered.table.tsv:md5,349277d892297b57b1761c88825580de",
@@ -2310,10 +2308,10 @@
             "lvl2-treatment1::b.volcano_plot.tsv:md5,d2d76d7f8824e748559295224c96d10e",
             "ASV-treatment1::a.volcano_plot.tsv:md5,c999d1f72b221f6502b7b4a3d1112b32"
         ],
-        "timestamp": "2026-06-08T17:17:56.621828533",
+        "timestamp": "2026-09-25T12:17:51.638398329",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.3"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
         }
     }
 }

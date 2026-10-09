@@ -1,0 +1,44 @@
+name: barrnapsummary
+description: Summarises Barrnap predictions per ASV, reporting the lowest e-value per kingdom
+keywords:
+  - rrna
+  - barrnap
+  - summary
+tools:
+  - python:
+      description: The Python programming language
+      homepage: https://www.python.org/
+      licence:
+        - PSF-2.0
+      identifier: ""
+input:
+  - predictions:
+      type: file
+      description: Barrnap GFF3 files, one per kingdom
+output:
+  summary:
+    - summary.tsv:
+        type: file
+        description: E-values per ASV and kingdom (TSV)
+        pattern: summary.tsv
+  warning:
+    - "*warning.txt":
+        type: file
+        description: Warnings, e.g. when no rRNA was predicted
+        pattern: "*warning.txt"
+  versions_barrnapsummary:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@jtangrot"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

@@ -37,14 +37,24 @@ shtax.loc[:, 8] = shtax.loc[:, 8].str.split("_", 1).str[1]
 shtax.loc[:, 9] = ""
 
 # Read taxonomy table
-# Determine number of taxonomy levels from header
-# ASV_ID  Domain  Kingdom Phylum  Class   Order   Family  Genus   confidence      sequence
+# Determine taxonomy rank columns from header -- everything except ASV_ID, sequence,
+# the aggregate "confidence" column, and the per-rank "<rank>_confidence" columns,
+# none of which are taxonomy ranks
+# ASV_ID  Domain  Kingdom Phylum  Class   Order   Family  Genus   confidence  [rank_confidence columns]  sequence
 taxtable = pd.read_csv(sys.argv[3], sep="\t", header=0)
-num_ranks = len(taxtable.columns) - 3
-# Add SH slot to table:
-# ASV_ID  Domain  Kingdom Phylum  Class   Order   Family  Genus  SH confidence      sequence
-taxtable.insert(num_ranks + 1, "SH", "", allow_duplicates=False)
-tax_entries = list(taxtable.columns)[1 : num_ranks + 3]
+rank_cols = [
+    c
+    for c in taxtable.columns
+    if c not in ("ASV_ID", "sequence", "confidence") and not c.endswith("_confidence")
+]
+num_ranks = len(rank_cols)
+# Add SH slot to table, right after the last rank column:
+# ASV_ID  Domain  Kingdom Phylum  Class   Order   Family  Genus  SH confidence  [rank_confidence columns]  sequence
+sh_pos = taxtable.columns.get_loc(rank_cols[-1]) + 1
+taxtable.insert(sh_pos, "SH", "", allow_duplicates=False)
+tax_entries = rank_cols + ["SH", "confidence"]
+# The per-rank bootstrap values belong to the replaced DADA2 ranks, so they are cleared for updated ASVs
+rank_conf_cols = [c for c in taxtable.columns if c.endswith("_confidence")]
 
 # Go through vsearch matches and update taxonomy for those entries
 fh = open(sys.argv[4], mode="r")
@@ -87,6 +97,7 @@ for row in fh:
         if SH != "":
             tax_list = tax[1 : num_ranks + 1] + [SH] + [conf]
             taxtable.loc[taxtable["ASV_ID"] == prev_ASV, tax_entries] = tax_list
+            taxtable.loc[taxtable["ASV_ID"] == prev_ASV, rank_conf_cols] = float("nan")
         prev_ASV = ASV
         maxid = -1
         maxlen = -1
@@ -133,6 +144,7 @@ if match != "*":  # Take care of last row/ASV in match file
     if SH != "":
         tax_list = tax[1 : num_ranks + 1] + [SH] + [conf]
         taxtable.loc[taxtable["ASV_ID"] == prev_ASV, tax_entries] = tax_list
+        taxtable.loc[taxtable["ASV_ID"] == prev_ASV, rank_conf_cols] = float("nan")
 
 
 # Write new taxtable, with SH and new taxonomy added if found

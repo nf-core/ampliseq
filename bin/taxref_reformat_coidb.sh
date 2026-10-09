@@ -2,7 +2,7 @@
 
 for f in $(ls);
 do
-    c=$(gunzip -c $f | head -1 | wc -m | egrep -o "[0-9]+")
+    c=$(gunzip -c $f | head -1 | wc -m | grep -E -o "[0-9]+")
     echo -e "$f\t$c" >> tmp
 done
 

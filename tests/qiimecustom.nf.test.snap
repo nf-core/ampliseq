@@ -8,6 +8,13 @@
                 "BARRNAPSUMMARY": {
                     "python": "Python 3.9.1"
                 },
+                "BUILD_ASV_ANNOTATIONS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
+                },
+                "COMPARE_SEQUENCES": {
+                    "R": "4.2.1"
+                },
                 "CUTADAPT_BASIC": {
                     "cutadapt": 5.2
                 },
@@ -52,10 +59,13 @@
                     "R": "4.5.2",
                     "decontam": "1.30.0"
                 },
+                "DUCKDB_TABLE2PARQUET": {
+                    "duckdb": "1.5.5"
+                },
                 "FASTQC": {
                     "fastqc": "0.12.1"
                 },
-                "MERGE_STATS_STD": {
+                "MERGE_STATS_DADA": {
                     "R": "4.5.2"
                 },
                 "PHYLOSEQ": {
@@ -82,7 +92,15 @@
                     "qiime2": "2026.4.0"
                 },
                 "RENAME_RAW_DATA_FILES": {
-                    "sed": 4.7
+                    "bash": "5.2.37(1)-release"
+                },
+                "SUMMARY_TABLE_COUNTS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
+                },
+                "SUMMARY_TABLE_TAXONOMY": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
                 },
                 "TREESUMMARIZEDEXPERIMENT": {
                     "R": "4.3.2",
@@ -92,8 +110,11 @@
                     "python": "3.9.1",
                     "pandas": "1.1.5"
                 },
+                "VSEARCH_USEARCHGLOBAL_BM": {
+                    "vsearch": "2.31.0"
+                },
                 "Workflow": {
-                    "nf-core/ampliseq": "v2.18.0"
+                    "nf-core/ampliseq": "v3.0.0"
                 }
             },
             [
@@ -103,6 +124,24 @@
                 "barrnap/rrna.euk.gff",
                 "barrnap/rrna.mito.gff",
                 "barrnap/summary.tsv",
+                "comparison",
+                "comparison/md5sum_version.txt",
+                "comparison/nucleotide-differences.log",
+                "comparison/nucleotide-differences.tsv",
+                "comparison/per-sample",
+                "comparison/per-sample/sampleID_1_nucleotide-differences_per-sample.tsv",
+                "comparison/per-sample/sampleID_1_nucleotide-distance_barplot.png",
+                "comparison/per-sample/sampleID_1_nucleotide-distance_barplot.svg",
+                "comparison/per-sample/sampleID_1a_nucleotide-differences_per-sample.tsv",
+                "comparison/per-sample/sampleID_1a_nucleotide-distance_barplot.png",
+                "comparison/per-sample/sampleID_1a_nucleotide-distance_barplot.svg",
+                "comparison/per-sample/sampleID_2_nucleotide-differences_per-sample.tsv",
+                "comparison/per-sample/sampleID_2_nucleotide-distance_barplot.png",
+                "comparison/per-sample/sampleID_2_nucleotide-distance_barplot.svg",
+                "comparison/per-sample/sampleID_2a_nucleotide-differences_per-sample.tsv",
+                "comparison/per-sample/sampleID_2a_nucleotide-distance_barplot.png",
+                "comparison/per-sample/sampleID_2a_nucleotide-distance_barplot.svg",
+                "comparison/vsearch_usearchglobal.tsv",
                 "cutadapt",
                 "cutadapt/cutadapt_summary.tsv",
                 "cutadapt/sampleID_1.trimmed.cutadapt.log",
@@ -161,7 +200,7 @@
                 "fastqc/sampleID_2a_1_fastqc.html",
                 "fastqc/sampleID_2a_2_fastqc.html",
                 "input",
-                "input/Samplesheet.tsv",
+                "input/Samplesheet_v3.tsv",
                 "multiqc",
                 "multiqc/multiqc_data",
                 "multiqc/multiqc_data/cutadapt_filtered_reads_plot.txt",
@@ -262,6 +301,11 @@
                 "summary_report/stacked_barchart_of_reads.svg",
                 "summary_report/summary_report.html",
                 "summary_report/versions.yml",
+                "summary_tables",
+                "summary_tables/ampliseq.counts.parquet",
+                "summary_tables/ampliseq.counts.tsv.gz",
+                "summary_tables/ampliseq.taxonomy.QIIME2.user.parquet",
+                "summary_tables/ampliseq.taxonomy.QIIME2.user.tsv.gz",
                 "treesummarizedexperiment",
                 "treesummarizedexperiment/qiime2_TreeSummarizedExperiment.rds"
             ],
@@ -275,15 +319,16 @@
             "ASV_table.tsv:md5,d3f7d98b8750dfb3b486b32cc5d32414",
             "DADA2_stats.tsv:md5,b61a945febb806ed63729bcaa8ae0575",
             "DADA2_table.tsv:md5,7ec2214a627e7492d31ac2672f82f94d",
-            "Samplesheet.tsv:md5,51ff46f4b431730e41b6950ae3b20e35",
+            "Samplesheet_v3.tsv:md5,e03352e42a97a6078b30ec3fcec362a4",
             "multiqc_fastqc.txt:md5,7d23984b06e4251f17e1cfce7a04aaae",
             "multiqc_general_stats.txt:md5,885c19ff3e53d16bfe7937d6694268d7",
-            "multiqc_cutadapt.txt:md5,3dce058d2d6c85a3cca7314ae19c5586"
+            "multiqc_cutadapt.txt:md5,3dce058d2d6c85a3cca7314ae19c5586",
+            "nucleotide-differences.tsv:md5,160f7e62670478d40de6c74a7eae405d"
         ],
+        "timestamp": "2026-06-24T15:07:50.576330079",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.4"
-        },
-        "timestamp": "2026-04-21T09:30:09.367229091"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.3"
+        }
     }
 }

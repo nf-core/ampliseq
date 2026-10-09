@@ -1,0 +1,33 @@
+process QIIME2_INTREE {
+    tag "${meta.id}:${meta.model}"
+    label 'process_low'
+    label 'process_cpu_single'
+
+    conda "${moduleDir}/environment.yml"
+    container "qiime2/qiime2:2026.4"
+
+    input:
+    tuple val(meta), path(tree)
+
+    output:
+    path("tree.qza")   , emit: qza
+    path "versions.yml", emit: versions_qiime2_intree, topic: versions
+
+    script:
+    """
+    export XDG_CONFIG_HOME="./xdgconfig"
+    export XDG_CACHE_HOME="./xqcache"
+    export MPLCONFIGDIR="./mplconfigdir"
+    export NUMBA_CACHE_DIR="./numbacache"
+
+    qiime tools import \\
+        --type 'Phylogeny[Rooted]' \\
+        --input-path $tree \\
+        --output-path tree.qza
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        qiime2: \$( qiime --version | sed '1!d;s/.* //' )
+    END_VERSIONS
+    """
+}

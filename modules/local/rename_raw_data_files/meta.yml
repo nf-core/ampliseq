@@ -1,0 +1,75 @@
+name: rename_raw_data_files
+description: Renames read files to the sample ID
+keywords:
+  - rename
+  - fastq
+  - samples
+tools:
+  - bash:
+      description: The GNU Bourne-Again SHell
+      homepage: https://www.gnu.org/software/bash/
+      licence:
+        - GPL-3.0-or-later
+      identifier: ""
+  - coreutils:
+      description: GNU core utilities
+      homepage: https://www.gnu.org/software/coreutils/
+      licence:
+        - GPL-3.0-or-later
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information, e.g. [ id:'test' ]
+    - reads:
+        type: file
+        description: Reads (FASTQ)
+output:
+  fastq:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information, e.g. [ id:'test' ]
+      - ${meta.id}{_1,_2,}.fastq.gz:
+          type: file
+          description: Renamed reads (FASTQ)
+          pattern: ${meta.id}{_1,_2,}.fastq.gz
+  versions_rename_raw_data_files:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"
+containers:
+  docker:
+    linux/arm64:
+      name: community.wave.seqera.io/library/bash_coreutils:1ee21000d35e67a8
+      build_id: bd-1ee21000d35e67a8_1
+      scan_id: sc-27b25fbe9b04fdbb_1
+    linux/amd64:
+      name: community.wave.seqera.io/library/bash_coreutils:25e9437236fbb54f
+      build_id: bd-25e9437236fbb54f_1
+      scan_id: sc-077809b383988bb7_1
+  singularity:
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/bash_coreutils:c15120f24e988fef
+      build_id: bd-c15120f24e988fef_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/ac/ac8d2a429a6d54f2642e14f2334a12493b42ae7769071d3da79030f4b5e3fd66/data
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/bash_coreutils:a6fddae97714a610
+      build_id: bd-a6fddae97714a610_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/19/192943fc3892b7bf5a1fd30bb395abb382e7433da19e1e2a36d9b2641b7ae986/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/rename_raw_data_files/.conda-lock/linux_amd64-bd-25e9437236fbb54f_1.txt
+    linux/arm64:
+      lock_file: modules/local/rename_raw_data_files/.conda-lock/linux_arm64-bd-1ee21000d35e67a8_1.txt

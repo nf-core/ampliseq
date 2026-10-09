@@ -1,0 +1,43 @@
+name: merge_stats
+description: Merges two per-sample statistics tables
+keywords:
+  - statistics
+  - merge
+  - summary
+tools:
+  - dada2:
+      description: Infers exact amplicon sequence variants (ASVs) from high-throughput amplicon sequencing data
+      homepage: https://bioconductor.org/packages/dada2
+      documentation: https://benjjneb.github.io/dada2/
+      licence:
+        - LGPL-2
+      identifier: biotools:dada2
+input:
+  - file1.tsv:
+      type: file
+      description: First statistics table (TSV)
+  - file2.tsv:
+      type: file
+      description: Second statistics table (TSV)
+output:
+  tsv:
+    - overall_summary.tsv:
+        type: file
+        description: Merged statistics table (TSV)
+        pattern: overall_summary.tsv
+  versions_merge_stats:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

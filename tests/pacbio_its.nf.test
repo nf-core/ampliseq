@@ -35,17 +35,17 @@ nextflow_pipeline {
                     path("$outputDir/dada2/ASV_table.tsv"),
                     path("$outputDir/dada2/DADA2_stats.tsv"),
                     path("$outputDir/dada2/DADA2_table.tsv"),
-                    path("$outputDir/input/Samplesheet_pacbio_ITS.tsv"),
+                    path("$outputDir/input/Samplesheet_pacbio_ITS_v3.tsv"),
                     path("$outputDir/input/Metadata_pacbio_ITS.tsv"),
                     path("$outputDir/itsx/ASV_ITS_seqs.full.fasta"),
                     path("$outputDir/itsx/ITSxRust.args.txt"),
                     path("$outputDir/multiqc/multiqc_data/multiqc_fastqc.txt"),
                     path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt"),
-                    path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt"),
-                    path("$outputDir/SBDI/dna.tsv"),
-                    path("$outputDir/SBDI/emof.tsv"),
-                    path("$outputDir/SBDI/event.tsv")
-                ).match() }
+                    path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt")
+                ).match() },
+                // --addsh with two listed databases: SH-assigned results for both actually differ,
+                // not both accidentally resolving to the same database
+                { assert path("$outputDir/assignsh/ASV_tax_species_SH.unite-fungi_8_2.tsv").text != path("$outputDir/assignsh/ASV_tax_species_SH.unite-alleuk_8_2.tsv").text }
             )
         }
     }

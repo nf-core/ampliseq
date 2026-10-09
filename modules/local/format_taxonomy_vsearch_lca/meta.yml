@@ -1,0 +1,45 @@
+name: format_taxonomy_vsearch_lca
+description: Formats a reference database for VSEARCH LCA classification
+keywords:
+  - vsearch
+  - lca
+  - taxonomy
+  - database
+tools:
+  - bash:
+      description: The GNU Bourne-Again SHell
+      homepage: https://www.gnu.org/software/bash/
+      licence:
+        - GPL-3.0-or-later
+      identifier: ""
+input:
+  - database:
+      type: file
+      description: Reference database files
+output:
+  db:
+    - sintaxdb.fa.gz:
+        type: file
+        description: Reference sequences with SINTAX-style taxonomy (FASTA)
+        pattern: sintaxdb.fa.gz
+  ref_tax_info:
+    - ref_taxonomy_vsearch_lca.txt:
+        type: file
+        description: Reference database provenance
+        pattern: ref_taxonomy_vsearch_lca.txt
+  versions_format_taxonomy_vsearch_lca:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@pieterprovoost"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

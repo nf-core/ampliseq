@@ -1,0 +1,57 @@
+name: qiime2_tablefiltertaxa
+description: Filters a QIIME2 feature table by taxonomy, frequency and prevalence
+keywords:
+  - qiime2
+  - filter
+  - taxonomy
+  - feature table
+tools:
+  - qiime2:
+      description: Microbiome multi-omics data science platform
+      homepage: https://qiime2.org
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:qiime2
+input:
+  - table:
+      type: file
+      description: QIIME2 feature table artifact
+  - taxonomy:
+      type: file
+      description: QIIME2 taxonomy artifact
+  - min_frequency:
+      type: integer
+      description: Minimum total frequency of a feature
+  - min_samples:
+      type: integer
+      description: Minimum number of samples a feature occurs in
+  - exclude_taxa:
+      type: string
+      description: Comma-separated taxa to exclude
+output:
+  qza:
+    - filtered-table.qza:
+        type: file
+        description: QIIME2 feature table artifact
+        pattern: filtered-table.qza
+  tsv:
+    - filtered-table.tsv:
+        type: file
+        description: Filtered feature table (TSV)
+        pattern: filtered-table.tsv
+  versions_qiime2_tablefiltertaxa:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

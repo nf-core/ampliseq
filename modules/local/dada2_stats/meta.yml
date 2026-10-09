@@ -1,0 +1,55 @@
+name: dada2_stats
+description: Counts reads through the DADA2 steps
+keywords:
+  - dada2
+  - statistics
+  - read counts
+tools:
+  - dada2:
+      description: Infers exact amplicon sequence variants (ASVs) from high-throughput amplicon sequencing data
+      homepage: https://bioconductor.org/packages/dada2
+      documentation: https://benjjneb.github.io/dada2/
+      licence:
+        - LGPL-2
+      identifier: biotools:dada2
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information, e.g. [ id:'test' ]
+    - filter_and_trim_files/*:
+        type: file
+        description: Filtering statistics (TSV)
+    - denoised:
+        type: file
+        description: DADA2 denoising results (RDS)
+    - mergers:
+        type: file
+        description: Merged read pairs (RDS)
+    - seqtab_nochim:
+        type: file
+        description: Chimera-free DADA2 sequence table (RDS)
+output:
+  stats:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information, e.g. [ id:'test' ]
+      - "*.stats.tsv":
+          type: file
+          description: Read counts per sample and step (TSV)
+          pattern: "*.stats.tsv"
+  versions_dada2_stats:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

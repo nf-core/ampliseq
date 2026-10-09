@@ -1,0 +1,77 @@
+name: qiime2_ancombc2_tax
+description: Differential abundance testing of taxa at one rank with QIIME2 ANCOM-BC2
+keywords:
+  - qiime2
+  - ancombc2
+  - differential abundance
+  - taxonomy
+tools:
+  - qiime2:
+      description: Microbiome multi-omics data science platform
+      homepage: https://qiime2.org
+      licence:
+        - BSD-3-Clause
+      identifier: biotools:qiime2
+input:
+  - - metadata:
+        type: file
+        description: Sample metadata table (TSV)
+    - table:
+        type: file
+        description: QIIME2 feature table artifact
+    - taxonomy:
+        type: file
+        description: QIIME2 taxonomy artifact
+    - taxlevel:
+        type: integer
+        description: Taxonomic level to collapse to
+    - formula_in:
+        type: string
+        description: ANCOM-BC2 formula
+output:
+  plot:
+    - ${outfolder}/*.svg:
+        type: file
+        description: Differential abundance plots (SVG)
+        pattern: ${outfolder}/*.svg
+  table:
+    - ${outfolder}/*.tsv:
+        type: file
+        description: Differential abundance tables (TSV)
+        pattern: ${outfolder}/*.tsv
+  barplot_qzv:
+    - ${outfolder}/*.qzv:
+        type: file
+        description: Differential abundance barplots (QZV)
+        pattern: ${outfolder}/*.qzv
+  differentials:
+    - ${outfolder}/differentials/*:
+        type: file
+        description: Exported differentials
+        pattern: ${outfolder}/differentials/*
+  qza:
+    - "*.qza":
+        type: file
+        description: QIIME2 artifact
+        pattern: "*.qza"
+  qzv:
+    - "*.qzv":
+        type: file
+        description: QIIME2 visualisation
+        pattern: "*.qzv"
+  versions_qiime2_ancombc2_tax:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@d4straub"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

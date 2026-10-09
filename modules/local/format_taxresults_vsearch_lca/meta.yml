@@ -1,0 +1,52 @@
+name: format_taxresults_vsearch_lca
+description: Converts VSEARCH LCA results into a taxonomy table
+keywords:
+  - vsearch
+  - lca
+  - taxonomy
+  - format
+tools:
+  - python:
+      description: The Python programming language
+      homepage: https://www.python.org/
+      licence:
+        - PSF-2.0
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information, e.g. [ id:'test' ]
+    - lcaout:
+        type: file
+        description: VSEARCH LCA output
+  - fastafile:
+      type: file
+      description: ASV sequences in FASTA format
+  - outfile:
+      type: string
+      description: Output file name
+  - taxlevels_input:
+      type: string
+      description: Comma-separated taxonomic rank names, empty to use the database's own
+output:
+  tsv:
+    - outfile:
+        type: file
+        description: Taxonomy table (TSV)
+        pattern: outfile
+  versions_format_taxresults_vsearch_lca:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: versions.yml
+authors:
+  - "@pieterprovoost"
+maintainers:
+  - "@d4straub"
+  - "@erikrikarddaniel"

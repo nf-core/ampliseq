@@ -8,6 +8,9 @@
                 "BARRNAPSUMMARY": {
                     "python": "Python 3.9.1"
                 },
+                "COMBINE_TABLE": {
+                    "R": "4.0.3"
+                },
                 "CUTADAPT_BASIC": {
                     "cutadapt": 5.2
                 },
@@ -57,6 +60,9 @@
                     "R": "4.5.2",
                     "dada2": "1.38.0"
                 },
+                "DUCKDB_TABLE2PARQUET": {
+                    "duckdb": "1.5.5"
+                },
                 "FILTER_STATS": {
                     "python": "3.9.1",
                     "pandas": "1.1.5"
@@ -68,10 +74,10 @@
                     "kraken2": "2.1.6",
                     "pigz": 2.8
                 },
-                "MERGE_STATS_FILTERTAXA": {
+                "MERGE_STATS_DADA": {
                     "R": "4.5.2"
                 },
-                "MERGE_STATS_STD": {
+                "MERGE_STATS_FILTERTAXA": {
                     "R": "4.5.2"
                 },
                 "PHYLOSEQ": {
@@ -109,7 +115,11 @@
                     "qiime2": "2026.4.0"
                 },
                 "RENAME_RAW_DATA_FILES": {
-                    "sed": 4.7
+                    "bash": "5.2.37(1)-release"
+                },
+                "SUMMARY_TABLE_COUNTS": {
+                    "R": "4.3.1",
+                    "r-dplyr": "1.1.4"
                 },
                 "TREESUMMARIZEDEXPERIMENT": {
                     "R": "4.3.2",
@@ -123,7 +133,7 @@
                     "untar": 1.34
                 },
                 "Workflow": {
-                    "nf-core/ampliseq": "v2.18.0"
+                    "nf-core/ampliseq": "v3.0.0"
                 }
             },
             [
@@ -177,7 +187,7 @@
                 "dada2/log/1.dada.log",
                 "dada2/log/1.err.log",
                 "input",
-                "input/Samplesheet_double_primer.tsv",
+                "input/Samplesheet_double_primer_v3.tsv",
                 "kraken2",
                 "kraken2/ASV_tax.greengenes.kraken2.classifiedreads.txt",
                 "kraken2/ASV_tax.greengenes.kraken2.complete.tsv",
@@ -284,6 +294,7 @@
                 "qiime2/rel_abundance_tables/rel-table-5.tsv",
                 "qiime2/rel_abundance_tables/rel-table-6.tsv",
                 "qiime2/rel_abundance_tables/rel-table-ASV.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV_with-KRAKEN2-greengenes-tax.tsv",
                 "qiime2/representative_sequences",
                 "qiime2/representative_sequences/descriptive_stats.tsv",
                 "qiime2/representative_sequences/filtered-sequences.qza",
@@ -295,6 +306,9 @@
                 "summary_report/stacked_barchart_of_reads.svg",
                 "summary_report/summary_report.html",
                 "summary_report/versions.yml",
+                "summary_tables",
+                "summary_tables/ampliseq.counts.parquet",
+                "summary_tables/ampliseq.counts.tsv.gz",
                 "treesummarizedexperiment",
                 "treesummarizedexperiment/kraken2_TreeSummarizedExperiment.rds"
             ],
@@ -308,17 +322,17 @@
             "ASV_table.tsv:md5,a78cfe6eb6e31fdea975af829f6b3939",
             "DADA2_stats.tsv:md5,bf62ec6262ed990544122dd968c601bc",
             "DADA2_table.tsv:md5,c332cae4d4936e236bab006fca741223",
-            "Samplesheet_double_primer.tsv:md5,cd63754fefa6e844a758efb893660f97",
+            "Samplesheet_double_primer_v3.tsv:md5,df20e3d873396a9d285fb179dbb5de4d",
             "ASV_tax.greengenes.kraken2.classifiedreads.txt:md5,ae8832342484b1aa9c980a14a28491bf",
             "ASV_tax.greengenes.kraken2.complete.tsv:md5,cbdd1db05ba897ac9972b106a8138956",
             "ASV_tax.greengenes.kraken2.tsv:md5,87f748440bf5b3ce1c73029c495ff6e9",
             "multiqc_general_stats.txt:md5,87461482b83b797b1c6b139a0cf3164e",
             "multiqc_cutadapt.txt:md5,05eca9a962170f318bd90938d331afec"
         ],
+        "timestamp": "2026-09-24T14:38:13.446364911",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.4"
-        },
-        "timestamp": "2026-04-21T10:41:12.85923209"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
     }
 }

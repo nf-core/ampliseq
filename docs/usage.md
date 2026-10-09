@@ -4,39 +4,15 @@
 
 > _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
 
-## Table of Contents
+## Introduction
 
-- [Running the pipeline](#running-the-pipeline)
-  - [Quick start](#quick-start)
-  - [Setting parameters in a file](#setting-parameters-in-a-file)
-  - [Input specifications](#input-specifications)
-    - [Sample sheet input](#sample-sheet-input)
-    - [ASV/OTU fasta input](#asvotu-fasta-input)
-    - [Direct FASTQ input](#direct-fastq-input)
-  - [Regions of variable length e.g. ITS](#regions-of-variable-length-eg-its)
-    - [ITS extraction tool](#its-extraction-tool)
-  - [Decontamination](#decontamination)
-  - [Taxonomic classification](#taxonomic-classification)
-  - [Multiple region analysis with Sidle](#multiple-region-analysis-with-sidle)
-  - [Metadata](#metadata)
-  - [Differential abundance analysis](#differential-abundance-analysis)
-  - [Phylogenetic placement](#phylogenetic-placement)
-    - [Single reference phylogenetic placement](#single-reference-phylogenetic-placement)
-    - [Multiple reference phylogenetic placement](#multiple-reference-phylogenetic-placement)
-    - [Placement in database-provided phylogenies](#placement-in-database-provided-phylogenies)
-  - [Updating the pipeline](#updating-the-pipeline)
-  - [Reproducibility](#reproducibility)
-- [Core Nextflow arguments](#core-nextflow-arguments)
-  - [`-profile`](#-profile)
-  - [`-resume`](#-resume)
-  - [`-c`](#-c)
-- [Custom configuration](#custom-configuration)
-  - [Resource requests](#resource-requests)
-  - [Custom Containers](#custom-containers)
-  - [Custom Tool Arguments](#custom-tool-arguments)
-  - [nf-core/configs](#nf-coreconfigs)
-- [Running in the background](#running-in-the-background)
-- [Nextflow memory requirements](#nextflow-memory-requirements)
+The nf-core/ampliseq pipeline is a Nextflow-based workflow for amplicon sequencing analysis, supporting denoising (via DADA2 for Illumina, IonTorrent, and PacBio HiFi data, or Savont for Oxford Nanopore data) and taxonomic assignment for 16S, ITS, 18S, and other amplicons. Defaults are optimized for Illumina paired-end 16S rRNA data.
+
+By default, the pipeline performs quality filtering, denoising, chimera removal, taxonomic classification, and generates diversity metrics, count tables, and interactive visualizations. This makes it ready to use out-of-the-box for standard microbial community analyses.
+
+For most users, the main sections of interest will be the [Input specifications](#input-specifications), [Sequencing data types](#sequencing-data-types), [Taxonomic classification](#taxonomic-classification), and [Metadata](#metadata), as these define how to tailor the pipeline to a project and interpret the results. Each parameter is listed in the [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/).
+
+Users can customize also compute resources to match their data or infrastructure. The pipeline also allows overriding default containers or adding custom parameters for specific tools, which is useful for keeping up with rapidly updated databases or specialized analyses.
 
 ## Running the pipeline
 
@@ -48,13 +24,13 @@ The typical command for running the pipeline is as follows:
 nextflow run nf-core/ampliseq \
     -profile singularity \
     --input "samplesheet.tsv" \
-    --FW_primer GTGYCAGCMGCCGCGGTAA \
-    --RV_primer GGACTACNVGGGTWTCTAAT \
+    --primer_fwd GTGYCAGCMGCCGCGGTAA \
+    --primer_rev GGACTACNVGGGTWTCTAAT \
     --metadata "data/Metadata.tsv" \
     --outdir "./results"
 ```
 
-In this example, `--input` is the [Sample sheet input](#sample-sheet-input), other options are [Direct FASTQ input](#direct-fastq-input) and [ASV/OTU fasta input](#asvotu-fasta-input). For more details on metadata, see [Metadata](#metadata). It is possible to not provide primer sequences (`--FW_primer` & `--RV_primer`) and skip primer trimming using `--skip_cutadapt`, but this is only for data that indeed does not contain any PCR primers in their sequences. Also, metadata (`--metadata`) isnt required, but aids downstream analysis.
+In this example, `--input` is the [Sample sheet input](#sample-sheet-input), the other option is [ASV/OTU fasta input](#asvotu-fasta-input). For more details on metadata, see [Metadata](#metadata). It is possible to not provide primer sequences (`--primer_fwd` & `--primer_rev`) and skip primer trimming using `--skip_cutadapt`, but this is only for data that indeed does not contain any PCR primers in their sequences. Also, metadata (`--metadata`) isnt required, but aids downstream analysis.
 
 This will launch the pipeline with the `singularity` configuration profile. See below [`-profile`](#profile) for more information about profiles.
 
@@ -71,7 +47,7 @@ work                # Directory containing the nextflow working files
 > For [Reproducibility](#reproducibility), specify the version to run using `-r` (= release, e.g. 2.17.0, please use the most recent release). See the [nf-core/ampliseq website documentation](https://nf-co.re/ampliseq/parameters) for more information about pipeline specific parameters.
 
 > [!NOTE]
-> If the data originates from multiple sequencing runs, the error profile of each of those sequencing runs needs to be considered separately. Using the `run` column in the sample sheet input or adding `--multiple_sequencing_runs` for direct FASTQ input will separate certain processes by the sequencing run. Please see the following example:
+> If the data originates from multiple sequencing runs, the error profile of each of those sequencing runs needs to be considered separately. Using the `run` column in the sample sheet input will separate certain processes by the sequencing run. Please see the following example:
 
 <p align="center">
     <img src="images/ampliseq_workflow_multiplesequencingruns.png" alt="nf-core/ampliseq workflow overview with --multiple_sequencing_runs" width="40%">
@@ -96,8 +72,8 @@ with:
 
 ```yaml title="params.yaml"
 input: "samplesheet.tsv"
-FW_primer: "GTGYCAGCMGCCGCGGTAA"
-RV_primer: "GGACTACNVGGGTWTCTAAT"
+primer_fwd: "GTGYCAGCMGCCGCGGTAA"
+primer_rev: "GGACTACNVGGGTWTCTAAT"
 metadata: "data/Metadata.tsv"
 outdir: "./results"
 <...>
@@ -107,12 +83,11 @@ You can also generate such `YAML`/`JSON` files via [nf-core/launch](https://nf-c
 
 ### Input specifications
 
-The input data can be passed to nf-core/ampliseq in three possible ways using the parameters `--input`, `--input_fasta`, or `--input_folder`.
-The three parameters and input types are mutually exclusive.
+The input data can be passed to nf-core/ampliseq in two possible ways using the parameters `--input` or `--input_fasta`.
+The two parameters and input types are mutually exclusive.
 
 - [Sample sheet input](#sample-sheet-input) using `--input`: Sample sheet tab-separated, comma-separated, or in YAML format
 - [ASV/OTU fasta input](#asvotu-fasta-input) using `--input_fasta`: Fasta file with sequences to be taxonomically classified
-- [Direct FASTQ input](#direct-fastq-input) using `--input_folder`: Folder containing zipped FastQ files.
 
 Optionally, a metadata sheet can be specified for downstream analysis.
 
@@ -144,28 +119,23 @@ For example, the tab-separated sample sheet may contain:
 | sample3 | ./S4x.fastq.gz            | ./S4y.fastq.gz            | B   | control | 1100          |
 | sample4 | ./a.fastq.gz              | ./b.fastq.gz              | B   | sample  | 11000         |
 
-Two header layouts are supported, a legacy and a standardized layout (the latter is described above):
-
-| Layout       | Required columns           | Optional columns                                  |
-| ------------ | -------------------------- | ------------------------------------------------- |
-| Legacy       | `sampleID`, `forwardReads` | `reverseReads`, `run`, `control`, `quant_reading` |
-| Standardized | `sample`, `fastq_1`        | `fastq_2`, `run`, `control`, `quant_reading`      |
+| Required columns    | Optional columns                             |
+| ------------------- | -------------------------------------------- |
+| `sample`, `fastq_1` | `fastq_2`, `run`, `control`, `quant_reading` |
 
 Please note the following requirements:
 
 - 2 to 6 columns/entries
 - File extensions `.tsv`,`.csv`,`.yml`,`.yaml` specify the file type, otherwise file type will be derived from content, if possible
-- Must contain either `sample` and `fastq_1` (standardized) OR `sampleID` and `forwardReads` (legacy)
-- May contain `fastq_2`/`reverseReads`, `run`, `control`, and `quant_reading`
+- Must contain either `sample` and `fastq_1`
+- May contain `fastq_2`, `run`, `control`, and `quant_reading`
 - Sample IDs must be unique
 - Sample IDs must start with a letter
 - Sample IDs can only contain letters, numbers or underscores
 - FastQ files must be compressed (`.fastq.gz`, `.fq.gz`)
 - Within one samplesheet, only one type of raw data should be specified (same amplicon & sequencing method)
 
-Examples for both layouts are provided within the pipeline code in folder `assets` as `samplesheet_legacy.tsv` and `samplesheet_standardized.tsv`.
-
-To avoid producing a sample sheet, [Direct FASTQ input](#direct-fastq-input) may be used instead.
+Examples for the layout is provided within the pipeline code in folder `assets` as `samplesheet.tsv`.
 
 #### ASV/OTU fasta input
 
@@ -177,59 +147,21 @@ The sequence header line may contain a description, that will be kept as part of
 --input_fasta 'path/to/amplicon_sequences.fasta'
 ```
 
-#### Direct FASTQ input
+### Sequencing data types
 
-An easy way to input sequencing data to the pipeline is to specify directly the path to the folder that contains your input FASTQ files. For example:
+The pipeline supports the analysis of multiple sequencing data types: Illumina (paired-end or single-end), IonTorrent, PacBio HiFi, and Oxford Nanopore (ONT).
 
-```bash
---input_folder 'path/to/data/'
-```
+By default, Illumina paired-end reads are preprocessed with [Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200/479) and Amplicon Sequence Variants (ASVs) are generated with [DADA2](https://pubmed.ncbi.nlm.nih.gov/27214047/). For single-end Illumina data, use `--sequencing_type illumina_se`.
 
-File names must follow a specific pattern, default is `/*_R{1,2}_001.fastq.gz`, but this can be adjusted with `--extension`.
+IonTorrent and PacBio HiFi data are analyzed similarly to Illumina data, but `--sequencing_type iontorrent` and `--sequencing_type pacbio` adjust Cutadapt and DADA2 settings accordingly.
 
-For example, the following files in folder `data` would be processed as `sample1` and `sample2`:
+ASVs for PacBio HiFi data can be generated with [Savont](https://doi.org/10.64898/2026.05.26.727271) instead of DADA2 when choosing `--asv_calling savont`.
 
-```console
-data
-    |-sample1_1_L001_R1_001.fastq.gz
-    |-sample1_1_L001_R2_001.fastq.gz
-    |-sample2_1_L001_R1_001.fastq.gz
-    |-sample2_1_L001_R2_001.fastq.gz
-```
-
-All sequencing data should originate from one sequencing run, because processing relies on run-specific error models that are unreliable when data from several sequencing runs are mixed. Sequencing data originating from multiple sequencing runs requires additionally the parameter `--multiple_sequencing_runs` and a specific folder structure, for example:
-
-```console
-data
-    |-runA
-    |   |-sample1_1_L001_R1_001.fastq.gz
-    |   |-sample1_1_L001_R2_001.fastq.gz
-    |   |-sample2_1_L001_R1_001.fastq.gz
-    |   |-sample2_1_L001_R2_001.fastq.gz
-    |
-    |-runB
-        |-sample3_1_L001_R1_001.fastq.gz
-        |-sample3_1_L001_R2_001.fastq.gz
-        |-sample4_1_L001_R1_001.fastq.gz
-        |-sample4_1_L001_R2_001.fastq.gz
-```
-
-Where `sample1` and `sample2` were sequenced in one sequencing run and `sample3` and `sample4` in another sequencing run.
-
-Please note the following additional requirements:
-
-- Files names must be unique
-- Valid file extensions: `.fastq.gz`, `.fq.gz` (files must be compressed)
-- The path must be enclosed in quotes
-- `--extension` must have at least one `*` wildcard character
-- When using the pipeline with paired end data, the `--extension` must use `{1,2}` (or similar) notation to specify read pairs
-- To run single-end data you must additionally specify `--single_end` and `--extension` may not include curly brackets `{}`
-- Sample identifiers are extracted from file names, i.e. the string before the first underscore `_`, these must be unique (also across sequencing runs) and only contain letters, numbers or underscores
-- If your data is scattered, produce a sample sheet
+To analyze Oxford Nanopore (ONT) R10.4 sequencing reads (preferably with SUP basecalling), use the `--sequencing_type nanopore` parameter. This enables a dedicated workflow, including preprocessing with [Porechop_ABI](https://pubmed.ncbi.nlm.nih.gov/36698762/), [Chopper](https://pubmed.ncbi.nlm.nih.gov/37171891/), and [Cutadapt](https://journal.embnet.org/index.php/embnetjournal/article/view/200/479), followed by ASV generation with [Savont](https://doi.org/10.64898/2026.05.26.727271).
 
 ### Regions of variable length (e.g. ITS)
 
-Special considerations should be made when pre-processing reads for regions of variable length, e.g. ITS for fungal barcoding. For ITS regions e.g. ITS1 or ITS2, it is recommended to use the `--illumina_pe_its` parameter for paired-end Illumina reads, which disables fixed-length read truncation. Also consider adjusting `--truncq` to a value higher than the default value of 2 if you find that a high proportion of reads is excluded by DADA2 filtering.
+Special considerations should be made when pre-processing reads for regions of variable length, e.g. ITS for fungal barcoding. For ITS regions e.g. ITS1 or ITS2, it is recommended to use the `--illumina_pe_readthrough` parameter for paired-end Illumina reads, which disables fixed-length read truncation. Also consider adjusting `--truncq` to a value higher than the default value of 2 if you find that a high proportion of reads is excluded by DADA2 filtering.
 
 #### ITS extraction tool
 
@@ -239,7 +171,7 @@ By default, [ITSx](https://microbiology.se/software/itsx/) is used for ITS regio
 --its_extractor itsxrust
 ```
 
-ITSxRust automatically selects platform-appropriate presets: `--preset ont` by default, or `--preset hifi` when `--pacbio` is set. The required HMM profile is bundled in the container and Bioconda package, so no additional files need to be provided.
+ITSxRust automatically selects platform-appropriate presets: `--preset ont` when `--sequencing_type nanopore` is set, or `--preset hifi` when `--sequencing_type pacbio` is set. The required HMM profile is bundled in the container and Bioconda package, so no additional files need to be provided.
 
 ITSxRust produces the same output files as ITSx and is fully compatible with all downstream steps including `--cut_its` and `--its_partial`.
 
@@ -261,7 +193,7 @@ Taxonomic classification of ASVs can be performed with tools DADA2, SINTAX, Krak
 
 In case multiple tools for taxonomic classification are executed in one pipeline run, only the taxonomic classification result of one tool is forwarded to downstream analysis with QIIME2. The priority is `SIDLE` (multi-region) > `phylogenetic placement` > `DADA2` > `SINTAX` > `Kraken2` > `QIIME2` > `VSEARCH`, that is by no means a recommendation for a specific tool but a technical limitation.
 
-Default setting for taxonomic classification is DADA2 with the SILVA reference taxonomy database.
+Default setting for taxonomic classification is DADA2 with the SBDI-GTDB reference taxonomy database.
 
 Pre-configured reference taxonomy databases are:
 
@@ -273,16 +205,18 @@ Pre-configured reference taxonomy databases are:
 | rdp          | +     | -      | +       | -      | -       | -          | 16S rRNA                                      |
 | greengenes   | -     | -      | +       | (+)³   | -       | -          | 16S rRNA                                      |
 | greengenes2  | +     | -      | -       | +      | -       | -          | 16S rRNA                                      |
-| pr2          | +     | -      | -       | -      | -       | -          | 18S rRNA                                      |
+| pr2          | +     | -      | -       | -      | -       | -          | 18S rRNA, also plastid/chloroplast 16S rRNA   |
+| GloSED       | +     | -      | -       | -      | -       | -          | eukaryotic nuclear ribosomal ITS region       |
 | unite-fungi  | +     | +      | -       | -      | +       | -          | eukaryotic nuclear ribosomal ITS region       |
 | unite-alleuk | +     | +      | -       | -      | +       | -          | eukaryotic nuclear ribosomal ITS region       |
 | coidb        | +     | +      | -       | -      | +       | -          | eukaryotic Cytochrome Oxidase I (COI)         |
 | midori2-co1  | +     | -      | -       | -      | +       | -          | eukaryotic Cytochrome Oxidase I (COI)         |
-| phytoref     | +     | -      | -       | -      | -       | -          | eukaryotic plastid 16S rRNA                   |
 | zehr-nifh    | +     | -      | -       | -      | -       | -          | Nitrogenase iron protein NifH                 |
 | standard     | -     | -      | +       | -      | -       | -          | any in genomes of archaea, bacteria, viruses⁴ |
 
 ¹: As of Silva version 138 optimized for classification of Bacteria and Archaea, not suitable for Eukaryotes; ²[`--dada_taxonomy_rc`](https://nf-co.re/ampliseq/parameters#dada_taxonomy_rc) is recommended; ³: de-replicated at 85%, only for testing purposes; ⁴: quality of results might vary
+
+For the exact versioned key of each database (e.g. `gtdb=R11-RS232`), see [`conf/ref_databases.config`](https://github.com/nf-core/ampliseq/blob/master/conf/ref_databases.config).
 
 Special features of taxonomic classification tools:
 
@@ -292,10 +226,31 @@ Special features of taxonomic classification tools:
 - DADA2, Kraken2, QIIME2, SINTAX, and VSEARCH have specific parameters to accept custom databases (but theoretically possible with all classifiers).
 - Phyloplace assigns taxonomy by placement on reference phylogenies provided with the database, see [Placement in database provided phylogenies](#placement-in-database-provided-phylogenies).
 
+Rank names follow what a database holds at its top level: `Domain` for the databases rooted at Bacteria, Archaea and Eukaryota (GTDB, SBDI-GTDB, SILVA, RDP, Greengenes2), `Kingdom` for those rooted at a kingdom (UNITE, COIDB, GloSED).
+SILVA 144 has both, having adopted the prokaryotic kingdoms (`Bacillati`, `Pseudomonadati` and the rest) that sit between domain and phylum.
+A database supplied with `--dada_ref_tax_custom` and no [`--dada_assign_taxlevels`](https://nf-co.re/ampliseq/parameters#dada_assign_taxlevels) still defaults to `Kingdom,Phylum,Class,Order,Family,Genus,Species`.
+
 Parameter guidance is given in [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#taxonomic-assignment). Citations are listed in [`CITATIONS.md`](CITATIONS.md).
 
 > [!TIP]
 > Taxonomic reference databases can be stored and shared locally with [`--ref_taxonomy_storage`](https://nf-co.re/ampliseq/parameters/#ref_taxonomy_storage). That way, remote files will be downloaded only if they are not available in the storage directory.
+
+#### Multiple DADA2 reference databases
+
+[`--dada_ref_taxonomy`](https://nf-co.re/ampliseq/parameters#dada_ref_taxonomy) accepts a comma-separated list of database keys (e.g. `gtdb,silva`) to run DADA2 classification against several databases at once.
+By default, only the first-listed database feeds downstream QIIME2 analysis (filtering, diversity, barplots, ANCOM) and R objects.
+Use [`--consolidate_taxonomies most-specific` or `score`](https://nf-co.re/ampliseq/parameters#consolidate_taxonomies) to instead pick a winning database per ASV.
+This currently compares DADA2 results only, not results from different classification methods.
+
+**Rank vocabulary across databases**
+
+- Most databases use `Domain` or `Kingdom` followed by `Phylum,Class,Order,Family,Genus,Species`.
+- PR2 uses `Domain,Supergroup,Division,Subdivision,Class,Order,Family,Genus,Species` instead.
+- The consolidated table uses the **first-listed** database's levels throughout, whichever database won a given ASV, so that everything reading it downstream (QIIME2 import, phyloseq/TSE objects) sees one consistent set of ranks.
+- `Domain` and `Kingdom` fill the same slot, as do `Division` and `Phylum`. A value arriving under one is written into whichever of the pair the first-listed database uses.
+- `Supergroup`/`Subdivision` have no counterpart in the standard levels and are dropped from the consolidated table. Each database's own unmodified table is still published under `dada2/`, so nothing is lost.
+- `most-specific` scores a database by how many of these levels it resolved, so a database with more intermediate rank names doesn't win purely by having more columns. A `Domain`/`Kingdom` pair counts once, as does a `Division`/`Phylum` pair.
+- This mapping isn't perfect everywhere in PR2 -- e.g. Metazoa's phylum-level names sit in `Class`, one level below `Division` -- but matches PR2's primary use case (protists, whose phylum-equivalent groups are in `Division`).
 
 ### Multiple region analysis with Sidle
 
@@ -306,7 +261,7 @@ For example, multiple variable regions of the 16S rRNA gene were sequenced with 
 Information about sequencing data via [`--input`](#sample-sheet-input), region primers length information via [`--multiregion`](https://nf-co.re/ampliseq/parameters#multiregion), and a taxonomic database via [`--sidle_ref_taxonomy`](https://nf-co.re/ampliseq/parameters#sidle_ref_taxonomy) or [`--sidle_ref_tax_custom`](https://nf-co.re/ampliseq/parameters#sidle_ref_tax_custom) with [`--sidle_ref_seq_custom`](https://nf-co.re/ampliseq/parameters#sidle_ref_seq_custom) is required.
 
 ```bash
---input "samplesheet_multiregion.tsv"  --multiregion "regions_multiregion.tsv" --sidle_ref_taxonomy "silva=128"
+--input "samplesheet_multiregion_v3.tsv"  --multiregion "regions_multiregion_v3.tsv" --sidle_ref_taxonomy "silva=128"
 ```
 
 The region information file can be tab-separated (.tsv), comma-separated (.csv), or in YAML format (.yml/.yaml) and can have two to four columns/entries with the following headers:
@@ -315,12 +270,12 @@ The region information file can be tab-separated (.tsv), comma-separated (.csv),
 | ------------- | ------------------------------------------------------------------------- |
 | region        | Unique region identifier                                                  |
 | region_length | Minimum region length, sequences are trimmed and shorter ones are omitted |
-| FW_primer     | Forward primer sequence                                                   |
-| RV_primer     | Reverse primer sequence                                                   |
+| primer_fwd    | Forward primer sequence                                                   |
+| primer_rev    | Reverse primer sequence                                                   |
 
-For example, the tab-separated `regions_multiregion.tsv` may contain:
+For example, the tab-separated `regions_multiregion_v3.tsv` may contain:
 
-| region  | FW_primer             | RV_primer            | region_length |
+| region  | primer_fwd            | primer_rev           | region_length |
 | ------- | --------------------- | -------------------- | ------------- |
 | region1 | TGGCGAACGGGTGAGTAA    | CCGTGTCTCAGTCCCARTG  | 145           |
 | region2 | ACTCCTACGGGAGGCAGC    | GTATTACCGCGGCTGCTG   | 135           |
@@ -362,6 +317,59 @@ Sample identifiers should be 36 characters long or less, and also contain only A
 
 The columns which are to be assessed can be specified by `--metadata_category`. If `--metadata_category` isn't specified than all columns that fit the specification are automatically chosen.
 
+### Comparison to expected outcomes
+
+To investigate the quality of data generation and/or data analysis, analysis outcome is compared to expected results. Comparison steps are implemented in the pipeline and can be used with `--expected_*` parameters, details in the [parameter documentation](https://nf-co.re/ampliseq/parameters/#comparison).
+
+The observed sequences will be aligned globally (using `VSEARCH --usearch_global`) to the expected sequences (`--expected_sequences`).
+Depending on the region to analyse (`--expected_sequences_region`) the mismatches and gaps within the alignment will be summarized with or without terminal gaps.
+The nucleotide differences will be evaluated for each observed sequence to its best match.
+
+Observed sequences will be accepted as "match" to an expected sequence (i.e. true positive) if there are no mismatches or gaps in the region (adjustable with `--expected_sequences_mismatches`).
+Both strands are searched, so an observed sequence that is the reverse complement of an expected sequence also counts as a match.
+Expected abundances per sequence (`--expected_abundances`) enable sample specific presence/absence metrics and abundance-based comparisons.
+
+Observed and expected sequences can form one-to-many, many-to-one, and many-to-many matches, depending on `--expected_sequences_region` and `--expected_sequences_mismatches` settings.
+The parameter `--expected_sequences_merge` determines how observed and expected sequences will be aggregated by their analysed region. By default, when one observed sequence matches to several expected sequences, the expected sequence IDs will be concatenated and vice versa.
+That means, for example, if observed sequences are shorter than expected sequences and the analysed region is "observed", each expected sequence (ID) that matches the same observed sequence will be aggregated.
+This allows to compare unique comparable sequenced regions and their abundances.
+
+Here an example of the aggregation of observed and expected IDs and abundances, assuming the table represents accepted matches.
+
+| obsID | expID | exp_abund | obs_abund |
+| ----- | ----- | --------- | --------- |
+| a     | 1     | 6         | 2         |
+| a     | 2     | 4         | 2         |
+| c     | 3     | 9         | 4         |
+| d     | 3     | 9         | 3         |
+|       | 4     | 1         | 0         |
+| e     | 5     | 4         | 5         |
+| f     | 6     | 5         | 1         |
+| f     | 7     | 1         | 1         |
+| g     | 6     | 5         | 2         |
+| g     | 7     | 1         | 2         |
+| h     |       | 0         | 1         |
+
+will be transformed to:
+
+| obsID | expID | exp_abund | obs_abund |
+| ----- | ----- | --------- | --------- |
+| a     | 1-2   | 10        | 2         |
+| c-d   | 3     | 9         | 7         |
+| e     | 5     | 4         | 5         |
+| g-f   | 6-7   | 6         | 3         |
+| h     |       | 0         | 1         |
+|       | 4     | 1         | 0         |
+
+This aggregation will not work properly when many sequences are not observed, e.g. in the above example observed ID "a" links expected IDs "1" and "2", which would not have been aggregated if "a" would not have been observed.
+This would inflate expected sequences.
+Therefore, optimal sequence and abundance input are tailored towards the actual sequenced region and de-duplicated.
+
+The mode of aggregation can be changed with `--expected_sequences_merge`.
+For example, when the aim is to retain expected sequence numbers while comparing short observed sequences (i.e. V4 region of the 16S rRNA) to long expected sequences (i.e. full length 16S rRNA sequences), `--expected_sequences_merge observed` will aggregate observed IDs and abundances but not expected sequences.
+However, observed and expected abundances are then not comparable any more, because multiple observed abundances were aggregated and might be multiplicated, i.e. the sum of all abundances can be >1.
+Optimal results are obtained when sequence and abundance input are tailored towards the actual sequenced region and de-duplicated.
+
 ### Differential abundance analysis
 
 Differential abundance analysis for relative abundance from microbial community analysis are plagued by multiple issues that aren't fully solved yet. But some approaches seem promising, for example Analysis of Composition of Microbiomes with Bias Correction ([ANCOM-BC](https://pubmed.ncbi.nlm.nih.gov/32665548/)). [ANCOM](https://pubmed.ncbi.nlm.nih.gov/26028277/), ANCOM-BC, and [ANCOM-BC2](https://pubmed.ncbi.nlm.nih.gov/38158428/) are integrated into the pipeline, but only executed on request via `--ancom`, `--ancombc` or `--ancombc2`, more details in the [nf-core/ampliseq website parameter documentation](https://nf-co.re/ampliseq/parameters/#differential-abundance-analysis).
@@ -373,7 +381,7 @@ This can be done either a single reference for all ASV sequences, or multiple re
 
 #### Single reference phylogenetic placement
 
-Adding the parameters `--pplace_tree`, `--place_aln`, `--pplace_alnmethod`, `--place_model`, `--pplace_taxonomy` and `--pplace_name` will perform phylogenetic placement of ASV sequences in the specified reference phylogeny.
+Adding the parameters `--pplace_tree`, `--pplace_aln`, `--pplace_alnmethod`, `--pplace_model`, `--pplace_taxonomy` and `--pplace_name` will perform phylogenetic placement of ASV sequences in the specified reference phylogeny.
 See the [nf-core/ampliseq parameter documentation](https://nf-co.re/ampliseq/parameters) for more information about the parameters.
 
 #### Multiple reference phylogenetic placement
@@ -465,7 +473,7 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
 - `apptainer`
   - A generic configuration profile to be used with [Apptainer](https://apptainer.org/)
 - `wave`
-  - A generic configuration profile to enable [Wave](https://seqera.io/wave/) containers. Use together with one of the above (requires Nextflow ` 24.03.0-edge` or later).
+  - A generic configuration profile to enable [Wave](https://seqera.io/wave/) containers. Use together with one of the above (requires Nextflow `24.03.0-edge` or later).
 - `conda`
   - A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter, Charliecloud, or Apptainer.
 

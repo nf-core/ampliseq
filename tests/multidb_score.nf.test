@@ -1,0 +1,36 @@
+nextflow_pipeline {
+
+    name "Test pipeline"
+    script "../main.nf"
+    tag "pipeline"
+    profile "test_multidb"
+
+    test("-profile test_multidb --consolidate_taxonomies score") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                consolidate_taxonomies = "score"
+            }
+        }
+
+        then {
+            // stable_path: All files + folders in ${params.outdir}/ with a stable path and file name
+            def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
+
+            assert workflow.success
+            def consolidated = path("$outputDir/dada2/ASV_tax.consolidated.score.tsv").csv(sep: '\t', header: true)
+            def databases = consolidated.columns["database"]
+            assertAll(
+                { assert snapshot(
+                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_ampliseq_software_mqc_versions.yml"),
+                    // All stable path name, with a relative path
+                    stable_path
+                ).match() },
+                { assert databases.findAll { it == "gtdb_R07-RS207" }.size() > 0 },
+                { assert databases.findAll { it == "rdp_18" }.size() > 0 }
+            )
+        }
+    }
+}

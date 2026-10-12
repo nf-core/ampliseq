@@ -65,8 +65,16 @@ workflow DADA2_TAXONOMY_WF {
         ASV_tax_name = "ASV_ITS_tax"
     }
 
-    //split sequences into chunks (shared across every listed database)
-    ch_fasta_chunks = ch_fasta.splitFasta( by: val_dada_assign_chunksize, file: true )
+    //chunk size: --dada_assign_chunksize, else the database's own `chunksize`, else 10000
+    def chunksizes = val_dada_ref_taxonomy_list.collectEntries { db_key ->
+        [ (db_key): val_dada_assign_chunksize ?: params.dada_ref_databases[db_key]?.chunksize ?: 10000 ]
+    }
+
+    //split sequences into chunks, once per distinct chunk size
+    ch_fasta_chunks = channel.empty()
+    chunksizes.values().toList().unique().each { chunksize ->
+        ch_fasta_chunks = ch_fasta_chunks.mix( ch_fasta.splitFasta( by: chunksize, file: true ).map { fasta -> [ chunksize, fasta ] } )
+    }
 
     //per-database outfile suffix + taxlevels, derived once per listed database. db_key is "user" for
     //--dada_ref_tax_custom (not a real dada_ref_databases key), so the lookup must be null-safe.
@@ -81,8 +89,9 @@ workflow DADA2_TAXONOMY_WF {
     //DADA2 assignTaxonomy -- one task per (database x fasta chunk)
     DADA2_TAXONOMY (
         ch_assigntax_taxlevels
-            .combine( ch_fasta_chunks )
-            .map { db_key, db, outfile, taxlevels, fasta -> [ db_key, fasta, db, outfile, taxlevels ] }
+            .map { db_key, db, outfile, taxlevels -> [ chunksizes[db_key], db_key, db, outfile, taxlevels ] }
+            .combine( ch_fasta_chunks, by: 0 )
+            .map { _chunksize, db_key, db, outfile, taxlevels, fasta -> [ db_key, fasta, db, outfile, taxlevels ] }
     )
 
     // collect all DADA2_TAXONOMY.out.tsv chunks into one file per database

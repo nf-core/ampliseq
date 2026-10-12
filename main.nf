@@ -139,7 +139,7 @@ params {
     consolidate_taxonomies: String = 'first'
     dada_addspecies_allowmultiple: Boolean
     dada_taxonomy_rc: Boolean
-    dada_assign_chunksize: Integer = 10000
+    dada_assign_chunksize: Integer?
     pplace_sheet: Path?
     pplace_tree: Path?
     pplace_aln: Path?

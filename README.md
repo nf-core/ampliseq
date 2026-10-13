@@ -33,7 +33,7 @@ A video about relevance, usage and output of the pipeline (version 2.1.0; 26th O
 </p>
 
 The map does not show every option.
-Not on the map are, for example: ASVs given directly as a fasta file, custom reference databases, exact-match species assignment and UNITE species hypotheses, building a phylogenetic tree, PERMANOVA, group-average barplots and the summary tables.
+Not on the map are, for example: ASVs given directly as a fasta file, custom reference databases and UNITE species hypotheses, building a phylogenetic tree and group-average barplots.
 All options are described in the [usage documentation](https://nf-co.re/ampliseq/usage) and the [parameter documentation](https://nf-co.re/ampliseq/parameters).
 
 On release, automated continuous integration tests run the pipeline on a full-sized dataset on the AWS cloud infrastructure. This ensures that the pipeline runs on AWS, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources. The results obtained from the full-sized test can be viewed on the [nf-core website](https://nf-co.re/ampliseq/results).

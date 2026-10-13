@@ -100,6 +100,10 @@
 
   > M. A. Moynihan & C. Furbo Reeder 2023. nifHdada2 GitHub repository, v2.0.5. Zenodo. doi: http://doi.org/10.5281/zenodo.7996213
 
+- [Diat.barcode](https://doi.org/10.1038/s41598-019-51500-6)
+
+  > Rimet F, Gusev E, Kahlert M, Kelly MG, Kulikovskiy M, Maltsev Y, Mann DG, Pfannkuchen M, Trobajo R, Vasselon V, Zimmermann J, Bouchez A. Diat.barcode, an open-access curated barcode library for diatoms. Sci Rep. 2019;9:15116. doi: 10.1038/s41598-019-51500-6.
+
 - [BOLD Plantae](https://boldsystems.org/)
 
   > Kesisoglou, G., Keisaris, S., & Pechlivanis, N. (2025). BOLD (Plantae - ITS1, ITS2, trnL) training data formatted for DADA2 [Data set]. Zenodo. doi: https://doi.org/10.5281/zenodo.15089110

@@ -5,6 +5,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## nf-core/ampliseq version 3.1.0dev - [YYYY-MM-DD]
 
+### `Added`
+
+- [#1121](https://github.com/nf-core/ampliseq/pull/1121) - Added the Diat.barcode database (rbcL, 263 bp) for classification of diatoms with DADA2: `--dada_ref_taxonomy diat-barcode` (requested in [#1115](https://github.com/nf-core/ampliseq/issues/1115) by @pragermh, by @erikrikarddaniel)
+
 ### `Changed`
 
 - [#1122](https://github.com/nf-core/ampliseq/pull/1122) - README lists what the metro map does not show and the optional steps missing from the pipeline summary; removed the citation and format script of the BOLD Plantae databases, which were removed in 2.15.0 (by @erikrikarddaniel)

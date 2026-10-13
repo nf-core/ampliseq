@@ -1,0 +1,48 @@
+nextflow_pipeline {
+
+    name "Test pipeline with Diat.barcode"
+    script "../main.nf"
+    tag "pipeline"
+    profile "test_diatbarcode"
+
+    test("-profile test_diatbarcode") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            // stable_name: All files + folders in ${params.outdir}/ with a stable name
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
+
+            assert workflow.success
+
+            def rows = path("$outputDir/dada2/ASV_tax_species.diat-barcode.tsv").text.readLines().collect { it.split('\t', -1) as List }
+            def header = rows[0]
+            def asv = rows.drop(1).collectEntries { r -> [(r[0]): [header, r].transpose().collectEntries { h, v -> [(h): v] }] }
+            def exact = [ASV_1: "minutissimum", ASV_2: "actinochilus", ASV_3: "vitrea", ASV_4: "lewisii", ASV_5: "decipiens", ASV_6: "closterium"]
+
+            assertAll(
+                { assert header[1..8] == ["Domain", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"] },
+                { assert asv.keySet() == ["ASV_1", "ASV_2", "ASV_3", "ASV_4", "ASV_5", "ASV_6", "ASV_7"] as Set },
+                // exact sequence matches get the species from addSpecies, which is also the last word of the assignTaxonomy species
+                { assert exact.every { id, epithet -> asv[id]["Species_exact"] == epithet && asv[id]["Species"].endsWith(" " + epithet) } },
+                // ASV_7 is ASV_1 with one mismatch: classified by assignTaxonomy, but no exact match
+                { assert asv["ASV_7"]["Species"] == asv["ASV_1"]["Species"] },
+                { assert asv["ASV_7"]["Species_exact"] == "" },
+                { assert snapshot(
+                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_ampliseq_software_mqc_versions.yml"),
+                    // All stable path name, with a relative path
+                    stable_name,
+                    // Manually chosen files for content checks
+                    path("$outputDir/dada2/ASV_tax.diat-barcode.tsv"),
+                    path("$outputDir/dada2/ASV_tax_species.diat-barcode.tsv"),
+                    path("$outputDir/input/diat_barcode_ASV_seqs.fasta")
+                ).match() }
+            )
+        }
+    }
+}

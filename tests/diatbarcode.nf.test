@@ -22,6 +22,8 @@ nextflow_pipeline {
             def rows = path("$outputDir/dada2/ASV_tax_species.diat-barcode.tsv").text.readLines().collect { it.split('\t', -1) as List }
             def header = rows[0]
             def asv = rows.drop(1).collectEntries { r -> [(r[0]): [header, r].transpose().collectEntries { h, v -> [(h): v] }] }
+            def sintax = path("$outputDir/sintax/ASV_tax_sintax.diat-barcode.tsv").text.readLines().collect { it.split('\t', -1) as List }
+            def sintaxAsv = sintax.drop(1).collectEntries { r -> [(r[0]): [sintax[0], r].transpose().collectEntries { h, v -> [(h): v] }] }
             def exact = [ASV_1: "minutissimum", ASV_2: "actinochilus", ASV_3: "vitrea", ASV_4: "lewisii", ASV_5: "decipiens", ASV_6: "closterium"]
 
             assertAll(
@@ -32,6 +34,11 @@ nextflow_pipeline {
                 // ASV_7 is ASV_1 with one mismatch: classified by assignTaxonomy, but no exact match
                 { assert asv["ASV_7"]["Species"] == asv["ASV_1"]["Species"] },
                 { assert asv["ASV_7"]["Species_exact"] == "" },
+                // SINTAX database is the DADA2 assignTaxonomy fasta converted to VSEARCH format, so all eight ranks are assigned
+                { assert sintax[0][1..8] == ["Domain", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"] },
+                { assert sintaxAsv.keySet() == asv.keySet() },
+                { assert exact.every { id, epithet -> sintaxAsv[id]["Species"].endsWith(" " + epithet) && sintaxAsv[id]["Species"] == asv[id]["Species"] } },
+                { assert sintaxAsv.values().every { it["Domain"] == "Eukaryota" && it["Phylum"] == "Bacillariophyta" } },
                 { assert snapshot(
                     // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
                     removeNextflowVersion("$outputDir/pipeline_info/nf_core_ampliseq_software_mqc_versions.yml"),
@@ -40,6 +47,7 @@ nextflow_pipeline {
                     // Manually chosen files for content checks
                     path("$outputDir/dada2/ASV_tax.diat-barcode.tsv"),
                     path("$outputDir/dada2/ASV_tax_species.diat-barcode.tsv"),
+                    path("$outputDir/sintax/ASV_tax_sintax.diat-barcode.tsv"),
                     path("$outputDir/input/diat_barcode_ASV_seqs.fasta")
                 ).match() }
             )

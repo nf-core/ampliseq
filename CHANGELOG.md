@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#1121](https://github.com/nf-core/ampliseq/pull/1121) - Added the Diat.barcode database (rbcL, 263 bp) for classification of diatoms with DADA2: `--dada_ref_taxonomy diat-barcode` (requested in [#1115](https://github.com/nf-core/ampliseq/issues/1115) by @pragermh, by @erikrikarddaniel)
 
+### `Changed`
+
+- [#1122](https://github.com/nf-core/ampliseq/pull/1122) - README lists what the metro map does not show and the optional steps missing from the pipeline summary; removed the citation and format script of the BOLD Plantae databases, which were removed in 2.15.0 (by @erikrikarddaniel)
+
 ### `Fixed`
 
 - [#1119](https://github.com/nf-core/ampliseq/pull/1119) - DADA2 `addSpecies` no longer runs out of memory with the SILVA 144 database: SILVA 144 is classified in chunks of 2000 ASVs instead of 10000. A database can set its own chunk size with `chunksize` in `conf/ref_databases.config`; `--dada_assign_chunksize` overrides it (by @erikrikarddaniel)

@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Changed`
 
 - [#1122](https://github.com/nf-core/ampliseq/pull/1122) - README lists what the metro map does not show and the optional steps missing from the pipeline summary; removed the citation and format script of the BOLD Plantae databases, which were removed in 2.15.0 (by @erikrikarddaniel)
-- [#NN](https://github.com/nf-core/ampliseq/pull/NN) - The `--consolidate_taxonomies` help and usage documentation now state that DADA2 bootstrap values are not known to be comparable between databases, so `score` may favour one database for reasons unrelated to accuracy ([#1113](https://github.com/nf-core/ampliseq/issues/1113)) (by @erikrikarddaniel)
+- [#1124](https://github.com/nf-core/ampliseq/pull/1124) - The `--consolidate_taxonomies` help and usage documentation now state that DADA2 bootstrap values are not known to be comparable between databases, so `score` may favour one database for reasons unrelated to accuracy ([#1113](https://github.com/nf-core/ampliseq/issues/1113)) (by @erikrikarddaniel)
 
 ### `Fixed`
 

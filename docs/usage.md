@@ -241,7 +241,11 @@ Parameter guidance is given in [nf-core/ampliseq website parameter documentation
 [`--dada_ref_taxonomy`](https://nf-co.re/ampliseq/parameters#dada_ref_taxonomy) accepts a comma-separated list of database keys (e.g. `gtdb,silva`) to run DADA2 classification against several databases at once.
 By default, only the first-listed database feeds downstream QIIME2 analysis (filtering, diversity, barplots, ANCOM) and R objects.
 Use [`--consolidate_taxonomies most-specific` or `score`](https://nf-co.re/ampliseq/parameters#consolidate_taxonomies) to instead pick a winning database per ASV.
-This currently compares DADA2 results only, not results from different classification methods.
+`score` compares DADA2 bootstrap values between databases, which are not known to be comparable: they depend on how many close relatives a database holds at a rank.
+Bootstrap values of 1 in several databases give `score` no basis for choosing, and it then falls back to the order in `--dada_ref_taxonomy`.
+A database that lacks a group can still give high bootstrap values for it, e.g. a bacterial database classifying chloroplast 16S sequences.
+`most-specific` does not use bootstrap values.
+Consolidation currently compares DADA2 results only, not results from different classification methods.
 
 **Rank vocabulary across databases**
 

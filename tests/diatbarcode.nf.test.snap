@@ -24,9 +24,19 @@
                     "bash": "5.2.37(1)-release",
                     "sed": "4.10"
                 },
+                "FORMAT_TAXONOMY_SINTAX": {
+                    "bash": "5.2.37(1)-release",
+                    "sed": "4.10"
+                },
+                "FORMAT_TAXRESULTS_SINTAX": {
+                    "python": "3.9.1"
+                },
                 "SUMMARY_TABLE_TAXONOMY": {
                     "R": "4.3.1",
                     "r-dplyr": "1.1.4"
+                },
+                "VSEARCH_SINTAX": {
+                    "vsearch": "2.31.0"
                 },
                 "Workflow": {
                     "nf-core/ampliseq": "v3.0.0"
@@ -57,19 +67,27 @@
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
                 "pipeline_info/nf_core_ampliseq_software_mqc_versions.yml",
+                "sintax",
+                "sintax/ASV_tax_sintax.diat-barcode.raw.tsv",
+                "sintax/ASV_tax_sintax.diat-barcode.tsv",
+                "sintax/ref_taxonomy_sintax.txt",
                 "summary_report",
                 "summary_report/dada2_taxonomic_classification_per_taxonomy_level.svg",
+                "summary_report/sintax_taxonomic_classification_per_taxonomy_level.svg",
                 "summary_report/summary_report.html",
                 "summary_report/versions.yml",
                 "summary_tables",
                 "summary_tables/ampliseq.taxonomy.DADA2.diat-barcode.parquet",
-                "summary_tables/ampliseq.taxonomy.DADA2.diat-barcode.tsv.gz"
+                "summary_tables/ampliseq.taxonomy.DADA2.diat-barcode.tsv.gz",
+                "summary_tables/ampliseq.taxonomy.SINTAX.diat-barcode.parquet",
+                "summary_tables/ampliseq.taxonomy.SINTAX.diat-barcode.tsv.gz"
             ],
             "ASV_tax.diat-barcode.tsv:md5,79836f5743a4f5300e0cabd922199cf8",
             "ASV_tax_species.diat-barcode.tsv:md5,1bf5aba844cf4d0afa19992cf4a178b8",
+            "ASV_tax_sintax.diat-barcode.tsv:md5,25dc0cd6b091e0d7d8b1fe8e3c8eab6d",
             "diat_barcode_ASV_seqs.fasta:md5,2a8d42daf13621f0834f966c96af36ea"
         ],
-        "timestamp": "2026-10-13T08:34:44.501900098",
+        "timestamp": "2026-10-13T12:29:26.12262049",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"

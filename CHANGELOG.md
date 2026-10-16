@@ -18,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Fixed`
 
 - [#1119](https://github.com/nf-core/ampliseq/pull/1119) - DADA2 `addSpecies` no longer runs out of memory with the SILVA 144 database: SILVA 144 is classified in chunks of 2000 ASVs instead of 10000. A database can set its own chunk size with `chunksize` in `conf/ref_databases.config`; `--dada_assign_chunksize` overrides it (by @erikrikarddaniel)
-- [#1126](https://github.com/nf-core/ampliseq/pull/1126) - Made params `config_profile_*` optional/nullable with nextflow v26.10.x (by @d4straub)
+- [#1126](https://github.com/nf-core/ampliseq/pull/1126) - Made params `config_profile_*` optional/nullable with nextflow v26.10.x (reported by @ebete, fix by @d4straub)
 
 ## nf-core/ampliseq version 3.0.0 - [2026-10-09]
 

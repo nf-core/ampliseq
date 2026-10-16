@@ -247,10 +247,10 @@ params {
     show_hidden: Boolean
     custom_config_version: String
     custom_config_base: String
-    config_profile_name: String
-    config_profile_description: String
-    config_profile_contact: String
-    config_profile_url: String
+    config_profile_name: String?
+    config_profile_description: String?
+    config_profile_contact: String?
+    config_profile_url: String?
     multiqc_title: String?
 }
 

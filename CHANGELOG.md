@@ -7,8 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-- [#1121](https://github.com/nf-core/ampliseq/pull/1121) - Added the Diat.barcode database (rbcL, 263 bp) for classification of diatoms with DADA2: `--dada_ref_taxonomy diat-barcode` (requested in [#1115](https://github.com/nf-core/ampliseq/issues/1115) by @pragermh, by @erikrikarddaniel)
-- [#1123](https://github.com/nf-core/ampliseq/pull/1123) - `--sintax_ref_taxonomy` now accepts all databases available for DADA2 (SILVA, GTDB, SBDI-GTDB, RDP, Greengenes2, PR2, GloSED, MIDORI2-CO1, Zehr-nifH, Diat.barcode), in addition to COIDB and UNITE; requested in [#618](https://github.com/nf-core/ampliseq/issues/618) (by @erikrikarddaniel)
+- [#1123](https://github.com/nf-core/ampliseq/pull/1123) - `--sintax_ref_taxonomy` now accepts all databases available for DADA2 (SILVA, GTDB, SBDI-GTDB, RDP, Greengenes2, PR2, GloSED, MIDORI2-CO1, Zehr-nifH), in addition to COIDB and UNITE; requested in [#618](https://github.com/nf-core/ampliseq/issues/618) (by @erikrikarddaniel)
 
 ### `Changed`
 

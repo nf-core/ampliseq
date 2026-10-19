@@ -91,7 +91,8 @@ include { QIIME2_PREPTAX                } from '../subworkflows/local/qiime2_pre
 include { QIIME2_TAXONOMY               } from '../subworkflows/local/qiime2_taxonomy/main'
 include { CUTADAPT_WORKFLOW             } from '../subworkflows/local/cutadapt_workflow/main'
 include { DADA2_TAXONOMY_WF             } from '../subworkflows/local/dada2_taxonomy_wf/main'
-include { CONSOLIDATE_DADA2_TAXONOMY    } from '../modules/local/consolidate_dada2_taxonomy/main'
+include { CONSOLIDATE_TAXONOMY                                } from '../modules/local/consolidate_taxonomy/main'
+include { CONSOLIDATE_TAXONOMY as CONSOLIDATE_TAXONOMY_TOOLS  } from '../modules/local/consolidate_taxonomy/main'
 include { SINTAX_TAXONOMY_WF            } from '../subworkflows/local/sintax_taxonomy_wf/main'
 include { VSEARCH_LCA_TAXONOMY_WF       } from '../subworkflows/local/vsearch_lca_taxonomy_wf/main'
 include { KRAKEN2_TAXONOMY_WF           } from '../subworkflows/local/kraken2_taxonomy_wf/main'
@@ -442,6 +443,14 @@ workflow AMPLISEQ {
         val_vsearch_lca_taxlevels = params.vsearch_lca_ref_databases[params.vsearch_lca_ref_taxonomy]["taxlevels"] ?
             params.vsearch_lca_ref_databases[params.vsearch_lca_ref_taxonomy]["taxlevels"] : ""
     }
+
+    // Consolidation across classifiers: DADA2, SINTAX and VSEARCH-LCA, in that priority order
+    val_dada_on = !params.skip_taxonomy && !params.skip_dada_taxonomy && val_dada_ref_taxonomy_list.size() > 0
+    val_sintax_on = val_sintax_ref_taxonomy != "none"
+    val_vsearch_lca_on = val_vsearch_lca_ref_taxonomy != "none"
+    val_consolidate_tools = params.consolidate_taxonomies == 'most-specific' && [ val_dada_on, val_sintax_on, val_vsearch_lca_on ].count { on -> on } > 1
+    val_consolidate_taxlevels = val_dada_on ? val_dada_taxlevels : ( val_sintax_on ? val_sintax_taxlevels : val_vsearch_lca_taxlevels )
+    ch_tax_candidates = channel.empty()
 
     // KRAKEN2
     ch_kraken2_ref_taxonomy  = channel.empty()
@@ -867,16 +876,20 @@ workflow AMPLISEQ {
             )
         // one entry per listed database -- feeds ch_tax_tsv (already tolerant of multiple entries per classifier)
         ch_tax_tsv = ch_tax_tsv.mix( ch_dada2_taxonomy_wf.tax.map { db_key, f -> [ [database: db_key.replace('=','_').replace('.','_'), classifier:"DADA2"], file(f) ] } )
+        ch_tax_candidates = ch_tax_candidates.mix(
+            ch_dada2_taxonomy_wf.tax.map { db_key, f -> [ val_dada_ref_taxonomy_list.indexOf(db_key), "DADA2", db_key.replace('=','_').replace('.','_'), f ] }
+        )
         // single taxonomy for every other downstream consumer
         if (params.consolidate_taxonomies != 'first' && val_dada_ref_taxonomy_list.size() > 1) {
-            CONSOLIDATE_DADA2_TAXONOMY (
-                ch_dada2_taxonomy_wf.tax.map { _db_key, f -> f }.collect(),
+            CONSOLIDATE_TAXONOMY (
+                ch_dada2_taxonomy_wf.tax.map { db_key, f -> [ val_dada_ref_taxonomy_list.indexOf(db_key), f ] }.toList()
+                    .map { tables -> tables.sort(false) { a, b -> a[0] <=> b[0] }.collect { t -> t[1] } },
                 params.consolidate_taxonomies,
-                val_dada_ref_taxonomy_list.collect { db_key -> db_key.replace('=','_').replace('.','_') }.join(','),
+                val_dada_ref_taxonomy_list.collect { db_key -> "DADA2:" + db_key.replace('=','_').replace('.','_') }.join(','),
                 val_dada_taxlevels,
                 "ASV_tax.consolidated.${params.consolidate_taxonomies}.tsv"
             )
-            ch_dada2_tax = CONSOLIDATE_DADA2_TAXONOMY.out.tsv
+            ch_dada2_tax = CONSOLIDATE_TAXONOMY.out.tsv
             ch_tax_tsv = ch_tax_tsv.mix( ch_dada2_tax.map { f -> [ [database: "consolidated_${params.consolidate_taxonomies}", classifier:"DADA2"], f ] } )
         } else {
             ch_dada2_tax = ch_dada2_taxonomy_wf.tax.filter { db_key, _f -> db_key == val_dada_ref_taxonomy_list[0] }.map { _db_key, f -> f }
@@ -920,6 +933,7 @@ workflow AMPLISEQ {
                 val_sintax_taxlevels
             ).tax
         ch_tax_tsv = ch_tax_tsv.mix( ch_sintax_tax.map { it = [ [database:val_sintax_ref_taxonomy, classifier:"SINTAX"], file(it) ] } )
+        ch_tax_candidates = ch_tax_candidates.mix( ch_sintax_tax.map { f -> [ 1000, "SINTAX", val_sintax_ref_taxonomy, f ] } )
         ch_tax_for_robject = ch_tax_for_robject.mix ( ch_sintax_tax.map { it -> [ "sintax", file(it) ] } )
     } else {
         ch_sintax_tax = channel.empty()
@@ -938,10 +952,28 @@ workflow AMPLISEQ {
         ch_vsearch_lca_raw = VSEARCH_LCA_TAXONOMY_WF.out.raw_lca
         ch_vsearch_lca_tax = VSEARCH_LCA_TAXONOMY_WF.out.tax
         ch_tax_tsv = ch_tax_tsv.mix( ch_vsearch_lca_tax.map { it = [ [database:val_vsearch_lca_ref_taxonomy, classifier:"VSEARCH-LCA"], file(it) ] } )
+        ch_tax_candidates = ch_tax_candidates.mix( ch_vsearch_lca_tax.map { f -> [ 2000, "VSEARCH-LCA", val_vsearch_lca_ref_taxonomy, f ] } )
         ch_tax_for_robject = ch_tax_for_robject.mix ( ch_vsearch_lca_tax.map { it -> [ "vsearch_lca", file(it) ] } )
     } else {
         ch_vsearch_lca_raw = channel.empty()
         ch_vsearch_lca_tax = channel.empty()
+    }
+
+    // One table across classifiers; each classifier's own table is kept for its own outputs
+    if (val_consolidate_tools) {
+        ch_tax_candidates_sorted = ch_tax_candidates.toList().map { candidates -> candidates.sort(false) { a, b -> a[0] <=> b[0] } }
+        CONSOLIDATE_TAXONOMY_TOOLS (
+            ch_tax_candidates_sorted.map { candidates -> candidates.collect { c -> c[3] } },
+            params.consolidate_taxonomies,
+            ch_tax_candidates_sorted.map { candidates -> candidates.collect { c -> "${c[1]}:${c[2]}" }.join(',') },
+            val_consolidate_taxlevels,
+            "ASV_tax.consolidated.${params.consolidate_taxonomies}.tsv"
+        )
+        ch_consolidated_tax = CONSOLIDATE_TAXONOMY_TOOLS.out.tsv
+        ch_tax_tsv = ch_tax_tsv.mix( ch_consolidated_tax.map { f -> [ [database: params.consolidate_taxonomies, classifier:"CONSOLIDATED"], f ] } )
+        ch_tax_for_robject = ch_tax_for_robject.mix( ch_consolidated_tax.map { f -> [ "consolidated", file(f) ] } )
+    } else {
+        ch_consolidated_tax = channel.empty()
     }
 
     //
@@ -1140,6 +1172,10 @@ workflow AMPLISEQ {
             log.info "Use EPA-NG / GAPPA taxonomy classification"
             val_used_taxonomy = "phylogenetic placement"
             ch_tax = QIIME2_INTAX ( ch_pplace_tax, "parse_dada2_taxonomy.r" ).qza
+        } else if ( val_consolidate_tools ) {
+            log.info "Use taxonomy classification consolidated across classifiers"
+            val_used_taxonomy = "consolidated (" + [ val_dada_on ? "DADA2" : null, val_sintax_on ? "SINTAX" : null, val_vsearch_lca_on ? "VSEARCH LCA" : null ].findAll { name -> name }.join(", ") + ")"
+            ch_tax = QIIME2_INTAX ( ch_consolidated_tax, "parse_dada2_taxonomy.r" ).qza
         } else if ( params.dada_ref_taxonomy && !params.skip_dada_taxonomy ) {
             log.info "Use DADA2 taxonomy classification"
             val_used_taxonomy = "DADA2"

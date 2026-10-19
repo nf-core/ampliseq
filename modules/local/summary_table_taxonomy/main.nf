@@ -75,11 +75,9 @@ process SUMMARY_TABLE_TAXONOMY {
             select(-matches("_confidence\$")) |>
             rename_with(str_to_lower)
 
-        # In a consolidated table (--consolidate_taxonomies), "database" is the database that won a
-        # given ASV, not the table's own.
-        if ("database" %in% colnames(tax)) {
-            tax <- tax |> rename(source_database = database)
-        }
+        # In a consolidated table (--consolidate_taxonomies), "classifier" and "database" are those
+        # that won a given ASV, not the table's own.
+        tax <- tax |> rename(any_of(c(source_classifier = "classifier", source_database = "database")))
 
         # DADA2_ADDSPECIES puts its exact matches in "Species_exact" and leaves "Species" out unless
         # assignTaxonomy's taxlevels had one. Many databases reach species through addSpecies alone,

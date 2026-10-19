@@ -1,0 +1,52 @@
+nextflow_pipeline {
+
+    name "Test pipeline"
+    script "../main.nf"
+    tag "pipeline"
+    profile "test_consolidate_tools"
+
+    test("-profile test_consolidate_tools") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            // stable_path: All files + folders in ${params.outdir}/ with a stable path and file name
+            def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
+
+            assert workflow.success
+            def consolidated = path("$outputDir/consolidated_taxonomy/ASV_tax.consolidated.most-specific.tsv").csv(sep: '\t', header: true)
+            def classifiers = consolidated.columns["classifier"]
+            def summary_table = path("$outputDir/summary_tables/ampliseq.taxonomy.CONSOLIDATED.most-specific.tsv.gz")
+            def barplot_headers = path("$outputDir/qiime2/barplot/level-7.csv").readLines()[0]
+            assertAll(
+                { assert snapshot(
+                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_ampliseq_software_mqc_versions.yml"),
+                    // All stable path name, with a relative path
+                    stable_path
+                ).match() },
+                // the table has provenance for every ASV, and only for classifiers that were run
+                { assert classifiers.every { it in ["DADA2", "SINTAX", "VSEARCH-LCA"] } },
+                // per-ASV mixing across classifiers happened, not a full pass-through of the first one
+                { assert classifiers.findAll { it == "DADA2" }.size() > 0 },
+                { assert classifiers.findAll { it == "SINTAX" }.size() > 0 },
+                { assert consolidated.columns["database"].every { it in ["unite-fungi_8_2", "unite-fungi_8_3"] } },
+                // DADA2 still consolidates its own two databases next to the table across classifiers
+                { assert path("$outputDir/dada2/ASV_tax.consolidated.most-specific.tsv").exists() },
+                // the provenance columns are not ranks: they must not reach the QIIME2 taxonomy string
+                { assert !path("$outputDir/qiime2/barplot/level-8.csv").exists() },
+                { assert !barplot_headers.contains("SINTAX") },
+                { assert !barplot_headers.contains("VSEARCH-LCA") },
+                { assert !barplot_headers.contains("unite-fungi_8_2") },
+                // the consolidated table reaches the taxonomy summary tables, provenance renamed
+                { assert summary_table.exists() },
+                { assert summary_table.linesGzip[0].split('\t').contains("source_classifier") },
+                { assert summary_table.linesGzip[0].split('\t').contains("source_database") }
+            )
+        }
+    }
+}

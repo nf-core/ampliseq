@@ -1,9 +1,9 @@
-name: consolidate_dada2_taxonomy
-description: Picks a per-ASV winning database across several DADA2 taxonomy tables
+name: consolidate_taxonomy
+description: Picks a per-ASV winning classifier and database across several taxonomy tables
 keywords:
   - taxonomy
-  - dada2
   - consolidation
+  - classifier
   - database
 tools:
   - dada2:
@@ -16,13 +16,13 @@ tools:
 input:
   - tax_files:
       type: file
-      description: DADA2 taxonomy tables (TSV), one per database
+      description: Taxonomy tables (TSV) in the DADA2-like wide format, one per classifier and database
   - method:
       type: string
       description: "Consolidation method: first, most-specific or score"
-  - db_key_order:
+  - sources:
       type: string
-      description: Comma-separated database keys in --dada_ref_taxonomy order
+      description: Comma-separated CLASSIFIER:database entries, one per file, in the order of the files and in priority order
   - taxlevels_input:
       type: string
       description: Comma-separated taxonomic rank names, empty to use the database's own
@@ -35,7 +35,7 @@ output:
         type: file
         description: Consolidated taxonomy table (TSV)
         pattern: outfile
-  versions_consolidate_dada2_taxonomy:
+  versions_consolidate_taxonomy:
     - versions.yml:
         type: file
         description: File containing software versions

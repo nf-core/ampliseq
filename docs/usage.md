@@ -245,7 +245,8 @@ Use [`--consolidate_taxonomies most-specific` or `score`](https://nf-co.re/ampli
 Bootstrap values of 1 in several databases give `score` no basis for choosing, and it then falls back to the order in `--dada_ref_taxonomy`.
 A database that lacks a group can still give high bootstrap values for it, e.g. a bacterial database classifying chloroplast 16S sequences.
 `most-specific` does not use bootstrap values.
-Consolidation currently compares DADA2 results only, not results from different classification methods.
+`score` compares DADA2 results only.
+`most-specific` also compares across classification methods, see [Consolidation across classifiers](#consolidation-across-classifiers).
 
 **Rank vocabulary across databases**
 
@@ -256,6 +257,18 @@ Consolidation currently compares DADA2 results only, not results from different 
 - `Supergroup`/`Subdivision` have no counterpart in the standard levels and are dropped from the consolidated table. Each database's own unmodified table is still published under `dada2/`, so nothing is lost.
 - `most-specific` scores a database by how many of these levels it resolved, so a database with more intermediate rank names doesn't win purely by having more columns. A `Domain`/`Kingdom` pair counts once, as does a `Division`/`Phylum` pair.
 - This mapping isn't perfect everywhere in PR2 -- e.g. Metazoa's phylum-level names sit in `Class`, one level below `Division` -- but matches PR2's primary use case (protists, whose phylum-equivalent groups are in `Division`).
+
+#### Consolidation across classifiers
+
+With `--consolidate_taxonomies most-specific`, DADA2, SINTAX and VSEARCH-LCA can be run together (e.g. `--dada_ref_taxonomy silva --sintax_ref_taxonomy coidb`), and the result for each ASV is taken from whichever classifier and database resolved the deepest rank.
+Ties go to the DADA2 databases in `--dada_ref_taxonomy` order, then SINTAX, then VSEARCH-LCA.
+The consolidated table has `classifier` and `database` columns that record the winner for each ASV.
+Rank names are harmonised as described for multiple DADA2 databases above, using the levels of the highest-priority classifier.
+Kraken2, QIIME2 and phylogenetic placement are not part of the consolidation: Kraken2 and QIIME2 output has a different shape, and placement gives an unranked taxonomy string.
+
+How many ranks a classifier resolves depends on its method and cutoffs, e.g. `--sintax_cutoff` for SINTAX and the minimum bootstrap for DADA2.
+A deeper result from one classifier is therefore not necessarily more trustworthy than a shallower one from another.
+`score` is not available across classifiers, because confidence values are not comparable between methods and VSEARCH-LCA reports none.
 
 ### Multiple region analysis with Sidle
 

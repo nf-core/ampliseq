@@ -1,11 +1,11 @@
 nextflow_process {
 
-    name "Test Process CONSOLIDATE_DADA2_TAXONOMY"
+    name "Test Process CONSOLIDATE_TAXONOMY"
     script "../main.nf"
-    process "CONSOLIDATE_DADA2_TAXONOMY"
+    process "CONSOLIDATE_TAXONOMY"
     tag "modules"
     tag "modules_local"
-    tag "consolidate_dada2_taxonomy"
+    tag "consolidate_taxonomy"
 
     test("a database with Domain and Kingdom keeps its own Kingdom") {
 
@@ -17,14 +17,15 @@ nextflow_process {
                     "dbA": "ASV_ID|Kingdom|Phylum|confidence|kingdom_confidence|phylum_confidence|sequence;asv1|Bacteria||0.9|0.9||ACGT;",
                     "dbB": "ASV_ID|Domain|Kingdom|Phylum|confidence|domain_confidence|kingdom_confidence|phylum_confidence|sequence;asv1|Eukaryota|Fungi|Ascomycota|0.8|1|0.9|0.8|ACGT;"
                 ]
-                def files = tables.collect { key, text ->
-                    def f = new File(dir, "ASV_tax.\${key}.tsv")
+                def files = "dbA,dbB".split(",").collect { key ->
+                    def text = tables[key]
+                    def f = new File(dir, "tax_\${key}.tsv")
                     f.text = text.replace("|", "\\t").replace(";", "\\n")
                     file(f.absolutePath)
                 }
                 input[0] = files
                 input[1] = "most-specific"
-                input[2] = "dbA,dbB"
+                input[2] = "DADA2:dbA,DADA2:dbB"
                 input[3] = "Kingdom,Phylum"
                 input[4] = "consolidated.tsv"
                 """
@@ -54,14 +55,15 @@ nextflow_process {
                     "dbA": "ASV_ID|Kingdom|Family|confidence|kingdom_confidence|family_confidence|sequence;asv1|Bacteria|F|1|1|1|ACGT;",
                     "dbB": "ASV_ID|Kingdom|Family|confidence|kingdom_confidence|family_confidence|sequence;asv1|Bacteria||0.9|0.9||ACGT;"
                 ]
-                def files = tables.collect { key, text ->
-                    def f = new File(dir, "ASV_tax.\${key}.tsv")
+                def files = "dbA,dbB".split(",").collect { key ->
+                    def text = tables[key]
+                    def f = new File(dir, "tax_\${key}.tsv")
                     f.text = text.replace("|", "\\t").replace(";", "\\n")
                     file(f.absolutePath)
                 }
                 input[0] = files
                 input[1] = "score"
-                input[2] = "dbA,dbB"
+                input[2] = "DADA2:dbA,DADA2:dbB"
                 input[3] = "Kingdom,Family"
                 input[4] = "consolidated.tsv"
                 """
@@ -90,14 +92,15 @@ nextflow_process {
                     "dbA": "ASV_ID|Kingdom|Phylum|BOLD_bin|confidence|kingdom_confidence|phylum_confidence|sequence;asv1|Animalia||BOLD:1|0.9|0.9||ACGT;",
                     "dbB": "ASV_ID|Kingdom|Phylum|BOLD_bin|confidence|kingdom_confidence|phylum_confidence|sequence;asv1|Animalia|Chordata||0.8|0.9|0.8|ACGT;"
                 ]
-                def files = tables.collect { key, text ->
-                    def f = new File(dir, "ASV_tax.\${key}.tsv")
+                def files = "dbA,dbB".split(",").collect { key ->
+                    def text = tables[key]
+                    def f = new File(dir, "tax_\${key}.tsv")
                     f.text = text.replace("|", "\\t").replace(";", "\\n")
                     file(f.absolutePath)
                 }
                 input[0] = files
                 input[1] = "most-specific"
-                input[2] = "dbA,dbB"
+                input[2] = "DADA2:dbA,DADA2:dbB"
                 input[3] = "Kingdom,Phylum,BOLD_bin"
                 input[4] = "consolidated.tsv"
                 """
@@ -125,14 +128,15 @@ nextflow_process {
                     "dbA": "ASV_ID|Kingdom|Phylum|Family|Genus|confidence|kingdom_confidence|phylum_confidence|family_confidence|genus_confidence|sequence;asv1|Bacteria|Bacillota|Bacillaceae|Bacillus|0.6|1|1|0.99|0.6|ACGT;",
                     "dbB": "ASV_ID|Kingdom|Phylum|Family|Genus|confidence|kingdom_confidence|phylum_confidence|family_confidence|genus_confidence|sequence;asv1|Bacteria|Bacillota|Bacillaceae||0.9|1|1|0.9|0.3|ACGT;"
                 ]
-                def files = tables.collect { key, text ->
-                    def f = new File(dir, "ASV_tax.\${key}.tsv")
+                def files = "dbB,dbA".split(",").collect { key ->
+                    def text = tables[key]
+                    def f = new File(dir, "tax_\${key}.tsv")
                     f.text = text.replace("|", "\\t").replace(";", "\\n")
                     file(f.absolutePath)
                 }
                 input[0] = files
                 input[1] = "score"
-                input[2] = "dbB,dbA"
+                input[2] = "DADA2:dbB,DADA2:dbA"
                 input[3] = "Kingdom,Phylum,Family,Genus"
                 input[4] = "consolidated.tsv"
                 """
@@ -161,14 +165,15 @@ nextflow_process {
                     "dbA": "ASV_ID|Kingdom|Phylum|Family|Genus|confidence|kingdom_confidence|phylum_confidence|family_confidence|genus_confidence|sequence;asv1|Bacteria|Bacillota|Bacillaceae|Bacillus|0.6|1|1|0.95|0.6|ACGT;",
                     "dbB": "ASV_ID|Kingdom|Phylum|Family|Genus|confidence|kingdom_confidence|phylum_confidence|family_confidence|genus_confidence|sequence;asv1|Bacteria|Bacillota|Bacillaceae||0.99|1|1|0.99|0.3|ACGT;"
                 ]
-                def files = tables.collect { key, text ->
-                    def f = new File(dir, "ASV_tax.\${key}.tsv")
+                def files = "dbA,dbB".split(",").collect { key ->
+                    def text = tables[key]
+                    def f = new File(dir, "tax_\${key}.tsv")
                     f.text = text.replace("|", "\\t").replace(";", "\\n")
                     file(f.absolutePath)
                 }
                 input[0] = files
                 input[1] = "score"
-                input[2] = "dbA,dbB"
+                input[2] = "DADA2:dbA,DADA2:dbB"
                 input[3] = "Kingdom,Phylum,Family,Genus"
                 input[4] = "consolidated.tsv"
                 """
@@ -197,14 +202,15 @@ nextflow_process {
                     "dbB": "ASV_ID|Kingdom|Phylum|Family|Genus|confidence|kingdom_confidence|phylum_confidence|family_confidence|genus_confidence|sequence;asv1|Bacteria|Bacillota|Bacillaceae|Priestia|0.95|1|1|1|0.95|ACGT;",
                     "dbC": "ASV_ID|Kingdom|Phylum|Family|Genus|confidence|kingdom_confidence|phylum_confidence|family_confidence|genus_confidence|sequence;asv1|Bacteria|Bacillota|||0.8|1|0.8|0.4|0.2|ACGT;"
                 ]
-                def files = tables.collect { key, text ->
-                    def f = new File(dir, "ASV_tax.\${key}.tsv")
+                def files = "dbA,dbB,dbC".split(",").collect { key ->
+                    def text = tables[key]
+                    def f = new File(dir, "tax_\${key}.tsv")
                     f.text = text.replace("|", "\\t").replace(";", "\\n")
                     file(f.absolutePath)
                 }
                 input[0] = files
                 input[1] = "score"
-                input[2] = "dbA,dbB,dbC"
+                input[2] = "DADA2:dbA,DADA2:dbB,DADA2:dbC"
                 input[3] = "Kingdom,Phylum,Family,Genus"
                 input[4] = "consolidated.tsv"
                 """
@@ -233,14 +239,15 @@ nextflow_process {
                     "dbA": "ASV_ID|Kingdom|Genus|Species|confidence|kingdom_confidence|genus_confidence|sequence;asv1|Bacteria|Bacillus|subtilis|1|1|1|ACGT;",
                     "dbB": "ASV_ID|Kingdom|Genus|confidence|kingdom_confidence|genus_confidence|sequence;asv1|Bacteria|Bacillus|1|1|1|ACGT;"
                 ]
-                def files = tables.collect { key, text ->
-                    def f = new File(dir, "ASV_tax.\${key}.tsv")
+                def files = "dbB,dbA".split(",").collect { key ->
+                    def text = tables[key]
+                    def f = new File(dir, "tax_\${key}.tsv")
                     f.text = text.replace("|", "\\t").replace(";", "\\n")
                     file(f.absolutePath)
                 }
                 input[0] = files
                 input[1] = "score"
-                input[2] = "dbB,dbA"
+                input[2] = "DADA2:dbB,DADA2:dbA"
                 input[3] = "Kingdom,Genus,Species"
                 input[4] = "consolidated.tsv"
                 """
@@ -255,6 +262,121 @@ nextflow_process {
                 { assert process.success },
                 { assert asv1[header.indexOf("Species")] == "subtilis" },
                 { assert asv1[header.indexOf("database")] == "dbA" }
+            )
+        }
+    }
+
+    test("most-specific: the table with the deepest rank wins per ASV, whichever classifier made it") {
+
+        when {
+            process {
+                """
+                def dir = File.createTempDir()
+                def tables = [
+                    "dada2": "ASV_ID|Kingdom|Phylum|Family|Genus|confidence|kingdom_confidence|phylum_confidence|family_confidence|genus_confidence|sequence;asv1|Bacteria|Bacillota|Bacillaceae||0.9|1|1|0.9|0.3|ACGT;asv2|Bacteria|Bacillota|Bacillaceae|Bacillus|0.8|1|1|1|0.8|TTTT;",
+                    "sintax": "ASV_ID|Kingdom|Phylum|Family|Genus|confidence|sequence;asv1|Bacteria|Bacillota|Bacillaceae|Bacillus|0.7|ACGT;asv2|Bacteria|Bacillota|||0.9|TTTT;"
+                ]
+                def files = ["dada2", "sintax"].collect { key ->
+                    def f = new File(dir, "tax_\${key}.tsv")
+                    f.text = tables[key].replace("|", "\\t").replace(";", "\\n")
+                    file(f.absolutePath)
+                }
+                input[0] = files
+                input[1] = "most-specific"
+                input[2] = "DADA2:silva,SINTAX:silva"
+                input[3] = "Kingdom,Phylum,Family,Genus"
+                input[4] = "consolidated.tsv"
+                """
+            }
+        }
+
+        then {
+            def rows = path(process.out.tsv[0]).readLines().collect { it.split("\t", -1) as List }
+            def header = rows[0]
+            def asv1 = rows.find { it[0] == "asv1" }
+            def asv2 = rows.find { it[0] == "asv2" }
+            assertAll(
+                { assert process.success },
+                { assert asv1[header.indexOf("Genus")] == "Bacillus" },
+                { assert asv1[header.indexOf("classifier")] == "SINTAX" },
+                { assert asv1[header.indexOf("database")] == "silva" },
+                { assert asv2[header.indexOf("Genus")] == "Bacillus" },
+                { assert asv2[header.indexOf("classifier")] == "DADA2" }
+            )
+        }
+    }
+
+    test("most-specific: a tie goes to the first listed source") {
+
+        when {
+            process {
+                """
+                def dir = File.createTempDir()
+                def tables = [
+                    "dada2": "ASV_ID|Kingdom|Phylum|Family|Genus|confidence|sequence;asv1|Bacteria|Bacillota|Bacillaceae|Bacillus|1|ACGT;",
+                    "sintax": "ASV_ID|Kingdom|Phylum|Family|Genus|confidence|sequence;asv1|Bacteria|Bacillota|Bacillaceae|Bacillus|1|ACGT;",
+                    "vsearch": "ASV_ID|Kingdom|Phylum|Family|Genus|confidence|sequence;asv1|Bacteria|Bacillota|Bacillaceae|Bacillus|1|ACGT;"
+                ]
+                def files = ["dada2", "sintax", "vsearch"].collect { key ->
+                    def f = new File(dir, "tax_\${key}.tsv")
+                    f.text = tables[key].replace("|", "\\t").replace(";", "\\n")
+                    file(f.absolutePath)
+                }
+                input[0] = files
+                input[1] = "most-specific"
+                input[2] = "DADA2:silva,SINTAX:coidb,VSEARCH-LCA:coidb"
+                input[3] = "Kingdom,Phylum,Family,Genus"
+                input[4] = "consolidated.tsv"
+                """
+            }
+        }
+
+        then {
+            def rows = path(process.out.tsv[0]).readLines().collect { it.split("\t", -1) as List }
+            def header = rows[0]
+            def asv1 = rows.find { it[0] == "asv1" }
+            def asv2 = rows.find { it[0] == "asv2" }
+            assertAll(
+                { assert process.success },
+                { assert asv1[header.indexOf("classifier")] == "DADA2" }
+            )
+        }
+    }
+
+    test("most-specific: a tie follows the order of the sources, not the classifier names") {
+
+        when {
+            process {
+                """
+                def dir = File.createTempDir()
+                def tables = [
+                    "dada2": "ASV_ID|Kingdom|Phylum|Family|Genus|confidence|sequence;asv1|Bacteria|Bacillota|Bacillaceae|Bacillus|1|ACGT;",
+                    "sintax": "ASV_ID|Kingdom|Phylum|Family|Genus|confidence|sequence;asv1|Bacteria|Bacillota|Bacillaceae|Bacillus|1|ACGT;",
+                    "vsearch": "ASV_ID|Kingdom|Phylum|Family|Genus|confidence|sequence;asv1|Bacteria|Bacillota|Bacillaceae|Bacillus|1|ACGT;"
+                ]
+                def files = ["vsearch", "sintax", "dada2"].collect { key ->
+                    def f = new File(dir, "tax_\${key}.tsv")
+                    f.text = tables[key].replace("|", "\\t").replace(";", "\\n")
+                    file(f.absolutePath)
+                }
+                input[0] = files
+                input[1] = "most-specific"
+                input[2] = "VSEARCH-LCA:coidb,SINTAX:coidb,DADA2:silva"
+                input[3] = "Kingdom,Phylum,Family,Genus"
+                input[4] = "consolidated.tsv"
+                """
+            }
+        }
+
+        then {
+            def rows = path(process.out.tsv[0]).readLines().collect { it.split("\t", -1) as List }
+            def header = rows[0]
+            def asv1 = rows.find { it[0] == "asv1" }
+            def asv2 = rows.find { it[0] == "asv2" }
+            assertAll(
+                { assert process.success },
+                { assert asv1[header.indexOf("classifier")] == "VSEARCH-LCA" },
+                { assert asv1[header.indexOf("database")] == "coidb" }
             )
         }
     }

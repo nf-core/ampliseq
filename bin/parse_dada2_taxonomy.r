@@ -22,7 +22,7 @@ tax = read.table(tax_file, header = TRUE, sep = "\t", stringsAsFactors = FALSE, 
 # SH and BOLD_bin are sequence-cluster identifiers rather than ranks, although databases declare
 # them in taxlevels: joined in, they become a spurious extra level in every rank-collapsed
 # QIIME2 output.
-non_rank_cols <- colnames(tax) %in% c('ASV_ID', 'sequence', 'confidence', 'database', 'SH', 'BOLD_bin') |
+non_rank_cols <- colnames(tax) %in% c('ASV_ID', 'sequence', 'confidence', 'classifier', 'database', 'SH', 'BOLD_bin') |
     grepl('_confidence$|_exact$', colnames(tax))
 r <- colnames(tax)[!non_rank_cols]
 tax$taxonomy <- do.call(paste, c(tax[r], sep = ';'))

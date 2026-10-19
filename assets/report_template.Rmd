@@ -1187,7 +1187,7 @@ if ("database" %in% colnames(asv_tax)) {
 }
 
 # Calculate the classified numbers/percent of asv
-non_rank_cols <- colnames(asv_tax) %in% c("ASV_ID", "confidence", "sequence", "database") | grepl("_confidence$", colnames(asv_tax))
+non_rank_cols <- colnames(asv_tax) %in% c("ASV_ID", "confidence", "sequence", "classifier", "database") | grepl("_confidence$", colnames(asv_tax))
 level <- colnames(asv_tax)[!non_rank_cols]
 
 n_asv_tax = nrow(asv_tax)

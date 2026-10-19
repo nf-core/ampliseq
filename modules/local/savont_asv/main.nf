@@ -5,8 +5,8 @@ process SAVONT_ASV {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/savont:0.7.0--hec9b1f2_0' :
-        'biocontainers/savont:0.7.0--hec9b1f2_0' }"
+        'https://depot.galaxyproject.org/singularity/savont:0.8.0--hec9b1f2_0' :
+        'biocontainers/savont:0.8.0--hec9b1f2_0' }"
 
     input:
     tuple val(meta), path(reads), val(sample_header), val(sample_string), val(pooled)

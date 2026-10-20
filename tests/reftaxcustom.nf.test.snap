@@ -119,7 +119,7 @@
                     "untar": 1.34
                 },
                 "Workflow": {
-                    "nf-core/ampliseq": "v3.0.0"
+                    "nf-core/ampliseq": "v3.1.0"
                 }
             },
             [

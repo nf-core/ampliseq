@@ -1,0 +1,134 @@
+nextflow_process {
+
+    name "Test Process FORMAT_TAXONOMY_SINTAX"
+    script "../main.nf"
+    process "FORMAT_TAXONOMY_SINTAX"
+    tag "modules"
+    tag "modules_local"
+    tag "format_taxonomy_sintax"
+
+    test("Greengenes2: gzipped assignTaxonomy.fna.gz from the DADA2 script is converted") {
+
+        when {
+            params {
+                sintax_ref_taxonomy = "greengenes2"
+            }
+            process {
+                """
+                def dir = File.createTempDir()
+                def plain = new File(dir, "gg2_2024_09_toSpecies_trainset.fa")
+                plain.text = [
+                    ">1 d__Bacteria;p__Bacillota_A_368345;c__Clostridia_258483;o__Lachnospirales;f__Lachnospiraceae;g__Eubacterium_G_180878;s__ventriosum; [x]",
+                    "ACGTACGT",
+                    ">2 d__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales_737866;f__Pasteurellaceae;g__Haemophilus_D_735815; [x]",
+                    "TTGGCCAA",
+                    ""
+                ].join("\\n")
+                def gz = new File(dir, plain.name + ".gz")
+                gz.withOutputStream { out -> new java.util.zip.GZIPOutputStream(out).withCloseable { it << plain.bytes } }
+                input[0] = file(gz.absolutePath)
+                """
+            }
+        }
+
+        then {
+            def lines = process.success ? path(process.out.db[0]).linesGzip : []
+            assertAll(
+                { assert process.success },
+                { assert lines.size() == 4 },
+                { assert lines[0] == ">s1;tax=d:Bacteria,k:Bacillota_A_368345,p:Clostridia_258483,c:Lachnospirales,o:Lachnospiraceae,f:Eubacterium_G_180878,g:ventriosum" },
+                { assert lines[1] == "ACGTACGT" },
+                { assert lines[2] == ">s2;tax=d:Bacteria,k:Pseudomonadota,p:Gammaproteobacteria,c:Enterobacterales_737866,o:Pasteurellaceae,f:Haemophilus_D_735815" },
+                { assert lines[3] == "TTGGCCAA" }
+            )
+        }
+    }
+
+    test("plain assignTaxonomy.fna: rank letters by position, empty ranks end the string, separators replaced") {
+
+        when {
+            params {
+                sintax_ref_taxonomy = "plain"
+                sintax_ref_databases = [ plain: [
+                    title: "plain", citation: "none", dbversion: "none",
+                    fmtscript: "cp db.fna assignTaxonomy.fna && taxref_reformat_dada2_to_sintax.sh"
+                ] ]
+            }
+            process {
+                """
+                def f = new File(File.createTempDir(), "db.fna")
+                f.text = [
+                    ">A;B;C;D;E;F;G;H;I;",
+                    "AAAA",
+                    ">A;B;;;",
+                    "CCCC",
+                    ">A;Foo:bar,baz;C;",
+                    "GGGG",
+                    ""
+                ].join("\\n")
+                input[0] = file(f.absolutePath)
+                """
+            }
+        }
+
+        then {
+            def lines = process.success ? path(process.out.db[0]).linesGzip : []
+            assertAll(
+                { assert process.success },
+                { assert lines.size() == 6 },
+                { assert lines[0] == ">s1;tax=d:A,k:B,p:C,c:D,o:E,f:F,g:G,s:H,t:I" },
+                { assert lines[2] == ">s2;tax=d:A,k:B" },
+                { assert lines[4] == ">s3;tax=d:A,k:Foo_bar_baz,p:C" },
+                { assert lines[1] == "AAAA" && lines[3] == "CCCC" && lines[5] == "GGGG" }
+            )
+        }
+    }
+
+    test("a taxonomy with more than nine ranks fails the task") {
+
+        when {
+            params {
+                sintax_ref_taxonomy = "plain"
+                sintax_ref_databases = [ plain: [
+                    title: "plain", citation: "none", dbversion: "none",
+                    fmtscript: "cp db.fna assignTaxonomy.fna && taxref_reformat_dada2_to_sintax.sh"
+                ] ]
+            }
+            process {
+                """
+                def f = new File(File.createTempDir(), "db.fna")
+                f.text = [ ">A;B;C;D;E;F;G;H;I;J;", "AAAA", ">A;B;", "CCCC", "" ].join("\\n")
+                input[0] = file(f.absolutePath)
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+        }
+    }
+
+    test("an assignTaxonomy.fna without records fails the task") {
+
+        when {
+            params {
+                sintax_ref_taxonomy = "plain"
+                sintax_ref_databases = [ plain: [
+                    title: "plain", citation: "none", dbversion: "none",
+                    fmtscript: "cp db.fna assignTaxonomy.fna && taxref_reformat_dada2_to_sintax.sh"
+                ] ]
+            }
+            process {
+                """
+                def f = new File(File.createTempDir(), "db.fna")
+                f.text = ""
+                input[0] = file(f.absolutePath)
+                """
+            }
+        }
+
+        then {
+            assert process.failed
+        }
+    }
+}

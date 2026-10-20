@@ -262,13 +262,20 @@ A database that lacks a group can still give high bootstrap values for it, e.g. 
 
 With `--consolidate_taxonomies most-specific`, DADA2, SINTAX and VSEARCH-LCA can be run together (e.g. `--dada_ref_taxonomy silva --sintax_ref_taxonomy coidb`), and the result for each ASV is taken from whichever classifier and database resolved the deepest rank.
 Ties go to the DADA2 databases in `--dada_ref_taxonomy` order, then SINTAX, then VSEARCH-LCA.
-The consolidated table has `classifier` and `database` columns that record the winner for each ASV.
+The consolidated table has `classifier` and `database` columns that record the winner for each ASV, and both are empty for an ASV that no classifier resolved to any rank.
 Rank names are harmonised as described for multiple DADA2 databases above, using the levels of the highest-priority classifier.
+The other classifiers need to use the same rank names, e.g. through `--sintax_assign_taxlevels` or `--vsearch_lca_assign_taxlevels` with a custom reference database.
+The pipeline stops if a table has none of them.
 Kraken2, QIIME2 and phylogenetic placement are not part of the consolidation: Kraken2 and QIIME2 output has a different shape, and placement gives an unranked taxonomy string.
 
 How many ranks a classifier resolves depends on its method and cutoffs, e.g. `--sintax_cutoff` for SINTAX and the minimum bootstrap for DADA2.
 A deeper result from one classifier is therefore not necessarily more trustworthy than a shallower one from another.
+For DADA2, the comparison is between the `assignTaxonomy` result, which includes species when the reference database has them, and the other methods.
+Exact species matches from `addSpecies` (the `Species_exact` column) are not counted as a rank.
+The `confidence` column of the table consolidated across classifiers is empty, because DADA2 bootstraps (0-100) and SINTAX probabilities (0-1) are not comparable.
+The per-rank `*_confidence` columns are DADA2 bootstraps and are empty for ASVs won by another classifier.
 `score` is not available across classifiers, because confidence values are not comparable between methods and VSEARCH-LCA reports none.
+With `score`, SINTAX and VSEARCH-LCA results are left out of the consolidation, and the pipeline prints a warning.
 
 ### Multiple region analysis with Sidle
 

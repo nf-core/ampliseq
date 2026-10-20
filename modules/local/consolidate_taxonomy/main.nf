@@ -77,7 +77,11 @@ process CONSOLIDATE_TAXONOMY {
         df <- read.delim(f, sep = "\\t", header = TRUE, na.strings = "", colClasses = "character", check.names = FALSE)
         conf_cols <- grep("^confidence\$|_confidence\$", colnames(df), value = TRUE)
         df[conf_cols] <- lapply(df[conf_cols], as.numeric)
+        own_ranks <- colnames(df)[!is_meta(colnames(df))]
         df <- harmonize(df)
+        if (!any(colnames(df) %in% target_ranks)) {
+            stop(paste0("None of the ranks of ", sources[i], " (", paste(own_ranks, collapse = ","), ") are among the taxonomic levels used for consolidation (", paste(target_ranks, collapse = ","), "). All consolidated tables need the same rank names."))
+        }
         df\$classifier <- source_classifier[i]
         df\$database <- source_database[i]
         df\$source_index <- i
@@ -150,6 +154,10 @@ process CONSOLIDATE_TAXONOMY {
         winner_rows <- vapply(rows_by_asv, function(rows) rows[order(-rowSums(assigned[rows, , drop = FALSE]), tiebreak[rows])][1], integer(1))
     }
     winners <- combined[winner_rows, ]
+    # an ASV without any rank was classified by nobody, whichever source came first
+    winners[rowSums(assigned[winner_rows, , drop = FALSE]) == 0, c("classifier", "database")] <- NA
+    # DADA2 bootstraps (0-100) and SINTAX probabilities (0-1) must not share one column
+    if (length(unique(source_classifier)) > 1 && "confidence" %in% colnames(winners)) winners\$confidence <- NA
 
     # same column order as a single-database dada2_taxonomy.nf table, with any identifier column
     # (SH, BOLD_bin, Species_exact) kept after the ranks and the new provenance column last

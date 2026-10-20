@@ -380,4 +380,183 @@ nextflow_process {
             )
         }
     }
+
+    test("most-specific: confidence is blank when tables from different classifiers are mixed") {
+
+        when {
+            process {
+                """
+                def dir = File.createTempDir()
+                def tables = [
+                    "dada2": "ASV_ID|Kingdom|Phylum|Family|confidence|sequence;asv1|Bacteria|Bacillota|Bacillaceae|90|ACGT;asv2|Bacteria|Bacillota||80|TTTT;",
+                    "sintax": "ASV_ID|Kingdom|Phylum|Family|confidence|sequence;asv1|Bacteria|Bacillota||0.9|ACGT;asv2|Bacteria|Bacillota|Bacillaceae|0.9|TTTT;"
+                ]
+                def files = ["dada2", "sintax"].collect { key ->
+                    def f = new File(dir, "tax_\${key}.tsv")
+                    f.text = tables[key].replace("|", "\\t").replace(";", "\\n")
+                    file(f.absolutePath)
+                }
+                input[0] = files
+                input[1] = "most-specific"
+                input[2] = "DADA2:silva,SINTAX:coidb"
+                input[3] = "Kingdom,Phylum,Family"
+                input[4] = "consolidated.tsv"
+                """
+            }
+        }
+
+        then {
+            def rows = path(process.out.tsv[0]).readLines().collect { it.split("\t", -1) as List }
+            def header = rows[0]
+            assertAll(
+                { assert process.success },
+                // each classifier won one ASV, so the column would otherwise mix a 0-100 bootstrap with a 0-1 probability
+                { assert rows.find { it[0] == "asv1" }[header.indexOf("classifier")] == "DADA2" },
+                { assert rows.find { it[0] == "asv2" }[header.indexOf("classifier")] == "SINTAX" },
+                { assert rows.drop(1).every { it[header.indexOf("confidence")] == "" } }
+            )
+        }
+    }
+
+    test("most-specific: confidence is kept when all tables come from DADA2") {
+
+        when {
+            process {
+                """
+                def dir = File.createTempDir()
+                def tables = [
+                    "dada2a": "ASV_ID|Kingdom|Phylum|Family|confidence|sequence;asv1|Bacteria|Bacillota|Bacillaceae|90|ACGT;",
+                    "dada2b": "ASV_ID|Kingdom|Phylum|Family|confidence|sequence;asv1|Bacteria|Bacillota||80|ACGT;"
+                ]
+                def files = ["dada2a", "dada2b"].collect { key ->
+                    def f = new File(dir, "tax_\${key}.tsv")
+                    f.text = tables[key].replace("|", "\\t").replace(";", "\\n")
+                    file(f.absolutePath)
+                }
+                input[0] = files
+                input[1] = "most-specific"
+                input[2] = "DADA2:silva,DADA2:rdp"
+                input[3] = "Kingdom,Phylum,Family"
+                input[4] = "consolidated.tsv"
+                """
+            }
+        }
+
+        then {
+            def rows = path(process.out.tsv[0]).readLines().collect { it.split("\t", -1) as List }
+            def header = rows[0]
+            assertAll(
+                { assert process.success },
+                { assert rows.find { it[0] == "asv1" }[header.indexOf("confidence")] == "90" }
+            )
+        }
+    }
+
+    test("most-specific: a table without any of the target ranks stops the process") {
+
+        when {
+            process {
+                """
+                def dir = File.createTempDir()
+                def tables = [
+                    "dada2": "ASV_ID|Kingdom|Phylum|Class|confidence|sequence;asv1|Bacteria|Bacillota|Bacilli|90|ACGT;",
+                    "sintax": "ASV_ID|K|P|C|O|confidence|sequence;asv1|Bacteria|Bacillota|Bacilli|Bacillales|0.9|ACGT;"
+                ]
+                def files = ["dada2", "sintax"].collect { key ->
+                    def f = new File(dir, "tax_\${key}.tsv")
+                    f.text = tables[key].replace("|", "\\t").replace(";", "\\n")
+                    file(f.absolutePath)
+                }
+                input[0] = files
+                input[1] = "most-specific"
+                input[2] = "DADA2:silva,SINTAX:custom"
+                input[3] = "Kingdom,Phylum,Class"
+                input[4] = "consolidated.tsv"
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.failed },
+                // the message names the offending source, so the user can fix its taxonomic levels
+                { assert process.errorReport.contains("SINTAX:custom") }
+            )
+        }
+    }
+
+    test("most-specific: an ASV nobody classified has no classifier or database") {
+
+        when {
+            process {
+                """
+                def dir = File.createTempDir()
+                def tables = [
+                    "dada2": "ASV_ID|Kingdom|Phylum|Family|confidence|sequence;asv1|Bacteria|Bacillota|Bacillaceae|90|ACGT;asv2|||||TTTT;",
+                    "sintax": "ASV_ID|Kingdom|Phylum|Family|confidence|sequence;asv1|Bacteria|Bacillota||0.9|ACGT;asv2|||||TTTT;"
+                ]
+                def files = ["dada2", "sintax"].collect { key ->
+                    def f = new File(dir, "tax_\${key}.tsv")
+                    f.text = tables[key].replace("|", "\\t").replace(";", "\\n")
+                    file(f.absolutePath)
+                }
+                input[0] = files
+                input[1] = "most-specific"
+                input[2] = "DADA2:silva,SINTAX:coidb"
+                input[3] = "Kingdom,Phylum,Family"
+                input[4] = "consolidated.tsv"
+                """
+            }
+        }
+
+        then {
+            def rows = path(process.out.tsv[0]).readLines().collect { it.split("\t", -1) as List }
+            def header = rows[0]
+            def asv1 = rows.find { it[0] == "asv1" }
+            def asv2 = rows.find { it[0] == "asv2" }
+            assertAll(
+                { assert process.success },
+                { assert asv1[header.indexOf("classifier")] == "DADA2" },
+                { assert asv1[header.indexOf("database")] == "silva" },
+                // the first source would win the tie, but it classified nothing
+                { assert asv2[header.indexOf("classifier")] == "" },
+                { assert asv2[header.indexOf("database")] == "" }
+            )
+        }
+    }
+
+    test("most-specific: ranks filled are counted, so a gap does not make a table deeper") {
+
+        when {
+            process {
+                """
+                def dir = File.createTempDir()
+                def tables = [
+                    "dada2": "ASV_ID|Kingdom|Phylum|Family|Genus|confidence|sequence;asv1|Bacteria|Bacillota|Bacillaceae||90|ACGT;",
+                    "sintax": "ASV_ID|Kingdom|Phylum|Family|Genus|confidence|sequence;asv1|Bacteria|Bacillota||Bacillus|0.9|ACGT;"
+                ]
+                def files = ["dada2", "sintax"].collect { key ->
+                    def f = new File(dir, "tax_\${key}.tsv")
+                    f.text = tables[key].replace("|", "\\t").replace(";", "\\n")
+                    file(f.absolutePath)
+                }
+                input[0] = files
+                input[1] = "most-specific"
+                input[2] = "DADA2:silva,SINTAX:coidb"
+                input[3] = "Kingdom,Phylum,Family,Genus"
+                input[4] = "consolidated.tsv"
+                """
+            }
+        }
+
+        then {
+            def rows = path(process.out.tsv[0]).readLines().collect { it.split("\t", -1) as List }
+            def header = rows[0]
+            assertAll(
+                { assert process.success },
+                // both fill three ranks, SINTAX reaches Genus past its gap, and the first source still wins
+                { assert rows.find { it[0] == "asv1" }[header.indexOf("classifier")] == "DADA2" }
+            )
+        }
+    }
 }

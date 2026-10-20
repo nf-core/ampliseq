@@ -234,6 +234,8 @@ Parameter guidance is given in [nf-core/ampliseq website parameter documentation
 
 > [!TIP]
 > Taxonomic reference databases can be stored and shared locally with [`--ref_taxonomy_storage`](https://nf-co.re/ampliseq/parameters/#ref_taxonomy_storage). That way, remote files will be downloaded only if they are not available in the storage directory.
+> The MIDORI2 databases (`midori2-co1`) are downloaded as zip archives of 0.4 to 0.6 GB that hold the files for all genes, from which the CO1 file is extracted.
+> Using `--ref_taxonomy_storage` avoids downloading them for every run.
 
 #### Multiple DADA2 reference databases
 

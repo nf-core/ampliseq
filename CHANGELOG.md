@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#1119](https://github.com/nf-core/ampliseq/pull/1119) - DADA2 `addSpecies` no longer runs out of memory with the SILVA 144 database: SILVA 144 is classified in chunks of 2000 ASVs instead of 10000. A database can set its own chunk size with `chunksize` in `conf/ref_databases.config`; `--dada_assign_chunksize` overrides it (by @erikrikarddaniel)
 - [#1126](https://github.com/nf-core/ampliseq/pull/1126) - Made params `config_profile_*` optional/nullable with nextflow v26.10.x (reported by @ebete, fix by @d4straub)
+- [#NN](https://github.com/nf-core/ampliseq/pull/NN) - The MIDORI2 databases (`midori2-co1`) could not be downloaded because `reference-midori.info` no longer serves them; they are now downloaded from Zenodo, and the CO1 file is extracted from the archive. `midori2-co1` is now release GB273, `midori2-co1=gb270` is kept and `midori2-co1=gb273` added. The key `midori2-co1=gb250` for `--dada_ref_taxonomy` is removed, because GB250 is not on Zenodo. Fixes [#1130](https://github.com/nf-core/ampliseq/issues/1130) (by @erikrikarddaniel)
 
 ### `Dependencies`
 

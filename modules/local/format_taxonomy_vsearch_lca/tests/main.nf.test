@@ -1,0 +1,46 @@
+nextflow_process {
+
+    name "Test Process FORMAT_TAXONOMY_VSEARCH_LCA"
+    script "../main.nf"
+    process "FORMAT_TAXONOMY_VSEARCH_LCA"
+    tag "modules"
+    tag "modules_local"
+    tag "format_taxonomy_vsearch_lca"
+
+    test("MIDORI2: the CO1 file in uniq/ is taken from the zip holding every gene") {
+
+        when {
+            params {
+                vsearch_lca_ref_taxonomy = "midori2-co1"
+            }
+            process {
+                """
+                def zip = new File(File.createTempDir(), "MIDORI2_GB273_SINTAX.zip")
+                new java.util.zip.ZipOutputStream(zip.newOutputStream()).withCloseable { z ->
+                    [
+                        "SINTAX/uniq/MIDORI2_UNIQ_NUC_GB273_Cytb_SINTAX.fasta.gz": ">cytb;tax=k:Eukaryota\\nTTTT\\n",
+                        "SINTAX/total/MIDORI2_TOTAL_NUC_GB273_CO1_SINTAX.fasta.gz": ">total;tax=k:Eukaryota\\nGGGG\\n",
+                        "SINTAX/uniq/MIDORI2_UNIQ_NUC_GB273_CO1_SINTAX.fasta.gz": ">MG559732.1.<1.>690;tax=k:Eukaryota_2759,p:Discosea_555280;\\nGATA\\n"
+                    ].each { name, content ->
+                        z.putNextEntry(new java.util.zip.ZipEntry(name))
+                        def bytes = new ByteArrayOutputStream()
+                        new java.util.zip.GZIPOutputStream(bytes).withCloseable { it << content.bytes }
+                        z.write(bytes.toByteArray())
+                        z.closeEntry()
+                    }
+                }
+                input[0] = file(zip.absolutePath)
+                """
+            }
+        }
+
+        then {
+            def lines = process.success ? path(process.out.db[0]).linesGzip : []
+            assertAll(
+                { assert process.success },
+                // the file for CO1 in uniq/, not another gene and not the total/ variant
+                { assert lines == [">MG559732.1.<1.>690;tax=k:Eukaryota_2759,p:Discosea_555280;", "GATA"] }
+            )
+        }
+    }
+}

@@ -210,12 +210,11 @@ Pre-configured reference taxonomy databases are:
 | unite-fungi  | +     | +      | -       | -      | +       | -          | eukaryotic nuclear ribosomal ITS region       |
 | unite-alleuk | +     | +      | -       | -      | +       | -          | eukaryotic nuclear ribosomal ITS region       |
 | coidb        | +     | +      | -       | -      | +       | -          | eukaryotic Cytochrome Oxidase I (COI)         |
-| midori2-co1  | +     | +      | -       | -      | +       | -          | eukaryotic Cytochrome Oxidase I (COI)         |
+| midori2-co1  | -⁵    | +      | -       | -      | +       | -          | eukaryotic Cytochrome Oxidase I (COI)         |
 | zehr-nifh    | +     | +      | -       | -      | -       | -          | Nitrogenase iron protein NifH                 |
-| diat-barcode | +     | +      | -       | -      | -       | -          | diatom rbcL (263 bp)                          |
 | standard     | -     | -      | +       | -      | -       | -          | any in genomes of archaea, bacteria, viruses⁴ |
 
-¹: As of Silva version 138 optimized for classification of Bacteria and Archaea, not suitable for Eukaryotes; ²[`--dada_taxonomy_rc`](https://nf-co.re/ampliseq/parameters#dada_taxonomy_rc) is recommended; ³: de-replicated at 85%, only for testing purposes; ⁴: quality of results might vary
+¹: As of Silva version 138 optimized for classification of Bacteria and Archaea, not suitable for Eukaryotes; ²[`--dada_taxonomy_rc`](https://nf-co.re/ampliseq/parameters#dada_taxonomy_rc) is recommended; ³: de-replicated at 85%, only for testing purposes; ⁴: quality of results might vary; ⁵: DADA2 `assignTaxonomy` cannot use the MIDORI2 files, which hold more distinct taxonomy strings than its limit of 65,535
 
 For the exact versioned key of each database (e.g. `gtdb=R11-RS232`), see [`conf/ref_databases.config`](https://github.com/nf-core/ampliseq/blob/master/conf/ref_databases.config).
 
@@ -235,6 +234,8 @@ Parameter guidance is given in [nf-core/ampliseq website parameter documentation
 
 > [!TIP]
 > Taxonomic reference databases can be stored and shared locally with [`--ref_taxonomy_storage`](https://nf-co.re/ampliseq/parameters/#ref_taxonomy_storage). That way, remote files will be downloaded only if they are not available in the storage directory.
+> The MIDORI2 databases (`midori2-co1`) are downloaded as zip archives of 0.4 to 0.6 GB that hold the files for all genes, from which the CO1 file is extracted.
+> Using `--ref_taxonomy_storage` avoids downloading them for every run.
 
 #### Multiple DADA2 reference databases
 

@@ -7,8 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-- [#1121](https://github.com/nf-core/ampliseq/pull/1121) - Added the Diat.barcode database (rbcL, 263 bp) for classification of diatoms with DADA2: `--dada_ref_taxonomy diat-barcode` (requested in [#1115](https://github.com/nf-core/ampliseq/issues/1115) by @pragermh, by @erikrikarddaniel)
-- [#1123](https://github.com/nf-core/ampliseq/pull/1123) - `--sintax_ref_taxonomy` now accepts all databases available for DADA2 (SILVA, GTDB, SBDI-GTDB, RDP, Greengenes2, PR2, GloSED, MIDORI2-CO1, Zehr-nifH, Diat.barcode), in addition to COIDB and UNITE; requested in [#618](https://github.com/nf-core/ampliseq/issues/618) (by @erikrikarddaniel)
+- [#1123](https://github.com/nf-core/ampliseq/pull/1123) - `--sintax_ref_taxonomy` now accepts all databases available for DADA2 (SILVA, GTDB, SBDI-GTDB, RDP, Greengenes2, PR2, GloSED, MIDORI2-CO1, Zehr-nifH), in addition to COIDB and UNITE; requested in [#618](https://github.com/nf-core/ampliseq/issues/618) (by @erikrikarddaniel)
 - [#1133](https://github.com/nf-core/ampliseq/pull/1133) - `--consolidate_taxonomies most-specific` now also picks a winner per ASV across classifiers when DADA2, SINTAX and VSEARCH-LCA are run together; consolidated tables have a new `classifier` column next to `database` ([#1061](https://github.com/nf-core/ampliseq/issues/1061)) (by @erikrikarddaniel)
 
 ### `Changed`
@@ -20,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [#1119](https://github.com/nf-core/ampliseq/pull/1119) - DADA2 `addSpecies` no longer runs out of memory with the SILVA 144 database: SILVA 144 is classified in chunks of 2000 ASVs instead of 10000. A database can set its own chunk size with `chunksize` in `conf/ref_databases.config`; `--dada_assign_chunksize` overrides it (by @erikrikarddaniel)
 - [#1126](https://github.com/nf-core/ampliseq/pull/1126) - Made params `config_profile_*` optional/nullable with nextflow v26.10.x (reported by @ebete, fix by @d4straub)
+- [#1132](https://github.com/nf-core/ampliseq/pull/1132) - The MIDORI2 databases (`midori2-co1`) for `--sintax_ref_taxonomy` and `--vsearch_lca_ref_taxonomy` could not be downloaded because `reference-midori.info` no longer serves them; they are now downloaded from Zenodo, and the CO1 file is extracted from the archive. `midori2-co1` is now release GB273, `midori2-co1=gb270` is kept and `midori2-co1=gb273` added. `midori2-co1` and `midori2-co1=gb250` are removed from `--dada_ref_taxonomy`: GB250 is not on Zenodo, and DADA2 `assignTaxonomy` cannot use the newer files because they hold more distinct taxonomy strings than its limit of 65,535. Fixes [#1130](https://github.com/nf-core/ampliseq/issues/1130) (by @erikrikarddaniel)
 
 ### `Dependencies`
 

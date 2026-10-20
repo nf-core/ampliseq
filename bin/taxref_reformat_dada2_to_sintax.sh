@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Converts the DADA2 assignTaxonomy() fasta (assignTaxonomy.fna, produced by a taxref_reformat_*.sh script)
+# Converts the DADA2 assignTaxonomy() fasta (assignTaxonomy.fna or assignTaxonomy.fna.gz, produced by a taxref_reformat_*.sh script)
 # to a gzipped fasta for VSEARCH sintax: sintaxdb.fa.gz
 #
 # ">Bacteria;Proteobacteria;Gammaproteobacteria;" becomes ">s1;tax=d:Bacteria,k:Proteobacteria,p:Gammaproteobacteria"
@@ -8,7 +8,12 @@
 # does not match the rank name, and the rank names are given by --sintax_assign_taxlevels / taxlevels.
 # A taxonomy string stops at its first empty rank, because sintax output is read by position.
 
-awk '
+set -eu
+
+input=assignTaxonomy.fna
+[ -e "$input" ] || input=assignTaxonomy.fna.gz
+
+gzip -cdf "$input" | awk '
 BEGIN { split("d k p c o f g s t", letter, " ") }
 /^>/ {
     n = split(substr($0, 2), rank, ";")
@@ -22,4 +27,7 @@ BEGIN { split("d k p c o f g s t", letter, " ") }
     next
 }
 { print }
-' assignTaxonomy.fna | gzip -c > sintaxdb.fa.gz
+' > sintaxdb.fa
+
+grep -q '^>' sintaxdb.fa || { echo "ERROR: no records in $input" >&2; exit 1; }
+gzip -f sintaxdb.fa

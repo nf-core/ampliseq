@@ -15,7 +15,7 @@
                 "COMBINE_TABLE": {
                     "R": "4.0.3"
                 },
-                "CONSOLIDATE_DADA2_TAXONOMY": {
+                "CONSOLIDATE_TAXONOMY": {
                     "R": "4.5.2"
                 },
                 "CUTADAPT_BASIC": {

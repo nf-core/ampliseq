@@ -109,6 +109,7 @@ params:
     dada2_taxonomy: FALSE
     sintax_taxonomy: FALSE
     vsearch_lca_taxonomy: FALSE
+    consolidated_taxonomy: FALSE
     pplace_taxonomy: FALSE
     pplace_heattree: ""
     qiime2_taxonomy: FALSE
@@ -1056,7 +1057,7 @@ datatable(filter_codons_stats, options = list(
 
 ```{r, results='asis'}
 # Check if any taxonomic classification is available
-any_taxonomy <- !isFALSE(params$dada2_taxonomy)  || !isFALSE(params$kraken2_taxonomy) || !isFALSE(params$qiime2_taxonomy) || !isFALSE(params$sintax_taxonomy) || !isFALSE(params$vsearch_lca_taxonomy) || !isFALSE(params$pplace_taxonomy)
+any_taxonomy <- !isFALSE(params$dada2_taxonomy)  || !isFALSE(params$kraken2_taxonomy) || !isFALSE(params$qiime2_taxonomy) || !isFALSE(params$sintax_taxonomy) || !isFALSE(params$vsearch_lca_taxonomy) || !isFALSE(params$consolidated_taxonomy) || !isFALSE(params$pplace_taxonomy)
 ```
 
 ```{r, eval = any_taxonomy, results='asis'}
@@ -1187,7 +1188,7 @@ if ("database" %in% colnames(asv_tax)) {
 }
 
 # Calculate the classified numbers/percent of asv
-non_rank_cols <- colnames(asv_tax) %in% c("ASV_ID", "confidence", "sequence", "database") | grepl("_confidence$", colnames(asv_tax))
+non_rank_cols <- colnames(asv_tax) %in% c("ASV_ID", "confidence", "sequence", "classifier", "database") | grepl("_confidence$", colnames(asv_tax))
 level <- colnames(asv_tax)[!non_rank_cols]
 
 n_asv_tax = nrow(asv_tax)
@@ -1424,6 +1425,62 @@ plot_asv_classi_df
 invisible(dev.off())
 
 cat("\n\nVSEARCH LCA taxonomy assignments can be found in folder [vsearch_lca](../vsearch_lca).")
+```
+
+<!-- Subsection on taxonomy consolidated across classifiers -->
+
+```{r, eval = !isFALSE(params$consolidated_taxonomy), results='asis'}
+cat("## Consolidation across classifiers\n")
+
+asv_tax <- read.table(params$consolidated_taxonomy, header = TRUE, sep = "\t", comment.char = "")
+
+winners <- paste(asv_tax$classifier, asv_tax$database, sep = ": ")[!is.na(asv_tax$classifier) & asv_tax$classifier != ""]
+winner_counts <- table(winners)
+winner_counts_str <- paste0("`", names(winner_counts), "` (", winner_counts, " ASVs)", collapse = ", ")
+cat("The taxonomy of each ASV was taken from the classifier and database that resolved the most taxonomic levels: ",
+    winner_counts_str, ". ", sum(is.na(asv_tax$classifier) | asv_tax$classifier == ""), " ASVs were not classified by any of them.\n\n", sep = "")
+
+# Calculate the classified numbers/percent of asv
+non_rank_cols <- colnames(asv_tax) %in% c("ASV_ID", "confidence", "sequence", "classifier", "database", "SH", "BOLD_bin") | grepl("_confidence$|_exact$", colnames(asv_tax))
+level <- colnames(asv_tax)[!non_rank_cols]
+
+n_asv_tax = nrow(asv_tax)
+
+asv_tax_subset <- subset(asv_tax, select = level)
+n_asv_classified <- colSums( asv_tax_subset != "" & !is.na(asv_tax_subset) )
+
+p_asv_classified <- round(n_asv_classified / n_asv_tax * 100, 2)
+
+asv_classi_df <- data.frame(level, n_asv_classified, p_asv_classified)
+
+# Build output string
+outputstr <- "The consolidated taxonomy classified "
+for (row in seq_len(nrow(asv_classi_df))) {
+    outputstr <- paste0(outputstr, asv_classi_df[row, ]$p_asv_classified,
+        " % ASVs at ", asv_classi_df[row, ]$level, " level, ")
+}
+outputstr <- substr(outputstr, 1, nchar(outputstr)-2)
+outputstr <- paste0(outputstr, ".\n\n")
+
+# Output Text Classifications
+cat(outputstr)
+
+# Barplot
+asv_classi_df$level <- factor(asv_classi_df$level, levels = asv_classi_df$level)
+plot_asv_classi_df <- ggplot(asv_classi_df,
+        aes(x = reorder(level, desc(level)), y = p_asv_classified)) +
+        geom_bar(stat = "identity", fill = rgb(0.1, 0.4, 0.75), width = 0.5) +
+        ylab("% Classification") +
+        xlab("Levels") +
+        coord_flip() +
+        theme_bw()
+plot_asv_classi_df
+
+svg("consolidated_taxonomic_classification_per_taxonomy_level.svg")
+plot_asv_classi_df
+invisible(dev.off())
+
+cat("\n\nThe consolidated taxonomy can be found in folder [consolidated_taxonomy](../consolidated_taxonomy).")
 ```
 
 <!-- Subsection on Kraken2 taxonomy results -->

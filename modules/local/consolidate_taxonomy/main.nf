@@ -1,4 +1,4 @@
-process CONSOLIDATE_DADA2_TAXONOMY {
+process CONSOLIDATE_TAXONOMY {
     tag "${method}"
     label 'process_low'
 
@@ -8,15 +8,15 @@ process CONSOLIDATE_DADA2_TAXONOMY {
         'community.wave.seqera.io/library/bioconductor-dada2_r-base_r-digest_tbb:38acac09bac46f36' }"
 
     input:
-    path(tax_files)
+    path(tax_files, stageAs: 'tax_*.tsv')
     val(method)
-    val(db_key_order)
+    val(sources)
     val(taxlevels_input)
     val(outfile)
 
     output:
     path(outfile)        , emit: tsv
-    path "versions.yml"  , emit: versions_consolidate_dada2_taxonomy, topic: versions
+    path "versions.yml"  , emit: versions_consolidate_taxonomy, topic: versions
 
     script:
     def taxlevels = taxlevels_input ?
@@ -26,22 +26,21 @@ process CONSOLIDATE_DADA2_TAXONOMY {
     #!/usr/bin/env Rscript
 
     method <- "$method"
-    db_key_order <- strsplit("$db_key_order", ",", fixed = TRUE)[[1]]
     files <- strsplit("${tax_files.join(',')}", ",", fixed = TRUE)[[1]]
+    # one "CLASSIFIER:database" per file, in file order; the position breaks ties
+    sources <- strsplit("$sources", ",", fixed = TRUE)[[1]]
+    source_classifier <- sub(":.*\$", "", sources)
+    source_database <- sub("^[^:]*:", "", sources)
+    stopifnot(length(sources) == length(files))
 
     # the consolidated table feeds every downstream consumer that expects one taxonomy per ASV
     # (QIIME2 import, phyloseq/TSE), all of which read ranks positionally or by name -- so the
     # output carries exactly these ranks, whichever database won a given ASV.
     target_ranks <- $taxlevels
 
-    # each file's sanitized database key is the segment right before the ".tsv" extension,
-    # e.g. "ASV_tax.gtdb_R07-RS207.tsv" -> "gtdb_R07-RS207" -- sanitize() (dada2_taxonomy_wf.nf)
-    # already replaced every "." in a raw db_key with "_", so this is unambiguous.
-    extract_db_key <- function(f) sub("^.*\\\\.([^.]+)\\\\.tsv\$", "\\\\1", basename(f))
-
     # everything that isn't one of these occupies a rank position. SH and BOLD_bin are
     # identifiers rather than ranks, the same distinction bin/parse_dada2_taxonomy.r makes.
-    is_meta <- function(cols) cols %in% c("ASV_ID", "confidence", "sequence", "database", "SH", "BOLD_bin") | grepl("_confidence\$|_exact\$", cols)
+    is_meta <- function(cols) cols %in% c("ASV_ID", "confidence", "sequence", "classifier", "database", "SH", "BOLD_bin") | grepl("_confidence\$|_exact\$", cols)
 
     # rank vocabulary differs by database: a database roots at Domain or at Kingdom depending on
     # what it holds, and PR2 puts Supergroup,Division,Subdivision ahead of Class where the others
@@ -72,18 +71,20 @@ process CONSOLIDATE_DADA2_TAXONOMY {
         df
     }
 
-    # process files in declared --dada_ref_taxonomy order, not channel-arrival order (which
-    # varies run to run since the per-database DADA2 tasks run in parallel) -- keeps the
-    # consolidated output's column order deterministic across otherwise-identical runs.
-    files <- files[ order(match(sapply(files, extract_db_key), db_key_order)) ]
-
-    tables <- lapply(files, function(f) {
+    tables <- lapply(seq_along(files), function(i) {
+        f <- files[i]
         # character, so a rank that happens to be only "F" or "T" is not read as logical
         df <- read.delim(f, sep = "\\t", header = TRUE, na.strings = "", colClasses = "character", check.names = FALSE)
         conf_cols <- grep("^confidence\$|_confidence\$", colnames(df), value = TRUE)
         df[conf_cols] <- lapply(df[conf_cols], as.numeric)
+        own_ranks <- colnames(df)[!is_meta(colnames(df))]
         df <- harmonize(df)
-        df\$database <- extract_db_key(f)
+        if (!any(colnames(df) %in% target_ranks)) {
+            stop(paste0("None of the ranks of ", sources[i], " (", paste(own_ranks, collapse = ","), ") are among the taxonomic levels used for consolidation (", paste(target_ranks, collapse = ","), "). All consolidated tables need the same rank names."))
+        }
+        df\$classifier <- source_classifier[i]
+        df\$database <- source_database[i]
+        df\$source_index <- i
         df
     })
 
@@ -122,7 +123,8 @@ process CONSOLIDATE_DADA2_TAXONOMY {
     slot_conf[!assigned | is.infinite(slot_conf)] <- NA
     comparable <- assigned & !is.na(slot_conf)
     depth <- apply(assigned, 1, function(x) if (any(x)) max(which(x)) else 0)
-    tiebreak <- match(combined\$database, db_key_order)
+    tiebreak <- combined\$source_index
+    combined\$source_index <- NULL
 
     # bootstraps only fall with depth, so each database's own deepest rank would favour shallow
     # assignments; compare at the deepest rank that all remaining candidates assigned instead
@@ -148,14 +150,18 @@ process CONSOLIDATE_DADA2_TAXONOMY {
     if (method == "score") {
         winner_rows <- vapply(rows_by_asv, pick_by_score, integer(1))
     } else {
-        # most slots filled first, tie broken by earliest position in db_key_order
+        # most slots filled first, tie broken by earliest source (priority order)
         winner_rows <- vapply(rows_by_asv, function(rows) rows[order(-rowSums(assigned[rows, , drop = FALSE]), tiebreak[rows])][1], integer(1))
     }
     winners <- combined[winner_rows, ]
+    # an ASV without any rank was classified by nobody, whichever source came first
+    winners[rowSums(assigned[winner_rows, , drop = FALSE]) == 0, c("classifier", "database")] <- NA
+    # DADA2 bootstraps (0-100) and SINTAX probabilities (0-1) must not share one column
+    if (length(unique(source_classifier)) > 1 && "confidence" %in% colnames(winners)) winners\$confidence <- NA
 
     # same column order as a single-database dada2_taxonomy.nf table, with any identifier column
     # (SH, BOLD_bin, Species_exact) kept after the ranks and the new provenance column last
-    tail_cols <- c("confidence", paste0(tolower(rank_cols), "_confidence"), "sequence", "database")
+    tail_cols <- c("confidence", paste0(tolower(rank_cols), "_confidence"), "sequence", "classifier", "database")
     extras <- setdiff(colnames(winners), c("ASV_ID", rank_cols, tail_cols))
     winners <- winners[ , c("ASV_ID", rank_cols, extras, intersect(tail_cols, colnames(winners))) ]
 

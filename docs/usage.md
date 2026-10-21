@@ -242,12 +242,12 @@ Parameter guidance is given in [nf-core/ampliseq website parameter documentation
 [`--dada_ref_taxonomy`](https://nf-co.re/ampliseq/parameters#dada_ref_taxonomy) accepts a comma-separated list of database keys (e.g. `gtdb,silva`) to run DADA2 classification against several databases at once.
 By default, only the first-listed database feeds downstream QIIME2 analysis (filtering, diversity, barplots, ANCOM) and R objects.
 Use [`--consolidate_taxonomies most-specific` or `score`](https://nf-co.re/ampliseq/parameters#consolidate_taxonomies) to instead pick a winning database per ASV.
+`most-specific` picks the database that resolved the most ranks and does not use bootstrap values.
+It also compares across classification methods, see [Consolidation across classifiers](#consolidation-across-classifiers).
 `score` compares DADA2 bootstrap values between databases, which are not known to be comparable: they depend on how many close relatives a database holds at a rank.
 Bootstrap values of 1 in several databases give `score` no basis for choosing, and it then falls back to the order in `--dada_ref_taxonomy`.
 A database that lacks a group can still give high bootstrap values for it, e.g. a bacterial database classifying chloroplast 16S sequences.
-`most-specific` does not use bootstrap values.
 `score` compares DADA2 results only.
-`most-specific` also compares across classification methods, see [Consolidation across classifiers](#consolidation-across-classifiers).
 
 **Rank vocabulary across databases**
 
@@ -268,6 +268,7 @@ Rank names are harmonised as described for multiple DADA2 databases above, using
 The other classifiers need to use the same rank names, e.g. through `--sintax_assign_taxlevels` or `--vsearch_lca_assign_taxlevels` with a custom reference database.
 The pipeline stops if a table has none of them.
 Kraken2, QIIME2 and phylogenetic placement are not part of the consolidation: Kraken2 and QIIME2 output has a different shape, and placement gives an unranked taxonomy string.
+The pipeline prints a warning when Kraken2 or QIIME2 is run alongside a consolidation.
 
 How many ranks a classifier resolves depends on its method and cutoffs, e.g. `--sintax_cutoff` for SINTAX and the minimum bootstrap for DADA2.
 A deeper result from one classifier is therefore not necessarily more trustworthy than a shallower one from another.

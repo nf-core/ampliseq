@@ -261,7 +261,7 @@ A database that lacks a group can still give high bootstrap values for it, e.g. 
 
 #### Consolidation across classifiers
 
-With `--consolidate_taxonomies most-specific`, DADA2, SINTAX and VSEARCH-LCA can be run together (e.g. `--dada_ref_taxonomy silva --sintax_ref_taxonomy coidb`), and the result for each ASV is taken from whichever classifier and database resolved the deepest rank.
+With `--consolidate_taxonomies most-specific`, DADA2, SINTAX and VSEARCH-LCA can be run together (e.g. `--dada_ref_taxonomy silva --sintax_ref_taxonomy coidb`), and the consolidated result for each ASV is taken from whichever classifier and database resolved the deepest rank.
 Ties go to the DADA2 databases in `--dada_ref_taxonomy` order, then SINTAX, then VSEARCH-LCA.
 The consolidated table has `classifier` and `database` columns that record the winner for each ASV, and both are empty for an ASV that no classifier resolved to any rank.
 Rank names are harmonised as described for multiple DADA2 databases above, using the levels of the highest-priority classifier.

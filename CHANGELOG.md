@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 - [#1123](https://github.com/nf-core/ampliseq/pull/1123) - `--sintax_ref_taxonomy` now accepts all databases available for DADA2 (SILVA, GTDB, SBDI-GTDB, RDP, Greengenes2, PR2, GloSED, MIDORI2-CO1, Zehr-nifH), in addition to COIDB and UNITE; requested in [#618](https://github.com/nf-core/ampliseq/issues/618) (by @erikrikarddaniel)
-- [#1133](https://github.com/nf-core/ampliseq/pull/1133) - `--consolidate_taxonomies most-specific` now also picks a winner per ASV across classifiers when DADA2, SINTAX and VSEARCH-LCA are run together; consolidated tables have a new `classifier` column next to `database` ([#1061](https://github.com/nf-core/ampliseq/issues/1061)) (by @erikrikarddaniel)
+- [#1133](https://github.com/nf-core/ampliseq/pull/1133) - `--consolidate_taxonomies most-specific` now also picks a winner per ASV across classifiers when DADA2, SINTAX and VSEARCH-LCA are run together; the result is published in `consolidated_taxonomy/`, reported in the summary report and available as `consolidated_across_classifiers_*` R objects; consolidated tables have a new `classifier` column next to `database` ([#1061](https://github.com/nf-core/ampliseq/issues/1061)) (by @erikrikarddaniel, reviewed by @d4straub)
 
 ### `Changed`
 

@@ -968,11 +968,11 @@ workflow AMPLISEQ {
             params.consolidate_taxonomies,
             ch_tax_to_consolidate_sorted.map { tables -> tables.collect { table -> "${table.classifier}:${table.database}" }.join(',') },
             val_consolidate_taxlevels,
-            "ASV_tax.consolidated.${params.consolidate_taxonomies}.tsv"
+            "ASV_tax.consolidated_across_classifiers.${params.consolidate_taxonomies}.tsv"
         )
         ch_consolidated_tax = CONSOLIDATE_TAXONOMY_TOOLS.out.tsv
-        ch_tax_tsv = ch_tax_tsv.mix( ch_consolidated_tax.map { f -> [ [database: params.consolidate_taxonomies, classifier:"CONSOLIDATED"], f ] } )
-        ch_tax_for_robject = ch_tax_for_robject.mix( ch_consolidated_tax.map { f -> [ "consolidated", file(f) ] } )
+        ch_tax_tsv = ch_tax_tsv.mix( ch_consolidated_tax.map { f -> [ [database: params.consolidate_taxonomies, classifier:"CONSOLIDATED-ACROSS-CLASSIFIERS"], f ] } )
+        ch_tax_for_robject = ch_tax_for_robject.mix( ch_consolidated_tax.map { f -> [ "consolidated_across_classifiers", file(f) ] } )
     } else {
         ch_consolidated_tax = channel.empty()
     }
@@ -1467,6 +1467,7 @@ workflow AMPLISEQ {
             !params.skip_taxonomy && params.dada_ref_taxonomy && !params.skip_dada_taxonomy ? ch_dada2_cut_tax.ifEmpty( [[],[]] ) : [[],[]],
             !params.skip_taxonomy && (params.sintax_ref_taxonomy || params.sintax_ref_tax_custom) ? ch_sintax_tax.ifEmpty( [] ) : [],
             !params.skip_taxonomy && (params.vsearch_lca_ref_tax_custom || params.vsearch_lca_ref_taxonomy) ? ch_vsearch_lca_tax.ifEmpty( [] ) : [],
+            val_consolidate_tools ? ch_consolidated_tax.ifEmpty( [] ) : [],
             !params.skip_taxonomy && ( params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom ) ? KRAKEN2_TAXONOMY_WF.out.tax_tsv.ifEmpty( [] ) : [],
             !params.skip_taxonomy && params.pplace_tree ? ch_pplace_tax.ifEmpty( [] ) : [],
             !params.skip_taxonomy && params.pplace_tree ? PPLACE_STANDARD.out.heattree.ifEmpty( [[],[]] ) : [[],[]],

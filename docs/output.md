@@ -37,6 +37,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
   - [Kraken2](#kraken2) - Taxonomic classification with Kraken2
   - [QIIME2](#qiime2) - Taxonomic classification with QIIME2
   - [VSEARCH LCA](#vsearch-lca) - Taxonomic classification with VSEARCH LCA
+  - [Consolidation across classifiers](#consolidation-across-classifiers) - One taxonomy per ASV from DADA2, SINTAX and VSEARCH LCA
 - [Phylogenetic placement and taxonomic classification](#phylogenetic-placement-and-taxonomic-classification) - Placing ASVs into a phylogenetic tree
 - [Multiple region analysis with Sidle](#multiple-region-analysis-with-sidle) - Scaffolding multiple regions along a reference
 - [Secondary analysis with QIIME2](#secondary-analysis-with-qiime2) - Visualisations, diversity and differential abundance analysis with QIIME2
@@ -220,7 +221,7 @@ Skip the Parquet copies with `--skip_parquet_summary`.
 
 - `summary_tables/`
   - `ampliseq.counts.tsv.gz` (+ `.parquet`): ASV counts in long format (`asv_id`, `sample`, `count`), zero-count rows dropped. Sourced from DADA2's raw output, before clustering and any post-processing filters below. Only written with `--asv_calling dada2`.
-  - `ampliseq.taxonomy.<classifier>.<database>.tsv.gz` (+ `.parquet`): One file pair per classifier/database actually run (Kraken2 excluded). A slim reformat of that classifier's native taxonomy table: `asv_id`, then the database's own ranks in lower case (`domain` or `kingdom` down to `species`, plus PR2's `supergroup`/`subdivision` where they apply), then `confidence`. QIIME2 and phylogenetic placement carry no rank names of their own, so theirs are named `domain`..`species` by position. `sequence` and DADA2's per-rank `*_confidence` columns are dropped (both remain available in the native per-classifier files elsewhere in this directory). A consolidated DADA2 table (`--consolidate_taxonomies`) additionally has `source_classifier` and `source_database`, the classifier and database that won each ASV. The table consolidated across classifiers is named `ampliseq.taxonomy.CONSOLIDATED.most-specific.tsv.gz`.
+  - `ampliseq.taxonomy.<classifier>.<database>.tsv.gz` (+ `.parquet`): One file pair per classifier/database actually run (Kraken2 excluded). A slim reformat of that classifier's native taxonomy table: `asv_id`, then the database's own ranks in lower case (`domain` or `kingdom` down to `species`, plus PR2's `supergroup`/`subdivision` where they apply), then `confidence`. QIIME2 and phylogenetic placement carry no rank names of their own, so theirs are named `domain`..`species` by position. `sequence` and DADA2's per-rank `*_confidence` columns are dropped (both remain available in the native per-classifier files elsewhere in this directory). A consolidated DADA2 table (`--consolidate_taxonomies`) additionally has `source_classifier` and `source_database`, the classifier and database that won each ASV. The table consolidated across classifiers is named `ampliseq.taxonomy.CONSOLIDATED-ACROSS-CLASSIFIERS.most-specific.tsv.gz`.
 
     Joined onto every taxonomy table, whenever that step ran, but not onto `ampliseq.counts` -- join on `asv_id` to combine them:
     - `barrnap_domain`: winning rRNA domain by e-value, `NA` if none significant.
@@ -359,7 +360,7 @@ DADA2 is the default method for taxonomy classification. Depending on the refere
 - `--consolidate_taxonomies score` instead picks, per ASV, whichever listed database reported the highest assignTaxonomy bootstrap confidence at the deepest rank that all listed databases assigned.
 - Both break ties by database order in `--dada_ref_taxonomy`. `score` is DADA2-only. `most-specific` also compares across classification methods when DADA2, SINTAX and VSEARCH-LCA are run together (see below).
 - When set, the winning per-ASV result is published as `dada2/ASV_tax.consolidated.<method>.tsv`, with added `classifier` and `database` columns recording which classifier and which listed database each row's winning classification came from.
-- When `--consolidate_taxonomies most-specific` is used with more than one of DADA2, SINTAX and VSEARCH-LCA, the winner is picked across all of them and published as `consolidated_taxonomy/ASV_tax.consolidated.most-specific.tsv`. Ties go to the DADA2 databases in `--dada_ref_taxonomy` order, then SINTAX, then VSEARCH-LCA. The `confidence` column of this table is empty, because confidence values are not comparable between the classifiers. This table feeds the QIIME2 analysis and the R objects, unless multi-region analysis or phylogenetic placement with a taxonomy is used. Each classifier's own tables are published as before, and DADA2 still publishes its own consolidated table.
+- With `--consolidate_taxonomies most-specific`, DADA2, SINTAX and VSEARCH-LCA can also be consolidated with each other, see [Consolidation across classifiers](#consolidation-across-classifiers). DADA2 still publishes its own consolidated table.
 
 In addition to the "confidence" column (the bootstrap support for the most specific rank assigned), each taxonomy table also has one `<rank>_confidence` column per rank (e.g. `phylum_confidence`), giving assignTaxonomy's bootstrap support at that specific rank.
 
@@ -494,6 +495,34 @@ Files when using ITSx:
 
 </details>
 
+#### Consolidation across classifiers
+
+With `--consolidate_taxonomies most-specific` and more than one of DADA2, SINTAX and VSEARCH-LCA, the winner for each ASV is picked across all of them.
+Ties go to the DADA2 databases in `--dada_ref_taxonomy` order, then SINTAX, then VSEARCH-LCA.
+The `confidence` column of this table is empty, because confidence values are not comparable between the classifiers.
+This table feeds the QIIME2 analysis and the R objects, unless multi-region analysis or phylogenetic placement with a taxonomy is used.
+Each classifier's own tables are published as before.
+DADA2 still publishes its own table consolidated across its databases, see [DADA2](#dada2).
+
+The names tell the two consolidated tables apart:
+
+|                          | DADA2 databases only                                     | Across classifiers                                                                |
+| ------------------------ | -------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Taxonomy table           | `dada2/ASV_tax.consolidated.<method>.tsv`                | `consolidated_taxonomy/ASV_tax.consolidated_across_classifiers.most-specific.tsv` |
+| Relative abundance table | `rel-table-ASV_with-DADA2-consolidated_<method>-tax.tsv` | `rel-table-ASV_with-CONSOLIDATED-ACROSS-CLASSIFIERS-most-specific-tax.tsv`        |
+| Summary table            | `ampliseq.taxonomy.DADA2.consolidated_<method>.tsv.gz`   | `ampliseq.taxonomy.CONSOLIDATED-ACROSS-CLASSIFIERS.most-specific.tsv.gz`          |
+| R objects                | `dada2_*`                                                | `consolidated_across_classifiers_*`                                               |
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `consolidated_taxonomy/`
+  - `ASV_tax.consolidated_across_classifiers.most-specific.tsv`: Taxonomic classification for each ASV, with the `classifier` and `database` columns recording which classifier and database won the ASV.
+
+</details>
+
+The [summary report](#pipeline-summary-report) has a section on this table.
+
 ### Phylogenetic placement and taxonomic classification
 
 Phylogenetic placement grafts sequences onto a phylogenetic reference tree and optionally outputs taxonomic annotations. The reference tree is ideally made from full-length high-quality sequences containing better evolutionary signal than short amplicons. It is hence superior to estimating de-novo phylogenetic trees from short amplicon sequences. On providing required reference files, ASV sequences are aligned to the reference alignment with either [HMMER](http://hmmer.org/) (default) or [MAFFT](https://mafft.cbrc.jp/alignment/software/). Subsequently, phylogenetic placement of query sequences is performed with [EPA-NG](https://github.com/Pbdas/epa-ng), and finally a number of summary operations are performed with [Gappa](https://github.com/lczech/gappa). This uses code from [nf-core/phyloplace](https://nf-co.re/phyloplace) in the form of its main [subworkflow](https://github.com/nf-core/modules/tree/master/subworkflows/nf-core/fasta_newick_epang_gappa), therefore its detailed documentation also applies here.
@@ -595,7 +624,7 @@ Absolute abundance tables produced by the previous steps contain count data, but
   - `rel-table-ASV.tsv`: Tab-separated relative abundance table for all ASVs.
   - `rel-table-ASV_with-*-tax.tsv`: Tab-separated table for all ASVs with taxonomic classification, sequence and relative abundance. The star (\*) is replaced by the taxonomic classification method.
     With `--consolidate_taxonomies most-specific` or `score`, the consolidated DADA2 taxonomy gets its own table, `rel-table-ASV_with-DADA2-consolidated_<method>-tax.tsv`.
-    The table consolidated across classifiers is `rel-table-ASV_with-CONSOLIDATED-most-specific-tax.tsv`.
+    The table consolidated across classifiers is `rel-table-ASV_with-CONSOLIDATED-ACROSS-CLASSIFIERS-most-specific-tax.tsv`.
 
 </details>
 
@@ -880,7 +909,7 @@ They remain in the DADA2 taxonomy tables.
 <summary>Output files</summary>
 
 - `phyloseq/`
-  - `<taxonomy>_phyloseq.rds`: Phyloseq R object.
+  - `<taxonomy>_phyloseq.rds`: Phyloseq R object. The object for the table consolidated across classifiers is `consolidated_across_classifiers_phyloseq.rds`; `dada2_phyloseq.rds` holds the DADA2 table, consolidated across its databases if several were used.
 - `treesummarizedexperiment/`
   - `<taxonomy>_TreeSummarizedExperiment.rds`: TreeSummarizedExperiment R object.
 

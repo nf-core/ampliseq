@@ -18,10 +18,11 @@ nextflow_pipeline {
             def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
 
             assert workflow.success
-            def consolidated = path("$outputDir/consolidated_taxonomy/ASV_tax.consolidated.most-specific.tsv").csv(sep: '\t', header: true)
+            def consolidated = path("$outputDir/consolidated_taxonomy/ASV_tax.consolidated_across_classifiers.most-specific.tsv").csv(sep: '\t', header: true)
             def classifiers = consolidated.columns["classifier"]
-            def summary_table = path("$outputDir/summary_tables/ampliseq.taxonomy.CONSOLIDATED.most-specific.tsv.gz")
+            def summary_table = path("$outputDir/summary_tables/ampliseq.taxonomy.CONSOLIDATED-ACROSS-CLASSIFIERS.most-specific.tsv.gz")
             def barplot_headers = path("$outputDir/qiime2/barplot/level-7.csv").readLines()[0]
+            def report = path("$outputDir/summary_report/summary_report.html").text
             assertAll(
                 { assert snapshot(
                     // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
@@ -35,8 +36,16 @@ nextflow_pipeline {
                 { assert classifiers.findAll { it == "DADA2" }.size() > 0 },
                 { assert classifiers.findAll { it == "SINTAX" }.size() > 0 },
                 { assert consolidated.columns["database"].every { it in ["unite-fungi_8_2", "unite-fungi_8_3"] } },
-                // DADA2 still consolidates its own two databases next to the table across classifiers
+                // DADA2 still consolidates its own two databases next to the table across classifiers,
+                // and the two tables have different file names
                 { assert path("$outputDir/dada2/ASV_tax.consolidated.most-specific.tsv").exists() },
+                { assert !path("$outputDir/consolidated_taxonomy/ASV_tax.consolidated.most-specific.tsv").exists() },
+                // the R objects of the table across classifiers are told apart from the DADA2 ones
+                { assert path("$outputDir/phyloseq/consolidated_across_classifiers_phyloseq.rds").exists() },
+                { assert path("$outputDir/treesummarizedexperiment/consolidated_across_classifiers_TreeSummarizedExperiment.rds").exists() },
+                // the summary report has a section for the table across classifiers
+                { assert report.contains('id="consolidation-across-classifiers"') },
+                { assert report.contains("resolved the most taxonomic levels") },
                 // the provenance columns are not ranks: they must not reach the QIIME2 taxonomy string
                 { assert !path("$outputDir/qiime2/barplot/level-8.csv").exists() },
                 { assert !barplot_headers.contains("SINTAX") },

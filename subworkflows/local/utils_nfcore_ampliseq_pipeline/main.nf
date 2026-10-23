@@ -305,9 +305,28 @@ def validateInputParameters() {
         log.warn "`--dada_ref_taxonomy` was also given, but `--dada_ref_tax_custom` takes priority -- `--dada_ref_taxonomy` (including every database listed in it, if a comma-separated list) will be ignored entirely."
     }
 
-    // --dada_ref_tax_custom always yields a single "user" database
-    if (params.consolidate_taxonomies != 'first' && (params.dada_ref_tax_custom || !params.dada_ref_taxonomy || params.dada_ref_taxonomy.tokenize(',').size() <= 1)) {
-        log.warn "`--consolidate_taxonomies` was given, but `--dada_ref_taxonomy` lists at most one database -- there is nothing to consolidate, this option has no effect."
+    if (params.consolidate_taxonomies != 'first') {
+        // --dada_ref_tax_custom always yields a single "user" database
+        def n_dada_dbs = (params.skip_taxonomy || params.skip_dada_taxonomy) ? 0 :
+                params.dada_ref_tax_custom ? 1 :
+                        params.dada_ref_taxonomy ? params.dada_ref_taxonomy.tokenize(',').size() : 0
+        def n_other_classifiers = [ params.sintax_ref_taxonomy || params.sintax_ref_tax_custom, params.vsearch_lca_ref_taxonomy || params.vsearch_lca_ref_tax_custom ].count { on -> on && !params.skip_taxonomy }
+        def n_classifiers = (n_dada_dbs > 0 ? 1 : 0) + n_other_classifiers
+        def consolidates_classifiers = params.consolidate_taxonomies == 'most-specific' && n_classifiers > 1
+        if (n_dada_dbs <= 1 && !consolidates_classifiers) {
+            def few_classifiers = params.consolidate_taxonomies == 'most-specific' ? " and fewer than two of DADA2, SINTAX and VSEARCH-LCA are run" : ""
+            log.warn "`--consolidate_taxonomies` was given, but `--dada_ref_taxonomy` lists at most one database${few_classifiers} -- there is nothing to consolidate, this option has no effect."
+        }
+        if (params.consolidate_taxonomies == 'score' && n_other_classifiers > 0) {
+            log.warn "`--consolidate_taxonomies score` only compares DADA2 databases, the SINTAX and VSEARCH-LCA results are not part of the consolidation. Use `most-specific` to consolidate across classifiers."
+        }
+        def unconsolidated = [
+            (params.kraken2_ref_taxonomy || params.kraken2_ref_tax_custom) && !params.skip_taxonomy ? "Kraken2" : null,
+            (params.qiime_ref_taxonomy || params.qiime_ref_tax_custom) && !params.skip_taxonomy && !params.skip_qiime ? "QIIME2" : null
+        ].findAll { name -> name }
+        if ((n_dada_dbs > 1 || consolidates_classifiers) && unconsolidated) {
+            log.warn "${unconsolidated.join(' and ')} taxonomy is not part of the consolidation and is reported separately."
+        }
     }
 
     if (params.pplace_tree) {

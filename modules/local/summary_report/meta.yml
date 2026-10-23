@@ -147,6 +147,9 @@ input:
   - vsearch_lca_tax:
       type: file
       description: VSEARCH LCA taxonomy table
+  - consolidated_tax:
+      type: file
+      description: Taxonomy table consolidated across classifiers
   - kraken2_tax:
       type: file
       description: Kraken2 taxonomy table

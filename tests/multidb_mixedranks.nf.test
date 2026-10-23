@@ -41,6 +41,9 @@ nextflow_pipeline {
                 // parse_dada2_taxonomy.r, phyloseq/TSE) reads ranks positionally or by name
                 { assert header.containsAll(["Domain", "Phylum", "Class", "Order", "Family", "Genus", "Species"]) },
                 { assert !header.any { it in ["Kingdom", "Supergroup", "Division", "Subdivision"] } },
+                // provenance columns come last, classifier before database
+                { assert header[-2..-1] == ["classifier", "database"] },
+                { assert consolidated.columns["classifier"].every { it == "DADA2" } },
                 // PR2 did win ASVs, and its Division values were carried into the Phylum slot
                 // rather than dropped with the column they arrived in
                 { assert pr2_rows.size() > 0 },

@@ -445,7 +445,7 @@
             "properties": {
                 "dada_ref_taxonomy": {
                     "type": "string",
-                    "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `silva=138`). This will download the desired database, format it to produce a file that is compatible with DADA2's assignTaxonomy and another file that is compatible with DADA2's addSpecies.\n\nDatabase keys are given in **lower case**; the values in parentheses below are the exact strings `--dada_ref_taxonomy` accepts for that database (the unversioned key selects the most recent/default version).\n\n**SSU rRNA**\n- SBDI-GTDB, a Sativa-vetted version of the GTDB 16S rRNA, the default (`sbdi-gtdb`, `sbdi-gtdb=R11-RS232-1`, `sbdi-gtdb=R10-RS226-2`, `sbdi-gtdb=R09-RS220-2`, `sbdi-gtdb=R09-RS220-1`, `sbdi-gtdb=R08-RS214-1`, `sbdi-gtdb=R07-RS207-1`, `sbdi-gtdb=R06-RS202-3`, `sbdi-gtdb=R06-RS202-1`)\n- SILVA ribosomal RNA gene database project, 16S rRNA (`silva`, `silva=144`, `silva=138.2`, `silva=138`, `silva=132`)\n- GTDB - Genome Taxonomy Database, 16S rRNA (`gtdb`, `gtdb=R11-RS232`, `gtdb=R10-RS226`, `gtdb=R09-RS220`, `gtdb=R08-RS214`, `gtdb=R07-RS207`, `gtdb=R06-RS202`, `gtdb=R05-RS95`)\n- RDP - Ribosomal Database Project, 16S rRNA (`rdp`, `rdp=18`)\n- Greengenes2, 16S rRNA (`greengenes2`, `greengenes2=2024.09`)\n- PR2 - Protist Reference Ribosomal Database, 18S rRNA (Note: also contains plastid/chloroplast 16S rRNA sequences) (`pr2`, `pr2=5.1.0`, `pr2=5.0.0`, `pr2=4.14.0`, `pr2=4.13.0`)\n\n**ITS** (also rRNA, listed next to SSU rRNA)\n- UNITE - eukaryotic nuclear ribosomal ITS region: fungi only (`unite-fungi`, `unite-fungi=10.0`, `unite-fungi=9.0`, `unite-fungi=8.3`, `unite-fungi=8.2`), or all eukaryotes (`unite-alleuk`, `unite-alleuk=10.0`, `unite-alleuk=9.0`, `unite-alleuk=8.3`, `unite-alleuk=8.2`)\n- GloSED - Global Standardised Soil Eukaryome Dataset, fungal ITS; SH support not available (`glosed`, `glosed=1.0.0`)\n\n**COI**\n- COIDB - eukaryotic Cytochrome Oxidase I (COI) from The Barcode of Life Data System (BOLD) (`coidb`, `coidb=221216`)\n- MIDORI2-CO1 (`midori2-co1`, `midori2-co1=gb250`)\n\n**nifH**\n- Zehr-nifH (`zehr-nifh`, `zehr-nifh=2.5.0`)\n\nSeveral comma-separated databases may be given (e.g. `sbdi-gtdb,silva`) to run DADA2 taxonomic classification against each of them; one full set of output files is published per listed database. By default, only the **first-listed** database feeds every downstream step that expects a single taxonomy (QIIME2 filtering, diversity, barplots, ANCOM, R objects); use `--consolidate_taxonomies` to instead pick a per-ASV winner across all listed databases.\n\nPlease note that commercial/non-academic entities [require licensing](https://www.arb-silva.de/silva-license-information) for SILVA v132 (non-default) but not from v138 on (default). This list (including the exact accepted database/version strings) always matches `conf/ref_databases.config` -- supply an invalid value (e.g. `x`) to have the pipeline print the current list. See also the [usage docs](https://nf-co.re/ampliseq/docs/usage/#taxonomic-classification).",
+                    "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `silva=138`). This will download the desired database, format it to produce a file that is compatible with DADA2's assignTaxonomy and another file that is compatible with DADA2's addSpecies.\n\nDatabase keys are given in **lower case**; the values in parentheses below are the exact strings `--dada_ref_taxonomy` accepts for that database (the unversioned key selects the most recent/default version).\n\n**SSU rRNA**\n- SBDI-GTDB, a Sativa-vetted version of the GTDB 16S rRNA, the default (`sbdi-gtdb`, `sbdi-gtdb=R11-RS232-1`, `sbdi-gtdb=R10-RS226-2`, `sbdi-gtdb=R09-RS220-2`, `sbdi-gtdb=R09-RS220-1`, `sbdi-gtdb=R08-RS214-1`, `sbdi-gtdb=R07-RS207-1`, `sbdi-gtdb=R06-RS202-3`, `sbdi-gtdb=R06-RS202-1`)\n- SILVA ribosomal RNA gene database project, 16S rRNA (`silva`, `silva=144`, `silva=138.2`, `silva=138`, `silva=132`)\n- GTDB - Genome Taxonomy Database, 16S rRNA (`gtdb`, `gtdb=R11-RS232`, `gtdb=R10-RS226`, `gtdb=R09-RS220`, `gtdb=R08-RS214`, `gtdb=R07-RS207`, `gtdb=R06-RS202`, `gtdb=R05-RS95`)\n- RDP - Ribosomal Database Project, 16S rRNA (`rdp`, `rdp=18`)\n- Greengenes2, 16S rRNA (`greengenes2`, `greengenes2=2024.09`)\n- PR2 - Protist Reference Ribosomal Database, 18S rRNA (Note: also contains plastid/chloroplast 16S rRNA sequences) (`pr2`, `pr2=5.1.0`, `pr2=5.0.0`, `pr2=4.14.0`, `pr2=4.13.0`)\n\n**ITS** (also rRNA, listed next to SSU rRNA)\n- UNITE - eukaryotic nuclear ribosomal ITS region: fungi only (`unite-fungi`, `unite-fungi=10.0`, `unite-fungi=9.0`, `unite-fungi=8.3`, `unite-fungi=8.2`), or all eukaryotes (`unite-alleuk`, `unite-alleuk=10.0`, `unite-alleuk=9.0`, `unite-alleuk=8.3`, `unite-alleuk=8.2`)\n- GloSED - Global Standardised Soil Eukaryome Dataset, fungal ITS; SH support not available (`glosed`, `glosed=1.0.0`)\n\n**COI**\n- COIDB - eukaryotic Cytochrome Oxidase I (COI) from The Barcode of Life Data System (BOLD) (`coidb`, `coidb=221216`)\n\n**nifH**\n- Zehr-nifH (`zehr-nifh`, `zehr-nifh=2.5.0`)\n\nSeveral comma-separated databases may be given (e.g. `sbdi-gtdb,silva`) to run DADA2 taxonomic classification against each of them; one full set of output files is published per listed database. By default, only the **first-listed** database feeds every downstream step that expects a single taxonomy (QIIME2 filtering, diversity, barplots, ANCOM, R objects); use `--consolidate_taxonomies` to instead pick a per-ASV winner across all listed databases.\n\nPlease note that commercial/non-academic entities [require licensing](https://www.arb-silva.de/silva-license-information) for SILVA v132 (non-default) but not from v138 on (default). This list (including the exact accepted database/version strings) always matches `conf/ref_databases.config` -- supply an invalid value (e.g. `x`) to have the pipeline print the current list. See also the [usage docs](https://nf-co.re/ampliseq/docs/usage/#taxonomic-classification).",
                     "description": "Name of supported database(s), and optionally also version number(s) -- comma-separated for multiple databases",
                     "default": "sbdi-gtdb=R11-RS232-1"
                 },
@@ -483,8 +483,8 @@
                     "type": "string",
                     "default": "first",
                     "enum": ["first", "most-specific", "score"],
-                    "help_text": "Only relevant when `--dada_ref_taxonomy` lists more than one database.\n\n- `first` (default): use the **first-listed** database's result for every downstream step (QIIME2 filtering, diversity, barplots, ANCOM, R objects).\n- `most-specific`: for each ASV, use whichever listed database resolved the deepest taxonomic rank (fewest unresolved ranks). Ties are broken by database order in `--dada_ref_taxonomy`.\n- `score`: for each ASV, compare the DADA2 assignTaxonomy bootstrap confidences of the listed databases at the deepest rank that all of them assigned, and use the database with the highest one. Databases tied there are compared again at their next shared rank, and a database that reaches a deeper rank wins over a tied one that does not. Remaining ties are broken by database order in `--dada_ref_taxonomy`.\n\nConsolidation is currently limited to DADA2's own listed databases; it does not compare across different classification methods (e.g. DADA2 vs. SINTAX).",
-                    "description": "How to pick one DADA2 taxonomy per ASV when `--dada_ref_taxonomy` lists several databases"
+                    "help_text": "Only relevant when `--dada_ref_taxonomy` lists more than one database or, for `most-specific`, when more than one of DADA2, SINTAX and VSEARCH-LCA is run.\n\n- `first` (default): use the **first-listed** database's result for every downstream step (QIIME2 filtering, diversity, barplots, ANCOM, R objects).\n- `most-specific`: for each ASV, use whichever listed database resolved the deepest taxonomic rank (fewest unresolved ranks). Ties are broken by database order in `--dada_ref_taxonomy`. When DADA2, SINTAX and VSEARCH-LCA are run together, the choice is made across all of them, and ties go to DADA2, then SINTAX, then VSEARCH-LCA.\n- `score`: for each ASV, compare the DADA2 assignTaxonomy bootstrap confidences of the listed databases at the deepest rank that all of them assigned, and use the database with the highest one. Databases tied there are compared again at their next shared rank, and a database that reaches a deeper rank wins over a tied one that does not. Remaining ties are broken by database order in `--dada_ref_taxonomy`.\n\nBootstrap values are not known to be comparable between databases: they depend on how many close relatives a database holds at a rank, so `score` may favour one database over another for reasons unrelated to accuracy, and bootstraps of 1 in several databases give no basis for choosing. A database that lacks a group can still give high bootstraps for it, e.g. a bacterial database classifying chloroplast 16S sequences. `most-specific` does not use bootstraps and is the safer choice unless you have checked that `score` suits your databases.\n\n`score` compares only DADA2's own listed databases, because confidence values are not comparable between classification methods. `most-specific` also compares across DADA2, SINTAX and VSEARCH-LCA, but not Kraken2, QIIME2 or phylogenetic placement. The ranks that different methods resolve depend on method-specific cutoffs (e.g. `--sintax_cutoff`), so a deeper result is not necessarily a more trustworthy one.",
+                    "description": "How to pick one taxonomy per ASV when several databases or classifiers are used"
                 },
                 "dada_addspecies_allowmultiple": {
                     "type": "boolean",
@@ -498,9 +498,8 @@
                 },
                 "dada_assign_chunksize": {
                     "type": "integer",
-                    "help_text": "Chunks for DADA2's assignTaxonomy and addSpecies can speed up the process and lower required memory.",
-                    "description": "ASV fasta will be subset into chunks of this size for classification",
-                    "default": 10000
+                    "help_text": "Chunks for DADA2's assignTaxonomy and addSpecies can speed up the process and lower required memory. Without this parameter, a database specific chunk size is used if the database defines one (`chunksize` in `conf/ref_databases.config`), otherwise 10000.",
+                    "description": "ASV fasta will be subset into chunks of this size for classification"
                 },
                 "pplace_sheet": {
                     "type": "string",
@@ -606,7 +605,7 @@
                 },
                 "sintax_ref_taxonomy": {
                     "type": "string",
-                    "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `coidb=221216`) . This will download the desired database and initiate taxonomic classification with VSEARCH sintax and the chosen database, which if needed is formatted to produce a file that is compatible with VSEARCH sintax.\n\nThe following databases are supported:\n- COIDB - eukaryotic Cytochrome Oxidase I (COI) from The Barcode of Life Data System (BOLD) - COI\n- UNITE - eukaryotic nuclear ribosomal ITS region - ITS\n\nGenerally, using `coidb`, `unite-fungi`, or `unite-alleuk` will select the most recent supported version.\n\nCannot be used together with `--sintax_ref_tax_custom`.",
+                    "help_text": "Choose any of the supported databases, and optionally also specify the version. Database and version are separated by an equal sign (`=`, e.g. `coidb=221216`) . This will download the desired database and initiate taxonomic classification with VSEARCH sintax and the chosen database, which if needed is formatted to produce a file that is compatible with VSEARCH sintax.\n\nThe unversioned key selects the most recent supported version. The exact accepted strings are:\n\n**SSU rRNA**\n- SBDI-GTDB (`sbdi-gtdb`, `sbdi-gtdb=R11-RS232-1`, `sbdi-gtdb=R10-RS226-2`, `sbdi-gtdb=R09-RS220-2`, `sbdi-gtdb=R09-RS220-1`, `sbdi-gtdb=R08-RS214-1`, `sbdi-gtdb=R07-RS207-1`, `sbdi-gtdb=R06-RS202-3`, `sbdi-gtdb=R06-RS202-1`)\n- SILVA (`silva`, `silva=144`, `silva=138.2`, `silva=138`, `silva=132`)\n- GTDB (`gtdb`, `gtdb=R11-RS232`, `gtdb=R10-RS226`, `gtdb=R09-RS220`, `gtdb=R08-RS214`, `gtdb=R07-RS207`, `gtdb=R06-RS202`, `gtdb=R05-RS95`)\n- RDP (`rdp`, `rdp=18`)\n- Greengenes2 (`greengenes2`, `greengenes2=2024.09`)\n- PR2 (`pr2`, `pr2=5.1.0`, `pr2=5.0.0`, `pr2=4.14.0`, `pr2=4.13.0`)\n\n**ITS**\n- UNITE, fungi only (`unite-fungi`, `unite-fungi=10.0`, `unite-fungi=9.0`, `unite-fungi=8.3`, `unite-fungi=8.2`), or all eukaryotes (`unite-alleuk`, `unite-alleuk=10.0`, `unite-alleuk=9.0`, `unite-alleuk=8.3`, `unite-alleuk=8.2`)\n- GloSED (`glosed`, `glosed=1.0.0`)\n\n**COI**\n- COIDB (`coidb`, `coidb=221216`)\n- MIDORI2-CO1 (`midori2-co1`, `midori2-co1=gb273`, `midori2-co1=gb270`)\n\n**nifH**\n- Zehr-nifH (`zehr-nifh`, `zehr-nifh=2.5.0`)\n\nDatabases not provided in SINTAX format are converted from the DADA2 assignTaxonomy files, which stop at the genus for some databases (e.g. RDP); species are then not assigned.\n\nCannot be used together with `--sintax_ref_tax_custom`.",
                     "description": "Name of supported database, and optionally also version number",
                     "enum": [
                         "coidb",
@@ -620,7 +619,45 @@
                         "unite-alleuk=10.0",
                         "unite-alleuk=9.0",
                         "unite-alleuk=8.3",
-                        "unite-alleuk=8.2"
+                        "unite-alleuk=8.2",
+                        "midori2-co1",
+                        "midori2-co1=gb273",
+                        "midori2-co1=gb270",
+                        "greengenes2",
+                        "greengenes2=2024.09",
+                        "gtdb",
+                        "gtdb=R11-RS232",
+                        "gtdb=R10-RS226",
+                        "gtdb=R09-RS220",
+                        "gtdb=R08-RS214",
+                        "gtdb=R07-RS207",
+                        "gtdb=R06-RS202",
+                        "gtdb=R05-RS95",
+                        "glosed",
+                        "glosed=1.0.0",
+                        "pr2",
+                        "pr2=5.1.0",
+                        "pr2=5.0.0",
+                        "pr2=4.14.0",
+                        "pr2=4.13.0",
+                        "rdp",
+                        "rdp=18",
+                        "sbdi-gtdb",
+                        "sbdi-gtdb=R11-RS232-1",
+                        "sbdi-gtdb=R10-RS226-2",
+                        "sbdi-gtdb=R09-RS220-2",
+                        "sbdi-gtdb=R09-RS220-1",
+                        "sbdi-gtdb=R08-RS214-1",
+                        "sbdi-gtdb=R07-RS207-1",
+                        "sbdi-gtdb=R06-RS202-3",
+                        "sbdi-gtdb=R06-RS202-1",
+                        "silva",
+                        "silva=144",
+                        "silva=138.2",
+                        "silva=138",
+                        "silva=132",
+                        "zehr-nifh",
+                        "zehr-nifh=2.5.0"
                     ]
                 },
                 "sintax_ref_tax_custom": {
@@ -656,6 +693,7 @@
                         "coidb",
                         "coidb=221216",
                         "midori2-co1",
+                        "midori2-co1=gb273",
                         "midori2-co1=gb270",
                         "unite-fungi",
                         "unite-fungi=10.0",

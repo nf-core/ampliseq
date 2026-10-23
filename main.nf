@@ -139,7 +139,7 @@ params {
     consolidate_taxonomies: String = 'first'
     dada_addspecies_allowmultiple: Boolean
     dada_taxonomy_rc: Boolean
-    dada_assign_chunksize: Integer = 10000
+    dada_assign_chunksize: Integer?
     pplace_sheet: Path?
     pplace_tree: Path?
     pplace_aln: Path?
@@ -247,10 +247,10 @@ params {
     show_hidden: Boolean
     custom_config_version: String
     custom_config_base: String
-    config_profile_name: String
-    config_profile_description: String
-    config_profile_contact: String
-    config_profile_url: String
+    config_profile_name: String?
+    config_profile_description: String?
+    config_profile_contact: String?
+    config_profile_url: String?
     multiqc_title: String?
 }
 

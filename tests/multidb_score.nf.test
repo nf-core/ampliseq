@@ -21,6 +21,7 @@ nextflow_pipeline {
             assert workflow.success
             def consolidated = path("$outputDir/dada2/ASV_tax.consolidated.score.tsv").csv(sep: '\t', header: true)
             def databases = consolidated.columns["database"]
+            def classifiers = consolidated.columns["classifier"]
             assertAll(
                 { assert snapshot(
                     // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
@@ -29,7 +30,9 @@ nextflow_pipeline {
                     stable_path
                 ).match() },
                 { assert databases.findAll { it == "gtdb_R07-RS207" }.size() > 0 },
-                { assert databases.findAll { it == "rdp_18" }.size() > 0 }
+                { assert databases.findAll { it == "rdp_18" }.size() > 0 },
+                // score only exists for DADA2 tables
+                { assert classifiers.every { it == "DADA2" } }
             )
         }
     }

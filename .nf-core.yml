@@ -1,6 +1,7 @@
 lint:
   files_exist:
     - conf/igenomes.config
+    - .github/workflows/linting_comment.yml
   files_unchanged:
     - .gitattributes
     - .gitignore
@@ -9,8 +10,14 @@ lint:
     - docs/images/nf-core-ampliseq_logo_light.png
     - docs/images/nf-core-ampliseq_logo_dark.png
   nextflow_config: false
+  nf_test_content:
+    - tests/comparison_incompatible.nf.test
+    - tests/savont_incompatible.nf.test
+    - tests/savont_multiregion.nf.test
+    - tests/savont_nosamples.nf.test
+    - tests/dada_ref_duplicates.nf.test
   schema_params: false
-nf_core_version: 4.1.0
+nf_core_version: 4.2.1
 repository_type: pipeline
 template:
   author: Daniel Straub, Alexander Peltzer
@@ -22,8 +29,4 @@ template:
   outdir: .
   skip_features:
     - igenomes
-  version: 2.19.0dev
-update:
-  https://github.com/nf-core/modules.git:
-    nf-core:
-      mafft: feb29be775d9e41750180539e9a3bdce801d0609
+  version: 3.1.0

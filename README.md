@@ -52,7 +52,7 @@ Depending on the sequencing technology and parameters, the pipeline performs the
 - Optional extraction of the ITS region ([ITSx](https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.12073) or [ITSxRust](https://doi.org/10.64898/2026.02.25.707950))
 - Phylogenetic placement ([EPA-NG](https://github.com/Pbdas/epa-ng))
 - Taxonomical classification using DADA2; alternatives are [SINTAX](https://doi.org/10.1101/074161), [VSEARCH/LCA](https://peerj.com/articles/2584/), [Kraken2](https://doi.org/10.1186/s13059-019-1891-0), and [QIIME2](https://www.nature.com/articles/s41587-019-0209-9); multi-region data (e.g. 5R) is analysed with [Sidle](https://doi.org/10.1101/2021.03.23.436606)
-- Optional consolidation of the taxonomies from several reference databases into one
+- Optional consolidation of the taxonomies from several reference databases and classifiers into one
 - Excludes unwanted taxa, produces absolute and relative feature/taxa count tables and plots, plots alpha rarefaction curves, computes alpha and beta diversity indices and plots thereof ([QIIME2](https://www.nature.com/articles/s41587-019-0209-9))
 - Optional differential abundance analysis ([ANCOM](https://pubmed.ncbi.nlm.nih.gov/26028277/), [ANCOM-BC](https://pubmed.ncbi.nlm.nih.gov/32665548/) and [ANCOM-BC2](https://pubmed.ncbi.nlm.nih.gov/38158428/), QIIME2)
 - Optional functional prediction ([PICRUSt2](https://pubmed.ncbi.nlm.nih.gov/32483366/))

@@ -199,22 +199,22 @@ Pre-configured reference taxonomy databases are:
 
 | Database key | DADA2 | SINTAX | Kraken2 | QIIME2 | VSEARCH | Phyloplace | Target genes                                  |
 | ------------ | ----- | ------ | ------- | ------ | ------- | ---------- | --------------------------------------------- |
-| silva        | +¹    | -      | +       | +      | -       | -          | 16S rRNA                                      |
-| gtdb         | +²    | -      | -       | -      | -       | -          | 16S rRNA                                      |
-| sbdi-gtdb    | +     | -      | -       | -      | -       | +          | 16S rRNA                                      |
-| rdp          | +     | -      | +       | -      | -       | -          | 16S rRNA                                      |
+| silva        | +¹    | +      | +       | +      | -       | -          | 16S rRNA                                      |
+| gtdb         | +²    | +      | -       | -      | -       | -          | 16S rRNA                                      |
+| sbdi-gtdb    | +     | +      | -       | -      | -       | +          | 16S rRNA                                      |
+| rdp          | +     | +      | +       | -      | -       | -          | 16S rRNA                                      |
 | greengenes   | -     | -      | +       | (+)³   | -       | -          | 16S rRNA                                      |
-| greengenes2  | +     | -      | -       | +      | -       | -          | 16S rRNA                                      |
-| pr2          | +     | -      | -       | -      | -       | -          | 18S rRNA, also plastid/chloroplast 16S rRNA   |
-| GloSED       | +     | -      | -       | -      | -       | -          | eukaryotic nuclear ribosomal ITS region       |
+| greengenes2  | +     | +      | -       | +      | -       | -          | 16S rRNA                                      |
+| pr2          | +     | +      | -       | -      | -       | -          | 18S rRNA, also plastid/chloroplast 16S rRNA   |
+| GloSED       | +     | +      | -       | -      | -       | -          | eukaryotic nuclear ribosomal ITS region       |
 | unite-fungi  | +     | +      | -       | -      | +       | -          | eukaryotic nuclear ribosomal ITS region       |
 | unite-alleuk | +     | +      | -       | -      | +       | -          | eukaryotic nuclear ribosomal ITS region       |
 | coidb        | +     | +      | -       | -      | +       | -          | eukaryotic Cytochrome Oxidase I (COI)         |
-| midori2-co1  | +     | -      | -       | -      | +       | -          | eukaryotic Cytochrome Oxidase I (COI)         |
-| zehr-nifh    | +     | -      | -       | -      | -       | -          | Nitrogenase iron protein NifH                 |
+| midori2-co1  | -⁵    | +      | -       | -      | +       | -          | eukaryotic Cytochrome Oxidase I (COI)         |
+| zehr-nifh    | +     | +      | -       | -      | -       | -          | Nitrogenase iron protein NifH                 |
 | standard     | -     | -      | +       | -      | -       | -          | any in genomes of archaea, bacteria, viruses⁴ |
 
-¹: As of Silva version 138 optimized for classification of Bacteria and Archaea, not suitable for Eukaryotes; ²[`--dada_taxonomy_rc`](https://nf-co.re/ampliseq/parameters#dada_taxonomy_rc) is recommended; ³: de-replicated at 85%, only for testing purposes; ⁴: quality of results might vary
+¹: As of Silva version 138 optimized for classification of Bacteria and Archaea, not suitable for Eukaryotes; ²[`--dada_taxonomy_rc`](https://nf-co.re/ampliseq/parameters#dada_taxonomy_rc) is recommended; ³: de-replicated at 85%, only for testing purposes; ⁴: quality of results might vary; ⁵: DADA2 `assignTaxonomy` cannot use the MIDORI2 files, which hold more distinct taxonomy strings than its limit of 65,535
 
 For the exact versioned key of each database (e.g. `gtdb=R11-RS232`), see [`conf/ref_databases.config`](https://github.com/nf-core/ampliseq/blob/master/conf/ref_databases.config).
 
@@ -234,13 +234,20 @@ Parameter guidance is given in [nf-core/ampliseq website parameter documentation
 
 > [!TIP]
 > Taxonomic reference databases can be stored and shared locally with [`--ref_taxonomy_storage`](https://nf-co.re/ampliseq/parameters/#ref_taxonomy_storage). That way, remote files will be downloaded only if they are not available in the storage directory.
+> The MIDORI2 databases (`midori2-co1`) are downloaded as zip archives of 0.4 to 0.6 GB that hold the files for all genes, from which the CO1 file is extracted.
+> Using `--ref_taxonomy_storage` avoids downloading them for every run.
 
 #### Multiple DADA2 reference databases
 
 [`--dada_ref_taxonomy`](https://nf-co.re/ampliseq/parameters#dada_ref_taxonomy) accepts a comma-separated list of database keys (e.g. `gtdb,silva`) to run DADA2 classification against several databases at once.
 By default, only the first-listed database feeds downstream QIIME2 analysis (filtering, diversity, barplots, ANCOM) and R objects.
 Use [`--consolidate_taxonomies most-specific` or `score`](https://nf-co.re/ampliseq/parameters#consolidate_taxonomies) to instead pick a winning database per ASV.
-This currently compares DADA2 results only, not results from different classification methods.
+`most-specific` picks the database that resolved the most ranks and does not use bootstrap values.
+It also compares across classification methods, see [Consolidation across classifiers](#consolidation-across-classifiers).
+`score` compares DADA2 bootstrap values between databases, which are not known to be comparable: they depend on how many close relatives a database holds at a rank.
+Bootstrap values of 1 in several databases give `score` no basis for choosing, and it then falls back to the order in `--dada_ref_taxonomy`.
+A database that lacks a group can still give high bootstrap values for it, e.g. a bacterial database classifying chloroplast 16S sequences.
+`score` compares DADA2 results only.
 
 **Rank vocabulary across databases**
 
@@ -251,6 +258,26 @@ This currently compares DADA2 results only, not results from different classific
 - `Supergroup`/`Subdivision` have no counterpart in the standard levels and are dropped from the consolidated table. Each database's own unmodified table is still published under `dada2/`, so nothing is lost.
 - `most-specific` scores a database by how many of these levels it resolved, so a database with more intermediate rank names doesn't win purely by having more columns. A `Domain`/`Kingdom` pair counts once, as does a `Division`/`Phylum` pair.
 - This mapping isn't perfect everywhere in PR2 -- e.g. Metazoa's phylum-level names sit in `Class`, one level below `Division` -- but matches PR2's primary use case (protists, whose phylum-equivalent groups are in `Division`).
+
+#### Consolidation across classifiers
+
+With `--consolidate_taxonomies most-specific`, DADA2, SINTAX and VSEARCH-LCA can be run together (e.g. `--dada_ref_taxonomy silva --sintax_ref_taxonomy coidb`), and the consolidated result for each ASV is taken from whichever classifier and database resolved the deepest rank.
+Ties go to the DADA2 databases in `--dada_ref_taxonomy` order, then SINTAX, then VSEARCH-LCA.
+The consolidated table has `classifier` and `database` columns that record the winner for each ASV, and both are empty for an ASV that no classifier resolved to any rank.
+Rank names are harmonised as described for multiple DADA2 databases above, using the levels of the highest-priority classifier.
+The other classifiers need to use the same rank names, e.g. through `--sintax_assign_taxlevels` or `--vsearch_lca_assign_taxlevels` with a custom reference database.
+The pipeline stops if a table has none of them.
+Kraken2, QIIME2 and phylogenetic placement are not part of the consolidation: Kraken2 and QIIME2 output has a different shape, and placement gives an unranked taxonomy string.
+The pipeline prints a warning when Kraken2 or QIIME2 is run alongside a consolidation.
+
+How many ranks a classifier resolves depends on its method and cutoffs, e.g. `--sintax_cutoff` for SINTAX and the minimum bootstrap for DADA2.
+A deeper result from one classifier is therefore not necessarily more trustworthy than a shallower one from another.
+For DADA2, the comparison is between the `assignTaxonomy` result, which includes species when the reference database has them, and the other methods.
+Exact species matches from `addSpecies` (the `Species_exact` column) are not counted as a rank.
+The `confidence` column of the table consolidated across classifiers is empty, because DADA2 bootstraps (0-100) and SINTAX probabilities (0-1) are not comparable.
+The per-rank `*_confidence` columns are DADA2 bootstraps and are empty for ASVs won by another classifier.
+`score` is not available across classifiers, because confidence values are not comparable between methods and VSEARCH-LCA reports none.
+With `score`, SINTAX and VSEARCH-LCA results are left out of the consolidation, and the pipeline prints a warning.
 
 ### Multiple region analysis with Sidle
 

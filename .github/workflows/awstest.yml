@@ -12,22 +12,23 @@ jobs:
     steps:
       # Launch workflow using Seqera Platform CLI tool action
       - name: Launch workflow via Seqera Platform
-        uses: seqeralabs/action-tower-launch@v2
+        id: launch
+        uses: seqeralabs/action-seqera-launch@f7b1a39afc8bb65f58b84150cd214b33fe416fef # v1.0.0
         with:
-          workspace_id: ${{ vars.TOWER_WORKSPACE_ID }}
-          access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}
-          compute_env: "aws_ireland_s3_cpu_spot"
+          wait: running
+          syntax-parser: v2
+          workspace-id: ${{ vars.TOWER_WORKSPACE_ID }}
+          access-token: ${{ secrets.TOWER_ACCESS_TOKEN }}
+          compute-env: "aws_ireland_s3_cpu_spot"
           revision: ${{ github.sha }}
-          workdir: s3://${{ vars.AWS_S3_BUCKET }}/work/ampliseq/work-${{ github.sha }}
+          work-dir: s3://${{ vars.AWS_S3_BUCKET }}/work/ampliseq/work-${{ github.sha }}
           parameters: |
             {
               "outdir": "s3://${{ vars.AWS_S3_BUCKET }}/ampliseq/results-test-${{ github.sha }}"
             }
           profiles: test,aws_scratch
-
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
-        with:
-          name: Seqera Platform debug log file
-          path: |
-            tower_action_*.log
-            tower_action_*.json
+      - name: Link to the Seqera Platform run
+        env:
+          WORKFLOW_URL: ${{ steps.launch.outputs.workflow-url }}
+        run: |
+          echo "Seqera Platform run: $WORKFLOW_URL" >> "$GITHUB_STEP_SUMMARY"

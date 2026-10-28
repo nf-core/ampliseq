@@ -15,7 +15,7 @@
                 "COMBINE_TABLE": {
                     "R": "4.0.3"
                 },
-                "CONSOLIDATE_DADA2_TAXONOMY": {
+                "CONSOLIDATE_TAXONOMY": {
                     "R": "4.5.2"
                 },
                 "CUTADAPT_BASIC": {
@@ -147,7 +147,7 @@
                     "pandas": "1.1.5"
                 },
                 "Workflow": {
-                    "nf-core/ampliseq": "v3.0.0"
+                    "nf-core/ampliseq": "v3.1.0"
                 }
             },
             [

@@ -32,6 +32,10 @@ A video about relevance, usage and output of the pipeline (version 2.1.0; 26th O
     <em>The nf-core/ampliseq metro map is a simplification in every regard, it only demonstrates the general idea and functions. *: check docs</em>
 </p>
 
+The map does not show every option.
+Not on the map are, for example: ASVs given directly as a fasta file, custom reference databases and UNITE species hypotheses, building a phylogenetic tree and group-average barplots.
+All options are described in the [usage documentation](https://nf-co.re/ampliseq/usage) and the [parameter documentation](https://nf-co.re/ampliseq/parameters).
+
 On release, automated continuous integration tests run the pipeline on a full-sized dataset on the AWS cloud infrastructure. This ensures that the pipeline runs on AWS, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources. The results obtained from the full-sized test can be viewed on the [nf-core website](https://nf-co.re/ampliseq/results).
 
 ## Pipeline summary
@@ -43,12 +47,18 @@ Depending on the sequencing technology and parameters, the pipeline performs the
 - Infer Amplicon Sequence Variants (ASVs) with [DADA2](https://doi.org/10.1038/nmeth.3869) for Illumina, PacBio and IonTorrent data, or with [Savont](https://doi.org/10.64898/2026.05.26.727271) for Oxford Nanopore data
 - Optional post-clustering with [VSEARCH](https://github.com/torognes/vsearch)
 - Decontamination with [decontam](https://pubmed.ncbi.nlm.nih.gov/30558668/), if any controls or quantification information is given
+- Optional filtering of ASVs by length and, for protein-coding amplicons, by open reading frame (codon filter)
 - Predict whether ASVs are ribosomal RNA sequences ([Barrnap](https://github.com/tseemann/barrnap))
+- Optional extraction of the ITS region ([ITSx](https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.12073) or [ITSxRust](https://doi.org/10.64898/2026.02.25.707950))
 - Phylogenetic placement ([EPA-NG](https://github.com/Pbdas/epa-ng))
-- Taxonomical classification using DADA2; alternatives are [SINTAX](https://doi.org/10.1101/074161), [VSEARCH/LCA](https://peerj.com/articles/2584/), [Kraken2](https://doi.org/10.1186/s13059-019-1891-0), and [QIIME2](https://www.nature.com/articles/s41587-019-0209-9)
+- Taxonomical classification using DADA2; alternatives are [SINTAX](https://doi.org/10.1101/074161), [VSEARCH/LCA](https://peerj.com/articles/2584/), [Kraken2](https://doi.org/10.1186/s13059-019-1891-0), and [QIIME2](https://www.nature.com/articles/s41587-019-0209-9); multi-region data (e.g. 5R) is analysed with [Sidle](https://doi.org/10.1101/2021.03.23.436606)
+- Optional consolidation of the taxonomies from several reference databases and classifiers into one
 - Excludes unwanted taxa, produces absolute and relative feature/taxa count tables and plots, plots alpha rarefaction curves, computes alpha and beta diversity indices and plots thereof ([QIIME2](https://www.nature.com/articles/s41587-019-0209-9))
+- Optional differential abundance analysis ([ANCOM](https://pubmed.ncbi.nlm.nih.gov/26028277/), [ANCOM-BC](https://pubmed.ncbi.nlm.nih.gov/32665548/) and [ANCOM-BC2](https://pubmed.ncbi.nlm.nih.gov/38158428/), QIIME2)
+- Optional functional prediction ([PICRUSt2](https://pubmed.ncbi.nlm.nih.gov/32483366/))
 - Creates phyloseq R objects ([Phyloseq](https://www.bioconductor.org/packages/release/bioc/html/phyloseq.html) and [TreeSE](https://doi.org/10.12688/f1000research.26669.2))
 - Optional comparison of the results to expected sequences, abundances and taxonomic profile
+- Summary tables of counts and taxonomy in TSV and Parquet format
 - Pipeline QC summaries ([MultiQC](https://multiqc.info/))
 - Pipeline summary report ([R Markdown](https://github.com/rstudio/rmarkdown))
 

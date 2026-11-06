@@ -95,4 +95,20 @@ process QIIME2_ANCOMBC2_TAX {
         qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
+
+    stub:
+    def formula = formula_in ?: "${table.baseName}"
+    outfolder = "Category-${formula}-level-${taxlevel}"
+    """
+    mkdir -p "${outfolder}/differentials"
+    touch "${outfolder}/lvl${taxlevel}-${formula}.volcano_plot.svg"
+    touch "${outfolder}/lvl${taxlevel}-${formula}.tsv"
+    touch "${outfolder}/lvl${taxlevel}-${formula}.visualizer.qzv"
+    touch "${outfolder}/differentials/lvl${taxlevel}-${formula}.tsv"
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        qiime2: stub
+    END_VERSIONS
+    """
 }

@@ -32,4 +32,19 @@ process FILTER_CODONS {
         pandas: \$(python -c "import pkg_resources; print(pkg_resources.get_distribution('pandas').version)")
     END_VERSIONS
     """
+
+    stub:
+    """
+    cp "$fasta" ASV_codon_filtered.fna
+    grep "^>" "$fasta" | sed "s/^>//" > ASV_codon_filtered.list
+    if [ -f "${asv}" ]; then
+        cp "$asv" ASV_codon_filtered.table.tsv
+        echo -e "sample\tinput\toutput" > codon.filtered.stats.tsv
+    fi
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: stub
+    END_VERSIONS
+    """
 }

@@ -31,4 +31,15 @@ process FORMAT_TAXONOMY_QIIME {
         sed: "\$(sed --version 2>&1 | sed -n 1p | sed 's/sed (GNU sed) //')"
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch ref.fna ref.tax
+    echo -e "--qiime_ref_taxonomy: ${params.qiime_ref_taxonomy}" > ref_taxonomy.txt
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        bash: stub
+    END_VERSIONS
+    """
 }

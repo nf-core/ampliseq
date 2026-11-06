@@ -29,4 +29,14 @@ process QIIME2_INSEQ {
         qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch rep-seqs.qza
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        qiime2: stub
+    END_VERSIONS
+    """
 }

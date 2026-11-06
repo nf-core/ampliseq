@@ -89,4 +89,21 @@ process ITSXRUST_CUTASV {
         ITSxRust: \$( itsxrust --version 2>&1 | sed 's/itsxrust //' )
     END_VERSIONS
     """
+
+    stub:
+    """
+    printf ">stub\\nACGT\\n" > ASV_ITS_seqs.full.fasta
+    printf ">stub\\nACGT\\n" > ASV_ITS_seqs.ITS1.fasta
+    printf ">stub\\nACGT\\n" > ASV_ITS_seqs.ITS2.fasta
+    printf ">stub\\nACGT\\n" > ASV_ITS_seqs.full_and_partial.fasta
+    printf ">stub\\nACGT\\n" > ASV_ITS_seqs.ITS1.full_and_partial.fasta
+    printf ">stub\\nACGT\\n" > ASV_ITS_seqs.ITS2.full_and_partial.fasta
+    echo -e "ITSxRust extraction summary" > ASV_ITS_seqs.summary.txt
+    echo -e "ITSxRust\tstub" > ITSxRust.args.txt
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        ITSxRust: stub
+    END_VERSIONS
+    """
 }

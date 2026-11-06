@@ -52,4 +52,16 @@ process QIIME2_EXPORT_RELTAX {
         qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
+
+    stub:
+    """
+    for i in \$(seq ${tax_agglom_min} 1 ${tax_agglom_max}); do
+        echo -e "#OTU ID" > rel-table-\$i.tsv
+    done
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        qiime2: stub
+    END_VERSIONS
+    """
 }

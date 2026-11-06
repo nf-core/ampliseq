@@ -35,4 +35,14 @@ process QIIME2_INASV {
         qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch table.qza
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        qiime2: stub
+    END_VERSIONS
+    """
 }

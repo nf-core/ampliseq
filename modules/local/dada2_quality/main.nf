@@ -75,4 +75,20 @@ process DADA2_QUALITY {
     write.table(paste0('plotQualityProfile\t$args\nmax_files\t',max_files), file = "${prefix}_plotQualityProfile.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
     writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")),paste0("    ShortRead: ", packageVersion("ShortRead")) ), "versions.yml")
     """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta}"
+    def qscore_list = ( params.binned_quality ?: "2,10,20,30,40,50" ).replace(',', ' ')
+    """
+    touch ${prefix}_qual_stats.pdf ${prefix}_qual_stats.svg
+    echo -e "Cycle\tCount\tMedian" > ${prefix}_qual_stats.tsv
+    echo -e "plotQualityProfile\tstub" > ${prefix}_plotQualityProfile.args.txt
+    touch "${prefix}_plotQualityProfile.txt"
+    for q in ${qscore_list}; do echo \$q; done > ${prefix}_QualityScores.txt
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        dada2: stub
+    END_VERSIONS
+    """
 }

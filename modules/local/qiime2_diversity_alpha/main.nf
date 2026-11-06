@@ -33,4 +33,16 @@ process QIIME2_DIVERSITY_ALPHA {
         qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
+
+    stub:
+    """
+    mkdir -p "alpha_diversity/${core.baseName}"
+    touch "alpha_diversity/${core.baseName}/placeholder.tsv"
+    touch ${core.baseName}-vis.qzv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        qiime2: stub
+    END_VERSIONS
+    """
 }

@@ -22,4 +22,14 @@ process FORMAT_FASTAINPUT {
         sed: \$(sed --version 2>&1 | sed -n 1p | sed 's/sed (GNU sed) //')
     END_VERSIONS
     """
+
+    stub:
+    """
+    cp "$fastain" input.mod.fasta
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        sed: stub
+    END_VERSIONS
+    """
 }

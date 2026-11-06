@@ -26,4 +26,14 @@ process ASSIGNSH {
         pandas: \$(python -c "import pkg_resources; print(pkg_resources.get_distribution('pandas').version)")
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch ${outtable}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: stub
+    END_VERSIONS
+    """
 }

@@ -24,4 +24,14 @@ process FILTER_STATS {
         pandas: \$(python -c "import pkg_resources; print(pkg_resources.get_distribution('pandas').version)")
     END_VERSIONS
     """
+
+    stub:
+    """
+    echo -e "sample\tinput\toutput" > count_table_filter_stats.tsv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: stub
+    END_VERSIONS
+    """
 }

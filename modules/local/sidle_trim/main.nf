@@ -36,4 +36,16 @@ process SIDLE_TRIM {
         q2-sidle: \$( qiime sidle --version | sed 's/.*version //' | sed 's/)//' )
     END_VERSIONS
     """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.region}"
+    def length = "${meta.region_length}"
+    """
+    touch ${prefix}_${length}_table.qza ${prefix}_${length}_rep-seqs.qza
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        q2-sidle: stub
+    END_VERSIONS
+    """
 }

@@ -169,4 +169,14 @@ process CONSOLIDATE_TAXONOMY {
 
     writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = "."))), "versions.yml")
     """
+
+    stub:
+    """
+    echo -e "ASV_ID\tKingdom\tPhylum\tClass\tOrder\tFamily\tGenus" > ${outfile}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        R: stub
+    END_VERSIONS
+    """
 }

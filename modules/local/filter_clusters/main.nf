@@ -30,4 +30,16 @@ process FILTER_CLUSTERS {
         pandas: \$(python -c "import pkg_resources; print(pkg_resources.get_distribution('pandas').version)")
     END_VERSIONS
     """
+
+    stub:
+    """
+    cp "$asv" ASV_post_clustering_filtered.table.tsv
+    cp "$asv" ASV_post_clustering_filtered.fna
+    echo -e "sample\tinput\toutput" > ASV_post_clustering_filtered.stats.tsv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: stub
+    END_VERSIONS
+    """
 }

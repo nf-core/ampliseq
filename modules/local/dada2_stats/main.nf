@@ -127,4 +127,16 @@ process DADA2_STATS {
         writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
         """
     }
+
+    stub:
+    def prefix = task.ext.prefix ?: "prefix"
+    def columns = meta.single_end ? "denoised" : "denoisedF\\tdenoisedR\\tdenoisedPairs\\tmerged"
+    """
+    printf "sample\\tDADA2_input\\tfiltered\\t${columns}\\tnonchim\\n" > ${prefix}.stats.tsv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        dada2: stub
+    END_VERSIONS
+    """
 }

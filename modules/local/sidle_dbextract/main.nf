@@ -53,4 +53,17 @@ process SIDLE_DBEXTRACT {
         q2-sidle: \$( qiime sidle --version | sed 's/.*version //' | sed 's/)//' )
     END_VERSIONS
     """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.region}"
+    def length = "${meta.region_length}"
+    """
+    touch db_${prefix}_${length}_kmers.qza
+    touch db_${prefix}_${length}_map.qza
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        q2-sidle: stub
+    END_VERSIONS
+    """
 }

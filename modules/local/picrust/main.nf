@@ -56,4 +56,20 @@ process PICRUST {
         picrust2: \$( picrust2_pipeline.py -v | sed -e "s/picrust2_pipeline.py //g" )
     END_VERSIONS
     """
+
+    stub:
+    """
+    mkdir -p all_output
+    touch all_output/placeholder.txt
+    touch EC_pred_metagenome_unstrat_descrip.tsv
+    touch KO_pred_metagenome_unstrat_descrip.tsv
+    touch METACYC_path_abun_unstrat_descrip.tsv
+    echo -e "picrust\tstub" > picrust.args.txt
+    echo "$message" > "${message}.txt"
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        picrust2: stub
+    END_VERSIONS
+    """
 }

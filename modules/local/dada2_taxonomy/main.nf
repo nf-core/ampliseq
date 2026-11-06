@@ -76,4 +76,16 @@ process DADA2_TAXONOMY {
     write.table('assignTaxonomy\t$args\ntaxlevels\t$taxlevels\nseed\t$seed', file = "assignTaxonomy${outfile}.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
     writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
     """
+
+    stub:
+    """
+    echo -e "ASV_ID\tKingdom\tPhylum\tClass\tOrder\tFamily\tGenus\tconfidence\tsequence" > ${fasta.baseName}${outfile}.tsv
+    touch ${fasta.baseName}${outfile}.rds
+    echo -e "assignTaxonomy\tstub" > assignTaxonomy${outfile}.args.txt
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        dada2: stub
+    END_VERSIONS
+    """
 }

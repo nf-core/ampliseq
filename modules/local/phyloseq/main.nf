@@ -52,4 +52,14 @@ process PHYLOSEQ {
         "versions.yml"
     )
     """
+
+    stub:
+    """
+    touch ${prefix}_phyloseq.rds
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        phyloseq: stub
+    END_VERSIONS
+    """
 }

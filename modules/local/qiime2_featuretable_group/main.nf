@@ -39,4 +39,14 @@ process QIIME2_FEATURETABLE_GROUP {
         qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch "${category}.qza"
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        qiime2: stub
+    END_VERSIONS
+    """
 }

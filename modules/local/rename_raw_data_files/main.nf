@@ -41,4 +41,29 @@ process RENAME_RAW_DATA_FILES {
         END_VERSIONS
         """
     }
+
+    stub:
+    // the output names may already exist as staged inputs, so remove them before writing
+    if (meta.single_end) {
+        """
+        rm -f ${meta.id}.fastq.gz
+        echo "" | gzip > ${meta.id}.fastq.gz
+
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+            bash: \$(bash -c 'echo \$BASH_VERSION')
+        END_VERSIONS
+        """
+    } else {
+        """
+        rm -f ${meta.id}_1.fastq.gz ${meta.id}_2.fastq.gz
+        echo "" | gzip > ${meta.id}_1.fastq.gz
+        echo "" | gzip > ${meta.id}_2.fastq.gz
+
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+            bash: \$(bash -c 'echo \$BASH_VERSION')
+        END_VERSIONS
+        """
+    }
 }

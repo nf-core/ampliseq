@@ -26,4 +26,14 @@ process FORMAT_TAXRESULTS_VSEARCH_LCA {
         python: \$(python --version 2>&1 | sed 's/Python //g')
     END_VERSIONS
     """
+
+    stub:
+    """
+    echo -e "ASV_ID\tKingdom\tsequence" > ${outfile}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: stub
+    END_VERSIONS
+    """
 }

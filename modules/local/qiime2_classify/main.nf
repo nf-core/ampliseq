@@ -45,4 +45,15 @@ process QIIME2_CLASSIFY {
         qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch taxonomy.qza
+    echo -e "Feature ID\tTaxon\tConfidence" > taxonomy.tsv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        qiime2: stub
+    END_VERSIONS
+    """
 }

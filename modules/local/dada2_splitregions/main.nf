@@ -57,4 +57,17 @@ process DADA2_SPLITREGIONS {
 
     writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = "."))), "versions.yml")
     """
+
+    stub:
+    def suffix = "region" + meta.region + "_" + meta.primer_fwd + "_" + meta.primer_rev
+    """
+    echo -e "ASV_ID\tsequence" > DADA2_table_${suffix}.tsv
+    echo -e "ASV_ID" > ASV_table_${suffix}.tsv
+    touch ASV_seqs_${suffix}.fasta
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        R: stub
+    END_VERSIONS
+    """
 }

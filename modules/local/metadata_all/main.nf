@@ -23,4 +23,14 @@ process METADATA_ALL {
         R: \$(R --version 2>&1 | sed -n 1p | sed 's/R version //' | sed 's/ (.*//')
     END_VERSIONS
     """
+
+    stub:
+    """
+    echo -n ""
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        R: stub
+    END_VERSIONS
+    """
 }

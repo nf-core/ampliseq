@@ -68,4 +68,18 @@ process QIIME2_DIVERSITY_CORE {
         qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
+
+    stub:
+    """
+    mkdir -p diversity_core
+    for m in bray_curtis jaccard unweighted_unifrac weighted_unifrac; do
+        touch diversity_core/\${m}_pcoa_results.qza diversity_core/\${m}_vector.qza diversity_core/\${m}_distance_matrix.qza \${m}_distance_matrix.tsv
+    done
+    printf "Use the sampling depth of ${mindepth} for rarefaction\\n" > "Use the sampling depth of ${mindepth} for rarefaction.txt"
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        qiime2: stub
+    END_VERSIONS
+    """
 }

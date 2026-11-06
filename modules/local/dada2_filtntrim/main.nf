@@ -48,4 +48,30 @@ process DADA2_FILTNTRIM {
     write.table(paste('filterAndTrim\t$trunc_args','$args',sep=","), file = "filterAndTrim.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
     writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
     """
+
+    stub:
+    if (meta.single_end) {
+        """
+        echo "" | gzip > ${meta.id}.filt.fastq.gz
+        echo -e "reads.in\treads.out\tID" > ${meta.id}.filter_stats.tsv
+        echo -e "filterAndTrim\tstub" > filterAndTrim.args.txt
+
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+            dada2: stub
+        END_VERSIONS
+        """
+    } else {
+        """
+        echo "" | gzip > ${meta.id}_1.filt.fastq.gz
+        echo "" | gzip > ${meta.id}_2.filt.fastq.gz
+        echo -e "reads.in\treads.out\tID" > ${meta.id}.filter_stats.tsv
+        echo -e "filterAndTrim\tstub" > filterAndTrim.args.txt
+
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+            dada2: stub
+        END_VERSIONS
+        """
+    }
 }

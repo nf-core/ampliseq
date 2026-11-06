@@ -72,4 +72,14 @@ process TREESUMMARIZEDEXPERIMENT {
         "versions.yml"
     )
     """
+
+    stub:
+    """
+    touch ${prefix}_TreeSummarizedExperiment.rds
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        TreeSummarizedExperiment: stub
+    END_VERSIONS
+    """
 }

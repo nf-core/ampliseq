@@ -50,4 +50,19 @@ process COMPARE_SEQUENCES {
         R: \$(R --version | sed -n 1p | sed 's/R version //g' | sed 's/\\s.*\$//')
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch nucleotide-differences.svg nucleotide-differences.png
+    echo -e "sample\tmismatches" > nucleotide-differences.tsv
+    echo -e "sample\tmismatches" > nucleotide-differences_per-sample.tsv
+    touch nucleotide-differences.log
+    touch md5sum_version.txt
+    touch Warnings.txt
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        R: stub
+    END_VERSIONS
+    """
 }

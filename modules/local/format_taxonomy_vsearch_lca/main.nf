@@ -49,4 +49,15 @@ process FORMAT_TAXONOMY_VSEARCH_LCA {
         END_VERSIONS
         """
     }
+
+    stub:
+    """
+    echo "" | gzip > sintaxdb.fa.gz
+    echo -e "--vsearch_lca_ref_taxonomy: ${params.vsearch_lca_ref_taxonomy}" > ref_taxonomy_vsearch_lca.txt
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        bash: stub
+    END_VERSIONS
+    """
 }

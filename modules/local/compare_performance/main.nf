@@ -45,4 +45,19 @@ process COMPARE_PERFORMANCE {
         R: \$(R --version | sed -n 1p | sed 's/R version //g' | sed 's/\\s.*\$//')
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch metrics.svg metrics.png
+    echo -e "sample\tprecision\trecall" > performance_summary.tsv
+    echo -e "sample\tprecision\trecall" > performance_per-sample.tsv
+    echo -e "sample\tobserved\texpected" > abundances_per-sample.tsv
+    touch performance.log
+    touch Warnings.txt
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        R: stub
+    END_VERSIONS
+    """
 }

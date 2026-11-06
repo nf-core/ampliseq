@@ -38,4 +38,16 @@ process QIIME2_BARPLOT {
         qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
+
+    stub:
+    suffix = setting ? "_${table.baseName}" : ""
+    """
+    mkdir -p barplot${suffix}
+    touch barplot${suffix}/placeholder.html
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        qiime2: stub
+    END_VERSIONS
+    """
 }

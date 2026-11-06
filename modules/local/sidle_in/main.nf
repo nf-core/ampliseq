@@ -38,4 +38,15 @@ process SIDLE_IN {
         qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.region}"
+    """
+    touch ${prefix}_table.qza ${prefix}_rep-seqs.qza
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        qiime2: stub
+    END_VERSIONS
+    """
 }

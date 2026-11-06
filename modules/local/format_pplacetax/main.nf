@@ -90,4 +90,15 @@ process FORMAT_PPLACETAX {
 
     writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
     """
+
+    stub:
+    """
+    echo -e "ASV_ID\ttaxonomy" > ${meta.id}.taxonomy.tsv
+    echo -e "name\tLWR\ttaxopath" > ${meta.id}.taxonomy.per_query_unique.tsv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        R: stub
+    END_VERSIONS
+    """
 }

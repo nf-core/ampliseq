@@ -45,4 +45,15 @@ process SIDLE_DBFILT {
         qiime2 rescript: \$( qiime rescript --version | sed 's/ (.*//' | sed 's/.*version //' )
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch db_filtered_sequences.qza
+    touch db_filtered_sequences_tax.qza
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        qiime2 rescript: stub
+    END_VERSIONS
+    """
 }

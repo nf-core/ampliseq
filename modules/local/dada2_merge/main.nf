@@ -68,4 +68,18 @@ process DADA2_MERGE {
 
     writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
     """
+
+    stub:
+    """
+    printf "ASV_ID\\tsequence\\tstub\\nstub\\tACGT\\t1\\n" > DADA2_table.tsv
+    printf "ASV_ID\\tstub\\nstub\\t1\\n" > ASV_table.tsv
+    printf ">stub\\nACGT\\n" > ASV_seqs.fasta
+    touch DADA2_table.rds
+    printf "sample\\tDADA2_input\\tfiltered\\tdenoisedF\\tdenoisedR\\tdenoisedPairs\\tmerged\\tnonchim\\nstub\\t1\\t1\\t1\\t1\\t1\\t1\\t1\\n" > DADA2_stats.tsv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        dada2: stub
+    END_VERSIONS
+    """
 }

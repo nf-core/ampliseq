@@ -46,4 +46,14 @@ process QIIME2_EXTRACT {
         qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch ${meta.primer_fwd}-${meta.primer_rev}-ref-seq.qza
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        qiime2: stub
+    END_VERSIONS
+    """
 }

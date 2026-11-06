@@ -52,4 +52,17 @@ process SIDLE_SEQRECON {
         q2-sidle: \$( qiime sidle --version | sed 's/.*version //' | sed 's/)//' )
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch reconstruction_fragments.qza
+    mkdir -p reconstruction_fragments
+    touch reconstruction_fragments/placeholder.tsv
+    touch reconstructed_fragments.fasta
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        q2-sidle: stub
+    END_VERSIONS
+    """
 }

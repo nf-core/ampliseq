@@ -32,4 +32,15 @@ process SIDLE_FILTTAX {
 
     writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")) ), "versions.yml")
     """
+
+    stub:
+    """
+    echo -e "ID" > reconstructed_taxonomy.tsv
+    echo -e "ID" > reconstructed_merged.tsv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        R: stub
+    END_VERSIONS
+    """
 }

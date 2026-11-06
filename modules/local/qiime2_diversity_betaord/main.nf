@@ -34,4 +34,16 @@ process QIIME2_DIVERSITY_BETAORD {
         qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
+
+    stub:
+    """
+    mkdir -p "beta_diversity/${core.baseName}-PCoA"
+    touch "beta_diversity/${core.baseName}-PCoA/placeholder.tsv"
+    touch ${core.baseName}-vis.qzv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        qiime2: stub
+    END_VERSIONS
+    """
 }

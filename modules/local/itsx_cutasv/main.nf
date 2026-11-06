@@ -37,4 +37,21 @@ process ITSX_CUTASV {
         ITSx: \$( ITSx -h 2>&1 > /dev/null | tail -n 2 | head -n 1 | cut -f 2 -d ' ' )
     END_VERSIONS
     """
+
+    stub:
+    """
+    printf ">stub\\nACGT\\n" > ASV_ITS_seqs.full.fasta
+    printf ">stub\\nACGT\\n" > ASV_ITS_seqs.ITS1.fasta
+    printf ">stub\\nACGT\\n" > ASV_ITS_seqs.ITS2.fasta
+    printf ">stub\\nACGT\\n" > ASV_ITS_seqs.full_and_partial.fasta
+    printf ">stub\\nACGT\\n" > ASV_ITS_seqs.ITS1.full_and_partial.fasta
+    printf ">stub\\nACGT\\n" > ASV_ITS_seqs.ITS2.full_and_partial.fasta
+    echo -e "ITSx extraction summary" > ASV_ITS_seqs.summary.txt
+    echo -e "ITSx\tstub" > ITSx.args.txt
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        ITSx: stub
+    END_VERSIONS
+    """
 }

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#1142](https://github.com/nf-core/ampliseq/pull/1142) - Added `stub:` sections to all local modules, so `-stub-run` with `--min_read_counts 0` exercises the whole pipeline without executing any tool (by @d4straub)
+
 ### `Changed`
 
 - [#1141](https://github.com/nf-core/ampliseq/pull/1141) - Change version to 3.2.0dev (by @d4straub)

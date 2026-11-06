@@ -79,4 +79,19 @@ process FILTER_SSU {
 
     writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    Biostrings: ", packageVersion("Biostrings")) ), "versions.yml")
     """
+
+    stub:
+    """
+    echo -e "ASV_ID\tresult" > result.tsv
+    echo -e "sample\tssufilter_input\tssufilter_output" > stats.ssu.tsv
+    cp "$fasta" ASV_seqs.ssu.fasta
+    if [ -f "${table}" ]; then
+        cp "$table" ASV_table.ssu.tsv
+    fi
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        Biostrings: stub
+    END_VERSIONS
+    """
 }

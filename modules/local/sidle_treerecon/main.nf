@@ -42,4 +42,15 @@ process SIDLE_TREERECON {
         q2-fragment-insertion: \$( qiime fragment-insertion --version | sed 's/.*version //' | sed 's/)//' )
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch reconstructed_tree.qza reconstruction_placements.qza
+    touch reconstructed_tree.nwk
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        q2-fragment-insertion: stub
+    END_VERSIONS
+    """
 }

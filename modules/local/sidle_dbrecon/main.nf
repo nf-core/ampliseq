@@ -51,4 +51,16 @@ process SIDLE_DBRECON {
         q2-sidle: \$( qiime sidle --version | sed 's/.*version //' | sed 's/)//' )
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch reconstruction_map.qza reconstruction_summary.qza
+    mkdir -p reconstruction_summary
+    touch reconstruction_summary/placeholder.tsv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        q2-sidle: stub
+    END_VERSIONS
+    """
 }

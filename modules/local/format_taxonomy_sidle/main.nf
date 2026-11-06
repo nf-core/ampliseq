@@ -34,4 +34,15 @@ process FORMAT_TAXONOMY_SIDLE {
         sed: "\$(sed --version 2>&1 | sed -n 1p | sed 's/sed (GNU sed) //')"
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch ref.seq.fasta ref.alnseq.fasta ref.tax.txt
+    echo -e "--sidle_ref_taxonomy: ${params.sidle_ref_taxonomy}" > ref_taxonomy.${suffix}.txt
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        bash: stub
+    END_VERSIONS
+    """
 }

@@ -73,4 +73,22 @@ process QIIME2_ANCOMBC2_ASV {
         qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
+
+    stub:
+    def formula = formula_in ?: "${table.baseName}"
+    outfolder = "Category-${formula}-ASV"
+    """
+    mkdir -p "${outfolder}/differentials"
+    touch "${outfolder}/ASV-${formula}.volcano_plot.svg"
+    touch "${outfolder}/ASV-${formula}.tsv"
+    touch "${outfolder}/ASV-${formula}.visualizer.qzv"
+    touch "${outfolder}/differentials/ASV-${formula}.tsv"
+    touch "ASV-${formula}.differentials.qza"
+    touch "ASV-${formula}.differentials.qzv"
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        qiime2: stub
+    END_VERSIONS
+    """
 }

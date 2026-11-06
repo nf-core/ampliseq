@@ -49,4 +49,15 @@ process FORMAT_TAXONOMY_SINTAX {
         END_VERSIONS
         """
     }
+
+    stub:
+    """
+    echo "" | gzip > sintaxdb.fa.gz
+    echo -e "--sintax_ref_taxonomy: ${params.sintax_ref_taxonomy}" > ref_taxonomy_sintax.txt
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        bash: stub
+    END_VERSIONS
+    """
 }

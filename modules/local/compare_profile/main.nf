@@ -36,4 +36,17 @@ process COMPARE_PROFILE {
         R: \$(R --version | sed -n 1p | sed 's/R version //g' | sed 's/\\s.*\$//')
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch profile.svg profile.png
+    echo -e "sample\trho" > profile_summary.tsv
+    echo -e "sample\trho" > profile_per-sample.tsv
+    touch profile.log
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        R: stub
+    END_VERSIONS
+    """
 }

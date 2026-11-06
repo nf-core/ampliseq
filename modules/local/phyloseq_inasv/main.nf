@@ -22,4 +22,14 @@ process PHYLOSEQ_INASV {
         sed: \$(sed --version 2>&1 | sed -n 1p | sed 's/sed (GNU sed) //')
     END_VERSIONS
     """
+
+    stub:
+    """
+    tail $biom_file -n +2 | sed '1s/#OTU ID/ASV_ID/' > reformat_$biom_file
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        sed: stub
+    END_VERSIONS
+    """
 }

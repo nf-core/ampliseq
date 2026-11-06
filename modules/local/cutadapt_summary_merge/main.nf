@@ -41,4 +41,25 @@ process CUTADAPT_SUMMARY_MERGE {
         cp $files cutadapt_summary.tsv
         """
     }
+
+    stub:
+    if (action == "merge") {
+        """
+        echo -e "sample\tcutadapt_total_processed\tcutadapt_doubleprimer_reverse_complemented\tcutadapt_doubleprimer_passing_filters\tcutadapt_doubleprimer_passing_filters_percent" > cutadapt_summary.tsv
+
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+            R: stub
+        END_VERSIONS
+        """
+    } else {
+        """
+        cp $files cutadapt_summary.tsv
+
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+            R: stub
+        END_VERSIONS
+        """
+    }
 }

@@ -32,4 +32,17 @@ process FORMAT_TAXONOMY {
         sed: "\$(sed --version 2>&1 | sed -n 1p | sed 's/sed (GNU sed) //')"
     END_VERSIONS
     """
+
+    stub:
+    def suffix = db_key.replace('=','_').replace('.','_')
+    """
+    echo "" | gzip > ${suffix}-assignTaxonomy.fna.gz
+    echo "" | gzip > ${suffix}-addSpecies.fna.gz
+    echo -e "--dada_ref_taxonomy: ${db_key}" > ref_taxonomy.${suffix}.txt
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        bash: stub
+    END_VERSIONS
+    """
 }

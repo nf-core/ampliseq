@@ -116,4 +116,21 @@ process DECONTAM {
 
     writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    decontam: ", packageVersion("decontam")) ), "versions.yml")
     """
+
+    stub:
+    """
+    cp "$abundances_tsv" decontaminated.tsv
+    echo -e "sample\tisContaminant_input\tisContaminant_output" > decontaminated_counts.tsv
+    echo -e "input\tisContaminant" > decontaminated_log.tsv
+    echo -e "ID\tcontaminant" > decontaminated_details.tsv
+    cp "$abundances_tsv" notcontaminant.tsv
+    echo -e "sample\tisNotContaminant_input\tisNotContaminant_output" > notcontaminant_counts.tsv
+    echo -e "input\tisNotContaminant" > notcontaminant_log.tsv
+    echo -e "ID\tnot.contaminant" > notcontaminant_details.tsv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        decontam: stub
+    END_VERSIONS
+    """
 }

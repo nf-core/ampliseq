@@ -38,4 +38,16 @@ process QIIME2_DIVERSITY_ADONIS {
         qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
+
+    stub:
+    """
+    mkdir -p adonis/${core.baseName}-${formula}
+    touch adonis/${core.baseName}-${formula}/placeholder.tsv
+    touch ${core.baseName}_adonis.qzv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        qiime2: stub
+    END_VERSIONS
+    """
 }

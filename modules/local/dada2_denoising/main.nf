@@ -143,4 +143,34 @@ process DADA2_DENOISING {
         writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
         """
     }
+
+    stub:
+    def prefix = task.ext.prefix ?: "prefix"
+    if (!meta.single_end) {
+        """
+        touch ${prefix}_1.dada.rds ${prefix}_2.dada.rds
+        touch ${prefix}.seqtab.rds ${prefix}.mergers.rds
+        touch ${prefix}.dada.log
+        echo -e "dada\tstub" > dada.args.txt
+        echo -e "mergePairs\tstub" > mergePairs.args.txt
+
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+            dada2: stub
+        END_VERSIONS
+        """
+    } else {
+        """
+        touch ${prefix}.dada.rds
+        touch ${prefix}.seqtab.rds
+        touch dummy_${prefix}.mergers.rds
+        touch ${prefix}.dada.log
+        echo -e "dada\tstub" > dada.args.txt
+
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+            dada2: stub
+        END_VERSIONS
+        """
+    }
 }

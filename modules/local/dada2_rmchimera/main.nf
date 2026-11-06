@@ -34,4 +34,16 @@ process DADA2_RMCHIMERA {
     write.table('removeBimeraDenovo\t$args', file = "removeBimeraDenovo.args.txt", row.names = FALSE, col.names = FALSE, quote = FALSE, na = '')
     writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
     """
+
+    stub:
+    def prefix = task.ext.prefix ?: "prefix"
+    """
+    touch ${prefix}.ASVtable.rds
+    echo -e "removeBimeraDenovo\tstub" > removeBimeraDenovo.args.txt
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        dada2: stub
+    END_VERSIONS
+    """
 }

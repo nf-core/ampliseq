@@ -32,4 +32,14 @@ process QIIME2_TRAIN {
         qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch ${meta.primer_fwd}-${meta.primer_rev}-classifier.qza
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        qiime2: stub
+    END_VERSIONS
+    """
 }

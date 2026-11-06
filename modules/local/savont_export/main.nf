@@ -33,4 +33,12 @@ process SAVONT_EXPORT {
     cp savont_export/merged_rep_seqs.fasta ${prefix}_final_asvs.fasta
     cp savont_export/savont_*.log ${prefix}_savont_export.log
     """
+
+    stub:
+    def prefix = task.ext.prefix ?: "$meta.id"
+    """
+    echo -e "ASV_ID" > ${prefix}_feature-table.tsv
+    awk 'BEGIN{printf ">stub\\n"; for(i=0;i<1500;i++) printf "A"; printf "\\n"}' > ${prefix}_final_asvs.fasta
+    touch ${prefix}_savont_export.log
+    """
 }

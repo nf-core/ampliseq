@@ -30,4 +30,15 @@ process BARRNAPSUMMARY {
         python: \$( python --version )
     END_VERSIONS
     """
+
+    stub:
+    """
+    echo -e "ASV_ID\tresult" > summary.tsv
+    touch no_warning.txt
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: stub
+    END_VERSIONS
+    """
 }

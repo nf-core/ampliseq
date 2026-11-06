@@ -197,4 +197,14 @@ process SUMMARY_REPORT  {
         paste0("    knitr: ", packageVersion("knitr")) ),
         "versions.yml")
     """
+
+    stub:
+    """
+    touch summary_report.html
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        rmarkdown: stub
+    END_VERSIONS
+    """
 }

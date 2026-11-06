@@ -52,4 +52,15 @@ process FILTER_SAMPLES {
     # versions
     writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")) ), "versions.yml")
     """
+
+    stub:
+    """
+    cp "$metadata" metadata.tsv
+    cp "$table" table.tsv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        R: stub
+    END_VERSIONS
+    """
 }

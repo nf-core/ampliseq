@@ -51,4 +51,17 @@ process SIDLE_TAXRECON {
         q2-sidle: \$( qiime sidle --version | sed 's/.*version //' | sed 's/)//' )
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch reconstruction_taxonomy.qza
+    mkdir -p reconstruction_taxonomy
+    touch reconstruction_taxonomy/placeholder.tsv
+    echo -e "Feature ID\tTaxon" > reconstruction_taxonomy.tsv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        q2-sidle: stub
+    END_VERSIONS
+    """
 }

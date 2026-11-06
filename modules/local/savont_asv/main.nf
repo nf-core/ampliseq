@@ -43,4 +43,20 @@ process SAVONT_ASV {
     cp savont_asv_${prefix}/final_assignments.tsv ${prefix}_final_assignments.tsv
     cp savont_asv_${prefix}/savont_*.log ${prefix}_savont.log
     """
+
+    stub:
+    def prefix = task.ext.prefix ?: "$meta.id"
+    """
+    mkdir -p savont_asv_${prefix}/temp
+    touch savont_asv_${prefix}/temp/placeholder.txt
+    echo -e "${sample_header}" > savont_asv_${prefix}/feature-table.tsv
+    echo -e "ASV_ID" > ${prefix}_feature-table.tsv
+    echo -e "sample\tcount" > ${prefix}_stats.tsv
+    awk 'BEGIN{printf ">stub\\n"; for(i=0;i<1500;i++) printf "A"; printf "\\n"}' > savont_asv_${prefix}/final_asvs.fasta
+    touch savont_asv_${prefix}/final_assignments.tsv
+    touch savont_asv_${prefix}/savont_stub.log
+    cp savont_asv_${prefix}/final_asvs.fasta ${prefix}_final_asvs.fasta
+    cp savont_asv_${prefix}/final_assignments.tsv ${prefix}_final_assignments.tsv
+    cp savont_asv_${prefix}/savont_stub.log ${prefix}_savont.log
+    """
 }

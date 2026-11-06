@@ -52,7 +52,7 @@ process DADA2_FILTNTRIM {
     stub:
     if (meta.single_end) {
         """
-        echo "" | gzip > ${meta.id}.filt.fastq.gz
+        printf "@stub\\nACGT\\n+\\nIIII\\n" | gzip > ${meta.id}.filt.fastq.gz
         echo -e "reads.in\treads.out\tID" > ${meta.id}.filter_stats.tsv
         echo -e "filterAndTrim\tstub" > filterAndTrim.args.txt
 
@@ -63,8 +63,8 @@ process DADA2_FILTNTRIM {
         """
     } else {
         """
-        echo "" | gzip > ${meta.id}_1.filt.fastq.gz
-        echo "" | gzip > ${meta.id}_2.filt.fastq.gz
+        printf "@stub\\nACGT\\n+\\nIIII\\n" | gzip > ${meta.id}_1.filt.fastq.gz
+        printf "@stub\\nACGT\\n+\\nIIII\\n" | gzip > ${meta.id}_2.filt.fastq.gz
         echo -e "reads.in\treads.out\tID" > ${meta.id}.filter_stats.tsv
         echo -e "filterAndTrim\tstub" > filterAndTrim.args.txt
 

@@ -47,7 +47,7 @@ process RENAME_RAW_DATA_FILES {
     if (meta.single_end) {
         """
         rm -f ${meta.id}.fastq.gz
-        echo "" | gzip > ${meta.id}.fastq.gz
+        printf "@stub\\nACGT\\n+\\nIIII\\n" | gzip > ${meta.id}.fastq.gz
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
@@ -57,8 +57,8 @@ process RENAME_RAW_DATA_FILES {
     } else {
         """
         rm -f ${meta.id}_1.fastq.gz ${meta.id}_2.fastq.gz
-        echo "" | gzip > ${meta.id}_1.fastq.gz
-        echo "" | gzip > ${meta.id}_2.fastq.gz
+        printf "@stub\\nACGT\\n+\\nIIII\\n" | gzip > ${meta.id}_1.fastq.gz
+        printf "@stub\\nACGT\\n+\\nIIII\\n" | gzip > ${meta.id}_2.fastq.gz
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":

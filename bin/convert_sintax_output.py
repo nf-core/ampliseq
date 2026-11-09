@@ -127,8 +127,13 @@ for line in args.infile:
             print(tmp_list[0], "\t".join(annot_list), confidence, sequence, sep="\t", file=args.outfile)
         else:
             if dbtype == "UNITE":
-                (species, sh) = annot_list[num_taxa - 1].rsplit("_", 1)
-                annot_list[num_taxa - 1] = species
+                # Older UNITE species labels end in the SH (Genus_species_SH1140861.08FU), UNITE 10 labels don't
+                sh_match = re.match(r"(.+)_(SH[0-9]+\.[0-9]+[A-Z]*)$", annot_list[num_taxa - 1])
+                if sh_match:
+                    (species, sh) = sh_match.groups()
+                    annot_list[num_taxa - 1] = species
+                else:
+                    sh = ""
                 annot_list.append(sh)
             print(tmp_list[0], "\t".join(annot_list), confidence, sequence, sep="\t", file=args.outfile)
     else:

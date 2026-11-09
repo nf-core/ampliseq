@@ -1,0 +1,56 @@
+nextflow_process {
+
+    name "Test Process FORMAT_TAXRESULTS_SINTAX"
+    script "../main.nf"
+    process "FORMAT_TAXRESULTS_SINTAX"
+    tag "modules"
+    tag "modules_local"
+    tag "format_taxresults_sintax"
+
+    test("UNITE: the SH is split off only when the species label ends in one") {
+
+        when {
+            params {
+                sintax_ref_taxonomy = "unite-fungi"
+            }
+            process {
+                """
+                def dir = File.createTempDir()
+                def lineage = "d:Fungi,p:Ascomycota,c:Archaeorhizomycetes,o:Archaeorhizomycetales,f:Archaeorhizomycetaceae,g:Archaeorhizomyces"
+                // query, taxonomy with confidences, strand, taxonomy above the cutoff
+                def hits = [
+                    asv1: lineage + ",s:Archaeorhizomyces_finlayi",                // UNITE 10: no SH in the label
+                    asv2: lineage + ",s:Archaeorhizomyces_finlayi_SH1140861.08FU", // UNITE 8.2: SH at the end
+                    asv3: lineage + ",s:Archaeorhizomyces_finlayi_var._alba",      // more than one underscore, no SH
+                    asv4: lineage                                                  // no species above the cutoff
+                ]
+                def sintax = new File(dir, "sintax.tsv")
+                sintax.text = hits.collect { asv, tax ->
+                    def conf = (lineage + ",s:Archaeorhizomyces_finlayi").split(",").collect { it + "(1.00)" }.join(",")
+                    [asv, conf, "+", tax].join("\\t")
+                }.join("\\n") + "\\n"
+                def fasta = new File(dir, "asvs.fa")
+                fasta.text = hits.keySet().collect { ">\${it}\\nACGT" }.join("\\n") + "\\n"
+                input[0] = [ [id: "test"], file(sintax.absolutePath) ]
+                input[1] = file(fasta.absolutePath)
+                input[2] = "ASV_tax_sintax.tsv"
+                input[3] = ""
+                """
+            }
+        }
+
+        then {
+            def rows = process.success ? path(process.out.tsv[0]).readLines().collect { it.split("\t", -1) as List } : []
+            def row = { asv -> rows.find { it[0] == asv } }
+            def lineage = ["Fungi", "Ascomycota", "Archaeorhizomycetes", "Archaeorhizomycetales", "Archaeorhizomycetaceae", "Archaeorhizomyces"]
+            assertAll(
+                { assert process.success },
+                { assert rows[0] == ["ASV_ID", "Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species", "SH", "confidence", "sequence"] },
+                { assert row("asv1") == ["asv1"] + lineage + ["Archaeorhizomyces_finlayi", "", "1.00", "ACGT"] },
+                { assert row("asv2") == ["asv2"] + lineage + ["Archaeorhizomyces_finlayi", "SH1140861.08FU", "1.00", "ACGT"] },
+                { assert row("asv3") == ["asv3"] + lineage + ["Archaeorhizomyces_finlayi_var._alba", "", "1.00", "ACGT"] },
+                { assert row("asv4") == ["asv4"] + lineage + ["", "", "1.00", "ACGT"] }
+            )
+        }
+    }
+}

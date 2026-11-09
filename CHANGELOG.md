@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
-- [#XXXX](https://github.com/nf-core/ampliseq/pull/XXXX) - SINTAX with UNITE 10 (the default `unite-fungi`) no longer splits the species epithet off as the SH; the SH is only split off when the species label ends in one. Fixes [#1139](https://github.com/nf-core/ampliseq/issues/1139) (by @stev004)
+- [#1143](https://github.com/nf-core/ampliseq/pull/1143) - SINTAX with UNITE 10 (`unite-fungi`, `unite-fungi=10.0`) no longer splits the species epithet off as the SH; the SH is only split off when the species label ends in one. Fixes [#1139](https://github.com/nf-core/ampliseq/issues/1139) (by @stev004)
 
 ### `Dependencies`
 

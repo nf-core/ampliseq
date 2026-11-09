@@ -17,17 +17,20 @@ nextflow_process {
                 """
                 def dir = File.createTempDir()
                 def lineage = "d:Fungi,p:Ascomycota,c:Archaeorhizomycetes,o:Archaeorhizomycetales,f:Archaeorhizomycetaceae,g:Archaeorhizomyces"
-                // query, taxonomy with confidences, strand, taxonomy above the cutoff
+                // species label and its confidence for each query
                 def hits = [
-                    asv1: lineage + ",s:Archaeorhizomyces_finlayi",                // UNITE 10: no SH in the label
-                    asv2: lineage + ",s:Archaeorhizomyces_finlayi_SH1140861.08FU", // UNITE 8.2: SH at the end
-                    asv3: lineage + ",s:Archaeorhizomyces_finlayi_var._alba",      // more than one underscore, no SH
-                    asv4: lineage                                                  // no species above the cutoff
+                    asv1: ["s:Archaeorhizomyces_finlayi", "1.00"],                // UNITE 10: no SH in the label
+                    asv2: ["s:Archaeorhizomyces_finlayi_SH1140861.08FU", "1.00"], // UNITE 8.2: SH at the end
+                    asv3: ["s:Archaeorhizomyces_finlayi_var._alba", "1.00"],      // more than one underscore, no SH
+                    asv4: ["s:Archaeorhizomyces_finlayi", "0.50"]                 // species below the cutoff
                 ]
+                // query, taxonomy with confidences, strand, taxonomy above the cutoff
                 def sintax = new File(dir, "sintax.tsv")
-                sintax.text = hits.collect { asv, tax ->
-                    def conf = (lineage + ",s:Archaeorhizomyces_finlayi").split(",").collect { it + "(1.00)" }.join(",")
-                    [asv, conf, "+", tax].join("\\t")
+                sintax.text = hits.collect { asv, hit ->
+                    def (species, conf) = hit
+                    def raw = lineage.split(",").collect { it + "(1.00)" } + [species + "(" + conf + ")"]
+                    def kept = conf == "1.00" ? lineage + "," + species : lineage
+                    [asv, raw.join(","), "+", kept].join("\\t")
                 }.join("\\n") + "\\n"
                 def fasta = new File(dir, "asvs.fa")
                 fasta.text = hits.keySet().collect { ">\${it}\\nACGT" }.join("\\n") + "\\n"

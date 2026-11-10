@@ -58,13 +58,15 @@ pre-commit hooks (prettier, trailing whitespace, nextflow-lint) run via `prek`/`
 
 Module/subworkflow tests under `modules/nf-core/**/tests` and `subworkflows/nf-core/**/tests` are vendored from nf-core/modules and excluded from local test runs (`ignore` list in `nf-test.config`) — don't hand-edit these, update via `nf-core modules update`.
 
-`tests/stub_*.nf.test` run a test profile with `-stub`, covering 13 profiles that reach every process in the real snapshots. They assert the process set and file layout, not tool output, and finish in minutes:
+`tests/stub_*.nf.test` run a test profile with `-stub`, covering 13 profiles. They assert the process set and file layout, not tool output, and finish in minutes:
 
 ```bash
 nf-test test tests/stub_fasta.nf.test --profile +docker
 ```
 
-They use `conf/test_stub_limits.config` (resource caps plus `min_read_counts = 0`) and set `ref_taxonomy_storage` inside their own `outdir` to stay offline. Keep `tag "stub"` on these files and do not add `tag "pipeline"`; they are not a substitute for the corresponding real test.
+Eleven of the 13 reach every process in the corresponding real snapshot. `pplace` and `pplace_sheet` do not — they miss 23 and 8 processes respectively. The vendored `epang/place` and `hmmer/hmmrank` stubs never emit what their downstream steps consume: `EPANG_PLACE` writes only `*.epa_info.log`, not the optional `*.epa_result.jplace.gz`, and `HMMER_HMMRANK` writes a header row only. That starves `GAPPA_*`, `PPLACEFORMATTAX_*`, `PHYLOSEQ_INTAX_PPLACE`, `QIIME2_INTREE`, `SEQTK_SUBSEQ` and the QIIME2/Phyloseq steps downstream of them, so for these two profiles the stub snapshot does not prove the process set matches the real run.
+
+They use `conf/test_stub_limits.config` (resource caps plus `min_read_counts = 0`) and set `ref_taxonomy_storage` inside their own `outdir` to stay offline. Keep `tag "stub"` on these files and do not add `tag "pipeline"`; they are not a substitute for the corresponding real test. To reach a branch the profile leaves off without changing the shared profile, set the param in the test's own `params` block, as `tests/stub_novaseq.nf.test` does for `picrust`.
 
 ## Architecture
 

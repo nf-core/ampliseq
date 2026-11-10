@@ -1,0 +1,223 @@
+{
+    "-profile test_pplace -stub": {
+        "content": [
+            54,
+            {
+                "BARRNAP": {
+                    "barrnap": "stub"
+                },
+                "BARRNAPSUMMARY": {
+                    "python": "stub"
+                },
+                "BUILD_ASV_ANNOTATIONS": {
+                    "R": "stub"
+                },
+                "CLUSTALO_ALIGN": {
+                    "clustalo": "1.2.4",
+                    "pigz": 2.8
+                },
+                "CUTADAPT_BASIC": {
+                    "cutadapt": 5.2
+                },
+                "CUTADAPT_SUMMARY_STD": {
+                    "python": "stub"
+                },
+                "DADA2_DENOISING": {
+                    "dada2": "stub"
+                },
+                "DADA2_ERR": {
+                    "dada2": "stub"
+                },
+                "DADA2_FILTNTRIM": {
+                    "dada2": "stub"
+                },
+                "DADA2_MERGE": {
+                    "dada2": "stub"
+                },
+                "DADA2_QUALITY1": {
+                    "dada2": "stub"
+                },
+                "DADA2_QUALITY2": {
+                    "dada2": "stub"
+                },
+                "DADA2_RMCHIMERA": {
+                    "dada2": "stub"
+                },
+                "DADA2_STATS": {
+                    "dada2": "stub"
+                },
+                "DECONTAM": {
+                    "decontam": "stub"
+                },
+                "DUCKDB_TABLE2PARQUET": {
+                    "duckdb": "1.5.5"
+                },
+                "EPANG_PLACE": {
+                    "epa-ng": "0.3.8"
+                },
+                "EPANG_SPLIT_CLUSTALO": {
+                    "epa-ng": "0.3.8"
+                },
+                "FILTER_SAMPLES": {
+                    "R": "stub"
+                },
+                "FILTER_SSU": {
+                    "Biostrings": "stub"
+                },
+                "FORMAT_TAXONOMY_QIIME": {
+                    "bash": "stub"
+                },
+                "MERGE_STATS_DADA": {
+                    "R": "stub"
+                },
+                "MERGE_STATS_FILTERSSU": {
+                    "R": "stub"
+                },
+                "METADATA_ALL": {
+                    "R": "stub"
+                },
+                "METADATA_PAIRWISE": {
+                    "R": "stub"
+                },
+                "PHYLOSEQ_INTAX_QIIME2": {
+                    "python": "stub"
+                },
+                "QIIME2_CLASSIFY": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_EXTRACT": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_INASV": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_INSEQ": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_TRAIN": {
+                    "qiime2": "stub"
+                },
+                "RENAME_RAW_DATA_FILES": {
+                    "bash": "5.2.37(1)-release"
+                },
+                "SUMMARY_TABLE_COUNTS": {
+                    "R": "stub"
+                },
+                "SUMMARY_TABLE_TAXONOMY": {
+                    "R": "stub"
+                },
+                "TRUNCLEN": {
+                    "python": "stub"
+                },
+                "Workflow": {
+                    "nf-core/ampliseq": "v3.2.0dev"
+                }
+            },
+            [
+                "barrnap",
+                "barrnap/ASV_seqs.ssu.fasta",
+                "barrnap/ASV_table.ssu.tsv",
+                "barrnap/result.tsv",
+                "barrnap/rrna.arc.gff",
+                "barrnap/rrna.bac.gff",
+                "barrnap/rrna.euk.gff",
+                "barrnap/rrna.mito.gff",
+                "barrnap/stats.ssu.tsv",
+                "barrnap/summary.tsv",
+                "cutadapt",
+                "cutadapt/cutadapt_summary.tsv",
+                "cutadapt/sampleID_1.trimmed.cutadapt.log",
+                "cutadapt/sampleID_1a.trimmed.cutadapt.log",
+                "cutadapt/sampleID_2.trimmed.cutadapt.log",
+                "cutadapt/sampleID_2a.trimmed.cutadapt.log",
+                "dada2",
+                "dada2/ASV_seqs.fasta",
+                "dada2/ASV_table.tsv",
+                "dada2/DADA2_stats.tsv",
+                "dada2/DADA2_table.rds",
+                "dada2/DADA2_table.tsv",
+                "dada2/QC",
+                "dada2/QC/1_1.err.convergence.txt",
+                "dada2/QC/1_1.err.pdf",
+                "dada2/QC/1_2.err.convergence.txt",
+                "dada2/QC/1_2.err.pdf",
+                "dada2/QC/FW_plotQualityProfile.txt",
+                "dada2/QC/FW_preprocessed_qual_stats.pdf",
+                "dada2/QC/FW_qual_stats.pdf",
+                "dada2/QC/RV_plotQualityProfile.txt",
+                "dada2/QC/RV_preprocessed_qual_stats.pdf",
+                "dada2/QC/RV_qual_stats.pdf",
+                "dada2/QC/svg",
+                "dada2/QC/svg/1_1.err.svg",
+                "dada2/QC/svg/1_2.err.svg",
+                "dada2/QC/svg/FW_preprocessed_qual_stats.svg",
+                "dada2/QC/svg/FW_qual_stats.svg",
+                "dada2/QC/svg/RV_preprocessed_qual_stats.svg",
+                "dada2/QC/svg/RV_qual_stats.svg",
+                "dada2/args",
+                "dada2/args/FW_plotQualityProfile.args.txt",
+                "dada2/args/FW_preprocessed_plotQualityProfile.args.txt",
+                "dada2/args/RV_plotQualityProfile.args.txt",
+                "dada2/args/RV_preprocessed_plotQualityProfile.args.txt",
+                "dada2/args/dada.args.txt",
+                "dada2/args/filterAndTrim.args.txt",
+                "dada2/args/learnErrors.args.txt",
+                "dada2/args/mergePairs.args.txt",
+                "dada2/args/removeBimeraDenovo.args.txt",
+                "dada2/log",
+                "dada2/log/1.dada.log",
+                "dada2/log/1.err.log",
+                "decontam",
+                "decontam/decontaminated.tsv",
+                "decontam/decontaminated_counts.tsv",
+                "decontam/decontaminated_details.tsv",
+                "decontam/decontaminated_log.tsv",
+                "decontam/notcontaminant.tsv",
+                "decontam/notcontaminant_counts.tsv",
+                "decontam/notcontaminant_details.tsv",
+                "decontam/notcontaminant_log.tsv",
+                "input",
+                "input/Metadata.tsv",
+                "input/Samplesheet_v3.tsv",
+                "multiqc",
+                "multiqc/multiqc_data",
+                "multiqc/multiqc_data/.stub",
+                "multiqc/multiqc_plots",
+                "multiqc/multiqc_plots/.stub",
+                "multiqc/multiqc_report.html",
+                "overall_summary.tsv",
+                "pipeline_info",
+                "pipeline_info/nf_core_ampliseq_software_mqc_versions.yml",
+                "pplace",
+                "pplace/clustalo",
+                "pplace/clustalo/test_pplace.aln",
+                "pplace/epang",
+                "pplace/epang/test_pplace.epa_info.log",
+                "qiime2",
+                "qiime2/input",
+                "qiime2/input/rep-seqs.qza",
+                "qiime2/input/table.qza",
+                "qiime2/taxonomy",
+                "qiime2/taxonomy/GTGYCAGCMGCCGCGGTAA-GGACTACNVGGGTWTCTAAT-classifier.qza",
+                "qiime2/taxonomy/ref_taxonomy.txt",
+                "qiime2/taxonomy/taxonomy.tsv",
+                "ref-storage",
+                "ref-storage/85_otu_taxonomy.txt",
+                "ref-storage/85_otus.fasta",
+                "summary_report",
+                "summary_report/summary_report.html",
+                "summary_report/versions.yml",
+                "summary_tables",
+                "summary_tables/ampliseq.counts.parquet",
+                "summary_tables/ampliseq.counts.tsv.gz",
+                "summary_tables/ampliseq.taxonomy.QIIME2.greengenes85.parquet",
+                "summary_tables/ampliseq.taxonomy.QIIME2.greengenes85.tsv.gz"
+            ]
+        ],
+        "timestamp": "2026-11-09T14:45:41.234309372",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.5"
+        }
+    }
+}

@@ -1,0 +1,260 @@
+{
+    "-profile test_savont -stub": {
+        "content": [
+            69,
+            {
+                "BARRNAP": {
+                    "barrnap": "stub"
+                },
+                "BARRNAPSUMMARY": {
+                    "python": "stub"
+                },
+                "BUILD_ASV_ANNOTATIONS": {
+                    "R": "stub"
+                },
+                "CHOPPER": {
+                    "chopper": "0.12.0"
+                },
+                "COMBINE_TABLE": {
+                    "R": "stub"
+                },
+                "COMPARE_PERFORMANCE": {
+                    "R": "stub"
+                },
+                "COMPARE_PROFILE": {
+                    "R": "stub"
+                },
+                "COMPARE_SEQUENCES": {
+                    "R": "stub"
+                },
+                "CUTADAPT_BASIC": {
+                    "cutadapt": 5.2
+                },
+                "CUTADAPT_SUMMARY_STD": {
+                    "python": "stub"
+                },
+                "DADA2_ADDSPECIES": {
+                    "dada2": "stub"
+                },
+                "DADA2_TAXONOMY": {
+                    "dada2": "stub"
+                },
+                "DUCKDB_TABLE2PARQUET": {
+                    "duckdb": "1.5.5"
+                },
+                "FASTQC": {
+                    "fastqc": "0.12.1"
+                },
+                "FILTER_LEN_ASV": {
+                    "Biostrings": "stub"
+                },
+                "FILTER_STATS": {
+                    "python": "stub"
+                },
+                "FORMAT_TAXONOMY": {
+                    "bash": "stub"
+                },
+                "MERGE_STATS_CUTADAPT": {
+                    "R": "stub"
+                },
+                "MERGE_STATS_FILTERLENASV": {
+                    "R": "stub"
+                },
+                "MERGE_STATS_FILTERTAXA": {
+                    "R": "stub"
+                },
+                "MERGE_STATS_SAVONT": {
+                    "R": "stub"
+                },
+                "PHYLOSEQ": {
+                    "phyloseq": "stub"
+                },
+                "PHYLOSEQ_INASV": {
+                    "sed": "stub"
+                },
+                "PORECHOP_ABI": {
+                    "porechop_abi": "0.5.0"
+                },
+                "QIIME2_BARPLOT": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_EXPORT_ABSOLUTE": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_EXPORT_RELASV": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_EXPORT_RELTAX": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_INASV": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_INSEQ": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_INTAX": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_SEQFILTERTABLE": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_TABLEFILTERTAXA": {
+                    "qiime2": "stub"
+                },
+                "RENAME_RAW_DATA_FILES": {
+                    "bash": "5.2.37(1)-release"
+                },
+                "SAVONT_ASV": {
+                    "savont": "0.8.0"
+                },
+                "SAVONT_EXPORT": {
+                    "savont": "0.8.0"
+                },
+                "SUMMARY_TABLE_TAXONOMY": {
+                    "R": "stub"
+                },
+                "TREESUMMARIZEDEXPERIMENT": {
+                    "TreeSummarizedExperiment": "stub"
+                },
+                "VSEARCH_USEARCHGLOBAL_BM": {
+                    "vsearch": "2.31.0"
+                },
+                "Workflow": {
+                    "nf-core/ampliseq": "v3.2.0dev"
+                }
+            },
+            [
+                "asv_length_filter",
+                "asv_length_filter/ASV_len_filt.tsv",
+                "asv_length_filter/ASV_len_orig.tsv",
+                "asv_length_filter/ASV_seqs.len.fasta",
+                "asv_length_filter/ASV_table.len.tsv",
+                "asv_length_filter/stats.len.tsv",
+                "barrnap",
+                "barrnap/rrna.arc.gff",
+                "barrnap/rrna.bac.gff",
+                "barrnap/rrna.euk.gff",
+                "barrnap/rrna.mito.gff",
+                "barrnap/summary.tsv",
+                "comparison",
+                "comparison/abundances_per-sample.tsv",
+                "comparison/md5sum_version.txt",
+                "comparison/nucleotide-differences.log",
+                "comparison/nucleotide-differences.tsv",
+                "comparison/per-sample",
+                "comparison/per-sample/nucleotide-differences.png",
+                "comparison/per-sample/nucleotide-differences.svg",
+                "comparison/per-sample/nucleotide-differences_per-sample.tsv",
+                "comparison/performance.log",
+                "comparison/performance_per-sample.tsv",
+                "comparison/performance_summary.tsv",
+                "comparison/profile.log",
+                "comparison/profile.png",
+                "comparison/profile.svg",
+                "comparison/profile_per-sample.tsv",
+                "comparison/profile_summary.tsv",
+                "comparison/vsearch_usearchglobal.tsv",
+                "cutadapt",
+                "cutadapt/Log1.trimmed.cutadapt.log",
+                "cutadapt/Log2.trimmed.cutadapt.log",
+                "cutadapt/Log3.trimmed.cutadapt.log",
+                "cutadapt/Std1.trimmed.cutadapt.log",
+                "cutadapt/Std2.trimmed.cutadapt.log",
+                "cutadapt/Std3.trimmed.cutadapt.log",
+                "cutadapt/cutadapt_summary.tsv",
+                "dada2",
+                "dada2/ASV_tax.gtdb_R07-RS207.tsv",
+                "dada2/ASV_tax_species.gtdb_R07-RS207.tsv",
+                "dada2/args",
+                "dada2/args/addSpecies_gtdb_R07-RS207.args.txt",
+                "dada2/args/assignTaxonomy.ASV_tax.gtdb_R07-RS207.args.txt",
+                "dada2/chunks",
+                "dada2/chunks/ASV_seqs.len.1.ASV_tax.gtdb_R07-RS207.species.tsv",
+                "dada2/chunks/ASV_seqs.len.1.ASV_tax.gtdb_R07-RS207.tsv",
+                "dada2/ref_taxonomy.gtdb_R07-RS207.txt",
+                "fastqc",
+                "fastqc/Log1.html",
+                "fastqc/Log2.html",
+                "fastqc/Log3.html",
+                "fastqc/Std1.html",
+                "fastqc/Std2.html",
+                "fastqc/Std3.html",
+                "input",
+                "input/Samplesheet_nanopore_v3.tsv",
+                "multiqc",
+                "multiqc/multiqc_data",
+                "multiqc/multiqc_data/.stub",
+                "multiqc/multiqc_plots",
+                "multiqc/multiqc_plots/.stub",
+                "multiqc/multiqc_report.html",
+                "overall_summary.tsv",
+                "phyloseq",
+                "phyloseq/dada2_phyloseq.rds",
+                "pipeline_info",
+                "pipeline_info/nf_core_ampliseq_software_mqc_versions.yml",
+                "porechop_abi",
+                "porechop_abi/Log1.porechop_abi.log",
+                "porechop_abi/Log2.porechop_abi.log",
+                "porechop_abi/Log3.porechop_abi.log",
+                "porechop_abi/Std1.porechop_abi.log",
+                "porechop_abi/Std2.porechop_abi.log",
+                "porechop_abi/Std3.porechop_abi.log",
+                "qiime2",
+                "qiime2/abundance_tables",
+                "qiime2/abundance_tables/abs-abund-table-2.tsv",
+                "qiime2/abundance_tables/abs-abund-table-3.tsv",
+                "qiime2/abundance_tables/abs-abund-table-4.tsv",
+                "qiime2/abundance_tables/abs-abund-table-5.tsv",
+                "qiime2/abundance_tables/abs-abund-table-6.tsv",
+                "qiime2/abundance_tables/abs-abund-table-7.tsv",
+                "qiime2/abundance_tables/count_table_filter_stats.tsv",
+                "qiime2/abundance_tables/feature-table.biom",
+                "qiime2/abundance_tables/feature-table.tsv",
+                "qiime2/abundance_tables/filtered-table.qza",
+                "qiime2/barplot",
+                "qiime2/barplot/placeholder.html",
+                "qiime2/input",
+                "qiime2/input/rep-seqs.qza",
+                "qiime2/input/table.qza",
+                "qiime2/input/taxonomy.qza",
+                "qiime2/rel_abundance_tables",
+                "qiime2/rel_abundance_tables/rel-table-2.tsv",
+                "qiime2/rel_abundance_tables/rel-table-3.tsv",
+                "qiime2/rel_abundance_tables/rel-table-4.tsv",
+                "qiime2/rel_abundance_tables/rel-table-5.tsv",
+                "qiime2/rel_abundance_tables/rel-table-6.tsv",
+                "qiime2/rel_abundance_tables/rel-table-7.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-gtdb_R07-RS207-tax.tsv",
+                "qiime2/representative_sequences",
+                "qiime2/representative_sequences/descriptive_stats.tsv",
+                "qiime2/representative_sequences/filtered-sequences.qza",
+                "qiime2/representative_sequences/rep-seq.fasta",
+                "qiime2/representative_sequences/seven_number_summary.tsv",
+                "ref-storage",
+                "ref-storage/ar53_ssu_reps_r207.tar.gz",
+                "ref-storage/bac120_ssu_reps_r207.tar.gz",
+                "savont",
+                "savont/pooled_feature-table.tsv",
+                "savont/pooled_final_asvs.fasta",
+                "savont/pooled_savont.log",
+                "savont/pooled_savont_export.log",
+                "savont/pooled_stats.tsv",
+                "summary_report",
+                "summary_report/summary_report.html",
+                "summary_report/versions.yml",
+                "summary_tables",
+                "summary_tables/ampliseq.taxonomy.DADA2.gtdb_R07-RS207.parquet",
+                "summary_tables/ampliseq.taxonomy.DADA2.gtdb_R07-RS207.tsv.gz",
+                "treesummarizedexperiment",
+                "treesummarizedexperiment/dada2_TreeSummarizedExperiment.rds"
+            ]
+        ],
+        "timestamp": "2026-11-09T14:36:41.384874605",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.5"
+        }
+    }
+}

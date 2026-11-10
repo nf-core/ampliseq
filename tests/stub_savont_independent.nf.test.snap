@@ -1,0 +1,407 @@
+{
+    "-profile test_savont_independent -stub": {
+        "content": [
+            66,
+            {
+                "BARRNAP": {
+                    "barrnap": "stub"
+                },
+                "BARRNAPSUMMARY": {
+                    "python": "stub"
+                },
+                "BUILD_ASV_ANNOTATIONS": {
+                    "R": "stub"
+                },
+                "COMBINE_TABLE": {
+                    "R": "stub"
+                },
+                "COMPARE_PERFORMANCE": {
+                    "R": "stub"
+                },
+                "COMPARE_PROFILE": {
+                    "R": "stub"
+                },
+                "COMPARE_SEQUENCES": {
+                    "R": "stub"
+                },
+                "DADA2_TAXONOMY": {
+                    "dada2": "stub"
+                },
+                "DUCKDB_TABLE2PARQUET": {
+                    "duckdb": "1.5.5"
+                },
+                "FILTER_SAMPLES": {
+                    "R": "stub"
+                },
+                "FILTER_SSU": {
+                    "Biostrings": "stub"
+                },
+                "FILTER_STATS": {
+                    "python": "stub"
+                },
+                "FORMAT_TAXONOMY": {
+                    "bash": "stub"
+                },
+                "MERGE_STATS_FILTERSSU": {
+                    "R": "stub"
+                },
+                "MERGE_STATS_FILTERTAXA": {
+                    "R": "stub"
+                },
+                "METADATA_ALL": {
+                    "R": "stub"
+                },
+                "METADATA_PAIRWISE": {
+                    "R": "stub"
+                },
+                "QIIME2_ANCOMBC2_ASV": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_ANCOMBC2_TAX": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_BARPLOT": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_BPAVG": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_DIVERSITY_ALPHA": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_DIVERSITY_BETA": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_DIVERSITY_BETAORD": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_DIVERSITY_CORE": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_EXPORT_ABSOLUTE": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_EXPORT_RELASV": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_EXPORT_RELTAX": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_FEATURETABLE_GROUP": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_FILTERSAMPLES_ANCOM": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_INASV": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_INASV_BPAVG": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_INSEQ": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_INTAX": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_SEQFILTERTABLE": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_TABLEFILTERTAXA": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_TREE": {
+                    "qiime2": "stub"
+                },
+                "RENAME_RAW_DATA_FILES": {
+                    "bash": "5.2.37(1)-release"
+                },
+                "SAVONT_ASV": {
+                    "savont": "0.8.0"
+                },
+                "SAVONT_EXPORT": {
+                    "savont": "0.8.0"
+                },
+                "SUMMARY_TABLE_TAXONOMY": {
+                    "R": "stub"
+                },
+                "VSEARCH_USEARCHGLOBAL_BM": {
+                    "vsearch": "2.31.0"
+                },
+                "Workflow": {
+                    "nf-core/ampliseq": "v3.2.0dev"
+                }
+            },
+            [
+                "barrnap",
+                "barrnap/ASV_seqs.ssu.fasta",
+                "barrnap/ASV_table.ssu.tsv",
+                "barrnap/result.tsv",
+                "barrnap/rrna.arc.gff",
+                "barrnap/rrna.bac.gff",
+                "barrnap/rrna.euk.gff",
+                "barrnap/rrna.mito.gff",
+                "barrnap/stats.ssu.tsv",
+                "barrnap/summary.tsv",
+                "comparison",
+                "comparison/abundances_per-sample.tsv",
+                "comparison/md5sum_version.txt",
+                "comparison/nucleotide-differences.log",
+                "comparison/nucleotide-differences.tsv",
+                "comparison/per-sample",
+                "comparison/per-sample/nucleotide-differences.png",
+                "comparison/per-sample/nucleotide-differences.svg",
+                "comparison/per-sample/nucleotide-differences_per-sample.tsv",
+                "comparison/performance.log",
+                "comparison/performance_per-sample.tsv",
+                "comparison/performance_summary.tsv",
+                "comparison/profile.log",
+                "comparison/profile.png",
+                "comparison/profile.svg",
+                "comparison/profile_per-sample.tsv",
+                "comparison/profile_summary.tsv",
+                "comparison/vsearch_usearchglobal.tsv",
+                "dada2",
+                "dada2/ASV_tax.gtdb_R07-RS207.tsv",
+                "dada2/args",
+                "dada2/args/assignTaxonomy.ASV_tax.gtdb_R07-RS207.args.txt",
+                "dada2/chunks",
+                "dada2/chunks/ASV_seqs.ssu.1.ASV_tax.gtdb_R07-RS207.tsv",
+                "dada2/ref_taxonomy.gtdb_R07-RS207.txt",
+                "input",
+                "input/Metadata_nanopore.tsv",
+                "input/Samplesheet_nanopore_v3.tsv",
+                "multiqc",
+                "multiqc/multiqc_data",
+                "multiqc/multiqc_data/.stub",
+                "multiqc/multiqc_plots",
+                "multiqc/multiqc_plots/.stub",
+                "multiqc/multiqc_report.html",
+                "overall_summary.tsv",
+                "pipeline_info",
+                "pipeline_info/nf_core_ampliseq_software_mqc_versions.yml",
+                "qiime2",
+                "qiime2/abundance_tables",
+                "qiime2/abundance_tables/abs-abund-table-2.tsv",
+                "qiime2/abundance_tables/abs-abund-table-3.tsv",
+                "qiime2/abundance_tables/count_table_filter_stats.tsv",
+                "qiime2/abundance_tables/feature-table.biom",
+                "qiime2/abundance_tables/feature-table.tsv",
+                "qiime2/abundance_tables/filtered-table.qza",
+                "qiime2/ancombc2",
+                "qiime2/ancombc2/Category-type-ASV",
+                "qiime2/ancombc2/Category-type-ASV/ASV-type.tsv",
+                "qiime2/ancombc2/Category-type-ASV/ASV-type.visualizer.qzv",
+                "qiime2/ancombc2/Category-type-ASV/ASV-type.volcano_plot.svg",
+                "qiime2/ancombc2/Category-type-ASV/differentials",
+                "qiime2/ancombc2/Category-type-ASV/differentials/ASV-type.tsv",
+                "qiime2/ancombc2/Category-type-level-2",
+                "qiime2/ancombc2/Category-type-level-2/differentials",
+                "qiime2/ancombc2/Category-type-level-2/differentials/lvl2-type.tsv",
+                "qiime2/ancombc2/Category-type-level-2/lvl2-type.tsv",
+                "qiime2/ancombc2/Category-type-level-2/lvl2-type.visualizer.qzv",
+                "qiime2/ancombc2/Category-type-level-2/lvl2-type.volcano_plot.svg",
+                "qiime2/ancombc2/Category-type-level-3",
+                "qiime2/ancombc2/Category-type-level-3/differentials",
+                "qiime2/ancombc2/Category-type-level-3/differentials/lvl3-type.tsv",
+                "qiime2/ancombc2/Category-type-level-3/lvl3-type.tsv",
+                "qiime2/ancombc2/Category-type-level-3/lvl3-type.visualizer.qzv",
+                "qiime2/ancombc2/Category-type-level-3/lvl3-type.volcano_plot.svg",
+                "qiime2/ancombc2/qza_qzv",
+                "qiime2/ancombc2/qza_qzv/ASV-type.differentials.qza",
+                "qiime2/ancombc2/qza_qzv/ASV-type.differentials.qzv",
+                "qiime2/barplot",
+                "qiime2/barplot/placeholder.html",
+                "qiime2/barplot_average",
+                "qiime2/barplot_average/barplot_type",
+                "qiime2/barplot_average/barplot_type/placeholder.html",
+                "qiime2/barplot_average/table.qza",
+                "qiime2/diversity",
+                "qiime2/diversity/Use the sampling depth of 500 for rarefaction.txt",
+                "qiime2/diversity/alpha_diversity",
+                "qiime2/diversity/alpha_diversity/bray_curtis_vector",
+                "qiime2/diversity/alpha_diversity/bray_curtis_vector/placeholder.tsv",
+                "qiime2/diversity/alpha_diversity/jaccard_vector",
+                "qiime2/diversity/alpha_diversity/jaccard_vector/placeholder.tsv",
+                "qiime2/diversity/alpha_diversity/unweighted_unifrac_vector",
+                "qiime2/diversity/alpha_diversity/unweighted_unifrac_vector/placeholder.tsv",
+                "qiime2/diversity/alpha_diversity/weighted_unifrac_vector",
+                "qiime2/diversity/alpha_diversity/weighted_unifrac_vector/placeholder.tsv",
+                "qiime2/diversity/beta_diversity",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-type",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-type/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix.tsv",
+                "qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA",
+                "qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-type",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-type/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix.tsv",
+                "qiime2/diversity/beta_diversity/jaccard_pcoa_results-PCoA",
+                "qiime2/diversity/beta_diversity/jaccard_pcoa_results-PCoA/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-type",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-type/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix.tsv",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_pcoa_results-PCoA",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_pcoa_results-PCoA/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-type",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-type/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix.tsv",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_pcoa_results-PCoA",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_pcoa_results-PCoA/placeholder.tsv",
+                "qiime2/diversity/qza_qzv",
+                "qiime2/diversity/qza_qzv/bray_curtis_distance_matrix-type.qzv",
+                "qiime2/diversity/qza_qzv/bray_curtis_pcoa_results-vis.qzv",
+                "qiime2/diversity/qza_qzv/bray_curtis_vector-vis.qzv",
+                "qiime2/diversity/qza_qzv/jaccard_distance_matrix-type.qzv",
+                "qiime2/diversity/qza_qzv/jaccard_pcoa_results-vis.qzv",
+                "qiime2/diversity/qza_qzv/jaccard_vector-vis.qzv",
+                "qiime2/diversity/qza_qzv/unweighted_unifrac_distance_matrix-type.qzv",
+                "qiime2/diversity/qza_qzv/unweighted_unifrac_pcoa_results-vis.qzv",
+                "qiime2/diversity/qza_qzv/unweighted_unifrac_vector-vis.qzv",
+                "qiime2/diversity/qza_qzv/weighted_unifrac_distance_matrix-type.qzv",
+                "qiime2/diversity/qza_qzv/weighted_unifrac_pcoa_results-vis.qzv",
+                "qiime2/diversity/qza_qzv/weighted_unifrac_vector-vis.qzv",
+                "qiime2/input",
+                "qiime2/input/rep-seqs.qza",
+                "qiime2/input/table.qza",
+                "qiime2/input/taxonomy.qza",
+                "qiime2/phylogenetic_tree",
+                "qiime2/phylogenetic_tree/rooted-tree.qza",
+                "qiime2/phylogenetic_tree/tree.nwk",
+                "qiime2/rel_abundance_tables",
+                "qiime2/rel_abundance_tables/rel-table-2.tsv",
+                "qiime2/rel_abundance_tables/rel-table-3.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-gtdb_R07-RS207-tax.tsv",
+                "qiime2/representative_sequences",
+                "qiime2/representative_sequences/descriptive_stats.tsv",
+                "qiime2/representative_sequences/filtered-sequences.qza",
+                "qiime2/representative_sequences/rep-seq.fasta",
+                "qiime2/representative_sequences/seven_number_summary.tsv",
+                "ref-storage",
+                "ref-storage/ar53_ssu_reps_r207.tar.gz",
+                "ref-storage/bac120_ssu_reps_r207.tar.gz",
+                "savont",
+                "savont/independent_feature-table.tsv",
+                "savont/independent_final_asvs.fasta",
+                "savont/independent_savont_export.log",
+                "savont/intermediate",
+                "savont/intermediate/Log1",
+                "savont/intermediate/Log1/Log1_feature-table.tsv",
+                "savont/intermediate/Log1/Log1_final_assignments.tsv",
+                "savont/intermediate/Log1/Log1_final_asvs.fasta",
+                "savont/intermediate/Log1/Log1_savont.log",
+                "savont/intermediate/Log1/Log1_stats.tsv",
+                "savont/intermediate/Log1/savont_asv_Log1",
+                "savont/intermediate/Log1/savont_asv_Log1/feature-table.tsv",
+                "savont/intermediate/Log1/savont_asv_Log1/final_assignments.tsv",
+                "savont/intermediate/Log1/savont_asv_Log1/final_asvs.fasta",
+                "savont/intermediate/Log1/savont_asv_Log1/savont_stub.log",
+                "savont/intermediate/Log1/savont_asv_Log1/temp",
+                "savont/intermediate/Log1/savont_asv_Log1/temp/placeholder.txt",
+                "savont/intermediate/Log2",
+                "savont/intermediate/Log2/Log2_feature-table.tsv",
+                "savont/intermediate/Log2/Log2_final_assignments.tsv",
+                "savont/intermediate/Log2/Log2_final_asvs.fasta",
+                "savont/intermediate/Log2/Log2_savont.log",
+                "savont/intermediate/Log2/Log2_stats.tsv",
+                "savont/intermediate/Log2/savont_asv_Log2",
+                "savont/intermediate/Log2/savont_asv_Log2/feature-table.tsv",
+                "savont/intermediate/Log2/savont_asv_Log2/final_assignments.tsv",
+                "savont/intermediate/Log2/savont_asv_Log2/final_asvs.fasta",
+                "savont/intermediate/Log2/savont_asv_Log2/savont_stub.log",
+                "savont/intermediate/Log2/savont_asv_Log2/temp",
+                "savont/intermediate/Log2/savont_asv_Log2/temp/placeholder.txt",
+                "savont/intermediate/Log3",
+                "savont/intermediate/Log3/Log3_feature-table.tsv",
+                "savont/intermediate/Log3/Log3_final_assignments.tsv",
+                "savont/intermediate/Log3/Log3_final_asvs.fasta",
+                "savont/intermediate/Log3/Log3_savont.log",
+                "savont/intermediate/Log3/Log3_stats.tsv",
+                "savont/intermediate/Log3/savont_asv_Log3",
+                "savont/intermediate/Log3/savont_asv_Log3/feature-table.tsv",
+                "savont/intermediate/Log3/savont_asv_Log3/final_assignments.tsv",
+                "savont/intermediate/Log3/savont_asv_Log3/final_asvs.fasta",
+                "savont/intermediate/Log3/savont_asv_Log3/savont_stub.log",
+                "savont/intermediate/Log3/savont_asv_Log3/temp",
+                "savont/intermediate/Log3/savont_asv_Log3/temp/placeholder.txt",
+                "savont/intermediate/Std1",
+                "savont/intermediate/Std1/Std1_feature-table.tsv",
+                "savont/intermediate/Std1/Std1_final_assignments.tsv",
+                "savont/intermediate/Std1/Std1_final_asvs.fasta",
+                "savont/intermediate/Std1/Std1_savont.log",
+                "savont/intermediate/Std1/Std1_stats.tsv",
+                "savont/intermediate/Std1/savont_asv_Std1",
+                "savont/intermediate/Std1/savont_asv_Std1/feature-table.tsv",
+                "savont/intermediate/Std1/savont_asv_Std1/final_assignments.tsv",
+                "savont/intermediate/Std1/savont_asv_Std1/final_asvs.fasta",
+                "savont/intermediate/Std1/savont_asv_Std1/savont_stub.log",
+                "savont/intermediate/Std1/savont_asv_Std1/temp",
+                "savont/intermediate/Std1/savont_asv_Std1/temp/placeholder.txt",
+                "savont/intermediate/Std2",
+                "savont/intermediate/Std2/Std2_feature-table.tsv",
+                "savont/intermediate/Std2/Std2_final_assignments.tsv",
+                "savont/intermediate/Std2/Std2_final_asvs.fasta",
+                "savont/intermediate/Std2/Std2_savont.log",
+                "savont/intermediate/Std2/Std2_stats.tsv",
+                "savont/intermediate/Std2/savont_asv_Std2",
+                "savont/intermediate/Std2/savont_asv_Std2/feature-table.tsv",
+                "savont/intermediate/Std2/savont_asv_Std2/final_assignments.tsv",
+                "savont/intermediate/Std2/savont_asv_Std2/final_asvs.fasta",
+                "savont/intermediate/Std2/savont_asv_Std2/savont_stub.log",
+                "savont/intermediate/Std2/savont_asv_Std2/temp",
+                "savont/intermediate/Std2/savont_asv_Std2/temp/placeholder.txt",
+                "savont/intermediate/Std3",
+                "savont/intermediate/Std3/Std3_feature-table.tsv",
+                "savont/intermediate/Std3/Std3_final_assignments.tsv",
+                "savont/intermediate/Std3/Std3_final_asvs.fasta",
+                "savont/intermediate/Std3/Std3_savont.log",
+                "savont/intermediate/Std3/Std3_stats.tsv",
+                "savont/intermediate/Std3/savont_asv_Std3",
+                "savont/intermediate/Std3/savont_asv_Std3/feature-table.tsv",
+                "savont/intermediate/Std3/savont_asv_Std3/final_assignments.tsv",
+                "savont/intermediate/Std3/savont_asv_Std3/final_asvs.fasta",
+                "savont/intermediate/Std3/savont_asv_Std3/savont_stub.log",
+                "savont/intermediate/Std3/savont_asv_Std3/temp",
+                "savont/intermediate/Std3/savont_asv_Std3/temp/placeholder.txt",
+                "savont/per-sample",
+                "savont/per-sample/Log1_feature-table.tsv",
+                "savont/per-sample/Log1_final_asvs.fasta",
+                "savont/per-sample/Log1_savont.log",
+                "savont/per-sample/Log1_stats.tsv",
+                "savont/per-sample/Log2_feature-table.tsv",
+                "savont/per-sample/Log2_final_asvs.fasta",
+                "savont/per-sample/Log2_savont.log",
+                "savont/per-sample/Log2_stats.tsv",
+                "savont/per-sample/Log3_feature-table.tsv",
+                "savont/per-sample/Log3_final_asvs.fasta",
+                "savont/per-sample/Log3_savont.log",
+                "savont/per-sample/Log3_stats.tsv",
+                "savont/per-sample/Std1_feature-table.tsv",
+                "savont/per-sample/Std1_final_asvs.fasta",
+                "savont/per-sample/Std1_savont.log",
+                "savont/per-sample/Std1_stats.tsv",
+                "savont/per-sample/Std2_feature-table.tsv",
+                "savont/per-sample/Std2_final_asvs.fasta",
+                "savont/per-sample/Std2_savont.log",
+                "savont/per-sample/Std2_stats.tsv",
+                "savont/per-sample/Std3_feature-table.tsv",
+                "savont/per-sample/Std3_final_asvs.fasta",
+                "savont/per-sample/Std3_savont.log",
+                "savont/per-sample/Std3_stats.tsv",
+                "summary_report",
+                "summary_report/summary_report.html",
+                "summary_report/versions.yml",
+                "summary_tables",
+                "summary_tables/ampliseq.taxonomy.DADA2.gtdb_R07-RS207.parquet",
+                "summary_tables/ampliseq.taxonomy.DADA2.gtdb_R07-RS207.tsv.gz"
+            ]
+        ],
+        "timestamp": "2026-11-09T14:34:31.561869055",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.5"
+        }
+    }
+}

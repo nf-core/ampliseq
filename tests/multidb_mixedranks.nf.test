@@ -31,6 +31,8 @@ nextflow_pipeline {
             def pr2_rows = (0..<consolidated.rowCount).findAll { consolidated.columns["database"][it] == "pr2_5_0_0" }
             assertAll(
                 { assert snapshot(
+                    // Number of tasks that completed successfully
+                    workflow.trace.succeeded().size(),
                     // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
                     removeNextflowVersion("$outputDir/pipeline_info/nf_core_ampliseq_software_mqc_versions.yml"),
                     // All stable path name, with a relative path

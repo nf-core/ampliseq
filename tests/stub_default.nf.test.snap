@@ -1,0 +1,776 @@
+{
+    "-profile test -stub": {
+        "content": [
+            210,
+            {
+                "ANCOMBC2_FORMULA_ASV": {
+                    "qiime2": "stub"
+                },
+                "ANCOMBC2_FORMULA_TAX": {
+                    "qiime2": "stub"
+                },
+                "ANCOMBC_FORMULA_ASV": {
+                    "qiime2": "stub"
+                },
+                "ANCOMBC_FORMULA_TAX": {
+                    "qiime2": "stub"
+                },
+                "BARRNAP": {
+                    "barrnap": "stub"
+                },
+                "BARRNAPSUMMARY": {
+                    "python": "stub"
+                },
+                "BUILD_ASV_ANNOTATIONS": {
+                    "R": "stub"
+                },
+                "COMBINE_TABLE": {
+                    "R": "stub"
+                },
+                "CUTADAPT_BASIC": {
+                    "cutadapt": 5.2
+                },
+                "CUTADAPT_SUMMARY_STD": {
+                    "python": "stub"
+                },
+                "CUTADAPT_TAXONOMY": {
+                    "cutadapt": 5.2
+                },
+                "DADA2_ADDSPECIES": {
+                    "dada2": "stub"
+                },
+                "DADA2_DENOISING": {
+                    "dada2": "stub"
+                },
+                "DADA2_ERR": {
+                    "dada2": "stub"
+                },
+                "DADA2_FILTNTRIM": {
+                    "dada2": "stub"
+                },
+                "DADA2_MERGE": {
+                    "dada2": "stub"
+                },
+                "DADA2_QUALITY1": {
+                    "dada2": "stub"
+                },
+                "DADA2_QUALITY2": {
+                    "dada2": "stub"
+                },
+                "DADA2_RMCHIMERA": {
+                    "dada2": "stub"
+                },
+                "DADA2_STATS": {
+                    "dada2": "stub"
+                },
+                "DADA2_TAXONOMY": {
+                    "dada2": "stub"
+                },
+                "DECONTAM": {
+                    "decontam": "stub"
+                },
+                "DUCKDB_TABLE2PARQUET": {
+                    "duckdb": "1.5.5"
+                },
+                "FASTQC": {
+                    "fastqc": "0.12.1"
+                },
+                "FILTER_CLUSTERS": {
+                    "python": "stub"
+                },
+                "FILTER_LEN_ASV": {
+                    "Biostrings": "stub"
+                },
+                "FILTER_SAMPLES": {
+                    "R": "stub"
+                },
+                "FILTER_SEQUENCES_ABUNDANCES": {
+                    "Biostrings": "stub"
+                },
+                "FILTER_SSU": {
+                    "Biostrings": "stub"
+                },
+                "FILTER_STATS": {
+                    "python": "stub"
+                },
+                "FORMAT_TAXONOMY": {
+                    "bash": "stub"
+                },
+                "FORMAT_TAXONOMY_QIIME": {
+                    "bash": "stub"
+                },
+                "MERGE_STATS_DADA": {
+                    "R": "stub"
+                },
+                "MERGE_STATS_DECONTAM": {
+                    "R": "stub"
+                },
+                "MERGE_STATS_FILTERLENASV": {
+                    "R": "stub"
+                },
+                "MERGE_STATS_FILTERSSU": {
+                    "R": "stub"
+                },
+                "MERGE_STATS_FILTERTAXA": {
+                    "R": "stub"
+                },
+                "METADATA_ALL": {
+                    "R": "stub"
+                },
+                "METADATA_PAIRWISE": {
+                    "R": "stub"
+                },
+                "PHYLOSEQ": {
+                    "phyloseq": "stub"
+                },
+                "PHYLOSEQ_INASV": {
+                    "sed": "stub"
+                },
+                "PHYLOSEQ_INTAX_QIIME2": {
+                    "python": "stub"
+                },
+                "QIIME2_ALPHARAREFACTION": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_ANCOMBC2_ASV": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_ANCOMBC2_TAX": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_ANCOMBC_ASV": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_ANCOMBC_TAX": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_BARPLOT": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_BPAVG": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_CLASSIFY": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_DIVERSITY_ADONIS": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_DIVERSITY_ALPHA": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_DIVERSITY_BETA": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_DIVERSITY_BETAORD": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_DIVERSITY_CORE": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_EXPORT_ABSOLUTE": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_EXPORT_RELASV": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_EXPORT_RELTAX": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_EXTRACT": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_FEATURETABLE_GROUP": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_FILTERSAMPLES_ANCOM": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_INASV": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_INASV_BPAVG": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_INSEQ": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_INTAX": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_SEQFILTERTABLE": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_TABLEFILTERTAXA": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_TRAIN": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_TREE": {
+                    "qiime2": "stub"
+                },
+                "RENAME_RAW_DATA_FILES": {
+                    "bash": "5.2.37(1)-release"
+                },
+                "SUMMARY_TABLE_COUNTS": {
+                    "R": "stub"
+                },
+                "SUMMARY_TABLE_TAXONOMY": {
+                    "R": "stub"
+                },
+                "TREESUMMARIZEDEXPERIMENT": {
+                    "TreeSummarizedExperiment": "stub"
+                },
+                "TRUNCLEN": {
+                    "python": "stub"
+                },
+                "VSEARCH_CLUSTER": {
+                    "samtools": "1.23.1",
+                    "vsearch": "2.31.0"
+                },
+                "Workflow": {
+                    "nf-core/ampliseq": "v3.2.0dev"
+                }
+            },
+            [
+                "asv_length_filter",
+                "asv_length_filter/ASV_len_filt.tsv",
+                "asv_length_filter/ASV_len_orig.tsv",
+                "asv_length_filter/ASV_seqs.len.fasta",
+                "asv_length_filter/ASV_table.len.tsv",
+                "asv_length_filter/stats.len.tsv",
+                "barrnap",
+                "barrnap/ASV_seqs.ssu.fasta",
+                "barrnap/ASV_table.ssu.tsv",
+                "barrnap/result.tsv",
+                "barrnap/rrna.arc.gff",
+                "barrnap/rrna.bac.gff",
+                "barrnap/rrna.euk.gff",
+                "barrnap/rrna.mito.gff",
+                "barrnap/stats.ssu.tsv",
+                "barrnap/summary.tsv",
+                "cutadapt",
+                "cutadapt/assignTaxonomy_gtdb_R07-RS207.cutadapt.log",
+                "cutadapt/cutadapt_summary.tsv",
+                "cutadapt/sampleID_1.trimmed.cutadapt.log",
+                "cutadapt/sampleID_1a.trimmed.cutadapt.log",
+                "cutadapt/sampleID_2.trimmed.cutadapt.log",
+                "cutadapt/sampleID_2a.trimmed.cutadapt.log",
+                "dada2",
+                "dada2/ASV_seqs.fasta",
+                "dada2/ASV_table.tsv",
+                "dada2/ASV_tax.gtdb_R07-RS207.tsv",
+                "dada2/ASV_tax_species.gtdb_R07-RS207.tsv",
+                "dada2/DADA2_stats.tsv",
+                "dada2/DADA2_table.rds",
+                "dada2/DADA2_table.tsv",
+                "dada2/QC",
+                "dada2/QC/1_1.err.convergence.txt",
+                "dada2/QC/1_1.err.pdf",
+                "dada2/QC/1_2.err.convergence.txt",
+                "dada2/QC/1_2.err.pdf",
+                "dada2/QC/FW_plotQualityProfile.txt",
+                "dada2/QC/FW_preprocessed_qual_stats.pdf",
+                "dada2/QC/FW_qual_stats.pdf",
+                "dada2/QC/RV_plotQualityProfile.txt",
+                "dada2/QC/RV_preprocessed_qual_stats.pdf",
+                "dada2/QC/RV_qual_stats.pdf",
+                "dada2/QC/svg",
+                "dada2/QC/svg/1_1.err.svg",
+                "dada2/QC/svg/1_2.err.svg",
+                "dada2/QC/svg/FW_preprocessed_qual_stats.svg",
+                "dada2/QC/svg/FW_qual_stats.svg",
+                "dada2/QC/svg/RV_preprocessed_qual_stats.svg",
+                "dada2/QC/svg/RV_qual_stats.svg",
+                "dada2/args",
+                "dada2/args/FW_plotQualityProfile.args.txt",
+                "dada2/args/FW_preprocessed_plotQualityProfile.args.txt",
+                "dada2/args/RV_plotQualityProfile.args.txt",
+                "dada2/args/RV_preprocessed_plotQualityProfile.args.txt",
+                "dada2/args/addSpecies_gtdb_R07-RS207.args.txt",
+                "dada2/args/assignTaxonomy.ASV_tax.gtdb_R07-RS207.args.txt",
+                "dada2/args/dada.args.txt",
+                "dada2/args/filterAndTrim.args.txt",
+                "dada2/args/learnErrors.args.txt",
+                "dada2/args/mergePairs.args.txt",
+                "dada2/args/removeBimeraDenovo.args.txt",
+                "dada2/chunks",
+                "dada2/chunks/ASV_seqs.len.1.ASV_tax.gtdb_R07-RS207.species.tsv",
+                "dada2/chunks/ASV_seqs.len.1.ASV_tax.gtdb_R07-RS207.tsv",
+                "dada2/log",
+                "dada2/log/1.dada.log",
+                "dada2/log/1.err.log",
+                "dada2/ref_taxonomy.gtdb_R07-RS207.txt",
+                "decontam",
+                "decontam/decontaminated.tsv",
+                "decontam/decontaminated_counts.tsv",
+                "decontam/decontaminated_details.tsv",
+                "decontam/decontaminated_log.tsv",
+                "decontam/notcontaminant.tsv",
+                "decontam/notcontaminant_counts.tsv",
+                "decontam/notcontaminant_details.tsv",
+                "decontam/notcontaminant_log.tsv",
+                "fastqc",
+                "fastqc/sampleID_1.html",
+                "fastqc/sampleID_1a.html",
+                "fastqc/sampleID_2.html",
+                "fastqc/sampleID_2a.html",
+                "input",
+                "input/Metadata.tsv",
+                "input/Samplesheet_v3.tsv",
+                "multiqc",
+                "multiqc/multiqc_data",
+                "multiqc/multiqc_data/.stub",
+                "multiqc/multiqc_plots",
+                "multiqc/multiqc_plots/.stub",
+                "multiqc/multiqc_report.html",
+                "overall_summary.tsv",
+                "phyloseq",
+                "phyloseq/dada2_phyloseq.rds",
+                "phyloseq/qiime2_phyloseq.rds",
+                "pipeline_info",
+                "pipeline_info/nf_core_ampliseq_software_mqc_versions.yml",
+                "qiime2",
+                "qiime2/abundance_tables",
+                "qiime2/abundance_tables/abs-abund-table-2.tsv",
+                "qiime2/abundance_tables/count_table_filter_stats.tsv",
+                "qiime2/abundance_tables/feature-table.biom",
+                "qiime2/abundance_tables/feature-table.tsv",
+                "qiime2/abundance_tables/filtered-table.qza",
+                "qiime2/alpha-rarefaction",
+                "qiime2/alpha-rarefaction/placeholder.txt",
+                "qiime2/ancombc",
+                "qiime2/ancombc/da_barplot",
+                "qiime2/ancombc/da_barplot/Category-bad3-ASV",
+                "qiime2/ancombc/da_barplot/Category-bad3-ASV/placeholder.tsv",
+                "qiime2/ancombc/da_barplot/Category-bad3-level-2",
+                "qiime2/ancombc/da_barplot/Category-bad3-level-2/placeholder.tsv",
+                "qiime2/ancombc/da_barplot/Category-bad4-ASV",
+                "qiime2/ancombc/da_barplot/Category-bad4-ASV/placeholder.tsv",
+                "qiime2/ancombc/da_barplot/Category-bad4-level-2",
+                "qiime2/ancombc/da_barplot/Category-bad4-level-2/placeholder.tsv",
+                "qiime2/ancombc/da_barplot/Category-bad5-ASV",
+                "qiime2/ancombc/da_barplot/Category-bad5-ASV/placeholder.tsv",
+                "qiime2/ancombc/da_barplot/Category-bad5-level-2",
+                "qiime2/ancombc/da_barplot/Category-bad5-level-2/placeholder.tsv",
+                "qiime2/ancombc/da_barplot/Category-bad9-ASV",
+                "qiime2/ancombc/da_barplot/Category-bad9-ASV/placeholder.tsv",
+                "qiime2/ancombc/da_barplot/Category-bad9-level-2",
+                "qiime2/ancombc/da_barplot/Category-bad9-level-2/placeholder.tsv",
+                "qiime2/ancombc/da_barplot/Category-badpairwise10-ASV",
+                "qiime2/ancombc/da_barplot/Category-badpairwise10-ASV/placeholder.tsv",
+                "qiime2/ancombc/da_barplot/Category-badpairwise10-level-2",
+                "qiime2/ancombc/da_barplot/Category-badpairwise10-level-2/placeholder.tsv",
+                "qiime2/ancombc/da_barplot/Category-materialSampleID-ASV",
+                "qiime2/ancombc/da_barplot/Category-materialSampleID-ASV/placeholder.tsv",
+                "qiime2/ancombc/da_barplot/Category-materialSampleID-level-2",
+                "qiime2/ancombc/da_barplot/Category-materialSampleID-level-2/placeholder.tsv",
+                "qiime2/ancombc/da_barplot/Category-mix8-ASV",
+                "qiime2/ancombc/da_barplot/Category-mix8-ASV/placeholder.tsv",
+                "qiime2/ancombc/da_barplot/Category-mix8-level-2",
+                "qiime2/ancombc/da_barplot/Category-mix8-level-2/placeholder.tsv",
+                "qiime2/ancombc/da_barplot/Category-num6-ASV",
+                "qiime2/ancombc/da_barplot/Category-num6-ASV/placeholder.tsv",
+                "qiime2/ancombc/da_barplot/Category-num6-level-2",
+                "qiime2/ancombc/da_barplot/Category-num6-level-2/placeholder.tsv",
+                "qiime2/ancombc/da_barplot/Category-num7-ASV",
+                "qiime2/ancombc/da_barplot/Category-num7-ASV/placeholder.tsv",
+                "qiime2/ancombc/da_barplot/Category-num7-level-2",
+                "qiime2/ancombc/da_barplot/Category-num7-level-2/placeholder.tsv",
+                "qiime2/ancombc/da_barplot/Category-target_gene-ASV",
+                "qiime2/ancombc/da_barplot/Category-target_gene-ASV/placeholder.tsv",
+                "qiime2/ancombc/da_barplot/Category-target_gene-level-2",
+                "qiime2/ancombc/da_barplot/Category-target_gene-level-2/placeholder.tsv",
+                "qiime2/ancombc/da_barplot/Category-treatment1-ASV",
+                "qiime2/ancombc/da_barplot/Category-treatment1-ASV/placeholder.tsv",
+                "qiime2/ancombc/da_barplot/Category-treatment1-level-2",
+                "qiime2/ancombc/da_barplot/Category-treatment1-level-2/placeholder.tsv",
+                "qiime2/ancombc/differentials",
+                "qiime2/ancombc/differentials/Category-bad3-ASV",
+                "qiime2/ancombc/differentials/Category-bad3-ASV/placeholder.tsv",
+                "qiime2/ancombc/differentials/Category-bad3-level-2",
+                "qiime2/ancombc/differentials/Category-bad3-level-2/placeholder.tsv",
+                "qiime2/ancombc/differentials/Category-bad4-ASV",
+                "qiime2/ancombc/differentials/Category-bad4-ASV/placeholder.tsv",
+                "qiime2/ancombc/differentials/Category-bad4-level-2",
+                "qiime2/ancombc/differentials/Category-bad4-level-2/placeholder.tsv",
+                "qiime2/ancombc/differentials/Category-bad5-ASV",
+                "qiime2/ancombc/differentials/Category-bad5-ASV/placeholder.tsv",
+                "qiime2/ancombc/differentials/Category-bad5-level-2",
+                "qiime2/ancombc/differentials/Category-bad5-level-2/placeholder.tsv",
+                "qiime2/ancombc/differentials/Category-bad9-ASV",
+                "qiime2/ancombc/differentials/Category-bad9-ASV/placeholder.tsv",
+                "qiime2/ancombc/differentials/Category-bad9-level-2",
+                "qiime2/ancombc/differentials/Category-bad9-level-2/placeholder.tsv",
+                "qiime2/ancombc/differentials/Category-badpairwise10-ASV",
+                "qiime2/ancombc/differentials/Category-badpairwise10-ASV/placeholder.tsv",
+                "qiime2/ancombc/differentials/Category-badpairwise10-level-2",
+                "qiime2/ancombc/differentials/Category-badpairwise10-level-2/placeholder.tsv",
+                "qiime2/ancombc/differentials/Category-materialSampleID-ASV",
+                "qiime2/ancombc/differentials/Category-materialSampleID-ASV/placeholder.tsv",
+                "qiime2/ancombc/differentials/Category-materialSampleID-level-2",
+                "qiime2/ancombc/differentials/Category-materialSampleID-level-2/placeholder.tsv",
+                "qiime2/ancombc/differentials/Category-mix8-ASV",
+                "qiime2/ancombc/differentials/Category-mix8-ASV/placeholder.tsv",
+                "qiime2/ancombc/differentials/Category-mix8-level-2",
+                "qiime2/ancombc/differentials/Category-mix8-level-2/placeholder.tsv",
+                "qiime2/ancombc/differentials/Category-num6-ASV",
+                "qiime2/ancombc/differentials/Category-num6-ASV/placeholder.tsv",
+                "qiime2/ancombc/differentials/Category-num6-level-2",
+                "qiime2/ancombc/differentials/Category-num6-level-2/placeholder.tsv",
+                "qiime2/ancombc/differentials/Category-num7-ASV",
+                "qiime2/ancombc/differentials/Category-num7-ASV/placeholder.tsv",
+                "qiime2/ancombc/differentials/Category-num7-level-2",
+                "qiime2/ancombc/differentials/Category-num7-level-2/placeholder.tsv",
+                "qiime2/ancombc/differentials/Category-target_gene-ASV",
+                "qiime2/ancombc/differentials/Category-target_gene-ASV/placeholder.tsv",
+                "qiime2/ancombc/differentials/Category-target_gene-level-2",
+                "qiime2/ancombc/differentials/Category-target_gene-level-2/placeholder.tsv",
+                "qiime2/ancombc/differentials/Category-treatment1-ASV",
+                "qiime2/ancombc/differentials/Category-treatment1-ASV/placeholder.tsv",
+                "qiime2/ancombc/differentials/Category-treatment1-level-2",
+                "qiime2/ancombc/differentials/Category-treatment1-level-2/placeholder.tsv",
+                "qiime2/ancombc2",
+                "qiime2/ancombc2/Category-bad3-ASV",
+                "qiime2/ancombc2/Category-bad3-ASV/ASV-bad3.tsv",
+                "qiime2/ancombc2/Category-bad3-ASV/ASV-bad3.visualizer.qzv",
+                "qiime2/ancombc2/Category-bad3-ASV/ASV-bad3.volcano_plot.svg",
+                "qiime2/ancombc2/Category-bad3-ASV/differentials",
+                "qiime2/ancombc2/Category-bad3-ASV/differentials/ASV-bad3.tsv",
+                "qiime2/ancombc2/Category-bad3-level-2",
+                "qiime2/ancombc2/Category-bad3-level-2/differentials",
+                "qiime2/ancombc2/Category-bad3-level-2/differentials/lvl2-bad3.tsv",
+                "qiime2/ancombc2/Category-bad3-level-2/lvl2-bad3.tsv",
+                "qiime2/ancombc2/Category-bad3-level-2/lvl2-bad3.visualizer.qzv",
+                "qiime2/ancombc2/Category-bad3-level-2/lvl2-bad3.volcano_plot.svg",
+                "qiime2/ancombc2/Category-bad4-ASV",
+                "qiime2/ancombc2/Category-bad4-ASV/ASV-bad4.tsv",
+                "qiime2/ancombc2/Category-bad4-ASV/ASV-bad4.visualizer.qzv",
+                "qiime2/ancombc2/Category-bad4-ASV/ASV-bad4.volcano_plot.svg",
+                "qiime2/ancombc2/Category-bad4-ASV/differentials",
+                "qiime2/ancombc2/Category-bad4-ASV/differentials/ASV-bad4.tsv",
+                "qiime2/ancombc2/Category-bad4-level-2",
+                "qiime2/ancombc2/Category-bad4-level-2/differentials",
+                "qiime2/ancombc2/Category-bad4-level-2/differentials/lvl2-bad4.tsv",
+                "qiime2/ancombc2/Category-bad4-level-2/lvl2-bad4.tsv",
+                "qiime2/ancombc2/Category-bad4-level-2/lvl2-bad4.visualizer.qzv",
+                "qiime2/ancombc2/Category-bad4-level-2/lvl2-bad4.volcano_plot.svg",
+                "qiime2/ancombc2/Category-bad5-ASV",
+                "qiime2/ancombc2/Category-bad5-ASV/ASV-bad5.tsv",
+                "qiime2/ancombc2/Category-bad5-ASV/ASV-bad5.visualizer.qzv",
+                "qiime2/ancombc2/Category-bad5-ASV/ASV-bad5.volcano_plot.svg",
+                "qiime2/ancombc2/Category-bad5-ASV/differentials",
+                "qiime2/ancombc2/Category-bad5-ASV/differentials/ASV-bad5.tsv",
+                "qiime2/ancombc2/Category-bad5-level-2",
+                "qiime2/ancombc2/Category-bad5-level-2/differentials",
+                "qiime2/ancombc2/Category-bad5-level-2/differentials/lvl2-bad5.tsv",
+                "qiime2/ancombc2/Category-bad5-level-2/lvl2-bad5.tsv",
+                "qiime2/ancombc2/Category-bad5-level-2/lvl2-bad5.visualizer.qzv",
+                "qiime2/ancombc2/Category-bad5-level-2/lvl2-bad5.volcano_plot.svg",
+                "qiime2/ancombc2/Category-bad9-ASV",
+                "qiime2/ancombc2/Category-bad9-ASV/ASV-bad9.tsv",
+                "qiime2/ancombc2/Category-bad9-ASV/ASV-bad9.visualizer.qzv",
+                "qiime2/ancombc2/Category-bad9-ASV/ASV-bad9.volcano_plot.svg",
+                "qiime2/ancombc2/Category-bad9-ASV/differentials",
+                "qiime2/ancombc2/Category-bad9-ASV/differentials/ASV-bad9.tsv",
+                "qiime2/ancombc2/Category-bad9-level-2",
+                "qiime2/ancombc2/Category-bad9-level-2/differentials",
+                "qiime2/ancombc2/Category-bad9-level-2/differentials/lvl2-bad9.tsv",
+                "qiime2/ancombc2/Category-bad9-level-2/lvl2-bad9.tsv",
+                "qiime2/ancombc2/Category-bad9-level-2/lvl2-bad9.visualizer.qzv",
+                "qiime2/ancombc2/Category-bad9-level-2/lvl2-bad9.volcano_plot.svg",
+                "qiime2/ancombc2/Category-badpairwise10-ASV",
+                "qiime2/ancombc2/Category-badpairwise10-ASV/ASV-badpairwise10.tsv",
+                "qiime2/ancombc2/Category-badpairwise10-ASV/ASV-badpairwise10.visualizer.qzv",
+                "qiime2/ancombc2/Category-badpairwise10-ASV/ASV-badpairwise10.volcano_plot.svg",
+                "qiime2/ancombc2/Category-badpairwise10-ASV/differentials",
+                "qiime2/ancombc2/Category-badpairwise10-ASV/differentials/ASV-badpairwise10.tsv",
+                "qiime2/ancombc2/Category-badpairwise10-level-2",
+                "qiime2/ancombc2/Category-badpairwise10-level-2/differentials",
+                "qiime2/ancombc2/Category-badpairwise10-level-2/differentials/lvl2-badpairwise10.tsv",
+                "qiime2/ancombc2/Category-badpairwise10-level-2/lvl2-badpairwise10.tsv",
+                "qiime2/ancombc2/Category-badpairwise10-level-2/lvl2-badpairwise10.visualizer.qzv",
+                "qiime2/ancombc2/Category-badpairwise10-level-2/lvl2-badpairwise10.volcano_plot.svg",
+                "qiime2/ancombc2/Category-materialSampleID-ASV",
+                "qiime2/ancombc2/Category-materialSampleID-ASV/ASV-materialSampleID.tsv",
+                "qiime2/ancombc2/Category-materialSampleID-ASV/ASV-materialSampleID.visualizer.qzv",
+                "qiime2/ancombc2/Category-materialSampleID-ASV/ASV-materialSampleID.volcano_plot.svg",
+                "qiime2/ancombc2/Category-materialSampleID-ASV/differentials",
+                "qiime2/ancombc2/Category-materialSampleID-ASV/differentials/ASV-materialSampleID.tsv",
+                "qiime2/ancombc2/Category-materialSampleID-level-2",
+                "qiime2/ancombc2/Category-materialSampleID-level-2/differentials",
+                "qiime2/ancombc2/Category-materialSampleID-level-2/differentials/lvl2-materialSampleID.tsv",
+                "qiime2/ancombc2/Category-materialSampleID-level-2/lvl2-materialSampleID.tsv",
+                "qiime2/ancombc2/Category-materialSampleID-level-2/lvl2-materialSampleID.visualizer.qzv",
+                "qiime2/ancombc2/Category-materialSampleID-level-2/lvl2-materialSampleID.volcano_plot.svg",
+                "qiime2/ancombc2/Category-mix8-ASV",
+                "qiime2/ancombc2/Category-mix8-ASV/ASV-mix8.tsv",
+                "qiime2/ancombc2/Category-mix8-ASV/ASV-mix8.visualizer.qzv",
+                "qiime2/ancombc2/Category-mix8-ASV/ASV-mix8.volcano_plot.svg",
+                "qiime2/ancombc2/Category-mix8-ASV/differentials",
+                "qiime2/ancombc2/Category-mix8-ASV/differentials/ASV-mix8.tsv",
+                "qiime2/ancombc2/Category-mix8-level-2",
+                "qiime2/ancombc2/Category-mix8-level-2/differentials",
+                "qiime2/ancombc2/Category-mix8-level-2/differentials/lvl2-mix8.tsv",
+                "qiime2/ancombc2/Category-mix8-level-2/lvl2-mix8.tsv",
+                "qiime2/ancombc2/Category-mix8-level-2/lvl2-mix8.visualizer.qzv",
+                "qiime2/ancombc2/Category-mix8-level-2/lvl2-mix8.volcano_plot.svg",
+                "qiime2/ancombc2/Category-num6-ASV",
+                "qiime2/ancombc2/Category-num6-ASV/ASV-num6.tsv",
+                "qiime2/ancombc2/Category-num6-ASV/ASV-num6.visualizer.qzv",
+                "qiime2/ancombc2/Category-num6-ASV/ASV-num6.volcano_plot.svg",
+                "qiime2/ancombc2/Category-num6-ASV/differentials",
+                "qiime2/ancombc2/Category-num6-ASV/differentials/ASV-num6.tsv",
+                "qiime2/ancombc2/Category-num6-level-2",
+                "qiime2/ancombc2/Category-num6-level-2/differentials",
+                "qiime2/ancombc2/Category-num6-level-2/differentials/lvl2-num6.tsv",
+                "qiime2/ancombc2/Category-num6-level-2/lvl2-num6.tsv",
+                "qiime2/ancombc2/Category-num6-level-2/lvl2-num6.visualizer.qzv",
+                "qiime2/ancombc2/Category-num6-level-2/lvl2-num6.volcano_plot.svg",
+                "qiime2/ancombc2/Category-num7-ASV",
+                "qiime2/ancombc2/Category-num7-ASV/ASV-num7.tsv",
+                "qiime2/ancombc2/Category-num7-ASV/ASV-num7.visualizer.qzv",
+                "qiime2/ancombc2/Category-num7-ASV/ASV-num7.volcano_plot.svg",
+                "qiime2/ancombc2/Category-num7-ASV/differentials",
+                "qiime2/ancombc2/Category-num7-ASV/differentials/ASV-num7.tsv",
+                "qiime2/ancombc2/Category-num7-level-2",
+                "qiime2/ancombc2/Category-num7-level-2/differentials",
+                "qiime2/ancombc2/Category-num7-level-2/differentials/lvl2-num7.tsv",
+                "qiime2/ancombc2/Category-num7-level-2/lvl2-num7.tsv",
+                "qiime2/ancombc2/Category-num7-level-2/lvl2-num7.visualizer.qzv",
+                "qiime2/ancombc2/Category-num7-level-2/lvl2-num7.volcano_plot.svg",
+                "qiime2/ancombc2/Category-target_gene-ASV",
+                "qiime2/ancombc2/Category-target_gene-ASV/ASV-target_gene.tsv",
+                "qiime2/ancombc2/Category-target_gene-ASV/ASV-target_gene.visualizer.qzv",
+                "qiime2/ancombc2/Category-target_gene-ASV/ASV-target_gene.volcano_plot.svg",
+                "qiime2/ancombc2/Category-target_gene-ASV/differentials",
+                "qiime2/ancombc2/Category-target_gene-ASV/differentials/ASV-target_gene.tsv",
+                "qiime2/ancombc2/Category-target_gene-level-2",
+                "qiime2/ancombc2/Category-target_gene-level-2/differentials",
+                "qiime2/ancombc2/Category-target_gene-level-2/differentials/lvl2-target_gene.tsv",
+                "qiime2/ancombc2/Category-target_gene-level-2/lvl2-target_gene.tsv",
+                "qiime2/ancombc2/Category-target_gene-level-2/lvl2-target_gene.visualizer.qzv",
+                "qiime2/ancombc2/Category-target_gene-level-2/lvl2-target_gene.volcano_plot.svg",
+                "qiime2/ancombc2/Category-treatment1-ASV",
+                "qiime2/ancombc2/Category-treatment1-ASV/ASV-treatment1.tsv",
+                "qiime2/ancombc2/Category-treatment1-ASV/ASV-treatment1.visualizer.qzv",
+                "qiime2/ancombc2/Category-treatment1-ASV/ASV-treatment1.volcano_plot.svg",
+                "qiime2/ancombc2/Category-treatment1-ASV/differentials",
+                "qiime2/ancombc2/Category-treatment1-ASV/differentials/ASV-treatment1.tsv",
+                "qiime2/ancombc2/Category-treatment1-level-2",
+                "qiime2/ancombc2/Category-treatment1-level-2/differentials",
+                "qiime2/ancombc2/Category-treatment1-level-2/differentials/lvl2-treatment1.tsv",
+                "qiime2/ancombc2/Category-treatment1-level-2/lvl2-treatment1.tsv",
+                "qiime2/ancombc2/Category-treatment1-level-2/lvl2-treatment1.visualizer.qzv",
+                "qiime2/ancombc2/Category-treatment1-level-2/lvl2-treatment1.volcano_plot.svg",
+                "qiime2/ancombc2_formula",
+                "qiime2/ancombc2_formula/Category-treatment1-ASV",
+                "qiime2/ancombc2_formula/Category-treatment1-ASV/ASV-treatment1.tsv",
+                "qiime2/ancombc2_formula/Category-treatment1-ASV/ASV-treatment1.visualizer.qzv",
+                "qiime2/ancombc2_formula/Category-treatment1-ASV/ASV-treatment1.volcano_plot.svg",
+                "qiime2/ancombc2_formula/Category-treatment1-ASV/differentials",
+                "qiime2/ancombc2_formula/Category-treatment1-ASV/differentials/ASV-treatment1.tsv",
+                "qiime2/ancombc2_formula/Category-treatment1-level-2",
+                "qiime2/ancombc2_formula/Category-treatment1-level-2/differentials",
+                "qiime2/ancombc2_formula/Category-treatment1-level-2/differentials/lvl2-treatment1.tsv",
+                "qiime2/ancombc2_formula/Category-treatment1-level-2/lvl2-treatment1.tsv",
+                "qiime2/ancombc2_formula/Category-treatment1-level-2/lvl2-treatment1.visualizer.qzv",
+                "qiime2/ancombc2_formula/Category-treatment1-level-2/lvl2-treatment1.volcano_plot.svg",
+                "qiime2/ancombc_formula",
+                "qiime2/ancombc_formula/da_barplot",
+                "qiime2/ancombc_formula/da_barplot/Category-treatment1-ASV",
+                "qiime2/ancombc_formula/da_barplot/Category-treatment1-ASV/placeholder.tsv",
+                "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-2",
+                "qiime2/ancombc_formula/da_barplot/Category-treatment1-level-2/placeholder.tsv",
+                "qiime2/ancombc_formula/differentials",
+                "qiime2/ancombc_formula/differentials/Category-treatment1-ASV",
+                "qiime2/ancombc_formula/differentials/Category-treatment1-ASV/placeholder.tsv",
+                "qiime2/ancombc_formula/differentials/Category-treatment1-level-2",
+                "qiime2/ancombc_formula/differentials/Category-treatment1-level-2/placeholder.tsv",
+                "qiime2/barplot",
+                "qiime2/barplot/placeholder.html",
+                "qiime2/barplot_average",
+                "qiime2/barplot_average/barplot_treatment1",
+                "qiime2/barplot_average/barplot_treatment1/placeholder.html",
+                "qiime2/diversity",
+                "qiime2/diversity/Use the sampling depth of 500 for rarefaction.txt",
+                "qiime2/diversity/alpha_diversity",
+                "qiime2/diversity/alpha_diversity/bray_curtis_vector",
+                "qiime2/diversity/alpha_diversity/bray_curtis_vector/placeholder.tsv",
+                "qiime2/diversity/alpha_diversity/jaccard_vector",
+                "qiime2/diversity/alpha_diversity/jaccard_vector/placeholder.tsv",
+                "qiime2/diversity/alpha_diversity/unweighted_unifrac_vector",
+                "qiime2/diversity/alpha_diversity/unweighted_unifrac_vector/placeholder.tsv",
+                "qiime2/diversity/alpha_diversity/weighted_unifrac_vector",
+                "qiime2/diversity/alpha_diversity/weighted_unifrac_vector/placeholder.tsv",
+                "qiime2/diversity/beta_diversity",
+                "qiime2/diversity/beta_diversity/adonis",
+                "qiime2/diversity/beta_diversity/adonis/bray_curtis_distance_matrix-mix8",
+                "qiime2/diversity/beta_diversity/adonis/bray_curtis_distance_matrix-mix8/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/adonis/bray_curtis_distance_matrix-treatment1",
+                "qiime2/diversity/beta_diversity/adonis/bray_curtis_distance_matrix-treatment1/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/adonis/jaccard_distance_matrix-mix8",
+                "qiime2/diversity/beta_diversity/adonis/jaccard_distance_matrix-mix8/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/adonis/jaccard_distance_matrix-treatment1",
+                "qiime2/diversity/beta_diversity/adonis/jaccard_distance_matrix-treatment1/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/adonis/unweighted_unifrac_distance_matrix-mix8",
+                "qiime2/diversity/beta_diversity/adonis/unweighted_unifrac_distance_matrix-mix8/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/adonis/unweighted_unifrac_distance_matrix-treatment1",
+                "qiime2/diversity/beta_diversity/adonis/unweighted_unifrac_distance_matrix-treatment1/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/adonis/weighted_unifrac_distance_matrix-mix8",
+                "qiime2/diversity/beta_diversity/adonis/weighted_unifrac_distance_matrix-mix8/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/adonis/weighted_unifrac_distance_matrix-treatment1",
+                "qiime2/diversity/beta_diversity/adonis/weighted_unifrac_distance_matrix-treatment1/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-bad3",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-bad3/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-bad4",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-bad4/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-bad5",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-bad5/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-bad9",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-bad9/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-badpairwise10",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-badpairwise10/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-materialSampleID",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-materialSampleID/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-mix8",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-mix8/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-num6",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-num6/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-num7",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-num7/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-target_gene",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-target_gene/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix-treatment1/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/bray_curtis_distance_matrix.tsv",
+                "qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA",
+                "qiime2/diversity/beta_diversity/bray_curtis_pcoa_results-PCoA/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-bad3",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-bad3/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-bad4",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-bad4/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-bad5",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-bad5/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-bad9",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-bad9/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-badpairwise10",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-badpairwise10/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-materialSampleID",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-materialSampleID/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-mix8",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-mix8/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-num6",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-num6/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-num7",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-num7/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-target_gene",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-target_gene/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix-treatment1/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/jaccard_distance_matrix.tsv",
+                "qiime2/diversity/beta_diversity/jaccard_pcoa_results-PCoA",
+                "qiime2/diversity/beta_diversity/jaccard_pcoa_results-PCoA/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-bad3",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-bad3/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-bad4",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-bad4/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-bad5",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-bad5/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-bad9",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-bad9/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-badpairwise10",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-badpairwise10/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-materialSampleID",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-materialSampleID/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-mix8",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-mix8/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-num6",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-num6/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-num7",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-num7/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-target_gene",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-target_gene/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix-treatment1/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_distance_matrix.tsv",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_pcoa_results-PCoA",
+                "qiime2/diversity/beta_diversity/unweighted_unifrac_pcoa_results-PCoA/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-bad3",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-bad3/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-bad4",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-bad4/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-bad5",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-bad5/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-bad9",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-bad9/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-badpairwise10",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-badpairwise10/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-materialSampleID",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-materialSampleID/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-mix8",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-mix8/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-num6",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-num6/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-num7",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-num7/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-target_gene",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-target_gene/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix-treatment1/placeholder.tsv",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_distance_matrix.tsv",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_pcoa_results-PCoA",
+                "qiime2/diversity/beta_diversity/weighted_unifrac_pcoa_results-PCoA/placeholder.tsv",
+                "qiime2/input",
+                "qiime2/input/rep-seqs.qza",
+                "qiime2/input/table.qza",
+                "qiime2/input/taxonomy.qza",
+                "qiime2/phylogenetic_tree",
+                "qiime2/phylogenetic_tree/rooted-tree.qza",
+                "qiime2/phylogenetic_tree/tree.nwk",
+                "qiime2/rel_abundance_tables",
+                "qiime2/rel_abundance_tables/rel-table-2.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV_with-DADA2-gtdb_R07-RS207-tax.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV_with-QIIME2-greengenes85-tax.tsv",
+                "qiime2/representative_sequences",
+                "qiime2/representative_sequences/descriptive_stats.tsv",
+                "qiime2/representative_sequences/filtered-sequences.qza",
+                "qiime2/representative_sequences/rep-seq.fasta",
+                "qiime2/representative_sequences/seven_number_summary.tsv",
+                "qiime2/taxonomy",
+                "qiime2/taxonomy/GTGYCAGCMGCCGCGGTAA-GGACTACNVGGGTWTCTAAT-classifier.qza",
+                "qiime2/taxonomy/ref_taxonomy.txt",
+                "qiime2/taxonomy/taxonomy.tsv",
+                "ref-storage",
+                "ref-storage/85_otu_taxonomy.txt",
+                "ref-storage/85_otus.fasta",
+                "ref-storage/ar53_ssu_reps_r207.tar.gz",
+                "ref-storage/bac120_ssu_reps_r207.tar.gz",
+                "summary_report",
+                "summary_report/summary_report.html",
+                "summary_report/versions.yml",
+                "summary_tables",
+                "summary_tables/ampliseq.counts.parquet",
+                "summary_tables/ampliseq.counts.tsv.gz",
+                "summary_tables/ampliseq.taxonomy.DADA2.gtdb_R07-RS207.parquet",
+                "summary_tables/ampliseq.taxonomy.DADA2.gtdb_R07-RS207.tsv.gz",
+                "summary_tables/ampliseq.taxonomy.QIIME2.greengenes85.parquet",
+                "summary_tables/ampliseq.taxonomy.QIIME2.greengenes85.tsv.gz",
+                "treesummarizedexperiment",
+                "treesummarizedexperiment/dada2_TreeSummarizedExperiment.rds",
+                "treesummarizedexperiment/qiime2_TreeSummarizedExperiment.rds",
+                "vsearch_cluster",
+                "vsearch_cluster/ASV_post_clustering_filtered.fna",
+                "vsearch_cluster/ASV_post_clustering_filtered.stats.tsv",
+                "vsearch_cluster/ASV_post_clustering_filtered.table.tsv"
+            ]
+        ],
+        "timestamp": "2026-11-09T14:32:09.296490532",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.5"
+        }
+    }
+}

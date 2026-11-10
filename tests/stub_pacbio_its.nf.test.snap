@@ -1,0 +1,228 @@
+{
+    "-profile test_pacbio_its -stub": {
+        "content": [
+            59,
+            {
+                "ASSIGNSH": {
+                    "python": "stub"
+                },
+                "BARRNAP": {
+                    "barrnap": "stub"
+                },
+                "BARRNAPSUMMARY": {
+                    "python": "stub"
+                },
+                "BUILD_ASV_ANNOTATIONS": {
+                    "R": "stub"
+                },
+                "CUTADAPT_BASIC": {
+                    "cutadapt": 5.2
+                },
+                "CUTADAPT_SUMMARY_STD": {
+                    "python": "stub"
+                },
+                "DADA2_ADDSPECIES": {
+                    "dada2": "stub"
+                },
+                "DADA2_DENOISING": {
+                    "dada2": "stub"
+                },
+                "DADA2_ERR": {
+                    "dada2": "stub"
+                },
+                "DADA2_FILTNTRIM": {
+                    "dada2": "stub"
+                },
+                "DADA2_MERGE": {
+                    "dada2": "stub"
+                },
+                "DADA2_QUALITY1": {
+                    "dada2": "stub"
+                },
+                "DADA2_QUALITY2": {
+                    "dada2": "stub"
+                },
+                "DADA2_RMCHIMERA": {
+                    "dada2": "stub"
+                },
+                "DADA2_STATS": {
+                    "dada2": "stub"
+                },
+                "DADA2_TAXONOMY": {
+                    "dada2": "stub"
+                },
+                "DUCKDB_TABLE2PARQUET": {
+                    "duckdb": "1.5.5"
+                },
+                "FASTQC": {
+                    "fastqc": "0.12.1"
+                },
+                "FILTER_LEN_ITSX": {
+                    "Biostrings": "stub"
+                },
+                "FORMAT_TAXONOMY": {
+                    "bash": "stub"
+                },
+                "FORMAT_TAXONOMY_SINTAX": {
+                    "bash": "stub"
+                },
+                "FORMAT_TAXRESULTS_ADDSP": {
+                    "python": "stub"
+                },
+                "FORMAT_TAXRESULTS_SINTAX": {
+                    "python": "stub"
+                },
+                "FORMAT_TAXRESULTS_STD": {
+                    "python": "stub"
+                },
+                "ITSXRUST_CUTASV": {
+                    "ITSxRust": "stub"
+                },
+                "MERGE_STATS_DADA": {
+                    "R": "stub"
+                },
+                "RENAME_RAW_DATA_FILES": {
+                    "bash": "5.2.37(1)-release"
+                },
+                "SUMMARY_TABLE_COUNTS": {
+                    "R": "stub"
+                },
+                "SUMMARY_TABLE_TAXONOMY": {
+                    "R": "stub"
+                },
+                "TREESUMMARIZEDEXPERIMENT": {
+                    "TreeSummarizedExperiment": "stub"
+                },
+                "VSEARCH_SINTAX": {
+                    "vsearch": "2.31.0"
+                },
+                "VSEARCH_USEARCHGLOBAL": {
+                    "vsearch": "2.31.0"
+                },
+                "Workflow": {
+                    "nf-core/ampliseq": "v3.2.0dev"
+                }
+            },
+            [
+                "assignsh",
+                "assignsh/ASV_ITS_tax.vsearch.unite-alleuk_8_2.txt",
+                "assignsh/ASV_ITS_tax.vsearch.unite-fungi_8_2.txt",
+                "assignsh/ASV_tax_species_SH.unite-alleuk_8_2.tsv",
+                "assignsh/ASV_tax_species_SH.unite-fungi_8_2.tsv",
+                "barrnap",
+                "barrnap/rrna.arc.gff",
+                "barrnap/rrna.bac.gff",
+                "barrnap/rrna.euk.gff",
+                "barrnap/rrna.mito.gff",
+                "barrnap/summary.tsv",
+                "cutadapt",
+                "cutadapt/cutadapt_summary.tsv",
+                "cutadapt/pb1.trimmed.cutadapt.log",
+                "cutadapt/pb2.trimmed.cutadapt.log",
+                "cutadapt/pb3.trimmed.cutadapt.log",
+                "dada2",
+                "dada2/ASV_ITS_tax.unite-alleuk_8_2.tsv",
+                "dada2/ASV_ITS_tax.unite-fungi_8_2.tsv",
+                "dada2/ASV_ITS_tax_species.unite-alleuk_8_2.tsv",
+                "dada2/ASV_ITS_tax_species.unite-fungi_8_2.tsv",
+                "dada2/ASV_seqs.fasta",
+                "dada2/ASV_table.tsv",
+                "dada2/ASV_tax.unite-alleuk_8_2.tsv",
+                "dada2/ASV_tax.unite-fungi_8_2.tsv",
+                "dada2/ASV_tax_species.unite-alleuk_8_2.tsv",
+                "dada2/ASV_tax_species.unite-fungi_8_2.tsv",
+                "dada2/DADA2_stats.tsv",
+                "dada2/DADA2_table.rds",
+                "dada2/DADA2_table.tsv",
+                "dada2/QC",
+                "dada2/QC/1.err.convergence.txt",
+                "dada2/QC/1.err.pdf",
+                "dada2/QC/single_end_plotQualityProfile.txt",
+                "dada2/QC/single_end_preprocessed_qual_stats.pdf",
+                "dada2/QC/single_end_qual_stats.pdf",
+                "dada2/QC/svg",
+                "dada2/QC/svg/1.err.svg",
+                "dada2/QC/svg/single_end_preprocessed_qual_stats.svg",
+                "dada2/QC/svg/single_end_qual_stats.svg",
+                "dada2/args",
+                "dada2/args/addSpecies_unite-alleuk_8_2.args.txt",
+                "dada2/args/addSpecies_unite-fungi_8_2.args.txt",
+                "dada2/args/assignTaxonomy.ASV_ITS_tax.unite-alleuk_8_2.args.txt",
+                "dada2/args/assignTaxonomy.ASV_ITS_tax.unite-fungi_8_2.args.txt",
+                "dada2/args/dada.args.txt",
+                "dada2/args/filterAndTrim.args.txt",
+                "dada2/args/learnErrors.args.txt",
+                "dada2/args/removeBimeraDenovo.args.txt",
+                "dada2/args/single_end_plotQualityProfile.args.txt",
+                "dada2/args/single_end_preprocessed_plotQualityProfile.args.txt",
+                "dada2/chunks",
+                "dada2/chunks/ASV_seqs.len.1.ASV_ITS_tax.unite-alleuk_8_2.species.tsv",
+                "dada2/chunks/ASV_seqs.len.1.ASV_ITS_tax.unite-alleuk_8_2.tsv",
+                "dada2/chunks/ASV_seqs.len.1.ASV_ITS_tax.unite-fungi_8_2.species.tsv",
+                "dada2/chunks/ASV_seqs.len.1.ASV_ITS_tax.unite-fungi_8_2.tsv",
+                "dada2/log",
+                "dada2/log/1.dada.log",
+                "dada2/log/1.err.log",
+                "dada2/ref_taxonomy.unite-alleuk_8_2.txt",
+                "dada2/ref_taxonomy.unite-fungi_8_2.txt",
+                "fastqc",
+                "fastqc/pb1.html",
+                "fastqc/pb2.html",
+                "fastqc/pb3.html",
+                "input",
+                "input/Metadata_pacbio_ITS.tsv",
+                "input/Samplesheet_pacbio_ITS_v3.tsv",
+                "itsx",
+                "itsx/ASV_ITS_seqs.ITS1.fasta",
+                "itsx/ASV_ITS_seqs.ITS1.full_and_partial.fasta",
+                "itsx/ASV_ITS_seqs.ITS2.fasta",
+                "itsx/ASV_ITS_seqs.ITS2.full_and_partial.fasta",
+                "itsx/ASV_ITS_seqs.full.fasta",
+                "itsx/ASV_ITS_seqs.full_and_partial.fasta",
+                "itsx/ASV_ITS_seqs.summary.txt",
+                "itsx/ASV_len_filt.tsv",
+                "itsx/ASV_len_orig.tsv",
+                "itsx/ASV_seqs.len.fasta",
+                "itsx/ASV_table.len.tsv",
+                "itsx/ITSxRust.args.txt",
+                "multiqc",
+                "multiqc/multiqc_data",
+                "multiqc/multiqc_data/.stub",
+                "multiqc/multiqc_plots",
+                "multiqc/multiqc_plots/.stub",
+                "multiqc/multiqc_report.html",
+                "overall_summary.tsv",
+                "pipeline_info",
+                "pipeline_info/nf_core_ampliseq_software_mqc_versions.yml",
+                "ref-storage",
+                "ref-storage/6fdb458a-9299-41dc-8774-5152b867d882.gz",
+                "ref-storage/a6c4d680-c99a-4252-ba67-748271c7d7f4.gz",
+                "ref-storage/dbd892b6-0446-4351-988e-922c4b73585e.gz",
+                "sintax",
+                "sintax/ASV_ITS_tax_sintax.unite-fungi_8_2.raw.tsv",
+                "sintax/ASV_tax_sintax.unite-fungi_8_2.tsv",
+                "sintax/ref_taxonomy_sintax.txt",
+                "summary_report",
+                "summary_report/summary_report.html",
+                "summary_report/versions.yml",
+                "summary_tables",
+                "summary_tables/ampliseq.counts.parquet",
+                "summary_tables/ampliseq.counts.tsv.gz",
+                "summary_tables/ampliseq.taxonomy.DADA2.unite-alleuk_8_2.parquet",
+                "summary_tables/ampliseq.taxonomy.DADA2.unite-alleuk_8_2.tsv.gz",
+                "summary_tables/ampliseq.taxonomy.DADA2.unite-fungi_8_2.parquet",
+                "summary_tables/ampliseq.taxonomy.DADA2.unite-fungi_8_2.tsv.gz",
+                "summary_tables/ampliseq.taxonomy.SINTAX.unite-fungi_8_2.parquet",
+                "summary_tables/ampliseq.taxonomy.SINTAX.unite-fungi_8_2.tsv.gz",
+                "treesummarizedexperiment",
+                "treesummarizedexperiment/dada2_TreeSummarizedExperiment.rds",
+                "treesummarizedexperiment/sintax_TreeSummarizedExperiment.rds"
+            ]
+        ],
+        "timestamp": "2026-11-09T14:53:45.549994456",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.5"
+        }
+    }
+}

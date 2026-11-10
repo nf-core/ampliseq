@@ -23,6 +23,6 @@ process DOWNLOAD_REFERENCE {
     stub:
     local_filename = file(ref_url).name
     """
-    touch "${local_filename}"
+    tar -cf - --files-from /dev/null | gzip > "${local_filename}"
     """
 }

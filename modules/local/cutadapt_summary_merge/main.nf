@@ -55,11 +55,6 @@ process CUTADAPT_SUMMARY_MERGE {
     } else {
         """
         cp $files cutadapt_summary.tsv
-
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-            R: stub
-        END_VERSIONS
         """
     }
 }

@@ -53,6 +53,7 @@ process SIDLE_DBFILT {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
+        qiime2: stub
         qiime2 rescript: stub
     END_VERSIONS
     """

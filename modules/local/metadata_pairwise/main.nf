@@ -26,7 +26,7 @@ process METADATA_PAIRWISE {
 
     stub:
     """
-    echo -n ""
+    head -n 1 ${metadata} | tr '\\t' '\\n' | tail -n +2 | paste -sd, -
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

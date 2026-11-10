@@ -7,8 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-- [#1142](https://github.com/nf-core/ampliseq/pull/1142) - Added `stub:` sections to all local modules, so `-stub-run` with `--min_read_counts 0` exercises the whole pipeline without running any analysis (by @d4straub)
-- [#1142](https://github.com/nf-core/ampliseq/pull/1142) - Added `picrust = true` to the `test_novaseq` profile so that the `PICRUST` stub is exercised by a test, and added stub tests to verify the process set of 13 test profiles (by @d4straub)
+- [#1142](https://github.com/nf-core/ampliseq/pull/1142) - Added `stub:` sections to all local modules and stub tests for 13 test profiles, so `-stub-run` exercises the pipeline and its process set and output layout are verified without running any analysis (by @d4straub)
 
 ### `Changed`
 

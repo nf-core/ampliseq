@@ -1,6 +1,7 @@
 {
     "-profile test": {
         "content": [
+            130,
             {
                 "ANCOMBC2_FORMULA_ASV": {
                     "qiime2": "2026.4.0"

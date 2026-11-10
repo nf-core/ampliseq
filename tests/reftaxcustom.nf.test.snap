@@ -1,6 +1,7 @@
 {
     "-profile test_reftaxcustom": {
         "content": [
+            56,
             {
                 "BARRNAP": {
                     "barrnap": 0.9

@@ -1,6 +1,7 @@
 {
     "-profile test_iontorrent": {
         "content": [
+            36,
             {
                 "BARRNAP": {
                     "barrnap": 0.9

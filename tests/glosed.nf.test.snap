@@ -1,6 +1,7 @@
 {
     "-profile test_glosed": {
         "content": [
+            43,
             {
                 "BUILD_ASV_ANNOTATIONS": {
                     "R": "4.3.1",

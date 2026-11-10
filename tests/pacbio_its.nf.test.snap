@@ -1,6 +1,7 @@
 {
     "-profile test_pacbio_its": {
         "content": [
+            56,
             {
                 "ASSIGNSH": {
                     "python": "3.9.1",

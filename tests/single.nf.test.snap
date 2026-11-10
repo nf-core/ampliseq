@@ -1,6 +1,7 @@
 {
     "-profile test_single": {
         "content": [
+            44,
             {
                 "BARRNAP": {
                     "barrnap": 0.9

@@ -1,6 +1,7 @@
 {
     "-profile test_pplace": {
         "content": [
+            93,
             {
                 "BARRNAP": {
                     "barrnap": 0.9

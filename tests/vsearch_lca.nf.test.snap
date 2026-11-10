@@ -1,6 +1,7 @@
 {
     "-profile test_vsearch_lca": {
         "content": [
+            50,
             {
                 "BARRNAP": {
                     "barrnap": 0.9

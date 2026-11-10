@@ -1,6 +1,7 @@
 {
     "-profile test_multidb --dada_ref_taxonomy silva,gtdb,pr2 --consolidate_taxonomies most-specific": {
         "content": [
+            74,
             {
                 "BARRNAP": {
                     "barrnap": 0.9

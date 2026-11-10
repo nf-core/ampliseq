@@ -1,6 +1,7 @@
 {
     "-profile test_consolidate_tools": {
         "content": [
+            85,
             {
                 "BARRNAP": {
                     "barrnap": 0.9

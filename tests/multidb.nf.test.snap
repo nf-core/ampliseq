@@ -1,6 +1,7 @@
 {
     "-profile test_multidb": {
         "content": [
+            63,
             {
                 "BARRNAP": {
                     "barrnap": 0.9

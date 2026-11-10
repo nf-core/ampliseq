@@ -1,6 +1,7 @@
 {
     "-profile test_multidb --consolidate_taxonomies score": {
         "content": [
+            67,
             {
                 "BARRNAP": {
                     "barrnap": 0.9

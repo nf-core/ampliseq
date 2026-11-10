@@ -1,7 +1,7 @@
 {
     "-profile test_novaseq -stub": {
         "content": [
-            24,
+            23,
             {
                 "DADA2_DENOISING": {
                     "dada2": "stub"
@@ -38,9 +38,6 @@
                 },
                 "MERGE_STATS_CODONS": {
                     "R": "stub"
-                },
-                "PICRUST": {
-                    "picrust2": "stub"
                 },
                 "RENAME_RAW_DATA_FILES": {
                     "bash": "5.2.37(1)-release"
@@ -110,14 +107,6 @@
                 "multiqc/multiqc_plots/.stub",
                 "multiqc/multiqc_report.html",
                 "overall_summary.tsv",
-                "picrust",
-                "picrust/EC_pred_metagenome_unstrat_descrip.tsv",
-                "picrust/KO_pred_metagenome_unstrat_descrip.tsv",
-                "picrust/METACYC_path_abun_unstrat_descrip.tsv",
-                "picrust/This Picrust2 analysis is based on unfiltered reads from DADA2.txt",
-                "picrust/all_output",
-                "picrust/all_output/placeholder.txt",
-                "picrust/picrust.args.txt",
                 "pipeline_info",
                 "pipeline_info/nf_core_ampliseq_software_mqc_versions.yml",
                 "summary_report",
@@ -128,7 +117,7 @@
                 "summary_tables/ampliseq.counts.tsv.gz"
             ]
         ],
-        "timestamp": "2026-11-10T09:32:12.84606314",
+        "timestamp": "2026-11-10T11:52:26.500494165",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.10.5"

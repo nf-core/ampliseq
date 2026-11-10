@@ -13,6 +13,9 @@ nextflow_pipeline {
             params {
                 outdir = "$outputDir"
                 ref_taxonomy_storage = "$outputDir/ref-storage"
+                // Only this stub test enables PICRUST, so its branch stays covered without
+                // turning it (and its real test) on in conf/test_novaseq.config
+                picrust = true
             }
         }
 

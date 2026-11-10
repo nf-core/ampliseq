@@ -74,4 +74,21 @@ process QIIME2_EXPORT_ABSOLUTE {
         qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch rep-seq.fasta
+    echo -e "#OTU ID" > feature-table.tsv
+    touch feature-table.biom
+    echo -e "Sample\tCount" > seven_number_summary.tsv
+    echo -e "Sample\tCount" > descriptive_stats.tsv
+    for i in \$(seq ${tax_agglom_min} 1 ${tax_agglom_max}); do
+        touch abs-abund-table-\$i.tsv
+    done
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        qiime2: stub
+    END_VERSIONS
+    """
 }

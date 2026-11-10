@@ -17,7 +17,7 @@ Requires Nextflow, nf-core tools, and nf-test.
 Run pipeline tests (small test profiles, requires Docker/Singularity/Conda):
 
 ```bash
-nf-test test --tag test --profile +docker --verbose
+nf-test test --tag pipeline --profile +docker --verbose
 ```
 
 Run a single test file:
@@ -29,7 +29,7 @@ nf-test test tests/default.nf.test --profile +docker --verbose
 Update snapshots after intentional output changes:
 
 ```bash
-nf-test test --tag test --profile +docker --verbose --update-snapshot
+nf-test test --tag pipeline --profile +docker --verbose --update-snapshot
 ```
 
 Lint (nf-core community rules, run before opening a PR):
@@ -58,6 +58,16 @@ pre-commit hooks (prettier, trailing whitespace, nextflow-lint) run via `prek`/`
 
 Module/subworkflow tests under `modules/nf-core/**/tests` and `subworkflows/nf-core/**/tests` are vendored from nf-core/modules and excluded from local test runs (`ignore` list in `nf-test.config`) — don't hand-edit these, update via `nf-core modules update`.
 
+`tests/stub_*.nf.test` run a test profile with `-stub`, covering 13 profiles. They assert the process set and file layout, not tool output, and finish in minutes:
+
+```bash
+nf-test test tests/stub_fasta.nf.test --profile +docker
+```
+
+Eleven of the 13 reach every process in the corresponding real snapshot. `pplace` and `pplace_sheet` do not — they miss 23 and 8 processes respectively. The vendored `epang/place` and `hmmer/hmmrank` stubs never emit what their downstream steps consume: `EPANG_PLACE` writes only `*.epa_info.log`, not the optional `*.epa_result.jplace.gz`, and `HMMER_HMMRANK` writes a header row only. That starves `GAPPA_*`, `PPLACEFORMATTAX_*`, `PHYLOSEQ_INTAX_PPLACE`, `QIIME2_INTREE`, `SEQTK_SUBSEQ` and the QIIME2/Phyloseq steps downstream of them, so for these two profiles the stub snapshot does not prove the process set matches the real run.
+
+They use `conf/test_stub_limits.config` (resource caps plus `min_read_counts = 0`) and set `ref_taxonomy_storage` inside their own `outdir` to stay offline. Keep `tag "stub"` on these files and do not add `tag "pipeline"`; they are not a substitute for the corresponding real test. To reach a branch the profile leaves off without changing the shared profile, set the param in the test's own `params` block, as `tests/stub_novaseq.nf.test` does for `picrust`.
+
 ## Architecture
 
 - `main.nf` — entry point. Declares the pipeline-level `params` schema block, wires `PIPELINE_INITIALISATION` → `NFCORE_AMPLISEQ` (wraps the `AMPLISEQ` workflow) → `PIPELINE_COMPLETION`.
@@ -83,3 +93,4 @@ Module/subworkflow tests under `modules/nf-core/**/tests` and `subworkflows/nf-c
 
 - `results/` and `work/` at the repo root are local Nextflow run artifacts (from prior pipeline executions in this checkout), not source — don't treat their contents as project structure to preserve.
 - `.nf-core.yml` disables `nextflow_config`/`schema_params` lint rules ("TODO: Remove when tools supports parameter types") — don't be surprised these are off, it's a known pending upstream fix, not a repo choice to replicate elsewhere.
+- Prefer a stub run (`-stub-run` with `--min_read_counts 0`) over `nf-test` for changes that do not touch a module's `script:` body. A stub run checks wiring and output names, not content, and it does not reach branches that depend on real metadata values or on real tool output, so a passing stub run does not prove that every branch was exercised. To check what it actually reached, compare the process names in its `versions.yml` against the corresponding real snapshot; the `tests/stub_*.nf.test` tests do this automatically.

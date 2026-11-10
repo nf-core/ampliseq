@@ -38,4 +38,15 @@ process QIIME2_ANCOM_ASV {
         qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
+
+    stub:
+    """
+    mkdir -p ancom/Category-${table.baseName}-ASV
+    touch ancom/Category-${table.baseName}-ASV/placeholder.txt
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        qiime2: stub
+    END_VERSIONS
+    """
 }

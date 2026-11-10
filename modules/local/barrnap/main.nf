@@ -45,4 +45,16 @@ process BARRNAP {
         barrnap: \$(echo \$(barrnap --version 2>&1) | sed "s/^.*barrnap //g")
     END_VERSIONS
     """
+
+    stub:
+    def kingdoms = ( task.ext.kingdom ?: "bac,arc,mito,euk" ).tokenize(',')
+    """
+    touch ${kingdoms.collect { kingdom -> "${kingdom}.matches.txt" }.join(' ')}
+    touch ${kingdoms.collect { kingdom -> "rrna.${kingdom}.gff" }.join(' ')}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        barrnap: stub
+    END_VERSIONS
+    """
 }

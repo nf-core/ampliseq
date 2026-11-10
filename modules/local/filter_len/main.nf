@@ -63,4 +63,20 @@ process FILTER_LEN {
 
     writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    Biostrings: ", packageVersion("Biostrings")) ), "versions.yml")
     """
+
+    stub:
+    """
+    cp "$fasta" ASV_seqs.len.fasta
+    echo -e "sample\tlenfilter_input\tlenfilter_output" > stats.len.tsv
+    echo -e "Length\tCounts" > ASV_len_orig.tsv
+    echo -e "Length\tCounts" > ASV_len_filt.tsv
+    if [ -f "${table}" ]; then
+        cp "$table" ASV_table.len.tsv
+    fi
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        Biostrings: stub
+    END_VERSIONS
+    """
 }

@@ -1,6 +1,7 @@
 {
     "-profile test_failed": {
         "content": [
+            73,
             {
                 "BARRNAP": {
                     "barrnap": 0.9

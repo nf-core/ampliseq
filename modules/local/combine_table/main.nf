@@ -25,4 +25,15 @@ process COMBINE_TABLE {
         R: \$(R --version 2>&1 | sed -n 1p | sed 's/R version //' | sed 's/ (.*//')
     END_VERSIONS
     """
+
+    stub:
+    def outfile = "rel-table-ASV_with-${meta.classifier}-${meta.database}-tax.tsv"
+    """
+    echo -e "ASV_ID\tKingdom\tPhylum\tClass\tOrder\tFamily\tGenus" > ${outfile}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        R: stub
+    END_VERSIONS
+    """
 }

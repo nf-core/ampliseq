@@ -20,6 +20,8 @@ nextflow_pipeline {
             assert workflow.success
             assertAll(
                 { assert snapshot(
+                    // Number of tasks that completed successfully
+                    workflow.trace.succeeded().size(),
                     removeNextflowVersion("$outputDir/pipeline_info/nf_core_ampliseq_software_mqc_versions.yml"),
                     stable_path,
                     path("$outputDir/vsearch_lca/ASV_tax_vsearch_lca.unite-fungi.tsv"),

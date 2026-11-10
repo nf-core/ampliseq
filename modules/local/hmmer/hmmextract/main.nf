@@ -49,7 +49,15 @@ process HMMER_HMMEXTRACT {
     stub:
     def prefix  = task.ext.prefix ?: "${meta.id}"
 
+    // Avoid accidentally overwriting the input hmm
+    def move    = ""
+    if ( "${prefix}.hmm" == "${hmm}" ) {
+        move    = "mv ${hmm} ${prefix}.in.hmm"
+        hmm     = "${prefix}.in.hmm"
+    }
+
     """
+    $move
     touch ${prefix}.hmm
 
     cat <<-END_VERSIONS > versions.yml

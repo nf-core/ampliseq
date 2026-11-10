@@ -70,4 +70,18 @@ process SIDLE_TABLERECON {
         q2-sidle: \$( qiime sidle --version | sed 's/.*version //' | sed 's/)//' )
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch reconstruction_table.qza
+    mkdir -p reconstruction_table
+    touch reconstruction_table/placeholder.tsv
+    touch reconstructed_feature-table.biom
+    echo -e "#OTU ID" > reconstructed_feature-table.tsv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        q2-sidle: stub
+    END_VERSIONS
+    """
 }

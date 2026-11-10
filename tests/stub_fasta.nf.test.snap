@@ -1,0 +1,101 @@
+{
+    "-profile test_fasta -stub": {
+        "content": [
+            16,
+            {
+                "BARRNAP": {
+                    "barrnap": "stub"
+                },
+                "BARRNAPSUMMARY": {
+                    "python": "stub"
+                },
+                "BUILD_ASV_ANNOTATIONS": {
+                    "R": "stub"
+                },
+                "DADA2_ADDSPECIES": {
+                    "dada2": "stub"
+                },
+                "DADA2_TAXONOMY": {
+                    "dada2": "stub"
+                },
+                "DUCKDB_TABLE2PARQUET": {
+                    "duckdb": "1.5.5"
+                },
+                "FILTER_CODONS": {
+                    "python": "stub"
+                },
+                "FILTER_LEN_ASV": {
+                    "Biostrings": "stub"
+                },
+                "FILTER_SSU": {
+                    "Biostrings": "stub"
+                },
+                "FORMAT_FASTAINPUT": {
+                    "sed": "stub"
+                },
+                "FORMAT_TAXONOMY": {
+                    "bash": "stub"
+                },
+                "SUMMARY_TABLE_TAXONOMY": {
+                    "R": "stub"
+                },
+                "Workflow": {
+                    "nf-core/ampliseq": "v3.2.0dev"
+                }
+            },
+            [
+                "asv_length_filter",
+                "asv_length_filter/ASV_len_filt.tsv",
+                "asv_length_filter/ASV_len_orig.tsv",
+                "asv_length_filter/ASV_seqs.len.fasta",
+                "asv_length_filter/stats.len.tsv",
+                "barrnap",
+                "barrnap/ASV_seqs.ssu.fasta",
+                "barrnap/result.tsv",
+                "barrnap/rrna.arc.gff",
+                "barrnap/rrna.bac.gff",
+                "barrnap/rrna.euk.gff",
+                "barrnap/rrna.mito.gff",
+                "barrnap/stats.ssu.tsv",
+                "barrnap/summary.tsv",
+                "codon_filter",
+                "codon_filter/ASV_codon_filtered.fna",
+                "codon_filter/ASV_codon_filtered.list",
+                "dada2",
+                "dada2/ASV_tax.rdp_18.tsv",
+                "dada2/ASV_tax_species.rdp_18.tsv",
+                "dada2/args",
+                "dada2/args/addSpecies_rdp_18.args.txt",
+                "dada2/args/assignTaxonomy.ASV_tax.rdp_18.args.txt",
+                "dada2/chunks",
+                "dada2/chunks/ASV_codon_filtered.1.ASV_tax.rdp_18.species.tsv",
+                "dada2/chunks/ASV_codon_filtered.1.ASV_tax.rdp_18.tsv",
+                "dada2/ref_taxonomy.rdp_18.txt",
+                "input",
+                "input/ASV_seqs.fasta",
+                "multiqc",
+                "multiqc/multiqc_data",
+                "multiqc/multiqc_data/.stub",
+                "multiqc/multiqc_plots",
+                "multiqc/multiqc_plots/.stub",
+                "multiqc/multiqc_report.html",
+                "pipeline_info",
+                "pipeline_info/nf_core_ampliseq_software_mqc_versions.yml",
+                "ref-storage",
+                "ref-storage/rdp_species_assignment_18.fa.gz",
+                "ref-storage/rdp_train_set_18.fa.gz",
+                "summary_report",
+                "summary_report/summary_report.html",
+                "summary_report/versions.yml",
+                "summary_tables",
+                "summary_tables/ampliseq.taxonomy.DADA2.rdp_18.parquet",
+                "summary_tables/ampliseq.taxonomy.DADA2.rdp_18.tsv.gz"
+            ]
+        ],
+        "timestamp": "2026-11-09T14:12:53.330078282",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.5"
+        }
+    }
+}

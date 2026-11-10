@@ -13,6 +13,7 @@
     },
     "-profile test_savont_independent": {
         "content": [
+            64,
             {
                 "BARRNAP": {
                     "barrnap": 0.9

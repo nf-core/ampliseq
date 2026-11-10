@@ -38,4 +38,14 @@ process QIIME2_EXPORT_RELASV {
         qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
+
+    stub:
+    """
+    echo -e "#OTU ID" > rel-table-ASV.tsv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        qiime2: stub
+    END_VERSIONS
+    """
 }

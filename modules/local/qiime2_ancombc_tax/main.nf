@@ -83,4 +83,18 @@ process QIIME2_ANCOMBC_TAX {
         qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
+
+    stub:
+    def formula = formula_in ?: "${table.baseName}"
+    def outfolder = "Category-${formula}-level-${taxlevel}"
+    """
+    mkdir -p "differentials/${outfolder}" "da_barplot/${outfolder}"
+    touch "differentials/${outfolder}/placeholder.tsv"
+    touch "da_barplot/${outfolder}/placeholder.tsv"
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        qiime2: stub
+    END_VERSIONS
+    """
 }

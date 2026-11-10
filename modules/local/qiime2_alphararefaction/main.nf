@@ -43,4 +43,16 @@ process QIIME2_ALPHARAREFACTION {
         qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
+
+    stub:
+    """
+    mkdir -p alpha-rarefaction
+    touch alpha-rarefaction/placeholder.txt
+    touch alpha-rarefaction.qzv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        qiime2: stub
+    END_VERSIONS
+    """
 }

@@ -19,4 +19,10 @@ process DOWNLOAD_REFERENCE {
     """
     wget -O "${local_filename}" "${ref_url}"
     """
+
+    stub:
+    local_filename = file(ref_url).name
+    """
+    tar -cf - --files-from /dev/null | gzip > "${local_filename}"
+    """
 }

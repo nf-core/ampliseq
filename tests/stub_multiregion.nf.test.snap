@@ -1,0 +1,323 @@
+{
+    "-profile test_multiregion -stub": {
+        "content": [
+            146,
+            {
+                "CUTADAPT_BASIC": {
+                    "cutadapt": 5.2
+                },
+                "CUTADAPT_SUMMARY_STD": {
+                    "python": "stub"
+                },
+                "DADA2_DENOISING": {
+                    "dada2": "stub"
+                },
+                "DADA2_ERR": {
+                    "dada2": "stub"
+                },
+                "DADA2_FILTNTRIM": {
+                    "dada2": "stub"
+                },
+                "DADA2_MERGE": {
+                    "dada2": "stub"
+                },
+                "DADA2_QUALITY1": {
+                    "dada2": "stub"
+                },
+                "DADA2_QUALITY2": {
+                    "dada2": "stub"
+                },
+                "DADA2_RMCHIMERA": {
+                    "dada2": "stub"
+                },
+                "DADA2_SPLITREGIONS": {
+                    "R": "stub"
+                },
+                "DADA2_STATS": {
+                    "dada2": "stub"
+                },
+                "DUCKDB_TABLE2PARQUET": {
+                    "duckdb": "1.5.5"
+                },
+                "FASTQC": {
+                    "fastqc": "0.12.1"
+                },
+                "FILTER_STATS": {
+                    "python": "stub"
+                },
+                "FORMAT_TAXONOMY_SIDLE": {
+                    "bash": "stub"
+                },
+                "MERGE_STATS_DADA": {
+                    "R": "stub"
+                },
+                "MERGE_STATS_FILTERTAXA": {
+                    "R": "stub"
+                },
+                "METADATA_ALL": {
+                    "R": "stub"
+                },
+                "METADATA_PAIRWISE": {
+                    "R": "stub"
+                },
+                "PHYLOSEQ_INASV": {
+                    "sed": "stub"
+                },
+                "QIIME2_ANCOM_ASV": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_ANCOM_TAX": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_BARPLOT": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_EXPORT_RELASV": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_EXPORT_RELTAX": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_FILTERSAMPLES_ANCOM": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_INASV": {
+                    "qiime2": "stub"
+                },
+                "QIIME2_TABLEFILTERTAXA": {
+                    "qiime2": "stub"
+                },
+                "RENAME_RAW_DATA_FILES": {
+                    "bash": "5.2.37(1)-release"
+                },
+                "SIDLE_ALIGN": {
+                    "q2-sidle": "stub"
+                },
+                "SIDLE_DBEXTRACT": {
+                    "q2-sidle": "stub"
+                },
+                "SIDLE_DBFILT": {
+                    "qiime2": "stub",
+                    "qiime2 rescript": "stub"
+                },
+                "SIDLE_DBRECON": {
+                    "q2-sidle": "stub"
+                },
+                "SIDLE_FILTTAX": {
+                    "R": "stub"
+                },
+                "SIDLE_IN": {
+                    "qiime2": "stub"
+                },
+                "SIDLE_INDB": {
+                    "qiime2": "stub"
+                },
+                "SIDLE_INDBALIGNED": {
+                    "qiime2": "stub"
+                },
+                "SIDLE_SEQRECON": {
+                    "q2-sidle": "stub"
+                },
+                "SIDLE_TABLERECON": {
+                    "q2-sidle": "stub"
+                },
+                "SIDLE_TAXRECON": {
+                    "q2-sidle": "stub"
+                },
+                "SIDLE_TRIM": {
+                    "q2-sidle": "stub"
+                },
+                "SUMMARY_TABLE_COUNTS": {
+                    "R": "stub"
+                },
+                "TRUNCLEN": {
+                    "python": "stub"
+                },
+                "Workflow": {
+                    "nf-core/ampliseq": "v3.2.0dev"
+                }
+            },
+            [
+                "cutadapt",
+                "cutadapt/cutadapt_summary.tsv",
+                "cutadapt/set1_ACTCCTACGGGAGGCAGC_GTATTACCGCGGCTGCTG.trimmed.cutadapt.log",
+                "cutadapt/set1_GGAGCATGTGGWTTAATTCGA_CGTTGCGGGACTTAACCC.trimmed.cutadapt.log",
+                "cutadapt/set1_GGAGGAAGGTGGGGATGAC_AAGGCCCGGGAACGTATT.trimmed.cutadapt.log",
+                "cutadapt/set1_GTGTAGCGGTGRAATGCG_CCCGTCAATTCMTTTGAGTT.trimmed.cutadapt.log",
+                "cutadapt/set1_TGGCGAACGGGTGAGTAA_CCGTGTCTCAGTCCCARTG.trimmed.cutadapt.log",
+                "cutadapt/set2_ACTCCTACGGGAGGCAGC_GTATTACCGCGGCTGCTG.trimmed.cutadapt.log",
+                "cutadapt/set2_GGAGCATGTGGWTTAATTCGA_CGTTGCGGGACTTAACCC.trimmed.cutadapt.log",
+                "cutadapt/set2_GGAGGAAGGTGGGGATGAC_AAGGCCCGGGAACGTATT.trimmed.cutadapt.log",
+                "cutadapt/set2_GTGTAGCGGTGRAATGCG_CCCGTCAATTCMTTTGAGTT.trimmed.cutadapt.log",
+                "cutadapt/set2_TGGCGAACGGGTGAGTAA_CCGTGTCTCAGTCCCARTG.trimmed.cutadapt.log",
+                "cutadapt/set3_ACTCCTACGGGAGGCAGC_GTATTACCGCGGCTGCTG.trimmed.cutadapt.log",
+                "cutadapt/set3_GGAGCATGTGGWTTAATTCGA_CGTTGCGGGACTTAACCC.trimmed.cutadapt.log",
+                "cutadapt/set3_GGAGGAAGGTGGGGATGAC_AAGGCCCGGGAACGTATT.trimmed.cutadapt.log",
+                "cutadapt/set3_GTGTAGCGGTGRAATGCG_CCCGTCAATTCMTTTGAGTT.trimmed.cutadapt.log",
+                "cutadapt/set3_TGGCGAACGGGTGAGTAA_CCGTGTCTCAGTCCCARTG.trimmed.cutadapt.log",
+                "dada2",
+                "dada2/ASV_seqs.fasta",
+                "dada2/ASV_table.tsv",
+                "dada2/DADA2_stats.tsv",
+                "dada2/DADA2_table.rds",
+                "dada2/DADA2_table.tsv",
+                "dada2/QC",
+                "dada2/QC/FW_plotQualityProfile.txt",
+                "dada2/QC/FW_preprocessed_qual_stats.pdf",
+                "dada2/QC/FW_qual_stats.pdf",
+                "dada2/QC/RV_plotQualityProfile.txt",
+                "dada2/QC/RV_preprocessed_qual_stats.pdf",
+                "dada2/QC/RV_qual_stats.pdf",
+                "dada2/QC/region-1_run-1_1.err.convergence.txt",
+                "dada2/QC/region-1_run-1_1.err.pdf",
+                "dada2/QC/region-1_run-1_2.err.convergence.txt",
+                "dada2/QC/region-1_run-1_2.err.pdf",
+                "dada2/QC/region-2_run-1_1.err.convergence.txt",
+                "dada2/QC/region-2_run-1_1.err.pdf",
+                "dada2/QC/region-2_run-1_2.err.convergence.txt",
+                "dada2/QC/region-2_run-1_2.err.pdf",
+                "dada2/QC/region-3_run-1_1.err.convergence.txt",
+                "dada2/QC/region-3_run-1_1.err.pdf",
+                "dada2/QC/region-3_run-1_2.err.convergence.txt",
+                "dada2/QC/region-3_run-1_2.err.pdf",
+                "dada2/QC/region-4_run-1_1.err.convergence.txt",
+                "dada2/QC/region-4_run-1_1.err.pdf",
+                "dada2/QC/region-4_run-1_2.err.convergence.txt",
+                "dada2/QC/region-4_run-1_2.err.pdf",
+                "dada2/QC/region-5_run-1_1.err.convergence.txt",
+                "dada2/QC/region-5_run-1_1.err.pdf",
+                "dada2/QC/region-5_run-1_2.err.convergence.txt",
+                "dada2/QC/region-5_run-1_2.err.pdf",
+                "dada2/QC/svg",
+                "dada2/QC/svg/FW_preprocessed_qual_stats.svg",
+                "dada2/QC/svg/FW_qual_stats.svg",
+                "dada2/QC/svg/RV_preprocessed_qual_stats.svg",
+                "dada2/QC/svg/RV_qual_stats.svg",
+                "dada2/QC/svg/region-1_run-1_1.err.svg",
+                "dada2/QC/svg/region-1_run-1_2.err.svg",
+                "dada2/QC/svg/region-2_run-1_1.err.svg",
+                "dada2/QC/svg/region-2_run-1_2.err.svg",
+                "dada2/QC/svg/region-3_run-1_1.err.svg",
+                "dada2/QC/svg/region-3_run-1_2.err.svg",
+                "dada2/QC/svg/region-4_run-1_1.err.svg",
+                "dada2/QC/svg/region-4_run-1_2.err.svg",
+                "dada2/QC/svg/region-5_run-1_1.err.svg",
+                "dada2/QC/svg/region-5_run-1_2.err.svg",
+                "dada2/args",
+                "dada2/args/FW_plotQualityProfile.args.txt",
+                "dada2/args/FW_preprocessed_plotQualityProfile.args.txt",
+                "dada2/args/RV_plotQualityProfile.args.txt",
+                "dada2/args/RV_preprocessed_plotQualityProfile.args.txt",
+                "dada2/args/dada.args.txt",
+                "dada2/args/filterAndTrim.args.txt",
+                "dada2/args/learnErrors.args.txt",
+                "dada2/args/mergePairs.args.txt",
+                "dada2/args/removeBimeraDenovo.args.txt",
+                "dada2/log",
+                "dada2/log/region-1_run-1.dada.log",
+                "dada2/log/region-1_run-1.err.log",
+                "dada2/log/region-2_run-1.dada.log",
+                "dada2/log/region-2_run-1.err.log",
+                "dada2/log/region-3_run-1.dada.log",
+                "dada2/log/region-3_run-1.err.log",
+                "dada2/log/region-4_run-1.dada.log",
+                "dada2/log/region-4_run-1.err.log",
+                "dada2/log/region-5_run-1.dada.log",
+                "dada2/log/region-5_run-1.err.log",
+                "fastqc",
+                "fastqc/set1_ACTCCTACGGGAGGCAGC_GTATTACCGCGGCTGCTG.html",
+                "fastqc/set1_GGAGCATGTGGWTTAATTCGA_CGTTGCGGGACTTAACCC.html",
+                "fastqc/set1_GGAGGAAGGTGGGGATGAC_AAGGCCCGGGAACGTATT.html",
+                "fastqc/set1_GTGTAGCGGTGRAATGCG_CCCGTCAATTCMTTTGAGTT.html",
+                "fastqc/set1_TGGCGAACGGGTGAGTAA_CCGTGTCTCAGTCCCARTG.html",
+                "fastqc/set2_ACTCCTACGGGAGGCAGC_GTATTACCGCGGCTGCTG.html",
+                "fastqc/set2_GGAGCATGTGGWTTAATTCGA_CGTTGCGGGACTTAACCC.html",
+                "fastqc/set2_GGAGGAAGGTGGGGATGAC_AAGGCCCGGGAACGTATT.html",
+                "fastqc/set2_GTGTAGCGGTGRAATGCG_CCCGTCAATTCMTTTGAGTT.html",
+                "fastqc/set2_TGGCGAACGGGTGAGTAA_CCGTGTCTCAGTCCCARTG.html",
+                "fastqc/set3_ACTCCTACGGGAGGCAGC_GTATTACCGCGGCTGCTG.html",
+                "fastqc/set3_GGAGCATGTGGWTTAATTCGA_CGTTGCGGGACTTAACCC.html",
+                "fastqc/set3_GGAGGAAGGTGGGGATGAC_AAGGCCCGGGAACGTATT.html",
+                "fastqc/set3_GTGTAGCGGTGRAATGCG_CCCGTCAATTCMTTTGAGTT.html",
+                "fastqc/set3_TGGCGAACGGGTGAGTAA_CCGTGTCTCAGTCCCARTG.html",
+                "input",
+                "input/metadata_multiregion.tsv",
+                "input/regions_multiregion_v3.tsv",
+                "input/samplesheet_multiregion_v3.tsv",
+                "multiqc",
+                "multiqc/multiqc_data",
+                "multiqc/multiqc_data/.stub",
+                "multiqc/multiqc_plots",
+                "multiqc/multiqc_plots/.stub",
+                "multiqc/multiqc_report.html",
+                "overall_summary.tsv",
+                "pipeline_info",
+                "pipeline_info/nf_core_ampliseq_software_mqc_versions.yml",
+                "qiime2",
+                "qiime2/abundance_tables",
+                "qiime2/abundance_tables/count_table_filter_stats.tsv",
+                "qiime2/abundance_tables/filtered-table.qza",
+                "qiime2/ancom",
+                "qiime2/ancom/Category-name-ASV",
+                "qiime2/ancom/Category-name-ASV/placeholder.txt",
+                "qiime2/ancom/Category-name-level-2",
+                "qiime2/ancom/Category-name-level-2/placeholder.txt",
+                "qiime2/ancom/Category-name-level-3",
+                "qiime2/ancom/Category-name-level-3/placeholder.txt",
+                "qiime2/ancom/Category-treatment-ASV",
+                "qiime2/ancom/Category-treatment-ASV/placeholder.txt",
+                "qiime2/ancom/Category-treatment-level-2",
+                "qiime2/ancom/Category-treatment-level-2/placeholder.txt",
+                "qiime2/ancom/Category-treatment-level-3",
+                "qiime2/ancom/Category-treatment-level-3/placeholder.txt",
+                "qiime2/barplot",
+                "qiime2/barplot/placeholder.html",
+                "qiime2/input",
+                "qiime2/input/table.qza",
+                "qiime2/rel_abundance_tables",
+                "qiime2/rel_abundance_tables/rel-table-2.tsv",
+                "qiime2/rel_abundance_tables/rel-table-3.tsv",
+                "qiime2/rel_abundance_tables/rel-table-ASV.tsv",
+                "qiime2/representative_sequences",
+                "ref-storage",
+                "ref-storage/gg_13_8_otus.tar.gz",
+                "sidle",
+                "sidle/DB",
+                "sidle/DB/3_reconstructed",
+                "sidle/DB/3_reconstructed/reconstruction_summary",
+                "sidle/DB/3_reconstructed/reconstruction_summary/placeholder.tsv",
+                "sidle/per_region",
+                "sidle/per_region/ASV_seqs_region1_TGGCGAACGGGTGAGTAA_CCGTGTCTCAGTCCCARTG.fasta",
+                "sidle/per_region/ASV_seqs_region2_ACTCCTACGGGAGGCAGC_GTATTACCGCGGCTGCTG.fasta",
+                "sidle/per_region/ASV_seqs_region3_GTGTAGCGGTGRAATGCG_CCCGTCAATTCMTTTGAGTT.fasta",
+                "sidle/per_region/ASV_seqs_region4_GGAGCATGTGGWTTAATTCGA_CGTTGCGGGACTTAACCC.fasta",
+                "sidle/per_region/ASV_seqs_region5_GGAGGAAGGTGGGGATGAC_AAGGCCCGGGAACGTATT.fasta",
+                "sidle/per_region/ASV_table_region1_TGGCGAACGGGTGAGTAA_CCGTGTCTCAGTCCCARTG.tsv",
+                "sidle/per_region/ASV_table_region2_ACTCCTACGGGAGGCAGC_GTATTACCGCGGCTGCTG.tsv",
+                "sidle/per_region/ASV_table_region3_GTGTAGCGGTGRAATGCG_CCCGTCAATTCMTTTGAGTT.tsv",
+                "sidle/per_region/ASV_table_region4_GGAGCATGTGGWTTAATTCGA_CGTTGCGGGACTTAACCC.tsv",
+                "sidle/per_region/ASV_table_region5_GGAGGAAGGTGGGGATGAC_AAGGCCCGGGAACGTATT.tsv",
+                "sidle/per_region/DADA2_table_region1_TGGCGAACGGGTGAGTAA_CCGTGTCTCAGTCCCARTG.tsv",
+                "sidle/per_region/DADA2_table_region2_ACTCCTACGGGAGGCAGC_GTATTACCGCGGCTGCTG.tsv",
+                "sidle/per_region/DADA2_table_region3_GTGTAGCGGTGRAATGCG_CCCGTCAATTCMTTTGAGTT.tsv",
+                "sidle/per_region/DADA2_table_region4_GGAGCATGTGGWTTAATTCGA_CGTTGCGGGACTTAACCC.tsv",
+                "sidle/per_region/DADA2_table_region5_GGAGGAAGGTGGGGATGAC_AAGGCCCGGGAACGTATT.tsv",
+                "sidle/reconstructed",
+                "sidle/reconstructed/reconstructed_feature-table.biom",
+                "sidle/reconstructed/reconstructed_feature-table.tsv",
+                "sidle/reconstructed/reconstructed_merged.tsv",
+                "sidle/reconstructed/reconstructed_taxonomy.tsv",
+                "sidle/reconstructed/reconstruction_table",
+                "sidle/reconstructed/reconstruction_table/placeholder.tsv",
+                "summary_tables",
+                "summary_tables/ampliseq.counts.parquet",
+                "summary_tables/ampliseq.counts.tsv.gz"
+            ]
+        ],
+        "timestamp": "2026-11-09T14:40:02.661136648",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.5"
+        }
+    }
+}

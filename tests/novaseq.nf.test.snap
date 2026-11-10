@@ -1,6 +1,7 @@
 {
     "-profile test_novaseq": {
         "content": [
+            23,
             {
                 "DADA2_DENOISING": {
                     "R": "4.5.2",

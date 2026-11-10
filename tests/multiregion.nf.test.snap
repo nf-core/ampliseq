@@ -1,6 +1,7 @@
 {
     "-profile test_multiregion": {
         "content": [
+            141,
             {
                 "CUTADAPT_BASIC": {
                     "cutadapt": 5.2

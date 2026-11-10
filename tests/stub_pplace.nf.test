@@ -1,0 +1,36 @@
+nextflow_pipeline {
+
+    name "Test pipeline (stub)"
+    script "../main.nf"
+    tag "stub"
+    profile "test_pplace"
+
+    test("-profile test_pplace -stub") {
+
+        when {
+            // Absolute path: Nextflow runs in the test's own directory, not the pipeline root.
+            options "-stub -c ${projectDir}/conf/test_stub_limits.config"
+            params {
+                outdir = "$outputDir"
+                ref_taxonomy_storage = "$outputDir/ref-storage"
+            }
+        }
+
+        then {
+            // stable_path: All files + folders in ${params.outdir}/ with a stable path and file name
+            def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
+
+            assert workflow.success
+            assertAll(
+                { assert snapshot(
+                    // Number of tasks that completed successfully
+                    workflow.trace.succeeded().size(),
+                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_ampliseq_software_mqc_versions.yml"),
+                    // All stable path name, with a relative path
+                    stable_path
+                ).match() }
+            )
+        }
+    }
+}

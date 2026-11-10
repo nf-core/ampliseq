@@ -60,4 +60,19 @@ process QIIME2_ANCOMBC_ASV {
         qiime2: \$( qiime --version | sed '1!d;s/.* //' )
     END_VERSIONS
     """
+
+    stub:
+    def formula = formula_in ?: "${table.baseName}"
+    """
+    mkdir -p "differentials/Category-${formula}-ASV" "da_barplot/Category-${formula}-ASV"
+    touch "differentials/Category-${formula}-ASV/placeholder.tsv"
+    touch "da_barplot/Category-${formula}-ASV/placeholder.tsv"
+    touch "${formula}.differentials.qza" "${formula}.differentials.qzv"
+    touch "${formula}.da_barplot.qzv"
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        qiime2: stub
+    END_VERSIONS
+    """
 }

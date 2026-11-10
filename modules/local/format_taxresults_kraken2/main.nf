@@ -101,4 +101,18 @@ process FORMAT_TAXRESULTS_KRAKEN2 {
 
     writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")) ), "versions.yml")
     """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    echo -e "rank\ttaxid\ttaxon" > ${prefix}.kraken2.keys.tsv
+    echo -e "ASV_ID\ttaxonomy" > ${prefix}.kraken2.complete.tsv
+    echo -e "ASV_ID\tKingdom\tlowest_match" > ${prefix}.kraken2.tsv
+    echo -e "ASV_ID\ttaxonomy" > ${prefix}.kraken2.into-qiime2.tsv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        R: stub
+    END_VERSIONS
+    """
 }

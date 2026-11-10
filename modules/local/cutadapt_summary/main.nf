@@ -26,4 +26,14 @@ process CUTADAPT_SUMMARY {
         python: \$( python --version )
     END_VERSIONS
     """
+
+    stub:
+    """
+    echo -e "sample\tcutadapt_total_processed" > ${name}_summary.tsv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: stub
+    END_VERSIONS
+    """
 }

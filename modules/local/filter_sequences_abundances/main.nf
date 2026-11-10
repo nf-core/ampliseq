@@ -60,4 +60,17 @@ process FILTER_SEQUENCES_ABUNDANCES {
 
     writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    Biostrings: ", packageVersion("Biostrings")) ), "versions.yml")
     """
+
+    stub:
+    """
+    cp "$fasta" filtered_sequences.fasta
+    cp "$table" filtered_abundances.tsv
+    echo -e "sample\tinput\toutput" > stats_counts.tsv
+    echo -e "file\tinput\toutput" > stats_features.tsv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        Biostrings: stub
+    END_VERSIONS
+    """
 }

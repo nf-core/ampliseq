@@ -98,4 +98,33 @@ process DADA2_ERR {
         writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),paste0("    dada2: ", packageVersion("dada2")) ), "versions.yml")
         """
     }
+
+    stub:
+    def prefix = task.ext.prefix ?: "prefix"
+    if (!meta.single_end) {
+        """
+        touch ${prefix}_1.err.rds ${prefix}_2.err.rds
+        touch ${prefix}_1.err.pdf ${prefix}_1.err.svg
+        touch ${prefix}_2.err.pdf ${prefix}_2.err.svg
+        touch ${prefix}_1.err.convergence.txt ${prefix}_2.err.convergence.txt
+        touch ${prefix}.err.log
+        echo -e "learnErrors\tstub" > learnErrors.args.txt
+
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+            dada2: stub
+        END_VERSIONS
+        """
+    } else {
+        """
+        touch ${prefix}.err.rds ${prefix}.err.pdf ${prefix}.err.svg
+        touch ${prefix}.err.convergence.txt ${prefix}.err.log
+        echo -e "learnErrors\tstub" > learnErrors.args.txt
+
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+            dada2: stub
+        END_VERSIONS
+        """
+    }
 }

@@ -23,6 +23,7 @@
     },
     "-profile test_savont": {
         "content": [
+            67,
             {
                 "BARRNAP": {
                     "barrnap": 0.9

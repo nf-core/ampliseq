@@ -127,7 +127,7 @@ for line in args.infile:
             print(tmp_list[0], "\t".join(annot_list), confidence, sequence, sep="\t", file=args.outfile)
         else:
             if dbtype == "UNITE":
-                # UNITE 8.2 species labels end in the SH (Genus_species_SH1140861.08FU), UNITE 10 labels don't
+                # UNITE 8.2 and 8.3 species labels end in the SH (Genus_species_SH1140861.08FU), 9.0 and 10.0 labels don't
                 sh_match = re.match(r"(.+)_(SH[0-9]+\.[0-9]+[A-Z]*)$", annot_list[num_taxa - 1])
                 if sh_match:
                     (species, sh) = sh_match.groups()

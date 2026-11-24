@@ -43,13 +43,13 @@
                 },
                 "DADA2_QUALITY1": {
                     "R": "4.5.2",
-                    "dada2": "1.38.0",
-                    "ShortRead": "1.68.0"
+                    "ShortRead": "1.68.0",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_QUALITY2": {
                     "R": "4.5.2",
-                    "dada2": "1.38.0",
-                    "ShortRead": "1.68.0"
+                    "ShortRead": "1.68.0",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_RMCHIMERA": {
                     "R": "4.5.2",
@@ -67,19 +67,19 @@
                     "duckdb": "1.5.5"
                 },
                 "FILTER_LEN_ASV": {
-                    "R": "4.0.3",
-                    "Biostrings": "2.58.0"
+                    "Biostrings": "2.58.0",
+                    "R": "4.0.3"
                 },
                 "FILTER_SAMPLES": {
                     "R": "4.2.1"
                 },
                 "FILTER_SSU": {
-                    "R": "4.0.3",
-                    "Biostrings": "2.58.0"
+                    "Biostrings": "2.58.0",
+                    "R": "4.0.3"
                 },
                 "FILTER_STATS": {
-                    "python": "3.9.1",
-                    "pandas": "1.1.5"
+                    "pandas": "1.1.5",
+                    "python": "3.9.1"
                 },
                 "MERGE_STATS_DADA": {
                     "R": "4.5.2"
@@ -164,8 +164,8 @@
                     "TreeSummarizedExperiment": "2.10.0"
                 },
                 "TRUNCLEN": {
-                    "python": "3.9.1",
-                    "pandas": "1.1.5"
+                    "pandas": "1.1.5",
+                    "python": "3.9.1"
                 },
                 "Workflow": {
                     "nf-core/ampliseq": "v3.2.0dev"

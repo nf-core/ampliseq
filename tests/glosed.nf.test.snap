@@ -35,13 +35,13 @@
                 },
                 "DADA2_QUALITY1": {
                     "R": "4.5.2",
-                    "dada2": "1.38.0",
-                    "ShortRead": "1.68.0"
+                    "ShortRead": "1.68.0",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_QUALITY2": {
                     "R": "4.5.2",
-                    "dada2": "1.38.0",
-                    "ShortRead": "1.68.0"
+                    "ShortRead": "1.68.0",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_RMCHIMERA": {
                     "R": "4.5.2",
@@ -63,7 +63,7 @@
                     "duckdb": "1.5.5"
                 },
                 "FASTQC": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "FORMAT_TAXONOMY": {
                     "bash": "5.2.37(1)-release",
@@ -92,8 +92,8 @@
                     "TreeSummarizedExperiment": "2.10.0"
                 },
                 "TRUNCLEN": {
-                    "python": "3.9.1",
-                    "pandas": "1.1.5"
+                    "pandas": "1.1.5",
+                    "python": "3.9.1"
                 },
                 "Workflow": {
                     "nf-core/ampliseq": "v3.2.0dev"
@@ -276,14 +276,14 @@
             "DADA2_stats.tsv:md5,b61a945febb806ed63729bcaa8ae0575",
             "DADA2_table.tsv:md5,7ec2214a627e7492d31ac2672f82f94d",
             "Samplesheet_v3.tsv:md5,e03352e42a97a6078b30ec3fcec362a4",
-            "multiqc_fastqc.txt:md5,7d23984b06e4251f17e1cfce7a04aaae",
+            "multiqc_fastqc.txt:md5,2a14f23d090f0908cceacb2e23a58a4c",
             "multiqc_general_stats.txt:md5,885c19ff3e53d16bfe7937d6694268d7",
             "multiqc_cutadapt.txt:md5,3dce058d2d6c85a3cca7314ae19c5586"
         ],
-        "timestamp": "2026-10-06T13:11:19.702209938",
+        "timestamp": "2026-11-24T10:41:21.918940081",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "26.10.5"
         }
     }
 }

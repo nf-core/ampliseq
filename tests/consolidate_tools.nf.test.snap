@@ -50,13 +50,13 @@
                 },
                 "DADA2_QUALITY1": {
                     "R": "4.5.2",
-                    "dada2": "1.38.0",
-                    "ShortRead": "1.68.0"
+                    "ShortRead": "1.68.0",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_QUALITY2": {
                     "R": "4.5.2",
-                    "dada2": "1.38.0",
-                    "ShortRead": "1.68.0"
+                    "ShortRead": "1.68.0",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_RMCHIMERA": {
                     "R": "4.5.2",
@@ -74,15 +74,15 @@
                     "duckdb": "1.5.5"
                 },
                 "FILTER_LEN_ITSX": {
-                    "R": "4.0.3",
-                    "Biostrings": "2.58.0"
+                    "Biostrings": "2.58.0",
+                    "R": "4.0.3"
                 },
                 "FILTER_SAMPLES": {
                     "R": "4.2.1"
                 },
                 "FILTER_STATS": {
-                    "python": "3.9.1",
-                    "pandas": "1.1.5"
+                    "pandas": "1.1.5",
+                    "python": "3.9.1"
                 },
                 "FORMAT_TAXONOMY": {
                     "bash": "5.2.37(1)-release",
@@ -97,15 +97,15 @@
                     "sed": "4.10"
                 },
                 "FORMAT_TAXRESULTS_ADDSP": {
-                    "python": "3.9.1",
-                    "pandas": "1.1.5"
+                    "pandas": "1.1.5",
+                    "python": "3.9.1"
                 },
                 "FORMAT_TAXRESULTS_SINTAX": {
                     "python": "3.9.1"
                 },
                 "FORMAT_TAXRESULTS_STD": {
-                    "python": "3.9.1",
-                    "pandas": "1.1.5"
+                    "pandas": "1.1.5",
+                    "python": "3.9.1"
                 },
                 "FORMAT_TAXRESULTS_VSEARCH_LCA": {
                     "python": "3.9.1"

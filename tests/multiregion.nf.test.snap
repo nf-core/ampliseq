@@ -27,13 +27,13 @@
                 },
                 "DADA2_QUALITY1": {
                     "R": "4.5.2",
-                    "dada2": "1.38.0",
-                    "ShortRead": "1.68.0"
+                    "ShortRead": "1.68.0",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_QUALITY2": {
                     "R": "4.5.2",
-                    "dada2": "1.38.0",
-                    "ShortRead": "1.68.0"
+                    "ShortRead": "1.68.0",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_RMCHIMERA": {
                     "R": "4.5.2",
@@ -50,11 +50,11 @@
                     "duckdb": "1.5.5"
                 },
                 "FASTQC": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "FILTER_STATS": {
-                    "python": "3.9.1",
-                    "pandas": "1.1.5"
+                    "pandas": "1.1.5",
+                    "python": "3.9.1"
                 },
                 "FORMAT_TAXONOMY_SIDLE": {
                     "bash": "5.2.37(1)-release",
@@ -103,23 +103,23 @@
                     "bash": "5.2.37(1)-release"
                 },
                 "SIDLE_ALIGN": {
+                    "q2-sidle": "2021.2.dev0",
                     "qiime2": "2021.4.0",
-                    "qiime2 plugin sidle": 2020.08,
-                    "q2-sidle": "2021.2.dev0"
+                    "qiime2 plugin sidle": 2020.08
                 },
                 "SIDLE_DBEXTRACT": {
+                    "q2-sidle": "2021.2.dev0",
                     "qiime2": "2021.4.0",
-                    "qiime2 plugin sidle": 2020.08,
-                    "q2-sidle": "2021.2.dev0"
+                    "qiime2 plugin sidle": 2020.08
                 },
                 "SIDLE_DBFILT": {
                     "qiime2": "2021.4.0",
                     "qiime2 rescript": "2021.4.0.dev0+6.g073ccf0"
                 },
                 "SIDLE_DBRECON": {
+                    "q2-sidle": "2021.2.dev0",
                     "qiime2": "2021.4.0",
-                    "qiime2 plugin sidle": 2020.08,
-                    "q2-sidle": "2021.2.dev0"
+                    "qiime2 plugin sidle": 2020.08
                 },
                 "SIDLE_FILTTAX": {
                     "R": "4.0.3"
@@ -134,32 +134,32 @@
                     "qiime2": "2021.4.0"
                 },
                 "SIDLE_SEQRECON": {
+                    "q2-sidle": "2021.2.dev0",
                     "qiime2": "2021.4.0",
-                    "qiime2 plugin sidle": 2020.08,
-                    "q2-sidle": "2021.2.dev0"
+                    "qiime2 plugin sidle": 2020.08
                 },
                 "SIDLE_TABLERECON": {
+                    "q2-sidle": "2021.2.dev0",
                     "qiime2": "2021.4.0",
-                    "qiime2 plugin sidle": 2020.08,
-                    "q2-sidle": "2021.2.dev0"
+                    "qiime2 plugin sidle": 2020.08
                 },
                 "SIDLE_TAXRECON": {
+                    "q2-sidle": "2021.2.dev0",
                     "qiime2": "2021.4.0",
-                    "qiime2 plugin sidle": 2020.08,
-                    "q2-sidle": "2021.2.dev0"
+                    "qiime2 plugin sidle": 2020.08
                 },
                 "SIDLE_TRIM": {
+                    "q2-sidle": "2021.2.dev0",
                     "qiime2": "2021.4.0",
-                    "qiime2 plugin sidle": 2020.08,
-                    "q2-sidle": "2021.2.dev0"
+                    "qiime2 plugin sidle": 2020.08
                 },
                 "SUMMARY_TABLE_COUNTS": {
                     "R": "4.3.1",
                     "r-dplyr": "1.1.4"
                 },
                 "TRUNCLEN": {
-                    "python": "3.9.1",
-                    "pandas": "1.1.5"
+                    "pandas": "1.1.5",
+                    "python": "3.9.1"
                 },
                 "Workflow": {
                     "nf-core/ampliseq": "v3.2.0dev"
@@ -619,7 +619,7 @@
             "DADA2_stats.tsv:md5,f315a1b44f7ea406ddecaf4a7406db8b",
             "DADA2_table.tsv:md5,2eb4b48aeb1b52e6e1dbd0af1777bc9b",
             "reconstructed_merged.tsv:md5,984b750dce7c876f3d4a780708f87848",
-            "multiqc_fastqc.txt:md5,9468ae91af1a841c5e1369f11f704604",
+            "multiqc_fastqc.txt:md5,6cf17db32c7fbca8231553bf0aa02a80",
             "multiqc_general_stats.txt:md5,68f2972dd2d44e499d5afac6cf8624c8",
             "multiqc_cutadapt.txt:md5,d845cb0bde470ed3b7ba32edb2e76f83"
         ],

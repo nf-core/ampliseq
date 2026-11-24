@@ -44,13 +44,13 @@
                 },
                 "DADA2_QUALITY1": {
                     "R": "4.5.2",
-                    "dada2": "1.38.0",
-                    "ShortRead": "1.68.0"
+                    "ShortRead": "1.68.0",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_QUALITY2": {
                     "R": "4.5.2",
-                    "dada2": "1.38.0",
-                    "ShortRead": "1.68.0"
+                    "ShortRead": "1.68.0",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_RMCHIMERA": {
                     "R": "4.5.2",
@@ -72,7 +72,7 @@
                     "duckdb": "1.5.5"
                 },
                 "FASTQC": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "FORMAT_TAXONOMY": {
                     "bash": "5.2.37(1)-release",
@@ -280,14 +280,14 @@
             "DADA2_stats.tsv:md5,25ab6c6d213de82e6e6d40e6c4c1ad6f",
             "DADA2_table.tsv:md5,82951f7be54adae8290e8fff951a7ae9",
             "Samplesheet_v3.tsv:md5,e03352e42a97a6078b30ec3fcec362a4",
-            "multiqc_fastqc.txt:md5,75d0463a8b94a5dec14c3fb5b82169cd",
+            "multiqc_fastqc.txt:md5,12d44b1f2405a40680d51f9ad6862bf2",
             "multiqc_general_stats.txt:md5,1662178e2c1ac6cb0880f95c1746ce81",
             "multiqc_cutadapt.txt:md5,0adee517528dc17cb0c9dfdc9858dc2c"
         ],
-        "timestamp": "2026-09-25T16:53:23.049692055",
+        "timestamp": "2026-11-24T15:30:11.064955061",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.5"
         }
     }
 }

@@ -4,8 +4,8 @@
             56,
             {
                 "ASSIGNSH": {
-                    "python": "3.9.1",
-                    "pandas": "1.1.5"
+                    "pandas": "1.1.5",
+                    "python": "3.9.1"
                 },
                 "BARRNAP": {
                     "barrnap": 0.9
@@ -45,13 +45,13 @@
                 },
                 "DADA2_QUALITY1": {
                     "R": "4.5.2",
-                    "dada2": "1.38.0",
-                    "ShortRead": "1.68.0"
+                    "ShortRead": "1.68.0",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_QUALITY2": {
                     "R": "4.5.2",
-                    "dada2": "1.38.0",
-                    "ShortRead": "1.68.0"
+                    "ShortRead": "1.68.0",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_RMCHIMERA": {
                     "R": "4.5.2",
@@ -69,11 +69,11 @@
                     "duckdb": "1.5.5"
                 },
                 "FASTQC": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "FILTER_LEN_ITSX": {
-                    "R": "4.0.3",
-                    "Biostrings": "2.58.0"
+                    "Biostrings": "2.58.0",
+                    "R": "4.0.3"
                 },
                 "FORMAT_TAXONOMY": {
                     "bash": "5.2.37(1)-release",
@@ -84,15 +84,15 @@
                     "sed": "4.10"
                 },
                 "FORMAT_TAXRESULTS_ADDSP": {
-                    "python": "3.9.1",
-                    "pandas": "1.1.5"
+                    "pandas": "1.1.5",
+                    "python": "3.9.1"
                 },
                 "FORMAT_TAXRESULTS_SINTAX": {
                     "python": "3.9.1"
                 },
                 "FORMAT_TAXRESULTS_STD": {
-                    "python": "3.9.1",
-                    "pandas": "1.1.5"
+                    "pandas": "1.1.5",
+                    "python": "3.9.1"
                 },
                 "ITSXRUST_CUTASV": {
                     "ITSxRust": "0.3.0"
@@ -337,7 +337,7 @@
             "Metadata_pacbio_ITS.tsv:md5,51d81b0fe29f6377fa21ce8399fc5ae0",
             "ASV_ITS_seqs.full.fasta:md5,1ba189e0f7474b660cf8d6d9afd2c720",
             "ITSxRust.args.txt:md5,5edc28029c799b9112f3d66731b9347a",
-            "multiqc_fastqc.txt:md5,f11936dbbf1718301ceba86050e24799",
+            "multiqc_fastqc.txt:md5,b641b65c249f7a5cff0568d8ff8150f1",
             "multiqc_general_stats.txt:md5,1fef8358fe3cc974bf05e2f27fc7e250",
             "multiqc_cutadapt.txt:md5,160135fece18361e17bef9e8d04cf0b9"
         ],

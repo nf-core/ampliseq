@@ -45,13 +45,13 @@
                 },
                 "DADA2_QUALITY1": {
                     "R": "4.5.2",
-                    "dada2": "1.38.0",
-                    "ShortRead": "1.68.0"
+                    "ShortRead": "1.68.0",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_QUALITY2": {
                     "R": "4.5.2",
-                    "dada2": "1.38.0",
-                    "ShortRead": "1.68.0"
+                    "ShortRead": "1.68.0",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_RMCHIMERA": {
                     "R": "4.5.2",
@@ -65,8 +65,8 @@
                     "duckdb": "1.5.5"
                 },
                 "FILTER_STATS": {
-                    "python": "3.9.1",
-                    "pandas": "1.1.5"
+                    "pandas": "1.1.5",
+                    "python": "3.9.1"
                 },
                 "FORMAT_TAXRESULTS_KRAKEN2": {
                     "R": "4.2.1"
@@ -127,8 +127,8 @@
                     "TreeSummarizedExperiment": "2.10.0"
                 },
                 "TRUNCLEN": {
-                    "python": "3.9.1",
-                    "pandas": "1.1.5"
+                    "pandas": "1.1.5",
+                    "python": "3.9.1"
                 },
                 "UNTAR": {
                     "untar": 1.34
@@ -330,10 +330,10 @@
             "multiqc_general_stats.txt:md5,87461482b83b797b1c6b139a0cf3164e",
             "multiqc_cutadapt.txt:md5,05eca9a962170f318bd90938d331afec"
         ],
-        "timestamp": "2026-09-24T14:38:13.446364911",
+        "timestamp": "2026-11-24T11:46:29.496605006",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.5"
         }
     }
 }

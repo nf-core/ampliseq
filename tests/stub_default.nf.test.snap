@@ -73,7 +73,7 @@
                     "duckdb": "1.5.5"
                 },
                 "FASTQC": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "FILTER_CLUSTERS": {
                     "python": "stub"
@@ -767,7 +767,7 @@
                 "vsearch_cluster/ASV_post_clustering_filtered.table.tsv"
             ]
         ],
-        "timestamp": "2026-11-09T14:32:09.296490532",
+        "timestamp": "2026-11-23T15:50:50.588484801",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.10.5"

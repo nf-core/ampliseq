@@ -40,7 +40,7 @@
                     "duckdb": "1.5.5"
                 },
                 "FASTQC": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "FILTER_STATS": {
                     "python": "stub"
@@ -314,7 +314,7 @@
                 "summary_tables/ampliseq.counts.tsv.gz"
             ]
         ],
-        "timestamp": "2026-11-09T14:40:02.661136648",
+        "timestamp": "2026-11-23T15:54:16.86144635",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.10.5"

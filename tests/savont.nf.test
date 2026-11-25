@@ -23,6 +23,14 @@ nextflow_pipeline {
             def performance_summary = getAllFilesFromDir(params.outdir, include: ['comparison/performance_summary.tsv'])
             def profile_summary = getAllFilesFromDir(params.outdir, include: ['comparison/profile_summary.tsv'])
 
+            // Exact sample names from the input sheet must be preserved in the output tables.
+            def input_samples = path("$outputDir/input/Samplesheet_nanopore_v3.tsv").text.readLines().drop(1).findAll { it.trim() }.collect { it.tokenize('\t')[0] }
+            def asv_samples = path("$outputDir/savont/pooled_feature-table.tsv").text.readLines()[0].tokenize('\t')
+            def summary_samples = path("$outputDir/overall_summary.tsv").text.readLines().drop(1).findAll { it.trim() }.collect { it.tokenize('\t')[0] }
+            def reltax_headers = getAllFilesFromDir(params.outdir, include: ['qiime2/rel_abundance_tables/rel-table-ASV_*-tax.tsv']).collect { it.text.readLines()[0].tokenize('\t').collect { col -> col.replace('"', '') } }
+            def cutadapt_samples = path("$outputDir/cutadapt/cutadapt_summary.tsv").text.readLines().drop(1).findAll { it.trim() }.collect { it.tokenize('\t')[0] }
+            def lengthfilter_samples = path("$outputDir/asv_length_filter/ASV_table.len.tsv").text.readLines()[0].tokenize('\t')
+
             assert workflow.success
             assertAll(
                 { assert snapshot(
@@ -53,6 +61,14 @@ nextflow_pipeline {
                     "performance_summary.tsv: median F1 > 0.8: ${performance_summary.every { log -> log.readLines().find { it.startsWith('F1\t') }.split('\t')[1].toFloat() > 0.8 } }",
                     "profile_summary.tsv: median F1 at level 6 > 0.8: ${profile_summary.every { log -> log.readLines().find { it.startsWith('L6\tF1\t') }.split('\t')[2].toFloat() > 0.8 }}",
                 ).match("comparison-checks") },
+
+                // Exact sample names from the input sheet must be preserved.
+                { assert asv_samples.containsAll(input_samples) },
+                { assert summary_samples.containsAll(input_samples) },
+                { assert reltax_headers.size() > 0 },
+                { assert reltax_headers.every { header -> header.containsAll(input_samples) } },
+                { assert cutadapt_samples.containsAll(input_samples) },
+                { assert lengthfilter_samples.containsAll(input_samples) }
             )
         }
     }

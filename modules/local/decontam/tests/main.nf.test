@@ -1,0 +1,39 @@
+nextflow_process {
+
+    name "Test Process DECONTAM"
+    script "../main.nf"
+    process "DECONTAM"
+    tag "modules"
+    tag "modules_local"
+    tag "decontam"
+
+    test("decontamination tolerates a control sample missing from the abundance table") {
+
+        when {
+            params {
+                seed = 100
+            }
+            process {
+                """
+                def dir = File.createTempDir()
+                def abundances = new File(dir, "abundances.tsv")
+                abundances.text = "ASV_ID\\tS1\\tS2\\tC2\\nasv1\\t10\\t1\\t0\\nasv2\\t0\\t5\\t2\\n"
+                def metadata = new File(dir, "metadata.tsv")
+                metadata.text = "sample\\tcontrol\\nS1\\tnon-control\\nS2\\tnon-control\\nC1\\tcontrol\\nC2\\tcontrol\\n"
+                input[0] = file(abundances.absolutePath)
+                input[1] = file(metadata.absolutePath)
+                input[2] = "prevalence"
+                input[3] = 0.1
+                input[4] = 0.5
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.decontaminated_abundances[0]).exists() }
+            )
+        }
+    }
+}

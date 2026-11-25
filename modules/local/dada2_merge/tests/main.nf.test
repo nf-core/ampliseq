@@ -1,0 +1,81 @@
+nextflow_process {
+
+    name "Test Process DADA2_MERGE"
+    script "../main.nf"
+    process "DADA2_MERGE"
+    tag "modules"
+    tag "modules_local"
+    tag "dada2_merge"
+
+    // A seqtab_nochim RDS as produced by DADA2_RMCHIMERA: rows are samples,
+    // columns are sequences, values are counts. The fixtures are tiny
+    // (about 200 bytes), so they are embedded as base64 rather than kept as
+    // binary files. They were generated with the container's R.
+    //
+    // single_end fixture sample names (each followed by '.filt.fastq.gz'):
+    //   sampleID, sampleID_1, sampleID_1a, sampleID_2, sampleID_2a
+    // paired_end fixture sample names (each followed by '_1.filt.fastq.gz'):
+    //   S1, sampleID_1, sampleID_1a, sampleID_2, sampleID_2a
+
+    test("single-end sample names ending in _1 keep that suffix") {
+
+        when {
+            process {
+                """
+                def dir = File.createTempDir()
+                def stats = new File(dir, "run1.stats.tsv")
+                stats.text = "sample\\tDADA2_input\\tfiltered\\tdenoisedF\\tdenoisedR\\tdenoisedPairs\\tmerged\\tnonchim\\nsampleID_1\\t1\\t1\\t1\\t1\\t1\\t1\\t1\\n"
+                def rds = new File(dir, "run1.ASVtable.rds")
+                rds.bytes = "H4sIAAAAAAAAA4vgYmBgYGZgYWViYGYFMhlYQ0PcdC0YGJh4gRwuKBYBSTBAADMQswMxDxAzAjELEHMCKSYwnwXEZmBOycwFUiAjmKBamdCUcACV5CXmphYD2cJQdQJgtRB5seLE3IKcVE8XvbTMnBK9tMTikkK99CqorARMNt4Qq7wkQj6RgAFGBAwwQjcA4k4mqEIeR2f3EBiGiYUAgSMQOAMBkP8PAE6SzbVmAQAA=".decodeBase64()
+                input[0] = true
+                input[1] = file(stats.absolutePath)
+                input[2] = file(rds.absolutePath)
+                """
+            }
+        }
+
+        then {
+            def asv_header = path(process.out.asv[0]).readLines()[0].tokenize('\t')
+            def dada2_header = path(process.out.dada2asv[0]).readLines()[0].tokenize('\t')
+            assertAll(
+                { assert process.success },
+                // 'sampleID_1' must not be truncated to 'sampleID', which would collide with the real 'sampleID' sample
+                { assert asv_header.containsAll(["sampleID", "sampleID_1", "sampleID_1a", "sampleID_2", "sampleID_2a"]) },
+                { assert asv_header.count("sampleID") == 1 },
+                { assert dada2_header.containsAll(["sampleID", "sampleID_1", "sampleID_1a", "sampleID_2", "sampleID_2a", "sequence"]) },
+                { assert dada2_header.count("sampleID") == 1 }
+            )
+        }
+    }
+
+    test("paired-end sample names ending in _1 lose only the read-1 marker") {
+
+        when {
+            process {
+                """
+                def dir = File.createTempDir()
+                def stats = new File(dir, "run1.stats.tsv")
+                stats.text = "sample\\tDADA2_input\\tfiltered\\tdenoisedF\\tdenoisedR\\tdenoisedPairs\\tmerged\\tnonchim\\nsampleID_1\\t1\\t1\\t1\\t1\\t1\\t1\\t1\\n"
+                def rds = new File(dir, "run1.ASVtable.rds")
+                rds.bytes = "H4sIAAAAAAAAA4vgYmBgYGZgYWViYGYFMhlYQ0PcdC0YGJh4gRwuKBYBSTBAADMQswMxDxAzAjELEHMCKSYwnwXEZmBOycwFUiAjmKBamdCUcACV5CXmphYD2cJQdQJgtRB5oWDDeEO9tMycEr20xOKSQr30KqiMVHFibkFOqqdLPC4V0ggViQQNMSJoiBGmIRC3MkGV8jg6u4fAMEwsBAgcgcAZCID8fwD2MBPjagEAAA==".decodeBase64()
+                input[0] = false
+                input[1] = file(stats.absolutePath)
+                input[2] = file(rds.absolutePath)
+                """
+            }
+        }
+
+        then {
+            def asv_header = path(process.out.asv[0]).readLines()[0].tokenize('\t')
+            def dada2_header = path(process.out.dada2asv[0]).readLines()[0].tokenize('\t')
+            assertAll(
+                { assert process.success },
+                // only the trailing '_1.filt.fastq.gz' read marker is removed
+                { assert asv_header.containsAll(["S1", "sampleID_1", "sampleID_1a", "sampleID_2", "sampleID_2a"]) },
+                { assert asv_header.count("sampleID_1") == 1 },
+                { assert dada2_header.containsAll(["S1", "sampleID_1", "sampleID_1a", "sampleID_2", "sampleID_2a", "sequence"]) },
+                { assert dada2_header.count("sampleID_1") == 1 }
+            )
+        }
+    }
+}

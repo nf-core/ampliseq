@@ -17,6 +17,14 @@ nextflow_pipeline {
             // stable_path: All files + folders in ${params.outdir}/ with a stable path and file name
             def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
 
+            // Exact sample names from the input sheet must be preserved in the output tables.
+            def input_samples = path("$outputDir/input/Samplesheet_v3.tsv").text.readLines().drop(1).findAll { it.trim() }.collect { it.tokenize('\t')[0] }
+            def asv_samples = path("$outputDir/dada2/ASV_table.tsv").text.readLines()[0].tokenize('\t')
+            def dada2_samples = path("$outputDir/dada2/DADA2_table.tsv").text.readLines()[0].tokenize('\t')
+            def summary_samples = path("$outputDir/overall_summary.tsv").text.readLines().drop(1).findAll { it.trim() }.collect { it.tokenize('\t')[0] }
+            def decontam_samples = path("$outputDir/decontam/decontaminated.tsv").text.readLines()[0].tokenize('\t')
+            def cutadapt_samples = path("$outputDir/cutadapt/cutadapt_summary.tsv").text.readLines().drop(1).findAll { it.trim() }.collect { it.tokenize('\t')[0] }
+
             assert workflow.success
             assertAll(
                 { assert snapshot(
@@ -42,7 +50,13 @@ nextflow_pipeline {
                     path("$outputDir/multiqc/multiqc_data/multiqc_fastqc.txt"),
                     path("$outputDir/multiqc/multiqc_data/multiqc_general_stats.txt"),
                     path("$outputDir/multiqc/multiqc_data/multiqc_cutadapt.txt")
-                ).match() }
+                ).match() },
+                // Exact sample names from the input sheet must be preserved.
+                { assert asv_samples.containsAll(input_samples) },
+                { assert dada2_samples.containsAll(input_samples) },
+                { assert summary_samples.containsAll(input_samples) },
+                { assert decontam_samples.containsAll(input_samples) },
+                { assert cutadapt_samples.containsAll(input_samples) }
             )
         }
     }

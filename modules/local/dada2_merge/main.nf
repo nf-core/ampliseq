@@ -8,6 +8,7 @@ process DADA2_MERGE {
         'community.wave.seqera.io/library/bioconductor-dada2_r-base_r-digest_tbb:38acac09bac46f36' }"
 
     input:
+    val(single_end)
     path(files)
     path(rds)
 
@@ -20,6 +21,9 @@ process DADA2_MERGE {
     path "versions.yml"      , emit: versions_dada2_merge, topic: versions
 
     script:
+    def gsub_code = single_end ?
+        "colnames(df) <- gsub('.filt.fastq.gz', '', colnames(df))" :
+        "colnames(df) <- gsub('_1.filt.fastq.gz', '', colnames(df))\n    colnames(df) <- gsub('.filt.fastq.gz', '', colnames(df))"
     """
     #!/usr/bin/env Rscript
     suppressPackageStartupMessages(library(dada2))
@@ -46,8 +50,7 @@ process DADA2_MERGE {
     saveRDS(ASVtab, "DADA2_table.rds")
 
     df <- t(ASVtab)
-    colnames(df) <- gsub('_1.filt.fastq.gz', '', colnames(df))
-    colnames(df) <- gsub('.filt.fastq.gz', '', colnames(df))
+    ${gsub_code}
     df <- data.frame(sequence = rownames(df), df, check.names=FALSE)
     # Create an md5 sum of the sequences as ASV_ID and rearrange columns
     df\$ASV_ID <- sapply(df\$sequence, digest, algo='md5', serialize = FALSE)

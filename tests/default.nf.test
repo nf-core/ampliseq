@@ -17,6 +17,18 @@ nextflow_pipeline {
             // stable_path: All files + folders in ${params.outdir}/ with a stable path and file name
             def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
 
+            // Exact sample names from the input sheet must be preserved in the output tables.
+            def input_samples = path("$outputDir/input/Samplesheet_v3.tsv").text.readLines().drop(1).findAll { it.trim() }.collect { it.tokenize('\t')[0] }
+            def asv_samples = path("$outputDir/dada2/ASV_table.tsv").text.readLines()[0].tokenize('\t')
+            def dada2_samples = path("$outputDir/dada2/DADA2_table.tsv").text.readLines()[0].tokenize('\t')
+            def summary_samples = path("$outputDir/overall_summary.tsv").text.readLines().drop(1).findAll { it.trim() }.collect { it.tokenize('\t')[0] }
+            def reltax_headers = getAllFilesFromDir(params.outdir, include: ['qiime2/rel_abundance_tables/rel-table-ASV_*-tax.tsv']).collect { it.text.readLines()[0].tokenize('\t').collect { col -> col.replace('"', '') } }
+            def decontam_samples = path("$outputDir/decontam/decontaminated.tsv").text.readLines()[0].tokenize('\t')
+            def cutadapt_samples = path("$outputDir/cutadapt/cutadapt_summary.tsv").text.readLines().drop(1).findAll { it.trim() }.collect { it.tokenize('\t')[0] }
+            def barrnap_samples = path("$outputDir/barrnap/ASV_table.ssu.tsv").text.readLines()[0].tokenize('\t')
+            def vsearch_samples = path("$outputDir/vsearch_cluster/ASV_post_clustering_filtered.table.tsv").text.readLines()[0].tokenize('\t')
+            def lengthfilter_samples = path("$outputDir/asv_length_filter/ASV_table.len.tsv").text.readLines()[0].tokenize('\t')
+
             assert workflow.success
             assertAll(
                 { assert snapshot(
@@ -61,6 +73,17 @@ nextflow_pipeline {
                 ).match() },
                 { assert path("$outputDir/decontam/decontaminated_details.tsv").csv(sep: '\t', header: true).columns["freq"].sum() > 0.99999 },
                 { assert path("$outputDir/summary_tables/ampliseq.counts.parquet").size() > 0 },
+                // Exact sample names from the input sheet must be preserved.
+                { assert asv_samples.containsAll(input_samples) },
+                { assert dada2_samples.containsAll(input_samples) },
+                { assert summary_samples.containsAll(input_samples) },
+                { assert reltax_headers.size() > 0 },
+                { assert reltax_headers.every { header -> header.containsAll(input_samples) } },
+                { assert decontam_samples.containsAll(input_samples) },
+                { assert cutadapt_samples.containsAll(input_samples) },
+                { assert barrnap_samples.containsAll(input_samples) },
+                { assert vsearch_samples.containsAll(input_samples) },
+                { assert lengthfilter_samples.containsAll(input_samples) }
             )
         }
     }

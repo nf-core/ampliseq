@@ -38,14 +38,14 @@ process DECONTAM {
 
     # get abundance table first: samples may have been filtered out before this step,
     # so the abundance table is the authoritative list of samples still present
-    abundances_tsv <- read.csv("$abundances_tsv", header=TRUE, sep="\\t")
+    abundances_tsv <- read.csv("$abundances_tsv", header=TRUE, sep="\\t", check.names=FALSE)
     abundances <- abundances_tsv[,-1]
     rownames(abundances) <- abundances_tsv[,1]
     abundances <- t(abundances)
     abundances <- abundances[order(rownames(abundances)),] # make sure samples in metadata and abundances are in same order
 
     # get controls and concentrations
-    metadata <- read.csv("$metadata_tsv", header=TRUE, sep="\\t")
+    metadata <- read.csv("$metadata_tsv", header=TRUE, sep="\\t", check.names=FALSE)
     metadata <- metadata[order(metadata[,1]),] # make sure samples in metadata and abundances are in same order
 
     # make sure that the metadata doesnt contain more samples than the abundance table (samples might have been lost before)

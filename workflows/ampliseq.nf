@@ -638,6 +638,7 @@ workflow AMPLISEQ {
 
         //merge if several runs, otherwise just publish
         DADA2_MERGE (
+            single_end,
             DADA2_STATS.out.stats.map { _meta, stats -> stats }.collect(),
             DADA2_RMCHIMERA.out.rds.map { _meta, rds -> rds }.collect() )
 

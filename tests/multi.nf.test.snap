@@ -48,11 +48,11 @@
                     "duckdb": "1.5.5"
                 },
                 "FASTQC": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "FILTER_STATS": {
-                    "python": "3.9.1",
-                    "pandas": "1.1.5"
+                    "pandas": "1.1.5",
+                    "python": "3.9.1"
                 },
                 "FORMAT_TAXONOMY": {
                     "bash": "5.2.37(1)-release",
@@ -318,14 +318,14 @@
             "DADA2_table.tsv:md5,6139bb39cd91790bf70e84eb09341be5",
             "Samplesheet_multi_v3.tsv:md5,0c0b52ef27bdb6ace45cf43152acf931",
             "multiqc_general_stats.txt:md5,5cca03b6090ae25c5c3d4b5f49a7acb8",
-            "multiqc_fastqc.txt:md5,7d23984b06e4251f17e1cfce7a04aaae",
+            "multiqc_fastqc.txt:md5,2a14f23d090f0908cceacb2e23a58a4c",
             "descriptive_stats.tsv:md5,4616d22b044dc2b0f26c270565d2140d",
             "seven_number_summary.tsv:md5,0d6f42cab31457c73e519f7bed4d46eb"
         ],
-        "timestamp": "2026-09-25T16:49:19.299759691",
+        "timestamp": "2026-11-24T12:12:02.383049765",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.5"
         }
     }
 }

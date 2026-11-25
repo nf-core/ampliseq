@@ -61,7 +61,7 @@
                     "duckdb": "1.5.5"
                 },
                 "FASTQC": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "FILTER_STATS": {
                     "python": "stub"
@@ -292,7 +292,7 @@
                 "treesummarizedexperiment/qiime2_TreeSummarizedExperiment.rds"
             ]
         ],
-        "timestamp": "2026-11-09T14:47:33.938686141",
+        "timestamp": "2026-11-23T15:59:23.710222501",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.10.5"

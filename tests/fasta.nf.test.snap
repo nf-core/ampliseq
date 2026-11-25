@@ -25,16 +25,16 @@
                     "duckdb": "1.5.5"
                 },
                 "FILTER_CODONS": {
-                    "python": "3.9.1",
-                    "pandas": "1.1.5"
+                    "pandas": "1.1.5",
+                    "python": "3.9.1"
                 },
                 "FILTER_LEN_ASV": {
-                    "R": "4.0.3",
-                    "Biostrings": "2.58.0"
+                    "Biostrings": "2.58.0",
+                    "R": "4.0.3"
                 },
                 "FILTER_SSU": {
-                    "R": "4.0.3",
-                    "Biostrings": "2.58.0"
+                    "Biostrings": "2.58.0",
+                    "R": "4.0.3"
                 },
                 "FORMAT_FASTAINPUT": {
                     "sed": 4.7
@@ -115,10 +115,10 @@
             "ref_taxonomy.rdp_18.txt:md5,47e0a8ebcc2059bfeb879381e791fabd",
             "ASV_seqs.fasta:md5,39b0d4ad96b37fa68d4ee5c21b667fed"
         ],
-        "timestamp": "2026-09-25T16:39:22.755906422",
+        "timestamp": "2026-11-24T10:32:34.461413302",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.5"
         }
     }
 }

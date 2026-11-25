@@ -50,13 +50,13 @@
                 },
                 "DADA2_QUALITY1": {
                     "R": "4.5.2",
-                    "dada2": "1.38.0",
-                    "ShortRead": "1.68.0"
+                    "ShortRead": "1.68.0",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_QUALITY2": {
                     "R": "4.5.2",
-                    "dada2": "1.38.0",
-                    "ShortRead": "1.68.0"
+                    "ShortRead": "1.68.0",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_RMCHIMERA": {
                     "R": "4.5.2",
@@ -83,11 +83,11 @@
                     "epa-ng": "0.3.8"
                 },
                 "FASTQC": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "FILTER_STATS": {
-                    "python": "3.9.1",
-                    "pandas": "1.1.5"
+                    "pandas": "1.1.5",
+                    "python": "3.9.1"
                 },
                 "FORMAT_TAXONOMY_QIIME": {
                     "sed": "4.10"
@@ -127,8 +127,8 @@
                     "sed": 4.7
                 },
                 "PHYLOSEQ_INTAX_QIIME2": {
-                    "python": "3.9.1",
-                    "pandas": "1.1.5"
+                    "pandas": "1.1.5",
+                    "python": "3.9.1"
                 },
                 "PPLACEFORMATTAX_SHEET": {
                     "R": "4.5.2",
@@ -186,8 +186,8 @@
                     "TreeSummarizedExperiment": "2.10.0"
                 },
                 "TRUNCLEN": {
-                    "python": "3.9.1",
-                    "pandas": "1.1.5"
+                    "pandas": "1.1.5",
+                    "python": "3.9.1"
                 },
                 "VSEARCH_USEARCHGLOBAL_BM": {
                     "vsearch": "2.31.0"
@@ -534,10 +534,10 @@
             3826,
             276
         ],
-        "timestamp": "2026-09-29T11:26:46.852451219",
+        "timestamp": "2026-11-24T14:04:33.737376768",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.5"
         }
     }
 }

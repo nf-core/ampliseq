@@ -44,13 +44,13 @@
                 },
                 "DADA2_QUALITY1": {
                     "R": "4.5.2",
-                    "dada2": "1.38.0",
-                    "ShortRead": "1.68.0"
+                    "ShortRead": "1.68.0",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_QUALITY2": {
                     "R": "4.5.2",
-                    "dada2": "1.38.0",
-                    "ShortRead": "1.68.0"
+                    "ShortRead": "1.68.0",
+                    "dada2": "1.38.0"
                 },
                 "DADA2_RMCHIMERA": {
                     "R": "4.5.2",
@@ -77,12 +77,12 @@
                     "R": "4.2.1"
                 },
                 "FILTER_SSU": {
-                    "R": "4.0.3",
-                    "Biostrings": "2.58.0"
+                    "Biostrings": "2.58.0",
+                    "R": "4.0.3"
                 },
                 "FILTER_STATS": {
-                    "python": "3.9.1",
-                    "pandas": "1.1.5"
+                    "pandas": "1.1.5",
+                    "python": "3.9.1"
                 },
                 "FORMAT_TAXONOMY_QIIME": {
                     "sed": "4.10"
@@ -119,12 +119,12 @@
                     "sed": 4.7
                 },
                 "PHYLOSEQ_INTAX_PPLACE": {
-                    "python": "3.9.1",
-                    "pandas": "1.1.5"
+                    "pandas": "1.1.5",
+                    "python": "3.9.1"
                 },
                 "PHYLOSEQ_INTAX_QIIME2": {
-                    "python": "3.9.1",
-                    "pandas": "1.1.5"
+                    "pandas": "1.1.5",
+                    "python": "3.9.1"
                 },
                 "PPLACEFORMATTAX_STANDARD": {
                     "R": "4.5.2",
@@ -197,8 +197,8 @@
                     "TreeSummarizedExperiment": "2.10.0"
                 },
                 "TRUNCLEN": {
-                    "python": "3.9.1",
-                    "pandas": "1.1.5"
+                    "pandas": "1.1.5",
+                    "python": "3.9.1"
                 },
                 "Workflow": {
                     "nf-core/ampliseq": "v3.2.0dev"
@@ -1235,10 +1235,10 @@
             "multiqc_general_stats.txt:md5,7a395be7984aaa0f9154de4abed5d824",
             "multiqc_cutadapt.txt:md5,3dce058d2d6c85a3cca7314ae19c5586"
         ],
-        "timestamp": "2026-09-29T10:34:24.238385465",
+        "timestamp": "2026-11-24T13:30:40.368008152",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.5",
+            "nextflow": "26.10.5"
         }
     }
 }

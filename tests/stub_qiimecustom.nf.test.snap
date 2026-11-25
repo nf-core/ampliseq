@@ -52,7 +52,7 @@
                     "duckdb": "1.5.5"
                 },
                 "FASTQC": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "MERGE_STATS_DADA": {
                     "R": "stub"
@@ -204,7 +204,7 @@
                 "treesummarizedexperiment/qiime2_TreeSummarizedExperiment.rds"
             ]
         ],
-        "timestamp": "2026-11-09T14:55:41.417957644",
+        "timestamp": "2026-11-23T16:01:03.609849975",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.10.5"

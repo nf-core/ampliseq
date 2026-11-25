@@ -27,8 +27,8 @@ nextflow_pipeline {
             def input_samples = path("$outputDir/input/Samplesheet_nanopore_v3.tsv").text.readLines().drop(1).findAll { it.trim() }.collect { it.tokenize('\t')[0] }
             def asv_samples = path("$outputDir/savont/pooled_feature-table.tsv").text.readLines()[0].tokenize('\t')
             def summary_samples = path("$outputDir/overall_summary.tsv").text.readLines().drop(1).findAll { it.trim() }.collect { it.tokenize('\t')[0] }
-            def reltax_headers = getAllFilesFromDir(params.outdir, include: ['qiime2/rel_abundance_tables/rel-table-ASV_*-tax.tsv']).collect { it.text.readLines()[0].tokenize('\t') }
-            def cutadapt_samples = path("$outputDir/cutadapt/cutadapt_summary.tsv").text.readLines()[0].tokenize('\t')
+            def reltax_headers = getAllFilesFromDir(params.outdir, include: ['qiime2/rel_abundance_tables/rel-table-ASV_*-tax.tsv']).collect { it.text.readLines()[0].tokenize('\t').collect { col -> col.replace('"', '') } }
+            def cutadapt_samples = path("$outputDir/cutadapt/cutadapt_summary.tsv").text.readLines().drop(1).findAll { it.trim() }.collect { it.tokenize('\t')[0] }
             def lengthfilter_samples = path("$outputDir/asv_length_filter/ASV_table.len.tsv").text.readLines()[0].tokenize('\t')
 
             assert workflow.success

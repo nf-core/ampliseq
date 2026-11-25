@@ -22,9 +22,9 @@ nextflow_pipeline {
             def asv_samples = path("$outputDir/dada2/ASV_table.tsv").text.readLines()[0].tokenize('\t')
             def dada2_samples = path("$outputDir/dada2/DADA2_table.tsv").text.readLines()[0].tokenize('\t')
             def summary_samples = path("$outputDir/overall_summary.tsv").text.readLines().drop(1).findAll { it.trim() }.collect { it.tokenize('\t')[0] }
-            def reltax_headers = getAllFilesFromDir(params.outdir, include: ['qiime2/rel_abundance_tables/rel-table-ASV_*-tax.tsv']).collect { it.text.readLines()[0].tokenize('\t') }
+            def reltax_headers = getAllFilesFromDir(params.outdir, include: ['qiime2/rel_abundance_tables/rel-table-ASV_*-tax.tsv']).collect { it.text.readLines()[0].tokenize('\t').collect { col -> col.replace('"', '') } }
             def decontam_samples = path("$outputDir/decontam/decontaminated.tsv").text.readLines()[0].tokenize('\t')
-            def cutadapt_samples = path("$outputDir/cutadapt/cutadapt_summary.tsv").text.readLines()[0].tokenize('\t')
+            def cutadapt_samples = path("$outputDir/cutadapt/cutadapt_summary.tsv").text.readLines().drop(1).findAll { it.trim() }.collect { it.tokenize('\t')[0] }
             def barrnap_samples = path("$outputDir/barrnap/ASV_table.ssu.tsv").text.readLines()[0].tokenize('\t')
             def vsearch_samples = path("$outputDir/vsearch_cluster/ASV_post_clustering_filtered.table.tsv").text.readLines()[0].tokenize('\t')
             def lengthfilter_samples = path("$outputDir/asv_length_filter/ASV_table.len.tsv").text.readLines()[0].tokenize('\t')

@@ -23,7 +23,7 @@ nextflow_pipeline {
             def dada2_samples = path("$outputDir/dada2/DADA2_table.tsv").text.readLines()[0].tokenize('\t')
             def summary_samples = path("$outputDir/overall_summary.tsv").text.readLines().drop(1).findAll { it.trim() }.collect { it.tokenize('\t')[0] }
             def decontam_samples = path("$outputDir/decontam/decontaminated.tsv").text.readLines()[0].tokenize('\t')
-            def cutadapt_samples = path("$outputDir/cutadapt/cutadapt_summary.tsv").text.readLines()[0].tokenize('\t')
+            def cutadapt_samples = path("$outputDir/cutadapt/cutadapt_summary.tsv").text.readLines().drop(1).findAll { it.trim() }.collect { it.tokenize('\t')[0] }
 
             assert workflow.success
             assertAll(

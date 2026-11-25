@@ -22,8 +22,10 @@ nextflow_pipeline {
             def asv_samples = path("$outputDir/dada2/ASV_table.tsv").text.readLines()[0].tokenize('\t')
             def dada2_samples = path("$outputDir/dada2/DADA2_table.tsv").text.readLines()[0].tokenize('\t')
             def summary_samples = path("$outputDir/overall_summary.tsv").text.readLines().drop(1).findAll { it.trim() }.collect { it.tokenize('\t')[0] }
-            def rel_asv_samples = path("$outputDir/qiime2/rel_abundance_tables/rel-table-ASV.tsv").text.readLines()[0].tokenize('\t')
-            def cutadapt_samples = path("$outputDir/cutadapt/cutadapt_summary.tsv").text.readLines()[0].tokenize('\t')
+            def rel_asv_samples = path("$outputDir/qiime2/rel_abundance_tables/rel-table-ASV.tsv").text.readLines()
+                .findAll { it.trim() && !it.startsWith('# Constructed from biom file') }[0]
+                .tokenize('\t')
+            def cutadapt_samples = path("$outputDir/cutadapt/cutadapt_summary.tsv").text.readLines().drop(1).findAll { it.trim() }.collect { it.tokenize('\t')[0] }
 
             assert workflow.success
             assertAll(

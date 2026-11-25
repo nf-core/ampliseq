@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#1143](https://github.com/nf-core/ampliseq/pull/1143) - SINTAX with UNITE 9.0 and 10.0 (`unite-fungi`, `unite-alleuk` and their `=9.0` and `=10.0` versions) no longer splits the species epithet off as the SH; the SH is only split off when the species label ends in one. Fixes [#1139](https://github.com/nf-core/ampliseq/issues/1139) (by @stev004)
 - [#1149](https://github.com/nf-core/ampliseq/pull/1149) - Update the nf-core template to 4.2.2; this updates `fastqc` to 0.13.0, `nf-schema` to 2.7.3 and `nft-utils` to 1.2.1, and regenerates the container configs, and the RO-Crate metadata (by @d4straub)
 - [#1150](https://github.com/nf-core/ampliseq/pull/1150) - Remove duplicate `Make a cache directory for the container images` and `count_initial` steps in `.github/workflows/download_pipeline.yml` that introduced a duplicate step id and kept the download workflow from running (by @d4straub)
+- [#1151](https://github.com/nf-core/ampliseq/pull/1151) - DECONTAM no longer fails when control samples are missing from the abundance table (filtered out earlier in the pipeline) (reported by @johnne, fixed by @d4straub)
 
 ### `Dependencies`
 
